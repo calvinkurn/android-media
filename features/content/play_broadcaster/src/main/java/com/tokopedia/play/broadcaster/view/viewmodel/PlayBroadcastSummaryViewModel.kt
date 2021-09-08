@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
@@ -13,7 +14,6 @@ import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -37,9 +37,9 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val observableTrafficMetrics: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
-        get() = _observableTrafficMetrics
-    private val _observableTrafficMetrics = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
+    val observableLiveSummary: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
+        get() = _observableLiveSummary
+    private val _observableLiveSummary = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
 
     val observableSaveVideo: LiveData<NetworkResult<Boolean>>
         get() = _observableSaveVideo
@@ -54,18 +54,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val _observableReportDuration = MutableLiveData<LiveDurationUiModel>()
 
     fun fetchLiveTraffic() {
-        _observableTrafficMetrics.value = NetworkResult.Loading
+        _observableLiveSummary.value = NetworkResult.Loading
         scope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
             _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
-            _observableTrafficMetrics.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+            _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
         }) {
-            _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _observableLiveSummary.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
-
     }
 
     fun saveVideo() {

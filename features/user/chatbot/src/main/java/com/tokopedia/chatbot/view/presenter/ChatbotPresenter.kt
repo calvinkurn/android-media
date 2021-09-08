@@ -32,6 +32,7 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -96,7 +97,8 @@ class ChatbotPresenter @Inject constructor(
         private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
         private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase
+        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -152,8 +154,8 @@ class ChatbotPresenter @Inject constructor(
                 networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
-                    sendReadEvent(messageId)
                 }
+                sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
 
             }
@@ -437,17 +439,20 @@ class ChatbotPresenter @Inject constructor(
                     reqParam)
 
             uploadImageUseCase.execute(params,
-                    object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                        override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                            t.dataResultImageUpload.data?.run {
-                                sendUploadedImageToWebsocket(SendWebsocketParam
-                                        .generateParamSendImage(messageId,
-                                                this.picSrc,
-                                                it.startTime,
-                                                opponentId))
-                            }
-                            isUploading = false
+                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
+                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
+                        t.dataResultImageUpload.data?.run {
+                            sendUploadedImageToWebsocket(
+                                ChatbotSendWebsocketParam
+                                    .generateParamSendImage(
+                                        messageId,
+                                        this.picSrc,
+                                        this.picObj,
+                                        it.startTime,
+                                        opponentId))
                         }
+                        isUploading = false
+                    }
 
                         override fun onCompleted() {
 
@@ -596,5 +601,23 @@ class ChatbotPresenter @Inject constructor(
         val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
                 ?: ""
         return ChatActionBubbleViewModel(text, value, action)
+    }
+
+    override fun checkForSession(messageId: String) {
+        val params = getTopBotNewSessionUseCase.createRequestParams(messageId)
+        launchCatchError(
+            block = {
+                val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
+                val isNewSession = response.topBotGetNewSession.isNewSession
+                if (isNewSession) {
+                    view.startNewSession()
+                } else {
+                    view.loadChatHistory()
+                }
+            },
+            onError = {
+                view.loadChatHistory()
+            }
+        )
     }
 }

@@ -66,7 +66,12 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         super.onViewCreated(view, savedInstanceState)
         clearContentPadding = true
         isFullpage = true
-        bottomSheetClose.setImageDrawable(context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_BACK) })
+        bottomSheetClose.setImageDrawable(context?.let {
+            getIconUnifyDrawable(
+                it,
+                IconUnify.ARROW_BACK
+            )
+        })
         setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyFilterDialogStyle)
         initView(view)
         setupCalendarView()
@@ -140,16 +145,27 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
             override fun onDateSelected(date: Date) {
                 when (mode) {
                     CalendarPickerView.SelectionMode.RANGE -> {
-                        if ((minDate == null || maxDate != null) || (maxDate == null && date.before(minDate))) {
+                        if ((minDate == null || maxDate != null) || (maxDate == null && date.before(
+                                minDate
+                            ))
+                        ) {
                             minDate = date
                             maxDate = null
                             selectStartDate(date)
-                        } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(minDate))) {
+                        } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(
+                                minDate
+                            ))
+                        ) {
                             maxDate = date
                             selectEndDate(date)
                             GlobalScope.launch(Dispatchers.Main) {
                                 delay(DELAY_SELECTED_FILTER_DATE_PENALTY)
-                                calenderFilterListener?.onSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
+                                calenderFilterListener?.onSaveCalendarClicked(
+                                    Pair(
+                                        startDateParam,
+                                        startDateEditText
+                                    ), Pair(endDateParam, endDateEditText)
+                                )
                                 dismissAllowingStateLoss()
                             }
                         }

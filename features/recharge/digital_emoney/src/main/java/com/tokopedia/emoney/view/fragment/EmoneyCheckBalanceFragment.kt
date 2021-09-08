@@ -13,9 +13,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -29,6 +26,7 @@ import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -40,7 +38,13 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     protected lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
+    protected lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
+
+    val errorHanlderBuilder = ErrorHandler.Builder().apply {
+        sendToScalyr = true
+        className = CLASS_NAME
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,8 +56,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     protected open fun initiateViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
+            tapcashBalanceViewModel = viewModelProvider.get(TapcashBalanceViewModel::class.java)
         }
     }
 
@@ -100,21 +105,25 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 // nfc enabled and process Mandiri NFC as default
                 showLoading()
-                executeMandiri(intent)
+                executeCard(intent)
             }
         }
     }
 
-    private fun executeMandiri(intent: Intent) {
-        if (CardUtils.isEmoneyCard(intent)) {
-            val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+    private fun executeCard(intent: Intent) {
+        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        if (CardUtils.isTapcashCard(intent) && goToNewTapcash()) {
+            tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+        } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
-                showError(ErrorHandler.getErrorMessage(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD)),
-                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
+                showError(errorMessage.first.orEmpty(),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                         true)
             }
@@ -141,23 +150,27 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
             context?.let {
-                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                var errorThrowable = throwable
+                if ((throwable.message ?: "").contains(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_error_msg), true)) {
+                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_full_page_title))
+                }
+                val errorMessage = ErrorHandler.getErrorMessagePair(it, errorThrowable, errorHanlderBuilder)
                 if((throwable is SocketTimeoutException)){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
-                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title)+" "+ errorMessage.second,
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
                             isButtonShow = true,
                             isGlobalErrorShow = false,
                             mandiriGetSocketTimeout = true
                     )
-                } else if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                } else if((throwable is UnknownHostException) || errorMessage.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
-                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+ " "+ errorMessage.second,
                             "",
                             true)
                 } else {
-                    showError(errorMessage,
-                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                    showError(errorMessage.first.orEmpty(),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+ " "+ errorMessage.second,
                             "",
                             true, true)
                 }
@@ -166,8 +179,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(ErrorHandler.getErrorMessage(context, it),
-                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+            val errorMessage = ErrorHandler.getErrorMessagePair(context, it, errorHanlderBuilder)
+            showError(errorMessage.first.orEmpty(),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                     true
             )
@@ -177,6 +191,72 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             tapETollCardView.setIssuerId(it)
         })
 
+        tapcashBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer {
+            val errorMessage = ErrorHandler.getErrorMessagePair(context, it, errorHanlderBuilder)
+            showError(errorMessage.first.orEmpty(),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
+                    true
+            )
+        })
+
+        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { throwable ->
+            context?.let {
+                val errorMessage = ErrorHandler.getErrorMessagePair(it, throwable, errorHanlderBuilder)
+                if((throwable is SocketTimeoutException)){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title_tapcash)+" "+errorMessage.second,
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                            isButtonShow = true,
+                            isGlobalErrorShow = false,
+                            tapCashWriteFailed = true
+                    )
+                } else if((throwable is UnknownHostException) || errorMessage.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+errorMessage.second,
+                            "",
+                            true)
+                } else {
+                    showError(errorMessage.first.orEmpty(),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+errorMessage.second,
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                            true,
+                            true)
+                }
+            }
+        })
+
+        tapcashBalanceViewModel.errorWrite.observe(viewLifecycleOwner, Observer { throwable ->
+            context?.let { context ->
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, errorHanlderBuilder)
+                showError(errorMessage.first.orEmpty(),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_write_error_desc)+" "+errorMessage.second,
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                        isButtonShow = true,
+                        isGlobalErrorShow = false,
+                        tapCashWriteFailed = true
+                )
+            }
+        })
+
+        tapcashBalanceViewModel.tapcashInquiry.observe(viewLifecycleOwner, Observer {
+            it.error?.let { error ->
+                when (error.status) {
+                    0 -> showCardLastBalance(it)
+                    1 -> it.error?.let { error ->
+                        showError(
+                                errorMessage = resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
+                                errorMessageLabel =  error.title,
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                                isButtonShow = true,
+                                isGlobalErrorShow = false,
+                                tapCashWriteFailed = true
+                        )
+                    }
+                    else -> return@let
+                }
+            }
+        })
     }
 
     protected open fun processBrizzi(intent: Intent) {
@@ -264,6 +344,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
+        const val CLASS_NAME = "EmoneyCheckBalanceFragment"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

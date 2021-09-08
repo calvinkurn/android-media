@@ -11,15 +11,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.util.LetUtil
+import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
+import com.tokopedia.chooseaccount.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.chooseaccount.data.AccountListDataModel
+import com.tokopedia.chooseaccount.data.ChooseAccountViewModel
 import com.tokopedia.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.chooseaccount.view.base.BaseChooseAccountFragment
 import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
-import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
-import com.tokopedia.chooseaccount.common.di.DaggerLoginRegisterPhoneComponent
-import com.tokopedia.chooseaccount.data.ChooseAccountViewModel
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.usecase.coroutines.Fail
@@ -223,7 +223,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     private fun onErrorLoginToken(throwable: Throwable) {
         checkExceptionType(throwable)
-        logUnknownError(Throwable("Login Phone Number Login Token is not success"))
+        val logException = Throwable("Failed LoginPN using token", throwable)
+        logUnknownError(logException)
     }
 
     private fun onSuccessGetAccountList(accountListDataModel: AccountListDataModel) {

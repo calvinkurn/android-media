@@ -158,6 +158,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

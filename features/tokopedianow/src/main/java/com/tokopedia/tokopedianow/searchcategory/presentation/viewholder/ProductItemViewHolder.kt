@@ -9,11 +9,11 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
+import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroupVariant
+import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
+import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToVariant
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 
 class ProductItemViewHolder(
         itemView: View,
@@ -65,38 +65,6 @@ class ProductItemViewHolder(
                 productItemListener.onProductNonVariantQuantityChanged(element, quantity)
             }
         })
-    }
-
-    private fun List<LabelGroupDataView>.mapToLabelGroup() = map {
-        ProductCardModel.LabelGroup(
-                position = it.position,
-                title = it.title,
-                type = it.type,
-                imageUrl = it.url,
-        )
-    }
-
-    private fun List<LabelGroupVariantDataView>.mapToLabelGroupVariant() = map {
-        ProductCardModel.LabelGroupVariant(
-                type = it.type,
-                typeVariant = it.typeVariant,
-                title = it.title,
-                hexColor = it.hexColor,
-        )
-    }
-
-    private fun VariantATCDataView.mapToVariant(): ProductCardModel.Variant {
-        return ProductCardModel.Variant(
-                quantity = this.quantity
-        )
-    }
-
-    private fun NonVariantATCDataView.mapToNonVariant(): ProductCardModel.NonVariant {
-        return ProductCardModel.NonVariant(
-                quantity = this.quantity,
-                maxQuantity = this.maxQuantity,
-                minQuantity = this.minQuantity,
-        )
     }
 
     override fun onViewRecycled() {

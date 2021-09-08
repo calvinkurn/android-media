@@ -50,7 +50,7 @@ open class TopAdsRepository {
             val model = TopAdsImageViewModel()
             val image = getImageById(data?.banner?.images, queryParams[DIMEN_ID] as? Int)
             with(model) {
-                bannerId = data?.id.toString()
+                bannerId = data?.id
                 bannerName = data?.banner?.name ?: ""
                 position = data?.banner?.position ?: 0
                 adClickUrl = data?.adClickUrl ?: ""
@@ -61,6 +61,8 @@ open class TopAdsRepository {
                 imageHeight = image.third
                 nextPageToken = response.header?.pagination?.nextPageToken
                 shopId = data?.banner?.shop?.id?.toString()?:""
+                currentPage = response.header?.pagination?.currentPage ?: ""
+                kind = response.header?.pagination?.kind ?: ""
             }
             list.add(model)
         }

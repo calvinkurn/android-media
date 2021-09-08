@@ -271,3 +271,12 @@
 -dontwarn com.jsoniter.extra.JacksonCompatibility*
 -dontwarn com.jsoniter.output.DynamicCodegen
 -dontwarn com.jsoniter.DynamicCodegen
+
+# View Binding
+-keep class * implements androidx.viewbinding.ViewBinding {
+    public static *** bind(android.view.View);
+    public static *** inflate(...);
+}
+
+# Window
+-keep class androidx.window.** { *; }

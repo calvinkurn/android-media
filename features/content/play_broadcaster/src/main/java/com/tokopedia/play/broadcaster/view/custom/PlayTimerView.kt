@@ -6,6 +6,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
+import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -28,14 +30,18 @@ class PlayTimerView : ConstraintLayout {
         tvTimeCounterEnd = view.findViewById(R.id.tv_time_counter_end)
     }
 
-    fun showTimeRemaining(minutesUntilFinished: Long = 0L) {
+    fun showTimeRemaining(remainingInMinutes: Long) {
         setVisibilityWhenTimesRunOut(true)
-        tvTimeCounterEnd.text = context.getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
+        tvTimeCounterEnd.text = context.getString(R.string.play_live_broadcast_time_left, remainingInMinutes)
     }
 
-    fun showCounterDuration(timeLeft: String = "") {
+    fun showCounterDuration(remainingInMillis: Long) {
         setVisibilityWhenTimesRunOut(false)
-        tvTimeCounter.text = timeLeft
+        tvTimeCounter.text = context.getString(
+            R.string.play_live_broadcast_remaining_duration_format,
+            remainingInMillis.millisToMinutes(),
+            remainingInMillis.millisToRemainingSeconds()
+        )
     }
 
     private fun setVisibilityWhenTimesRunOut(state: Boolean) {

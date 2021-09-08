@@ -202,6 +202,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           isDiscount
           discount
           discountFmt
+          isCashback
+          cashbackFmt
           priceOriginal
           priceOriginalFmt
           priceDiscount

@@ -16,11 +16,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -45,10 +44,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
         private val userSession: UserSessionInterface
-) : PlayBaseBroadcastFragment() {
+) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
+        private const val FIRST_PLACE = 0
     }
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
@@ -59,7 +59,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var loaderView: LoaderUnify
     private lateinit var deleteVideoDialog: DialogUnify
 
-    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
+    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it, this) }
 
     override fun getScreenName(): String = "Play Summary Page"
 
@@ -77,6 +77,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         observeLiveTrafficMetrics()
         observeSaveVideo()
         observeDeleteVideo()
+        observeInteractiveLeaderboardInfo()
 
         return view
     }
@@ -139,10 +140,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
-    private fun setSummaryInfo(dataList: List<TrafficMetricUiModel>) {
-        summaryInfoView.setSummaryInfo(dataList)
-    }
-
     private fun setLiveDuration(model: LiveDurationUiModel) {
         summaryInfoView.setLiveDuration(model)
     }
@@ -182,7 +179,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableTrafficMetrics.observe(viewLifecycleOwner, Observer{
+        viewModel.observableLiveSummary.observe(viewLifecycleOwner, Observer{
             when(it) {
                 is NetworkResult.Loading -> {
                     loaderView.visible()
@@ -191,7 +188,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 is NetworkResult.Success -> {
                     loaderView.gone()
                     summaryInfoView.hideError()
-                    setSummaryInfo(it.data)
+                    summaryInfoView.addTrafficMetrics(it.data)
                 }
                 is NetworkResult.Fail -> {
                     loaderView.gone()
@@ -250,6 +247,18 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         })
     }
 
+    private fun observeInteractiveLeaderboardInfo() {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+            summaryInfoView.addTrafficMetric(
+                TrafficMetricUiModel(
+                    type = TrafficMetricType.GameParticipants,
+                    count = if (it is NetworkResult.Success) it.data.totalParticipant else getString(R.string.play_interactive_leaderboard_default)
+                ),
+                FIRST_PLACE
+            )
+        })
+    }
+
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
         if (activity?.callingActivity == null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
@@ -263,5 +272,17 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             )
             activity?.finish()
         }
+    }
+
+    override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
+         if (metricType.isGameParticipants) openInteractiveLeaderboardSheet()
+    }
+
+    private fun openInteractiveLeaderboardSheet() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val leaderBoardBottomSheet = fragmentFactory.instantiate(
+            requireContext().classLoader,
+            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+        leaderBoardBottomSheet.show(childFragmentManager)
     }
 }

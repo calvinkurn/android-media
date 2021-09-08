@@ -21,7 +21,7 @@
         android:id="@+id/review_image_slider_item_see_all_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Neutral_N700_68"
+        android:background="@color/Unify_N700_68"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"

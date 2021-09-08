@@ -96,9 +96,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
@@ -108,6 +106,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
@@ -795,20 +794,25 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
+        val userSession = UserSession(context)
+        val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
         return ShopProductAdapterTypeFactory(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                null,
-                this,
-                true,
-                deviceWidth,
-                ShopTrackProductTypeDef.PRODUCT
+                membershipStampAdapterListener = this,
+                shopProductClickedListener = this,
+                shopProductImpressionListener = this,
+                shopCarouselSeeAllClickedListener = this,
+                emptyProductOnClickListener = this,
+                shopProductEtalaseListViewHolderListener = this,
+                shopProductAddViewHolderListener = this,
+                shopProductsEmptyViewHolderListener = this,
+                shopProductEmptySearchListener = null,
+                shopProductChangeGridSectionListener = this,
+                shopShowcaseEmptySearchListener = null,
+                isGridSquareLayout = true,
+                deviceWidth = deviceWidth,
+                shopTrackType = ShopTrackProductTypeDef.PRODUCT,
+                isShowTripleDot = !_isMyShop
         )
     }
 
@@ -981,7 +985,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
-        staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(resources.getInteger(R.integer.span_count_small_grid), StaggeredGridLayoutManager.VERTICAL)
     }
 
     private fun startMonitoringPltRenderPage() {

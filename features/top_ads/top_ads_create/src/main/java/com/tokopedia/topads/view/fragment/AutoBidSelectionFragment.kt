@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.UrlConstant
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
@@ -23,6 +24,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 private const val MANUAL_BID = 10
 private const val AUTO_BID = 20
+private const val CLICK_SAVE_AUTO_BID = "click - lanjutkan pengaturan iklan"
 class AutoBidSelectionFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var nextBtn: UnifyButton
@@ -67,11 +69,13 @@ class AutoBidSelectionFragment: BaseStepperFragment<CreateManualAdsStepperModel>
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
-        if (stepperModel?.autoBidState?.isEmpty() == true)
+        if (stepperModel?.autoBidState?.isEmpty() == true) {
             stepperListener?.goToNextPage(stepperModel)
-        else {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_SAVE_AUTO_BID, getString(R.string.autobid_manual_title))
+        } else {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_SAVE_AUTO_BID, getString(R.string.autobid_otomatis_title))
         }
     }
 

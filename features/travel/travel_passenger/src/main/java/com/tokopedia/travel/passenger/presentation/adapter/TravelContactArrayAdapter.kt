@@ -89,10 +89,9 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
             if (results.count > 0) {
-                clear()
-                val filteredList = results.values as ArrayList<TravelContactListModel.Contact>
-                for (contact in filteredList) add(contact)
                 notifyDataSetChanged()
+            } else {
+                notifyDataSetInvalidated()
             }
         }
     }

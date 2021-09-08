@@ -13,8 +13,10 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -57,6 +59,11 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
+        if (element.balanceType != TYPE_STATE_2) {
+            view_balance_widget_coachmark.visibility = View.GONE
+        } else {
+            view_balance_widget_coachmark.visibility = View.INVISIBLE
+        }
         containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
         balanceAdapter = BalanceAdapter(listener)

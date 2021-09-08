@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -45,10 +46,15 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           }
                     }
                     bebasOngkir {
-                      products {
-                        productID
-                        boType
-                      }
+                          products{
+                            productID
+                            boType
+                          }
+                          images{
+                            boType
+                            imageURL
+                            tokoCabangImageURL
+                          }
                     }
                     shopInfo {
                         shopType
@@ -156,6 +162,32 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     geolocation
                   }
                 }
+                ratesEstimate {
+                  warehouseID
+                  products
+                  data {
+                    totalService
+                    isSupportInstantCourier
+                    destination
+                    icon
+                    title
+                    subtitle
+                    eTAText
+                    errors {
+                      Code
+                      Message
+                      DevMessage
+                    }
+                    courierLabel
+                    cheapestShippingPrice
+                  }
+                  bottomsheet {
+                    title
+                    iconURL
+                    subtitle
+                    buttonCopy
+                  }
+               }
                 callsError{
                   cartRedirection{
                     Code
@@ -179,7 +211,13 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
-            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
+                    chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
+            )
+
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
@@ -217,7 +255,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 alternateCopy = data.cardRedirection.alternateCopy,
                 simpleBasicInfo = data.basicInfo,
                 shopType = data.shopInfo.shopType,
-                boData = data.bebasOngkir.boProduct
+                boData = data.bebasOngkir,
+                rates = data.ratesEstimate
         )
     }
 }

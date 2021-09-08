@@ -36,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -64,6 +65,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)

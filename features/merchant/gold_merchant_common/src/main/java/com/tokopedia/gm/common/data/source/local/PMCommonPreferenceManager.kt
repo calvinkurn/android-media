@@ -17,6 +17,7 @@ class PMCommonPreferenceManager @Inject constructor(
 
         const val KEY_HAS_OPENED_NEW_SELLER_PM_IDLE_POPUP = "key_has_opened_communication_new_seller_pm_idle_popup"
         const val KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
+        const val KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE = "key_has_opened_end_period_interrupt_page"
 
         const val KEY_SHOP_SCORE_CONSENT_CHECKED = "key_shop_score_consent_checked"
         const val KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED = "key_number_of_interrupt_page_opened"

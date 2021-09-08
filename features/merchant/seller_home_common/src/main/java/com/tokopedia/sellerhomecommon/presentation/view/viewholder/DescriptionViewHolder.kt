@@ -38,10 +38,10 @@ class DescriptionViewHolder(
                 tvDescriptionCta.visible()
                 icDescriptionCtaArrow.visible()
                 tvDescriptionCta.setOnClickListener {
-                    goToDetails(element.appLink, element.title)
+                    goToDetails(element)
                 }
                 icDescriptionCtaArrow.setOnClickListener {
-                    goToDetails(element.appLink, element.title)
+                    goToDetails(element)
                 }
             } else {
                 tvDescriptionCta.gone()
@@ -49,20 +49,20 @@ class DescriptionViewHolder(
             }
 
             addOnImpressionListener(element.impressHolder) {
-                listener.sendDescriptionImpressionEvent(element.title)
+                listener.sendDescriptionImpressionEvent(element)
             }
         }
     }
 
-    private fun goToDetails(appLink: String, descriptionTitle: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendDescriptionCtaClickEvent(descriptionTitle)
+    private fun goToDetails(model: DescriptionWidgetUiModel) {
+        if (RouteManager.route(itemView.context, model.appLink)) {
+            listener.sendDescriptionCtaClickEvent(model)
         }
     }
 
     interface Listener : BaseViewHolderListener {
-        fun sendDescriptionImpressionEvent(descriptionTitle: String) {}
+        fun sendDescriptionImpressionEvent(model: DescriptionWidgetUiModel) {}
 
-        fun sendDescriptionCtaClickEvent(descriptionTitle: String) {}
+        fun sendDescriptionCtaClickEvent(model: DescriptionWidgetUiModel) {}
     }
 }

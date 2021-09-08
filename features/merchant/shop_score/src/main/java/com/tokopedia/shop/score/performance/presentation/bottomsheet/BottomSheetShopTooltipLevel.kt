@@ -69,7 +69,14 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {  bottomSheetWrapper.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let {
+            bottomSheetWrapper.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
+        }
         isFullpage = true
         initView(view)
         setRecyclerView()
@@ -94,7 +101,8 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
             if (itemDecorationCount.isZero()) {
                 addItemDecoration(TooltipLevelItemDecoration())
             }
-            layoutManager = context?.let { GridLayoutManager(it, 2, GridLayoutManager.VERTICAL, false) }
+            layoutManager =
+                context?.let { GridLayoutManager(it, 2, GridLayoutManager.VERTICAL, false) }
             adapter = cardTooltipLevelAdapter
         }
     }
@@ -103,11 +111,11 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         observe(shopPerformanceViewModel.shopInfoLevel) {
             loaderTooltipLevel?.hide()
             val shopInfoLevelUiModel = ShopInfoLevelUiModel(
-                    shopIncome = shopIncome,
-                    productSold = productSold,
-                    periodDate = period,
-                    nextUpdate = nextUpdate,
-                    cardTooltipLevelList = it.cardTooltipLevelList
+                shopIncome = shopIncome,
+                productSold = productSold,
+                periodDate = period,
+                nextUpdate = nextUpdate,
+                cardTooltipLevelList = it.cardTooltipLevelList
             )
             setShopLevelData(shopInfoLevelUiModel)
         }
@@ -117,21 +125,26 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private fun setShopLevelData(data: ShopInfoLevelUiModel) {
         tvPeriodInformationLevel?.text = data.periodDate
         tvValueIncomeTooltip?.text =
-                if (data.shopIncome.toDoubleOrZero() < 0.0) {
-                    "-"
-                } else {
-                    StringBuilder("Rp${data.shopIncome.toDoubleOrZero().getNumberFormatted()}")
-                }
+            if (data.shopIncome.toDoubleOrZero() < 0.0) {
+                "-"
+            } else {
+                StringBuilder("Rp${data.shopIncome.toDoubleOrZero().getNumberFormatted()}")
+            }
         tvValueProductSoldTooltip?.text =
-                if (data.productSold.toDoubleOrZero() < 0.0) {
-                    "-"
-                } else {
-                    data.productSold
-                }
+            if (data.productSold.toDoubleOrZero() < 0.0) {
+                "-"
+            } else {
+                data.productSold
+            }
         tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
         context?.let {
-            containerCardIncomeInformation?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            containerCardIncomeInformation?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
         }
     }
 
@@ -144,7 +157,13 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         private const val PERIOD_KEY = "period_key"
         private const val NEXT_UPDATE_KEY = "next_update_key"
 
-        fun createInstance(shopLevel: Long, shopIncome: String, productSold: String, period: String, nextUpdate: String): BottomSheetShopTooltipLevel {
+        fun createInstance(
+            shopLevel: Long,
+            shopIncome: String,
+            productSold: String,
+            period: String,
+            nextUpdate: String
+        ): BottomSheetShopTooltipLevel {
             return BottomSheetShopTooltipLevel().apply {
                 val bundle = Bundle()
                 bundle.putLong(SHOP_PERFORMANCE_LEVEL_KEY, shopLevel)

@@ -96,7 +96,11 @@ data class ShopInfo(
 
         @SerializedName("shopTier")
         @Expose
-        val shopTier: Int = 0
+        val shopTier: Int = 0,
+
+        @SerializedName("branchLinkDomain")
+        @Expose
+        val branchLinkDomain: String = "",
 
 ) {
     fun isShopInfoNotEmpty():Boolean {

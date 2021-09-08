@@ -6,6 +6,8 @@ import com.tokopedia.officialstore.official.data.model.HeaderShop
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
 
+//this is old featured brand from external api
+//now doubles with featured brand on dynamic channel
 class OfficialFeaturedShopDataModel(
         val featuredShop: List<Shop>,
         val headerShop: HeaderShop?,

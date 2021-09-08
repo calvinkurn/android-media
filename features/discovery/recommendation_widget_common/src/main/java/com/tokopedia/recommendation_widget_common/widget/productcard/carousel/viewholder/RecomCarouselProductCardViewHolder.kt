@@ -32,7 +32,7 @@ class RecomCarouselProductCardViewHolder (view: View,
         productCardView?.run{
             applyCarousel()
             setProductModel(element.productModel)
-            addOnImpressionListener(element.impressHolder) {
+            addOnImpressionListener(element.recomItem) {
                 if(element.recomItem.isTopAds){
                     TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
@@ -74,5 +74,9 @@ class RecomCarouselProductCardViewHolder (view: View,
                 )
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        productCardView?.recycle()
     }
 }

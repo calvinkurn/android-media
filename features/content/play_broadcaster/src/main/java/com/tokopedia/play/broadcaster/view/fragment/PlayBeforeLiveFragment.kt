@@ -279,9 +279,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
-                is NetworkResult.Success -> {
-                    parentViewModel.startLiveStream(withTimer = false)
-                }
+                is NetworkResult.Success -> parentViewModel.startLiveStream(startTimer = false)
                 is NetworkResult.Fail -> {
                     showToaster(
                             message = it.error.localizedMessage,

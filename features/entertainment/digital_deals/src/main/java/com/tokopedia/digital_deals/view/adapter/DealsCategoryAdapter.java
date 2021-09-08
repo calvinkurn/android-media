@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -18,12 +15,15 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -92,6 +92,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private int homePosition;
     List<ProductItem> itemsForGA = new ArrayList<>();
     private String fromApplink;
+    private final String zeroPercent = "0%";
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -498,7 +499,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 dealListPrice.setVisibility(View.INVISIBLE);
             }
-            if (TextUtils.isEmpty(productItem.getSavingPercentage())) {
+            if (TextUtils.isEmpty(productItem.getSavingPercentage()) || productItem.getSavingPercentage().startsWith(zeroPercent)) {
                 discount.setVisibility(View.INVISIBLE);
             } else {
                 discount.setVisibility(View.VISIBLE);
@@ -680,7 +681,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 dealListPrice.setVisibility(View.INVISIBLE);
             }
-            if (TextUtils.isEmpty(productItem.getSavingPercentage())) {
+            if (TextUtils.isEmpty(productItem.getSavingPercentage()) || productItem.getSavingPercentage().startsWith(zeroPercent)) {
                 discount.setVisibility(View.INVISIBLE);
             } else {
                 discount.setVisibility(View.VISIBLE);
@@ -782,7 +783,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 } else {
                     mrpPrice.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(value.getSavingPercentage())) {
+                if (!TextUtils.isEmpty(value.getSavingPercentage()) && !value.getSavingPercentage().startsWith(zeroPercent)) {
                     discount.setText(value.getSavingPercentage());
                     discount.setBackground(context.getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.background_lightgreen_oval));
                 } else {

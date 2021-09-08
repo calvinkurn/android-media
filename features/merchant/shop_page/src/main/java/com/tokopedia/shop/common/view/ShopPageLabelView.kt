@@ -260,7 +260,7 @@ class ShopPageLabelView : ShopPageBaseCustomView {
 
     private fun badgeCounter(badge: Int): String {
         var counter = badge.toString()
-        if (badge > 99) {
+        if (badge > MAXIMUM_COUNTER) {
             counter = "99+"
         }
         return counter
@@ -284,5 +284,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
 
     companion object {
         private const val MAX_WIDTH_PERCENT_CONTENT = 0.3f
+        private const val MAXIMUM_COUNTER = 99
     }
 }

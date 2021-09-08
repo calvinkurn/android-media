@@ -33,7 +33,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
         if (data.isBebasOngkirExtra) {
             tvTitleExtra.text = itemView.context.getString(R.string.bracket_container, CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountedRate, false).removeDecimalSuffix())
             tvTitleExtra.visibility = View.VISIBLE
@@ -87,7 +87,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         if (!data.disabled) {
             itemView.setOnClickListener {
-                listener.onLogisticPromoClicked(data)
+                listener?.onLogisticPromoClicked(data)
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {

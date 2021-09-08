@@ -31,7 +31,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -58,8 +57,12 @@ import com.tokopedia.officialstore.official.presentation.adapter.typefactory.Off
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -74,7 +77,8 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler{
+        DynamicChannelEventHandler,
+        RecommendationWidgetListener{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -86,6 +90,9 @@ class OfficialHomeFragment :
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
         private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+        private const val POS_1 = 1
+        private const val POS_10 = 10
+        private const val DELAY_200L = 200L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
@@ -115,6 +122,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
     private var localChooseAddress: OSChooseAddressData? = null
+    private var recommendationWishlistItem: RecommendationItem? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -169,18 +177,20 @@ class OfficialHomeFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.os_child_recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
+            this,
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
+                OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -195,11 +205,30 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        observeFeaturedShopSuccessDC()
+        observeFeaturedShopRemoveDC()
+        observeRecomwidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun observeRecomwidget() {
+        viewModel.recomWidget.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingRecomWidget(it.data, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+        })
     }
 
     override fun onPause() {
@@ -230,6 +259,8 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
+        viewModel.featuredShopRemove.removeObservers(this)
+        viewModel.featuredShopResult.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -345,7 +376,7 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
-                    (position + 1).toString(10),
+                    (position + POS_1).toString(POS_10),
                     it,
                     channelModel
             )
@@ -375,7 +406,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData
                 )
@@ -408,7 +439,7 @@ class OfficialHomeFragment :
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         campaignId,
                         campaignCode
@@ -440,7 +471,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData.campaignCode,
                         channelData.campaignID.toString()
@@ -640,6 +671,21 @@ class OfficialHomeFragment :
         RouteManager.route(context, shopData.url)
     }
 
+    override fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int) {
+    }
+
+    override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun goToApplink(applink: String) {
+        RouteManager.route(requireContext(), applink)
+    }
+
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()
 
@@ -799,6 +845,27 @@ class OfficialHomeFragment :
         })
     }
 
+    private fun observeFeaturedShopSuccessDC() {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                   //update UI
+                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
+                        adapter?.submitList(newDataList)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeFeaturedShopRemoveDC() {
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
+            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                adapter?.submitList(newDataList)
+            }
+        })
+    }
+
     private fun showErrorNetwork(t: Throwable) {
         view?.let {
             Toaster.build(it,
@@ -825,10 +892,9 @@ class OfficialHomeFragment :
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
-
                             Handler().postDelayed({
                                 isScrolling = false
-                            }, 200)
+                            }, DELAY_200L)
                         }
 
                     }
@@ -934,6 +1000,31 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        RouteManager.route(context, recommendationItem.appUrl)
+    }
+
+    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    }
+
+    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        recommendationWishlistItem = recommendationItem
+        showProductCardOptions(
+            this,
+            recommendationItem.createProductCardOptionsModel(widgetPosition))
+    }
+
+    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
+    }
+
+    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
@@ -946,5 +1037,17 @@ class OfficialHomeFragment :
         }
         return false
 
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }

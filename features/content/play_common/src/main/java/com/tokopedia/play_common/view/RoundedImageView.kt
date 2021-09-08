@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Outline
@@ -32,11 +33,12 @@ class RoundedImageView : AppCompatImageView {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView)
 
-            cornerRadius = attributeArray.getDimension(R.styleable.RoundedImageView_cornerRadius, 0f)
+            cornerRadius = attributeArray.getDimension(R.styleable.RoundedImageView_rImg_cornerRadius, 0f)
             attributeArray.recycle()
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val save = canvas.save()

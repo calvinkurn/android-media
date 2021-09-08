@@ -306,8 +306,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             REQUEST_CODE_GLOBAL_SEARCH -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     hotelHomepageModel.apply {
-                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)
-                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE) ?: ""
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE) ?: ""
                         if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS)) roomCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS, 1)
                         if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS)) adultCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS, 1)
                     }
@@ -323,7 +323,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(error: Throwable) {
-        if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
+        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
 
             binding?.let {
@@ -332,8 +332,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
 
             context?.run {
-                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
-            }
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
@@ -438,7 +438,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 HotelShare(this).shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
-                        this.applicationContext)
+                    requireContext())
             }
         }
     }

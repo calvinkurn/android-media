@@ -22,6 +22,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -134,6 +135,7 @@ class ShopHomeNplCampaignViewHolder(
                         itemView.rv_product_carousel?.layoutManager?.onRestoreInstanceState(rvState)
                     }
                     val clickableBannerAreaWidth = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+                    productListCampaignAdapter?.clearAllElements()
                     if(productList.isNotEmpty())
                         productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
                     productListCampaignAdapter?.addElement(productList)
@@ -179,7 +181,11 @@ class ShopHomeNplCampaignViewHolder(
         itemView.banner_background?.apply {
             try {
                 if(context.isValidGlideContext())
-                    setImageUrl(bannerUrl, heightRatio = 1f)
+                    if (DeviceScreenInfo.isTablet(context)) {
+                        setImageUrlTileMode(bannerUrl)
+                    } else {
+                        setImageUrl(bannerUrl, heightRatio = 1f)
+                    }
             } catch (e: Exception) { }
         }
     }

@@ -18,6 +18,19 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/pdp_dev_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="@string/pdp_dev"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/access_token"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -67,4 +67,10 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideHelpfullOptions()
 
+    fun onConnectWebSocket()
+
+    fun clearChatOnLoadChatHistory()
+
+    fun clearDuplicate(list: List<Visitable<*>>):ArrayList<Visitable<*>>
+
 }

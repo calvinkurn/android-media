@@ -103,8 +103,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
             verifySuccessValidateShopNameRequestParamsCalled(shopName)
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-
             verifySuccessValidateShopNameCalled()
 
             Assert.assertTrue(shopEditBasicInfoViewModel.validateShopName.value is Success)
@@ -124,8 +122,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
-
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
 
             verifySuccessValidateDomainNameCalled()
 

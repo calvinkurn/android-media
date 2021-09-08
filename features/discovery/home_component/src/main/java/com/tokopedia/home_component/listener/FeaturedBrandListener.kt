@@ -13,7 +13,7 @@ interface FeaturedBrandListener {
 
     fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 
-    fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
+    fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int, applink: String)
 
     fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int)
 }

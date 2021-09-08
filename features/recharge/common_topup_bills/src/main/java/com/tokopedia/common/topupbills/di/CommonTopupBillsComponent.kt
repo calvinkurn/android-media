@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
@@ -20,7 +21,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Created by resakemal on 12/08/19.
  */
 @CommonTopupBillsScope
-@Component(modules = [CommonTopupBillsModule::class], dependencies = [DigitalCommonComponent::class])
+@Component(modules = [CommonTopupBillsModule::class, TopupBillsViewModelModule::class], dependencies = [DigitalCommonComponent::class])
 interface CommonTopupBillsComponent {
 
     @ApplicationContext
@@ -46,4 +47,6 @@ interface CommonTopupBillsComponent {
     fun digitalInterceptor(): DigitalInterceptor
 
     fun networkRouter(): NetworkRouter
+
+    fun inject(topupBillsFavoriteNumberFragment: TopupBillsFavoriteNumberFragment)
 }

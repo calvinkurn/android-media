@@ -1,11 +1,8 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.MediaRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
-import com.tokopedia.mediauploader.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.data.entity.UploaderPolicy
 import com.tokopedia.mediauploader.stubDataPolicyRepository
-import com.tokopedia.usecase.RequestParams
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
@@ -15,19 +12,19 @@ import kotlin.test.assertFailsWith
 
 class DataPolicyUseCaseTest: Spek({
     Feature("data policy use case") {
-        val repository = mockk<MediaRepository>(relaxed = true)
+        val repository = mockk<GraphqlRepository>(relaxed = true)
         val useCase = DataPolicyUseCase(repository)
         val sourceId = "WXjxja"
         val dataUploaderPolicy = DataUploaderPolicy()
 
         Scenario("create param with source id") {
-            var requestParams = RequestParams.create()
+            var requestParams = mapOf<String, String>()
 
             When("create param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
+                requestParams = useCase.createParams(sourceId)
             }
             Then("it should return source id correctly") {
-                assert(requestParams.getString("source", "") == sourceId)
+                assert(requestParams["source"] == sourceId)
             }
         }
 
@@ -38,17 +35,17 @@ class DataPolicyUseCaseTest: Spek({
             Then("it should return exception of param not found") {
                 runBlocking {
                     assertFailsWith<Exception> {
-                        useCase(RequestParams.EMPTY)
+                        useCase(mapOf())
                     }
                 }
             }
         }
 
         Scenario("request data policy with source id") {
-            var requestParams = RequestParams.create()
+            var requestParams = mapOf<String, String>()
 
             Given("request param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
+                requestParams = useCase.createParams(sourceId)
             }
             Given("graphql repository") {
                 repository.stubDataPolicyRepository(onError = mapOf())
@@ -62,10 +59,10 @@ class DataPolicyUseCaseTest: Spek({
         }
 
         Scenario("request data policy with null error") {
-            var requestParams = RequestParams.create()
+            var requestParams = mapOf<String, String>()
 
             Given("create param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
+                requestParams = useCase.createParams(sourceId)
             }
             Given("graphql repository") {
                 repository.stubDataPolicyRepository(onError = null)

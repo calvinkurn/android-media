@@ -34,9 +34,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home_component.util.invertIfDarkMode
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 /**
@@ -299,10 +297,27 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 }
             }
 
+
+            //error state using shimmering
             element?.defaultIconRes?.let {
-                itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                if (element.drawerItemType == TYPE_WALLET_OVO ||
+                    element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                    element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
+                    element.drawerItemType == TYPE_WALLET_OTHER
+                ) {
+                    itemView.home_iv_logo_balance.visible()
+                    itemView.home_iv_logo_shimmering.invisible()
+
+                    itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                } else {
+                    itemView.home_iv_logo_balance.invisible()
+                    itemView.home_iv_logo_shimmering.visible()
+                }
             }
             element?.iconImageUrl?.let {
+                itemView.home_iv_logo_balance.visible()
+                itemView.home_iv_logo_shimmering.invisible()
+
                 if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
         }

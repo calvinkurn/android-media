@@ -49,7 +49,7 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
-        listener.onSeeAllRecomClicked(data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
+        listener.onSeeAllRecomClicked(data.recommendationData, data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
         listener.goToApplink(applink)
     }
 
@@ -101,10 +101,18 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
+        listener.onRecommendationBannerImpressed(
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
-        listener.goToApplink(applink)
+        listener.onRecommendationBannerClicked(
+                appLink = applink,
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onChannelWidgetEmpty() {

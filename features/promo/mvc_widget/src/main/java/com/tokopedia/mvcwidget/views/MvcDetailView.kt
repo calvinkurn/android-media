@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
@@ -47,6 +49,7 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
     private var shopId = ""
+    var bundleForDataUpdate:Bundle? = null
     override fun getShopId(): String {
         return this.shopId
     }
@@ -110,6 +113,11 @@ class MvcDetailView @JvmOverloads constructor(
                 }
             }
         })
+        viewModel.mvcSummatLiveData.observe(context as AppCompatActivity, Observer {
+            if (it.status == LiveDataResult.STATUS.SUCCESS && it.data!=null) {
+                handleMvcDataChanged(it.data)
+            }
+        })
 
         viewModel.followLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
@@ -129,6 +137,11 @@ class MvcDetailView @JvmOverloads constructor(
         globalError.setActionClickListener {
             viewModel.getListData(shopId)
         }
+    }
+
+
+    private fun handleMvcDataChanged(data:TokopointsCatalogMVCSummaryResponse){
+        bundleForDataUpdate = IntentManger.prepareBundleForJadiMember(data, shopId)
     }
 
     private fun toggleLoading(showLoading: Boolean) {
@@ -256,6 +269,7 @@ class MvcDetailView @JvmOverloads constructor(
         super.onDetachedFromWindow()
         viewModel.listLiveData.removeObservers(context as AppCompatActivity)
         viewModel.membershipLiveData.removeObservers(context as AppCompatActivity)
+        viewModel.mvcSummatLiveData.removeObservers(context as AppCompatActivity)
     }
 
     override fun handleFollowButtonClick() {

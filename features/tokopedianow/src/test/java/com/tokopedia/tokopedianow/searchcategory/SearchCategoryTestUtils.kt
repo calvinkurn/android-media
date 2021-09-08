@@ -2,8 +2,11 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -12,11 +15,13 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -44,14 +49,6 @@ fun Visitable<*>.assertChooseAddressDataView() {
 
 fun Visitable<*>.assertBannerDataView() {
     assertThat(this, instanceOf(BannerDataView::class.java))
-}
-
-fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boolean) {
-    assertThat(this, instanceOf(TitleDataView::class.java))
-
-    val titleDataView = this as TitleDataView
-    assertThat(titleDataView.title, shouldBe(title))
-    assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
 }
 
 fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue) {
@@ -192,4 +189,25 @@ private fun assertATCConfiguration(
         assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
         assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.stock))
     }
+}
+
+fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
+        expectedPageName: String,
+) {
+    assertThat(this, instanceOf(RecommendationCarouselDataView::class.java))
+
+    val recomWidget = this as RecommendationCarouselDataView
+    assertThat(recomWidget.pageName, shouldBe(expectedPageName))
+    assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
+}
+
+fun assertTokonowRecommendationCarouselRequestParams(
+        getRecommendationRequestParam: GetRecommendationRequestParam,
+        recommendationCarouselDataView: RecommendationCarouselDataView,
+) {
+    assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
+    assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
+    assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
 }

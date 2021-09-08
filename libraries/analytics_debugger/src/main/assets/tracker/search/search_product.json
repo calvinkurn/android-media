@@ -3,7 +3,7 @@
   "mode": "exact",
   "query" : [
     {
-      "event": "clickSearch",
+      "event": "clickTopNav",
       "eventCategory": "top nav|top nav - .+",
       "eventAction": "general search",
       "eventLabel": ".+|.+|\\d|.+|.+|.+|.+",

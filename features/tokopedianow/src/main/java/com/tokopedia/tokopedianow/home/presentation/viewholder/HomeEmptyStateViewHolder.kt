@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -33,11 +35,17 @@ class HomeEmptyStateViewHolder(
     private var emptyStateNoAddress: NoAddressEmptyStateView? = null
     private var emptyStateNoAddressAndLocalCache: EmptyStateUnify? = null
     private var emptyStateFailedToFetchData: GlobalError? = null
+    private var params: ViewGroup.LayoutParams? = null
+    private var layout: RelativeLayout? = null
+    private var divider: View? = null
 
     init {
         emptyStateNoAddress = itemView.findViewById(R.id.empty_state_no_address)
         emptyStateNoAddressAndLocalCache = itemView.findViewById(R.id.empty_state_no_address_and_local_cache)
         emptyStateFailedToFetchData = itemView.findViewById(R.id.empty_state_failed_to_fetch_data)
+        divider = itemView.findViewById(R.id.divider)
+        layout = itemView.findViewById(R.id.layout)
+        params = layout?.layoutParams
     }
 
     override fun bind(element: HomeEmptyStateUiModel?) {
@@ -49,6 +57,7 @@ class HomeEmptyStateViewHolder(
     }
 
     private fun showEmptyStateNoAddress() {
+        divider?.show()
         emptyStateFailedToFetchData?.hide()
         emptyStateNoAddressAndLocalCache?.hide()
         emptyStateNoAddress?.show()
@@ -62,9 +71,14 @@ class HomeEmptyStateViewHolder(
                 (itemView.context as? TokoNowHomeActivity)?.finish()
             }
         }
+        setParamsLayout(
+            width = ViewGroup.LayoutParams.WRAP_CONTENT,
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun showEmptyStateNoAddressAndLocalCache() {
+        divider?.hide()
         emptyStateFailedToFetchData?.hide()
         emptyStateNoAddress?.hide()
         emptyStateNoAddressAndLocalCache?.show()
@@ -75,15 +89,30 @@ class HomeEmptyStateViewHolder(
         emptyStateNoAddressAndLocalCache?.setSecondaryCTAClickListener {
             (itemView.context as? TokoNowHomeActivity)?.finish()
         }
+        setParamsLayout(
+            width = ViewGroup.LayoutParams.MATCH_PARENT,
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        )
     }
 
     private fun showEmptyStateFailedToFetchData() {
+        divider?.hide()
         emptyStateNoAddress?.hide()
         emptyStateNoAddressAndLocalCache?.hide()
         emptyStateFailedToFetchData?.show()
         emptyStateFailedToFetchData?.setActionClickListener {
             tokoNowListener?.refreshLayoutPage()
         }
+        setParamsLayout(
+            width = ViewGroup.LayoutParams.MATCH_PARENT,
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        )
+    }
+
+    private fun setParamsLayout(width: Int, height: Int) {
+        params?.width = width
+        params?.height = height
+        layout?.layoutParams = params
     }
 
     private fun showBottomSheetChooseAddress() {

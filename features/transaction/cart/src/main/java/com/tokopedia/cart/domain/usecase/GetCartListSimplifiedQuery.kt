@@ -126,6 +126,10 @@ fun getQueryCartRevamp(): String {
                       duration
                     }
                   }
+                  pinned {
+                    is_pinned
+                    coachmark_message  
+                  }
                   shop {
                     shop_ticker
                     maximum_weight_wording

@@ -27,6 +27,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
             if (element.isSpecialProductPromo())
                 listener.onTrackSpecialProductImpression(element, adapterPosition)
 
+            renderCardSize()
             renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
@@ -37,9 +38,17 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         }
     }
 
+    private fun renderCardSize() {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_MCCM) {
+                telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+            }
+        }
+    }
+
     private fun renderDescProduct(element: TelcoProduct) {
         with(itemView) {
-            if (productType == TelcoProductType.PRODUCT_LIST) {
+            if (productType == TelcoProductType.PRODUCT_LIST || productType == TelcoProductType.PRODUCT_MCCM) {
                 telco_empty_view.hide()
                 telco_desc_product.show()
                 telco_desc_product.text = element.attributes.detail

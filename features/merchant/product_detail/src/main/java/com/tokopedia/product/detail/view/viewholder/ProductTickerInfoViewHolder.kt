@@ -50,7 +50,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
             showComponent()
             setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
-        } else if (element.isOos()) {
+        } else if (element.isOos() && !element.isProductParent) {
             showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis), element.impressHolder)
         } else if (element.isProductInactive()) {
