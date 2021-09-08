@@ -141,6 +141,7 @@ class SingleProductBundleFragment(
         )
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
+        updateTotalAmountAtcButtonText(preorderDurationWording)
     }
 
     override fun onDataChanged(
@@ -308,6 +309,14 @@ class SingleProductBundleFragment(
             amountView.text = price
             setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
             setSubtitleText(context.getString(R.string.text_saving), priceGap)
+        }
+    }
+
+    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
+        totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
+            getString(R.string.action_buy)
+        } else {
+            getString(R.string.action_preorder)
         }
     }
 

@@ -26,7 +26,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -284,6 +283,14 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
+    private fun updateProductBundleOverViewButtonText(preOrderStatus: String) {
+        productBundleOverView?.amountCtaView?.text = if (viewModel.isPreOrderActive(preOrderStatus)) {
+            getString(R.string.action_preorder)
+        } else {
+            getString(R.string.action_buy)
+        }
+    }
+
     private fun showProductBundleOutOfStockDialog() {
         DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE).apply {
             setTitle(getString(R.string.error_bundle_out_of_stock_dialog_title))
@@ -309,9 +316,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
         // deselect the rest of selection except the selected one
         productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
-        // update the process day
+
         with(productBundleMaster) {
+            // update the process day
             renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
+            // update totalView atc button text
+            updateProductBundleOverViewButtonText(preOrderStatus)
         }
     }
 
