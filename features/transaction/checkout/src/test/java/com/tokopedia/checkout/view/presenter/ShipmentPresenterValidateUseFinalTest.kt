@@ -1,13 +1,13 @@
-package com.tokopedia.checkout.view.presenter
+package com.tokopedia.checkout.bundle.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.bundle.domain.usecase.*
+import com.tokopedia.checkout.bundle.view.ShipmentContract
+import com.tokopedia.checkout.bundle.view.ShipmentPresenter
+import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter

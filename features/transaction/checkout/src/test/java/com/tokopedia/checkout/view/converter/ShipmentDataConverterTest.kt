@@ -1,6 +1,6 @@
-package com.tokopedia.checkout.view.converter
+package com.tokopedia.checkout.bundle.view.converter
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.*
+import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.*
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

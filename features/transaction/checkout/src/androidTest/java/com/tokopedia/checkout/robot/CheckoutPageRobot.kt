@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.robot
+package com.tokopedia.checkout.bundle.robot
 
 import android.content.Context
 import android.view.View
@@ -16,10 +16,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.ShipmentActivity
-import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
+import com.tokopedia.checkout.bundle.view.ShipmentActivity
+import com.tokopedia.checkout.bundle.view.viewholder.PromoCheckoutViewHolder
+import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
+import com.tokopedia.checkout.bundle.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography

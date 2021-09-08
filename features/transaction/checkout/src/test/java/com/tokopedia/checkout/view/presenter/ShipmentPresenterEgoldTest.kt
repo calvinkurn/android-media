@@ -1,14 +1,14 @@
-package com.tokopedia.checkout.view.presenter
+package com.tokopedia.checkout.bundle.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
-import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.bundle.domain.usecase.*
+import com.tokopedia.checkout.bundle.view.ShipmentContract
+import com.tokopedia.checkout.bundle.view.ShipmentPresenter
+import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.bundle.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
