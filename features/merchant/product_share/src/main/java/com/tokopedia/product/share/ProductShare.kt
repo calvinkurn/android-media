@@ -258,11 +258,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             onClickChannelWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), shareModel.channel
                     ?: "", productData.userId, productData.productId)
 
-            var linkerShareData = productData.let { productDataToLinkerDataMapper(it) }
+            val linkerShareData = productDataToLinkerDataMapper(productData)
             linkerShareData.linkerData?.apply {
                 feature = shareModel.feature
                 channel = shareModel.channel
                 campaign = shareModel.campaign
+                uri = productData.productUrl
                 ogTitle = generateOgTitle(productData)
                 ogDescription = generateOgDescription(productData)
                 if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
