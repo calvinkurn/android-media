@@ -16,6 +16,10 @@ import kotlin.math.roundToInt
 
 object BitmapHelper {
 
+    const val RESIZE_BITMAP_DEFAULT = 0.035f
+    const val THRESHOLD_WHITE_SPACE = 20
+    const val HEIGHT_MULTIPLIER_TEXT = 0.72f
+
     fun String.textAsBitmap(context: Context, properties: TextUIModel, height: Int = 0): Bitmap {
         // created TextPaint for painting the watermark text
         val paint = TextPaint().apply {
@@ -36,7 +40,7 @@ object BitmapHelper {
 
             // text alpha
             if (properties.textAlpha in 0..255) {
-                alpha = 80
+                alpha = properties.textAlpha
             }
 
             // text shadow properties
@@ -68,9 +72,9 @@ object BitmapHelper {
             bounds
         )
 
-        var boundWidth = bounds.width() + 20 // 20 is the threshold of white space
+        var boundWidth = bounds.width() + THRESHOLD_WHITE_SPACE // 20 is the threshold of white space
         var boundHeight = bounds.height()
-        while (boundHeight < height * 0.72f) {
+        while (boundHeight < height * HEIGHT_MULTIPLIER_TEXT) {
             paint.textSize += 1
             paint.getTextBounds(
                 this,
@@ -79,7 +83,7 @@ object BitmapHelper {
                 bounds
             )
             boundHeight = bounds.height()
-            boundWidth = bounds.width() + 20
+            boundWidth = bounds.width() + THRESHOLD_WHITE_SPACE
         }
         val textMaxWidth = paint.measureText(this).toInt()
 
@@ -147,9 +151,9 @@ object BitmapHelper {
         val ratio = this.height.toFloat() / this.width
 
         val newHeight = if (mainBitmap.height < mainBitmap.width) {
-            mainBitmap.height * 0.035f
+            mainBitmap.height * RESIZE_BITMAP_DEFAULT
         } else {
-            mainBitmap.width * 0.035f
+            mainBitmap.width * RESIZE_BITMAP_DEFAULT
         }
         val newWidth = newHeight / ratio
         val scaleWidth = newWidth / bitmapWidth

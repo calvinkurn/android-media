@@ -6,6 +6,11 @@ import java.util.HashMap
 object ImageEditorTracking {
     val tracker = TrackApp.getInstance().gtm
 
+    const val UNKNOWN_PAGE = "Unknown"
+
+    @JvmStatic
+    fun String.suffixPage(): String = "$this Page"
+
     @JvmStatic
     fun onSaveEditImage(label: String, pageType: String, userId: String) {
         tracker.sendGeneralEvent(createEventMap(ImageEditorTrackingConstant.EVENT,

@@ -147,7 +147,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     //save state if watermark is rendered
     private boolean isSetWatermark = false;
     private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
-    private String pageSource = "Unknown Page";
+    private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -1185,7 +1185,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void trackClickSave(String label) {
-        ImageEditorTracking.onSaveEditImage(label, pageSource, userSession.getUserId());
+        ImageEditorTracking.onSaveEditImage(label, ImageEditorTracking.suffixPage(pageSource), userSession.getUserId());
     }
 
     private String getLabelWatermark() {
