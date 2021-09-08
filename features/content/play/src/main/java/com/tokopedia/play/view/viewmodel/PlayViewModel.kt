@@ -1311,14 +1311,12 @@ class PlayViewModel @Inject constructor(
 
         when(result) {
             is UpcomingChannelUpdateLive -> {
-                if(result.channelId.toString() == channelId) {
-                    // TODO("WATCH NOW!")
-                }
+                if(result.channelId.toString() == channelId)
+                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
             }
             is UpcomingChannelUpdateActive -> {
-                if(result.channelId.toString() == channelId) {
-                    // TODO("WATCH NOW!")
-                }
+                if(result.channelId.toString() == channelId)
+                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
             }
         }
     }

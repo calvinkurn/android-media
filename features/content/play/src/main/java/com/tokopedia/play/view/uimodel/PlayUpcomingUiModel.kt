@@ -8,7 +8,8 @@ data class PlayUpcomingUiModel(
     val isUpcoming: Boolean,
     val isReminderSet: Boolean,
     val coverUrl: String,
-    val startTime: String
+    val startTime: String,
+    val isAlreadyLive: Boolean
 ) {
     companion object {
         const val COMING_SOON = "COMING_SOON"

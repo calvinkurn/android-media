@@ -209,7 +209,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
             isReminderSet = isReminderSet,
             coverUrl = coverUrl,
-            startTime = startTime
+            startTime = startTime,
+            isAlreadyLive = false
         )
 
     companion object {
