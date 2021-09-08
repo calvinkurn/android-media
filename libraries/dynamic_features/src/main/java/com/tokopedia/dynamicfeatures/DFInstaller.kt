@@ -266,6 +266,9 @@ object DFInstaller {
 
     private fun startDeferredInstall(context: Context, moduleNameToDownload: List<String>, message: String) {
         val filteredModuleNameToDownload = getFilteredModuleList(context, moduleNameToDownload)
+        if (filteredModuleNameToDownload.isEmpty()) {
+            return
+        }
         val messageLog = "$TAG_LOG_DFM_DEFERRED_INSTALL {$message}"
         getManager(context.applicationContext)?.deferredInstall(filteredModuleNameToDownload)?.addOnSuccessListener {
             logDeferredStatus(context.applicationContext, messageLog, filteredModuleNameToDownload)
