@@ -154,8 +154,6 @@
         app:tickerShapeType="loose"
         app:closeButtonVisibility="gone"
         app:tickerType="warning"
-        app:titleText="@string/title_warning_new_seller_shop_score"
-        app:descriptionText="@string/desc_warning_new_seller_shop_score"
         app:layout_constraintStart_toStartOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintTop_toBottomOf="@id/tvShopLevel"
         app:layout_constraintEnd_toEndOf="@id/tvTitleNewSellerEndTenure"/>
