@@ -66,10 +66,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     private fun initListener() {
-//        btnHowToUse.setOnClickListener {
-//            openActionBottomSheet()
-//        }
-//
+        btnHowToUse.setOnClickListener {
+            openActionBottomSheet()
+        }
+
         faqList.setOnClickListener {
             openFaqBottomSheet()
         }
