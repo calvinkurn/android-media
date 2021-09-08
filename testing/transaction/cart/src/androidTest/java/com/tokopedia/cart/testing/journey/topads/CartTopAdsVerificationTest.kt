@@ -1,4 +1,4 @@
-package com.tokopedia.cart.journey.topads
+package com.tokopedia.cart.testing.journey.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,7 +14,6 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -48,7 +47,7 @@ class CartTopAdsVerificationTest {
     fun setTopAdsAssertion() {
         // reset top ads count
         topAdsCount = 0
-        topAdsAssertion = TopAdsAssertion(activityRule.activity, TopAdsVerificatorInterface { topAdsCount })
+        topAdsAssertion = TopAdsAssertion(activityRule.activity) { topAdsCount }
 
         waitForData()
     }

@@ -2,10 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
 android {
-//    packagingOptions {
-//        exclude 'META-INF/**'
-//    }
-
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -28,6 +24,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 
     api projectOrAar(rootProject.ext.features.purchase_platform_common)
 
