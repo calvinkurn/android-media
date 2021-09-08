@@ -78,7 +78,7 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.streamAllowed
+        return dataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
     }
 
     private fun setupTextContentSgcWidget() {
