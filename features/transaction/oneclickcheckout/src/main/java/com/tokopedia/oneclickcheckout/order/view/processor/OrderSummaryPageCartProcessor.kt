@@ -281,7 +281,3 @@ class ResultGetOccCart(
     val totalProductPrice: String = "",
     val profileCode: String = ""
 )
-
-class ResultCreditCardTenor(
-    val errorMsg: String,
-    val ccData: CreditCardTenorListData?)

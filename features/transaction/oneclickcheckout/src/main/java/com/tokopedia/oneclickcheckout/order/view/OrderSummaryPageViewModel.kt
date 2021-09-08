@@ -134,7 +134,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
-            adjustAdminFee()
         }
     }
 
@@ -484,7 +483,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
                 clearBboIfExist()
-                adjustAdminFee()
             }
             globalEvent.value = newGlobalEvent
         }
@@ -493,7 +491,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun updateCart() {
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-            if (orderPayment.value.creditCard.isAfpb) adjustAdminFee()
         }
     }
 
@@ -557,7 +554,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 clearBboIfExist()
-                adjustAdminFee()
             }
             globalEvent.value = newGlobalEvent
         }
@@ -574,7 +570,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updateCartPromo(param)
             globalEvent.value = newGlobalEvent
             if (isSuccess) {
-                adjustAdminFee()
                 onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
             }
         }
@@ -648,6 +643,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                     validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            if (orderPayment.value.creditCard.isAfpb) adjustAdminFee()
         }
     }
 
