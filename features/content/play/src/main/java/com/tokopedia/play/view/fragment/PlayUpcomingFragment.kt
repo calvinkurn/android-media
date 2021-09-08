@@ -93,7 +93,8 @@ class PlayUpcomingFragment @Inject constructor(
 
         playViewModel.upcomingInfo?.let {
             actionButton.setButtonStatus(
-                if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
+                if(it.isAlreadyLive) UpcomingActionButtonViewComponent.Status.WATCH_NOW
+                else if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
                 else UpcomingActionButtonViewComponent.Status.HIDDEN
             )
         }
