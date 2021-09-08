@@ -199,13 +199,15 @@ class SmartBillsViewHolder(val view: View,
                 }
             }
 
-            if(element.newBillLabel.isNewLabel){
+            if(element.newBillLabel.isNewLabel && element.newBillLabel.text.isNotEmpty()){
                 icon_menu_sbm_delete.apply {
                     show()
                     setOnClickListener {
                         detailListener.onDeleteClicked(element)
                     }
                 }
+            } else {
+                icon_menu_sbm_delete.gone()
             }
         }
     }

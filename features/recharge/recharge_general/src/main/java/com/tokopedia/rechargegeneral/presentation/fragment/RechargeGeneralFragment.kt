@@ -681,8 +681,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             val messages = mutableListOf<TickerData>()
             if (isAddSBM){
                 messages.add(TickerData(getString(R.string.add_bills_ticker_desc), Ticker.TYPE_ANNOUNCEMENT))
-            } else {
-                for (item in tickers) {
+            }
+            for (item in tickers) {
                     var description: String = item.content
                     if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
                         description += " [${item.actionText}]{${item.actionLink}}"
@@ -695,8 +695,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                                 TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
                                 else -> Ticker.TYPE_INFORMATION
                             }))
-                }
             }
+
 
             if (messages.size == 1) {
                 with (messages.first()) {
