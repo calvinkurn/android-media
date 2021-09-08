@@ -6,6 +6,10 @@ object RollenceKey {
     const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"

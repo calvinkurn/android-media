@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -102,11 +103,13 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setFollowStatus(followStatus: FollowStatus?) {
         isShopFavorite = followStatus?.status?.userIsFollowing == true
+        val shopFollowButtonVarianType = ShopUtil.getShopFollowButtonAbTestVariant()
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
                     it.followButton?.buttonLabel.orEmpty(),
                     it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite
+                    isShopFavorite,
+                    shopFollowButtonVarianType
             )
         }
     }

@@ -8,6 +8,7 @@ import android.view.View
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
@@ -57,9 +58,34 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
             if (!isShowLoading)
                 text = model.label
             setDrawableLeft(this, model.leftDrawableUrl)
-            buttonVariant = UnifyButton.Variant.GHOST
-            val isFollowing = model.isFollowing
-            buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
+            when (model.buttonAbTestVariantType) {
+                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD -> {
+                    // existing/old variant type follow button
+                    buttonSize = UnifyButton.Size.MICRO
+                    buttonVariant = UnifyButton.Variant.GHOST
+                    buttonType = UnifyButton.Type.MAIN
+                    val isFollowing = model.isFollowing
+                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
+                }
+                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL -> {
+                    // new variant type follow button micro size
+                    buttonSize = UnifyButton.Size.MICRO
+                    buttonVariant = UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.MAIN
+                    val isFollowing = model.isFollowing
+                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing } ?: UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
+                }
+                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
+                    // new variant type follow button small size
+                    buttonSize = UnifyButton.Size.SMALL
+                    buttonVariant = UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.MAIN
+                    val isFollowing = model.isFollowing
+                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing } ?: UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
+                }
+            }
             setOnClickListener {
                 if (!isLoading)
                     listener.onClickFollowUnFollowButton(
