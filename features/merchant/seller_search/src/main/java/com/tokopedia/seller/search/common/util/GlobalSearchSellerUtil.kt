@@ -8,9 +8,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HTTPS_APP_LINK_PREFIX
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.WWW_APP_LINK_PREFIX
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_search_result_article.view.*
 import java.util.*
 
 internal fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
