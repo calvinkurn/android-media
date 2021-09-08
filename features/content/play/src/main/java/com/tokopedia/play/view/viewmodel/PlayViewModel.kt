@@ -1,10 +1,13 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -13,6 +16,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.sse.PlayChannelSSE
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
@@ -53,15 +57,20 @@ import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.OkSse
+import com.tokopedia.play_common.sse.ServerSentEvent
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import okhttp3.Request
+import okhttp3.Response
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -89,6 +98,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
+        private val playChannelSSE: PlayChannelSSE,
         private val interactiveRepo: PlayViewerInteractiveRepository,
         private val partnerRepo: PlayViewerPartnerRepository,
         private val likeRepo: PlayViewerLikeRepository,
@@ -292,6 +302,8 @@ class PlayViewModel @Inject constructor(
 
     private var socketJob: Job? = null
 
+    private var sseJob: Job? = null
+
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
@@ -435,6 +447,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         stopWebSocket()
+        stopSSE()
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
@@ -676,6 +689,8 @@ class PlayViewModel @Inject constructor(
              * 1. Show Upcoming Fragment
              * 2. Start SSE
              */
+            startSSE(channelData.id)
+            startWebSocket(channelData.id)
         }
         else {
             focusVideoPlayer(channelData)
@@ -694,6 +709,7 @@ class PlayViewModel @Inject constructor(
         stopWebSocket()
 
         stopInteractive()
+        stopSSE()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -801,13 +817,7 @@ class PlayViewModel @Inject constructor(
     private fun startWebSocket(channelId: String) {
         socketJob?.cancel()
         socketJob = viewModelScope.launch {
-            val socketCredential = try {
-                withContext(dispatchers.io) {
-                    return@withContext getSocketCredentialUseCase.executeOnBackground()
-                }
-            } catch (e: Throwable) {
-                SocketCredential()
-            }
+            val socketCredential = getSocketCredential()
 
             if (!isActive) return@launch
             connectWebSocket(
@@ -833,6 +843,27 @@ class PlayViewModel @Inject constructor(
 
     private fun stopInteractive() {
         _interactive.value = PlayInteractiveUiState.NoInteractive
+    }
+
+    private fun startSSE(channelId: String) {
+        sseJob?.cancel()
+        sseJob = viewModelScope.launch {
+            val socketCredential = getSocketCredential()
+            playChannelSSE.connect(channelId, "play-upcomming-channel", socketCredential.gcToken)
+        }
+    }
+
+    private fun stopSSE() {
+        sseJob?.cancel()
+        playChannelSSE.close()
+    }
+
+    private suspend fun getSocketCredential(): SocketCredential = try {
+        withContext(dispatchers.io) {
+            return@withContext getSocketCredentialUseCase.executeOnBackground()
+        }
+    } catch (e: Throwable) {
+        SocketCredential()
     }
 
     /**
