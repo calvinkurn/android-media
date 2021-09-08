@@ -86,7 +86,6 @@ class GetMilestoneDataUseCase(
                   }
                   cta {
                     text
-                    url
                     applink
                   }
                   error

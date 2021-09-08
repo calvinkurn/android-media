@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.shc_item_mission_milestone_widget.view.*
 
 class MilestoneMissionAdapter(
     private val milestoneData: MilestoneDataUiModel,
-    private val onCtaClick: (BaseMilestoneMissionUiModel) -> Unit
+    private val listener: Listener
 ) : RecyclerView.Adapter<MilestoneMissionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,12 +34,14 @@ class MilestoneMissionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mission = milestoneData.milestoneMissions[position]
-        holder.bind(mission, milestoneData.showNumber, onCtaClick)
+        holder.bind(mission, milestoneData.showNumber, listener)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         companion object {
+            private const val PLUS_ONE = 1
+
             fun create(parent: ViewGroup): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.shc_item_mission_milestone_widget, parent, false)
@@ -49,17 +52,22 @@ class MilestoneMissionAdapter(
         fun bind(
             mission: BaseMilestoneMissionUiModel,
             shouldShowNumber: Boolean,
-            onCtaClick: (BaseMilestoneMissionUiModel) -> Unit
+            listener: Listener
         ) {
             with(itemView) {
                 tvShcTitleItemMission.text = mission.title
                 tvShcDescItemMission.text = mission.subTitle
                 tvShcMissionPosition.isVisible = shouldShowNumber
-                tvShcMissionPosition.text = adapterPosition.toString()
+                tvShcMissionPosition.text = adapterPosition.plus(PLUS_ONE).toString()
 
                 imgShcMission.loadImage(mission.imageUrl)
 
-                setupCtaButton(mission, onCtaClick)
+                setupCtaButton(mission) {
+                    listener.onMissionActionClick(it)
+                }
+                addOnImpressionListener(mission.impressHolder) {
+                    listener.onMissionImpressionListener(mission)
+                }
             }
         }
 
@@ -107,5 +115,10 @@ class MilestoneMissionAdapter(
                 }
             }
         }
+    }
+
+    interface Listener {
+        fun onMissionActionClick(mission: BaseMilestoneMissionUiModel)
+        fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel)
     }
 }

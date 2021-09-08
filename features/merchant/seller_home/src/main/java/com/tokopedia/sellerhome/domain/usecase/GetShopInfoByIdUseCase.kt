@@ -20,7 +20,7 @@ class GetShopInfoByIdUseCase @Inject constructor(
 
         private val QUERY = """
             query shopInfoByID(${'$'}shopID: Int!) {
-              shopInfoByID(input: {shopIDs: [${'$'}shopID], fields: ["core","closed_info"]}) {
+              shopInfoByID(input: {shopIDs: [${'$'}shopID], fields: ["core","closed_info","shop-snippet"]}) {
                 result {
                   shopCore{
                     url
@@ -32,6 +32,7 @@ class GetShopInfoByIdUseCase @Inject constructor(
                       status
                     }
                   }
+                  shopSnippetURL
                 }
                 error {
                   message

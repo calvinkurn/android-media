@@ -2,8 +2,8 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/shc_dimen_290dp"
-    android:layout_height="@dimen/shc_dimen_164dp"
+    android:layout_width="290dp"
+    android:layout_height="154dp"
     app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,20 +12,23 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcMission"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcTitleItemMission"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@+id/tvShcMissionPosition"
             app:layout_constraintStart_toEndOf="@id/imgShcMission"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
@@ -33,11 +36,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcDescItemMission"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="@color/Unify_N700_68"
@@ -49,12 +52,12 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnShcMissionCta"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/shc_dimen_12dp"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,10 +70,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMissionPosition"
-            android:layout_width="@dimen/shc_dimen_25dp"
-            android:layout_height="@dimen/shc_dimen_30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="-1dp"
+            android:layout_marginEnd="-1dp"
             android:background="@drawable/bg_corner_pin_number_milestone_widget"
             android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"

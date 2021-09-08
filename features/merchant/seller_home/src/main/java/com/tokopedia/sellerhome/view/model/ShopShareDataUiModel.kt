@@ -5,5 +5,6 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class ShopShareDataUiModel(
-    val shopUrl: String = ""
+    val shopUrl: String = "",
+    val shopSnippetURL: String = ""
 )

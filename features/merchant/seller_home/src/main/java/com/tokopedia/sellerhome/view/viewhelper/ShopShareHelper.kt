@@ -38,7 +38,7 @@ class ShopShareHelper @Inject constructor(
     fun onShareOptionClicked(
         activity: Activity,
         data: DataModel,
-        callback: (isSuccess: Boolean) -> Unit
+        callback: (shareModel: ShareModel, isSuccess: Boolean) -> Unit
     ) {
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.SHOP_TYPE
@@ -58,7 +58,7 @@ class ShopShareHelper @Inject constructor(
     private fun getShopShareCallback(
         activity: Activity,
         data: DataModel,
-        callback: (isSuccess: Boolean) -> Unit
+        callback: (shareModel: ShareModel, isSuccess: Boolean) -> Unit
     ): ShareCallback {
         val shareModel = data.shareModel
 
@@ -137,7 +137,7 @@ class ShopShareHelper @Inject constructor(
                     }
                 }
 
-                callback(true)
+                callback(shareModel, true)
             }
 
             override fun onError(linkerError: LinkerError?) {}

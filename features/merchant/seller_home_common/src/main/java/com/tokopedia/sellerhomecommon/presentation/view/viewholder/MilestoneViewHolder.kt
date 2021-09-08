@@ -15,6 +15,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapt
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.shc_milestone_widget_error.view.*
@@ -29,7 +30,10 @@ class MilestoneViewHolder(
     companion object {
         val RES_LAYOUT = R.layout.shc_milestone_widget
 
+        private const val PROGRESS_BAR_MIN_VALUE = 0
         private const val PROGRESS_BAR_MAX_VALUE = 100
+        private const val FIRST_INDEX = 0
+        private const val LAST_ONE = 1
     }
 
     private val onLoadingView: View by itemView.viewStubInflater(R.id.stubShcMilestoneLoading)
@@ -67,13 +71,21 @@ class MilestoneViewHolder(
                     rvShcMissionMilestone.visible()
                     iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
                 }
+                if (!element.isAlreadyMinimized) {
+                    element.isAlreadyMinimized = true
+                    listener.sendMilestoneWidgetMinimizeClickEvent()
+                }
             }
 
             showMilestoneBackground(data.backgroundImageUrl)
             setupMilestoneProgress(data.milestoneProgress)
-            setupMilestoneList(element)
             setupTooltip(tvTitleMilestoneWidget, element)
             setupSeeMoreCta(element)
+
+            addOnImpressionListener(element.impressHolder) {
+                listener.sendMilestoneWidgetImpressionEvent(element)
+                setupMilestoneList(element)
+            }
         }
     }
 
@@ -85,13 +97,17 @@ class MilestoneViewHolder(
 
     private fun setupSeeMoreCta(element: MilestoneWidgetUiModel) {
         with(onSuccessView) {
-            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+            val applink = element.getSeeMoreCtaApplink()
+            val ctaText = element.getSeeMoreCtaText()
+
+            val isCtaVisible = applink.isNotBlank() && ctaText.isNotBlank()
             tvShcMilestoneCta.isVisible = isCtaVisible
 
             if (isCtaVisible) {
-                tvShcMilestoneCta.text = element.ctaText
+                tvShcMilestoneCta.text = ctaText
                 tvShcMilestoneCta.setOnClickListener {
-                    openApplink(element)
+                    RouteManager.route(itemView.context, applink)
+                    listener.sendMilestoneWidgetCtaClickEvent()
                 }
                 val iconColor = context.getResColor(
                     com.tokopedia.unifyprinciples.R.color.Unify_G400
@@ -112,10 +128,6 @@ class MilestoneViewHolder(
         }
     }
 
-    private fun openApplink(element: MilestoneWidgetUiModel) {
-        RouteManager.route(itemView.context, element.appLink)
-    }
-
     private fun setupMilestoneList(element: MilestoneWidgetUiModel) {
         with(onSuccessView) {
             val mission = element.data ?: return
@@ -125,9 +137,33 @@ class MilestoneViewHolder(
                 override fun canScrollVertically(): Boolean = false
             }
 
-            rvShcMissionMilestone.adapter = MilestoneMissionAdapter(mission) {
-                listener.onMilestoneMissionActionClickedListener(element, it)
+            try {
+                rvShcMissionMilestone.removeItemDecorationAt(FIRST_INDEX)
+                rvShcMissionMilestone.removeItemDecorationAt(
+                    mission.milestoneMissions.size.minus(LAST_ONE)
+                )
+            } catch (e: IndexOutOfBoundsException) {
+                //do nothing
             }
+            rvShcMissionMilestone.addItemDecoration(
+                MilestoneMissionItemDecoration(
+                    resources.getDimension(R.dimen.unify_space_12).toInt()
+                )
+            )
+            rvShcMissionMilestone.adapter = MilestoneMissionAdapter(
+                mission,
+                object : MilestoneMissionAdapter.Listener {
+                    override fun onMissionActionClick(mission: BaseMilestoneMissionUiModel) {
+                        listener.onMilestoneMissionActionClickedListener(element, mission)
+                    }
+
+                    override fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel) {
+                        listener.sendMilestoneMissionImpressionEvent(
+                            mission, adapterPosition.plus(LAST_ONE)
+                        )
+                    }
+                }
+            )
         }
     }
 
@@ -136,7 +172,7 @@ class MilestoneViewHolder(
             val valuePerIndicator = try {
                 PROGRESS_BAR_MAX_VALUE / milestoneProgress.totalTask
             } catch (e: ArithmeticException) {
-                0
+                PROGRESS_BAR_MIN_VALUE
             }
             progressBarShcMilestone.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
             progressBarShcMilestone.setValue(milestoneProgress.taskCompleted.times(valuePerIndicator))
@@ -185,10 +221,22 @@ class MilestoneViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {}
+
         fun onMilestoneMissionActionClickedListener(
             element: MilestoneWidgetUiModel,
             mission: BaseMilestoneMissionUiModel
         ) {
         }
+
+        fun sendMilestoneWidgetImpressionEvent(element: MilestoneWidgetUiModel) {}
+
+        fun sendMilestoneMissionImpressionEvent(
+            mission: BaseMilestoneMissionUiModel,
+            position: Int
+        ) {
+        }
+
+        fun sendMilestoneWidgetCtaClickEvent() {}
+        fun sendMilestoneWidgetMinimizeClickEvent() {}
     }
 }

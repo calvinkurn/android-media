@@ -96,10 +96,7 @@ data class MilestoneData(
         val applink: String = "",
         @Expose
         @SerializedName("text")
-        val text: String = "",
-        @Expose
-        @SerializedName("url")
-        val url: String = ""
+        val text: String = ""
     )
 }
 

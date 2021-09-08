@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class MilestoneDataUiModel(
     override var dataKey: String = "",
     override var error: String = "",
@@ -18,7 +20,7 @@ data class MilestoneDataUiModel(
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
-        return !isFromCache && !showWidget
+        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty()
     }
 }
 
@@ -38,6 +40,7 @@ interface BaseMilestoneMissionUiModel {
     val subTitle: String
     val missionCompletionStatus: Boolean
     val missionButton: MissionButtonUiModel
+    val impressHolder: ImpressHolder
 
     companion object {
         const val MISSION_KEY = "mission"
@@ -70,7 +73,8 @@ data class MilestoneMissionUiModel(
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val missionButton: MissionButtonUiModel = MissionButtonUiModel()
+    override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
+    override val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseMilestoneMissionUiModel
 
 data class MilestoneFinishMissionUiModel(
@@ -79,11 +83,11 @@ data class MilestoneFinishMissionUiModel(
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val missionButton: MissionButtonUiModel = MissionButtonUiModel()
+    override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
+    override val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseMilestoneMissionUiModel
 
 data class MilestoneCtaUiModel(
     val text: String = "",
-    val url: String = "",
     val appLink: String = ""
 )

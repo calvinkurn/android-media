@@ -99,7 +99,6 @@
         android:id="@+id/rvShcMissionMilestone"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_font_12"
         android:layout_marginTop="@dimen/unify_space_12"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

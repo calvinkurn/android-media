@@ -107,7 +107,6 @@ class MilestoneMapper @Inject constructor(
     private fun mapGetMilestoneCta(ctaData: MilestoneData.Cta): MilestoneCtaUiModel {
         return MilestoneCtaUiModel(
             text = ctaData.text,
-            url = ctaData.url,
             appLink = ctaData.applink
         )
     }

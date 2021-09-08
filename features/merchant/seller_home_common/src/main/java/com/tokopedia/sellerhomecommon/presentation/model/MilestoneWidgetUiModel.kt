@@ -19,7 +19,8 @@ data class MilestoneWidgetUiModel(
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
-    override var emptyState: WidgetEmptyStateUiModel
+    override var emptyState: WidgetEmptyStateUiModel,
+    var isAlreadyMinimized: Boolean = false
 ) : BaseWidgetUiModel<MilestoneDataUiModel> {
 
     override fun copy(): BaseWidgetUiModel<MilestoneDataUiModel> {
@@ -39,7 +40,8 @@ data class MilestoneWidgetUiModel(
             isLoading,
             isFromCache,
             isNeedToBeRemoved,
-            emptyState
+            emptyState,
+            isAlreadyMinimized
         )
     }
 
@@ -49,5 +51,21 @@ data class MilestoneWidgetUiModel(
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getSeeMoreCtaApplink(): String {
+        var applink = data?.milestoneCta?.appLink.orEmpty()
+        if (applink.isBlank()) {
+            applink = this.appLink
+        }
+        return applink
+    }
+
+    fun getSeeMoreCtaText(): String {
+        var ctaText = data?.milestoneCta?.text.orEmpty()
+        if (ctaText.isBlank()) {
+            ctaText = this.ctaText
+        }
+        return ctaText
     }
 }

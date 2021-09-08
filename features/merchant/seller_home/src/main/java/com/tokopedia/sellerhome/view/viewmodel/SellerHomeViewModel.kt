@@ -530,7 +530,10 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(context = dispatcher.io, block = {
             val shopId = userSession.get().shopId.toLongOrZero()
             val result = getShopInfoByIdUseCase.get().execute(shopId)
-            val shopShareData = ShopShareDataUiModel(result.coreInfo?.url.orEmpty())
+            val shopShareData = ShopShareDataUiModel(
+                shopUrl = result.coreInfo?.url.orEmpty(),
+                shopSnippetURL = result.shopSnippetURL.orEmpty()
+            )
             _shopShareData.postValue(Success(shopShareData))
         }, onError = {
             _shopShareData.postValue(Fail(it))
