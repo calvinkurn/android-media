@@ -278,7 +278,8 @@ class DigitalTopupAnalytics {
                           categoryName: String? = null) {
         val productTelcoList = ArrayList<Bundle>()
 
-        val trackingCategoryName = categoryName ?: getTrackingCategoryName(itemProduct.attributes.categoryId)
+        val trackingCategoryName = categoryName
+                ?: getTrackingCategoryName(itemProduct.attributes.categoryId)
         productTelcoList.add(Bundle().apply {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
@@ -445,7 +446,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
-            putParcelableArrayList(DigitalTopupEventTracking.Additional.PROMOTIONS, promotions)
+            putParcelableArrayList(DigitalTopupEventTracking.Additional.VALUE_PROMOTIONS, promotions)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.VIEW_ITEM, eventDataLayer)
     }
@@ -467,7 +468,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
-            putParcelableArrayList(DigitalTopupEventTracking.Additional.PROMOTIONS, promotions)
+            putParcelableArrayList(DigitalTopupEventTracking.Additional.VALUE_PROMOTIONS, promotions)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.SELECT_CONTENT, eventDataLayer)
     }
@@ -520,7 +521,8 @@ class DigitalTopupAnalytics {
 
     fun clickSeeMoreOnMccmProductItem(titleProduct: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(TrackAppUtils.EVENT to DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                mapOf(
+                        TrackAppUtils.EVENT to DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_ACTION to DigitalTopupEventTracking.Action.CLICK_DETAIL_IN_PROMO_CARD,
                         TrackAppUtils.EVENT_CATEGORY to DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         TrackAppUtils.EVENT_LABEL to "${titleProduct.toLowerCase()} - $operatorName",
