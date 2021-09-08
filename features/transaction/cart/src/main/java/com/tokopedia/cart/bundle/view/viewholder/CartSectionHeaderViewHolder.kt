@@ -3,7 +3,7 @@ package com.tokopedia.cart.bundle.view.viewholder
 import android.text.TextUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartSectionHeaderBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.kotlin.extensions.view.gone
@@ -13,10 +13,10 @@ import com.tokopedia.kotlin.extensions.view.visible
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBundleBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_cart_section_header
+        val LAYOUT = R.layout.item_cart_section_header_bundle
     }
 
     fun bind(element: CartSectionHeaderHolderData) {

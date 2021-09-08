@@ -50,7 +50,7 @@ import com.tokopedia.cart.bundle.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.LocalizationChooseAddress
-import com.tokopedia.cart.databinding.FragmentCartBinding
+import com.tokopedia.cart.databinding.FragmentCartBundleBinding
 import com.tokopedia.cart.bundle.domain.model.cartlist.*
 import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.bundle.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
@@ -140,7 +140,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
 
-    private var binding by autoClearedNullable<FragmentCartBinding>()
+    private var binding by autoClearedNullable<FragmentCartBundleBinding>()
 
     lateinit var toolbar: CartToolbar
 
@@ -281,7 +281,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentCartBinding.inflate(inflater, container, false)
+        binding = FragmentCartBundleBinding.inflate(inflater, container, false)
         val view = binding?.root
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
@@ -675,7 +675,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun getFragmentLayout(): Int {
-        return R.layout.fragment_cart
+        return R.layout.fragment_cart_bundle
     }
 
     private fun onClickChevronSummaryTransaction() {

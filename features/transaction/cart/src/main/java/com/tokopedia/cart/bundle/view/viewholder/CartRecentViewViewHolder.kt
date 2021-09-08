@@ -3,7 +3,7 @@ package com.tokopedia.cart.bundle.view.viewholder
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
+import com.tokopedia.cart.databinding.ItemCartRecentViewBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.bundle.view.decorator.CartHorizontalItemDecoration
@@ -13,12 +13,12 @@ import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewHolderData
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewViewHolder(private val binding: ItemCartRecentViewBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartRecentViewViewHolder(private val binding: ItemCartRecentViewBundleBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     var recentViewAdapter: CartRecentViewAdapter? = null
 
     companion object {
-        val LAYOUT = R.layout.item_cart_recent_view
+        val LAYOUT = R.layout.item_cart_recent_view_bundle
     }
 
     fun bind(element: CartRecentViewHolderData) {

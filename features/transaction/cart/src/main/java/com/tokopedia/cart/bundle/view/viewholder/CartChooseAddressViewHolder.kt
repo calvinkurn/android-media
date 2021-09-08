@@ -3,15 +3,15 @@ package com.tokopedia.cart.bundle.view.viewholder
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
+import com.tokopedia.cart.databinding.ItemCartChooseAddressBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
-class CartChooseAddressViewHolder(private val binding: ItemCartChooseAddressBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartChooseAddressViewHolder(private val binding: ItemCartChooseAddressBundleBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_cart_choose_address
+        val LAYOUT = R.layout.item_cart_choose_address_bundle
         private const val SOURCE = "cart page"
     }
 

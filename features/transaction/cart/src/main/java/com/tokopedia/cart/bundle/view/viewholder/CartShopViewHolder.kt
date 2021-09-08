@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemShopBinding
+import com.tokopedia.cart.databinding.ItemShopBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.adapter.collapsedproduct.CartCollapsedProductAdapter
@@ -30,7 +30,7 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
 
-class CartShopViewHolder(private val binding: ItemShopBinding,
+class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                          private val actionListener: ActionListener,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
@@ -418,7 +418,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     companion object {
-        val LAYOUT = R.layout.item_shop
+        val LAYOUT = R.layout.item_shop_bundle
 
         private const val COLLAPSED_PRODUCTS_LIMIT = 10
 

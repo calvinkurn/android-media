@@ -2,16 +2,16 @@ package com.tokopedia.cart.bundle.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledReasonBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
-class DisabledReasonViewHolder(private val binding: ItemCartDisabledReasonBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class DisabledReasonViewHolder(private val binding: ItemCartDisabledReasonBundleBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_cart_disabled_reason
+        val LAYOUT = R.layout.item_cart_disabled_reason_bundle
     }
 
     fun bind(data: DisabledReasonHolderData) {

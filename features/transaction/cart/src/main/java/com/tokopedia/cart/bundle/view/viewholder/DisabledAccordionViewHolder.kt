@@ -2,14 +2,14 @@ package com.tokopedia.cart.bundle.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBundleBinding
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.uimodel.DisabledAccordionHolderData
 
-class DisabledAccordionViewHolder(private val binding: ItemCartDisabledAccordionBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class DisabledAccordionViewHolder(private val binding: ItemCartDisabledAccordionBundleBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_cart_disabled_accordion
+        val LAYOUT = R.layout.item_cart_disabled_accordion_bundle
     }
 
     fun bind(data: DisabledAccordionHolderData) {

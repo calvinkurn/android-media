@@ -3,7 +3,7 @@ package com.tokopedia.cart.bundle.view.adapter.cart
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBinding
+import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBundleBinding
 import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.view.viewholder.CartPromoSummaryViewHolder
 
@@ -14,7 +14,7 @@ class CartPromoSummaryAdapter(private val promoSummaryList: List<PromoSummaryDet
     : RecyclerView.Adapter<CartPromoSummaryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartPromoSummaryViewHolder =
-            CartPromoSummaryViewHolder(ItemCartPromoPriceSummaryBinding.inflate(
+            CartPromoSummaryViewHolder(ItemCartPromoPriceSummaryBundleBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = promoSummaryList.size

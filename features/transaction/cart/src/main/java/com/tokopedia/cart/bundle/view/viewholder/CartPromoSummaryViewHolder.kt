@@ -3,13 +3,13 @@ package com.tokopedia.cart.bundle.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBinding
+import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBundleBinding
 import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryDetailData
 
 /**
  * @author by furqan on 17/02/2021
  */
-class CartPromoSummaryViewHolder(private val binding: ItemCartPromoPriceSummaryBinding)
+class CartPromoSummaryViewHolder(private val binding: ItemCartPromoPriceSummaryBundleBinding)
     : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: PromoSummaryDetailData) {
@@ -27,7 +27,7 @@ class CartPromoSummaryViewHolder(private val binding: ItemCartPromoPriceSummaryB
     }
 
     companion object {
-        val LAYOUT = R.layout.item_cart_promo_price_summary
+        val LAYOUT = R.layout.item_cart_promo_price_summary_bundle
     }
 
 }
