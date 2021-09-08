@@ -26,4 +26,9 @@ class UpcomingTimerViewComponent(
             timerUpcoming.targetDate = calendar
         } ?: invisible()
     }
+
+    fun stopTimer() {
+        timerUpcoming.pause()
+        invisible()
+    }
 }
