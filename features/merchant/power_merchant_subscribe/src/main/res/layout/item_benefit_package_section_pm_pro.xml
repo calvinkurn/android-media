@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="300dp"
-        android:layout_height="500dp">
+        android:layout_height="440dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/bgBenefitPackage"
