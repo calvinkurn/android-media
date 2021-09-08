@@ -17,7 +17,10 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.sse.PlayChannelSSE
+import com.tokopedia.play.data.sse.PlayChannelSSEPageSource
+import com.tokopedia.play.data.ssemapper.PlaySSEMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
+import com.tokopedia.play.data.websocket.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
@@ -57,8 +60,7 @@ import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
-import com.tokopedia.play_common.sse.OkSse
-import com.tokopedia.play_common.sse.ServerSentEvent
+import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -849,8 +851,21 @@ class PlayViewModel @Inject constructor(
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
             val socketCredential = getSocketCredential()
-            playChannelSSE.connect(channelId, "play-upcomming-channel", socketCredential.gcToken)
+            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+            playChannelSSE.listen().collect {
+                when (it) {
+                    is SSEAction.Message -> handleSSEMessage(it.message, channelId)
+                    is SSEAction.Close -> {
+                        if (it.reason == SSECloseReason.ERROR)
+                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+                    }
+                }
+            }
         }
+    }
+
+    private fun connectSSE(channelId: String, pageSource: String, gcToken: String) {
+        playChannelSSE.connect(channelId, pageSource, gcToken)
     }
 
     private fun stopSSE() {
@@ -1284,6 +1299,26 @@ class PlayViewModel @Inject constructor(
             is ChannelInteractive -> {
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
+            }
+        }
+    }
+
+    private suspend fun handleSSEMessage(message: SSEResponse, channelId: String) {
+        val result = withContext(dispatchers.computation) {
+            val sseMapper = PlaySSEMapper(message)
+            sseMapper.mapping()
+        }
+
+        when(result) {
+            is UpcomingChannelUpdateLive -> {
+                if(result.channelId.toString() == channelId) {
+                    // TODO("WATCH NOW!")
+                }
+            }
+            is UpcomingChannelUpdateActive -> {
+                if(result.channelId.toString() == channelId) {
+                    // TODO("WATCH NOW!")
+                }
             }
         }
     }

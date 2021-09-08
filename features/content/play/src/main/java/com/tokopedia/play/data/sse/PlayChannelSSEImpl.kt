@@ -1,7 +1,5 @@
 package com.tokopedia.play.data.sse
 
-import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
@@ -63,12 +61,10 @@ class PlayChannelSSEImpl @Inject constructor(
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                Log.d("<SSE>", "onClosed")
                 sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request? {
-                Log.d("<SSE>", "onPreRetry - originalRequest: $request")
                 return request
             }
         })
