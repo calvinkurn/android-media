@@ -94,7 +94,7 @@ object PlayDateTimeFormatter {
 
     fun convertToCalendar(
         rawDate: String,
-        pattern: String = ddMMMMyyyy_HHmm // TODO("Should be changed to yyyyMMddTHHmmss")
+        pattern: String = yyyyMMddTHHmmss
     ) : Calendar? {
         return try {
             val format = SimpleDateFormat(pattern, locale)
