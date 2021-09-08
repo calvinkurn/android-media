@@ -18,7 +18,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="@dimen/spacing_lvl4">
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:background="?selectableItemBackground">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_saldo"
@@ -98,7 +99,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="@dimen/spacing_lvl4">
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:background="?selectableItemBackground">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_topads"

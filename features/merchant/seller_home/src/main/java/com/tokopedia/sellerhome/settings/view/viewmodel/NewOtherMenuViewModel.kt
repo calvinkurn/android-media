@@ -44,7 +44,7 @@ class NewOtherMenuViewModel @Inject constructor(
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
 
     companion object {
@@ -53,20 +53,23 @@ class NewOtherMenuViewModel @Inject constructor(
         private const val START_TOPUP_ANIM_DELAY = 2000L
         private const val TOGGLE_TOPUP_ANIM_DELAY = 1000L
 
-        private const val MAX_TOGGLE_TIMES = 2
+        private const val MAX_TOGGLE_TIMES = 4
+        private const val ERROR_COUNT_THRESHOLD = 2
 
-        private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
+        private const val INVALID_FOLLOWERS_ERROR_MESSAGE = "Shop followers value is invalid"
     }
 
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
     private val _shopSnippetUrl = MutableLiveData<String>()
 
-    private val _freeShippingLiveData = MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
+    private val _freeShippingLiveData =
+        MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
-    private val _shopOperationalLiveData = MutableLiveData<SettingResponseState<ShopOperationalData>>()
+    private val _shopOperationalLiveData =
+        MutableLiveData<SettingResponseState<ShopOperationalData>>()
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
@@ -109,29 +112,31 @@ class NewOtherMenuViewModel @Inject constructor(
         }
     }
 
-    private val _secondarySuccessStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
-        addSource(_shopBadgeLiveData) {
-            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Badge, it)
+    private val _secondarySuccessStateMap =
+        MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
+            addSource(_shopBadgeLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.Badge, it)
+            }
+            addSource(_shopTotalFollowersLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.Followers, it)
+            }
+            addSource(_userShopInfoLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.Status, it)
+            }
+            addSource(_shopOperationalLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.Operational, it)
+            }
+            addSource(_freeShippingLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
+            }
         }
-        addSource(_shopTotalFollowersLiveData) {
-            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Followers, it)
-        }
-        addSource(_userShopInfoLiveData) {
-            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Status, it)
-        }
-        addSource(_shopOperationalLiveData) {
-            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Operational, it)
-        }
-        addSource(_freeShippingLiveData) {
-            value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
-        }
-    }
 
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
         addSource(_errorStateMap) { map ->
             val errorCounts = map?.count { it.value }.orZero()
             if (errorCounts <= map?.count().orZero()) {
-                val shouldShowMultipleErrorToaster = errorCounts >= 2 && _hasShownMultipleErrorToaster.value == false
+                val shouldShowMultipleErrorToaster =
+                    errorCounts >= ERROR_COUNT_THRESHOLD && _hasShownMultipleErrorToaster.value == false
                 value = shouldShowMultipleErrorToaster
                 _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
             } else {
@@ -192,7 +197,7 @@ class NewOtherMenuViewModel @Inject constructor(
     fun onCheckDelayErrorResponseTrigger() {
         launch(coroutineContext) {
             _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-                if (!isToasterAlreadyShown){
+                if (!isToasterAlreadyShown) {
                     _isToasterAlreadyShown.value = true
                     delay(DELAY_TIME)
                     _isToasterAlreadyShown.value = false
@@ -204,7 +209,8 @@ class NewOtherMenuViewModel @Inject constructor(
     fun getShopPeriodType() {
         launchCatchError(block = {
             val periodData = withContext(dispatcher.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
+                getShopInfoPeriodUseCase.requestParams =
+                    GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             _shopPeriodType.value = Success(periodData)
@@ -214,9 +220,9 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     fun reloadErrorData() {
-        _errorStateMap.value?.forEach{
+        _errorStateMap.value?.forEach {
             if (it.value) {
-                when(it.key) {
+                when (it.key) {
                     OtherMenuDataType.Badge -> getShopBadge()
                     OtherMenuDataType.Followers -> getShopTotalFollowers()
                     OtherMenuDataType.Status -> getUserShopInfo()
@@ -266,26 +272,30 @@ class NewOtherMenuViewModel @Inject constructor(
     fun startToggleTopadsCredit() {
         launchCatchError(block = {
             toggleTopadsTopupWithDelay()
-        }){}
+        }) {}
     }
 
     private fun getFreeShippingStatusData() {
 
-        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        val inTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        val freeShippingDisabled =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        val inTransitionPeriod =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         launchCatchError(block = {
             val freeShippingPair = withContext(dispatcher.io) {
                 if (freeShippingDisabled || inTransitionPeriod) {
                     val userId = userSession.userId.toIntOrZero()
                     val shopId = userSession.shopId.toIntOrZero()
-                    val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
+                    val params =
+                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
                     getShopFreeShippingInfoUseCase.execute(params).first().let {
                         it.freeShipping.isActive to it.freeShipping.imgUrl
                     }
                 } else {
                     val userId = userSession.userId.toIntOrZero()
                     val shopId = userSession.shopId.toIntOrZero()
-                    val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
+                    val params =
+                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
                     getShopFreeShippingInfoUseCase.execute(params).first().let {
                         it.freeShipping.isActive to it.freeShipping.imgUrl
                     }
@@ -301,7 +311,8 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val badgeUrl = withContext(dispatcher.io) {
-                    getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                    getShopBadgeUseCase.params =
+                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getShopBadgeUseCase.executeOnBackground()
                 }
                 _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
@@ -316,7 +327,8 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val totalFollowers = withContext(dispatcher.io) {
-                    getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                    getShopTotalFollowersUseCase.params =
+                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
                         if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
                             throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
@@ -339,13 +351,19 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
-                    getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                    getUserShopInfoUseCase.params =
+                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 userShopInfoWrapper.shopSnippetUrl?.let {
                     setShopSnippetUrl(it)
                 }
-                _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(ShopStatusUiModel(userShopInfoWrapper, userSession))
+                _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
+                    ShopStatusUiModel(
+                        userShopInfoWrapper,
+                        userSession
+                    )
+                )
             },
             onError = {
                 _userShopInfoLiveData.value = SettingResponseState.SettingError(it)
@@ -359,7 +377,8 @@ class NewOtherMenuViewModel @Inject constructor(
                 val shopOperational = withContext(dispatcher.io) {
                     getShopOperationalUseCase.executeOnBackground()
                 }
-                _shopOperationalLiveData.value = SettingResponseState.SettingSuccess(shopOperational)
+                _shopOperationalLiveData.value =
+                    SettingResponseState.SettingSuccess(shopOperational)
             },
             onError = {
                 _shopOperationalLiveData.value = SettingResponseState.SettingError(it)
@@ -371,7 +390,7 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val balanceInfo = withContext(dispatcher.io) {
-                        balanceInfoUseCase.executeOnBackground().totalBalance.orEmpty()
+                    balanceInfoUseCase.executeOnBackground().totalBalance.orEmpty()
                 }
                 _balanceInfoLiveData.value = SettingResponseState.SettingSuccess(balanceInfo)
             },
@@ -385,12 +404,14 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
-                    topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                    topAdsDashboardDepositUseCase.params =
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()
                 }
-                _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingSuccess(topAdsBalanceFormatted)
+                _kreditTopAdsFormattedLiveData.value =
+                    SettingResponseState.SettingSuccess(topAdsBalanceFormatted)
             },
             onError = {
                 _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingError(it)
@@ -402,7 +423,8 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val isTopAdsAutoTopup = withContext(dispatcher.io) {
-                    topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(userSession.shopId)
+                    topAdsAutoTopupUseCase.params =
+                        TopAdsAutoTopupUseCase.createRequestParams(userSession.shopId)
                     topAdsAutoTopupUseCase.executeOnBackground()
                 }
                 _isTopAdsAutoTopupLiveData.value = Success(isTopAdsAutoTopup)
@@ -465,7 +487,7 @@ class NewOtherMenuViewModel @Inject constructor(
                 if (toggleCount == null) {
                     delay(START_TOPUP_ANIM_DELAY)
                     _numberOfTopupToggleCounts.postValue(1)
-                } else if (toggleCount < MAX_TOGGLE_TIMES){
+                } else if (toggleCount < MAX_TOGGLE_TIMES) {
                     delay(TOGGLE_TOPUP_ANIM_DELAY)
                     _numberOfTopupToggleCounts.postValue(toggleCount.inc())
                 }
@@ -479,7 +501,10 @@ class NewOtherMenuViewModel @Inject constructor(
     private fun SettingResponseState<*>.isSuccess(): Boolean =
         this is SettingResponseState.SettingSuccess
 
-    private fun Map<OtherMenuDataType, Boolean>.getUpdatedErrorMap(dataType: OtherMenuDataType, state: SettingResponseState<*>): Map<OtherMenuDataType, Boolean> {
+    private fun Map<OtherMenuDataType, Boolean>.getUpdatedErrorMap(
+        dataType: OtherMenuDataType,
+        state: SettingResponseState<*>
+    ): Map<OtherMenuDataType, Boolean> {
         return mapValues {
             if (it.key == dataType) {
                 state.isError()
@@ -489,7 +514,10 @@ class NewOtherMenuViewModel @Inject constructor(
         }
     }
 
-    private fun Map<OtherMenuDataType, Boolean>.getUpdatedSuccessMap(dataType: OtherMenuDataType, state: SettingResponseState<*>): Map<OtherMenuDataType, Boolean> {
+    private fun Map<OtherMenuDataType, Boolean>.getUpdatedSuccessMap(
+        dataType: OtherMenuDataType,
+        state: SettingResponseState<*>
+    ): Map<OtherMenuDataType, Boolean> {
         return mapValues {
             if (it.key == dataType) {
                 state.isSuccess()

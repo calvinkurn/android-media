@@ -39,6 +39,7 @@ import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,6 +76,8 @@ class NewOtherMenuViewHolder(
     private var shopNextButton: IconUnify? = null
     private var topadsAutoTopupIcon: IconUnify? = null
 
+    private var balanceSaldoCard: CardUnify? = null
+    private var balanceTopadsCard: CardUnify? = null
     private var balanceSaldoTextView: Typography? = null
     private var balanceTopadsTopupView: TopadsTopupView? = null
     private var shimmerSaldo: LoaderTextView? = null
@@ -241,6 +244,8 @@ class NewOtherMenuViewHolder(
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
             topadsAutoTopupIcon = findViewById(R.id.ic_sah_new_other_balance_topads)
 
+            balanceSaldoCard = findViewById(R.id.card_sah_new_other_saldo)
+            balanceTopadsCard = findViewById(R.id.card_sah_new_other_topads)
             balanceSaldoTextView = findViewById(R.id.tv_sah_new_other_saldo_value)
             balanceTopadsTopupView = findViewById(R.id.topads_topup_view_sah)
             shimmerSaldo = findViewById(R.id.shimmer_sah_new_other_balance_saldo)
@@ -333,10 +338,10 @@ class NewOtherMenuViewHolder(
     }
 
     private fun setupBalanceClickListener() {
-        balanceSaldoTextView?.setOnClickListener {
+        balanceSaldoCard?.setOnClickListener {
             listener.onSaldoClicked()
         }
-        balanceTopadsTopupView?.setOnClickListener {
+        balanceTopadsCard?.setOnClickListener {
             listener.onKreditTopadsClicked()
         }
         errorLayoutSaldo?.setOnClickListener {

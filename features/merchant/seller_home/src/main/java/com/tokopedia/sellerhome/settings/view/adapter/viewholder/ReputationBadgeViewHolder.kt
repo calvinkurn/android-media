@@ -41,12 +41,12 @@ class ReputationBadgeViewHolder(itemView: View?,
         shopBadgeImageView?.run {
             show()
             setImageUrl(badgeUrl)
-            setOnClickListener {
-                onReputationBadgeClicked()
-            }
         }
         errorLayout?.gone()
         shimmerLoading?.gone()
+        itemView.setOnClickListener {
+            onReputationBadgeClicked()
+        }
     }
 
     private fun showError() {
@@ -58,11 +58,13 @@ class ReputationBadgeViewHolder(itemView: View?,
             }
         }
         shimmerLoading?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun showLoading() {
         shopBadgeImageView?.gone()
         errorLayout?.gone()
         shimmerLoading?.show()
+        itemView.setOnClickListener(null)
     }
 }

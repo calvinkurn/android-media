@@ -14,7 +14,9 @@ object ShopOperationalHourMapper {
     private const val OPERATIONAL_HOUR_RESPONSE_FORMAT = "HH:mm:ss"
     private const val OPERATIONAL_HOUR_UI_FORMAT = "HH:mm"
     private const val OPERATIONAL_HOUR_TIMEZONE = "WIB"
+    private const val OPERATIONAL_YEAR_FORMAT = "yyyy"
     private const val SHOP_CLOSED_INFO_DATE_FORMAT = "dd MMM"
+    private const val SHOP_CLOSED_INFO_DATE_FORMAT_FULL = "dd MMM yyyy"
 
     fun mapTopShopOperational(
         operationalHourResponse: ShopOperationalHourResponse,
@@ -121,15 +123,32 @@ object ShopOperationalHourMapper {
                 if (isShopClosed) {
                     operationalTimeIcon = IconUnify.CALENDAR
                     operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    val startTimeYear =
+                        DateFormatUtils.getFormattedDate(
+                            closedInfoResponse.startDate,
+                            OPERATIONAL_YEAR_FORMAT
+                        )
+
+                    val endTimeYear =
+                        DateFormatUtils.getFormattedDate(
+                            closedInfoResponse.endDate,
+                            OPERATIONAL_YEAR_FORMAT
+                        )
+                    val dateFormat =
+                        if (startTimeYear == endTimeYear) {
+                            SHOP_CLOSED_INFO_DATE_FORMAT
+                        } else {
+                            SHOP_CLOSED_INFO_DATE_FORMAT_FULL
+                        }
                     startTime =
                         DateFormatUtils.getFormattedDate(
                             closedInfoResponse.startDate,
-                            SHOP_CLOSED_INFO_DATE_FORMAT
+                            dateFormat
                         )
                     endTime =
                         DateFormatUtils.getFormattedDate(
                             closedInfoResponse.endDate,
-                            SHOP_CLOSED_INFO_DATE_FORMAT
+                            dateFormat
                         )
                 } else {
                     operationalTimeIcon = IconUnify.CLOCK

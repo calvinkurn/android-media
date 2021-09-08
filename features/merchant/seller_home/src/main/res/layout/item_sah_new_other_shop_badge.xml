@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/spacing_lvl4"
     android:paddingVertical="@dimen/spacing_lvl5"
+    android:background="?selectableItemBackground"
     tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
 
     <com.tokopedia.unifycomponents.ImageUnify

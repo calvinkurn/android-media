@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:background="?selectableItemBackground"
     tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
 
     <androidx.constraintlayout.widget.Group

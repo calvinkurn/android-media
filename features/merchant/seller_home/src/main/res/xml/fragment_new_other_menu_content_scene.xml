@@ -25,6 +25,14 @@
             android:layout_marginTop="@dimen/sah_new_other_layout_animation_start_margin_top"
             android:alpha="0.2"
             motion:layout_constraintTop_toTopOf="parent"/>
+        <Constraint
+            android:id="@+id/iv_sah_new_other_share"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginTop="@dimen/layout_lvl5"
+            android:alpha="0"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toEndOf="parent"/>
     </ConstraintSet>
 
     <ConstraintSet
@@ -43,6 +51,14 @@
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:alpha="1"
             motion:layout_constraintTop_toTopOf="parent"/>
+        <Constraint
+            android:id="@+id/iv_sah_new_other_share"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginTop="@dimen/layout_lvl5"
+            android:alpha="0"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toEndOf="parent"/>
     </ConstraintSet>
 
     <!-- Share button animation from right -->

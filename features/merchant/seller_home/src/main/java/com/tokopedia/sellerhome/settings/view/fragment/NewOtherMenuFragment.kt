@@ -518,21 +518,23 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     private fun showMultipleErrorToaster() {
-        multipleErrorSnackbar =
-            view?.run {
-                Toaster.build(
-                    this,
-                    context?.getString(R.string.setting_header_multiple_error_message).orEmpty(),
-                    Snackbar.LENGTH_INDEFINITE,
-                    Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.setting_toaster_error_retry).orEmpty()
-                )
-                {
-                    viewModel.reloadErrorData()
-                    viewModel.onReloadErrorData()
+        if (multipleErrorSnackbar?.isShown == false) {
+            multipleErrorSnackbar =
+                view?.run {
+                    Toaster.build(
+                        this,
+                        context?.getString(R.string.setting_header_multiple_error_message).orEmpty(),
+                        Snackbar.LENGTH_INDEFINITE,
+                        Toaster.TYPE_NORMAL,
+                        context?.getString(R.string.setting_toaster_error_retry).orEmpty()
+                    )
+                    {
+                        viewModel.reloadErrorData()
+                        viewModel.onReloadErrorData()
+                    }
                 }
-            }
-        multipleErrorSnackbar?.show()
+            multipleErrorSnackbar?.show()
+        }
     }
 
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {

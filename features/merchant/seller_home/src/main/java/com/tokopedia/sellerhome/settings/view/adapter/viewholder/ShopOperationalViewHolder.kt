@@ -60,7 +60,7 @@ class ShopOperationalViewHolder(
         }
 
         if (shopOperational.shopSettingAccess) {
-            descTextView?.setOnClickListener {
+            itemView.setOnClickListener {
                 onShopOperationalClicked()
             }
         }
@@ -96,6 +96,7 @@ class ShopOperationalViewHolder(
         successGroup?.gone()
         loadingLayout?.show()
         errorLayout?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun setErrorOperationalHour() {
@@ -107,5 +108,6 @@ class ShopOperationalViewHolder(
                 onErrorClicked()
             }
         }
+        itemView.setOnClickListener(null)
     }
 }

@@ -41,20 +41,19 @@ class ShopFollowersViewHolder(itemView: View?,
 
     private fun setSuccessFollowersLayout(totalFollowers: String) {
         successLayout?.show()
-        descTextView?.run {
-            text = totalFollowers
-            setOnClickListener {
-                onShopFollowersClicked()
-            }
-        }
+        descTextView?.text = totalFollowers
         loadingLayout?.gone()
         errorLayout?.gone()
+        itemView.setOnClickListener {
+            onShopFollowersClicked()
+        }
     }
 
     private fun setLoadingFollowersLayout() {
         successLayout?.gone()
         loadingLayout?.show()
         errorLayout?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun setErrorFollowersLayout() {
@@ -66,6 +65,7 @@ class ShopFollowersViewHolder(itemView: View?,
                 onErrorClicked()
             }
         }
+        itemView.setOnClickListener(null)
     }
 
 }

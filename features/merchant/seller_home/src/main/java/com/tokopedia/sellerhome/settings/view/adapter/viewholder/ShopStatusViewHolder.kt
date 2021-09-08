@@ -72,14 +72,16 @@ class ShopStatusViewHolder(itemView: View?,
         setDescription(
             R.string.sah_new_other_status_upgrade,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        ) {
-            onGoToPowerMerchant(TAB_PM)
-        }
+        )
 
         pmIcon?.gone()
         pmProIcon?.gone()
         warningIcon?.gone()
         successOsLayout?.gone()
+
+        itemView.setOnClickListener {
+            onGoToPowerMerchant(TAB_PM)
+        }
     }
 
     private fun setPowerMerchantLayout(powerMerchantStatus: PowerMerchantStatus) {
@@ -89,24 +91,24 @@ class ShopStatusViewHolder(itemView: View?,
                 setDescription(
                     R.string.sah_new_other_status_upgrade,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                ) {
-                    onGoToPowerMerchant(TAB_PM_PRO)
-                }
+                )
                 warningIcon?.gone()
             }
             is PowerMerchantStatus.NotActive -> {
                 setDescription(
                     R.string.setting_not_active,
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                ) {
-                    onGoToPowerMerchant(TAB_PM_PRO)
-                }
+                )
                 warningIcon?.show()
             }
         }
         pmIcon?.show()
         pmProIcon?.gone()
         successOsLayout?.gone()
+
+        itemView.setOnClickListener {
+            onGoToPowerMerchant(TAB_PM_PRO)
+        }
     }
 
     private fun setPowerMerchantProLayout(powerMerchantProStatus: PowerMerchantProStatus) {
@@ -137,10 +139,15 @@ class ShopStatusViewHolder(itemView: View?,
             }
         }
         setDescription(statusStringRes, statusColorRes)
+
         warningIcon?.showWithCondition(!isStatusActive)
         pmIcon?.gone()
         pmProIcon?.show()
         successOsLayout?.gone()
+
+        itemView.setOnClickListener {
+            onGoToPowerMerchant(TAB_PM_PRO)
+        }
     }
 
     private fun setOfficialStoreLayout() {
@@ -148,6 +155,7 @@ class ShopStatusViewHolder(itemView: View?,
         hideAllShopStatusSuccessLayouts()
         loadingLayout?.gone()
         errorLayout?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun setTitle(@StringRes titleStringRes: Int) {
@@ -159,9 +167,7 @@ class ShopStatusViewHolder(itemView: View?,
 
     private fun setDescription(
         @StringRes descStringRes: Int,
-        @ColorRes descColorRes: Int,
-        onClick: () -> Unit = {}
-    ) {
+        @ColorRes descColorRes: Int) {
         shopStatusDescTextView?.run {
             text = getString(descStringRes)
             setTextColor(
@@ -170,9 +176,6 @@ class ShopStatusViewHolder(itemView: View?,
                     descColorRes
                 )
             )
-            setOnClickListener {
-                onClick.invoke()
-            }
             show()
         }
     }
@@ -182,6 +185,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
         loadingLayout?.show()
         errorLayout?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun setShopStatusErrorLayout() {
@@ -194,6 +198,7 @@ class ShopStatusViewHolder(itemView: View?,
                 onErrorClicked()
             }
         }
+        itemView.setOnClickListener(null)
     }
 
     /**

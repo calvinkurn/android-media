@@ -41,12 +41,12 @@ class FreeShippingViewHolder(itemView: View?,
         freeShippingImageView?.run {
             show()
             setImageUrl(freeShippingUrl)
-            setOnClickListener {
-                onFreeShippingClicked()
-            }
         }
         errorLayout?.gone()
         shimmerLoading?.gone()
+        itemView.setOnClickListener {
+            onFreeShippingClicked()
+        }
     }
 
     private fun setWidgetError() {
@@ -58,12 +58,14 @@ class FreeShippingViewHolder(itemView: View?,
             }
         }
         shimmerLoading?.gone()
+        itemView.setOnClickListener(null)
     }
 
     private fun setWidgetLoading() {
         freeShippingImageView?.gone()
         errorLayout?.gone()
         shimmerLoading?.show()
+        itemView.setOnClickListener(null)
     }
 
 }
