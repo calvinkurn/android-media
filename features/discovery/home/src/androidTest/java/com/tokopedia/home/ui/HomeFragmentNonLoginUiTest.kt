@@ -74,7 +74,7 @@ class HomeFragmentNonLoginUiTest {
     }
 
     @Test
-    fun testFirstTimeLoggedInUser() {
+    fun testFirstTimeNonLoggedInUser() {
         /**
          * Onboarding and coachmark for new user
          */
@@ -82,9 +82,8 @@ class HomeFragmentNonLoginUiTest {
         assertHomeCoachmarkDisplayed()
 
         /**
-         * Home skeleton content
+         * Home skeleton content for non login
          * - Toolbar
-         * - Header + Balance Widget
          * - Home Content (Header + ATF + BTF)
          * - Recommendation tab / Mega feed
          */
@@ -142,6 +141,7 @@ class HomeFragmentNonLoginUiTest {
     /**
      * We want to make sure that the home header:
      * - Showing header background image
+     * - Showing choose address widget
      */
     private fun assertHeader() {
         /**
