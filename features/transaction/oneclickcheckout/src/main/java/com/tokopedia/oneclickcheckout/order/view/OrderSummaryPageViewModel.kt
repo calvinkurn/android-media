@@ -767,6 +767,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    fun resetFlagGetTenorList() {
+        this.hasGetTenorList = false
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()

@@ -651,10 +651,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     view?.let { v ->
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
+                    viewModel.resetFlagGetTenorList()
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
                     progressDialog?.dismiss()
                     creditCardTenorListData = it.ccData
+                    viewModel.resetFlagGetTenorList()
                 }
             }
         }
