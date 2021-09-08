@@ -15,7 +15,8 @@ class ProductBundleDetailAdapter(
     : RecyclerView.Adapter<ProductBundleDetailViewHolder>() {
 
     interface ProductBundleDetailItemClickListener {
-        fun onProductVariantSpinnerClicked(selectedProductVariant: ProductVariant?)
+        fun onProductNameViewClicked(selectedProductBundleDetail: ProductBundleDetail)
+        fun onProductVariantSpinnerClicked(selectedProductBundleDetail: ProductBundleDetail)
     }
 
     private var productBundleDetails: MutableList<ProductBundleDetail> = mutableListOf()
