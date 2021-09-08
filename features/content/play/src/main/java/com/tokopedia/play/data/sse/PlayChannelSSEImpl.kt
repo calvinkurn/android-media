@@ -1,12 +1,14 @@
 package com.tokopedia.play.data.sse
 
 import android.util.Log
+import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play_common.sse.OkSse
-import com.tokopedia.play_common.sse.ServerSentEvent
+import com.tokopedia.play_common.sse.*
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.*
 import okhttp3.Request
 import okhttp3.Response
 import javax.inject.Inject
@@ -15,9 +17,12 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 08, 2021
  */
 class PlayChannelSSEImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
 ): PlayChannelSSE {
+
     private var sse: ServerSentEvent? = null
+    private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
     override fun connect(channelId: String, pageSource: String, gcToken: String) {
         var url = "https://sse-staging.tokopedia.com/play-sse?page=$pageSource&channel_id=$channelId"
@@ -31,9 +36,7 @@ class PlayChannelSSEImpl @Inject constructor(
             .build()
 
         sse = OkSse().newServerSentEvent(request, object: ServerSentEvent.Listener {
-            override fun onOpen(sse: ServerSentEvent, response: Response) {
-                Log.d("<SSE>", "onOpen")
-            }
+            override fun onOpen(sse: ServerSentEvent, response: Response) { }
 
             override fun onMessage(
                 sse: ServerSentEvent,
@@ -41,15 +44,12 @@ class PlayChannelSSEImpl @Inject constructor(
                 event: String,
                 message: String
             ) {
-                Log.d("<SSE>", "onMessage - event: $event & message: $message")
+                sseFlow.tryEmit(SSEAction.Message(SSEResponse(event = event, message = message)))
             }
 
-            override fun onComment(sse: ServerSentEvent, comment: String) {
-                Log.d("<SSE>", "onComment - event: $comment")
-            }
+            override fun onComment(sse: ServerSentEvent, comment: String) { }
 
             override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                Log.d("<SSE>", "onRetryTime - milliseconds: $milliseconds")
                 return false
             }
 
@@ -58,22 +58,27 @@ class PlayChannelSSEImpl @Inject constructor(
                 throwable: Throwable,
                 response: Response?
             ): Boolean {
-                Log.d("<SSE>", "onRetryError - response: $response")
-                return false
+                sseFlow.tryEmit(SSEAction.Close(SSECloseReason.ERROR))
+                return true
             }
 
             override fun onClosed(sse: ServerSentEvent) {
                 Log.d("<SSE>", "onClosed")
+                sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request? {
                 Log.d("<SSE>", "onPreRetry - originalRequest: $request")
-                return null
+                return request
             }
         })
     }
 
     override fun close() {
         sse?.close()
+    }
+
+    override fun listen(): Flow<SSEAction> {
+        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
     }
 }

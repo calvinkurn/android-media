@@ -148,5 +148,6 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun providePlayChannelSSE(userSession: UserSessionInterface): PlayChannelSSE = PlayChannelSSEImpl(userSession)
+    fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers)
 }
