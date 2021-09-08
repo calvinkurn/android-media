@@ -1,5 +1,8 @@
 package com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet
 
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.adapter.SortFilterAdapter
 import com.tokopedia.tokopedianow.sortfilter.presentation.differ.SortFilterDiffer
 import com.tokopedia.tokopedianow.sortfilter.presentation.typefactory.SortFilterAdapterTypeFactory
@@ -32,7 +36,6 @@ class TokoNowSortFilterBottomSheet :
 
     private var rvSort: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
-    private var listener: TokoNowSortFilterBottomSheetListener? = null
     private var sortValue: Int = FREQUENTLY_BOUGHT
     private var listTitles: List<SortFilterUiModel> = listOf()
 
@@ -56,9 +59,13 @@ class TokoNowSortFilterBottomSheet :
         sortValue = value
     }
 
-    fun show(fm: FragmentManager, sortValue: Int, listener: TokoNowSortFilterBottomSheetListener) {
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        activity?.finish()
+    }
+
+    fun show(fm: FragmentManager, sortValue: Int) {
         show(fm, TAG)
-        this.listener = listener
         this.sortValue = sortValue
 
         listTitles = listOf(
@@ -111,12 +118,10 @@ class TokoNowSortFilterBottomSheet :
 
     private fun setupBtnFilter() {
         btnApplyFilter?.setOnClickListener {
-            listener?.onApplySortFilter(sortValue)
+            val intent = Intent()
+            intent.putExtra(SORT_VALUE, sortValue)
+            activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
-    }
-
-    interface TokoNowSortFilterBottomSheetListener {
-        fun onApplySortFilter(value: Int)
     }
 }
