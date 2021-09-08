@@ -1166,7 +1166,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onGridItemClick(
         positionInFeed: Int,
         contentPosition: Int,
-        productPosition: Long,
+        productPosition: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,

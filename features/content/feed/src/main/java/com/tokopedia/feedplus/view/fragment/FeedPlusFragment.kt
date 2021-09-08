@@ -2204,7 +2204,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onGridItemClick(
         positionInFeed: Int,
         activityId: Int,
-        productId: Long,
+        productId: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
@@ -2222,7 +2222,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
                 feedAnalytics.eventGridProductItemClicked(
                     activityId.toString(),
-                    productId.toString(),
+                    productId,
                     type,
                     isFollowed,
                     shopId,
