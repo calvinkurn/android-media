@@ -3444,6 +3444,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     onUserDenied = {}, onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {}
             )
         }
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     private fun observeToggleNotifyMe() {
