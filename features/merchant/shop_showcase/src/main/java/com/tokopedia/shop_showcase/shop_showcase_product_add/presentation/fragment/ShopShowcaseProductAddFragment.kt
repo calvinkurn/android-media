@@ -66,6 +66,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
         const val SHOWCASE_DELETED_LIST = "deleted_list"
+        private const val CARD_ELEVATION = 16.0f
+        private const val CARD_NO_ELEVATION = 0f
+        private const val SLIDE_UP_COUNTER_ANIMATION_DELAY_MILLIS = 1800L
+        private const val SLIDE_DOWN_COUNTER_TRANSLATE_Y = 250f
     }
 
     @Inject
@@ -144,11 +148,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 super.onScrolled(view, dx, dy)
                 if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
-                    headerLayout?.cardElevation = 0f
+                    headerLayout?.cardElevation = CARD_NO_ELEVATION
                 }
                 else {
                     buttonBackToTop?.show()
-                    headerLayout?.cardElevation = 16.0f
+                    headerLayout?.cardElevation = CARD_ELEVATION
                 }
             }
 
@@ -156,7 +160,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 if(newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Handler().postDelayed({
                         slideUpCounter()
-                    }, 1800)
+                    }, SLIDE_UP_COUNTER_ANIMATION_DELAY_MILLIS)
                 }
                 if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     val currentFirstVisible = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
@@ -398,7 +402,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     private fun slideDownCounter() {
-        productSelectedCounter?.animate()?.translationY(250f)
+        productSelectedCounter?.animate()?.translationY(SLIDE_DOWN_COUNTER_TRANSLATE_Y)
         if(buttonBackToTop?.circleMainMenu?.visibility == View.VISIBLE)
             buttonBackToTop?.circleMainMenu?.hide()
     }
