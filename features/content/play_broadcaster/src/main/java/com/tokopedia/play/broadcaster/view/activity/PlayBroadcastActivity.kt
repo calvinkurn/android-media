@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alivc.live.pusher.SurfaceStatus
+import com.google.android.play.core.splitinstall.SplitInstallHelper
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -99,6 +100,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SplitInstallHelper.loadLibrary(this, "artp")
+
         inject()
         initViewModel()
         setFragmentFactory()

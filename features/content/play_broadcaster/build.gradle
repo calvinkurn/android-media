@@ -63,6 +63,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.playServicesDependencies.core
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
