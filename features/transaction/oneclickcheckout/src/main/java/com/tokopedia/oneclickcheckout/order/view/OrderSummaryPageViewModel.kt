@@ -75,6 +75,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var finalUpdateJob: Job? = null
 
     private var hasSentViewOspEe = false
+    private var hasGetTenorList = false
 
     fun getShopId(): String {
         return orderCart.shop.shopId.toString()
@@ -643,7 +644,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                     validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
-            if (orderPayment.value.creditCard.isAfpb) adjustAdminFee()
+            adjustAdminFee()
         }
     }
 
@@ -745,7 +746,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun adjustAdminFee() {
-        if (orderPayment.value.creditCard.isAfpb) {
+        if (orderPayment.value.creditCard.isAfpb && !hasGetTenorList) {
+            hasGetTenorList = true
             val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
                 userSession.userId, orderTotal.value, orderCart)
             launch(executorDispatchers.immediate) {
