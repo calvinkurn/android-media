@@ -1,4 +1,4 @@
-package com.tokopedia.cart.utils
+package com.tokopedia.cart.bundle.utils
 
 import com.google.gson.Gson
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
