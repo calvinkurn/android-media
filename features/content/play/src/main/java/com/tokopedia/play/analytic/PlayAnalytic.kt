@@ -522,6 +522,55 @@ class PlayAnalytic(
         )
     }
 
+    /**
+     * Upcoming Page
+     */
+
+    fun impressUpcomingPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_UPCOMING_IRIS,
+                KEY_EVENT_ACTION to "impression on upcoming page",
+                KEY_EVENT_CATEGORY to KEY_TRACK_UPCOMING_PAGE,
+                KEY_EVENT_LABEL to mChannelId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickRemindMe() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_UPCOMING,
+                KEY_EVENT_ACTION to "click on ingatkan saya",
+                KEY_EVENT_CATEGORY to KEY_TRACK_UPCOMING_PAGE,
+                KEY_EVENT_LABEL to mChannelId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickWatchNow() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_UPCOMING,
+                KEY_EVENT_ACTION to "click on tonton sekarang",
+                KEY_EVENT_CATEGORY to KEY_TRACK_UPCOMING_PAGE,
+                KEY_EVENT_LABEL to mChannelId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
     fun getTrackingQueue() = trackingQueue
 
     /**
@@ -778,11 +827,14 @@ class PlayAnalytic(
         private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT_IRIS = "viewGroupChatIris"
+        private const val KEY_TRACK_VIEW_UPCOMING_IRIS = "viewUpcomingIris"
         private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
         private const val KEY_TRACK_BUSINESS_UNIT = "play"
 
         private const val KEY_TRACK_CLICK = "click"
+        private const val KEY_TRACK_CLICK_UPCOMING = "clickUpcoming"
         private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
+        private const val KEY_TRACK_UPCOMING_PAGE = "upcoming page"
 
         private const val ERR_STATE_VIDEO = "Video Player"
         private const val ERR_STATE_GLOBAL = "Global Error"
