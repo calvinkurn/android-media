@@ -76,7 +76,7 @@ class GetProfileDataUseCase @Inject constructor(
                 getShopInfoUseCase.executeOnBackground()
             }
             userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-
+            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
             userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
 
             if(isABNewTokopoint()) tokopoint =
@@ -92,7 +92,6 @@ class GetProfileDataUseCase @Inject constructor(
                 // check if tokopoint = 0 or null then follow old flow (fetch saldo)
                 if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
                     ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                    saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
                     tokopoint = null
                 }
             } else {
@@ -100,7 +99,6 @@ class GetProfileDataUseCase @Inject constructor(
                     ovoData = null
                     tokopoint = null
                     isWalletAppError = false
-                    saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
                     getWalletAppBalanceUseCase.executeOnBackground()
                 } catch (e: Exception) {
                     isWalletAppError = true

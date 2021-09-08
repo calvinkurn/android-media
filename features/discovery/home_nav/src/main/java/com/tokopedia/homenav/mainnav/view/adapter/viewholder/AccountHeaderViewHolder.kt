@@ -51,7 +51,6 @@ class AccountHeaderViewHolder(itemView: View,
 
     private lateinit var layoutNonLogin: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
-    private lateinit var layoutLoginAs: ConstraintLayout
 
     companion object {
         @LayoutRes
@@ -65,7 +64,21 @@ class AccountHeaderViewHolder(itemView: View,
         private const val GREETINGS_18_23 = "Jangan lupa makan malam~"
         private const val GREETINGS_DEFAULT = "Hai Toppers"
 
+        private const val HOURS_0 = 0
+        private const val HOURS_2 = 2
+        private const val HOURS_3 = 3
+        private const val HOURS_4 = 4
+        private const val HOURS_5 = 5
+        private const val HOURS_9 = 9
+        private const val HOURS_10 = 10
+        private const val HOURS_14 = 14
+        private const val HOURS_15 = 15
+        private const val HOURS_17 = 17
+        private const val HOURS_18 = 18
+        private const val HOURS_23 = 23
+
         private const val ANIMATION_DURATION_MS: Long = 300
+        private const val GREETINGS_DELAY = 1000L
     }
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
@@ -76,7 +89,6 @@ class AccountHeaderViewHolder(itemView: View,
         initViewHolder()
 
         val sectionShimmering: View = itemView.findViewById(R.id.section_shimmering_profile)
-        val sectionCard: View = itemView.findViewById(R.id.section_card_profile)
 
         when(element.state) {
             NAV_PROFILE_STATE_LOADING -> {
@@ -84,7 +96,6 @@ class AccountHeaderViewHolder(itemView: View,
             }
             NAV_PROFILE_STATE_SUCCESS -> {
                 sectionShimmering.gone()
-                sectionCard.visible()
 
                 when(element.loginState) {
                     AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
@@ -97,10 +108,7 @@ class AccountHeaderViewHolder(itemView: View,
     private fun initViewHolder() {
         layoutLogin = itemView.findViewById(R.id.layout_login)
         layoutNonLogin = itemView.findViewById(R.id.layout_nonlogin)
-        layoutLoginAs = itemView.findViewById(R.id.layout_login_as)
-
         layoutNonLogin.visibility = View.GONE
-        layoutLoginAs.visibility = View.GONE
         layoutLogin.visibility = View.GONE
     }
 
@@ -126,12 +134,14 @@ class AccountHeaderViewHolder(itemView: View,
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
         val sectionSaldo: View = layoutLogin.findViewById(R.id.section_header_saldo)
+        val sectionWallet: View = layoutLogin.findViewById(R.id.section_header_wallet)
 
         /**
          * Initial state
          */
         tvOvo.isClickable = false
         usrOvoBadge.visible()
+        sectionWallet.visible()
 
         layoutLogin.setOnClickListener {
             TrackingProfileSection.onClickProfileSection(userSession.userId)
@@ -246,12 +256,17 @@ class AccountHeaderViewHolder(itemView: View,
                     element.profileWalletAppDataModel.let { walletAppModel ->
                         when {
                             walletAppModel.isWalletAppLinked -> {
-                                tvOvo.text = String.format(
-                                    itemView.context.getString(R.string.mainnav_wallet_app_format),
-                                    walletAppModel.gopayBalance,
-                                    walletAppModel.gopayPointsBalance
-                                )
-                                usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
+                                if (walletAppModel.gopayBalance.isNotEmpty()
+                                        && walletAppModel.gopayPointsBalance.isNotEmpty()) {
+                                    tvOvo.text = String.format(
+                                        itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                        walletAppModel.gopayBalance,
+                                        walletAppModel.gopayPointsBalance
+                                    )
+                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
+                                } else {
+                                    sectionWallet.gone()
+                                }
                             }
                             walletAppModel.isWalletAppLinked -> {
                                 if (walletAppModel.walletAppActivationCta.isNotEmpty()) {
@@ -260,6 +275,7 @@ class AccountHeaderViewHolder(itemView: View,
                                 } else {
                                     tvOvo.gone()
                                     usrOvoBadge.gone()
+                                    sectionWallet.gone()
                                 }
                             }
                             walletAppModel.isWalletAppFailed -> {
@@ -294,7 +310,11 @@ class AccountHeaderViewHolder(itemView: View,
                 element.profileMembershipDataModel.tokopointExternalAmount.isNotEmpty()
                         && element.profileMembershipDataModel.tokopointPointAmount.isNotEmpty() -> {
                     element.profileMembershipDataModel.let { profileMembership ->
-                        val spanText = "${profileMembership.tokopointExternalAmount} (${profileMembership.tokopointPointAmount})"
+                        val spanText = String.format(
+                            itemView.context.getString(R.string.mainnav_tokopoint_format),
+                            profileMembership.tokopointExternalAmount,
+                            profileMembership.tokopointPointAmount
+                        )
                         val span = SpannableString(spanText)
                         span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -321,7 +341,21 @@ class AccountHeaderViewHolder(itemView: View,
          * Handling seller info value
          */
         element.profileSellerDataModel.let { profileSeller ->
-            if (!profileSeller.isGetShopError) {
+            if (profileSeller.isGetShopLoading) {
+                tvShopInfo.gone()
+                tvShopTitle.gone()
+                btnTryAgainShopInfo.gone()
+                tvShopNotif.gone()
+                shimmerShopInfo.visible()
+            } else if (profileSeller.isGetShopError) {
+                btnTryAgainShopInfo.visible()
+                tvShopInfo.visible()
+                tvShopTitle.visible()
+                shimmerShopInfo.gone()
+                tvShopNotif.gone()
+
+                tvShopInfo.text = getString(R.string.error_state_shop_info)
+            } else if (!profileSeller.isGetShopError) {
                 val shopTitle: String
                 val shopInfo: String
                 if (!profileSeller.hasShop){
@@ -359,20 +393,6 @@ class AccountHeaderViewHolder(itemView: View,
                 } else {
                     tvShopNotif.gone()
                 }
-            } else if (profileSeller.isGetShopLoading) {
-                tvShopInfo.gone()
-                tvShopTitle.gone()
-                btnTryAgainShopInfo.gone()
-                tvShopNotif.gone()
-                shimmerShopInfo.visible()
-            } else if (profileSeller.isGetShopError) {
-                btnTryAgainShopInfo.visible()
-                tvShopInfo.visible()
-                tvShopTitle.visible()
-                shimmerShopInfo.gone()
-                tvShopNotif.gone()
-
-                tvShopInfo.text = getString(R.string.error_state_shop_info)
             }
         }
     }
@@ -407,24 +427,24 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getCurrentGreetings() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 0..2 -> GREETINGS_0_2
-            in 3..4 -> GREETINGS_3_4
-            in 5..9 -> GREETINGS_5_9
-            in 10..14 -> GREETINGS_10_14
-            in 15..17 -> GREETINGS_15_17
-            in 18..23 -> GREETINGS_18_23
+            in HOURS_0..HOURS_2 -> GREETINGS_0_2
+            in HOURS_3..HOURS_4 -> GREETINGS_3_4
+            in HOURS_5..HOURS_9 -> GREETINGS_5_9
+            in HOURS_10..HOURS_14 -> GREETINGS_10_14
+            in HOURS_15..HOURS_17 -> GREETINGS_15_17
+            in HOURS_18..HOURS_23 -> GREETINGS_18_23
             else -> GREETINGS_DEFAULT
         }
     }
 
     private fun getCurrentGreetingsIconStringUrl() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 0..2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
-            in 3..4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
-            in 5..9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
-            in 10..14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
-            in 15..17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
-            in 18..23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
+            in HOURS_0..HOURS_2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
+            in HOURS_3..HOURS_4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
+            in HOURS_5..HOURS_9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
+            in HOURS_10..HOURS_14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
+            in HOURS_15..HOURS_17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
+            in HOURS_18..HOURS_23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
             else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
         }
     }
@@ -445,7 +465,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvName.text = greetingString
             ivBadge.loadImage(badgeGreetingsUrl)
             launch {
-                delay(1000)
+                delay(GREETINGS_DELAY)
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
                 ivBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)

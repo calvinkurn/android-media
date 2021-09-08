@@ -26,7 +26,7 @@ import dagger.Provides
 @Module
 class MainNavUseCaseModule {
 
-    private val walletBalanceQuery : String = "{\n" +
+    private val walletBalanceQuery : String = "query mainNavOvoWallet {\n" +
             "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
