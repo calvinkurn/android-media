@@ -1,11 +1,11 @@
-package com.tokopedia.checkout.view
+package com.tokopedia.checkout.bundle.view
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.UnitTestFileUtils
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.bundle.UnitTestFileUtils
+import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
+import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
 object DataProvider {

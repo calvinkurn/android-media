@@ -1,16 +1,16 @@
-package com.tokopedia.checkout.view.presenter
+package com.tokopedia.checkout.bundle.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.DataProvider
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.bundle.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.bundle.data.model.request.checkout.old.ShopProductCheckoutRequest
+import com.tokopedia.checkout.bundle.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.bundle.domain.usecase.*
+import com.tokopedia.checkout.bundle.view.DataProvider
+import com.tokopedia.checkout.bundle.view.ShipmentContract
+import com.tokopedia.checkout.bundle.view.ShipmentPresenter
+import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter

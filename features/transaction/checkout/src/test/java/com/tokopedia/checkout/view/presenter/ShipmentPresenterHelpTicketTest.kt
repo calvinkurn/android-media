@@ -1,14 +1,14 @@
-package com.tokopedia.checkout.view.presenter
+package com.tokopedia.checkout.bundle.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.bundle.data.api.CommonPurchaseApiUrl
+import com.tokopedia.checkout.bundle.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.bundle.domain.model.checkout.ErrorReporter
+import com.tokopedia.checkout.bundle.domain.usecase.*
+import com.tokopedia.checkout.bundle.view.ShipmentContract
+import com.tokopedia.checkout.bundle.view.ShipmentPresenter
+import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -16,7 +16,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
+import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase

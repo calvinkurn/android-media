@@ -12,7 +12,7 @@ class AddToCartBundleDataMapper @Inject constructor() {
 
     fun mapAddToCartBundleResponse(response: AddToCartBundleResponse): AddToCartBundleModel {
         return AddToCartBundleModel().apply {
-            success = response.status == "OK"
+            status = response.status
             errorMessage = response.errorMessage
             addToCartBundleDataModel = mapAddToCartBundleData(response.data)
         }
@@ -20,6 +20,7 @@ class AddToCartBundleDataMapper @Inject constructor() {
 
     private fun mapAddToCartBundleData(dataResponse: AddToCartBundleDataResponse): AddToCartBundleDataModel {
         return AddToCartBundleDataModel().apply {
+            success = dataResponse.success
             message = dataResponse.messages
             val productDataList = mutableListOf<ProductDataModel>()
             dataResponse.data.forEach { productDataResponse ->

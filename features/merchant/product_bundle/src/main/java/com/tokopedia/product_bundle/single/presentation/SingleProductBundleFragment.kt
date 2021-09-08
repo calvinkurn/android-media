@@ -18,6 +18,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -89,6 +90,7 @@ class SingleProductBundleFragment(
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
+        setupToolbarActions()
 
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
@@ -132,9 +134,14 @@ class SingleProductBundleFragment(
         quantity: Int,
         preorderDurationWording: String?
     ) {
-        SingleProductBundleTracking.trackSingleBundleOptionClick(selectedBundleId, selectedProductId)
+        SingleProductBundleTracking.trackSingleBundleOptionClick(
+            adapter.getSelectedBundleId(),
+            parentProductID,
+            adapter.getSelectedProductId()
+        )
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
+        updateTotalAmountAtcButtonText(preorderDurationWording)
     }
 
     override fun onDataChanged(
@@ -256,6 +263,11 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
+                SingleProductBundleTracking.trackSingleBuyClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
                 atcProductBundle()
             }
         }
@@ -274,6 +286,19 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun setupToolbarActions() {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
+            setNavigationOnClickListener {
+                SingleProductBundleTracking.trackSingleBackClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
+                activity?.finish()
+            }
+        }
+    }
+
     private fun updateTotalPO(totalPOWording: String?) {
         tvBundleSold?.isVisible = totalPOWording != null
         tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
@@ -284,6 +309,14 @@ class SingleProductBundleFragment(
             amountView.text = price
             setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
             setSubtitleText(context.getString(R.string.text_saving), priceGap)
+        }
+    }
+
+    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
+        totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
+            getString(R.string.action_buy)
+        } else {
+            getString(R.string.action_preorder)
         }
     }
 

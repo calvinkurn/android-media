@@ -73,8 +73,8 @@ class ProductBundleViewModel @Inject constructor(
     private val errorMessageLiveData: SingleLiveEvent<String> = SingleLiveEvent()
     val errorMessage: LiveData<String> get() = errorMessageLiveData
 
-    private val isBundleOutOfStockLiveData: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val isBundleOutOfStock: LiveData<Boolean> get() = isBundleOutOfStockLiveData
+    private val atcDialogMessagesLiveData: SingleLiveEvent<Pair<String,String>> = SingleLiveEvent()
+    val atcDialogMessages: LiveData<Pair<String,String>> get() = atcDialogMessagesLiveData
 
     fun getProductIdFromUri(uri: Uri?, pathSegments: List<String>): String {
         return if (pathSegments.size >= 2) {
@@ -198,17 +198,24 @@ class ProductBundleViewModel @Inject constructor(
                 addToCartBundleUseCase.setParams(atcParams)
                 addToCartBundleUseCase.executeOnBackground()
             }
-            if (result.data.isNotEmpty()) {
-                addToCartResultLiveData.value = AddToCartDataResult(
-                    requestParams = atcParams,
-                    responseResult = result
-                )
-            } else {
-                isBundleOutOfStockLiveData.value = true
-            }
+
+            result.validateResponse(
+                    onSuccess = {
+                        addToCartResultLiveData.value = AddToCartDataResult(
+                                requestParams = atcParams,
+                                responseResult = result.addToCartBundleDataModel
+                        )
+                    },
+                    onFailedWithMessages = {
+                        atcDialogMessagesLiveData.value = Pair(first = it.firstOrNull() ?: "", it.lastOrNull() ?: "")
+                    },
+                    onFailedWithException = {
+                        errorMessageLiveData.value = it.localizedMessage
+                    }
+            )
         }, onError = {
             // TODO: log error, provide default error message
-            errorMessageLiveData.value = it.localizedMessage
+
         })
     }
 
@@ -251,7 +258,7 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
-                quantity = productBundleDetail.productQuantity,
+                quantity = ATC_BUNDLE_QUANTITY,
                 shopId = shopId.toString(),
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId

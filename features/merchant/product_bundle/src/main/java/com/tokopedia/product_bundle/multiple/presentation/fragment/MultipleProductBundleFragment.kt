@@ -198,9 +198,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             }
         })
         // observe product bundle quota issue
-        viewModel.isBundleOutOfStock.observe(viewLifecycleOwner, { isOutOfStock ->
-            isOutOfStock?.let {
-                if (isOutOfStock) showProductBundleOutOfStockDialog()
+        viewModel.atcDialogMessages.observe(viewLifecycleOwner, { atcDialogMessages ->
+            val title = atcDialogMessages.first
+            val message = atcDialogMessages.second
+            if (title.isNotBlank() && message.isNotBlank()) {
+                showAtcDialog(title, message)
             }
         })
         // observe atc validation error message
@@ -315,10 +317,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
-    private fun showProductBundleOutOfStockDialog() {
+    private fun updateProductBundleOverViewButtonText(preOrderStatus: String) {
+        productBundleOverView?.amountCtaView?.text = if (viewModel.isPreOrderActive(preOrderStatus)) {
+            getString(R.string.action_preorder)
+        } else {
+            getString(R.string.action_buy)
+        }
+    }
+
+    private fun showAtcDialog(title: String, message: String) {
         DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE).apply {
-            setTitle(getString(R.string.error_bundle_out_of_stock_dialog_title))
-            setDescription(getString(R.string.error_bundle_out_of_stock_dialog_description))
+            setTitle(title)
+            setDescription(message)
             setPrimaryCTAText(getString(R.string.action_select_another_bundle))
             setSecondaryCTAText(getString(R.string.action_back))
             dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
@@ -349,6 +359,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
         // deselect the rest of selection except the selected one
         productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
+        // update the process day
         with(productBundleMaster) {
             // track product bundle master selection
             MultipleProductBundleTracking.trackMultipleBundleOptionClick(
@@ -357,6 +368,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             )
             // update the process day
             renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
+            // update totalView atc button text
+            updateProductBundleOverViewButtonText(preOrderStatus)
         }
     }
 

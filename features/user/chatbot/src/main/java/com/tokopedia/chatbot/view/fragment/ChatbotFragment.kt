@@ -714,8 +714,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSelectedInvoiceResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.run {
-                val selectedInvoice = data.getParcelableExtra<SelectedInvoice>(
-                        ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY)
+                val selectedInvoice = data.getParcelableExtra(
+                        ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY) ?: SelectedInvoice()
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
         }

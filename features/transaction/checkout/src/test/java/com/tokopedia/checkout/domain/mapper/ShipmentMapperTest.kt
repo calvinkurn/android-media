@@ -1,8 +1,8 @@
-package com.tokopedia.checkout.domain.mapper
+package com.tokopedia.checkout.bundle.domain.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.UnitTestFileUtils
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.bundle.UnitTestFileUtils
+import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before

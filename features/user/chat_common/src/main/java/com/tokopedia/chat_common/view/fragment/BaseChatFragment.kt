@@ -240,7 +240,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onBackPressed(): Boolean {
-        if (viewState.isAttachmentMenuVisible()) {
+        if (::viewState.isInitialized && viewState.isAttachmentMenuVisible()) {
             viewState.hideAttachmentMenu()
             return true
         }

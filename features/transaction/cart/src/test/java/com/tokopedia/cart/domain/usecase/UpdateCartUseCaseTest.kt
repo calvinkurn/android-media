@@ -1,10 +1,10 @@
-package com.tokopedia.cart.domain.usecase
+package com.tokopedia.cart.bundle.domain.usecase
 
-import com.tokopedia.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.cart.data.model.response.updatecart.Data
-import com.tokopedia.cart.data.model.response.updatecart.UpdateCartDataResponse
-import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
-import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.cart.bundle.data.model.request.UpdateCartRequest
+import com.tokopedia.cart.bundle.data.model.response.updatecart.Data
+import com.tokopedia.cart.bundle.data.model.response.updatecart.UpdateCartDataResponse
+import com.tokopedia.cart.bundle.data.model.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateCartData
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

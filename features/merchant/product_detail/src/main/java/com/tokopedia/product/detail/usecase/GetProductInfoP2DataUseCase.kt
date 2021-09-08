@@ -425,6 +425,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
+            rating {
+                ratingScore
+                totalRating
+                totalReviewTextAndImage
+            }
             bundleInfo {
               productID
               bundleID
@@ -519,6 +524,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
+            p2UiData.rating = rating
         }
         return p2UiData
     }

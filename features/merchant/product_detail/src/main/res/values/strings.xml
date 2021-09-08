@@ -267,4 +267,7 @@
     <string name="pdp_bundling_saving">Hemat</string>
     <string name="pdp_bundling_quantity">(Total %1s barang)</string>
 
+    <string name="pdp_review_rating_and_review_count">%s rating • %s ulasan</string>
+    <string name="pdp_review_rating_only_count">%s rating (tanpa ulasan)</string>
+
 </resources>
