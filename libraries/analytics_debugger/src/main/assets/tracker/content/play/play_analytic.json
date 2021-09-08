@@ -9,7 +9,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
-      "screenName": "/group-chat-room/\\d+/vod|live",
+      "screenName": "/group-chat-room/\\d+/(vod|live)",
       "userId": ".*",
       "sessionIris": ".*",
       "theme": ".*"
@@ -33,7 +33,7 @@
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
       "businessUnit": "play",
-      "duration": "\\d+",
+      "duration": ".*",
       "isLoggedInStatus": ".*",
       "channel": ".*"
     },
@@ -41,14 +41,14 @@
       "eventAction": "click - shop",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - vod|live",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "sessionIris": ".*"
     },
     {
       "eventAction": "click (follow|unfollow) shop",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - vod|live",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "sessionIris": ".*"
     },
     {
