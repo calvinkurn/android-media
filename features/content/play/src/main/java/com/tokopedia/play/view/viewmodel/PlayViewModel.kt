@@ -1427,7 +1427,12 @@ class PlayViewModel @Inject constructor(
             }
         }
 
-        fun handleClickLikeLive() {
+        /**
+         * Like for Live Channel
+         * - New status will always be LIKE
+         * - Send Data to BE via Socket
+         */
+        fun handleClickLikeLive(analyticFn: (status: PlayLikeStatus) -> Unit) {
             val newStatus = PlayLikeStatus.Liked
             _likeInfo.setValue {
                 copy(status = newStatus, source = LikeSource.UserAction)
@@ -1444,10 +1449,19 @@ class PlayViewModel @Inject constructor(
                 copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
             }
 
-            //TODO("Hit Socket")
+            playChannelWebSocket.send(
+                playSocketToModelMapper.mapSendLike(channelId)
+            )
+
+            analyticFn(newStatus)
         }
 
-        fun handleClickLikeNonLive() {
+        /**
+         * Like for Non-Live Channel
+         * - New status can be UNLIKE or LIKE
+         * - Send Data to BE via GQL
+         */
+        fun handleClickLikeNonLive(analyticFn: (status: PlayLikeStatus) -> Unit) {
             val likeInfo = _likeInfo.value
             if (likeInfo.status == PlayLikeStatus.Unknown) return
 
@@ -1478,16 +1492,23 @@ class PlayViewModel @Inject constructor(
                 )
             }
 
+            analyticFn(newStatus)
+        }
+
+        /**
+         * Main Like Condition Logic
+         */
+        val analyticHandler: (PlayLikeStatus) -> Unit = { status ->
             playAnalytic.clickLike(
                 channelId = channelId,
                 channelType = channelType,
                 channelName = _channelDetail.value.channelInfo.title,
-                likeStatus = newStatus,
+                likeStatus = status,
             )
         }
 
-        if (channelType.isLive) handleClickLikeLive()
-        else handleClickLikeNonLive()
+        if (channelType.isLive) handleClickLikeLive(analyticHandler)
+        else handleClickLikeNonLive(analyticHandler)
     }
 
     private fun handleClickShare() {

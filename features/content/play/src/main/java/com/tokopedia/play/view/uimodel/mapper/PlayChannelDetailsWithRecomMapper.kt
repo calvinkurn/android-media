@@ -8,8 +8,9 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayLikeBubbleUiModel
+import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -38,6 +39,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                             it.config.realTimeNotif
                         ),
                         videoInfo = mapVideoInfo(it.video),
+                        multipleLikeConfigInfo = mapMultipleLikeConfig(
+                            it.config.multipleLikeConfig
+                        )
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
@@ -110,6 +114,17 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = PlayVideoConfigUiModel(
         id = videoResponse.id,
         orientation = VideoOrientation.getByValue(videoResponse.orientation),
+    )
+
+    private fun mapMultipleLikeConfig(
+        configs: List<ChannelDetailsWithRecomResponse.MultipleLikeConfig>
+    ) = PlayMultipleLikesConfig(
+        bubbles = configs.map { config ->
+            PlayLikeBubbleUiModel(
+                icon = config.icon,
+                bgColor = config.bgColor,
+            )
+        }
     )
 
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
