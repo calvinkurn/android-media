@@ -75,6 +75,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
@@ -919,6 +920,13 @@ class DiscoveryFragment :
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
                     (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
+            AtcVariantHelper.ATC_VARIANT_RESULT_CODE ->{
+                context?.let {it->
+                    AtcVariantHelper.onActivityResultAtcVariant(it,requestCode,data){
+//                        Todo:Handle updating variant data here
+                    }
+                }
+            }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
             override fun onFail() {
@@ -1169,10 +1177,12 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(productId: String,
-                  shopId: String,
-                  quantity: Int) {
-        discoveryViewModel.addProductToCart(productId, quantity, shopId)
+    fun addOrUpdateItemCart(productId: String, shopId: String, quantity: Int) {
+        if (UserSession(context).isLoggedIn) {
+            discoveryViewModel.addProductToCart(productId, quantity, shopId)
+        } else {
+            openLoginScreen()
+        }
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -1184,6 +1194,7 @@ class DiscoveryFragment :
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+//            Todo: do we need to add pageName in Analytics?.
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
             bottomNav?.hide()
@@ -1197,6 +1208,7 @@ class DiscoveryFragment :
             miniCartWidget?.hide()
         }
         // TODO: Update the product card with new data
+
     }
 
     private fun hideSystemUi() {

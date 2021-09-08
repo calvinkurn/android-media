@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
@@ -51,8 +52,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
 
             masterProductCardListView?.setAddVariantClickListener {
-
+                openVariantSheet()
             }
+            masterProductCardListView?.setAddToCartNonVariantClickListener(this)
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -62,12 +64,28 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
 
             masterProductCardGridView?.setAddVariantClickListener {
-
+                openVariantSheet()
             }
+            masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
         }
 
         productCardView.setOnClickListener {
             handleUIClick(it)
+        }
+    }
+
+    private fun openVariantSheet() {
+        masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
+            AtcVariantHelper.goToAtcVariant(
+                itemView.context,
+                dataItem.productId ?: "",
+                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                true,
+                dataItem.shopId ?: "",
+                startActivitResult = { intent, reqCode ->
+                        fragment.startActivityForResult(intent, reqCode)
+                }
+            )
         }
     }
 
@@ -222,5 +240,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onQuantityChanged(quantity: Int) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
+        masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
+            if (!productItem.productId.isNullOrEmpty() && !productItem.shopId.isNullOrEmpty())
+                (fragment as DiscoveryFragment).addOrUpdateItemCart(productItem.productId!!, productItem.shopId!!, quantity)
+        }
     }
 }

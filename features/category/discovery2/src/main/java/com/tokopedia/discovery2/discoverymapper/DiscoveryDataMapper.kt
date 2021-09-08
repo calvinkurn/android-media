@@ -235,19 +235,19 @@ class DiscoveryDataMapper {
     }
 
     private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
-        return if (checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (!dataItem.hasATC || checkForVariantProductCard(dataItem.parentProductId)) {
             null
         } else {
             ProductCardModel.NonVariant(
                 dataItem.quantity,
-                dataItem.minQuanity,
-                dataItem.maxQuanity
+                dataItem.minQuantity,
+                dataItem.maxQuantity
             )
         }
     }
 
     private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
-        return if (checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (dataItem.hasATC && checkForVariantProductCard(dataItem.parentProductId)) {
             ProductCardModel.Variant(
                 dataItem.quantity,
             )

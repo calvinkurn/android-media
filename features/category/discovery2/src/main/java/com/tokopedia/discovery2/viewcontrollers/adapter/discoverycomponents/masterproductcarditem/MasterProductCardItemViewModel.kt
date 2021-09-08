@@ -245,4 +245,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
     fun updateProductQuantity(quantity: Int){
         components.data?.firstOrNull()?.quantity = quantity
     }
+
+    fun getProductDataItem(): DataItem? {
+        return components.data?.firstOrNull()
+    }
 }
