@@ -50,7 +50,7 @@ class PlayUpcomingFragment @Inject constructor(
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
-    private val upcomingTimerViewComponent by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
+    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
 
     private lateinit var ivUpcomingCover: AppCompatImageView
@@ -106,7 +106,7 @@ class PlayUpcomingFragment @Inject constructor(
 
             tvUpcomingTitle.text = it.title
 
-            upcomingTimerViewComponent.setupTimer(it.startTime)
+            upcomingTimer.setupTimer(it.startTime)
         }
 
         toolbarView.setShareInfo(playViewModel.latestCompleteChannelData.shareInfo)
