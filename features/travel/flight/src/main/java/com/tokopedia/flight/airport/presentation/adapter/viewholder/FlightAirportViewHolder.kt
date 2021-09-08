@@ -47,7 +47,7 @@ class FlightAirportViewHolder(val binding: ItemFlightAirportBinding,
                 val airportString = context.getString(R.string.flight_labe_all_airport)
                 this.airport.text = airportString
             }
-            itemView.setOnClickListener { filterTextListener.airportClicked(airport) }
+            root.setOnClickListener { filterTextListener.airportClicked(airport) }
         }
     }
 

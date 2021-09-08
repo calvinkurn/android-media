@@ -124,10 +124,10 @@ class FlightOrderCancellationDetailRouteViewHolder(
     private fun setDepartureInfo(route: FlightOrderDetailRouteModel) {
         with(binding) {
             if (!TextUtils.isEmpty(route.departureCityName)) {
-                arrivalDescAirportName.text = String.format("%s (%s)", route.departureCityName, route.departureId)
-                arrivalDescAirportName.text = route.departureAirportName
+                departureAirportName.text = String.format("%s (%s)", route.departureCityName, route.departureId)
+                departureDescAirportName.text = route.departureAirportName
             } else {
-                arrivalDescAirportName.text = (route.departureId)
+                arrivalAirportName.text = (route.departureId)
                 arrivalDescAirportName.text = ""
             }
         }

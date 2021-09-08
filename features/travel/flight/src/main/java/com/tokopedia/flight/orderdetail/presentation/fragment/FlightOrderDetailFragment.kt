@@ -324,7 +324,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             )
             binding?.flightOrderDetailInsurance?.buildView()
         } else {
-            binding?.containerFlightOrderDetailCancellationDetail?.visibility = View.GONE
+            binding?.flightOrderDetailInsurance?.visibility = View.GONE
         }
 
         /* Render Web Check In View */

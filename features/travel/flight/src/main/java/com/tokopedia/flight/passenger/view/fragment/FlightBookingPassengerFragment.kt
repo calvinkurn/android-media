@@ -196,10 +196,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
             binding?.tilPassportIssuerCountry?.textFieldInput?.isFocusable = false
-            binding?.tilNationality?.textFieldInput?.isClickable = true
-            binding?.tilNationality?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            binding?.tilPassportIssuerCountry?.textFieldInput?.isClickable = true
+            binding?.tilPassportIssuerCountry?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
-            binding?.tilNationality?.textFieldInput?.setOnClickListener {
+            binding?.tilPassportIssuerCountry?.textFieldInput?.setOnClickListener {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }

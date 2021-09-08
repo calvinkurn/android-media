@@ -278,9 +278,9 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         binding?.containerEstimateRefund?.visibility = View.VISIBLE
 
         if (estimationNotes.isNotEmpty()) {
-            binding?.tvRefundDetail?.visibility = View.VISIBLE
+            binding?.tvRefundStar?.visibility = View.VISIBLE
         } else {
-            binding?.tvRefundDetail?.visibility = View.GONE
+            binding?.tvRefundStar?.visibility = View.GONE
         }
 
         if (!::estimationNotesAdapter.isInitialized) {
