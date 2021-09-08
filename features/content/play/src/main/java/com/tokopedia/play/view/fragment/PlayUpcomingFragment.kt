@@ -141,6 +141,7 @@ class PlayUpcomingFragment @Inject constructor(
                     is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     is RemindMeEvent -> {
                         if(event.isSuccess) {
+                            analytic.clickRemindMe()
                             actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
                             doShowToaster(message = getTextFromUiString(event.message))
                         }
@@ -215,7 +216,6 @@ class PlayUpcomingFragment @Inject constructor(
                 playParentViewModel.refreshChannel()
             }
             else {
-                analytic.clickRemindMe()
                 playViewModel.submitAction(ClickRemindMeUpcomingChannel)
             }
         }
