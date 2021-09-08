@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
@@ -21,6 +21,8 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PayLaterOffersFragment : BaseDaggerFragment() {
@@ -28,6 +30,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     lateinit var payLaterProductList: List<PayLaterAllData>
+
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
@@ -39,6 +42,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         PayLaterOfferPagerAdapter(childFragmentManager, 0)
     }
     var pdpSimulationCallback: PdpSimulationCallback? = null
+    var productAmount: Long = 0
+
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -87,20 +92,38 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> payLaterAvailableDataLoad(it.data)
-                is Fail -> payLaterAvailableDataLoadFail()
+                is Fail -> payLaterAvailableDataLoadFail(it.throwable)
             }
         })
 
 
     }
 
-    private fun payLaterAvailableDataLoadFail() {
-
+    private fun payLaterAvailableDataLoadFail(throwable: Throwable) {
+        payLaterOffersShimmerGroup.gone()
+        payLaterOffersGlobalError.visible()
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                payLaterOffersGlobalError.setType(GlobalError.NO_CONNECTION)
+            }
+            is IllegalStateException -> {
+                payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
+            }
+        }
+        payLaterOffersGlobalError.show()
+        payLaterOffersGlobalError.setActionClickListener {
+            payLaterOffersGlobalError.hide()
+            payLaterOffersShimmerGroup.visible()
+            payLaterViewModel.getPayLaterAvailableDetail(productAmount)
+        }
     }
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
 
-        if (paylaterProduct.productList != null) {
+        if (paylaterProduct.productList != null && paylaterProduct.productList.isNotEmpty()) {
             payLaterProductList = paylaterProduct.productList
             generateSortFilter(paylaterProduct)
             payLaterOffersShimmerGroup.gone()
@@ -111,7 +134,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-
+            payLaterAvailableDataLoadFail(IllegalStateException())
         }
     }
 
@@ -158,9 +181,13 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         const val PAGE_MARGIN = 16
 
         @JvmStatic
-        fun newInstance(pdpSimulationCallback: PdpSimulationCallback): PayLaterOffersFragment {
+        fun newInstance(
+            pdpSimulationCallback: PdpSimulationCallback,
+            bundle: Bundle
+        ): PayLaterOffersFragment {
             val detailFragment = PayLaterOffersFragment()
             detailFragment.pdpSimulationCallback = pdpSimulationCallback
+            detailFragment.productAmount = bundle.getLong(PRODUCT_PRICE)
             return detailFragment
         }
     }

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -20,6 +19,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLater
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
@@ -124,9 +124,23 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             tvTitlePaymentPartner.text = data.gateway_detail?.name
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
-            interestAmount.text = data.total_interest_ceil.toString()
-            serviceFeeAmount.text = data.total_fee_ceil.toString()
-            totalAmount.text = data.installment_per_month_ceil.toString()
+            interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    interest_ceil, false
+                )
+            }
+            serviceFeeAmount.text =
+                data.total_fee_ceil?.let { total_fee_ceil ->
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        total_fee_ceil,
+                        false
+                    )
+                }
+            totalAmount.text = data.installment_per_month_ceil?.let { montlyInstallment ->
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    montlyInstallment, false
+                )
+            }
             btnHowToUse.text = data.cta?.name
 
             if (data.is_recommended == true)
@@ -173,7 +187,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+            imageView.loadImage(imageUrl)
     }
 
 //    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {

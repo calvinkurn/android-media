@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
@@ -33,6 +34,7 @@ import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
@@ -139,29 +141,29 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun productDetailFail(throwable: Throwable) {
-
+        productInfoShimmer.gone()
+        productDetail.gone()
     }
 
     private fun productDetailSuccess(data: GetProductV3) {
         productInfoShimmer.gone()
         data.pictures?.get(0)?.let { pictures ->
-            pictures.urlThumbnail?.let { urlThumbnail -> productDetail.productImage.loadImage(urlThumbnail) }
+            pictures.urlThumbnail?.let { urlThumbnail -> imageView.loadImage(urlThumbnail) }
         }
         data.productName?.let {
             productDetail.productName.text = it
         }
         data.price?.let {
-            productDetail.productPrice.text = it.toString()
+            productDetail.productPrice.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
         }
 
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-//        payLaterDataList = payLaterViewModel.getPayLaterOptions()
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-//        payLaterDataList = payLaterViewModel.getPayLaterOptions()
         applicationStatusList = data.applicationDetailList ?: arrayListOf()
     }
 
@@ -225,7 +227,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 )
             }
             else -> {
-                listOf<Fragment>(PayLaterOffersFragment.newInstance(this))
+                val bundle = Bundle()
+                bundle.putLong(PRODUCT_PRICE, productPrice)
+                listOf<Fragment>(PayLaterOffersFragment.newInstance(this, bundle))
             }
         }
     }
@@ -272,21 +276,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         renderTabAndViewPager()
     }
 
-    override fun showNoNetworkView() {
-        hideDataGroup()
-//        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
-//        payLaterParentGlobalError.show()
-//        payLaterParentGlobalError.setActionClickListener {
-//            payLaterParentGlobalError.gone()
-//            getSimulationProductInfo()
-//        }
-    }
+
 
     private fun hideDataGroup() {
-        paylaterTabLayout.gone()
         payLaterViewPager.gone()
-        modeSwitcher.gone()
-        payLaterBorder.gone()
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
@@ -300,6 +293,16 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun switchPaymentMode() {
         if (isCreditCardModeAvailable)
             modeSwitcher.isChecked = !modeSwitcher.isChecked
+    }
+
+    override fun showNoNetworkView() {
+        hideDataGroup()
+        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
+        payLaterParentGlobalError.show()
+        payLaterParentGlobalError.setActionClickListener {
+            payLaterParentGlobalError.gone()
+            getSimulationProductInfo()
+        }
     }
 
     companion object {
