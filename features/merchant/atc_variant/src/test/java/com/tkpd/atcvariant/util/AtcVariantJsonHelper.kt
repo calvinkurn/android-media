@@ -65,7 +65,9 @@ object AtcVariantJsonHelper {
                 data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
                 data.cardRedirection.alternateCopy,
                 data.ratesEstimate,
-                data.restrictionInfo
+                data.restrictionInfo,
+                data.uniqueSellingPoint.uspBoe.uspIcon,
+                data.isCashback.percentage
         )
     }
 

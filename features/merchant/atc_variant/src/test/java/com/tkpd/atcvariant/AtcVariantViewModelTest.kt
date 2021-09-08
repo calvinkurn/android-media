@@ -80,7 +80,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      * render without calling gql, because all of the data already provided from PDP
      */
     @Test
-    fun `render initial variant with given parent id and non hit gql tokonow`() {
+    fun `render initial variant with given parent id and non hit gql tokonow tokocabang`() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
@@ -104,7 +104,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1
+                expectedMinOrder = 1,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = true,
+                expectedEmptyOrInnactiveCopy = ""
         )
         assertButton(expectedCartText = "Simpan Perubahan")
         assertRestrictionData(assertSuccess = false)
@@ -166,7 +170,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 0,
-                expectedMinOrder = 1
+                expectedMinOrder = 1,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = true,
+                expectedEmptyOrInnactiveCopy = ""
         )
         assertButton()
 
@@ -193,7 +201,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1
+                expectedMinOrder = 1,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = true,
+                expectedEmptyOrInnactiveCopy = ""
         )
         assertButton(expectedCartText = "Simpan Perubahan")
         assertRestrictionData(assertSuccess = false)
@@ -218,7 +230,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254087",
                 expectedVariantName = listOf("Ungu", "XL"),
                 expectedQuantity = 0,
-                expectedMinOrder = 2
+                expectedMinOrder = 2,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = false,
+                expectedEmptyOrInnactiveCopy = ""
         )
         assertButton()
 
@@ -251,7 +267,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254084",
                 expectedQuantity = 2,
                 expectedVariantName = listOf("Biru", "S"),
-                expectedMinOrder = 3
+                expectedMinOrder = 3,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = false,
+                expectedEmptyOrInnactiveCopy = "kosong bro copy"
         )
 
         assertButton(expectedIsBuyable = false,
@@ -291,7 +311,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Hijau", "M"),
                 expectedQuantity = 0,
-                expectedMinOrder = 1
+                expectedMinOrder = 1,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = false,
+                expectedEmptyOrInnactiveCopy = ""
         )
 
         assertButton(expectedIsBuyable = true,
@@ -343,7 +367,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254084",
                 expectedVariantName = listOf("Merah", "S"),
                 expectedQuantity = 0,
-                expectedMinOrder = 1
+                expectedMinOrder = 1,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = false,
+                expectedEmptyOrInnactiveCopy = "kosong bro copy"
         )
 
         assertButton(expectedIsBuyable = false,
