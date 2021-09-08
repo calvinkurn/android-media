@@ -269,7 +269,7 @@ fun createCategoryGridDataModel(
     categoryList: List<TokoNowCategoryItemUiModel>,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id, title, categoryList, state)
+    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
