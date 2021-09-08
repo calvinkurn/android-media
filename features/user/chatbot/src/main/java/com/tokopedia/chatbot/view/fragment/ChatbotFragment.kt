@@ -334,7 +334,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun startNewSession() {
         presenter.connectWebSocket(messageId)
-        getViewState().onConnectWebSocket()
+        getViewState()?.onConnectWebSocket()
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -442,7 +442,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
-        getViewState().clearChatOnLoadChatHistory()
+        getViewState()?.clearChatOnLoadChatHistory()
         showLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
@@ -456,7 +456,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             updateViewData(it)
             renderList(list, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it)
+            getViewState()?.onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
             enableLoadMore()
         }
@@ -469,9 +469,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         (it is MessageViewModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false
-            val filteredList= getViewState().clearDuplicate(list)
-            if (filteredList.isEmpty()) loadData(page + FIRST_PAGE)
-            renderList(filteredList, it.canLoadMore)
+            val filteredList= getViewState()?.clearDuplicate(list)
+            if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
+            filteredList?.let { renderList ->
+                renderList(renderList, it.canLoadMore)
+            }
             checkShowLoading(it.canLoadMore)
             enableLoadMore()
         }
@@ -504,14 +506,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         manageActionBubble(visitable)
         managePreviousStateOfBubble(visitable)
         mapMessageToList(visitable)
-        getViewState().hideEmptyMessage(visitable)
-        getViewState().onCheckToHideQuickReply(visitable)
+        getViewState()?.hideEmptyMessage(visitable)
+        getViewState()?.onCheckToHideQuickReply(visitable)
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
         if(visitable is MessageViewModel && visitable.isSender){
-            getViewState().hideInvoiceList()
-            getViewState().hideHelpfullOptions()
+            getViewState()?.hideInvoiceList()
+            getViewState()?.hideHelpfullOptions()
         }
     }
 
@@ -523,7 +525,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun hideActionBubble() {
-        getViewState().hideActionBubbleOnSenderMsg()
+        getViewState()?.hideActionBubbleOnSenderMsg()
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
@@ -532,29 +534,29 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun getViewState(): ChatbotViewState {
-        return viewState as ChatbotViewState
+    private fun getViewState(): ChatbotViewState? {
+        return viewState as? ChatbotViewState
     }
 
     private fun mapMessageToList(visitable: Visitable<*>) {
         when (visitable) {
-            is QuickReplyListViewModel -> getViewState().onReceiveQuickReplyEvent(visitable)
-            is ChatActionSelectionBubbleViewModel -> getViewState().onReceiveQuickReplyEventWithActionButton(visitable)
-            is ChatRatingViewModel -> getViewState().onReceiveQuickReplyEventWithChatRating(visitable)
+            is QuickReplyListViewModel -> getViewState()?.onReceiveQuickReplyEvent(visitable)
+            is ChatActionSelectionBubbleViewModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(visitable)
+            is ChatRatingViewModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(visitable)
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
-        getViewState().onShowInvoiceToChat(generatedInvoice)
+        getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
                 opponentId)
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
-        getViewState().onShowInvoiceToChat(generatedInvoice)
+        getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
                 opponentId)
     }
@@ -586,7 +588,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onImageUploadCancelClicked(image: ImageUploadViewModel) {
         presenter.cancelImageUpload()
-        getViewState().showRetryUploadImages(image, true)
+        getViewState()?.showRetryUploadImages(image, true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -615,7 +617,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
         view?.let {
-            csatOptionsViewModel?.let { it -> getViewState().hideCsatOptionList(it) }
+            csatOptionsViewModel?.let { it -> getViewState()?.hideCsatOptionList(it) }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
         }
     }
@@ -672,7 +674,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
         processImagePathToUpload(data)?.let {
-            getViewState().onImageUpload(it)
+            getViewState()?.onImageUpload(it)
             presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
         }
     }
@@ -681,7 +683,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return { throwable, image ->
             if (view != null) {
                 Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-                getViewState().showRetryUploadImages(image, true)
+                getViewState()?.showRetryUploadImages(image, true)
             }
         }
     }
@@ -737,9 +739,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
         return {
-            getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+            getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
                     .name, sendMessage, startTime)
-            getViewState().scrollToBottom()
+            getViewState()?.scrollToBottom()
         }
     }
 
@@ -748,7 +750,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (selected.action.equals(SEE_ALL_INVOICE_TEXT, true)) {
             showSearchInvoiceScreen()
         } else {
-            getViewState().hideActionBubble(model)
+            getViewState()?.hideActionBubble(model)
             presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
         }
     }
@@ -884,13 +886,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>) {
-        getViewState().showDividerViewOnConnection(connectionDividerViewModel)
-        getViewState().showLiveChatQuickReply(quickReplyList)
+        getViewState()?.showDividerViewOnConnection(connectionDividerViewModel)
+        getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
     override fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>) {
-        getViewState().showLiveChatSeprator(chatSepratorViewModel)
-        getViewState().showLiveChatQuickReply(quickReplyList)
+        getViewState()?.showLiveChatSeprator(chatSepratorViewModel)
+        getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
     override fun isBackAllowed(isBackAllowed: Boolean) {
@@ -908,11 +910,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
-        getViewState().showErrorWebSocket(isWebSocketError)
+        getViewState()?.showErrorWebSocket(isWebSocketError)
     }
 
     override fun chatOptionListSelected(selected: ChatOptionListViewModel, model: HelpFullQuestionsViewModel?) {
-        model?.let { getViewState().hideOptionList(it) }
+        model?.let { getViewState()?.hideOptionList(it) }
         sendOptionListSelectedMessage(selected.text ?: "")
 
         selected.value.let { presenter.hitGqlforOptionList(it, model) }
@@ -963,7 +965,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             when (it) {
                 RESEND -> {
                     removeDummy(element)
-                    getViewState().onImageUpload(element)
+                    getViewState()?.onImageUpload(element)
                     presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
                     bottomSheetPage.dismiss()
                 }
@@ -981,7 +983,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 
     override fun removeDummy(visitable: Visitable<*>) {
-        getViewState().removeDummy(visitable)
+        getViewState()?.removeDummy(visitable)
     }
 
     override fun onStickyActionButtonClicked(invoiceRefNum: String, replyText: String) {
