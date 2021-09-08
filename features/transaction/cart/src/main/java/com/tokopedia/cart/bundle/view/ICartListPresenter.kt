@@ -36,7 +36,7 @@ interface ICartListPresenter {
                               addWishList: Boolean,
                               forceExpandCollapsedUnavailableItems: Boolean = false,
                               isFromGlobalCheckbox: Boolean = false,
-                              forceReloadCart: Boolean = false)
+                              isFromEditBundle: Boolean = false)
 
     fun processUndoDeleteCartItem(cartIds: List<String>);
 

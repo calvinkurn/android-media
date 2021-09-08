@@ -197,7 +197,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                        addWishList: Boolean,
                                        forceExpandCollapsedUnavailableItems: Boolean,
                                        isFromGlobalCheckbox: Boolean,
-                                       forceReloadCart: Boolean) {
+                                       isFromEditBundle: Boolean) {
         view?.let {
             it.showProgressLoading()
 
@@ -210,7 +210,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
             deleteCartUseCase.execute(
                     onSuccess = {
-                        onSuccessDeleteCartItems(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, forceReloadCart)
+                        onSuccessDeleteCartItems(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle)
                     },
                     onError = {
                         onErrorDeleteCartItems(forceExpandCollapsedUnavailableItems, it)
@@ -235,10 +235,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          addWishList: Boolean,
                                          isFromGlobalCheckbox: Boolean,
-                                         forceReloadCart: Boolean) {
+                                         isFromEditBundle: Boolean) {
         view?.let { view ->
             view.renderLoadGetCartDataFinish()
-            view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, forceReloadCart)
+            view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox, isFromEditBundle)
 
             val params = view.generateGeneralParamValidateUse()
             if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
