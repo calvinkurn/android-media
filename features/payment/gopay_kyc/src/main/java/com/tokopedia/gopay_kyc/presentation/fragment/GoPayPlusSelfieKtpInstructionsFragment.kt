@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 
-class GoPayPlusSelfieKtpInstructionsFragment : TkpdBaseV4Fragment() {
+class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
 
     private val instructionStringResList = arrayListOf<Int>()
 
@@ -78,6 +78,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : TkpdBaseV4Fragment() {
     }
 
     override fun getScreenName() = null
+    override fun initInjector() {}
 
     companion object {
 

@@ -2,18 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/upgradeGoPayHeader"
+        android:id="@+id/ktpHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:unify_header_title="Upgrade GoPay Plus"
-        app:unify_header_subtitle="Langkah 1 dari 2"/>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
-        android:id="@+id/kycInstructionFrameLayout"
+        android:id="@+id/kycFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

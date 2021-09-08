@@ -22,7 +22,8 @@
     <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan KTP</string>
     <string name="gopay_kyc_ktp_right_text">Benar</string>
     <string name="gopay_kyc_ktp_wrong">Salah</string>
-    
+
+
     <string name="gopay_ktp_instruction_1">Gunakan KTP asli bukan hasil fotokopi.</string>
     <string name="gopay_ktp_instruction_2">Pastikan foto KTP berada dalam bingkai.</string>
     <string name="gopay_ktp_instruction_3">Pastikan foto KTP terlihat terang dan jelas.</string>
@@ -37,5 +38,12 @@
     <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan KTP, ya</string>
     <string name="gopay_kyc_selfie_ktp_description_text">Digunakan untuk verifikasi identitas diri</string>
     <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang KTP</string>
+    <string name="gopay_kyc_reset_image_text">Foto Ulang</string>
+    <string name="gopay_kyc_use_photo_button_text">Pakai Foto Ini</string>
+
+    <string name="gopay_kyc_ktp_capture_instruction_text">Posisikan KTP di dalam bingkai. Tap layarnya agar informasi di foto bisa terbaca jelas.</string>
+    <string name="gopay_kyc_ktp_capture_verification_text">Pastikan KTP kamu di dalam bingkai dan informasi di foto bisa terbaca jelas</string>
+    <string name="gopay_kyc_selfie_ktp_capture_instruction_text">Posisikan wajah dan KTP di dalam bingkai</string>
+    <string name="gopay_kyc_selfie_ktp_capture_verification_text">Pastikan muka dan KTP kamu berada dalam bingkai dan terlihat jelas</string>
 
 </resources>

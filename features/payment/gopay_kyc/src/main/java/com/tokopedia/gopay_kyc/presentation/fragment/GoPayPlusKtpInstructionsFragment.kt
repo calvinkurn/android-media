@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 
-class GoPayPlusKtpInstructionsFragment : TkpdBaseV4Fragment() {
+class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
 
     private val instructionStringResList = arrayListOf<Int>()
 
@@ -39,7 +39,9 @@ class GoPayPlusKtpInstructionsFragment : TkpdBaseV4Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         takePhotoButton.setOnClickListener {
-
+            context?.let {
+                it.startActivity(GoPayCameraKtpActivity.getIntent(it))
+            }
         }
 
     }
@@ -77,6 +79,7 @@ class GoPayPlusKtpInstructionsFragment : TkpdBaseV4Fragment() {
     }
 
     override fun getScreenName() = null
+    override fun initInjector() {}
 
     companion object {
 

@@ -25,5 +25,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
 
+        <activity android:name=".presentation.activity.GoPayCameraKtpActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopoints3"/>
+
     </application>
 </manifest>
