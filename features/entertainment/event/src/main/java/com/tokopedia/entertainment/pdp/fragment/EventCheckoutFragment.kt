@@ -504,12 +504,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         setPassengerData(forms)
                     }
                     REQUEST_CODE_ADDITIONAL_ITEM -> {
-                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        val additionalData = data.getParcelableExtra(EXTRA_DATA_PESSANGER) ?: EventCheckoutAdditionalData()
                         listAdditionalItem[additionalData.position] = additionalData
                         adapterAdditional.notifyDataSetChanged()
                     }
                     REQUEST_CODE_ADDITIONAL_PACKAGE -> {
-                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        val additionalData = data.getParcelableExtra(EXTRA_DATA_PESSANGER) ?: EventCheckoutAdditionalData()
                         eventCheckoutAdditionalDataPackage = additionalData
                         updateAdditionalPackage()
                     }
