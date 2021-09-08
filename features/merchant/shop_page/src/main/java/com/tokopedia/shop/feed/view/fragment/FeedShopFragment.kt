@@ -869,7 +869,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onGridItemClick(
         positionInFeed: Int,
         contentPosition: Int,
-        productPosition: Int,
+        productPosition: Long,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,

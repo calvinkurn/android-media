@@ -2204,7 +2204,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onGridItemClick(
         positionInFeed: Int,
         activityId: Int,
-        productId: Int,
+        productId: Long,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
