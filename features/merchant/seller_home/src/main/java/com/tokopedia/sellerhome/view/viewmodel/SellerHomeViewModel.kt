@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
@@ -20,6 +21,8 @@ import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
+import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +55,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
+    private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -537,6 +541,21 @@ class SellerHomeViewModel @Inject constructor(
             _shopShareData.postValue(Success(shopShareData))
         }, onError = {
             _shopShareData.postValue(Fail(it))
+        })
+    }
+
+    fun sendShopShareQuestTracker(socialMediaName: String) {
+        launchCatchError(context = dispatcher.io, block = {
+            val useCase = shopQuestTrackerUseCase.get()
+            useCase.params = ShopQuestGeneralTrackerUseCase.createRequestParams(
+                actionName = SellerHomeConst.SHOP_SHARE_GQL_TRACKER_ACTION,
+                source = SellerHomeConst.SHOP_SHARE_GQL_TRACKER_SOURCE,
+                channel = socialMediaName,
+                input = ShopQuestGeneralTrackerInput(shopId)
+            )
+            useCase.executeOnBackground()
+        }, onError = {
+            //no op
         })
     }
 

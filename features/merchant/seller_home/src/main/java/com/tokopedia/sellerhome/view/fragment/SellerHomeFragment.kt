@@ -53,6 +53,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -931,10 +932,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             it,
                             shareDataModel,
                             callback = { shareModel, _ ->
-                                SellerHomeTracking.sendMilestoneMissionShareClickEvent(
-                                    shareModel.socialMediaName.orEmpty()
-                                )
-                                universalShareBottomSheet?.dismiss()
+                                setOnShopShareOptionClicked(shareModel)
                             }
                         )
                     }
@@ -957,6 +955,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         universalShareBottomSheet?.show(childFragmentManager, this)
+    }
+
+    private fun setOnShopShareOptionClicked(shareModel: ShareModel) {
+        val socialMediaName = when (shareModel) {
+            is ShareModel.CopyLink -> {
+                SellerHomeConst.SHOP_SHARE_DEFAULT_CHANNEL
+            }
+            is ShareModel.Others -> {
+                SellerHomeConst.SHOP_SHARE_OTHERS_CHANNEL
+            }
+            else -> shareModel.socialMediaName.orEmpty()
+        }
+        SellerHomeTracking.sendMilestoneMissionShareClickEvent(socialMediaName)
+        sellerHomeViewModel.sendShopShareQuestTracker(socialMediaName)
+        universalShareBottomSheet?.dismiss()
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

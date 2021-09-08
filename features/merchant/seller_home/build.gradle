@@ -29,17 +29,17 @@ buildscript {
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     //features
+    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
+    implementation projectOrAar(rootProject.ext.features.internalReview)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.sellerHomeCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMenuCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.features.reputationCommon)
-    implementation projectOrAar(rootProject.ext.features.internalReview)
-    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
-    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
 
     //libs
     implementation projectOrAar(rootProject.ext.libraries.analytics)
