@@ -276,7 +276,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
-                        var shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
+                        val shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
                         shareModel.subjectName = productData.productName ?: ""
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
                         if (isLog) {
@@ -335,7 +335,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         if (view != null) {
             parentView = view
         }
-        val a = productData.getTextDescription(activity.applicationContext,"https:link")
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
