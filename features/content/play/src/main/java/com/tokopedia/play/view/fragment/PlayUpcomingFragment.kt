@@ -28,6 +28,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
@@ -57,6 +58,7 @@ class PlayUpcomingFragment @Inject constructor(
     private lateinit var tvUpcomingTitle: AppCompatTextView
 
     private lateinit var playViewModel: PlayViewModel
+    private lateinit var playParentViewModel: PlayParentViewModel
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -65,6 +67,11 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+
+        val currentActivity = requireActivity()
+        if (currentActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+        }
     }
 
     override fun onCreateView(
@@ -200,7 +207,10 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onClickActionButton() {
-        playViewModel.submitAction(ClickRemindMeUpcomingChannel)
+        playViewModel.observableUpcomingInfo.value?.let {
+            if(it.isAlreadyLive) playParentViewModel.refreshChannel()
+            else playViewModel.submitAction(ClickRemindMeUpcomingChannel)
+        }
     }
 
     override fun onBackButtonClicked(view: ToolbarViewComponent) {
