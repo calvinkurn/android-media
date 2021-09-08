@@ -11,7 +11,7 @@
 
         <include
             android:id="@+id/partial_countdown"
-            layout="@layout/partial_countdown"
+            layout="@layout/partial_countdown_bundle"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView

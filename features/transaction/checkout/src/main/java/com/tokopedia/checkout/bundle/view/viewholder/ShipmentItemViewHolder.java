@@ -79,7 +79,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements ShipmentCartItemViewHolder.ShipmentItemListener {
 
-    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
+    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment_bundle;
 
     private static final int FIRST_ELEMENT = 0;
 

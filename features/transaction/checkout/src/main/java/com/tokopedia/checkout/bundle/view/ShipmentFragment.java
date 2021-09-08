@@ -331,7 +331,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_shipment;
+        return R.layout.fragment_shipment_bundle;
     }
 
     @Override
@@ -1032,7 +1032,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
             LayoutInflater inflater = getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
+            View layout = inflater.inflate(R.layout.toast_rectangle_bundle, getView().findViewById(R.id.toast_layout));
 
             TextView tvMessage = layout.findViewById(R.id.tv_message);
             tvMessage.setText(message);

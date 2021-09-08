@@ -84,29 +84,29 @@
             tools:ignore="UselessParent">
 
             <include
-                layout="@layout/item_shipment_seller_info"
+                layout="@layout/item_shipment_seller_info_bundle"
                 tools:visibility="visible" />
 
             <include
-                layout="@layout/item_shipment_product"
+                layout="@layout/item_shipment_product_bundle"
                 tools:visibility="visible" />
 
             <include
-                layout="@layout/item_shipment_other_product"
+                layout="@layout/item_shipment_other_product_bundle"
                 tools:visibility="gone" />
 
             <!--Shipping: Shipping Experience-->
             <include
-                layout="@layout/item_shipment_shipping_experience"
+                layout="@layout/item_shipment_shipping_experience_bundle"
                 tools:visibility="visible" />
 
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include
-                layout="@layout/item_shipment_shipping_options"
+                layout="@layout/item_shipment_shipping_options_bundle"
                 tools:visibility="gone" />
 
             <include
-                layout="@layout/item_shipment_subtotal"
+                layout="@layout/item_shipment_subtotal_bundle"
                 tools:visibility="visible" />
 
         </LinearLayout>

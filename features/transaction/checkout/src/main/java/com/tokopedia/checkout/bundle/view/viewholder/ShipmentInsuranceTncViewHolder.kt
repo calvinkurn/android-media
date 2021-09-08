@@ -49,7 +49,7 @@ class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapter
 
     companion object {
         @JvmField
-        val ITEM_VIEW_INSURANCE_TNC = R.layout.item_insurance_tnc
+        val ITEM_VIEW_INSURANCE_TNC = R.layout.item_insurance_tnc_bundle
 
         const val INDEX_DIFFERENCE = 3
     }
