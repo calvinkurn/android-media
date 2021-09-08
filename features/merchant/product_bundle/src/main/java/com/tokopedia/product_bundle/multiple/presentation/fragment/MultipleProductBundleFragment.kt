@@ -22,7 +22,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
@@ -92,7 +91,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private var processDayView: Typography? = null
     private var productBundleOverView: TotalAmount? = null
-    private var loaderDialog: LoaderDialog? = null
 
     // product bundle master components
     private var productBundleMasterView: RecyclerView? = null
@@ -126,7 +124,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
 
         // setup multiple product bundle views
-        loaderDialog = LoaderDialog(requireContext())
         processDayView = view.findViewById(R.id.tv_po_process_day)
         setupProductBundleMasterView(view)
         setupProductBundleDetailView(view, emptyVariantProductIds)
