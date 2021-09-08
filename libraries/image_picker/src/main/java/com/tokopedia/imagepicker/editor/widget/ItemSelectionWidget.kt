@@ -66,6 +66,10 @@ class ItemSelectionWidget : FrameLayout {
         adapter.clear()
     }
 
+    fun resetPosition() {
+        adapter.resetPosition()
+    }
+
     fun hasData(): Boolean {
         return adapter.itemCount != 0
     }

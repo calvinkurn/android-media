@@ -50,6 +50,11 @@ class EditorItemSelectionAdapter constructor(
         notifyDataSetChanged()
     }
 
+    fun resetPosition() {
+        selectedPosition = 0
+        notifyDataSetChanged()
+    }
+
     fun updateAll(list: List<ItemSelection>) {
         items.clear()
         items.addAll(list)

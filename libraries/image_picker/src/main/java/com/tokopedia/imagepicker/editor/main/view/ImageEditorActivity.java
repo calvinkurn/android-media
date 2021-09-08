@@ -562,14 +562,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     if (fragment != null && !isSetWatermark) {
                         hideAllControls();
+                        watermarkItemSelection.clearData();
                         setLastStateWatermarkImage();
                         watermarkType = Constant.TYPE_WATERMARK_TOPED;
                         isSetWatermark = true;
-                        if (watermarkItemSelection.hasData()) {
-                            setWatermarkDataFromAdapter();
-                        } else {
-                            fragment.setWatermark();
-                        }
+                        fragment.setWatermark();
                     }
                     layoutWatermark.setVisibility(View.VISIBLE);
 
