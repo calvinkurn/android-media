@@ -1,8 +1,9 @@
-package com.tokopedia.checkout.bundle.view
+package com.tokopedia.checkout
 
 import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.checkout.bundle.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
