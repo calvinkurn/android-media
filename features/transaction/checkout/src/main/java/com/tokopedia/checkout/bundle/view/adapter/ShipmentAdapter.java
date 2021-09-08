@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.bundle.view.adapter;
 
+import static com.tokopedia.checkout.bundle.domain.mapper.ShipmentMapper.BUNDLING_ITEM_HEADER;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -787,7 +789,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             tradeInPrice += cartItemModel.getOldDevicePrice();
                         }
 
-                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                        if (cartItemModel.isBundlingItem()) {
+                            if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
+                                totalItemPrice += (cartItemModel.getBundleQuantity() * cartItemModel.getBundlePrice());
+                            }
+                        } else {
+                            totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                        }
                     }
                 }
 

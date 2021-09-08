@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.bundle.view.viewholder;
 
+import static com.tokopedia.checkout.bundle.domain.mapper.ShipmentMapper.BUNDLING_ITEM_HEADER;
+
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -1273,7 +1275,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
             if (!cartItemModel.isError()) {
-                totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                if (cartItemModel.isBundlingItem()) {
+                    if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
+                        totalItemPrice += (cartItemModel.getBundleQuantity() * cartItemModel.getBundlePrice());
+                    }
+                } else {
+                    totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                }
                 totalItem += cartItemModel.getQuantity();
                 totalWeight += cartItemModel.getWeight();
                 if (cartItemModel.isProtectionOptIn()) {
