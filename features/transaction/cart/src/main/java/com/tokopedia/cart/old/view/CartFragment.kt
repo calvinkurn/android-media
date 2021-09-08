@@ -3523,6 +3523,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        // TODO: listRedPromos
 //        cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos = mapCreateListRedPromos(validateUsePromoRevampUiModel)
     }
 

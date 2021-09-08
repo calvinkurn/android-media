@@ -565,6 +565,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
                 additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
                 message = mapMessageGlobalPromo(lastApplyPromoData.message),
+                // TODO: listRedPromos
 //                listRedPromos = mapCreateListRedPromos(lastApplyPromoData),
                 benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
         )

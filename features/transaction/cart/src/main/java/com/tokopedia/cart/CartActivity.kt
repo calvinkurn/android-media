@@ -57,7 +57,7 @@ class CartActivity : BaseCheckoutActivity() {
 
     @Keep
     fun isBundleCart(): Boolean {
-        return false
+        return true
     }
 
     companion object {
