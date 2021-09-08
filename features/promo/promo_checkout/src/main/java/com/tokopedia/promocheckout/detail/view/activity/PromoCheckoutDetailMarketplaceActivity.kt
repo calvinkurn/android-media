@@ -24,7 +24,7 @@ class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(), HasComponen
 
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailMarketplaceFragment.createInstance(
-                intent.getStringExtra(EXTRA_KUPON_CODE),
+                intent.getStringExtra(EXTRA_KUPON_CODE) ?: "",
                 intent.getBooleanExtra(EXTRA_IS_USE, false),
                 intent.getBooleanExtra(ONE_CLICK_SHIPMENT, false),
                 intent.getIntExtra(PAGE_TRACKING, 1) ?: 1
