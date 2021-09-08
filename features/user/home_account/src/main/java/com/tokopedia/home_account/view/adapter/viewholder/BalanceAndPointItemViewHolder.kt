@@ -22,7 +22,7 @@ class BalanceAndPointItemViewHolder(
     fun bind(item: BalanceAndPointUiModel?) {
         setImage(item?.urlImage)
         setTitleText(item?.isFailed.orFalse(), item?.title)
-        setSubtitleText(item?.id, item?.isFailed.orFalse(), item?.subtitle)
+        setSubtitleText(item?.subtitle)
         setClickLitener(
             item?.id,
             item?.applink,
@@ -38,7 +38,7 @@ class BalanceAndPointItemViewHolder(
 
     private fun setTitleText(isFailed: Boolean, text: String?) {
         val title = if (isFailed) {
-            "Muat Ulang"
+            getString(R.string.home_account_balance_and_point_retry)
         } else {
             text
         }
@@ -46,7 +46,9 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointTitle?.text = title
 
         when (text) {
-            "Aktifkan", "Tambah Points", "Muat Ulang" -> {
+            getString(R.string.home_account_balance_and_point_activate),
+            getString(R.string.home_account_balance_and_point_add_point),
+            getString(R.string.home_account_balance_and_point_retry) -> {
                 setTitleToGreen()
             }
         }
@@ -61,29 +63,8 @@ class BalanceAndPointItemViewHolder(
         )
     }
 
-    private fun setSubtitleText(id: String?, isFailed: Boolean, text: String?) {
-        val subtitle = if (isFailed) {
-            when (id) {
-                AccountConstants.WALLET.OVO -> {
-                    "OVO"
-                }
-                AccountConstants.WALLET.GOPAY -> {
-                    "GoPay"
-                }
-                AccountConstants.WALLET.TOKOPOINT -> {
-                    "Tokopoint"
-                }
-                AccountConstants.WALLET.SALDO -> {
-                    "Saldo Tokopedia"
-                }
-                else -> {
-                    text
-                }
-            }
-        } else {
-            text
-        }
-        binding?.homeAccountItemBalanceAndPointSubtitle?.text = subtitle
+    private fun setSubtitleText(text: String?) {
+        binding?.homeAccountItemBalanceAndPointSubtitle?.text = text
     }
 
     private fun setClickLitener(

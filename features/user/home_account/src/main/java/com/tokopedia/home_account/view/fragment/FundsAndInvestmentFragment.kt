@@ -6,12 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
@@ -22,8 +28,12 @@ import com.tokopedia.home_account.view.adapter.uimodel.TitleUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
+import com.tokopedia.home_account.view.mapper.UiModelMapper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -60,128 +70,92 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObserver()
         initView()
+
+        showLoading()
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
     }
 
-    override fun onClickWallet(type: String) {
-        when (type) {
-            AccountConstants.WALLET.OVO -> {
-            }
-            AccountConstants.WALLET.GOPAY -> {
+    override fun onClickWallet(id: String, applink: String?, weblink: String?, isFailed: Boolean) {
+        if (isFailed) {
+            viewModel.getBalanceAndPoint(id)
+        } else {
+            when {
+                !applink.isNullOrEmpty() -> {
+                    goToApplink(applink)
+                }
+                !weblink.isNullOrEmpty() -> {
+                    goToWebview(weblink)
+                }
             }
         }
     }
 
     private fun initView() {
-//        setupStatusBar()
-//        setupToolbarTransition()
         setupAdapter()
         setupSwipeRefresh()
+    }
 
+    private fun setupObserver() {
+        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetCentralizedAssetConfig(it.data)
+                }
+                is Fail -> {
+                    onFailedGetCentralizedAssetConfig()
+                }
+            }
+        })
+        viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ResultBalanceAndPoint.Success -> {
+                    onSuccessGetBalanceAndPoint(it.data)
+                }
+                is ResultBalanceAndPoint.Fail -> {
+                    onFailedGetBalanceAndPoint(it.walletId)
+                }
+            }
+        })
+    }
+
+    private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         hideLoading()
         addTitleView()
-        addWalletView(
-            listOf(
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Rp.200.000.000",
-                    AccountConstants.Url.SALDO_ICON,
-                    false,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    false
-                ),
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Rp.200.000.000",
-                    AccountConstants.Url.SALDO_ICON,
-                    false,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    false
-                )
-            )
-        )
-        addWalletView(
-            listOf(
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "",
-                    AccountConstants.Url.SALDO_ICON,
-                    false,
-                    "Aktifkan",
-                    AccountConstants.WALLET.SALDO,
-                    false
-                )
-            )
-        )
-        addSubtitleView()
-        addWalletView(
-            listOf(
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Gagal memuat",
-                    AccountConstants.Url.SALDO_ICON,
-                    true,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    true
-                ),
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Gagal memuat",
-                    AccountConstants.Url.SALDO_ICON,
-                    true,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    true
-                )
-            )
-        )
-        addWalletView(
-            listOf(
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Gagal memuat",
-                    AccountConstants.Url.SALDO_ICON,
-                    true,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    true
-                ),
-                WalletUiModel(
-                    "Saldo Tokopedia",
-                    "Gagal memuat",
-                    AccountConstants.Url.SALDO_ICON,
-                    true,
-                    "",
-                    AccountConstants.WALLET.SALDO,
-                    true
-                )
+        var fundAndInvestmentPlaceholders = mutableListOf<WalletUiModel>()
+        centralizedUserAssetConfig.assetConfigVertical.forEach {
+            fundAndInvestmentPlaceholders.add(UiModelMapper.getWalletUiModel(it))
+            viewModel.getBalanceAndPoint(it.id)
+        }
+        addWalletView(fundAndInvestmentPlaceholders)
+        if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
+            addSubtitleView()
+            fundAndInvestmentPlaceholders = mutableListOf()
+            centralizedUserAssetConfig.assetConfigHorizontal.forEach {
+                fundAndInvestmentPlaceholders.add(UiModelMapper.getWalletUiModel(it))
+                viewModel.getBalanceAndPoint(it.id)
+            }
+            addWalletView(fundAndInvestmentPlaceholders)
+        }
+    }
+
+    private fun onFailedGetCentralizedAssetConfig() {
+        hideLoading()
+        showErrorState()
+    }
+    
+    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        adapter?.changeItemBySameId(
+            UiModelMapper.getWalletUiModel(
+                balanceAndPoint
             )
         )
     }
 
-//    private fun setupStatusBar() {
-//        activity?.let {
-//            binding?.statusBarBg?.background = ColorDrawable(
-//                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-//            )
-//        }
-//        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            binding?.statusBarBg?.visibility = View.INVISIBLE
-//        } else {
-//            binding?.statusBarBg?.visibility = View.VISIBLE
-//        }
-//        setStatusBarAlpha(0f)
-//    }
-//
-//    private fun setStatusBarAlpha(alpha: Float) {
-//        val drawable = binding?.statusBarBg?.background
-//        drawable?.alpha = alpha.toInt()
-//        binding?.statusBarBg?.background = drawable
-//    }
+    private fun onFailedGetBalanceAndPoint(walletId: String) {
+        adapter?.changeItemToFailed(walletId)
+    }
 
     private fun setupAdapter() {
         adapter = HomeAccountFundsAndInvestmentAdapter(this)
@@ -193,33 +167,6 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         )
         binding?.fundsAndInvestmentRv?.layoutManager = layoutManager
     }
-
-//    private fun setupToolbarTransition() {
-//        binding?.homeAccountUserToolbar?.let {
-//            NavRecyclerViewScrollListener(
-//                navToolbar = it,
-//                startTransitionPixel = 200,
-//                toolbarTransitionRangePixel = 50,
-//                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-//                    override fun onAlphaChanged(offsetAlpha: Float) {
-//                        setStatusBarAlpha(offsetAlpha)
-//                    }
-//
-//                    override fun onSwitchToDarkToolbar() {
-//                        binding?.homeAccountUserToolbar?.switchToLightToolbar()
-//                    }
-//
-//                    override fun onSwitchToLightToolbar() {
-//                    }
-//
-//                    override fun onYposChanged(yOffset: Int) {
-//                    }
-//                }
-//            )
-//        }?.let {
-//            binding?.fundsAndInvestmentRv?.addOnScrollListener(it)
-//        }
-//    }
 
     private fun setupSwipeRefresh() {
         binding?.fundsAndInvestmentRv?.swipeLayout = binding?.homeAccountUserFragmentSwipeRefresh
@@ -244,6 +191,7 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private fun onRefresh() {
         showLoading()
         adapter?.clearAllItems()
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
     }
 
     private fun showLoading() {
@@ -256,8 +204,38 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         binding?.fundsAndInvestmentRv?.show()
     }
 
+    private fun showErrorState() {
+        binding?.fundsAndInvestmentEmptyState?.show()
+        binding?.fundsAndInvestmentRv?.hide()
+        binding?.fundsAndInvestmentEmptyState?.setImageUrl(FAILED_IMG_URL)
+        binding?.fundsAndInvestmentEmptyState?.setPrimaryCTAClickListener {
+            hideErrorState()
+            onRefresh()
+        }
+    }
+
+    private fun hideErrorState() {
+        binding?.fundsAndInvestmentEmptyState?.hide()
+        binding?.fundsAndInvestmentRv?.show()
+    }
+
+    private fun goToApplink(applink: String) {
+        if (applink.isNotEmpty()) {
+            val intent = RouteManager.getIntent(context, applink)
+            startActivity(intent)
+        }
+    }
+
+    private fun goToWebview(link: String) {
+        if (link.isNotEmpty()) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
+            startActivity(intent)
+        }
+    }
+
     companion object {
 
+        private const val FAILED_IMG_URL = "https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE = "asset_page"
 
         fun newInstance(bundle: Bundle?): Fragment {

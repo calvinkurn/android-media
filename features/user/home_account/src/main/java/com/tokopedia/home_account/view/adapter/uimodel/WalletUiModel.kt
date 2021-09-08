@@ -1,11 +1,12 @@
 package com.tokopedia.home_account.view.adapter.uimodel
 
 data class WalletUiModel(
-    val title: String,
-    val subtitle: String,
-    val urlImage: String,
-    val isShowActionImage: Boolean,
-    val actionText: String,
-    val type: String,
-    val isNotConnected: Boolean
+    var id: String = "",
+    var title: String = "",
+    var subtitle: String = "",
+    var urlImage: String = "",
+    var applink: String = "",
+    var weblink: String = "",
+    var isFailed: Boolean = false,
+    var isActive: Boolean = true
 )

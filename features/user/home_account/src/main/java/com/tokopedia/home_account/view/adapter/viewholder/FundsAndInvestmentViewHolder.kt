@@ -9,6 +9,8 @@ import com.tokopedia.home_account.databinding.FundsAndInvestmentItemWalletBindin
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
@@ -24,8 +26,13 @@ class FundsAndInvestmentViewHolder(
         setImage(item?.urlImage)
         setTitleText(item?.title)
         setSubtitleText(item?.subtitle)
-        setAction(item?.actionText, item?.isShowActionImage)
-        setClickLitener(walletListener, item?.type)
+        setAction(item?.isFailed.orFalse(), item?.isActive.orTrue())
+        setClickLitener(item?.id,
+            item?.applink,
+            item?.weblink,
+            item?.isFailed.orFalse(),
+            walletListener
+        )
     }
 
     private fun setImage(url: String?) {
@@ -44,32 +51,39 @@ class FundsAndInvestmentViewHolder(
         }
     }
 
-    private fun setAction(text: String?, isButtonShown: Boolean? = true) {
+    private fun setAction(isFailed: Boolean, isActive: Boolean) {
         binding?.imageAction?.gone()
         binding?.textAction?.gone()
-        if (isButtonShown == true) {
-            binding?.imageAction?.visible()
-            binding?.imageAction?.context?.let {
-                val colorGreen = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
+        when {
+            isFailed -> {
+                binding?.imageAction?.visible()
+                binding?.imageAction?.context?.let {
+                    val colorGreen = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
+                }
             }
-        } else if (!text.isNullOrEmpty()) {
-            binding?.textAction?.visible()
-            binding?.textAction?.text = text
-        } else {
-            binding?.imageAction?.visible()
-            binding?.imageAction?.context?.let {
-                val colorNeutral = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700)
-                binding?.imageAction?.setImage(IconUnify.CHEVRON_RIGHT, colorNeutral, colorNeutral)
+            !isActive -> {
+                binding?.textAction?.visible()
+                binding?.textAction?.text = getString(R.string.funds_and_investment_actiivate)
+            }
+            else -> {
+                binding?.imageAction?.visible()
+                binding?.imageAction?.context?.let {
+                    val colorNeutral = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700)
+                    binding?.imageAction?.setImage(IconUnify.CHEVRON_RIGHT, colorNeutral, colorNeutral)
+                }
             }
         }
     }
 
-    private fun setClickLitener(listener: WalletListener, type: String?) {
+    private fun setClickLitener(id: String?,
+                                applink: String?,
+                                weblink: String?,
+                                isFailed: Boolean,
+                                listener: WalletListener
+    ) {
         binding?.container?.setOnClickListener {
-            if (!type.isNullOrEmpty()) {
-                listener.onClickWallet(type)
-            }
+            id?.let { id -> listener.onClickWallet(id, applink, weblink, isFailed) }
         }
     }
 
