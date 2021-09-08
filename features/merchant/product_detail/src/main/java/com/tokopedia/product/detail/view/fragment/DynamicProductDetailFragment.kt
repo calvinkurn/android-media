@@ -330,7 +330,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         renderInitialAffiliate()
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
-        screenshotDetector = context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        screenshotDetector = context?.let {
+            UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                it, this, this,
+                addFragmentLifecycleObserver = true
+            )
+        }
     }
 
     override fun onSwipeRefresh() {
