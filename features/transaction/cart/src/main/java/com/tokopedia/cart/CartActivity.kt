@@ -1,13 +1,15 @@
 package com.tokopedia.cart
 
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.bundle.view.CartFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 
 class CartActivity : BaseCheckoutActivity() {
 
-    lateinit var fragment: CartFragment
+    private var fragment: CartFragment? = null
+    private var oldFragment: com.tokopedia.cart.old.view.CartFragment? = null
     private var cartId: String? = null
     private var productId: Long = 0L
 
@@ -31,8 +33,9 @@ class CartActivity : BaseCheckoutActivity() {
     }
 
     override fun onBackPressed() {
-        if (::fragment.isInitialized) {
-            fragment.onBackPressed()
+        if (fragment != null || oldFragment != null) {
+            fragment?.onBackPressed()
+            oldFragment?.onBackPressed()
         } else {
             finish()
         }
@@ -43,9 +46,18 @@ class CartActivity : BaseCheckoutActivity() {
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        fragment = CartFragment.newInstance(bundle, "")
+        if (isBundleCart()) {
+            fragment = CartFragment.newInstance(bundle, "")
+            return fragment
+        } else {
+            oldFragment = com.tokopedia.cart.old.view.CartFragment.newInstance(bundle, "")
+            return oldFragment
+        }
+    }
 
-        return fragment
+    @Keep
+    fun isBundleCart(): Boolean {
+        return false
     }
 
     companion object {
