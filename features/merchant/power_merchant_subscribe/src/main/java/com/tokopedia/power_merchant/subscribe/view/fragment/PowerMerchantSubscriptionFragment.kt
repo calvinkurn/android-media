@@ -766,8 +766,7 @@ open class PowerMerchantSubscriptionFragment :
 
     private fun showCoachMark() {
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() ||
-                pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
+        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
         val isShowCoachmark = coachMark?.isCoachmmarkShowAllowed
         if (isPmPro && isNewSeller) {
             if (isShowCoachmark && getCoachMarkItems().value.isNotEmpty()) {
