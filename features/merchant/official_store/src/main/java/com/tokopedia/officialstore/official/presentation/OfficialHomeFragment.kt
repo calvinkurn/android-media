@@ -57,12 +57,8 @@ import com.tokopedia.officialstore.official.presentation.adapter.typefactory.Off
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -77,8 +73,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler,
-        RecommendationWidgetListener{
+        DynamicChannelEventHandler{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -184,7 +179,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
-            this,
+                RecommendationWidgetCallback(this, this.context, userSession.userId),
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
@@ -1000,28 +995,23 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        RouteManager.route(context, recommendationItem.appUrl)
+    override fun onBestSellerClick(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-    }
-
-    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem,
+        widgetPosition: Int) {
         recommendationWishlistItem = recommendationItem
         showProductCardOptions(
             this,
             recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
-    }
-
-    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeMoreTextClick(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeAllCardClick(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
