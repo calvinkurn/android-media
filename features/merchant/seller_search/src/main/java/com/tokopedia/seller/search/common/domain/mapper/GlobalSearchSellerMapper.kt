@@ -1,6 +1,7 @@
 package com.tokopedia.seller.search.common.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ARTICLES
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HIGHLIGHTS
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HISTORY
@@ -69,6 +70,18 @@ object GlobalSearchSellerMapper {
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         add(DividerSellerSearchUiModel(isVisibleDivider))
                     }
+                    ARTICLES -> {
+                        add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
+                        val articleSellerSearchVisitable = mapToArticleSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
+                        addAll(articleSellerSearchVisitable.first)
+                        countItem += articleSellerSearchVisitable.second
+                        if (it.has_more == true) {
+                            add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
+                                appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
+                        }
+                        val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
+                    }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         val faqSellerSearchVisitable = mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
@@ -119,6 +132,23 @@ object GlobalSearchSellerMapper {
             }
         }
         return Pair(productSellerSearchList, productSellerSearchList.size)
+    }
+
+    private fun mapToArticleSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
+                                                  keyword: String,
+                                                  title: String): Pair<List<ArticleSellerSearchUiModel>, Int> {
+        val articleSellerSearchList = mutableListOf<ArticleSellerSearchUiModel>()
+        articleSellerSearchList.apply {
+            sellerSearch.map { articleItem ->
+                add(ArticleSellerSearchUiModel(
+                    id = articleItem.id, title = articleItem.title,
+                    desc = articleItem.description, imageUrl = articleItem.image_url,
+                    url = articleItem.url, appUrl = articleItem.app_url, keyword = keyword,
+                    section = title
+                ))
+            }
+        }
+        return Pair(articleSellerSearchList, articleSellerSearchList.size)
     }
 
     private fun mapToNavigationSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
