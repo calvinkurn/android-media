@@ -125,41 +125,7 @@ query  tokopointsHomepage(${'$'}apiVersion: String!) {
        layoutTopAdsAttr {
        jsonTopAdsDisplayParam
       }
-      layoutMerchantCouponAttr {
-        topAdsJsonParam
-        CatalogMVCWithProductsList {
-           shopInfo {
-            id
-            name
-            iconUrl
-            url
-            appLink
-            shopStatusIconURL
-           }
-        title
-        maximumBenefitAmountStr
-        subtitle
-        adInfo {
-            AdID
-            AdViewUrl
-            AdClickUrl
-           }
-        products {
-        id
-        imageURL
-        name
-        redirectURL
-        redirectAppLink
-        benefitLabel
-        category {
-             id
-             name
-             rootID
-             rootName
-               }
-            }
-         }
-       }
+     %s
     }
   }
   }
