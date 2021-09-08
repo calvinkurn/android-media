@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import android.content.Context
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.oneclickcheckout.interceptor.PreferenceTestInterceptor
+import com.tokopedia.oneclickcheckout.interceptor.PromoTestInterceptor
 
 object OneClickCheckoutInterceptor {
     val cartInterceptor = CartTestInterceptor()

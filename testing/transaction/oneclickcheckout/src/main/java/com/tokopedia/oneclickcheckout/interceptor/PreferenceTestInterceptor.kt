@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.interceptor
 
 import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
 import okhttp3.Interceptor

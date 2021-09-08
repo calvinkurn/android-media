@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.interceptor
 
 import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
 import okhttp3.Interceptor
@@ -31,7 +31,9 @@ class PromoTestInterceptor : BaseOccInterceptor() {
             } else if (customClearPromoResponsePath != null) {
                 return mockResponse(copy, getJsonFromResource(customClearPromoResponsePath!!))
             }
-            return mockResponse(copy, getJsonFromResource(CLEAR_CACHE_AUTO_APPLY_STACK_DEFAULT_RESPONSE))
+            return mockResponse(copy, getJsonFromResource(
+                CLEAR_CACHE_AUTO_APPLY_STACK_DEFAULT_RESPONSE
+            ))
         }
         return chain.proceed(chain.request())
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.interceptor
 
 import okhttp3.*
 import okio.Buffer

@@ -1,12 +1,12 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.testing.order.view
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
@@ -51,54 +51,62 @@ class OrderSummaryPageActivityRemoveProfileTest {
 
     @Test
     fun typePost_NoAddress() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertNoAddressLayoutVisible()
 
             clickAddNewAddress()
 
-            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
-            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, SaveAddressDataModel())))
+            cartInterceptor.customGetOccCartResponsePath =
+                GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    Intent().putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, SaveAddressDataModel())
+                )
+            )
 
             clickAddNewAddress()
 
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = null,
+                productSlashPriceLabel = null,
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertAddressRevamp(
-                    addressName = "Address 1 - User 1 (1)",
-                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
-                    isMainAddress = true
+                addressName = "Address 1 - User 1 (1)",
+                addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                isMainAddress = true
             )
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "Kurir Rekomendasi",
-                    shippingPrice = "Rp15.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "Kurir Rekomendasi",
+                shippingPrice = "Rp15.000",
+                shippingEta = null
             )
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)

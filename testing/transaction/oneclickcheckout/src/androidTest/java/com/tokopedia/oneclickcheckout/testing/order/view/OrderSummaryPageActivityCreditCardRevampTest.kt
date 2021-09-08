@@ -1,21 +1,15 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.testing.order.view
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -52,10 +46,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun happyFlow_ZeroMonthDirectCheckout() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -65,10 +61,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.725",
-                        totalPrice = "Rp116.725"
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    paymentFee = "Rp1.725",
+                    totalPrice = "Rp116.725"
                 )
                 closeBottomSheet()
             }
@@ -83,10 +79,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun happyFlow_ChangeInstallment() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -104,10 +102,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp500.000",
-                        shippingPrice = "Rp15.000",
-                        paymentFee = "Rp12.875",
-                        totalPrice = "Rp527.875"
+                    productPrice = "Rp500.000",
+                    shippingPrice = "Rp15.000",
+                    paymentFee = "Rp12.875",
+                    totalPrice = "Rp527.875"
                 )
                 closeBottomSheet()
             }
@@ -122,10 +120,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun errorFlow_CreditCardExpired() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -139,10 +139,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun errorFlow_CreditCardDeleted() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -156,10 +158,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun errorFlow_CreditCardScroogeError() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -167,16 +171,21 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertPayment("Rp116.725", "Ganti Metode Bayar")
 
-            assertProfilePaymentErrorRevamp("Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.", null)
+            assertProfilePaymentErrorRevamp(
+                "Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.",
+                null
+            )
         }
     }
 
     @Test
     fun errorFlow_InstallmentMinimumAmount() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -198,10 +207,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp400.000",
-                        shippingPrice = "Rp15.000",
-                        paymentFee = "Rp10.375",
-                        totalPrice = "Rp425.375"
+                    productPrice = "Rp400.000",
+                    shippingPrice = "Rp15.000",
+                    paymentFee = "Rp10.375",
+                    totalPrice = "Rp425.375"
                 )
                 closeBottomSheet()
             }
@@ -233,23 +242,28 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun errorFlow_CreditCardMinimumAmount() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
             assertPayment("Rp25.375", "Ganti Metode Bayar")
 
-            assertProfilePaymentErrorRevamp("Belanjaanmu kurang dari min. transaksi Kartu Kredit.", "Ubah")
+            assertProfilePaymentErrorRevamp(
+                "Belanjaanmu kurang dari min. transaksi Kartu Kredit.",
+                "Ubah"
+            )
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp10.000",
-                        shippingPrice = "Rp15.000",
-                        paymentFee = "Rp375",
-                        totalPrice = "Rp25.375"
+                    productPrice = "Rp10.000",
+                    shippingPrice = "Rp15.000",
+                    paymentFee = "Rp375",
+                    totalPrice = "Rp25.375"
                 )
                 closeBottomSheet()
             }
@@ -264,10 +278,12 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
     @Test
     fun happyFlow_DebitCard() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -277,10 +293,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.725",
-                        totalPrice = "Rp116.725"
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    paymentFee = "Rp1.725",
+                    totalPrice = "Rp116.725"
                 )
                 closeBottomSheet()
             }

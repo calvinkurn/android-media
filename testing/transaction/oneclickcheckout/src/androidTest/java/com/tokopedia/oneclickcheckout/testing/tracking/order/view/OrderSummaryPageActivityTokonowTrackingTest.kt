@@ -1,11 +1,11 @@
-package com.tokopedia.oneclickcheckout_journey.tracking.order.view
+package com.tokopedia.oneclickcheckout.testing.tracking.order.view
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -16,9 +16,9 @@ import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterce
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity
+import com.tokopedia.oneclickcheckout.testing.order.view.TestOrderSummaryPageActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -64,32 +64,37 @@ class OrderSummaryPageActivityTokonowTrackingTest {
 
     @Test
     fun performRevampAnalyticsActions() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath =
+            GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
         activityRule.launchActivity(null)
 
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Now! 2 jam tiba (Rp20.000)",
-                    shippingPrice = null,
-                    shippingEta = "Tiba dalam 2 jam",
-                    shippingNotes = "Belum mencapai min. transaksi untuk gratis ongkir (RpXX.000)"
+                shippingDuration = null,
+                shippingCourier = "Now! 2 jam tiba (Rp20.000)",
+                shippingPrice = null,
+                shippingEta = "Tiba dalam 2 jam",
+                shippingNotes = "Belum mencapai min. transaksi untuk gratis ongkir (RpXX.000)"
             )
             clickAddProductQuantity(0, 1)
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "Pre Order 3 hari",
-                    alertMessage = "Alert"
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "Pre Order 3 hari",
+                alertMessage = "Alert"
             )
         }
 
-        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+            hasAllSuccess()
+        )
     }
 }

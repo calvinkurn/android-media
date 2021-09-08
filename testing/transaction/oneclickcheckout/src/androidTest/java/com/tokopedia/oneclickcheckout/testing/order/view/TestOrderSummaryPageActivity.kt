@@ -1,9 +1,10 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.testing.order.view
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
-import com.tokopedia.oneclickcheckout.order.di.TestOrderSummaryPageModule
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
+import com.tokopedia.oneclickcheckout.testing.order.di.TestOrderSummaryPageModule
 
 // For running OrderSummaryPageActivity with TestOrderSummaryPageModule
 class TestOrderSummaryPageActivity: OrderSummaryPageActivity() {
