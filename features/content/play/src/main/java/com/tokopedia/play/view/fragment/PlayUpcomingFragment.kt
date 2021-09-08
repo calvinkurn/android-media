@@ -70,6 +70,8 @@ class PlayUpcomingFragment @Inject constructor(
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+
+        analytic.impressUpcomingPage()
     }
 
     override fun onCreateView(
@@ -208,8 +210,14 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onClickActionButton() {
         playViewModel.observableUpcomingInfo.value?.let {
-            if(it.isAlreadyLive) playParentViewModel.refreshChannel()
-            else playViewModel.submitAction(ClickRemindMeUpcomingChannel)
+            if(it.isAlreadyLive)  {
+                analytic.clickWatchNow()
+                playParentViewModel.refreshChannel()
+            }
+            else {
+                analytic.clickRemindMe()
+                playViewModel.submitAction(ClickRemindMeUpcomingChannel)
+            }
         }
     }
 
