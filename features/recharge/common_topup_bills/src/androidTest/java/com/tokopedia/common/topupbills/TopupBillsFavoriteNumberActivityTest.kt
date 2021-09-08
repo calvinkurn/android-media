@@ -163,12 +163,12 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     fun validate_show_contents_favorite_number_page() {
-        onView(withId(R.id.common_topupbills_search_number_input_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).check(
-            matches(
-                isDisplayed()
-            )
-        )
+//        onView(withId(R.id.common_topupbills_search_number_input_view)).check(matches(isDisplayed()))
+//        onView(withId(R.id.common_topupbills_search_number_contact_picker)).check(
+//            matches(
+//                isDisplayed()
+//            )
+//        )
         Thread.sleep(2000)
         onView(withId(R.id.common_topupbills_favorite_number_clue)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
@@ -250,12 +250,6 @@ class TopupBillsFavoriteNumberActivityTest {
         deleteConfirmationDialog_clickConfirm()
 
         Thread.sleep(3000)
-    }
-
-    /* Local test only, cannot be validated using FTL */
-    fun validate_pick_number_from_contact_book() {
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).perform(click())
-        intended(toPackage("com.android.contacts"))
     }
 
     private fun modifyBottomSheet_typeNewClientName(name: String) {

@@ -28,8 +28,8 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
+import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_clickBuyWidget
@@ -96,6 +96,7 @@ class TelcoPostpaidLoginInstrumentTest {
         validate_pdp_client_number_widget_interaction()
         enquiry_phone_number()
         enquiry_new_input_phone_number()
+        validate_interaction_saved_number()
         click_on_tab_menu_login()
         click_item_recent_widget_login()
 
@@ -148,6 +149,28 @@ class TelcoPostpaidLoginInstrumentTest {
 
     }
 
+    fun validate_interaction_saved_number() {
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_2,
+            TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
+
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_3,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_3)
+    }
+
     fun click_item_recent_widget_login() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
@@ -194,6 +217,7 @@ class TelcoPostpaidLoginInstrumentTest {
 
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
+        private const val VALID_PHONE_NUMBER_3 = "081234567890"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
 }

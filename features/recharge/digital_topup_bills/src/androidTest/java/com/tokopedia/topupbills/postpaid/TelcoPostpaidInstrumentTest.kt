@@ -8,6 +8,7 @@ import android.provider.ContactsContract
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.core.internal.deps.guava.collect.Iterables
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -17,6 +18,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -29,14 +31,15 @@ import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickContactBook
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubAccessingSavedNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
-import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Before
@@ -83,24 +86,14 @@ class TelcoPostpaidInstrumentTest {
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun stubContactNumber() {
-        val telcoContactHelper = TelcoContactHelper()
-        val contentResolver = mActivityRule.activity.contentResolver
-
-        Intents.intending(AllOf.allOf(IntentMatchers.hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
-            IntentMatchers.hasAction(Intent.ACTION_PICK))
-        ).respondWith(telcoContactHelper.createUriContact(contentResolver))
-    }
-
     @Test
     fun validate_postpaid_non_login() {
 
         validate_show_contents_pdp_telco_not_login()
         validate_interaction_menu()
         validate_pdp_client_number_widget_interaction()
-//        validate_click_on_contact_picker_and_list_fav_number()
-//        click_phonebook_and_clear()
         validate_interaction_promo()
+        validate_interaction_saved_number()
 
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
 //            hasAllSuccess())
@@ -144,23 +137,26 @@ class TelcoPostpaidInstrumentTest {
         bottomSheet_close()
     }
 
-    private fun pick_phone_number_from_phonebook() {
+    fun validate_interaction_saved_number() {
+        stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_2,
+            TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
         Thread.sleep(2000)
-        onView(withId(R.id.text_field_icon_1)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(isDisplayed()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-    }
-
-    /**
-     * activate this test for local instrumentation test only because it contains contact picker
-     */
-    fun click_phonebook_and_clear() {
-        stubContactNumber()
-
+        clientNumberWidget_clickContactBook()
         Thread.sleep(2000)
-        pick_phone_number_from_phonebook()
-        clientNumberWidget_clickClearBtn()
-        clientNumberWidget_validateText(EMPTY_TEXT)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
+
+        stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_3,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_3)
     }
 
     @After
@@ -182,8 +178,8 @@ class TelcoPostpaidInstrumentTest {
         private const val PATH_RESPONSE_POSTPAID_ENQUIRY = "postpaid/response_mock_data_postpaid_enquiry.json"
 
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_PHONE_BOOK = "087821212121"
-        private const val VALID_PHONE_BOOK_RAW = "0878-2121-2121"
+        private const val VALID_PHONE_NUMBER_2 = "085600001111"
+        private const val VALID_PHONE_NUMBER_3 = "081234567890"
         private const val ANALYTIC_VALIDATOR_QUERY_NON_LOGIN = "tracker/recharge/recharge_telco_postpaid.json"
     }
 }

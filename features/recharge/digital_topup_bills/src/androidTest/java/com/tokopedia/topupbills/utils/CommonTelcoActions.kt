@@ -9,13 +9,18 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
@@ -24,32 +29,49 @@ import org.hamcrest.core.AllOf
 
 object CommonTelcoActions {
 
-    fun createOrderNumberWithType(
+    private fun createOrderNumberWithType(
         number: String,
-        type: TopupBillsSearchNumberFragment.InputNumberActionType
+        type: TopupBillsSearchNumberFragment.InputNumberActionType,
+        categoryId: String
     ): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsSeamlessFavNumberItem(clientNumber = number)
+        val savedNumber = if (type == TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE) {
+            TopupBillsSavedNumber(
+                clientName = "tokopedia",
+                clientNumber = number,
+                inputNumberActionTypeIndex = type.ordinal,
+                categoryId = categoryId,
+                productId = "81"
+            )
+        } else {
+            TopupBillsSavedNumber(
+                clientName = "tokopedia",
+                clientNumber = number,
+                inputNumberActionTypeIndex = type.ordinal
+            )
+        }
         val resultData = Intent()
         resultData.putExtra(
             TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER,
-            orderClientNumber
-        )
-        resultData.putExtra(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-            type.ordinal
+            savedNumber
         )
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
+    fun stubAccessingSavedNumber(
+        number: String,
+        type: TopupBillsSearchNumberFragment.InputNumberActionType,
+        categoryId: String
+    ) {
+        Intents.intending(
+            IntentMatchers.hasComponent(
+            ComponentNameMatchers.hasClassName(TopupBillsSavedNumberActivity::class.java.name)))
+            .respondWith(createOrderNumberWithType(number, type, categoryId))
+    }
+
+
     fun clientNumberWidget_typeNumber(number: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
             .perform(typeText(number))
-    }
-
-    fun clientNumberWidget_clickTextField() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
-            .check(matches(isDisplayed()))
-            .perform(click())
     }
 
     fun clientNumberWidget_validateText(text: String) {
@@ -69,6 +91,10 @@ object CommonTelcoActions {
 
     fun clientNumberWidget_clickClearBtn() {
         onView(withId(R.id.text_field_icon_close)).perform(click())
+    }
+
+    fun clientNumberWidget_clickContactBook() {
+        onView(withId(R.id.text_field_icon_1)).perform(click())
     }
 
     fun kebabMenu_click() {
