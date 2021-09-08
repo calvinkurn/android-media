@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -43,7 +42,6 @@ import javax.inject.Inject
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val dispatchers: CoroutineDispatchers,
     private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
@@ -152,6 +150,7 @@ class PlayUpcomingFragment @Inject constructor(
                             ) { actionButton.onButtonClick() }
                         }
                     }
+                    else -> { }
                 }
             }
         }
@@ -217,9 +216,7 @@ class PlayUpcomingFragment @Inject constructor(
         (requireActivity() as PlayActivity).onBackPressed(isSystemBack = false)
     }
 
-    override fun onMoreButtonClicked(view: ToolbarViewComponent) {
-        TODO("Not yet implemented")
-    }
+    override fun onMoreButtonClicked(view: ToolbarViewComponent) { }
 
     override fun onFollowButtonClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickFollowAction)
@@ -229,9 +226,7 @@ class PlayUpcomingFragment @Inject constructor(
         playViewModel.submitAction(ClickPartnerNameAction)
     }
 
-    override fun onCartButtonClicked(view: ToolbarViewComponent) {
-        TODO("Not yet implemented")
-    }
+    override fun onCartButtonClicked(view: ToolbarViewComponent) { }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
         copyToClipboard(content)
