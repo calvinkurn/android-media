@@ -350,7 +350,13 @@ public class RouteManager {
 
     private static Intent getHomeIntent(Context context) {
         Intent intent = new Intent();
-        intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+        String pkgName;
+        if (context == null) {
+            pkgName = GlobalConfig.PACKAGE_APPLICATION;
+        } else {
+            pkgName = context.getPackageName();
+        }
+        intent.setClassName(pkgName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
         return intent;
     }
 
