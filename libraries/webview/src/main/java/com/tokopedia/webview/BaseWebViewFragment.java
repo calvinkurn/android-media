@@ -246,7 +246,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         progressBar.setIndeterminate(true);
 
         if (needLogin && !userSession.isLoggedIn()) {
-            progressBar.setVisibility(View.GONE);
             startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
         } else {
             if (!TextUtils.isEmpty(url)) {
@@ -342,8 +341,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            webView.loadAuthUrl(getUrl(), userSession);
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if(resultCode == RESULT_OK){
+                webView.loadAuthUrl(getUrl(), userSession);
+            }else {
+                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+                    ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
+            }
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
