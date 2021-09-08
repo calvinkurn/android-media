@@ -125,7 +125,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
         createPostModel.allowVideo = feedContentForm.media.allowVideo
-        createPostModel.maxProduct = feedContentForm.maxTag
+        createPostModel.maxProduct = 5
         createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
         if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 
@@ -187,6 +187,9 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         TODO("Not yet implemented")
     }
 
+    fun getLatestCreatePostData(): CreatePostViewModel {
+        return createContentPostViewModel.getPostData() ?: CreatePostViewModel()
+    }
 
 
 }

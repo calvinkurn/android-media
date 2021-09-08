@@ -523,6 +523,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val isLoggedIn = userSession.isLoggedIn
         if (isSeller && isLoggedIn)
             fab_feed.show()
+        else
+            fab_feed.hide()
         isFabExpanded = true
                 fab_feed.setOnClickListener {
                     val intent = this?.context?.let { it1 ->
@@ -584,9 +586,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             return
         }
 
-        if (isInitial) {
-            fab_feed.hide()
-        } else {
+        if (!isInitial) {
             fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_backward)
         }
         fab_feed_byme.hide()

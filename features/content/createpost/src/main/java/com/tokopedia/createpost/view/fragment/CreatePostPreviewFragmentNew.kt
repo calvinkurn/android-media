@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -33,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.round
 
 /**
@@ -96,30 +98,37 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val relatedProducts = ArrayList(createPostModel.relatedProducts)
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
+        createPostModel.maxProduct = 5
         image_position_text?.text = context?.let {
             String.format(
                 it.getString(R.string.feed_content_position_text,
-                    "(1/${imageList.size})")
+                    "(0/${createPostModel.maxProduct})")
             )
         }
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         product_tag_button.setOnClickListener {
-            removeExtraTagListElement(mediaModel)
-            val tagListSize = mediaModel.tags.size
-            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
-                FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
-            openProductTaggingScreen()
-
+            setProductTagListener(mediaModel)
         }
         content_tag_product_text.setOnClickListener {
-            removeExtraTagListElement(mediaModel)
-            val tagListSize = mediaModel.tags.size
-            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
-                FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
-            openProductTaggingScreen()
+            setProductTagListener(mediaModel)
         }
 
         updateCarouselView()
+    }
+    private fun setProductTagListener(mediaModel: MediaModel){
+        if (getLatestTotalProductCount() < 5) {
+            removeExtraTagListElement(mediaModel)
+            val tagListSize = mediaModel.tags.size
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
+                FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
+            openProductTaggingScreen()
+        }else{
+            Toaster.build(requireView(),
+                getString(R.string.feed_content_more_than_5_product_tag),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR).show()
+        }
+
     }
 
     private fun removeExtraTagListElement(mediaModel: MediaModel){
@@ -142,6 +151,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
+        createPostModel.currentCorouselIndex = 0
 
         feed_content_carousel.apply {
             stage.removeAllViews()
@@ -235,11 +245,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     createPostModel.currentCorouselIndex = current
                     page_indicator.setCurrentIndicator(current)
-                    val position = "(${current + 1}/${imageList.size})"
-                    image_position_text.text = String.format(
-                        context.getString(R.string.feed_content_position_text),
-                        position
-                    )
+
                     if (createPostModel.completeImageList[current].type == MediaType.VIDEO) {
                         playVideo(createPostModel.completeImageList[current],
                             current)
@@ -296,7 +302,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         createPostModel.completeImageList[index].isPlaying = false
                     } else {
                         hideVideoLoading()
-                        videoPlayer?.resume()
+                        videoPlayer?.replay()
                         createPostModel.completeImageList[index].isPlaying = true
                     }
 
@@ -347,13 +353,18 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun deleteItemFromProductTagList(position: Int) {
 
         val currentImagePos = createPostModel.currentCorouselIndex
-//        try {
+        removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
+        try {
             createPostModel.completeImageList[currentImagePos].products.removeAt(position)
             createPostModel.completeImageList[currentImagePos].tags.removeAt(position)
-//        } catch (e: Exception) {
-//            Timber.e(e)
-//        }
-        removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
+        image_position_text.text = String.format(
+            requireContext().getString(R.string.feed_content_position_text),
+            pos
+        )
 
         //update tagIndex
         createPostModel.completeImageList[currentImagePos].tags.forEachIndexed { index, feedXMediaTagging ->
@@ -366,6 +377,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         }
         val mediaModel = createPostModel.completeImageList[currentImagePos]
+        if (getLatestTotalProductCount() < 5)
+            enableProductIcon()
 
         if (mediaModel.type == MediaType.VIDEO)
             bindVideo(mediaModel)
@@ -418,8 +431,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val product = data?.getSerializableExtra(
             PARAM_PRODUCT) as ShopPageProduct
 
-
-        product?.let {
+        product.let {
             createPostModel.productIdList.add(it.pId!!)
             val relatedProductItem = mapResultToRelatedProductItem(it)
             createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
@@ -427,6 +439,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
+
+        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
+        image_position_text.text = String.format(
+            requireContext().getString(R.string.feed_content_position_text),
+            pos
+        )
+
+        if (getLatestTotalProductCount() == 5)
+            disableProductIcon()
+
         if (mediaModel.products.size > 0) {
             if (mediaModel.type == MediaType.VIDEO)
                 bindVideo(mediaModel)
@@ -441,8 +463,33 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             id = item.pId!!,
             name = item.name!!,
             price = item.price.priceIdr,
-            image = item.pImage.img
+            image = item.pImage.img,
+            priceOriginalFmt = item.campaign.oPriceFormatted,
+            priceDiscountFmt = item.campaign.dPriceFormatted,
+            isDiscount = (item.campaign.dPrice.toInt() != 0)
         )
+    }
+    private fun getLatestTotalProductCount() : Int{
+        var count = 0
+        createPostModel.completeImageList.forEach { mediaModel ->
+            count += mediaModel.products.size
+        }
+        return count
+    }
+    private fun disableProductIcon(){
+        val color = context?.let { ContextCompat.getColor(it, R.color.Unify_NN300 ) }
+        color?.let {
+            product_tag_button.setColorFilter(it)
+            content_tag_product_text.setTextColor(it)
+        }
+
+    }
+    private fun enableProductIcon(){
+        val color = context?.let { ContextCompat.getColor(it, R.color.Unify_NN900 ) }
+        color?.let {
+            product_tag_button.setColorFilter(it)
+            content_tag_product_text.setTextColor(it)
+        }
     }
 
     private fun bindImage(media: MediaModel) {
@@ -479,8 +526,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 }
         }
     }
-    private fun bindVideo(mediaModel: MediaModel){
-
+    private fun bindVideo(mediaModel: MediaModel) {
         mediaModel.videoView?.run {
             content_product_tagging_parent.showWithCondition(mediaModel.products.isNotEmpty())
             content_product_tagging_parent?.setOnClickListener {

@@ -15,8 +15,7 @@ import kotlinx.android.synthetic.main.content_preview_post_view_item.view.*
  */
 
 class CaptionPagePreviewImageAdapter(
-    private val itemList: MutableList<MediaModel> = mutableListOf(),
-    private val onTagProductClick: ((List<RelatedProductItem>) -> Unit)? = null,
+    private val itemList: MutableList<MediaModel> = mutableListOf()
 ) :
     RecyclerView.Adapter<CaptionPagePreviewImageAdapter.ContentCaptionPostViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentCaptionPostViewHolder {

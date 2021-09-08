@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.fragment.ImagePickerFragement
@@ -168,10 +169,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     private fun postFeed() {
+        (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
         val cacheManager = SaveInstanceCacheManager(this, true)
         cacheManager.put(
             CreatePostViewModel.TAG,
-            intent.extras?.get(CreatePostViewModel.TAG), TimeUnit.DAYS.toMillis(7)
+            (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData(),
+            TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
         finish()
