@@ -28,7 +28,7 @@
       "eventAction": "leave room",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - vod|live",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
@@ -141,12 +141,7 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*"
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click buy in bottom sheet with varian",
@@ -162,19 +157,18 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
+          "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
           "item_id": "\\d+",
-          "item_name": ".*",
-          "dimension81": ".*",
-          "dimension80": ".*",
-          "item_brand": ".*",
-          "item_category": ".*",
-          "dimension45": "\\d+",
-          "dimension82": ".*",
           "price": "\\d+.\\d+",
-          "dimension40": "/groupchat - bottom sheet",
-          "dimension79": ".*",
-          "item_variant": ".*"
+          "shop_type": ".*",
+          "dimension39": "/groupchat - bottom sheet",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
       "sessionIris": ".*",
@@ -201,19 +195,18 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
+          "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
           "item_id": "\\d+",
-          "item_name": ".*",
-          "dimension81": ".*",
-          "dimension80": ".*",
-          "item_brand": ".*",
-          "item_category": ".*",
-          "dimension45": "\\d+",
-          "dimension82": ".*",
           "price": "\\d+.\\d+",
-          "dimension40": "/groupchat - bottom sheet",
-          "dimension79": ".*",
-          "item_variant": ".*"
+          "shop_type": ".*",
+          "dimension39": "/groupchat - bottom sheet",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
       "sessionIris": ".*",
@@ -280,19 +273,18 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
+          "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
           "item_id": "\\d+",
-          "item_name": ".*",
-          "dimension81": ".*",
-          "dimension80": ".*",
-          "item_brand": ".*",
-          "item_category": ".*",
-          "dimension45": "\\d+",
-          "dimension82": ".*",
           "price": "\\d+.\\d+",
-          "dimension40": "/groupchat - varian page",
-          "dimension79": ".*",
-          "item_variant": ".*"
+          "shop_type": ".*",
+          "dimension39": "/groupchat - varian page",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
       "sessionIris": ".*",
@@ -312,19 +304,19 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
+
+          "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
           "item_id": "\\d+",
-          "item_name": ".*",
-          "dimension81": ".*",
-          "dimension80": ".*",
-          "item_brand": ".*",
-          "item_category": ".*",
-          "dimension45": "\\d+",
-          "dimension82": ".*",
           "price": "\\d+.\\d+",
-          "dimension40": "/groupchat - varian page",
-          "dimension79": ".*",
-          "item_variant": ".*"
+          "shop_type": ".*",
+          "dimension39": "/groupchat - varian page",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
       "sessionIris": ".*",
