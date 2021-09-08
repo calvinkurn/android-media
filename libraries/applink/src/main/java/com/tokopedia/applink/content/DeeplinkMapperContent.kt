@@ -14,7 +14,7 @@ object DeeplinkMapperContent {
     fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
         return when {
             uri.host == ApplinkConstInternalContent.TOKOPEDIA_BYME -> handleNavigationByMe(deepLink)
-            uri.pathSegments.joinToString("/").startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false) -> handleNavigationPlay(deepLink)
+            uri.pathSegments.joinToString("/").startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false) -> handleNavigationPlay(uri)
             else -> ""
         }
     }
@@ -59,8 +59,8 @@ object DeeplinkMapperContent {
         return deepLink
     }
 
-    private fun handleNavigationPlay(deepLink: String): String {
-        return "${ApplinkConst.BROWSER}?url=$deepLink"
+    private fun handleNavigationPlay(uri: Uri): String {
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
 
     private fun handleNavigationByMe(deepLink: String): String {
