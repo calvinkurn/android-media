@@ -333,7 +333,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         screenshotDetector = context?.let {
             UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it, this, this,
-                addFragmentLifecycleObserver = true
+                addFragmentLifecycleObserver = true,
+                permissionListener = shareProductInstance?.universalSharePermissionListener
             )
         }
     }

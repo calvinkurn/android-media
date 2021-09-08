@@ -1,5 +1,6 @@
 package com.tokopedia.product.share.tracker
 
+import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_SCREENSHOT_SHARE_BOTTOMSHEET
@@ -45,6 +46,17 @@ object ProductShareTracking {
                 EVENT_CATEGORY_PDP_SHARING,
                 EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET,
                 "")
+        mapEvent.appendDefaultTracker(userId, productId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun onClickAccessPhotoMediaAndFiles(userId: String, productId: String, label: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+            EVENT_CLICK_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES,
+            label
+        )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }

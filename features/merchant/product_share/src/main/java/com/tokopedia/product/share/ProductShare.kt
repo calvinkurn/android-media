@@ -24,6 +24,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.product.share.ekstensions.getTextDescription
+import com.tokopedia.product.share.tracker.ProductShareTracking.onClickAccessPhotoMediaAndFiles
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
@@ -32,6 +33,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -354,6 +356,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
     }
     //endregion
+
+    val universalSharePermissionListener = object : PermissionListener {
+        override fun permissionAction(action: String, label: String) {
+            onClickAccessPhotoMediaAndFiles(productData.userId, productData.productId, label)
+        }
+    }
 }
 
 class ProductShareException(e: Throwable) : Throwable(e)
