@@ -135,9 +135,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
-            affiliatePerformance.affiliatePerformance.data.links?.items?.let { products ->
-                if (products.isNotEmpty()) {
-                    for (product in products) {
+            affiliatePerformance.affiliatePerformance.data.links?.let { links ->
+                affiliate_products_count.text = getString(R.string.affiliate_product_count, links.totalCount.toString())
+                if (links.items.isNotEmpty()) {
+                    for (product in links.items) {
                         adapter.addElement(AffiliateSharedProductCardsModel(product))
                     }
                 } else {
@@ -174,6 +175,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             AFFILIATE_LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     affiliateHomeViewModel.getAffiliateValidateUser()
+                } else {
+                    activity?.finish()
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

@@ -15,8 +15,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
-        app:toolbarInitialFillColor="transparent"
         app:toolbarContentType="typeTitle"
+        app:toolbarInitialFillColor="transparent"
         app:toolbarInitialTheme="light"
         app:toolbarTitle="@string/label_affiliate" />
 
@@ -76,11 +76,29 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_28"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:text="@string/affiliate_promoted_products"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_name"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/affiliate_products_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_28"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:gravity="end"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintLeft_toRightOf="@id/affiliate_promoted_products"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_name"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="6 Produk" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/products_rv"
