@@ -25,18 +25,21 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
+import com.tokopedia.topupbills.postpaid.TelcoPostpaidLoginInstrumentTest
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
+import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateErrorMessage
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetDisplayed
@@ -47,6 +50,7 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.productItemRv_scrollToP
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_clickSeeMore
 import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
+import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_validateExist
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
@@ -118,10 +122,9 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(2000)
 
         validate_show_contents_pdp_telco_not_login()
+        validate_interaction_saved_number()
         validate_interaction_menu()
-//        validate_click_on_contact_picker_and_list_fav_number()
         validate_pdp_client_number_widget_interaction()
-//        click_phonebook_and_clear()
         interaction_product_not_login()
         interaction_product_filter()
         validate_interaction_promo()
@@ -132,9 +135,19 @@ class TelcoPrepaidInstrumentTest {
 
     fun validate_pdp_client_number_widget_interaction() {
         clientNumberWidget_clickClearBtn()
-        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
+        clientNumberWidget_typeNumber(INVALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+        clientNumberWidget_validateText(INVALID_PHONE_NUMBER)
+        clientNumberWidget_validateErrorMessage("Nomor terlalu pendek, minimal 10 karakter")
+        tabLayout_validateExist("Pulsa")
+        tabLayout_validateExist("Paket Data")
+        tabLayout_validateExist("Roaming")
+
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_typeNumber(INVALID_PHONE_NUMBER_2)
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(INVALID_PHONE_NUMBER_2)
+        clientNumberWidget_validateErrorMessage("Nomor terlalu panjang, maksimum 14 karakter")
 
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
@@ -142,23 +155,26 @@ class TelcoPrepaidInstrumentTest {
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 
-
-    /**
-     * activate this test for local instrumentation test only because it contains contact picker
-     */
-    fun validate_click_on_contact_picker_and_list_fav_number() {
-        stubContactNumber()
-
+    fun validate_interaction_saved_number() {
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_2,
+            TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
         Thread.sleep(2000)
-        onView(withId(R.id.telco_input_number)).perform(click())
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
         Thread.sleep(2000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.telco_search_number_contact_picker)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchbar_textfield)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
+
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_3,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_3)
     }
 
     fun validate_show_contents_pdp_telco_not_login() {
@@ -189,25 +205,6 @@ class TelcoPrepaidInstrumentTest {
         kebabMenu_validateContents()
         Thread.sleep(1000)
         bottomSheet_close()
-    }
-
-    private fun pick_phone_number_from_phonebook() {
-        Thread.sleep(2000)
-        onView(withId(R.id.text_field_icon_1)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(isDisplayed()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-    }
-
-    /**
-     * activate this test for local instrumentation test only because it contains contact picker
-     */
-    fun click_phonebook_and_clear() {
-        stubContactNumber()
-
-        Thread.sleep(2000)
-        pick_phone_number_from_phonebook()
-        onView(withId(R.id.text_field_icon_close)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
     }
 
     fun interaction_product_not_login() {
@@ -305,8 +302,10 @@ class TelcoPrepaidInstrumentTest {
 
 
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_PHONE_BOOK = "087821212121"
-        private const val VALID_PHONE_BOOK_RAW = "0878-2121-2121"
+        private const val VALID_PHONE_NUMBER_2 = "085252525252"
+        private const val VALID_PHONE_NUMBER_3 = "081234567890"
+        private const val INVALID_PHONE_NUMBER = "0856"
+        private const val INVALID_PHONE_NUMBER_2 = "08561234123409872"
         private const val ANALYTIC_VALIDATOR_QUERY_NON_LOGIN = "tracker/recharge/recharge_telco_prepaid.json"
     }
 }

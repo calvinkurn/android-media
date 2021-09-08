@@ -42,6 +42,7 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_clickSeeMor
 import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.PREFERENCES_NAME
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.TELCO_COACH_MARK_HAS_SHOWN
+import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -105,6 +106,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
         validate_coachmark()
         validate_pdp_client_number_widget_interaction()
+        validate_interaction_saved_number()
         validate_tab_menu_login()
         interaction_product_login()
         interaction_product_mccm()
@@ -146,6 +148,28 @@ class TelcoPrepaidLoginInstrumentTest {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+    }
+
+    fun validate_interaction_saved_number() {
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_2,
+            TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
+
+        CommonTelcoActions.stubAccessingSavedNumber(
+            VALID_PHONE_NUMBER_3,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE,
+            TelcoCategoryType.CATEGORY_PASCABAYAR.toString()
+        )
+        Thread.sleep(2000)
+        CommonTelcoActions.clientNumberWidget_clickContactBook()
+        Thread.sleep(2000)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_3)
     }
 
     fun validate_tab_menu_login() {
@@ -246,7 +270,8 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val PATH_RESPONSE_PREPAID_PRODUCT_MULTITAB = "prepaid/response_mock_data_prepaid_product_multitab_with_mccm.json"
 
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_FAV_PHONE_NUMBER = "087855813789"
+        private const val VALID_PHONE_NUMBER_2 = "085252525252"
+        private const val VALID_PHONE_NUMBER_3 = "081234567890"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_prepaid_login.json"
     }
 }

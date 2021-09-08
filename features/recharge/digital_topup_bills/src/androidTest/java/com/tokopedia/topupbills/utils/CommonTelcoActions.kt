@@ -79,6 +79,11 @@ object CommonTelcoActions {
             .check(matches(ViewMatchers.withText(text)))
     }
 
+    fun clientNumberWidget_validateErrorMessage(text: String) {
+        onView(withId(com.tokopedia.unifycomponents.R.id.textinput_helper_text))
+            .check(matches(ViewMatchers.withText(text)))
+    }
+
     fun kebabMenu_validateContents() {
         onView(withId(R.id.menu_promo)).check(matches(isDisplayed()))
         onView(withId(R.id.menu_help)).check(matches(isDisplayed()))
@@ -143,6 +148,11 @@ object CommonTelcoActions {
                 click()
             )
         )
+    }
+
+    fun tabLayout_validateExist(text: String) {
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).check(
+            matches(isDisplayed()))
     }
 
     fun tabLayout_clickTabWithText(text: String) {
