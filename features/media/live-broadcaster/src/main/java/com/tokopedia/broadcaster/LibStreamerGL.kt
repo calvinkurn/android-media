@@ -7,7 +7,7 @@ import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.StreamerGL
 import com.wmspanel.libstream.VideoConfig
 
-interface ExternalStreamerGL {
+interface LibStreamerGL {
     val fps: Double
     val activeCameraId: String
 
@@ -30,9 +30,9 @@ interface ExternalStreamerGL {
     fun getUdpPacketsLost(connectionId: Int): Long
 }
 
-class ExternalStreamerGLImpl constructor(
+class LibStreamerGLFactory constructor(
     private var streamerGL: StreamerGL? = null
-) : ExternalStreamerGL {
+) : LibStreamerGL {
 
     override val fps get() = streamerGL?.fps?: 0.0
 

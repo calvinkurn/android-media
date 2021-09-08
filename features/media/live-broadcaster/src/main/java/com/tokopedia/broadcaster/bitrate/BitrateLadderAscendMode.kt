@@ -1,13 +1,13 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.tokopedia.broadcaster.ExternalStreamerGL
+import com.tokopedia.broadcaster.LibStreamerGL
 import kotlin.math.roundToLong
 
 class BitrateLadderAscendMode : BitrateAdapter() {
 
     var mStep = 0
 
-    override fun start(streamer: ExternalStreamerGL, bitrate: Long, connectionId: Int) {
+    override fun start(streamer: LibStreamerGL, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
         mStep = 2
         val startBitrate = (bitrate * BANDWIDTH_STEPS[mStep]).roundToLong()

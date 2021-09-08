@@ -3,13 +3,19 @@ package com.tokopedia.broadcaster
 import android.content.Context
 import android.os.Handler
 import com.tokopedia.broadcaster.camera.CameraManager
+import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
+import com.wmspanel.libstream.Streamer
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
     /**
@@ -19,15 +25,23 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
      * ⏳ set listener
      * ⏳ start preview
      * ✅ stop preview
-     * ⏳ switch camera
-     * ⏳ start live streaming with init
-     * ⏳ start live streaming without init
-     * ⏳ resume live
-     * ⏳ pause
+     * ✅ switch camera
+     * ✅ start live streaming with init
+     * ✅ start live streaming without init
+     * ✅ resume live
+     * ✅ pause
      * ⏳ reconnect
-     * ⏳ stop
+     * ✅ stop
      * ⏳ get handler
-     * ⏳ connection state changed
+     * ✅ connection state changed idle
+     * ✅ connection state changed init
+     * ✅ connection state changed setup
+     * ✅ connection state changed connected
+     * ⏳ connection state changed record
+     * ⏳ connection state changed disconnected
+     * ⏳ connection state changed started
+     * ⏳ connection state changed resumed
+     * ⏳ connection state changed recovered
      * ⏳ video capture state changed
      * ⏳ audio capture state changed
      * ⏳ create streamer
@@ -41,11 +55,10 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     }
 
     @Test
-    fun `Should be able to init LiveBroadcasterManager and return non-null Handler`() {
+    fun `Should be able to init LiveBroadcasterManager and return non-null Context`() {
         // Given
         `Given isDeviceSupported as`(true)
-        `Given getAvailableCameras from CameraManager`()
-        `Given isDeviceHaveCameraAvailable as`(true)
+        `Given device has available cameras as`(true)
 
         // When
         broadcaster.init(context, Handler())
@@ -58,8 +71,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     fun `Should not be able to init because device is not supported`() {
         // Given
         `Given isDeviceSupported as`(false)
-        `Given getAvailableCameras from CameraManager`()
-        `Given isDeviceHaveCameraAvailable as`(true)
+        `Given device has available cameras as`(true)
 
         // Then
         `Then should be throw fails as`<IllegalAccessException> {
@@ -71,8 +83,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     fun `Should not be able to init because device has not available camera`() {
         // Given
         `Given isDeviceSupported as`(true)
-        `Given getAvailableCameras from CameraManager`(isNotEmpty = false)
-        `Given isDeviceHaveCameraAvailable as`(false)
+        `Given device has available cameras as`(false)
 
         // Then
         `Then should be throw fails as`<IllegalAccessException> {
@@ -82,10 +93,16 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
     @Test
     fun `Should be able to prepare with null config from param`() {
+        // Given
+        `Given audio config`()
+        `Given video config`()
+
         // When
         broadcaster.prepare(null)
 
         // Then
+        `Then changeAudioConfig of streamer is called`()
+        `Then changeVideoConfig of streamer is called`()
         `Then a property from BroadcasterConfig equals of`(
             `Given BroadcasterConfig`()
         )
@@ -94,30 +111,40 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     @Test
     fun `Should be able to prepare with non-null config from param`() {
         // Given
+        `Given audio config`()
+        `Given video config`()
+
         val expectedValueOfConfig = `Given BroadcasterConfig` {
-            ingestUrl = "rtmp://test.url.net"
+            ingestUrl = INGEST_URL
         }
 
         // When
         broadcaster.prepare(expectedValueOfConfig)
 
         // Then
+        `Then changeAudioConfig of streamer is called`()
+        `Then changeVideoConfig of streamer is called`()
         `Then a property from BroadcasterConfig equals of`(expectedValueOfConfig)
     }
 
     @Test
-    fun `Should be able to start preview`() {
+    // Ignored for now
+    fun `Should be able to start preview if streamer non-null`() = testDispatcher.runBlockingTest {
         // Given
+        //`Given start video capture from streamerGL`()
+        //`Given start audio capture from streamerGL`()
 
         // When
+        //broadcaster.startPreview(SurfaceView(context))
 
         // Then
+        //`Then startVideoCapture of streamer is called`()
+        //`Then startAudioCapture of streamer is called`()
     }
 
     @Test
     fun `Should be able to stop preview`() {
         // Given
-        `Given Streamer`()
         `Given stop audio capture from streamerGL`()
 
         // When
@@ -127,22 +154,157 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         `Then stop audio capture is called`()
     }
 
-//    @Test
-//    fun `Should be able to switch camera front to back and vice versa`() {
-//        // Given
-//        `Given Streamer`()
-//        `Given available camera as`(isEmpty = true)
-//
-//        // When
-//        broadcaster.switchCamera()
-//
-//        // Then
-//        `Then the flip camera is called`()
-//    }
+    @Test
+    fun `Should be able to switch camera front to back and vice versa`() {
+        // Given
+        `Given Switch Camera Supported`()
+
+        // When
+        broadcaster.switchCamera()
+
+        // Then
+        `Then the flip camera should be`(called = true)
+    }
+
+    @Test
+    fun `Should not be able to switch camera`() {
+        // When
+        broadcaster.switchCamera()
+
+        // Then
+        `Then the flip camera should be`(called = false)
+    }
+
+    @Test
+    fun `Should be able to start live streaming following init first`() {
+        // Given
+        `Given isDeviceSupported as`(true)
+        `Given device has available cameras as`(true)
+        `Given create streamer connection with id`()
+
+        // When
+        broadcaster.init(context, Handler())
+        broadcaster.start(INGEST_URL)
+
+        // Then
+        `Then the state should be`(BroadcasterState.Connecting)
+        `Then the connection config url should be equals of`(INGEST_URL)
+        `Then a property from BroadcasterConfig equals of`(
+            BroadcasterConfig().apply { ingestUrl = INGEST_URL }
+        )
+    }
+
+    @Test
+    fun `Should not be able to start live streaming without init`() {
+        // Given
+        `Given create streamer connection with id`()
+
+        // Then
+        `Then should be throw fails as`<IllegalAccessException> {
+            broadcaster.start(INGEST_URL)
+        }
+    }
+
+    @Test
+    fun `Should be able to resume the live stream`() {
+        // Given
+        `Given create streamer connection with id`()
+
+        // When
+        broadcaster.resume()
+
+        // Then
+        `Then the state should be`(BroadcasterState.Connecting)
+    }
+
+    @Test
+    fun `Should be able to pause the live stream`() {
+        // Given
+        `Given create streamer connection with id`()
+
+        // When
+        broadcaster.pause()
+
+        // Then
+        `Then the state should be`(BroadcasterState.Pause)
+    }
+
+    @Test
+    fun `Should be able to stop the live stream`() {
+        // When
+        broadcaster.stop()
+
+        // Then
+        `Then the state should be`(BroadcasterState.Stop)
+        `Then the streamer is released`()
+    }
+
+    @Test
+    fun `Should be connection state changed return as Idle when streamer is Idle`() {
+        // Given
+        val connectionId = 123
+        val streamerState = Streamer.CONNECTION_STATE.IDLE
+        `Given create streamer connection with id`(connectionId)
+
+        // When
+        broadcaster.onConnectionStateChanged(
+            connectionId,
+            streamerState,
+            null,
+            null
+        )
+
+        // Then
+        `Then the state should be`(BroadcasterState.Idle)
+    }
+
+    @Test
+    fun `Should be connection state changed return as Connecting when streamer is setup`() {
+        // Given
+        val connectionId = 123
+        val streamerState = Streamer.CONNECTION_STATE.SETUP
+        `Given create streamer connection with id`(connectionId)
+
+        // When
+        broadcaster.onConnectionStateChanged(
+            connectionId,
+            streamerState,
+            null,
+            null
+        )
+
+        // Then
+        `Then the state should be`(BroadcasterState.Connecting)
+    }
+
+    @Test
+    fun `Should be init the data log when state of streamer as Connected`() {
+        // Given
+        val connectionId = 123
+        val streamerState = Streamer.CONNECTION_STATE.CONNECTED
+
+        `Given data logger`()
+        `Given create streamer connection with id`(connectionId)
+
+        // When
+        broadcaster.onConnectionStateChanged(
+            connectionId,
+            streamerState,
+            null,
+            null
+        )
+
+        // Then
+        `Then data log is succeed to init`()
+    }
 
     @After
     fun tearDown() {
         unmockkAll()
+    }
+
+    companion object {
+        private const val INGEST_URL = "rtmp://test.url.net"
     }
 
 }

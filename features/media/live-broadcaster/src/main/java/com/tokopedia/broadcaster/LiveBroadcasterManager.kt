@@ -27,40 +27,39 @@ import com.wmspanel.libstream.CameraConfig
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.StreamerGL
 import com.wmspanel.libstream.StreamerGLBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.ladderAscend as ladderAscendMode
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.logarithmicDescend as logarithmicDescendMode
 
-class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScope {
+@Suppress("MemberVisibilityCanBePrivate")
+class LiveBroadcasterManager constructor(
+    var streamer: LibStreamerGL? = null,
+    var mConfig: BroadcasterConfig = BroadcasterConfig(),
+    var mConnection: BroadcasterConnection = BroadcasterConnection(),
+    var dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    val dataLogCentralized: BroadcasterDataLog = BroadcasterDataLog()
+) : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
     private var mContext: Context? = null
 
-    private var streamer: ExternalStreamerGL? = null
     private var mListener: BroadcasterListener? = null
-    private var mState: BroadcasterState = BroadcasterState.Idle
-    private var mConfig = BroadcasterConfig()
     private var mHandler: Handler? = null
     private var mBitrateAdapter: BitrateAdapter? = null
-    private val mConnection = BroadcasterConnection()
 
-    private val mLogger by lazy { BroadcasterLoggerImpl() }
-    private val mLog = BroadcasterDataLog()
-
-    private var isPushStarted = false
-
-    private var mAvailableCameras = mutableListOf<CameraInfo>()
+    private val newRelicTracker = BroadcasterLoggerImpl()
     private var statisticUpdateTimer: Timer? = null
+
+    var mAvailableCameras = mutableListOf<CameraInfo>()
+    var mState: BroadcasterState = BroadcasterState.Idle
+    var isPushStarted = false
 
     private val job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
+        get() = job + dispatcher
 
     override val connection: BroadcasterConnection
         get() = mConnection
@@ -115,6 +114,10 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     }
 
     override fun start(url: String) {
+        if (mContext == null) {
+            throw IllegalAccessException("you have to initialize first with call init()")
+        }
+
         // showing debug notif for tracking chucker of live broadcaster
         if (GlobalConfig.DEBUG) {
             mContext?.let {
@@ -161,7 +164,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     }
 
     override fun getHandler(): Handler {
-        return mHandler ?: throw IllegalStateException("PlayLivePusher is not initialized.")
+        return mHandler ?: throw IllegalStateException("LiveBroadcasterManager is not initialized.")
     }
 
     override fun onConnectionStateChanged(
@@ -171,18 +174,23 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         info: JSONObject?
     ) {
         if (state == null) return
+
         if (connectionId != mConnection.connectionId) {
             // ignore already released connection
             return
         }
+
         val lastState = mState
+
         when(state) {
             Streamer.CONNECTION_STATE.IDLE -> broadcastState(BroadcasterState.Idle)
             Streamer.CONNECTION_STATE.INITIALIZED,
             Streamer.CONNECTION_STATE.SETUP -> {
                 broadcastState(BroadcasterState.Connecting)
             }
-            Streamer.CONNECTION_STATE.CONNECTED -> mLog.init(streamer, connectionId)
+            Streamer.CONNECTION_STATE.CONNECTED -> {
+                dataLogCentralized.init(streamer, connectionId)
+            }
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
                     lastState.isError -> broadcastState(BroadcasterState.Recovered)
@@ -304,14 +312,16 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
             ladderAscendMode(videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
         }
 
-        streamer = ExternalStreamerGLImpl(builder.build())
+        streamer = LibStreamerGLFactory(builder.build())
     }
 
     private fun safeStartPreview() {
-        Handler().postDelayed({
+        launch(dispatcher) {
+            delay(SAFE_OPEN_CAMERA_DELAYED)
+
             streamer?.startVideoCapture()
             streamer?.startAudioCapture()
-        }, SAFE_OPEN_CAMERA_DELAYED)
+        }
     }
 
     private fun isDeviceHaveCameraAvailable(context: Context): Boolean {
@@ -342,7 +352,10 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     }
 
     private fun configureMirrorFrontCamera() {
-        streamer?.setFrontMirror(false, false)
+        streamer?.setFrontMirror(
+            isPreview = false,
+            isStream = false
+        )
     }
 
     private fun broadcastState(state: BroadcasterState) {
@@ -391,8 +404,8 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { mLog.update(it, mConfig, mLogger) }
-                    mListener?.onUpdateLivePusherStatistic(mLog)
+                    mContext?.let { dataLogCentralized.update(it, mConfig, newRelicTracker) }
+                    mListener?.onUpdateLivePusherStatistic(dataLogCentralized)
                 }
             }
 
@@ -407,7 +420,6 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
 
     companion object {
         private const val SAFE_OPEN_CAMERA_DELAYED = 500L
-
         private const val DELAYED_TIME = 1000L
         private const val PERIOD_TIME = 1000L
     }

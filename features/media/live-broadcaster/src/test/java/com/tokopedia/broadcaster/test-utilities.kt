@@ -26,7 +26,7 @@ infix fun Any.setPrivateProperty(property: MockProperty): Any {
     return this
 }
 
-inline fun <reified T> Any.getPrivateProperty(propertyName: String): T {
+inline fun <reified T> Any.getPrivateProperty(propertyName: String): T? {
     return javaClass.declaredFields
         .filter { it.isPrivateOrProtected() }
         .firstOrNull { it.name == propertyName }

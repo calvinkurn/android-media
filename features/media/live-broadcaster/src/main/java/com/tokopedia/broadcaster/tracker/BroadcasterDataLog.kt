@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
-import com.tokopedia.broadcaster.ExternalStreamerGL
+import com.tokopedia.broadcaster.LibStreamerGL
 import com.tokopedia.broadcaster.chucker.data.ChuckerDataSource
 import com.tokopedia.broadcaster.chucker.data.mapper.mapToData
 import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
@@ -12,7 +12,7 @@ import kotlin.math.ceil
 
 class BroadcasterDataLog {
 
-    private var mStreamer: ExternalStreamerGL? = null
+    private var mStreamer: LibStreamerGL? = null
     private var mConnectionId: Int? = null
     private var mStartTime: Long = 0
     private var mPrevTime: Long = 0
@@ -36,7 +36,7 @@ class BroadcasterDataLog {
         return this
     }
 
-    fun init(streamer: ExternalStreamerGL?, connectionId: Int?) {
+    fun init(streamer: LibStreamerGL?, connectionId: Int?) {
         mStreamer = streamer
         mConnectionId = connectionId
         val time = System.currentTimeMillis()

@@ -4,30 +4,56 @@ import android.content.Context
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.state.BroadcasterState
+import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.ARM_64
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.MINIMUM_SUPPORTED_SDK
-import io.mockk.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
+import com.wmspanel.libstream.AudioConfig
+import com.wmspanel.libstream.Streamer
+import com.wmspanel.libstream.VideoConfig
+import io.mockk.every
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlin.test.*
 
+@ExperimentalCoroutinesApi
 open class BaseLiveBroadcasterManagerTest {
 
-    val broadcaster = LiveBroadcasterManager()
+    protected val testDispatcher = TestCoroutineDispatcher()
 
-    private val broadcasterMock = spyk(broadcaster, recordPrivateCalls = true)
-    private val streamer = mockk<ExternalStreamerGL>(relaxUnitFun = true)
+    val broadcaster = LiveBroadcasterManager(
+        streamer = mockk(relaxUnitFun = true),
+        dataLogCentralized = mockk(relaxUnitFun = true),
+        dispatcher = testDispatcher,
+    )
 
     protected val context = mockk<Context>(relaxed = true)
 
-    fun `Given Streamer`() {
-        broadcaster.setPrivateProperty(
-            MockProperty(name = "streamer", value = streamer)
-        )
-    }
-
     fun `Given BroadcasterConfig`(config: BroadcasterConfig.() -> Unit = {}): BroadcasterConfig {
         return BroadcasterConfig().apply(config)
+    }
+
+    fun `Given local BroadcasterConfig from constructor`(config: BroadcasterConfig.() -> Unit = {}) {
+        val newConfig = `Given BroadcasterConfig`(config)
+        broadcaster.mConfig = newConfig
+    }
+
+    fun `Given create streamer connection with id`(id: Int = 123) {
+        every {
+            broadcaster.streamer?.createConnection(any())
+        } returns id
+    }
+
+    fun `Given data logger`() {
+        justRun {
+            broadcaster.dataLogCentralized.init(
+                any(),
+                any()
+            )
+        }
     }
 
     fun `Given isDeviceSupported as`(value: Boolean) {
@@ -50,60 +76,140 @@ open class BaseLiveBroadcasterManagerTest {
         mockArchBuild(isAboveLollipop, archBuild)
     }
 
-    fun `Given isDeviceHaveCameraAvailable as`(value: Boolean) {
-        val methodName = "isDeviceHaveCameraAvailable"
-        every { broadcasterMock[methodName](any() as Context) } returns value
+    fun `Given Switch Camera Supported`() {
+        val mockSampleActiveCameraId = 1
+
+        broadcaster.mAvailableCameras.addAll(listOf(
+            CameraInfo(mockSampleActiveCameraId.toString()), // 1
+            CameraInfo((mockSampleActiveCameraId + 1).toString()), // 2
+            CameraInfo((mockSampleActiveCameraId + 2).toString()) // 3
+        ))
+
+        every {
+            broadcaster.streamer?.activeCameraId
+        } returns mockSampleActiveCameraId.toString()
     }
 
-    fun `Given getAvailableCameras from CameraManager`(isNotEmpty: Boolean = true) {
+    fun `Given audio config`() {
         every {
-            CameraManager.getAvailableCameras(context)
-        } returns if (isNotEmpty) {
-            mutableListOf(CameraInfo(""))
+            BroadcasterUtil.getAudioConfig(any() as BroadcasterConfig)
+        } returns AudioConfig()
+    }
+
+    fun `Given video config`() {
+        // first, mock the verify of video resolution of the camera
+        every {
+            CameraManager.verifyResolution(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Streamer.Size(0, 0)
+
+        // then, mock the video config from BroadcasterUtil
+        every {
+            BroadcasterUtil.getVideoConfig(any() as BroadcasterConfig)
+        } returns VideoConfig()
+    }
+
+    fun `Given device has available cameras as`(value: Boolean) {
+        every {
+            CameraManager.getAvailableCameras(any() as Context)
+        } returns if (value) {
+            mutableListOf(CameraInfo("123"))
         } else {
             mutableListOf()
         }
     }
 
     fun `Given stop audio capture from streamerGL`() {
-        justRun { streamer.stopAudioCapture() }
+        justRun { broadcaster.streamer?.stopAudioCapture() }
     }
 
-    fun `Given available camera as`(isEmpty: Boolean) {
-        broadcaster.setPrivateProperty(
-            MockProperty("mAvailableCameras", if (isEmpty) {
-                listOf()
-            } else {
-                listOf(
-                    CameraInfo("")
-                )
-            })
-        )
+    fun `Given start video capture from streamerGL`() {
+        justRun { broadcaster.streamer?.startVideoCapture() }
+    }
+
+    fun `Given start audio capture from streamerGL`() {
+        justRun { broadcaster.streamer?.startAudioCapture() }
     }
 
     fun `Then stop audio capture is called`() {
-        verify(exactly = 1) { streamer.stopAudioCapture() }
+        verify(exactly = 1) { broadcaster.streamer?.stopAudioCapture() }
     }
 
-    fun `Then the flip camera is called`() {
-        verify(exactly = 1) { streamer.flip() }
+    fun `Then changeAudioConfig of streamer is called`() {
+        verify(exactly = 1) {
+            broadcaster.streamer?.changeAudioConfig(any() as AudioConfig)
+        }
+    }
+
+    fun `Then changeVideoConfig of streamer is called`() {
+        verify(exactly = 1) {
+            broadcaster.streamer?.changeVideoConfig(any() as VideoConfig)
+        }
+    }
+
+    fun `Then startVideoCapture of streamer is called`() {
+        verify(exactly = 1) {
+            broadcaster.streamer?.startVideoCapture()
+        }
+    }
+
+    fun `Then startAudioCapture of streamer is called`() {
+        verify(exactly = 1) {
+            broadcaster.streamer?.startAudioCapture()
+        }
+    }
+
+    fun `Then the flip camera should be`(called: Boolean) {
+        verify(exactly = if (called) 1 else 0) {
+            broadcaster.streamer?.flip()
+        }
+    }
+
+    fun `Then the streamer is released`() {
+        verify(atLeast = 1) { broadcaster.streamer?.release() }
+    }
+
+    fun `Then the connection config url should be equals of`(ingestUrl: String) {
+        assertTrue { broadcaster.mConnection.uri == ingestUrl }
+    }
+
+    fun `Then the state should be`(state: BroadcasterState) {
+        assertTrue { broadcaster.mState == state }
     }
 
     fun `Then a property from BroadcasterConfig equals of`(broadcasterConfig: BroadcasterConfig) {
-        val internalBroadcasterConfig = broadcaster
-            .getPrivateProperty<BroadcasterConfig>("mConfig")
+        assertEquals(broadcasterConfig, broadcaster.mConfig)
+    }
 
-        assertEquals(broadcasterConfig, internalBroadcasterConfig)
+    fun `Then data log is succeed to init`() {
+        verify(exactly = 1) {
+            broadcaster.dataLogCentralized.init(
+                any(),
+                any()
+            )
+        }
+    }
+
+    inline fun <reified T> `Then should be null for receiver of`(propertyName: String) {
+        assertTrue { `Get private property value`<T>(propertyName) == null }
     }
 
     inline fun <reified T> `Then should be not null for receiver of`(propertyName: String) {
-        assertNotNull(broadcaster.getPrivateProperty<T>(propertyName))
+        assertNotNull(`Get private property value`<T>(propertyName))
     }
 
     inline fun <reified T : Throwable> `Then should be throw fails as`(`when`: () -> Unit) {
         assertFailsWith<T> {
             `when`()
         }
+    }
+
+    inline fun <reified T> `Get private property value`(propertyName: String): T? {
+        return broadcaster.getPrivateProperty(propertyName)
     }
 
 }
