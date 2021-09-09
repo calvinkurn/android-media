@@ -7,7 +7,7 @@ import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.domain.query.GetBalanceAndPointQuery
 import javax.inject.Inject
 
-class GetTokopointsBalanceAndPointUseCase @Inject constructor(
+open class GetTokopointsBalanceAndPointUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, BalanceAndPointDataModel>(dispatcher.io) {

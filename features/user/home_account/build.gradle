@@ -75,6 +75,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -100,18 +101,16 @@ dependencies {
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analytics)
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.benchmark
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
 }
 

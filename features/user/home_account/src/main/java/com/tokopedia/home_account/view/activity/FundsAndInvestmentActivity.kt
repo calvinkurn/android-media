@@ -9,7 +9,7 @@ import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.sessioncommon.di.SessionModule
 
-class FundsAndInvestmentActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents> {
+open class FundsAndInvestmentActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents> {
 
     override fun getNewFragment(): Fragment {
         return FundsAndInvestmentFragment.newInstance(intent?.extras)

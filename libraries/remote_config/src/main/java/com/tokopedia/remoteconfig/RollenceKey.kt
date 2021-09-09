@@ -70,4 +70,7 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
+
+    //Home account
+    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
 }

@@ -17,7 +17,7 @@ import com.tokopedia.sessioncommon.di.SessionModule
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
+open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
 
     override fun getNewFragment(): Fragment? {
         return HomeAccountUserFragment.newInstance(intent?.extras)

@@ -15,7 +15,7 @@ object GetBalanceAndPointQuery {
             applink
             weblink
             is_active
-            is_hidden
+            is_show
           }
         }
     """.trimIndent()

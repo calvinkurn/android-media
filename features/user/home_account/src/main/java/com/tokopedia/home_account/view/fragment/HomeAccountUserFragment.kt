@@ -112,7 +112,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener,
+open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener,
     BalanceAndPointListener {
 
     @Inject

@@ -38,7 +38,7 @@ import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 
-class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
+open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
