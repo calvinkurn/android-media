@@ -61,5 +61,6 @@
     <string name="review_cancel_dailog_description">Datamu tidak akan tersimpan jika kamu keluar dari halaman ini.</string>
     <string name="continue_gopay_kyc_dialog">Lanjut Upgrade</string>
     <string name="exit_gopay_kyc">Keluar Halaman</string>
+    <string name="gopay_kyc_retry_uplaod_again_text">Kirim Ulang</string>
 
 </resources>

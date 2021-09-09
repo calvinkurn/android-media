@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Kirim Ulang"
+        android:text="@string/gopay_kyc_retry_uplaod_again_text"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
