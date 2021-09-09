@@ -18,6 +18,9 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
+    //TokoNowDateFilterActivity
+    val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter?date_label_position={date_label_position}&start_date={start_date}&end_date={end_date}"
+
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 

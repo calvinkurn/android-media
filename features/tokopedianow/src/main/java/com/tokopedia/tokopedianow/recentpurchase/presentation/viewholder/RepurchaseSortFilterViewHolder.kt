@@ -1,13 +1,17 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 
+import android.app.Activity
 import android.view.View
 import android.widget.LinearLayout.*
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.DATE_FILTER
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 
@@ -81,6 +85,8 @@ class RepurchaseSortFilterViewHolder(
     }
 
     private fun openDateFilterBottomSheet() {
+        val intent = RouteManager.getIntent(itemView.context, DATE_FILTER, "2","test","test")
+        (itemView.context as Activity).startActivityForResult(intent, REQUEST_CODE_DATE_FILTER_BOTTOMSHEET)
     }
 
     private fun openCategoryFilterBottomSheet() {
