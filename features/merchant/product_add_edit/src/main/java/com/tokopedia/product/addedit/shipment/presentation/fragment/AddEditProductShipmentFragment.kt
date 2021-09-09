@@ -69,6 +69,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.dialog.Produ
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_ACTIVATED
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
@@ -102,6 +103,7 @@ class AddEditProductShipmentFragment:
     private var tfWeightUnit: TextFieldUnify? = null
     private var selectedWeightPosition: Int = 0
     private var shipperServices: ArrayList<Int>? = arrayListOf()
+    private var isCPLActivated: Boolean = false
 
     private var radiosInsurance: RadioGroup? = null
     private var radioRequiredInsurance: RadioButtonUnify? = null
@@ -334,23 +336,9 @@ class AddEditProductShipmentFragment:
             when (it) {
                 is Success -> {
                     applyShipmentValue(it.data)
-                    updateShipmentData(it.data)
                 }
             }
         })
-    }
-
-    private fun updateShipmentData(data: CustomProductLogisticModel) {
-        if (data.shipperList.size == 1) {
-            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-        } else {
-            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-            shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
-            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
-        }
-        updateLayoutShipment()
     }
 
     private fun updateLayoutShipment() {
@@ -418,6 +406,7 @@ class AddEditProductShipmentFragment:
                 ).apply {
                     putExtra(EXTRA_SHOP_ID, shopId.toLong())
                     putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
+                    putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
                 }, 1234
             )
         }
@@ -430,6 +419,7 @@ class AddEditProductShipmentFragment:
                 ).apply {
                     putExtra(EXTRA_SHOP_ID, shopId.toLong())
                     putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
+                    putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
                 }, 1234
             )
         }
@@ -592,14 +582,36 @@ class AddEditProductShipmentFragment:
         if (cplProduct.isEmpty() || cplProduct[0].cplStatus == 0) {
             radioStandarShipment?.isChecked = true
             radioCustomShipment?.isChecked = false
+            isCPLActivated = true
             shipmentRadioValue(true)
+            updateShipmentDataStandard(data)
         } else {
             radioStandarShipment?.isChecked = false
             radioCustomShipment?.isChecked = true
+            isCPLActivated = false
             shipmentRadioValue(false)
+            updateShipmentDataCustom(data)
         }
+    }
 
+    private fun updateShipmentDataStandard(data: CustomProductLogisticModel) {
+        shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+        shipmentOnDemandAdapter.setAllProductIdsActivated()
+        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+        shipmentConventionalAdapter.setAllProductIdsActivated()
+    }
 
+    private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
+        if (data.shipperList.size == 1) {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        }
+        updateLayoutShipment()
     }
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {

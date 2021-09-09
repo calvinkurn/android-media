@@ -37,6 +37,15 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         notifyDataSetChanged()
     }
 
+    fun setAllProductIdsActivated() {
+        shipmentCPLitem.forEach { courier ->
+            courier.shipperProduct.forEach { data ->
+                data.isActive = true
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     fun setProductIdsActivated(data: CPLProductModel) {
         shipmentCPLitem.forEach { courier ->
             data.shipperServices.forEach {
