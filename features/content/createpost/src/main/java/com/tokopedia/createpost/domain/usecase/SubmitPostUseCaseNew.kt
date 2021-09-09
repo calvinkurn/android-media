@@ -1,17 +1,14 @@
 package com.tokopedia.createpost.domain.usecase
 
-import android.content.ContentResolver
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitMediumByte
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.PostUpdateProgressManager
-import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
