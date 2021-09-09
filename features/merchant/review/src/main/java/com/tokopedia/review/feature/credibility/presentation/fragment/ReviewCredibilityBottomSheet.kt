@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityLabel
@@ -46,6 +49,8 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     private var learnMore: Typography? = null
     private var statisticsBox: ReviewCredibilityStatisticBoxWidget? = null
     private var coordinatorLayout: CoordinatorLayout? = null
+    private var loadingView: View? = null
+    private var loadingBox: ConstraintLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component?.inject(this)
@@ -65,6 +70,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        showLoading()
         observeReviewerCredibility()
         getReviewerCredibility()
     }
@@ -86,6 +92,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             mainButton = findViewById(R.id.review_credibility_button)
             learnMore = findViewById(R.id.review_credibility_learn_more)
             statisticsBox = findViewById(R.id.review_credibility_statistics_box)
+            loadingView = findViewById(R.id.review_credibility_loading)
+            coordinatorLayout = findViewById(R.id.review_credibility_coordinator_layout)
+            loadingBox = findViewById(R.id.review_credibility_statistics_loading_box)
         }
     }
 
@@ -97,20 +106,23 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         viewModel.reviewerCredibility.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetReviewerCredibility(it.data)
-                is Fail -> onFailGetReviewerCredibility()
+                is Fail -> onFailGetReviewerCredibility(it.throwable)
             }
         })
     }
 
     private fun onSuccessGetReviewerCredibility(reviewCredibility: ReviewerCredibilityStatsWrapper) {
+        hideLoading()
         with(reviewCredibility) {
             setupLabels(label)
             setupStatistics(label.subtitle, stats)
         }
     }
 
-    private fun onFailGetReviewerCredibility() {
-
+    private fun onFailGetReviewerCredibility(throwable: Throwable) {
+        showToasterError(throwable.message ?: getString(R.string.review_toaster_page_error)) {
+            getReviewerCredibility()
+        }
     }
 
     private fun setupLabels(label: ReviewerCredibilityLabel) {
@@ -148,6 +160,15 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         this.learnMore?.setOnClickListener {
             RouteManager.route(context, ApplinkConst.WEBVIEW, url)
         }
+    }
+
+    private fun showLoading() {
+        loadingView?.show()
+        loadingBox?.setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
+    }
+
+    private fun hideLoading() {
+        loadingView?.hide()
     }
 
     private fun showToasterError(message: String, action: () -> Unit) {

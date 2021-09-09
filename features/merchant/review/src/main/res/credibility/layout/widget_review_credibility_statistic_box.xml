@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -17,9 +18,9 @@
         app:typographyType="body_3" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/review_credibility_statistic_box_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/review_credibility_statistic_box_guideline"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
@@ -27,8 +28,8 @@
         android:id="@+id/review_credibility_statistics_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toStartOf="@id/review_credibility_statistics_2"
         app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_box_title" />
 
@@ -37,9 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@id/review_credibility_statistic_box_guideline"
         app:layout_constraintEnd_toEndOf="@id/review_credibility_statistic_box_guideline"
-        app:layout_constraintStart_toEndOf="@id/review_credibility_statistics_1"
+        app:layout_constraintStart_toStartOf="@id/review_credibility_statistic_box_guideline"
         app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_box_title" />
 
     <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticWidget

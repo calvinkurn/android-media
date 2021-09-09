@@ -131,6 +131,9 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     private fun showReviewCredibilityBottomSheet() {
         reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source)
         reviewCredibilityBottomSheet?.apply {
+            showKnob = true
+            showCloseIcon = false
+            showHeader = false
             show(supportFragmentManager, REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG)
         }
     }
