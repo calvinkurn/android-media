@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
 class RecentPurchaseListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -11,7 +12,11 @@ class RecentPurchaseListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return oldItem == newItem
+        return if(oldItem is RepurchaseSortFilterUiModel && newItem is RepurchaseSortFilterUiModel) {
+            oldItem.id == newItem.id
+        } else {
+            oldItem == newItem
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
