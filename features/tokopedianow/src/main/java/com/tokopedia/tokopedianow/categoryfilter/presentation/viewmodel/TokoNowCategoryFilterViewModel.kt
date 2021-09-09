@@ -29,11 +29,11 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
     private val _applyFilter = MutableLiveData<SelectedSortFilter>()
     private val _categoryList = MutableLiveData<Success<List<CategoryFilterChip>>>()
 
-    private var selectedSortFilter: SelectedSortFilter? = SelectedSortFilter()
+    private var selectedFilter: SelectedSortFilter? = SelectedSortFilter()
 
     fun getCategoryList(warehouseId: String) {
         launchCatchError(block = {
-            val selectedFilterIds = selectedSortFilter?.id.orEmpty()
+            val selectedFilterIds = selectedFilter?.id.orEmpty()
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
             val categoryList = CategoryFilterMapper.mapToCategoryList(response, selectedFilterIds)
             _categoryList.postValue(Success(categoryList))
@@ -42,13 +42,13 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedFilter(filter: CategoryFilterChip) {
+    fun updateSelectedFilter(filter: CategoryFilterChip) {
         launchCatchError(block = {
             val filterId = filter.id.toInt()
             val filterTitle = filter.title
 
-            val selectedFilterIds = selectedSortFilter?.id.orEmpty().toMutableList()
-            val selectedFilterTitle = selectedSortFilter?.title.orEmpty().toMutableList()
+            val selectedFilterIds = selectedFilter?.id.orEmpty().toMutableList()
+            val selectedFilterTitle = selectedFilter?.title.orEmpty().toMutableList()
 
             if (selectedFilterIds.contains(filterId)) {
                 selectedFilterIds.remove(filterId)
@@ -58,17 +58,17 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
                 selectedFilterTitle.add(filterTitle)
             }
 
-            selectedSortFilter = SelectedSortFilter(selectedFilterIds, selectedFilterTitle)
+            selectedFilter = SelectedSortFilter(selectedFilterIds, selectedFilterTitle)
         }) {
 
         }
     }
 
-    fun setSelectedFilterIds(selectedSortFilter: SelectedSortFilter?) {
-        this.selectedSortFilter = selectedSortFilter
+    fun setSelectedFilter(selectedFilter: SelectedSortFilter?) {
+        this.selectedFilter = selectedFilter
     }
 
     fun applyFilter() {
-        _applyFilter.postValue(selectedSortFilter)
+        _applyFilter.postValue(selectedFilter)
     }
 }

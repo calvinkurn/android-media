@@ -119,7 +119,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
 
     private fun createFilterChipView(category: CategoryFilterChip): CategoryFilterChipView {
         val categoryFilterChipView = CategoryFilterChipView(requireContext())
-        categoryFilterChipView.setOnClickListener { viewModel.setSelectedFilter(it) }
+        categoryFilterChipView.setOnClickListener { viewModel.updateSelectedFilter(it) }
         categoryFilterChipView.submitList(category.childList)
         return categoryFilterChipView
     }
@@ -132,8 +132,9 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun setSelectedFilter() {
-        val selectedFilter = arguments?.getParcelable<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
-        viewModel.setSelectedFilterIds(selectedFilter)
+        val selectedFilter = arguments
+            ?.getParcelable<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
+        viewModel.setSelectedFilter(selectedFilter)
     }
 
     private fun getCategoryList() {
