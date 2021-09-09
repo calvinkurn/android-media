@@ -43,10 +43,6 @@ class SharedPreferenceListFragment :
         return false
     }
 
-    override fun loadInitialData() {
-        showLoading()
-    }
-
     fun search(searchName: String?) {
         val sharedPrefFolder =
             File("/data/data/" + GlobalConfig.getPackageApplicationName() + "/shared_prefs")
