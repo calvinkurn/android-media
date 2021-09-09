@@ -205,6 +205,14 @@
         app:layout_constraintTop_toBottomOf="@id/goPayDoIcon"
         android:orientation="vertical" />
 
+    <include
+        layout="@layout/gopay_kyc_bank_supervised_layout"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/takePhotoButton"
+        app:layout_constraintEnd_toEndOf="@+id/takePhotoButton"
+        app:layout_constraintStart_toStartOf="@+id/takePhotoButton" />
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/takePhotoButton"
         android:layout_width="@dimen/unify_space_0"

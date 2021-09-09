@@ -75,6 +75,6 @@
         app:layout_constraintStart_toEndOf="@+id/resetPhotoButton"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="filled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
