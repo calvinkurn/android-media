@@ -50,9 +50,9 @@ object DeeplinkMapperTokopediaNow {
         } else return ApplinkConstInternalTokopediaNow.OLD_TOKOMART
     }
 
-    fun getRegisteredNavigationTokopediaNowRecentPurchase(context: Context): String {
+    fun getRegisteredNavigationTokopediaNowRepurchase(context: Context): String {
         return if (getRemoteConfigTokopediaNowEnabler(context)) {
-            ApplinkConstInternalTokopediaNow.RECENT_PURCHASE
+            ApplinkConstInternalTokopediaNow.REPURCHASE
         } else {
             ApplinkConstInternalTokopediaNow.OLD_TOKOMART
         }

@@ -121,7 +121,7 @@ class TokoNowRecentPurchaseViewHolder(
     }
 
     private fun goToRepurchasePage() {
-        RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.RECENT_PURCHASE)
+        RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.REPURCHASE)
     }
 
     fun submitList(data: TokoNowRecentPurchaseUiModel?) {

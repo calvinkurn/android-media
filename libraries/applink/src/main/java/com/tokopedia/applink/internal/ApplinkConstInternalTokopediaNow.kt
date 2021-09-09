@@ -29,7 +29,7 @@ object ApplinkConstInternalTokopediaNow {
 
     //TokoNowRecentPurchaseActivity
     @JvmField
-    val RECENT_PURCHASE = "$INTERNAL_TOKOPEDIA_NOW/recent-purchase"
+    val REPURCHASE = "$INTERNAL_TOKOPEDIA_NOW/repurchase-page"
 
     //TokoNowCategoryFilterActivity
     @JvmField
