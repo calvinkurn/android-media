@@ -2,14 +2,16 @@ package com.tokopedia.checkout
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
-import com.tokopedia.checkout.bundle.view.ShipmentFragment
+import com.tokopedia.checkout.old.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 
 class ShipmentActivity : BaseCheckoutActivity() {
     private var shipmentFragment: ShipmentFragment? = null
+    private var oldShipmentFragment: com.tokopedia.checkout.old.view.ShipmentFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op
@@ -25,6 +27,11 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val bundle = intent.extras
         shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
         return shipmentFragment
+    }
+
+    @Keep
+    fun isBundleCheckout(): Boolean {
+        return true
     }
 
     override fun onBackPressed() {
