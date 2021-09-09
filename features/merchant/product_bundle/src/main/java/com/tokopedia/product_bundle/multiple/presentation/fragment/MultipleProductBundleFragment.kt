@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -78,15 +77,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             }
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModelProvider by lazy {
-        ViewModelProvider(this, viewModelFactory)
-    }
-
     private val viewModel by lazy {
-        viewModelProvider.get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this.requireActivity()).get(ProductBundleViewModel::class.java)
     }
 
     private var processDayView: Typography? = null
