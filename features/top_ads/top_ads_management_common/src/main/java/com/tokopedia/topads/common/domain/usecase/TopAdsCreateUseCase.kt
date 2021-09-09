@@ -64,7 +64,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     private fun convertToParam(source: String?, dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManagePromoGroupProductInput {
-        val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
+        var strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
         val groupAction = dataGroup[ACTION_TYPE] as? String
         var bidtypeData = dataKeyword[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
@@ -72,7 +72,10 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         if(bidtypeData == null) {
             bidtypeData = dataGroup[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
         }
-        val dailyBudgetGroup = dataGroup[DAILY_BUDGET] as? Int
+        if(strategy == null) {
+            strategy = dataGroup[STRATEGIES] as ArrayList<String>?
+        }
+        var dailyBudgetGroup = dataGroup[DAILY_BUDGET]?.toString()?.toDouble()
         val groupId = dataGroup[GROUPID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
         val isBudgetLimited = dataGroup[BUDGET_LIMITED] as? Boolean
@@ -110,7 +113,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
-            group?.dailyBudget = dailyBudgetGroup?.toDouble()
+            group?.dailyBudget = dailyBudgetGroup
         val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> = mutableListOf()
         bidtypeData?.forEach {
             val bidType = GroupEditInput.Group.TopadsGroupBidSetting()

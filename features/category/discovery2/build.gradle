@@ -56,6 +56,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     // UnifyDependencies Dependency
     implementation rootProject.ext.unifyDependencies.icons

@@ -68,6 +68,7 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
+        private const val MAX_ORDER_TO_SHOW = 6
     }
 
 
@@ -134,8 +135,16 @@ class MainNavViewModel @Inject constructor(
 
     fun setPageSource(pageSource: String = pageSourceDefault) {
         this.pageSource = pageSource
-        if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME) { removeHomeBackButtonMenu() }
+        if (isLaunchedFromHome()) {
+                        removeHomeBackButtonMenu()
+        }
         else { addHomeBackButtonMenu() }
+    }
+
+    private fun isLaunchedFromHome(): Boolean {
+        return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
     }
 
     fun getPageSource(): String {
@@ -250,11 +259,6 @@ class MainNavViewModel @Inject constructor(
                         addWidgetList(result, it)
                     }
                 }
-
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
-                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
@@ -272,10 +276,6 @@ class MainNavViewModel @Inject constructor(
                     updateWidget(ErrorStateBuDataModel(),
                             _mainNavListVisitable.indexOf(it)
                     )
-                }
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
                 }
                 e.printStackTrace()
             }
@@ -369,7 +369,7 @@ class MainNavViewModel @Inject constructor(
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                val othersTransactionCount = orderList.size - 6
+                val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)

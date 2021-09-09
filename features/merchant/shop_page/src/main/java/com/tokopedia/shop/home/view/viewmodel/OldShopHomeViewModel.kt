@@ -5,9 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -38,8 +41,6 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
@@ -64,22 +65,22 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class OldShopHomeViewModel @Inject constructor(
-    private val userSession: UserSessionInterface,
-    private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val addToCartOccUseCase: AddToCartOccUseCase,
-    private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-    private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-    private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
-    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-    private val shopProductSortMapper: ShopProductSortMapper,
-    private val mvcSummaryUseCase: MVCSummaryUseCase,
-    private val playWidgetTools: PlayWidgetTools
+        private val userSession: UserSessionInterface,
+        private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
+        private val getShopProductUseCase: GqlGetShopProductUseCase,
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+        private val shopProductSortMapper: ShopProductSortMapper,
+        private val mvcSummaryUseCase: MVCSummaryUseCase,
+        private val playWidgetTools: PlayWidgetTools
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
@@ -396,18 +397,19 @@ class OldShopHomeViewModel @Inject constructor(
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 
-    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
-        val requestParams = RequestParams.create().apply {
-            putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                    productId = product.id ?: "",
-                    shopId = shopId,
-                    quantity = product.minimumOrder.toString(),
-                    productName = product.name ?: "",
-                    price = product.displayedPrice ?: "",
-                    userId = userId
-            ))
-        }
-        return addToCartOccUseCase.createObservable(requestParams).toBlocking().first()
+    private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
+        return addToCartOccUseCase.setParams(AddToCartOccMultiRequestParams(
+                carts = listOf(
+                        AddToCartOccMultiCartParam(
+                                productId = product.id ?: "",
+                                shopId = shopId,
+                                quantity = product.minimumOrder.toString(),
+                                productName = product.name ?: "",
+                                price = product.displayedPrice ?: ""
+                        )
+                ),
+                userId = userId
+        )).executeOnBackground().mapToAddToCartDataModel()
     }
 
     private suspend fun checkListProductWishlist(

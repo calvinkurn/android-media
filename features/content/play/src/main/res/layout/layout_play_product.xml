@@ -20,7 +20,7 @@
             android:id="@+id/iv_product_image"
             android:layout_width="@dimen/play_product_image_size"
             android:layout_height="@dimen/play_product_image_size"
-            app:cornerRadius="@dimen/play_product_image_radius"
+            app:rImg_cornerRadius="@dimen/play_product_image_radius"
             tools:src="@tools:sample/avatars"
             />
 

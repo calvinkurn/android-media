@@ -188,7 +188,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun onBranchLinkClicked(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            val intent = RouteManager.getSplashScreenIntent(activity)
             intent.putExtra(RouteManager.BRANCH, url)
             intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
             startActivity(intent)

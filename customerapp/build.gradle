@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
+apply plugin: 'newrelic'
 
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -142,6 +143,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
+        checkDependencies true
     }
 
     signingConfigs {
@@ -225,6 +227,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     configurations.all {

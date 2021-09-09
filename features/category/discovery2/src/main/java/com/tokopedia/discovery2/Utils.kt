@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -302,6 +303,10 @@ class Utils {
             val displayMetrics = DisplayMetrics()
             (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics
+        }
+
+        fun getUserId(context: Context?): String {
+            return context?.let { UserSession(it).userId } ?: ""
         }
 
     }

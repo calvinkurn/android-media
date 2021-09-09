@@ -8,8 +8,7 @@
 /features/content/kol_common/           				@tokopedia/android-minionskywalker-dev
 /features/content/profile/              				@tokopedia/android-minionskywalker-dev
 /features/content/feed_component/       				@tokopedia/android-minionskywalker-dev
-/features/category/       				                @tokopedia/android-minionsolo-dev
-/features/discovery2/       				            @tokopedia/android-minionsolo-dev
+/features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
@@ -63,6 +62,7 @@
 /features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
+/features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/statistic/                           @tokopedia/android-minionstuart-dev

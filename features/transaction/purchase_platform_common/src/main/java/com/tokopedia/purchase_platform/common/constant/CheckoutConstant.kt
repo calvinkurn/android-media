@@ -26,6 +26,7 @@ class CheckoutConstant {
         const val PARAM_DEFAULT = "default"
         const val PARAM_CHECKOUT = "checkout"
         const val PARAM_OCC = "occ"
+        const val PARAM_OCC_MULTI = "occmulti"
         const val RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2
         const val RESULT_CODE_COUPON_STATE_CHANGED = 735
         const val KERO_TOKEN = "token"

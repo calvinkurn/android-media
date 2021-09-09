@@ -26,6 +26,10 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_follow_button_component
+        private const val TOP_BOUND = 5
+        private const val RIGHT_BOUND_COUNTER = 5
+        private const val TEST_ASCENT_MULTIPLIER = 0.15
+
     }
 
     interface Listener {
@@ -88,16 +92,14 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)
                     val left = 0
-                    val top = -5
-                    val right = drawableImage.intrinsicWidth + 5
+                    val right = drawableImage.intrinsicWidth + RIGHT_BOUND_COUNTER
                     val bottom = drawableImage.intrinsicHeight
-                    drawableImage.setBounds(left, top, right, bottom)
+                    drawableImage.setBounds(left, -TOP_BOUND, right, bottom)
                     val spannableString = SpannableString("   ${button.text}")
                     val imageSpan = ImageSpan(drawableImage)
                     spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val textAscentMultiplier = 0.15
                     spannableString.setSpan(
-                            TextBaselineSpanAdjuster(textAscentMultiplier),
+                            TextBaselineSpanAdjuster(TEST_ASCENT_MULTIPLIER),
                             0,
                             spannableString.length,
                             SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
