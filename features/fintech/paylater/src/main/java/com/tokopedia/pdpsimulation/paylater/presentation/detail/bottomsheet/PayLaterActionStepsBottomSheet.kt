@@ -50,8 +50,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var actionUrl: String = ""
     private var productUrl: String = ""
     private var partnerName: String? = ""
-    private lateinit var howToUseList: HowToUse
-    private var noteData: String = ""
+    private lateinit var  howToUseList:HowToUse
+    private  var noteData:String =""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,10 +72,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun setDataFromArguments(payLaterItemProductData: Detail?) {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
-            actionUrl = it.cta?.android_url ?: ""
-            if (it.gateway_detail?.how_toUse?.notes?.size != 0)
-                noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
-            it.gateway_detail?.how_toUse?.let { howToUseDetail ->
+            actionUrl = it.cta?.android_url?:""
+            if(it.gateway_detail?.how_toUse?.notes?.size  != 0)
+                noteData = it.gateway_detail?.how_toUse?.notes?.get(0)?:""
+            it.gateway_detail?.how_toUse?.let { howToUseDetail->
                 howToUseList = howToUseDetail
             }
 
@@ -83,10 +83,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (!noteData.isNullOrEmpty())
-            tickerPaylaterRegister.setTextDescription(noteData)
-        else
-            tickerPaylaterRegister.gone()
+        if( !noteData.isNullOrEmpty())
+              tickerPaylaterRegister.setTextDescription(noteData)
+            else
+                tickerPaylaterRegister.gone()
         initListeners()
         setButtonType()
         setDefaultParams()

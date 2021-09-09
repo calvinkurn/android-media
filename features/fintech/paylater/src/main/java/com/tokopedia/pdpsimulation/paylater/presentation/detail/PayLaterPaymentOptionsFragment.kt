@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -32,7 +33,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
     }
 
-    private var isClickableButton: Boolean? = false
+    private var isClickableButton:Boolean? = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +68,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            if (isClickableButton == true)
+            if(isClickableButton == true)
                 openActionBottomSheet()
         }
 
@@ -115,8 +116,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
-            data.cta?.cta_type?.let {
-                if (it in 1..4)
+            data.cta?.cta_type?.let{
+                if(it in 1..4)
                     isClickableButton = true
             }
             interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
@@ -136,7 +137,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     montlyInstallment, false
                 )
             }
-            if (!data.cta?.name.isNullOrEmpty())
+            if(!data.cta?.name.isNullOrEmpty())
                 btnHowToUse.text = data.cta?.name
             else
                 btnHowToUse.gone()
@@ -155,7 +156,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 setPartnerImage(gatewayDetail)
             }
 
-            if (data.disableDetail?.status == true)
+            if(data.disableDetail?.status == true)
                 disableVisibilityGroup.gone()
 
         }
@@ -168,7 +169,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            imageView.loadImage(imageUrl)
+            ivPaylaterPartner.loadImage(imageUrl)
     }
 
 
