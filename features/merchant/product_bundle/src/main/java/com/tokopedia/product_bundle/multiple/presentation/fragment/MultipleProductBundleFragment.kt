@@ -24,7 +24,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_BUNDLE_ID
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
@@ -181,7 +182,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             atcResult?.let {
                 if (viewModel.pageSource == PAGE_SOURCE_CART) {
                     val intent = Intent()
-                    intent.putExtra(EXTRA_BUNDLE_ID, atcResult.requestParams.bundleId)
+                    val oldBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
+                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
                     activity?.setResult(Activity.RESULT_OK, intent)
                 } else {
                     RouteManager.route(context, ApplinkConst.CART)
