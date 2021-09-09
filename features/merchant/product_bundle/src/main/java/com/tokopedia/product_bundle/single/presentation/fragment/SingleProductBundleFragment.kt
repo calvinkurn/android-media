@@ -88,7 +88,7 @@ class SingleProductBundleFragment(
         super.onViewCreated(view, savedInstanceState)
         activity.setBackgroundToWhite()
 
-        setupTotalSold(view)
+        setupTotalPO(view)
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
@@ -252,7 +252,7 @@ class SingleProductBundleFragment(
         })
     }
 
-    private fun setupTotalSold(view: View) {
+    private fun setupTotalPO(view: View) {
         tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
         updateTotalPO(null) // set null to hide
     }
