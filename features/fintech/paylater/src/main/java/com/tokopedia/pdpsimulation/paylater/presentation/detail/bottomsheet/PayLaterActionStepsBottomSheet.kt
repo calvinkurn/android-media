@@ -6,21 +6,13 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
-import com.tokopedia.pdpsimulation.paylater.domain.model.HowToUse
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerStepDetails
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
-import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
-import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterActionStepsAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -50,8 +42,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var actionUrl: String = ""
     private var productUrl: String = ""
     private var partnerName: String? = ""
-    private  var  listOfSteps: ArrayList<String>? = ArrayList()
-    private  var noteData:String =""
+    private var listOfSteps: ArrayList<String>? = ArrayList()
+    private var noteData: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,15 +64,14 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun setDataFromArguments(payLaterItemProductData: Detail?) {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
-            actionUrl = it.cta?.android_url?:""
-            if(it.cta?.cta_type == 4) {
+            actionUrl = it.cta?.android_url ?: ""
+            if (it.cta?.cta_type == 4) {
                 if (it.gateway_detail?.how_toUse?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
-            }
-            else (it.cta?.cta_type == 3)
+            } else (it.cta?.cta_type == 3)
             {
                 if (it.gateway_detail?.how_toApply?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
@@ -93,10 +84,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if( !noteData.isNullOrEmpty())
-              tickerPaylaterRegister.setTextDescription(noteData)
-            else
-                tickerPaylaterRegister.gone()
+        if (!noteData.isNullOrEmpty())
+            tickerPaylaterRegister.setTextDescription(noteData)
+        else
+            tickerPaylaterRegister.gone()
         initListeners()
         setButtonType()
         setDefaultParams()
@@ -122,17 +113,17 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun setButtonType() {
 
-            btnRegister.buttonSize = UnifyButton.Size.SMALL
-            btnRegister.buttonType = UnifyButton.Type.ALTERNATE
-            btnRegister.buttonVariant = UnifyButton.Variant.GHOST
-            btnRegister.text = context?.getString(R.string.pay_later_action_find_more)
+        btnRegister.buttonSize = UnifyButton.Size.SMALL
+        btnRegister.buttonType = UnifyButton.Type.ALTERNATE
+        btnRegister.buttonVariant = UnifyButton.Variant.GHOST
+        btnRegister.text = context?.getString(R.string.pay_later_action_find_more)
 
     }
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
-          //  sendAnalytics()
-            if(actionUrl.isNotEmpty())
+            //  sendAnalytics()
+            if (actionUrl.isNotEmpty())
                 openUrlWebView(actionUrl)
         }
     }
@@ -150,7 +141,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun initAdapter() {
 
         listOfSteps?.let {
-            rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it as ArrayList<String>)
+            rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it)
             rvPayLaterRegisterSteps.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }

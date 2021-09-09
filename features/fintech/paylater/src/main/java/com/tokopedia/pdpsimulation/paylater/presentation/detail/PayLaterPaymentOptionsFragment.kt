@@ -35,8 +35,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
     }
 
-   private var buttonStatus:RedirectionType? = null
-    private var urlToRedirect:String = ""
+    private var buttonStatus: RedirectionType? = null
+    private var urlToRedirect: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,12 +72,15 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun initListener() {
         btnHowToUse.setOnClickListener {
             buttonStatus?.let {
-                if(it == RedirectionType.HowToDetail)
+                if (it == RedirectionType.HowToDetail)
                     openActionBottomSheet()
-                 else if(it == RedirectionType.RedirectionWebView)
-                {
-                    if(!urlToRedirect.isNullOrEmpty())
-                        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlToRedirect)
+                else if (it == RedirectionType.RedirectionWebView) {
+                    if (!urlToRedirect.isNullOrEmpty())
+                        RouteManager.route(
+                            activity,
+                            ApplinkConstInternalGlobal.WEBVIEW,
+                            urlToRedirect
+                        )
                 }
             }
 
@@ -127,8 +130,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
-            urlToRedirect = data.cta?.android_url?:""
-            data.cta?.cta_type?.let{
+            urlToRedirect = data.cta?.android_url ?: ""
+            data.cta?.cta_type?.let {
                 buttonStatus = when (it) {
                     in 1..2 -> RedirectionType.RedirectionWebView
                     in 3..4 -> RedirectionType.HowToDetail
@@ -152,7 +155,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     montlyInstallment, false
                 )
             }
-            if(!data.cta?.name.isNullOrEmpty())
+            if (!data.cta?.name.isNullOrEmpty())
                 btnHowToUse.text = data.cta?.name
             else
                 btnHowToUse.gone()
@@ -171,7 +174,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 setPartnerImage(gatewayDetail)
             }
 
-            if(data.disableDetail?.status == true)
+            if (data.disableDetail?.status == true)
                 disableVisibilityGroup.gone()
 
         }

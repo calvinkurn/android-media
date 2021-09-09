@@ -69,11 +69,11 @@ data class Detail(
 ) : Parcelable
 
 @Parcelize
-data class DisableDetail (
-    @SerializedName("status") val status:Boolean?,
+data class DisableDetail(
+    @SerializedName("status") val status: Boolean?,
     @SerializedName("header") val header: String?,
-    @SerializedName("description")val description:String?
-        ) : Parcelable
+    @SerializedName("description") val description: String?
+) : Parcelable
 
 @Parcelize
 data class Faq(
