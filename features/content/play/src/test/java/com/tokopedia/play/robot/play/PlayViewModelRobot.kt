@@ -24,7 +24,9 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -40,29 +42,31 @@ import io.mockk.mockk
 typealias RobotWithValue<T> = Pair<PlayViewModelRobot, T>
 
 class PlayViewModelRobot(
-        private val playVideoBuilder: PlayVideoWrapper.Builder,
-        videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
-        channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
-        videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-        getChannelStatusUseCase: GetChannelStatusUseCase,
-        getSocketCredentialUseCase: GetSocketCredentialUseCase,
-        private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
-        getProductTagItemsUseCase: GetProductTagItemsUseCase,
-        trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
-        trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        playSocketToModelMapper: PlaySocketToModelMapper,
-        playUiModelMapper: PlayUiModelMapper,
-        private val userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers,
-        remoteConfig: RemoteConfig,
-        playPreference: PlayPreference,
-        videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        playChannelWebSocket: PlayChannelWebSocket,
-        interactiveRepo: PlayViewerInteractiveRepository,
-        partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
-        playAnalytic: PlayNewAnalytic,
+    private val playVideoBuilder: PlayVideoWrapper.Builder,
+    videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+    channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+    videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
+    getChannelStatusUseCase: GetChannelStatusUseCase,
+    getSocketCredentialUseCase: GetSocketCredentialUseCase,
+    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getCartCountUseCase: GetCartCountUseCase,
+    getProductTagItemsUseCase: GetProductTagItemsUseCase,
+    trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
+    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+    playChannelReminderUseCase: PlayChannelReminderUseCase,
+    playSocketToModelMapper: PlaySocketToModelMapper,
+    playUiModelMapper: PlayUiModelMapper,
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers,
+    remoteConfig: RemoteConfig,
+    playPreference: PlayPreference,
+    videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
+    playChannelWebSocket: PlayChannelWebSocket,
+    playChannelSSE: PlayChannelSSE,
+    interactiveRepo: PlayViewerInteractiveRepository,
+    partnerRepo: PlayViewerPartnerRepository,
+    private val likeRepo: PlayViewerLikeRepository,
+    playAnalytic: PlayNewAnalytic,
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -82,6 +86,7 @@ class PlayViewModelRobot(
                 getProductTagItemsUseCase,
                 trackProductTagBroadcasterUseCase,
                 trackVisitChannelBroadcasterUseCase,
+                playChannelReminderUseCase,
                 playSocketToModelMapper,
                 playUiModelMapper,
                 userSession,
@@ -90,6 +95,7 @@ class PlayViewModelRobot(
                 playPreference,
                 videoLatencyPerformanceMonitoring,
                 playChannelWebSocket,
+                playChannelSSE,
                 interactiveRepo,
                 partnerRepo,
                 likeRepo,
@@ -219,6 +225,7 @@ fun givenPlayViewModelRobot(
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
+        playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
@@ -227,6 +234,7 @@ fun givenPlayViewModelRobot(
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+        playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
         interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true),
         partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
         likeRepo: PlayViewerLikeRepository = mockk(relaxed = true),
@@ -245,6 +253,7 @@ fun givenPlayViewModelRobot(
             getProductTagItemsUseCase = getProductTagItemsUseCase,
             trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
             trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
+            playChannelReminderUseCase = playChannelReminderUseCase,
             playSocketToModelMapper = playSocketToModelMapper,
             playUiModelMapper = playUiModelMapper,
             userSession = userSession,
@@ -253,6 +262,7 @@ fun givenPlayViewModelRobot(
             playPreference = playPreference,
             videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
             playChannelWebSocket = playChannelWebSocket,
+            playChannelSSE = playChannelSSE,
             interactiveRepo = interactiveRepo,
             partnerRepo = partnerRepo,
             likeRepo = likeRepo,
