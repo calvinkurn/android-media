@@ -541,6 +541,7 @@ class ProductListPresenter @Inject constructor(
                     item.topadsClickUrl = topAds.productClickUrl
                     item.topadsWishlistUrl = topAds.productWishlistUrl
                     item.topadsClickShopUrl = topAds.shopClickUrl
+                    item.topadsTag = topAds.tag
                     item.productName = topAds.product.name
                     item.price = topAds.product.priceFormat
                     item.shopCity = topAds.shop.location
