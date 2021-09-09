@@ -634,7 +634,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.VALUE_BUSINESS_UNIT_SHARING
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId.ifBlank { 0 }
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
