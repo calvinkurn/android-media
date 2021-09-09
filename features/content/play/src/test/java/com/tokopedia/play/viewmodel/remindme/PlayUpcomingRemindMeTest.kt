@@ -7,22 +7,14 @@ import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
-import com.tokopedia.play.view.uimodel.event.RemindMeEvent
 import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
 import com.tokopedia.play_common.domain.model.PlayReminder
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -38,14 +30,11 @@ class PlayUpcomingRemindMeTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-//    @get:Rule
-//    private val coroutineTestRule = CoroutineTestRule()
-
     private val testDispatcher = CoroutineTestDispatchers
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val upcomingInfoModelBuilder = PlayUpcomingInfoModelBuilder()
-    private val mockUpcomingInfo = upcomingInfoModelBuilder.buildUpcomingInfo(isUpcoming = false)
+    private val mockUpcomingInfo = upcomingInfoModelBuilder.buildUpcomingInfo(isUpcoming = true)
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
