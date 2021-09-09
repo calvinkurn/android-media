@@ -1,36 +1,22 @@
 package com.tokopedia.filter.bottomsheet.keywordfilter
 
-import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ExistsAsNegative
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.IsOriginalKeyword
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.MaxFiveNegative
 import com.tokopedia.filter.testutils.jsonToObject
 import com.tokopedia.filter.testutils.shouldBe
+import org.hamcrest.core.IsInstanceOf.instanceOf
+import org.junit.Assert.assertThat
 import org.junit.Test
 
 internal class KeywordFilterTest {
 
-    @Test
-    fun `get original keyword empty option`() {
-        val keywordFilter = "keywordfilter/keyword-filter-empty.json".jsonToObject<Filter>()
+    private var isSuccess: Boolean? = null
+    private var error: KeywordFilterError? = null
 
-        val keyword1 = "samsung"
-        KeywordFilterDataView(keywordFilter, keyword1).assertOriginalKeyword(keyword1)
-
-        val keyword2 = "samsung -remote"
-        KeywordFilterDataView(keywordFilter, keyword2).assertOriginalKeyword(keyword2)
-    }
-
-    private fun KeywordFilterDataView.assertOriginalKeyword(expectedOriginalKeyword: String) {
-        originalKeyword shouldBe expectedOriginalKeyword
-    }
-
-    @Test
-    fun `get original keyword based on options`() {
-        val keywordFilter = "keywordfilter/keyword-filter.json".jsonToObject<Filter>()
-
-        val keyword = "samsung -tv"
-        val expectedOriginalKeyword = "samsung"
-        KeywordFilterDataView(keywordFilter, keyword)
-            .assertOriginalKeyword(expectedOriginalKeyword)
-    }
+    private val onSuccess = { isSuccess = true }
+    private val onError = { it: KeywordFilterError -> error = it }
 
     @Test
     fun `addKeyword with empty string should not add into item list`() {
@@ -39,13 +25,22 @@ internal class KeywordFilterTest {
         dataView.addKeyword("")
 
         dataView.itemList.isEmpty() shouldBe true
+        verifyOnSuccess()
     }
 
     private fun createKeywordFilterDataViewEmptyOption() =
         KeywordFilterDataView(
             filter = "keywordfilter/keyword-filter-empty.json".jsonToObject(),
-            keywordParam = "samsung"
+            originalKeyword = "samsung"
         )
+
+    private fun KeywordFilterDataView.addKeyword(keyword: String) {
+        addKeyword(keyword, onSuccess, onError)
+    }
+
+    private fun verifyOnSuccess() {
+        isSuccess shouldBe true
+    }
 
     @Test
     fun `addKeyword with only dash should not add into item list`() {
@@ -54,6 +49,7 @@ internal class KeywordFilterTest {
         dataView.addKeyword("-")
 
         dataView.itemList.isEmpty() shouldBe true
+        verifyOnSuccess()
     }
 
     @Test
@@ -65,6 +61,7 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         dataView.itemList[0].negativeKeyword shouldBe newKeywordFilter
+        verifyOnSuccess()
     }
 
     @Test
@@ -76,6 +73,7 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         dataView.itemList[0].negativeKeyword shouldBe "tv"
+        verifyOnSuccess()
     }
 
     @Test
@@ -86,6 +84,7 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         dataView.itemList[0].negativeKeyword shouldBe "tv"
+        verifyOnSuccess()
     }
 
     @Test
@@ -96,6 +95,7 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         dataView.itemList[0].negativeKeyword shouldBe "pro max"
+        verifyOnSuccess()
     }
 
     @Test
@@ -106,28 +106,80 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         dataView.itemList[0].negativeKeyword shouldBe "pro max"
+        verifyOnSuccess()
+    }
+
+    @Test
+    fun `addKeyword more than 5 should be error`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+
+        dataView.addKeyword("tv")
+        dataView.addKeyword("remote")
+        dataView.addKeyword("test")
+        dataView.addKeyword("galaxy")
+        dataView.addKeyword("testinglagi")
+        dataView.addKeyword("testingerror")
+
+        dataView.itemList.size shouldBe 5
+
+        assertThat(error, instanceOf(MaxFiveNegative::class.java))
+    }
+
+    @Test
+    fun `addKeyword cannot add original keyword`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+
+        dataView.addKeyword("samsung")
+
+        dataView.itemList.size shouldBe 0
+        assertThat(error, instanceOf(IsOriginalKeyword::class.java))
+    }
+
+    @Test
+    fun `addKeyword cannot add word contained in original keyword`() {
+        val dataView = KeywordFilterDataView(
+            filter = "keywordfilter/keyword-filter-empty.json".jsonToObject(),
+            originalKeyword = "samsung tv"
+        )
+
+        dataView.addKeyword("tv")
+
+        dataView.itemList.size shouldBe 0
+        assertThat(error, instanceOf(IsOriginalKeyword::class.java))
+    }
+
+    @Test
+    fun `addKeyword cannot add same negative keyword`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+
+        dataView.addKeyword("tv")
+        dataView.addKeyword("tv")
+
+        dataView.itemList.size shouldBe 1
+        assertThat(error, instanceOf(ExistsAsNegative::class.java))
+    }
+
+    @Test
+    fun `removeKeyword should remove from item list`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+        dataView.addKeyword("tv")
+
+        dataView.removeKeyword(dataView.itemList.first())
+
+        dataView.itemList.size shouldBe 0
+        verifyOnSuccess()
     }
 
     @Test
     fun `generateKeyword from keyword filter`() {
-        val keywordParam = "samsung -tv"
         val dataView = KeywordFilterDataView(
             filter = "keywordfilter/keyword-filter.json".jsonToObject(),
-            keywordParam = keywordParam
+            originalKeyword = "samsung"
         )
 
-        dataView.generateKeyword() shouldBe keywordParam
+        dataView.generateKeyword() shouldBe "samsung -\"tv\""
 
         dataView.addKeyword("-remote")
-        dataView.generateKeyword() shouldBe "samsung -tv -remote"
-    }
-
-    @Test
-    fun `generateKeyword with more than one word negative keyword should append quotes`() {
-        val dataView = createKeywordFilterDataViewEmptyOption()
-
-        dataView.addKeyword("pro max")
-
-        dataView.generateKeyword() shouldBe "samsung -\"pro max\""
+        dataView.generateKeyword() shouldBe "samsung -\"tv\" -\"remote\""
     }
 }

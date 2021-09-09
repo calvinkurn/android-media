@@ -225,7 +225,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun createKeywordFilterDataView(filter: Filter) =
         KeywordFilterDataView(
             filter = filter,
-            keywordParam = mapParameter[SearchApiConst.Q] ?: "",
+            originalKeyword = mapParameter[SearchApiConst.Q] ?: "",
         )
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
