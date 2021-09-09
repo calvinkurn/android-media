@@ -214,15 +214,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private fun setupView() {
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
-            override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+            override fun surfaceChanged(surfaceHolder: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
                 surfaceStatus = SurfaceStatus.CHANGED
             }
 
-            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
+            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
                 surfaceStatus = SurfaceStatus.DESTROYED
             }
 
-            override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
+            override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
                 if (surfaceStatus == SurfaceStatus.UNINITED) {
                     surfaceStatus = SurfaceStatus.CREATED
                 } else if (surfaceStatus == SurfaceStatus.DESTROYED) {
