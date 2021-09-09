@@ -2214,6 +2214,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 val cartTypeData = if (customCartRedirection != null) customCartRedirection else
                     p2Data?.cartRedirection
 
+                viewModel.clearCacheP2Data()
+
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         pageSource = AtcVariantHelper.PDP_PAGESOURCE,
