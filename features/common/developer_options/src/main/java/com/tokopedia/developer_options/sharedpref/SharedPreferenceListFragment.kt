@@ -46,13 +46,15 @@ class SharedPreferenceListFragment :
     fun search(searchName: String?) {
         val sharedPrefFolder =
             File("/data/data/" + GlobalConfig.getPackageApplicationName() + "/shared_prefs")
-        val folderList = sharedPrefFolder.list()?.filter { it ->
+        val folderList = sharedPrefFolder.list()?.asSequence()?.filter { it ->
             if (searchName.isNullOrEmpty()) {
                 true
             } else {
                 it.contains(searchName)
             }
-        }?.map { Visitable<SimpleTypeFactory> { SimpleTextViewHolder.LAYOUT } } ?: emptyList()
+        }?.map { it.replace(".xml", "") }
+            ?.map { IdViewModel(it) }?.toList()
+            ?: emptyList()
         adapter.setElements(folderList)
     }
 
