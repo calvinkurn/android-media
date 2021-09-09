@@ -38,9 +38,9 @@ class ReviewCredibilityStatisticWidget : BaseCustomView {
     }
 
     private fun bindViews() {
-        icon = findViewById(R.id.review_credibility_statistic_title)
+        icon = findViewById(R.id.review_credibility_statistic_icon)
         count = findViewById(R.id.review_credibility_statistic_count)
-        title = findViewById(R.id.review_credibility_statistic_icon)
+        title = findViewById(R.id.review_credibility_statistic_title)
     }
 
     fun setData(imageUrl: String, title: String, formattedCount: String) {

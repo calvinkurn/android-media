@@ -142,7 +142,6 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     private fun showReviewCredibilityBottomSheet() {
         reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source)
         reviewCredibilityBottomSheet?.apply {
-            clearContentPadding = true
             show(supportFragmentManager, REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG)
         }
     }
