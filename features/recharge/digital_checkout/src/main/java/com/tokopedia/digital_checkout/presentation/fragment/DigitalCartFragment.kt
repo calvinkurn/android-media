@@ -383,9 +383,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         loaderCheckout.visibility = View.GONE
 
         if (cartPassData?.isFromPDP == true) {
-            val message = ErrorHandler.getErrorMessage(context, error)
             val intent = Intent()
-            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message)
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, error)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {

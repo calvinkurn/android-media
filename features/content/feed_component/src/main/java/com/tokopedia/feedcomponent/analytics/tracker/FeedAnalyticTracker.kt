@@ -884,6 +884,41 @@ class FeedAnalyticTracker
         )
 
     }
+    fun eventClickPostTagitem(
+        activityId: String,
+        product: FeedXProduct,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
+
+        trackEnhancedEcommerceEventNew(
+            PRODUCT_CLICK,
+            CATEGORY_FEED_TIMELINE,
+            String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "product tag",
+                getPostType(type, isFollowed)
+            ),
+            String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                shopId,
+                product.id
+            ),
+            DataLayer.mapOf(CLICK, mapOf(
+                "actionField" to mapOf(
+                    "list" to "/feed - ${getPostType(type, isFollowed)}"
+                ),
+                "products" to getSingleProductListASGC(product, position, type, isFollowed)
+            )
+            )
+        )
+
+
+    }
 
     fun eventClickBSitem(
         activityId: String,
@@ -1017,7 +1052,7 @@ class FeedAnalyticTracker
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
             "dimension39", "/feed - ${getPostType(type, isFollowed)} "
         )
 

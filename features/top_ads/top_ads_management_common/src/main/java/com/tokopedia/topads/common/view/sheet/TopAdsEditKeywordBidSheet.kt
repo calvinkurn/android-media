@@ -33,7 +33,9 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var fromEdit = 99
     private var fromDetail = false
     private var fromRekomendasi = false
+    private var fromCreate = false
     private var dailyBudget = ""
+    private var keywordBudget = ""
     private var userID: String = ""
     private var groupId: String = ""
     var onSaved: ((bid: String, pos: Int) -> Unit)? = null
@@ -58,7 +60,8 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                         budget.setError(false)
                         budget.setMessage("")
                         btnSave.isEnabled = true
-                        min_suggested_bid.visibility = View.VISIBLE
+                        if(fromDetail)
+                           min_suggested_bid.visibility = View.VISIBLE
                     }
                     result > maxBid.toDouble() -> {
                         min_suggested_bid.visibility = View.GONE
@@ -105,8 +108,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
         fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
+        fromCreate = arguments?.getBoolean(FROM_CREATE) ?: false
         fromRekomendasi = arguments?.getBoolean(FROM_REKOMENDASI) ?: false
         dailyBudget = arguments?.getString(DAILY_BUDGET) ?: suggestedBid
+        keywordBudget = arguments?.getString(KEYWORD_BUDGET) ?: "0"
 
     }
 
@@ -125,7 +130,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             } else {
                 dailybudget_description.text = getString(R.string.topads_edit_bid_pencerian)
             }
-            budget.setMessage("Rekomendasi Rp$suggestedBid")
+            if(dailyBudget.toIntOrZero() < suggestedBid.toIntOrZero()) {
+                min_suggested_bid.visibility = View.VISIBLE
+            } else {
+                budget.setMessage("Rekomendasi Rp$suggestedBid")
+            }
         } else {
             budget.textFiedlLabelText.text = "Biaya Kata kunci"
             dailybudget_description.hide()
@@ -139,6 +148,8 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         }
         if(fromDetail) {
             budget.textFieldInput.setText(dailyBudget)
+        } else if(fromCreate) {
+            budget.textFieldInput.setText(keywordBudget)
         } else if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
             budget.textFieldInput.setText(minBid)
         } else {
@@ -157,8 +168,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         private const val FROM_EDIT = "fromEdit"
         private const val GROUP_ID = "group_id"
         private const val FROM_DETAIL = "fromDetail"
+        private const val FROM_CREATE = "fromCreate"
         private const val FROM_REKOMENDASI = "fromRekomendasi"
         private const val DAILY_BUDGET = "daily_budget"
+        private const val KEYWORD_BUDGET = "keywordBudget"
 
         fun createInstance(data: Bundle): TopAdsEditKeywordBidSheet {
             return TopAdsEditKeywordBidSheet().apply {

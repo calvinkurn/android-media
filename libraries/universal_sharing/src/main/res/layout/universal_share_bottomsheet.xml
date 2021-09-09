@@ -20,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_10"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/img_options_heading"
         app:layout_constraintLeft_toLeftOf="parent"/>
     <com.tokopedia.unifycomponents.ImageUnify
@@ -48,11 +50,15 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/thumb_nail_title"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_300"
         android:layout_height="@dimen/dp_19"
         android:text="@string/tn_title"
         android:textColor="@color/clr_31353B"
         android:textSize="@dimen/sp_14"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLength="40"
+        android:maxLines="1"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="@id/thumb_nail_image"

@@ -143,6 +143,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
+        checkDependencies true
     }
 
     signingConfigs {
@@ -226,6 +227,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     configurations.all {
