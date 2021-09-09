@@ -483,11 +483,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         (it is MessageViewModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false
-            val filteredList= getViewState().clearDuplicate(list)
-            if (filteredList.isEmpty()) loadData(page + FIRST_PAGE)
-            renderList(filteredList, it.canLoadMore)
-            checkShowLoading(it.canLoadMore)
-            enableLoadMore()
+            if (list.isNotEmpty()){
+                val filteredList= getViewState().clearDuplicate(list)
+                if (filteredList.isEmpty()) loadData(page + FIRST_PAGE)
+                renderList(filteredList, it.canLoadMore)
+                checkShowLoading(it.canLoadMore)
+                enableLoadMore()
+            }
+
         }
     }
 
