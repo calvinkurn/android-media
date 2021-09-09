@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.TrackingPageRefactorFragment">
@@ -9,6 +11,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -34,7 +37,7 @@
                 android:id="@+id/reference_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_8"
                 android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold"
@@ -243,20 +246,20 @@
                 android:id="@+id/detail_layout_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/Unify_N100"
                 android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toBottomOf="@id/eta" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_tracking_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/label_tracking_status"
                 android:textColor="@color/Unify_N300"
-                app:layout_constraintTop_toBottomOf="@id/detail_layout_separator"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
-                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/detail_layout_separator"
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -264,23 +267,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_Y500"
-                app:typographyType="body_2"
-                app:layout_constraintTop_toBottomOf="@id/lbl_tracking_status"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/lbl_tracking_status"
+                app:typographyType="body_2"
                 tools:text="On Process" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_info_courier"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:closeButtonVisibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/current_status"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintRight_toLeftOf="@id/right_padding"
-                app:layout_constraintEnd_toStartOf="@id/right_padding"
                 android:layout_marginTop="@dimen/dp_16"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/current_status"
                 app:tickerShapeType="loose" />
 
             <View
@@ -289,12 +292,11 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/ticker_info_courier"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
-                />
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/ticker_info_courier" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tracking_history"
@@ -302,20 +304,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@id/ticker_layout_separator"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toBottomOf="@id/ticker_layout_separator"
+                tools:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_info"
-                app:layout_constraintTop_toBottomOf="@id/tracking_history"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_32"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/tracking_history"
                 app:srcCompat="@drawable/info"
                 tools:ignore="VectorDrawableCompat" />
 
@@ -325,30 +328,79 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_8"
                 android:text="@string/warning_no_courier_change"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/img_info"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/img_info"
                 app:layout_constraintTop_toTopOf="@id/img_info"
-                app:layout_constraintRight_toLeftOf="@id/right_padding"
-                app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:typographyType="body_2" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/notification_help_step"
-                app:layout_constraintTop_toBottomOf="@id/notification_text"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintRight_toLeftOf="@id/right_padding"
-                app:layout_constraintEnd_toStartOf="@id/right_padding"
-                android:layout_margin="@dimen/dp_16"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/notification_text"
                 tools:visibility="visible" />
 
-<!--            todo wip sampe sini-->
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/live_tracking_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/label_live_tracking"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/notification_help_step"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/retry_pickup_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/find_new_driver"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/live_tracking_button"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_retry_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/bottom_padding"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/retry_pickup_button"
+                app:typographyType="body_2"
+                tools:text="Tunggu xx:xx untuk mencari driver baru"
+                tools:visibility="visible" />
 
 
             <!--            TODO: guidelines below-->
@@ -388,11 +440,42 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/description_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="lbl_delivery_date,delivery_date,lbl_seller_courier_tracking,store_name,store_address,lbl_eta,eta,lbl_service_code,service_code,lbl_buyer,buyer_name,buyer_location" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/ticker_info_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="ticker_info_courier" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/empty_update_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="img_info,notification_text,notification_help_step" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/main_progress_bar"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_centerInParent="true"
+        android:max="100"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
