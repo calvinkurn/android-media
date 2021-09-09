@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -36,6 +38,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
@@ -58,6 +62,8 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
 
 import javax.inject.Inject
 
@@ -68,7 +74,8 @@ class TokoNowRecentPurchaseFragment:
     TokoNowChooseAddressWidgetListener,
     TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
-    TokoNowRecommendationCarouselListener
+    TokoNowRecommendationCarouselListener,
+    SortFilterListener
 {
 
     companion object {
@@ -99,7 +106,8 @@ class TokoNowRecentPurchaseFragment:
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
                 tokoNowEmptyStateNoResultListener = this,
-                tokoNowRecommendationCarouselListener = this
+                tokoNowRecommendationCarouselListener = this,
+                sortFilterListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -128,6 +136,15 @@ class TokoNowRecentPurchaseFragment:
         updateCurrentPageLocalCacheModelData()
 
         viewModel.showLoading()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) return
+
+        when (requestCode) {
+            REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET -> onCategoryFilterActivityResult(data)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -234,6 +251,29 @@ class TokoNowRecentPurchaseFragment:
         recomItem: RecommendationItem
     ) {
         // TO-DO :
+    }
+
+    override fun onClickSortFilter() {
+
+    }
+
+    override fun onClickDateFilter() {
+
+    }
+
+    override fun onClickCategoryFilter() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalTokopediaNow.CATEGORY_FILTER,
+            localCacheModel?.warehouse_id.orEmpty()
+        )
+        val selectedFilter = viewModel.getSelectedCategoryFilter()
+        intent.putExtra(EXTRA_SELECTED_CATEGORY_FILTER, selectedFilter)
+        startActivityForResult(intent, REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET)
+    }
+
+    override fun onClearAllFilter() {
+        viewModel.clearSelectedFilters()
     }
 
     private fun initInjector() {
@@ -440,6 +480,11 @@ class TokoNowRecentPurchaseFragment:
                 }
             }
         }
+    }
+
+    private fun onCategoryFilterActivityResult(data: Intent?) {
+        val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
+        viewModel.setSelectedCategoryFilter(selectedFilter)
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {

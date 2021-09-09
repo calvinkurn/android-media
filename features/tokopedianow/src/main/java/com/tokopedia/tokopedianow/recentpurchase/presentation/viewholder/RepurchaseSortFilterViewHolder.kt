@@ -1,88 +1,108 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 
 import android.view.View
-import android.widget.LinearLayout.*
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.unifycomponents.ChipsUnify
 
 class RepurchaseSortFilterViewHolder(
-    itemView: View
-): AbstractViewHolder<RepurchaseSortFilterUiModel>(itemView) {
+    itemView: View,
+    private val listener: SortFilterListener
+) : AbstractViewHolder<RepurchaseSortFilterUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter
     }
 
-    private val filterData = ArrayList<SortFilterItem>()
+    private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
+
     private val sortFilter: SortFilter? by lazy { itemView.findViewById(R.id.sort_filter) }
 
     override fun bind(data: RepurchaseSortFilterUiModel) {
+        clearSortFilterItems()
         addSortFilterItems(data)
-        setupSortFilterLayout()
+        setupChipRightIcon()
+        setupClearButton(data)
     }
 
     private fun addSortFilterItems(data: RepurchaseSortFilterUiModel) {
         data.sortFilterList.forEach {
-            val title = getString(it.title)
-            val item = SortFilterItem(title)
-            val filterType = it.filterType
+            val selectedItems = it.selectedItem?.title.orEmpty()
 
-            filterData.add(item)
-            sortFilter?.addItem(filterData)
+            val title = if(selectedItems.isNotEmpty() && it.qtyFormat != null) {
+                val selectedFilterCount = selectedItems.count().orZero()
+                itemView.context.getString(it.qtyFormat, selectedFilterCount)
+            } else {
+                getString(it.title)
+            }
+
+            val item = SortFilterItem(title)
+
+            filterItems.add(item)
+            sortFilter?.addItem(filterItems)
 
             item.apply {
-                type = it.chipType
-                selectedItem = it.selectedItems
-                listener = { onClickSortFilterItem(filterType) }
+                type = if(selectedItems.isNotEmpty()) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    it.chipType
+                }
+                listener = {
+                    onClickSortFilterItem(it)
+                }
                 refChipUnify.setChevronClickListener {
-                    onClickSortFilterItem(filterType)
+                    onClickSortFilterItem(it)
                 }
             }
         }
     }
 
-    private fun setupSortFilterLayout() {
-        filterData.forEachIndexed { index, item ->
-            if (index == 0) {
-                val dimenMarginEnd = itemView.context.resources
-                    .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                val dimenMarginStart = itemView.context.resources
-                    .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private fun setupClearButton(data: RepurchaseSortFilterUiModel) {
+        sortFilter?.sortFilterPrefix?.setOnClickListener {
+            clearAllFilters(data)
+        }
+    }
 
-                val layoutParams = LayoutParams(
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT
-                ).apply {
-                    marginStart = dimenMarginStart
-                    marginEnd = dimenMarginEnd
-                }
-                item.refChipUnify.layoutParams = layoutParams
-            }
+    private fun setupChipRightIcon() {
+        filterItems.forEach { item ->
             item.refChipUnify.chip_right_icon.show()
         }
     }
 
-    private fun onClickSortFilterItem(type: RepurchaseSortFilterType) {
-        when(type) {
-            RepurchaseSortFilterType.SORT -> openSortFilterBottomSheet()
-            RepurchaseSortFilterType.DATE_FILTER -> openDateFilterBottomSheet()
-            RepurchaseSortFilterType.CATEGORY_FILTER -> openCategoryFilterBottomSheet()
+    private fun onClickSortFilterItem(filter: RepurchaseSortFilter) {
+        when (filter.type) {
+            RepurchaseSortFilterType.SORT -> listener.onClickSortFilter()
+            RepurchaseSortFilterType.DATE_FILTER -> listener.onClickDateFilter()
+            RepurchaseSortFilterType.CATEGORY_FILTER -> listener.onClickCategoryFilter()
         }
     }
 
-    private fun openSortFilterBottomSheet() {
+    private fun clearAllFilters(data: RepurchaseSortFilterUiModel) {
+        sortFilter?.resetAllFilters()
+        filterItems.forEachIndexed { index, item ->
+            val sortFilter = data.sortFilterList[index]
+            val title = getString(sortFilter.title)
+            item.title = title
+        }
+        listener.onClearAllFilter()
     }
 
-    private fun openDateFilterBottomSheet() {
+    private fun clearSortFilterItems() {
+        filterItems.clear()
     }
 
-    private fun openCategoryFilterBottomSheet() {
+    interface SortFilterListener {
+        fun onClickSortFilter()
+        fun onClickDateFilter()
+        fun onClickCategoryFilter()
+        fun onClearAllFilter()
     }
 }

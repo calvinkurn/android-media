@@ -1,10 +1,10 @@
-package com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.differ
+package com.tokopedia.tokopedianow.categoryfilter.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
-class RecentPurchaseListDiffer : BaseTokopediaNowDiffer() {
+class SortFilterChipDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -12,7 +12,7 @@ class RecentPurchaseListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if(oldItem is RepurchaseSortFilterUiModel && newItem is RepurchaseSortFilterUiModel) {
+        return if (oldItem is CategoryFilterChip && newItem is CategoryFilterChip) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
