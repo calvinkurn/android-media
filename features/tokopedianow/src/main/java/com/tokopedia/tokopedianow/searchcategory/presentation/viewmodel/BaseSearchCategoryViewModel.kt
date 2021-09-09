@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -243,7 +244,8 @@ abstract class BaseSearchCategoryViewModel(
     abstract val tokonowSource: String
 
     private fun isABTestNavigationRevamp() =
-            getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP || getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP2
+            getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
+                || getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP2
 
     private fun getNavigationExpVariant() =
             abTestPlatformWrapper
@@ -339,6 +341,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
         appendChooseAddressParams(tokonowQueryParam)
+        appendUniqueIdParam(tokonowQueryParam)
     }
 
     private fun appendDeviceParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -362,6 +365,10 @@ abstract class BaseSearchCategoryViewModel(
             tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
         if (chooseAddressData.warehouse_id.isNotEmpty())
             tokonowQueryParam[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
+    }
+
+    protected open fun appendUniqueIdParam(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam[SearchApiConst.UNIQUE_ID] = getUniqueId()
     }
 
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -1358,6 +1365,10 @@ abstract class BaseSearchCategoryViewModel(
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
     )
+
+    private fun getUniqueId() =
+        if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
+        else AuthHelper.getMD5Hash(userSession.deviceId)
 
     companion object {
         const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
