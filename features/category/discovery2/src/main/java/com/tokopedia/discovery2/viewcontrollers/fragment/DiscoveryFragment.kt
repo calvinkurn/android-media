@@ -85,6 +85,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -106,7 +107,6 @@ private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
-const val SCREENSHOT_SHARE_SHEET = 2
 
 class DiscoveryFragment :
     BaseDaggerFragment(),
@@ -114,7 +114,10 @@ class DiscoveryFragment :
     View.OnClickListener,
     LihatSemuaViewHolder.OnLihatSemuaClickListener,
     TabLayout.OnTabSelectedListener,
-    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
+    ChooseAddressWidget.ChooseAddressWidgetListener,
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -1161,5 +1164,10 @@ class DiscoveryFragment :
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
+    }
+
+    // ScreenShot Access Dialogue Permission
+    override fun permissionAction(action: String, label: String) {
+        getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
     }
 }
