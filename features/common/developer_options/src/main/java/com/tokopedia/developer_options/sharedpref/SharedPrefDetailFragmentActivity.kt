@@ -53,7 +53,7 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, keyToEdit)
         var value = ""
-        var success = true
+        var success = false
         var i = 0
         while (!success) {
             try {
