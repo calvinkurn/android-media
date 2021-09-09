@@ -35,7 +35,9 @@ import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
-import com.tokopedia.shop.home.domain.*
+import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -59,7 +61,7 @@ import rx.Observable
 import javax.inject.Provider
 
 @ExperimentalCoroutinesApi
-class ShopHomeViewModelTest {
+class OldShopHomeViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -95,16 +97,12 @@ class ShopHomeViewModelTest {
     @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
     @RelaxedMockK
-    lateinit var gqlShopPageGetHomeLayoutData: GqlShopPageGetHomeLayoutData
-    @RelaxedMockK
-    lateinit var getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
-    @RelaxedMockK
     lateinit var shopProductSortMapper: ShopProductSortMapper
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
     @RelaxedMockK
     lateinit var context: Context
-    private lateinit var viewModel: ShopHomeViewModel
+    private lateinit var viewModel: OldShopHomeViewModel
 
     private val mockShopId = "1234"
     private val mockCampaignId = "123"
@@ -144,8 +142,9 @@ class ShopHomeViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ShopHomeViewModel(
+        viewModel = OldShopHomeViewModel(
                 userSessionInterface,
+                getShopPageHomeLayoutUseCase,
                 getShopProductUseCase,
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
@@ -159,9 +158,7 @@ class ShopHomeViewModelTest {
                 gqlGetShopSortUseCase,
                 shopProductSortMapper,
                 mvcSummaryUseCase,
-                playWidgetTools,
-                gqlShopPageGetHomeLayoutData,
-                getShopPageHomeLayoutV2UseCase
+                playWidgetTools
         )
     }
     @Test
@@ -274,7 +271,7 @@ class ShopHomeViewModelTest {
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
-        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
+        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = OldShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
         viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)

@@ -10,9 +10,12 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_ROLLOUT_NEW_SHOP_ETALASE
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
 import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
+import com.tokopedia.remoteconfig.RollenceKey.NEW_SHOP_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
+import com.tokopedia.remoteconfig.RollenceKey.OLD_SHOP_HOME_TAB
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
@@ -122,5 +125,14 @@ object ShopUtil {
                 OLD_REVIEW_SHOP
         )
         return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
+    }
+
+    fun isUsingNewShopHomeTab(): Boolean {
+        val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_SHOP_NEW_HOME_TAB,
+                OLD_SHOP_HOME_TAB
+        )
+//        return newShopHomeTabAbTestKey.equals(NEW_SHOP_HOME_TAB, true)
+        return true
     }
 }

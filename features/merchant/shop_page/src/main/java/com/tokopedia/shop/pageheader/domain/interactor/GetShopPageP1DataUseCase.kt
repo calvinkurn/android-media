@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
+import com.tokopedia.shop.common.constant.ShopPageGetHomeTypeQuery
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
@@ -114,7 +115,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
         val params = GqlShopPageGetHomeType.createParams(shopId)
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
-                GqlShopPageGetHomeType.QUERY,
+                ShopPageGetHomeTypeQuery.getShopHomeTypeQuery(),
                 params.parameters
         )
     }

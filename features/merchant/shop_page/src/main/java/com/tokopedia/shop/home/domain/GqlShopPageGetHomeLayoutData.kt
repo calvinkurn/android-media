@@ -1,5 +1,6 @@
-package com.tokopedia.shop.pageheader.domain.interactor
+package com.tokopedia.shop.home.domain
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -11,7 +12,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GqlShopPageGetHomeType @Inject constructor(
+class GqlShopPageGetHomeLayoutData @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopPageGetHomeType>() {
 
@@ -27,7 +28,7 @@ class GqlShopPageGetHomeType @Inject constructor(
     var isFromCacheFirst: Boolean = true
     val request by lazy {
         GraphqlRequest(
-                ShopPageGetHomeTypeQuery.getShopHomeTypeQuery(),
+                ShopPageGetHomeTypeQuery.getShopHomeLayoutDataQuery(),
                 ShopPageGetHomeType.Response::class.java, params.parameters
         )
     }
@@ -35,8 +36,7 @@ class GqlShopPageGetHomeType @Inject constructor(
     override suspend fun executeOnBackground(): ShopPageGetHomeType {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopPageGetHomeType.Response::class.java)
         if (error == null || error.isEmpty()) {
@@ -45,4 +45,5 @@ class GqlShopPageGetHomeType @Inject constructor(
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
     }
+
 }

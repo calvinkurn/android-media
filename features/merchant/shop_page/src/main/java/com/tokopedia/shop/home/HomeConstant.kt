@@ -14,6 +14,7 @@ object WidgetType {
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
+    const val PROMO = "promo"
 }
 
 object WidgetName {

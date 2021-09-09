@@ -28,7 +28,7 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-class ShopHomeAdapter(
+class OldShopHomeAdapter(
         private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
         DataEndlessScrollListener.OnDataEndlessScrollListener,
@@ -90,7 +90,6 @@ class ShopHomeAdapter(
         val lastIndex = visitables.size
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
-        clearRecycleViewPool()
         if (initialData)
             notifyChangedDataSet()
         else
@@ -112,11 +111,7 @@ class ShopHomeAdapter(
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         visitables.clear()
-        visitables.addAll(data.onEach {
-            it.widgetState = WidgetState.PLACEHOLDER
-        })
-        visitables.add(ProductGridListPlaceholderUiModel(WidgetState.PLACEHOLDER))
-        clearRecycleViewPool()
+        visitables.addAll(data)
         notifyChangedDataSet()
     }
 
@@ -135,12 +130,9 @@ class ShopHomeAdapter(
             if (index >= 0) {
                 if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
                     visitables.removeAt(index)
-                    clearRecycleViewPool()
                     notifyItemRemoved(index)
                 } else {
-                    shopHomeVoucherUiModel.widgetState = WidgetState.FINISH
                     visitables[index] = shopHomeVoucherUiModel
-                    clearRecycleViewPool()
                     notifyItemChanged(index)
                 }
             }
@@ -458,10 +450,7 @@ class ShopHomeAdapter(
                 visitables.removeAt(position)
                 notifyItemRemoved(position)
             } else {
-                visitables[position] = (visitables[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel).apply {
-                    widgetState = WidgetState.FINISH
-                }
-                clearRecycleViewPool()
+                visitables[position] = (visitables[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel)
                 notifyChangedItem(position)
             }
         }
@@ -470,86 +459,5 @@ class ShopHomeAdapter(
     private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
         return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
                 || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
-    }
-
-    fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, BaseShopHomeWidgetUiModel?>) {
-        listWidgetContentData.onEach { widgetContentData ->
-            visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                widgetContentData.key.first == it.widgetId && widgetContentData.key.second == it.widgetMasterId
-            }.let{ position ->
-                if (position >= 0 && position < visitables.size) {
-                    widgetContentData.value?.let{
-                        it.widgetState = WidgetState.FINISH
-                        visitables[position] = it
-                    } ?: visitables.removeAt(position)
-                    clearRecycleViewPool()
-                    notifyChangedDataSet()
-                }
-            }
-        }
-    }
-
-    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
-        listWidgetLayout.onEach { widgetLayout ->
-            visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().firstOrNull {
-                widgetLayout.widgetId == it.widgetId && widgetLayout.widgetMasterId == it.widgetMasterId
-            }?.let{
-                it.widgetState = WidgetState.LOADING
-            }
-        }
-    }
-
-    fun isLoadNextHomeWidgetData(position: Int): Boolean {
-        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
-    }
-
-    fun isLoadProductGridListData(position: Int): Boolean {
-        return (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
-    }
-
-    fun updateProductGridListPlaceholderStateToLoadingState() {
-        visitables.filterIsInstance<ProductGridListPlaceholderUiModel>().firstOrNull()?.let {
-            it.widgetState = WidgetState.LOADING
-        }
-    }
-
-    fun removeProductGridListPlaceholder() {
-        visitables.indexOfFirst { it is ProductGridListPlaceholderUiModel }.let { position ->
-            if (position >= 0 && position < visitables.size) {
-                visitables.removeAt(position)
-                clearRecycleViewPool()
-                notifyItemRemoved(position)
-            }
-        }
-    }
-
-    fun isLoadFirstWidgetContentData(): Boolean {
-        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().none {
-            it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
-        }
-    }
-
-    fun getPlayWidgetUiModel(): CarouselPlayWidgetUiModel? {
-        return visitables.filterIsInstance<CarouselPlayWidgetUiModel>().firstOrNull()
-    }
-
-    fun getMvcWidgetUiModel(): ShopHomeVoucherUiModel? {
-        return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
-    }
-
-    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
-        listShopWidgetLayout.onEach { shopWidgetLayout ->
-            visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                shopWidgetLayout.widgetId == it.widgetId && shopWidgetLayout.widgetMasterId == it.widgetMasterId
-            }.let { position ->
-                visitables.removeAt(position)
-                clearRecycleViewPool()
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun clearRecycleViewPool(){
-        recyclerView?.recycledViewPool?.clear()
     }
 }
