@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.posttag
 
 import android.content.Context
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -85,8 +86,14 @@ class ProductTaggingView @JvmOverloads constructor(
         val product = products[index]
 
         productViewName.text = product.name
-        productViewSlashedPrice.gone()
-        productViewPrice.text = product.price
+
+        if (product.isDiscount) {
+            productViewPrice.text = product.priceDiscountFmt
+            setSlashedPriceText(product.priceOriginalFmt)
+        } else {
+            productViewSlashedPrice.gone()
+            productViewPrice.text = product.price
+        }
 
         if (feedXTag.posY > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
             this.finalPointerView = productTagPointerBottom
@@ -173,6 +180,13 @@ class ProductTaggingView @JvmOverloads constructor(
      fun hideExpandedView() {
         productTagExpandedView.invisible()
         finalPointerView.invisible()
+    }
+    private fun setSlashedPriceText(priceOriginal: String) {
+        productViewSlashedPrice.run {
+            text = priceOriginal
+            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            visible()
+        }
     }
 
 

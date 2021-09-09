@@ -70,4 +70,5 @@
     <string name="feed_content_text_lanjut">Lanjut</string>
     <string name="feed_content_text_post">Post</string>
     <string name="feed_content_delete_toaster_text">Tag produk telah dihapus.</string>
+    <string name="feed_content_more_than_5_product_tag">Oops, maksimal upload 5 media. Hapus salah satu media jika ingin menggantinya.</string>
 </resources>

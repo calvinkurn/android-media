@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.models.BundleData
 
@@ -27,11 +26,6 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-       // openImagePicker("","","")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +62,8 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
         isFromTemplateToken: Boolean,
     ) {
         val authors = feedContentForm.authors
-        openImagePicker(authors.first().name,
-            getString(R.string.feed_content_post_sebagai),
+        openImagePicker(
+            getString(R.string.feed_content_post_sebagai),authors.first().name,
             authors.first().thumbnail)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -86,5 +80,5 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
             }
         }
     }
-    }
+}
 

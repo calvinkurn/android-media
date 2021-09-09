@@ -11,7 +11,10 @@ data class RelatedProductItem(
         val name: String = "",
         val price: String = "",
         val image: String = "",
-        val type: String = ""
+        val type: String = "",
+        val priceOriginalFmt: String = "",
+        val priceDiscountFmt: String = "",
+        val isDiscount: Boolean = false
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString() ?: "",
