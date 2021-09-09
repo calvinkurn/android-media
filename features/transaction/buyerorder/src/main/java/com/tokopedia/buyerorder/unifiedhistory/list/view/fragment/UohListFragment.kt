@@ -128,7 +128,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
-import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
 import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
@@ -329,14 +328,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
-        if (userSession.isLoggedIn) {
-            activity?.let {
-                trackingQueue = TrackingQueue(it)
-            }
-            initialLoad()
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        }
+        checkLogin()
+        initTrackingQueue()
     }
 
     override fun onResume() {
@@ -361,6 +354,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun checkLogin() {
+        if (userSession.isLoggedIn) {
+            initialLoad()
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun initTrackingQueue() {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
@@ -1857,15 +1864,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession.userId?.let {
-            UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
-                    name = productName,
-                    id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
-                    category = recommendationItem.categoryBreadcrumbs,
-                    position = index.toString(),
-                    list = list
-            ), topAds)
+        userSession.userId?.let { userId ->
+            UohAnalytics.productViewRecommendation(trackingQueue, userId, recommendationItem, topAds, index.toString())
         }
     }
 
@@ -2004,5 +2004,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }
