@@ -77,9 +77,6 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // UI Test
-    androidTestImplementation rootProject.ext.miscDependencies.rxJava
-    
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
