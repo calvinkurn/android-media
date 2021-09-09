@@ -8,7 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-suspend inline fun <reified R, P> GraphqlRepository.request(
+suspend inline fun <P, reified R> GraphqlRepository.request(
     query: String,
     params: P
 ): R {
@@ -23,23 +23,28 @@ suspend inline fun <reified R, P> GraphqlRepository.request(
     return response.getSuccessData()
 }
 
-inline fun <reified R, P> GraphqlRepository.requestAsFlow(
+inline fun <P, reified R> GraphqlRepository.requestAsFlow(
     query: String,
     params: P
 ): Flow<R> {
     return flow {
-        request(query, params)
+        emit(request(query, params))
     }
 }
 
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)
-    if (error == null || error.isEmpty()){
+    if (error == null || error.isEmpty()) {
         return getData(T::class.java)
     } else {
         val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
-        LoggingUtils.logGqlErrorBackend("getSuccessData", "", errorMessage, httpStatusCode.toString())
+        LoggingUtils.logGqlErrorBackend(
+            "getSuccessData",
+            "",
+            errorMessage,
+            httpStatusCode.toString()
+        )
         throw MessageErrorException(errorMessage)
     }
 }

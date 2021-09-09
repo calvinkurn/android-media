@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class GetNoParamUseCase(
     private val repository: GraphqlRepository,
@@ -78,8 +79,10 @@ class GetNoParamFlowUseCase(
 
 }
 
-class GetNoParamFlowStateUseCase(private val repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    FlowStateUseCase<Unit, FooModel>(dispatcher) {
+class GetNoParamFlowStateUseCase(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+) : FlowStateUseCase<Unit, FooModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return """
@@ -93,7 +96,9 @@ class GetNoParamFlowStateUseCase(private val repository: GraphqlRepository, disp
     }
 
     override suspend fun execute(params: Unit): Flow<Result<FooModel>> {
-        return repository.requestAsFlow(graphqlQuery(), params)
+        return repository
+            .requestAsFlow<Unit, FooModel>(graphqlQuery(), params)
+            .map { Success(it) }
     }
 
 }
