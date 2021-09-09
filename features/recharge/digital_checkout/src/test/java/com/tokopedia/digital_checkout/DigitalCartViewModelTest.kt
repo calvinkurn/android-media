@@ -104,7 +104,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -159,7 +159,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(digitalCartViewModel.isNeedOtp.value == userSession.phoneNumber)
@@ -173,7 +173,7 @@ class DigitalCartViewModelTest {
         //when
         val categoryId = "1"
         val userNotLoginMessage = "user not login"
-        digitalCartViewModel.getCart(categoryId, userNotLoginMessage)
+        digitalCartViewModel.getCart(categoryId, userNotLoginMessage, isSpecialProduct = true)
 
         //then
         assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == userNotLoginMessage)
@@ -190,7 +190,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -244,7 +244,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         // then
         // must show content and show loading
@@ -299,7 +299,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -356,7 +356,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -373,7 +373,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -390,7 +390,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -408,7 +408,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -426,7 +426,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -444,7 +444,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -463,7 +463,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -536,7 +536,7 @@ class DigitalCartViewModelTest {
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), "")
+        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), "", isSpecialProduct = true)
 
         // then get cart
         // show loading and hide content
@@ -553,7 +553,7 @@ class DigitalCartViewModelTest {
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData())
+        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), isSpecialProduct = false)
 
         // then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -728,7 +728,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assertNotNull(digitalCartViewModel.promoData.value)
@@ -829,8 +829,9 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
-            val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
-            it.title == STRING_KODE_PROMO}
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
         assertNull(summary)
     }
 
@@ -849,7 +850,8 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
 
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
-            it.title == STRING_KODE_PROMO}
+            it.title == STRING_KODE_PROMO
+        }
         assertNull(summary)
     }
 
@@ -1016,7 +1018,8 @@ class DigitalCartViewModelTest {
 
         // then
         val summary = digitalCartViewModel.payment.value!!.summaries.first {
-            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN }
+            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+        }
         assert(summary.priceAmount == getStringIdrFormat(userInput))
     }
 
