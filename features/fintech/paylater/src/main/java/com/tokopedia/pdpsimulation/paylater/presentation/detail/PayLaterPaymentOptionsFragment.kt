@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -26,13 +25,14 @@ import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PayLaterPaymentOptionsFragment : Fragment() {
 
-    private var isUsageType: Boolean = false
     private val responseData by lazy {
         arguments?.getParcelable<Detail>(PAY_LATER_PARTNER_DATA)
     }
     private val applicationStatusData: PayLaterApplicationDetail? by lazy {
         arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
     }
+
+    private var isClickableButton: Boolean? = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +67,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            openActionBottomSheet()
+            if (isClickableButton == true)
+                openActionBottomSheet()
         }
 
         faqList.setOnClickListener {
@@ -112,19 +113,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun setData() {
         responseData?.let { data ->
-//            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, applicationStatusData)) {
-//                is UsageStepsPartnerType -> {
-//                    isUsageType = true
-//                    btnHowToUse.text = context?.getString(R.string.pay_later_see_how_to_use)
-//                }
-//                else -> {
-//                    isUsageType = false
-//                    btnHowToUse.text = context?.getString(R.string.pay_later_see_how_to_register)
-//                }
-//            }
-
             tvTitlePaymentPartner.text = data.gateway_detail?.name
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
+            data.cta?.cta_type?.let {
+                if (it in 1..4)
+                    isClickableButton = true
+            }
             interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     interest_ceil, false
@@ -142,7 +136,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     montlyInstallment, false
                 )
             }
-            btnHowToUse.text = data.cta?.name
+            if (!data.cta?.name.isNullOrEmpty())
+                btnHowToUse.text = data.cta?.name
+            else
+                btnHowToUse.gone()
 
             if (data.is_recommended == true)
                 recommendedImg.visible()
@@ -154,33 +151,16 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             } else {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST
             }
-
-//            applicationStatusData?.let {
-//                setSubHeaderText(it, data.subHeader)
-//                setLabelData(it)
-//            } ?: setSubHeaderText(null, data.subHeader)
             data.gateway_detail?.let { gatewayDetail ->
                 setPartnerImage(gatewayDetail)
             }
+
+            if (data.disableDetail?.status == true)
+                disableVisibilityGroup.gone()
+
         }
     }
 
-    /*
-    * if sub header from application state api is non empty set it otherwise
-    * set pay later product detail response in sub header text
-    * */
-    private fun setSubHeaderText(
-        detail: PayLaterApplicationDetail?,
-        productDetailSubHeader: String?
-    ) {
-        tvSubTitlePaylaterPartner.visible()
-        if (!detail?.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
-            tvSubTitlePaylaterPartner.text =
-                detail?.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
-        } else if (!productDetailSubHeader.isNullOrEmpty()) {
-            tvSubTitlePaylaterPartner.text = productDetailSubHeader
-        } else tvSubTitlePaylaterPartner.gone()
-    }
 
     private fun setPartnerImage(data: GatewayDetail) {
         val imageUrl: String? = if (context.isDarkMode())
@@ -188,22 +168,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+            imageView.loadImage(imageUrl)
     }
 
-//    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
-//        context?.let {
-//            payLaterApplicationDetail.payLaterApplicationStatusLabelStringId.also { resId ->
-//                if (resId != 0) {
-//                    tvPaylaterPartnerStatus.text = it.getString(resId)
-//                    tvPaylaterPartnerStatus.visible()
-//                    tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
-//                } else {
-//                    tvPaylaterPartnerStatus.gone()
-//                }
-//            }
-//        }
-//    }
 
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"

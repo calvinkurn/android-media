@@ -63,8 +63,16 @@ data class Detail(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("activation_status") val activation_status: Int?,
     @SerializedName("account_status") val account_status: Int?,
+    @SerializedName("disable") val disableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta?,
     @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?
+) : Parcelable
+
+@Parcelize
+data class DisableDetail(
+    @SerializedName("status") val status: Boolean?,
+    @SerializedName("header") val header: String?,
+    @SerializedName("description") val description: String?
 ) : Parcelable
 
 @Parcelize

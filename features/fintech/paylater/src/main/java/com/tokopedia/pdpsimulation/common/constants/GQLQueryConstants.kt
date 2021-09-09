@@ -135,6 +135,11 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         tenure
         activation_status
         account_status
+        disable {
+          status
+          header
+          description
+        } 
         cta {
           name
           description_1

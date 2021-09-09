@@ -185,6 +185,12 @@
 
                     </View>
 
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/disableVisibilityGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="serviceFeeText,interestAmount,serviceFeeAmount,duration,totalAmount,bg_grey,btnHowToUse,insuranceDetail" />
+
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/insuranceDetail"
