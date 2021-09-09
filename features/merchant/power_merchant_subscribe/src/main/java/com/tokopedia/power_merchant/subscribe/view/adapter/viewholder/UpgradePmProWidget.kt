@@ -61,12 +61,6 @@ class UpgradePmProWidget(
                         tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_eligible_benefit_package)
-                        tvSetMembershipStatus?.show()
-                        tvSetMembershipStatus?.setTextMakeHyperlink(
-                            getString(R.string.pm_set_membership_status)
-                        ) {
-                            listener.onMembershipStatusClickListener()
-                        }
                     } else {
                         viewPmUpgradeTermSection?.tvTermStatus?.hide()
                         tvPmUpgradePmProTitle?.text =
@@ -75,8 +69,6 @@ class UpgradePmProWidget(
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
                         hidePmProUpgradeSection()
-                        dividerMembershipStatus?.hide()
-                        tvSetMembershipStatus?.hide()
                     }
                 } else {
                     tvPmUpgradePmProTitle?.text =
@@ -86,21 +78,10 @@ class UpgradePmProWidget(
                         R.string.pm_desc_new_seller_before_30_days,
                         getDaysDate(shopInfo.shopAge)
                     )
-                    tvSetMembershipStatus?.setTextMakeHyperlink(
-                        getString(R.string.pm_set_membership_status)
-                    ) {
-                        listener.onMembershipStatusClickListener()
-                    }
                     viewPmUpgradeTermSection?.tvTermStatus?.hide()
                     hidePmProUpgradeSection()
                 }
             } else {
-                tvSetMembershipStatus?.show()
-                tvSetMembershipStatus?.setTextMakeHyperlink(
-                    getString(R.string.pm_set_membership_status)
-                ) {
-                    listener.onMembershipStatusClickListener()
-                }
                 viewPmUpgradeTermSection?.tvTermStatus?.hide()
                 tvPmUpgradePmProDesc?.hide()
             }
@@ -258,7 +239,6 @@ class UpgradePmProWidget(
     interface Listener {
         fun onUpgradePmProClickListener(adapterPosition: Int)
         fun onUpgradePmProTnCClickListener()
-        fun onMembershipStatusClickListener()
         fun onDeactivatePMClickListener()
     }
 }

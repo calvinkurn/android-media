@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="300dp"
-        android:layout_height="440dp">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/bgBenefitPackage"
@@ -63,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_benefit_package_list"
             tools:itemCount="4"

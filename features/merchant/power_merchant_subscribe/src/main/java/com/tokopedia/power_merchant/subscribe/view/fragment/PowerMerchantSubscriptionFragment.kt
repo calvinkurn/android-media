@@ -173,10 +173,6 @@ open class PowerMerchantSubscriptionFragment :
         bottomSheet.show(childFragmentManager)
     }
 
-    override fun onMembershipStatusClickListener() {
-        showRegularPmDeactivationBottomSheet()
-    }
-
     override fun onMembershipStatusPmProClickListener() {
         showPmProDeactivationBottomSheet()
     }
@@ -618,14 +614,11 @@ open class PowerMerchantSubscriptionFragment :
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                     pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isPmActive = isPm && isActive
-        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller == true
-        val isPmNotEligible = pmBasicInfo?.shopInfo?.isEligiblePmPro == false
-        val isNewSellerPMNotEligible = isPmActive && isNewSeller && isPmNotEligible
-        val isExistingPM = isPmActive && !isNewSeller
 
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
         }
+
         if (!isAutoExtendEnabled) {
             widgets.add(WidgetCancelDeactivationSubmissionUiModel(getExpiredTimeFmt()))
         }
@@ -649,7 +642,7 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
-        if (isAutoExtendEnabled && (isNewSellerPMNotEligible || isExistingPM)) {
+        if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
         }

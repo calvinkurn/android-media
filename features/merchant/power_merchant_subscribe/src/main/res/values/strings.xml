@@ -118,7 +118,7 @@
     <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
     <string name="pm_next_update_pm_pro_info"><![CDATA[Pengecekan status PM PRO akan dilakukan setiap 30 hari. Toko dengan skor <b>di bawah %1$d</b> berpotensi diturunkan menjadi PM.]]></string>
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
-    <string name="pm_deactivate_power_merchant_bottom_cta">Berhenti dari Power Merchant? <font color="#03AC0E"><b>Klik di sini</b></font></string>
+    <string name="pm_deactivate_power_merchant_bottom_cta">Atur status keanggotaanmu <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan penurunan status jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s WIB.</b>]]></string>
 
     <string name="pm_expired_time_format">%1$s, pukul %2$s</string>

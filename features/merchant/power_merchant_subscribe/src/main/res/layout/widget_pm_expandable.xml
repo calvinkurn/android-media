@@ -63,30 +63,4 @@
         tools:itemCount="5"
         tools:listitem="@layout/item_pm_expandable_widget_item" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerPmPro"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvPmExpandableItem"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSetMembershipStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:typographyType="body_3"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/dividerPmPro"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="@string/pm_set_membership_status" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
