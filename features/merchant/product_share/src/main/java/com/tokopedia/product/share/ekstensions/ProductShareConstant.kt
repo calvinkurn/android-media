@@ -15,6 +15,7 @@ object ProductShareConstant {
     const val EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET = "click - sharing channel"
     const val EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET = "click - channel share bottom sheet - screenshot"
     const val EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET = "view on sharing channel"
+    const val EVENT_ACTION_VIEW_SCREENSHOT_SHARE_BOTTOMSHEET = "view - screenshot share bottom sheet"
 
     const val EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES = "click - access photo media and files"
 

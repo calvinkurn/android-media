@@ -352,7 +352,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             productData.productImageUrl ?: "",
                             "", productImgList)
         }
-        onImpressShareWidget(productData.userId, productData.productId)
+        onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
         universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
     }
     //endregion

@@ -683,7 +683,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 activity?.onBackPressed(); true
             }
             R.id.action_share, R.id.action_report -> {
-                shareProduct(); true
+                onClickShareProduct(); true
             }
             R.id.action_cart -> {
                 gotoCart(); true
@@ -2347,25 +2347,31 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun shareProduct() {
-        activity?.let {
-            viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo.basic.productID, viewModel.userId)
+    private fun onClickShareProduct(){
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Click.eventClickPdpShare(
+                productInfo.basic.productID, viewModel.userId
+            )
+            shareProduct(productInfo)
+        }
+    }
 
-                val productData = ProductData(
-                        viewModel.userId,
-                        productInfo.finalPrice.getCurrencyFormatted(),
-                        "${productInfo.data.isCashback.percentage}%",
-                        MethodChecker.fromHtml(productInfo.getProductName).toString(),
-                        productInfo.data.price.currency,
-                        productInfo.basic.url,
-                        viewModel.getShopInfo().shopCore.url ?: "",
-                        productInfo.basic.shopName,
-                        productInfo.basic.productID,
-                        productInfo.data.getProductImageUrl() ?: ""
-                )
-                checkAndExecuteReferralAction(productData)
-            }
+    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
+        val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
+        if (productInfo != null) {
+            val productData = ProductData(
+                viewModel.userId,
+                productInfo.finalPrice.getCurrencyFormatted(),
+                "${productInfo.data.isCashback.percentage}%",
+                MethodChecker.fromHtml(productInfo.getProductName).toString(),
+                productInfo.data.price.currency,
+                productInfo.basic.url,
+                viewModel.getShopInfo().shopCore.url,
+                productInfo.basic.shopName,
+                productInfo.basic.productID,
+                productInfo.data.getProductImageUrl() ?: ""
+            )
+            checkAndExecuteReferralAction(productData)
         }
     }
 
@@ -2721,7 +2727,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
-                                shareProduct()
+                                onClickShareProduct()
                             }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -3669,8 +3675,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return false
     }
 
-    override fun screenShotTaken() {
-        shareProduct()
-    }
+    override fun screenShotTaken() { shareProduct() }
 
 }

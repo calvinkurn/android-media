@@ -5,6 +5,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_SCREENSHOT_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_SHARE_BOTTOMSHEET
+import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_VIEW_SCREENSHOT_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_CATEGORY_PDP_SHARING
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_CLICK_PDP_SHARING
@@ -18,6 +19,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_CURREN
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.CUSTOM_SHARE_SHEET
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.SCREENSHOT_SHARE_SHEET
 
 /**
  * Created by Yehezkiel on 05/08/21
@@ -40,12 +42,17 @@ object ProductShareTracking {
         }
     }
 
-    fun onImpressShareWidget(userId: String, productId: String) {
+    fun onImpressShareWidget(type: Int, userId: String, productId: String) {
+        val eventAction = if (type == SCREENSHOT_SHARE_SHEET)
+            EVENT_ACTION_VIEW_SCREENSHOT_SHARE_BOTTOMSHEET
+        else EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET
+
         val mapEvent = TrackAppUtils.gtmData(
-                EVENT_VIEW_IRIS_PDP_SHARING,
-                EVENT_CATEGORY_PDP_SHARING,
-                EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET,
-                "")
+            EVENT_VIEW_IRIS_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            eventAction,
+            ""
+        )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
@@ -107,6 +114,6 @@ object ProductShareTracking {
         this[KEY_BUSINESS_UNIT_SHARING] = VALUE_BUSINESS_UNIT_SHARING
         this[KEY_CURRENT_SITE_SHARING] = VALUE_CURRENT_SITE
         this[KEY_PRODUCT_ID_SHARING] = productId
-        this[KEY_USER_ID_SHARING] = userId
+        this[KEY_USER_ID_SHARING] = userId.ifBlank { 0 }
     }
 }
