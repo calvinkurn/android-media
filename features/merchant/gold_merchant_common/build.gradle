@@ -44,6 +44,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.debugToolsDependencies.chuck
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
