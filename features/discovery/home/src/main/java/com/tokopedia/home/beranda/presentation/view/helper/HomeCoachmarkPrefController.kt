@@ -18,6 +18,14 @@ const val PREF_KEY_WALLETAPP2_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_WALLE
 const val PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NEW_WALLETAPP"
 const val PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NEW_TOKOPOINT"
 
+fun isP1CoachmarkShown(context: Context): Boolean {
+    return isNavigationCoachmarkShown(context) ||
+            isInboxCoachmarkShown(context) ||
+            isBalanceWidgetCoachmarkShown(context) ||
+            isWalletAppCoachmarkShown(context) ||
+            isWalletApp2CoachmarkShown(context)
+}
+
 fun isNavigationCoachmarkShown(context: Context): Boolean {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
             PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
@@ -40,10 +48,6 @@ fun setInboxCoachmarkShown(context: Context) {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
             PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, true).apply()
-}
-
-fun isLocalizingAddressNeedShowCoachMark(context: Context): Boolean {
-    return  ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(context) ?: false
 }
 
 fun setChooseAddressCoachmarkShown(context: Context) {

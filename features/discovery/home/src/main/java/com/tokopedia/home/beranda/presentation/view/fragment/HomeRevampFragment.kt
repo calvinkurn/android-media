@@ -142,6 +142,7 @@ import com.tokopedia.remoteconfig.RollenceKey.HOME_PAYMENT_ABC
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -604,6 +605,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else null
     }
 
+    fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
+        val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(key, value).apply()
+    }
+    fun enableOnboarding(context: Context) {
+        val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(
+            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
@@ -619,6 +630,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         view.findViewById<Button>(R.id.btnTest).setOnClickListener {
             setFalseNewWalletAppCoachmarkShown(context!!)
             setFalseNewTokopointCoachmarkShown(context!!)
+            enableOnboarding(context!!)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_NAV, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_INBOX, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_BALANCE, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
+            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
         }
         oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
@@ -734,9 +753,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
                 bottomSheet.setOnDismissListener {
                     bottomSheetIsShowing = false
-                    adapter?.currentList?.let {
-                        showCoachmarkWithDataValidation(it)
-                    }
                 }
 
                 bottomSheet.setTitle("")
@@ -865,7 +881,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean = false,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
-        if (!bottomSheetIsShowing) {
+        if (!bottomSheetIsShowing && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachmark = CoachMark2(ctx)
