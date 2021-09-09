@@ -121,12 +121,13 @@ object GlobalSearchSellerMapper {
                     }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
-                        val (faqSellerSearchVisitable, _) = mapToFaqSellerSearchVisitable(
+                        val (faqSellerSearchVisitable, itemCount) = mapToFaqSellerSearchVisitable(
                             it.items,
                             keyword,
                             it.title.orEmpty()
                         )
                         addAll(faqSellerSearchVisitable)
+                        countItem += itemCount
                         if (it.has_more == true) {
                             add(
                                 TitleHasMoreSellerSearchUiModel(
@@ -137,6 +138,8 @@ object GlobalSearchSellerMapper {
                                 )
                             )
                         }
+                        val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
                     }
                     HIGHLIGHTS -> {
                         add(ItemTitleHighlightSuggestionSearchUiModel(it.title.orEmpty()))
@@ -205,9 +208,13 @@ object GlobalSearchSellerMapper {
             sellerSearch.map { articleItem ->
                 add(
                     ArticleSellerSearchUiModel(
-                        id = articleItem.id, title = articleItem.title,
-                        desc = articleItem.description, imageUrl = articleItem.image_url,
-                        url = articleItem.url, appUrl = articleItem.app_url, keyword = keyword,
+                        id = articleItem.id,
+                        title = articleItem.title,
+                        desc = articleItem.description,
+                        imageUrl = articleItem.image_url,
+                        url = articleItem.url,
+                        appUrl = articleItem.app_url,
+                        keyword = keyword,
                         section = title
                     )
                 )
