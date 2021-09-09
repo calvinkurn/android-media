@@ -155,6 +155,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         productClickUrl
                         productWishlistUrl
                         productViewUrl
+                        tag
                     }
                     shop {
                         id
@@ -230,6 +231,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                 product_click_url
                 product_wishlist_url
                 shop_click_url
+                tag
                 product {
                     id
                     name
