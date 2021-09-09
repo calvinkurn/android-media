@@ -64,7 +64,7 @@ class SingleProductBundleFragment(
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var tvBundleSold: Typography? = null
+    private var tvBundlePreorder: Typography? = null
     private var bundleListLayout: LinearLayoutCompat? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
@@ -231,14 +231,13 @@ class SingleProductBundleFragment(
             val isError = errorType != SingleProductBundleErrorEnum.NO_ERROR
             geBundlePage?.isVisible = isError
             bundleListLayout?.isVisible = !isError
-            tvBundleSold?.isVisible = !isError
             hideLoadingDialog()
         })
     }
 
     private fun setupTotalSold(view: View) {
-        tvBundleSold = view.findViewById(R.id.tv_bundle_sold)
-        updateTotalPO(null)
+        tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
+        updateTotalPO(null) // set null to hide
     }
 
     private fun setupRecyclerViewItems(view: View) {
@@ -296,9 +295,10 @@ class SingleProductBundleFragment(
         }
     }
 
+    // only visible when totalPOWording not null or empty
     private fun updateTotalPO(totalPOWording: String?) {
-        tvBundleSold?.isVisible = totalPOWording != null
-        tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
+        tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
+        tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
     }
 
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
