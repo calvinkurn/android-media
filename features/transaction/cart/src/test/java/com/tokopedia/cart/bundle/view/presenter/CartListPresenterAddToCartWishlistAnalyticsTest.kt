@@ -30,95 +30,95 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
-
-    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
-    val deleteCartUseCase: DeleteCartUseCase = mockk()
-    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
-    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
-    val updateCartUseCase: UpdateCartUseCase = mockk()
-    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
-    val compositeSubscription = CompositeSubscription()
-    val addWishListUseCase: AddWishListUseCase = mockk()
-    val removeWishListUseCase: RemoveWishListUseCase = mockk()
-    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
-    val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
-    val getWishlistUseCase: GetWishlistUseCase = mockk()
-    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
-    val addToCartUseCase: AddToCartUseCase = mockk()
-    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
-    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
-    val followShopUseCase: FollowShopUseCase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
-
-    Feature("generate add to cart data analytics on wishlist") {
-
-        val cartListPresenter by memoized {
-            CartListPresenter(
-                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
-                    updateCartUseCase, compositeSubscription, addWishListUseCase,
-                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-                    followShopUseCase, TestSchedulers
-            )
-        }
-
-        beforeEachTest {
-            cartListPresenter.attachView(view)
-        }
-
-        Scenario("1 item selected on non empty cart") {
-
-            lateinit var result: Map<String, Any>
-
-            When("generate add to cart wishlist data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), false)
-            }
-
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
-            }
-
-        }
-
-        Scenario("1 item selected on empty cart") {
-
-            lateinit var result: Map<String, Any>
-
-            When("generate add to cart wishlist data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), true)
-            }
-
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should be `empty cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
-            }
-
-        }
-
-    }
-
-})
+//object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
+//
+//    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
+//    val deleteCartUseCase: DeleteCartUseCase = mockk()
+//    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+//    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
+//    val updateCartUseCase: UpdateCartUseCase = mockk()
+//    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+//    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+//    val compositeSubscription = CompositeSubscription()
+//    val addWishListUseCase: AddWishListUseCase = mockk()
+//    val removeWishListUseCase: RemoveWishListUseCase = mockk()
+//    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
+//    val userSessionInterface: UserSessionInterface = mockk()
+//    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+//    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
+//    val getWishlistUseCase: GetWishlistUseCase = mockk()
+//    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
+//    val addToCartUseCase: AddToCartUseCase = mockk()
+//    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
+//    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+//    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+//    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+//    val followShopUseCase: FollowShopUseCase = mockk()
+//    val view: ICartListView = mockk(relaxed = true)
+//
+//    Feature("generate add to cart data analytics on wishlist") {
+//
+//        val cartListPresenter by memoized {
+//            CartListPresenter(
+//                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
+//                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+//                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+//                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+//                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+//                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+//                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+//                    followShopUseCase, TestSchedulers
+//            )
+//        }
+//
+//        beforeEachTest {
+//            cartListPresenter.attachView(view)
+//        }
+//
+//        Scenario("1 item selected on non empty cart") {
+//
+//            lateinit var result: Map<String, Any>
+//
+//            When("generate add to cart wishlist data analytics") {
+//                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), false)
+//            }
+//
+//            Then("should be containing 1 product") {
+//                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+//                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+//                Assert.assertEquals(1, products.size)
+//            }
+//
+//            Then("key `list` value should be `cart`") {
+//                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+//                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+//                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
+//            }
+//
+//        }
+//
+//        Scenario("1 item selected on empty cart") {
+//
+//            lateinit var result: Map<String, Any>
+//
+//            When("generate add to cart wishlist data analytics") {
+//                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), true)
+//            }
+//
+//            Then("should be containing 1 product") {
+//                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+//                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+//                Assert.assertEquals(1, products.size)
+//            }
+//
+//            Then("key `list` value should be `empty cart`") {
+//                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+//                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+//                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
+//            }
+//
+//        }
+//
+//    }
+//
+//})

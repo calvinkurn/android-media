@@ -3,8 +3,6 @@ package com.tokopedia.cart.bundle.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.bundle.domain.model.cartlistcheckboxstate.CartlistCheckboxStateData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
@@ -29,124 +27,124 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterSaveCheckboxStateTest : Spek({
-
-    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
-    val deleteCartUseCase: DeleteCartUseCase = mockk()
-    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
-    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
-    val updateCartUseCase: UpdateCartUseCase = mockk()
-    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
-    val compositeSubscription = CompositeSubscription()
-    val addWishListUseCase: AddWishListUseCase = mockk()
-    val removeWishListUseCase: RemoveWishListUseCase = mockk()
-    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
-    val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
-    val getWishlistUseCase: GetWishlistUseCase = mockk()
-    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
-    val addToCartUseCase: AddToCartUseCase = mockk()
-    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
-    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
-    val followShopUseCase: FollowShopUseCase = mockk()
-
-    val view: ICartListView = mockk(relaxed = true)
-
-    Feature("add cart item to wishlist") {
-
-        val cartListPresenter by memoized {
-            CartListPresenter(
-                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
-                    updateCartUseCase, compositeSubscription, addWishListUseCase,
-                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-                    followShopUseCase, TestSchedulers
-            )
-        }
-
-        beforeEachTest {
-            cartListPresenter.attachView(view)
-        }
-
-        Scenario("success save checkbox state") {
-
-            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
-                add(
-                        CartItemHolderData(
-                                CartItemData().apply {
-                                    originData = CartItemData.OriginData().apply {
-                                        cartId = 123
-                                    }
-                                },
-                                isSelected = true
-                        )
-                )
-            }
-
-            val cartlistCheckboxStateData = CartlistCheckboxStateData().apply {
-                success = true
-            }
-
-            Given("mock save checkbox state response") {
-                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(cartlistCheckboxStateData)
-            }
-
-            Given("mock params") {
-                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
-            }
-
-            When("process save checkbox state") {
-                cartListPresenter.saveCheckboxState(cartItemDataList)
-            }
-
-            Then("should success") {
-                assert(cartlistCheckboxStateData.success)
-            }
-        }
-
-        Scenario("failed save checkbox state") {
-
-            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
-                add(
-                        CartItemHolderData(
-                                CartItemData().apply {
-                                    originData = CartItemData.OriginData().apply {
-                                        cartId = 123
-                                    }
-                                },
-                                isSelected = true
-                        )
-                )
-            }
-
-            val cartlistCheckboxStateData = CartlistCheckboxStateData().apply {
-                success = false
-            }
-
-            Given("mock save checkbox state response") {
-                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(cartlistCheckboxStateData)
-            }
-
-            Given("mock params") {
-                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
-            }
-
-            When("process save checkbox state") {
-                cartListPresenter.saveCheckboxState(cartItemDataList)
-            }
-
-            Then("should failed") {
-                assert(!cartlistCheckboxStateData.success)
-            }
-        }
-
-    }
-
-})
+//object CartListPresenterSaveCheckboxStateTest : Spek({
+//
+//    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
+//    val deleteCartUseCase: DeleteCartUseCase = mockk()
+//    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+//    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
+//    val updateCartUseCase: UpdateCartUseCase = mockk()
+//    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+//    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+//    val compositeSubscription = CompositeSubscription()
+//    val addWishListUseCase: AddWishListUseCase = mockk()
+//    val removeWishListUseCase: RemoveWishListUseCase = mockk()
+//    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
+//    val userSessionInterface: UserSessionInterface = mockk()
+//    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+//    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
+//    val getWishlistUseCase: GetWishlistUseCase = mockk()
+//    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
+//    val addToCartUseCase: AddToCartUseCase = mockk()
+//    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
+//    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+//    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+//    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+//    val followShopUseCase: FollowShopUseCase = mockk()
+//
+//    val view: ICartListView = mockk(relaxed = true)
+//
+//    Feature("add cart item to wishlist") {
+//
+//        val cartListPresenter by memoized {
+//            CartListPresenter(
+//                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
+//                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+//                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+//                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+//                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+//                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+//                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+//                    followShopUseCase, TestSchedulers
+//            )
+//        }
+//
+//        beforeEachTest {
+//            cartListPresenter.attachView(view)
+//        }
+//
+//        Scenario("success save checkbox state") {
+//
+//            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
+//                add(
+//                        CartItemHolderData(
+//                                CartItemData().apply {
+//                                    originData = CartItemData.OriginData().apply {
+//                                        cartId = 123
+//                                    }
+//                                },
+//                                isSelected = true
+//                        )
+//                )
+//            }
+//
+//            val cartlistCheckboxStateData = CartlistCheckboxStateData().apply {
+//                success = true
+//            }
+//
+//            Given("mock save checkbox state response") {
+//                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(cartlistCheckboxStateData)
+//            }
+//
+//            Given("mock params") {
+//                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
+//            }
+//
+//            When("process save checkbox state") {
+//                cartListPresenter.saveCheckboxState(cartItemDataList)
+//            }
+//
+//            Then("should success") {
+//                assert(cartlistCheckboxStateData.success)
+//            }
+//        }
+//
+//        Scenario("failed save checkbox state") {
+//
+//            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
+//                add(
+//                        CartItemHolderData(
+//                                CartItemData().apply {
+//                                    originData = CartItemData.OriginData().apply {
+//                                        cartId = 123
+//                                    }
+//                                },
+//                                isSelected = true
+//                        )
+//                )
+//            }
+//
+//            val cartlistCheckboxStateData = CartlistCheckboxStateData().apply {
+//                success = false
+//            }
+//
+//            Given("mock save checkbox state response") {
+//                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(cartlistCheckboxStateData)
+//            }
+//
+//            Given("mock params") {
+//                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
+//            }
+//
+//            When("process save checkbox state") {
+//                cartListPresenter.saveCheckboxState(cartItemDataList)
+//            }
+//
+//            Then("should failed") {
+//                assert(!cartlistCheckboxStateData.success)
+//            }
+//        }
+//
+//    }
+//
+//})
