@@ -21,6 +21,8 @@ import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.view.util.FileUtil
 import com.tokopedia.createpost.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,8 +46,6 @@ class SubmitPostServiceNew : JobIntentService() {
 
     @Inject
     lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
-
-    private val listOfFileUri: ArrayList<ByteArray> = ArrayList()
 
     private var postUpdateProgressManager: PostUpdateProgressManager? = null
 
@@ -77,9 +77,13 @@ class SubmitPostServiceNew : JobIntentService() {
         postUpdateProgressManager = getProgressManager(viewModel)
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
+        val tagList:ArrayList<FeedXMediaTagging> = ArrayList()
+        val products: ArrayList<RelatedProductItem> = ArrayList()
+
         viewModel.fileImageList.forEach {
-            listOfFileUri.add(contentResolver.openInputStream(Uri.parse(it.path))?.readBytes()?: byteArrayOf())
             it.type = getFileType(contentResolver.getType(Uri.parse(it.path))?:"")
+            tagList.addAll(it.tags)
+            products.addAll(it.products)
         }
 
         submitPostUseCase.execute(
@@ -93,7 +97,7 @@ class SubmitPostServiceNew : JobIntentService() {
             (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
             else viewModel.fileImageList).map { it.path to it.type },
             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-            else viewModel.productIdList, listOfFileUri
+            else viewModel.productIdList, tagList,products
         ), getSubscriber())
     }
 
@@ -113,7 +117,7 @@ class SubmitPostServiceNew : JobIntentService() {
 
     private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager{
         val firstImage = FileUtil.createFilePathFromUri(applicationContext,Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
-        val maxCount = viewModel.completeImageList.size
+        val maxCount = viewModel.fileImageList.size
         return object: PostUpdateProgressManager(maxCount,firstImage,applicationContext){
         }
     }

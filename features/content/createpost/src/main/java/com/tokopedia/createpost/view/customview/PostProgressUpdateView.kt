@@ -117,7 +117,9 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun registerBroadcastReceiver() {
         context?.applicationContext?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(BROADCAST_SUBMIT_POST_NEW
+            intentFilter.addAction(BROADCAST_SUBMIT_POST_NEW)
+            LocalBroadcastManager
+                .getInstance(it)
                 .registerReceiver(submitPostReceiver, intentFilter)
         }
     }
@@ -125,7 +127,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun registerBroadcastReceiverProgress() {
         context?.applicationContext?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(UPLOAD_POST_SUCCESS_NEW)
+            intentFilter.addAction(UPLOAD_POST_NEW)
 
             LocalBroadcastManager
                 .getInstance(it)

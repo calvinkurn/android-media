@@ -19,6 +19,7 @@ abstract class PostUpdateProgressManager(
     private var imgUrl=""
 
     fun onAddProgress() {
+        sendBroadcast(++currentProgress,imgUrl)
     }
 
     fun onSubmitPost() {
@@ -26,7 +27,6 @@ abstract class PostUpdateProgressManager(
 
     fun setFirstIcon(url: String) {
         imgUrl = url
-        sendBroadcast(currentProgress++,imgUrl)
     }
 
     fun onSuccessPost() {

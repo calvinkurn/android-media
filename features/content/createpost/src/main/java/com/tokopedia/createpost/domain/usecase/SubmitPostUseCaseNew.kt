@@ -1,17 +1,16 @@
 package com.tokopedia.createpost.domain.usecase
 
-import android.content.ContentResolver
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitMediumByte
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.PostUpdateProgressManager
-import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
+import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -40,11 +39,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
         val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>?
             ?: emptyList())
 
-        val mediaByte = (requestParams.getObject(PARAM_MEDIA_BYTE))
-
         return uploadMultipleImageUseCase
             .createObservable(
-                UploadMultipleImageUsecaseNew.createRequestParams(getMediumList(media, tags),mediaByte as ArrayList<ByteArray>)
+                UploadMultipleImageUsecaseNew.createRequestParams(getMediumList(media, tags))
             )
             .map(rearrangeMedia())
             .flatMap(submitPostToGraphql(requestParams))
@@ -122,7 +119,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
         val input = ContentSubmitInput(
             action = requestParams.getString(PARAM_ACTION, null)
         )
-        //TODO tags,product
+        //TODO shruti tags,product
         input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
         input.token = requestParams.getString(PARAM_TOKEN, "")
         input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
@@ -156,7 +153,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val PARAM_MEDIA_BYTE = "media_byte"
         private const val ACTION_UPDATE = "update"
         private const val PARAM_MEDIA_MODEL_TAGS = "media_tags"
-        private const val PARAM_MEDIA_BYTE_PRODUCTS = "media_products"
+        private const val PARAM_MEDIA_MODEL_PRODUCTS = "media_products"
 
         fun createRequestParams(
             id: String?,
@@ -166,7 +163,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
             caption: String,
             media: List<Pair<String, String>>,
             relatedIdList: List<String>,
-            byteArray: ArrayList<ByteArray>
+            tags: ArrayList<FeedXMediaTagging>,
+            products: ArrayList<RelatedProductItem>
         ): RequestParams {
 
             val requestParams = RequestParams.create()
@@ -176,9 +174,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
             requestParams.putString(PARAM_AUTHOR_TYPE, "content-shop")
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_TAGS, relatedIdList)
-            requestParams.putObject(PARAM_MEDIA_BYTE, byteArray)
-          //  requestParams.putObject(PARAM_MEDIA_MODEL_TAGS,)
-
+            requestParams.putObject(PARAM_MEDIA_MODEL_TAGS,tags)
+            requestParams.putObject(PARAM_MEDIA_MODEL_PRODUCTS,products)
 
             if (!id.isNullOrEmpty()) {
                 requestParams.putString(PARAM_ID, id)

@@ -184,7 +184,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
-        goToFeed()
+   //     goToFeed()
         finish()
     }
 

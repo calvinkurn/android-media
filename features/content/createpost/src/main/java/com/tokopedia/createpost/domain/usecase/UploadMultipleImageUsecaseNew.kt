@@ -28,36 +28,25 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>,
     private val userSession: UserSessionInterface) : UseCase<List<SubmitPostMedium>>() {
 
-    var fileIndex = 0
     var postUpdateProgressManager: PostUpdateProgressManager? = null
     var tempFilePath=""
+    var firstTimeUpoad = true
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
         return Observable.from(requestParams.getObject(PARAM_URL_LIST) as List<SubmitPostMedium>)
-            .flatMap { if (it.type == SubmitPostMedium.TYPE_VIDEO) uploadVideo(it,
-                requestParams.getObject(PARAM_URL_BYTE) as ArrayList<ByteArray>) else uploadSingleImage(it,
-                requestParams.getObject(PARAM_URL_BYTE) as ArrayList<ByteArray>) }
+            .flatMap { if (it.type == SubmitPostMedium.TYPE_VIDEO) uploadVideo(it) else uploadSingleImage(it) }
             .toList()
     }
 
-    private fun uploadVideo(medium: SubmitPostMedium,byteArray: ArrayList<ByteArray>): Observable<SubmitPostMedium> {
-        return if (fileIndex<byteArray.size) {
-            uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(setTempFilePath(medium))).
-            map(mapToUrlVideo(medium)).map(updateNotification())
-        } else {
-            Observable.just(medium)
-        }
+    private fun uploadVideo(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
+            return uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(setTempFilePath(medium))).
+            map(mapToUrlVideo(medium))
     }
 
-    private fun uploadSingleImage(medium: SubmitPostMedium,byteArray: ArrayList<ByteArray>): Observable<SubmitPostMedium> {
-        return if (fileIndex < byteArray.size) {
+    private fun uploadSingleImage(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
             return uploadImageUseCase.createObservable(createUploadParams(setTempFilePath(medium))).
-            map(mapToUrl(medium)).map(updateNotification())
-        } else {
-            Observable.just(medium).map (updateNotification())
-        }
-
+            map(mapToUrl(medium))
     }
 
     private fun handleUri(medium: SubmitPostMedium):String{
@@ -84,7 +73,11 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             if (imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
-            postUpdateProgressManager?.setFirstIcon(imageUrl)
+            if (firstTimeUpoad) {
+                postUpdateProgressManager?.setFirstIcon(imageUrl)
+                firstTimeUpoad = false
+            }
+            postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.mediaURL = imageUrl
             medium
@@ -98,6 +91,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
             val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
                 ?: ""
+            postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.videoID = videoId
             medium.mediaURL = videoUrl
@@ -155,16 +149,13 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         private const val DEFAULT_RESOLUTION = "100-square"
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
-        private const val PARAM_URL_BYTE = "url_byte"
 
         var mContext:Context?=null
 
-        fun createRequestParams(mediumList: List<SubmitPostMedium>,byteArray: ArrayList<ByteArray>):
+        fun createRequestParams(mediumList: List<SubmitPostMedium>):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_URL_LIST, mediumList)
-            requestParams.putObject(PARAM_URL_BYTE, byteArray)
-
             return requestParams
         }
     }

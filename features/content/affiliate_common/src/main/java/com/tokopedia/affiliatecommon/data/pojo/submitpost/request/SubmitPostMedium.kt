@@ -21,7 +21,7 @@ data class SubmitPostMedium(
         val type: String = TYPE_IMAGE,
         @SerializedName("videoID")
         @Expose
-        var videoID: String = "",
+        var videoID: String = ""
 
         ) {
     companion object {
