@@ -12,6 +12,7 @@ import com.tokopedia.home_recom.RecomPageChooseAddressWidgetCallback
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.listener.RecomPageListener
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.doSuccessOrFail
@@ -286,7 +287,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     private fun showEmptyPage() {
-        renderEmptyPage()
+        renderEmptyPage(RecommendationEmptyDataModel.TYPE_PAGE_INFINITE_RECOM)
     }
 
     private fun showErrorFullPage(throwable: Throwable) {

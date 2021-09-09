@@ -142,9 +142,9 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         }
     }
 
-    fun renderEmptyPage() {
+    fun renderEmptyPage(type: Int = RecommendationEmptyDataModel.TYPE_DEFAULT) {
         context?.let { ctx ->
-            productAdapter?.showEmpty(RecommendationEmptyDataModel())
+            productAdapter?.showEmpty(RecommendationEmptyDataModel(type = type))
             swipeToRefresh?.let {
                 it.isEnabled = false
             }

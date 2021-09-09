@@ -9,7 +9,8 @@ import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
  */
 
 data class RecommendationEmptyDataModel(
-        val name: String = "recomLoading"
+        val name: String = "recomLoading",
+        val type: Int = TYPE_DEFAULT
 ) : HomeRecommendationDataModel {
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
         return typeFactory.type(this)
@@ -17,6 +18,8 @@ data class RecommendationEmptyDataModel(
 
     companion object {
         val LAYOUT = R.layout.item_recommendation_empty
+        val TYPE_DEFAULT = 0
+        val TYPE_PAGE_INFINITE_RECOM = 1
     }
 
     override fun name(): String = name
