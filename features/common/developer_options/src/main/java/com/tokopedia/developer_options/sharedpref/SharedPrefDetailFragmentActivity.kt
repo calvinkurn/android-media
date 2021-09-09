@@ -20,12 +20,21 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
         const val ARGS_SELECTED_VALUE = "selected_value"
+        const val TYPE_LONG = 0
+        const val TYPE_INT = 1
+        const val TYPE_FLOAT = 2
+        const val TYPE_BOOLEAN = 3
+        const val TYPE_STRING_SET = 4
+        const val TYPE_STRING = 5
+        const val TYPE_UNKNOWN = -1
     }
+
+    var sharedPrefValueType = TYPE_UNKNOWN
 
     private lateinit var listAdapter: KeyValueListAdapter
     private var isListEmpty: Boolean = false
     private lateinit var sharedPref: SharedPreferences
-    private var rvConfigList:RecyclerView? = null
+    private var rvConfigList: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +47,32 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
         showEditDialog(selectedConfigKey)
     }
 
-    fun showEditDialog(keyToEdit:String) {
+    fun showEditDialog(keyToEdit: String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, keyToEdit)
-        fragmentBundle.putString(ARGS_SELECTED_VALUE, sharedPref.getString(keyToEdit, ""))
+        var value = ""
+        var success = true
+        var i = 0
+        while (!success) {
+            try {
+                value = when (i) {
+                    TYPE_LONG -> sharedPref.getLong(keyToEdit, 0L).toString()
+                    TYPE_INT -> sharedPref.getInt(keyToEdit, 0).toString()
+                    TYPE_FLOAT -> sharedPref.getFloat(keyToEdit, 0F).toString()
+                    TYPE_BOOLEAN -> sharedPref.getBoolean(keyToEdit, false).toString()
+                    TYPE_STRING_SET -> sharedPref.getStringSet(keyToEdit, setOf())
+                        ?.joinToString("#") ?: ""
+                    TYPE_STRING -> sharedPref.getString(keyToEdit, "").toString()
+                    else -> return
+                }
+                sharedPrefValueType = i
+                success = true
+            } catch (e: Exception) {
+                success = false
+            }
+            i++
+        }
+        fragmentBundle.putString(ARGS_SELECTED_VALUE, value)
 
         val dialog = KeyValueEditorDialog()
         dialog.arguments = fragmentBundle
@@ -50,8 +81,21 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
 
     override fun onEditorSaveButtonClick(editedConfigKey: String, editedConfigValue: String) {
         if (!TextUtils.isEmpty(editedConfigKey)) {
-            sharedPref.edit().putString(editedConfigKey, editedConfigValue).apply()
-            updateListAdapterData()
+            val editor = sharedPref.edit()
+            try {
+                when (sharedPrefValueType) {
+                    TYPE_LONG -> editor.putLong(editedConfigKey, editedConfigValue.toLong()).apply()
+                    TYPE_INT -> editor.putInt(editedConfigKey, editedConfigValue.toInt()).apply()
+                    TYPE_FLOAT -> editor.putFloat(editedConfigKey, editedConfigValue.toFloat()).apply()
+                    TYPE_BOOLEAN -> editor.putBoolean(editedConfigKey, editedConfigValue.toBoolean()).apply()
+                    TYPE_STRING_SET -> editor.putStringSet(editedConfigKey, editedConfigValue.split("#").toSet()).apply()
+                    TYPE_STRING -> editor.putString(editedConfigKey, editedConfigValue).apply()
+                    else -> return
+                }
+                updateListAdapterData()
+            } catch (e: Exception) {
+
+            }
         }
     }
 
@@ -64,7 +108,10 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
     }
 
     private fun initView() {
-        sharedPref = this.getSharedPreferences(intent.extras?.getString(SHARED_PREF_FILE), Context.MODE_PRIVATE)
+        sharedPref = this.getSharedPreferences(
+            intent.extras?.getString(SHARED_PREF_FILE),
+            Context.MODE_PRIVATE
+        )
         listAdapter = KeyValueListAdapter(this)
 
         updateListAdapterData()
@@ -81,7 +128,7 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
         updateVisibility(!isListEmpty)
     }
 
-    private fun updateVisibility(mainDataVisible:Boolean) {
+    private fun updateVisibility(mainDataVisible: Boolean) {
         if (mainDataVisible) {
             rvConfigList?.visibility = View.VISIBLE
             findViewById<View>(R.id.empty_group).visibility = View.GONE
