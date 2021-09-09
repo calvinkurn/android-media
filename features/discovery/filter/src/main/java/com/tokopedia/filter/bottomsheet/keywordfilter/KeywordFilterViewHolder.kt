@@ -28,7 +28,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_keyword_filter_view_holder.view.*
 
 internal class KeywordFilterViewHolder(
     itemView: View,
@@ -136,11 +135,11 @@ internal class KeywordFilterViewHolder(
             setMessage(getString(R.string.keyword_filter_use_add_icon_to_add))
 
             editText?.text?.clear()
-
-            listener.onSuccessAddKeyword()
         }
 
         keywordFilterItemAdapter.setItemList(keywordFilterDataView.itemList)
+
+        listener.onChangeKeywordFilter(keywordFilterDataView)
     }
 
     private fun onErrorAddKeyword(error: KeywordFilterError) {
@@ -262,8 +261,10 @@ internal class KeywordFilterViewHolder(
     override fun onRemoveItemClicked(keywordFilterItemDataView: KeywordFilterItemDataView) {
         val keywordFilterDataView = keywordFilterDataView ?: return
 
-        keywordFilterDataView.removeKeyword(keywordFilterItemDataView)
+        keywordFilterDataView.removeKeyword(keywordFilterItemDataView.negativeKeyword)
 
         keywordFilterItemAdapter.setItemList(keywordFilterDataView.itemList)
+
+        listener.onChangeKeywordFilter(keywordFilterDataView)
     }
 }

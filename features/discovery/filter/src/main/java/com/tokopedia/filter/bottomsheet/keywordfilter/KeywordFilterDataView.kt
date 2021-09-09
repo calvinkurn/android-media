@@ -7,6 +7,7 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.Keyw
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.MaxFiveNegative
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.removeFirst
 
 internal class KeywordFilterDataView(
     val filter: Filter = Filter(),
@@ -33,9 +34,6 @@ internal class KeywordFilterDataView(
         .toMutableList()
 
     val itemList: List<KeywordFilterItemDataView> = mutableItemList
-
-    private fun isNotKeywordFilter(keyword: String) =
-        !itemList.map { it.negativeKeyword }.contains(keyword)
 
     fun addKeyword(
         keyword: String,
@@ -76,17 +74,17 @@ internal class KeywordFilterDataView(
     private fun isExistsAsNegativeKeyword(sanitizeKeyword: String) =
         itemList.map { it.negativeKeyword }.contains(sanitizeKeyword)
 
-    fun generateKeyword() = originalKeyword + itemList
-        .map(KeywordFilterItemDataView::negativeKeyword)
-        .joinToString(
-            prefix = KEYWORD_FILTER_SEPARATOR,
-            separator = KEYWORD_FILTER_SEPARATOR,
-            transform = ::modifyNegative,
-        )
+    fun generateKeyword() =
+        "$originalKeyword ${generateNegativeKeyword()}".trim()
 
-    private fun modifyNegative(keyword: String) = "\"$keyword\""
+    private fun generateNegativeKeyword() =
+        itemList
+            .map(KeywordFilterItemDataView::negativeKeyword)
+            .joinToString(separator = " ", transform = ::modifyNegative)
 
-    fun removeKeyword(keywordFilterItemDataView: KeywordFilterItemDataView) {
-        mutableItemList.remove(keywordFilterItemDataView)
+    private fun modifyNegative(keyword: String) = "-\"$keyword\""
+
+    fun removeKeyword(negativeKeyword: String) {
+        mutableItemList.removeFirst { it.negativeKeyword == negativeKeyword }
     }
 }

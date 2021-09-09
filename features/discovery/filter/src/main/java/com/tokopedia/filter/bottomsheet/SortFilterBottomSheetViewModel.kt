@@ -75,6 +75,7 @@ internal class SortFilterBottomSheetViewModel {
     private val sortApplyFilterMap = mutableMapOf<String, String>()
     private val originalFilterViewState = mutableSetOf<String>()
     private var originalSortValue = ""
+    private var originalKeyword = ""
 
     fun init(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
         this.mutableMapParameter = mapParameter.toMutableMap()
@@ -90,6 +91,7 @@ internal class SortFilterBottomSheetViewModel {
         filterController.initFilterController(mutableMapParameter, dynamicFilterModel?.data?.filter)
         originalFilterViewState.addAll(filterController.filterViewStateSet)
         originalSortValue = getSelectedSortValue()
+        originalKeyword = getKeyword()
     }
 
     private fun determineShouldShowKnob(dynamicFilterModel: DynamicFilterModel?): Boolean {
@@ -106,6 +108,8 @@ internal class SortFilterBottomSheetViewModel {
             mapParameter[it.getSortKey()] ?: it.defaultSortValue
         } ?: ""
     }
+
+    private fun getKeyword() = mutableMapParameter[SearchApiConst.Q] ?: ""
 
     fun getSelectedFilterMap(): Map<String, String> {
         return filterController.getActiveFilterMap()
@@ -354,7 +358,9 @@ internal class SortFilterBottomSheetViewModel {
         isViewExpandedMutableLiveData.value = true
     }
 
-    private fun getIsLoading() = isFilterChanged() || isSortChanged()
+    private fun getIsLoading() = isFilterChanged() || isSortChanged() || isKeywordChanged()
+
+    private fun isKeywordChanged() = originalKeyword != getKeyword()
 
     private fun isFilterChanged() = originalFilterViewState != filterController.filterViewStateSet
 
@@ -686,5 +692,12 @@ internal class SortFilterBottomSheetViewModel {
 
     fun onPriceTextOutOfFocus() {
         isLoadingMutableLiveData.value = true
+    }
+
+    fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {
+        mutableMapParameter[SearchApiConst.Q] = keywordFilterDataView.generateKeyword()
+        filterController.refreshMapParameter(mapParameter)
+
+        isLoadingMutableLiveData.value = getIsLoading()
     }
 }

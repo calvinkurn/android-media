@@ -19,6 +19,7 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
@@ -120,8 +121,8 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             )
         }
 
-        override fun onSuccessAddKeyword() {
-
+        override fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {
+            sortFilterBottomSheetViewModel?.onChangeKeywordFilter(keywordFilterDataView)
         }
     }
 

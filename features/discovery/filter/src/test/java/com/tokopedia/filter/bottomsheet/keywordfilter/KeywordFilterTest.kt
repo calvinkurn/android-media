@@ -162,12 +162,12 @@ internal class KeywordFilterTest {
     @Test
     fun `removeKeyword should remove from item list`() {
         val dataView = createKeywordFilterDataViewEmptyOption()
-        dataView.addKeyword("tv")
+        val negativeKeyword = "tv"
+        dataView.addKeyword(negativeKeyword)
 
-        dataView.removeKeyword(dataView.itemList.first())
+        dataView.removeKeyword(negativeKeyword)
 
         dataView.itemList.size shouldBe 0
-        verifyOnSuccess()
     }
 
     @Test
@@ -181,5 +181,15 @@ internal class KeywordFilterTest {
 
         dataView.addKeyword("-remote")
         dataView.generateKeyword() shouldBe "samsung -\"tv\" -\"remote\""
+    }
+
+    @Test
+    fun `generate keyword after adding and removing`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+
+        dataView.addKeyword("tv")
+        dataView.removeKeyword("tv")
+
+        dataView.generateKeyword() shouldBe "samsung"
     }
 }

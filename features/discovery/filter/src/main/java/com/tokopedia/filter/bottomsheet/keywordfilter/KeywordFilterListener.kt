@@ -1,8 +1,8 @@
 package com.tokopedia.filter.bottomsheet.keywordfilter
 
-interface KeywordFilterListener {
+internal interface KeywordFilterListener {
 
     fun scrollToPosition(position: Int)
 
-    fun onSuccessAddKeyword()
+    fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView)
 }
