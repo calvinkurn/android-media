@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
@@ -46,9 +48,12 @@ class ExpandableWidget(
 
     private fun setupMembershipStatus(element: WidgetExpandableUiModel) {
         with(itemView) {
-            dividerPmPro?.showWithCondition(element.isPmPro())
-            tvSetMembershipStatus?.showWithCondition(element.isPmPro())
-            if (element.isPmPro()) {
+            val isShowMembershipStatus = element.isPmPro() ||
+                    (element.pmTierType == PMTier.REGULAR &&
+                            element.pmStatus == PMStatusConst.IDLE)
+            dividerPmPro?.showWithCondition(isShowMembershipStatus)
+            tvSetMembershipStatus?.showWithCondition(isShowMembershipStatus)
+            if (isShowMembershipStatus) {
                 tvSetMembershipStatus?.setTextMakeHyperlink(
                     getString(R.string.pm_set_membership_status)
                 ) {

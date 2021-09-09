@@ -148,7 +148,7 @@ class ShopGradeWidget(
         if (isPmProActive) {
             if (is30FirstMondayNewSeller) {
                 tvPmShopGradeThreshold.show()
-                tvPmShopGradeThreshold.text = shopGradeInfo
+                tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
             }
             pmProStatusInfoView.visible()
             pmProStatusInfoView.setOnClickListener {

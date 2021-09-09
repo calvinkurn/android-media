@@ -618,6 +618,10 @@ open class PowerMerchantSubscriptionFragment :
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                     pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isPmActive = isPm && isActive
+        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller == true
+        val isPmNotEligible = pmBasicInfo?.shopInfo?.isEligiblePmPro == false
+        val isNewSellerPMNotEligible = isPmActive && isNewSeller && isPmNotEligible
+        val isExistingPM = isPmActive && !isNewSeller
 
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
@@ -645,7 +649,7 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
-        if (isAutoExtendEnabled && isPmActive) {
+        if (isAutoExtendEnabled && (isNewSellerPMNotEligible || isExistingPM)) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
         }

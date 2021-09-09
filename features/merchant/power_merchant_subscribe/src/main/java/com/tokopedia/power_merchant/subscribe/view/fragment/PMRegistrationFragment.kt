@@ -76,7 +76,8 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
     private fun renderPmRegistrationWidgets() {
         pmBasicInfo?.shopInfo?.let { shopInfo ->
-            val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo)
+            val isRegularMerchant = pmBasicInfo?.pmStatus?.isRegularMerchant() == true
+            val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo, isRegularMerchant)
 
             val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
             if (isPmPro) {
@@ -337,12 +338,14 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         RouteManager.route(context, appLink)
     }
 
-    private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
+    private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel, isRegularMerchant: Boolean): WidgetRegistrationHeaderUiModel {
         val currentPMProRegistrationSelected = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         return WidgetRegistrationHeaderUiModel(
             shopInfo = shopInfo,
             registrationTerms = if (currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT) {
-                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo, currentPMProRegistrationSelected)
+                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo,
+                    currentPMProRegistrationSelected, isRegularMerchant
+                )
             } else {
                 PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo, currentPMProRegistrationSelected)
             },

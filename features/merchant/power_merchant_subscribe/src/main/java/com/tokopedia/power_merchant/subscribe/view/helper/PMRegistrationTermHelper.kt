@@ -23,7 +23,7 @@ object PMRegistrationTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel,
         isPmProSelected: Boolean,
-        isRegularMerchant: Boolean = false
+        isRegularMerchant: Boolean
     ): List<RegistrationTermUiModel> {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)

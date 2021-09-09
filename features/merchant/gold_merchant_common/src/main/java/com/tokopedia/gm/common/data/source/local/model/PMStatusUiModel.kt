@@ -9,12 +9,12 @@ import com.tokopedia.gm.common.constant.PMStatusConst
  */
 
 data class PMStatusUiModel(
-        val shopId: String = "",
-        val status: String = PMStatusConst.INACTIVE,
-        val pmTier: Int = PMConstant.PMTierType.NA,
-        val expiredTime: String = "",
-        val isOfficialStore: Boolean = false,
-        val autoExtendEnabled: Boolean = true
+    val shopId: String = "",
+    val status: String = PMStatusConst.INACTIVE,
+    val pmTier: Int = PMConstant.PMTierType.NA,
+    val expiredTime: String = "",
+    val isOfficialStore: Boolean = false,
+    val autoExtendEnabled: Boolean = true
 ) {
     companion object {
         const val PM_AUTO_EXTEND_OFF = "off"
@@ -28,6 +28,9 @@ data class PMStatusUiModel(
             expiredTime
         }
     }
+
+    fun isRegularMerchant(): Boolean =
+        status == PMStatusConst.INACTIVE || status == PMStatusConst.INACTIVE
 
     fun isPowerMerchant(): Boolean = status == PMStatusConst.ACTIVE || status == PMStatusConst.IDLE
 }
