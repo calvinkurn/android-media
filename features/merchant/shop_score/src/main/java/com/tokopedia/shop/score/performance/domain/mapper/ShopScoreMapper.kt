@@ -152,7 +152,7 @@ class ShopScoreMapper @Inject constructor(
                     )
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
-                    if (shopAge in SHOP_AGE_THREE..SHOP_AGE_FIFTY_NINE) {
+                    if (shopAge < SHOP_AGE_NINETY_SIX && shopScore > 0) {
                         add(ItemLevelScoreProjectUiModel())
                     }
                 }
