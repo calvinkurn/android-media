@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
-        tools:background="@color/play_widget_dms_light_gray">
+        >
 
         <FrameLayout
             android:id="@+id/play_widget_overlay"
@@ -31,10 +31,11 @@
             android:layout_marginRight="@dimen/play_widget_medium_overlay_negative"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/play_widget_overlay_bg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                tools:background="@color/play_widget_dms_light_gray"
                 android:scaleType="fitXY" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -44,27 +45,20 @@
                 android:layout_marginStart="@dimen/play_widget_medium_overlay"
                 android:scaleType="fitStart" />
 
-        </FrameLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/play_widget_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl3"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_play_widget_card_channel_medium"
+                tools:orientation="horizontal"
+                tools:spanCount="3" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/play_widget_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/home_margin_12_dp_product_card"
-            android:paddingTop="@dimen/home_margin_12_dp_product_card"
-            android:clipToPadding="false"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingEnd="@dimen/spacing_lvl3"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_play_widget_card_channel_medium"
-            tools:orientation="horizontal"
-            tools:spanCount="3" />
+        </FrameLayout>
 
     </FrameLayout>
 

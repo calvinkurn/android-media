@@ -149,8 +149,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
-
-    private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+    private val spacing16 by lazy { resources.getDimensionPixelSize(R.dimen.dp_16) }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -260,7 +259,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
         recyclerViewItem.setMargin(
                 left = 0,
-                top = if (shouldAddSpacing(data)) spacing16 else 0,
+                top = if (shouldAddSpacing(data)) spacing16 else resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card),
                 right = 0,
                 bottom = spacing16,
         )
@@ -295,7 +294,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.loadImage(data.backgroundUrl)
         } else {
             overlayBackground.setImageDrawable(null)
-            overlayBackground.background = null
+            itemContainer.background = null
         }
     }
 
