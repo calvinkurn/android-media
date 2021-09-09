@@ -8,6 +8,7 @@ import com.tokopedia.checkout.bundle.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.utils.Switch
 
 class ShipmentActivity : BaseCheckoutActivity() {
     private var shipmentFragment: ShipmentFragment? = null
@@ -25,18 +26,13 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
         val bundle = intent.extras
-        if (isBundleCheckout()) {
+        if (Switch.isBundleToggleOn()) {
             shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
             return shipmentFragment
         } else {
             oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
             return oldShipmentFragment
         }
-    }
-
-    @Keep
-    fun isBundleCheckout(): Boolean {
-        return true
     }
 
     override fun onBackPressed() {

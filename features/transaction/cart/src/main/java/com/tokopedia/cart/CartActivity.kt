@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.bundle.view.CartFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
+import com.tokopedia.purchase_platform.common.utils.Switch
 
 class CartActivity : BaseCheckoutActivity() {
 
@@ -46,18 +47,13 @@ class CartActivity : BaseCheckoutActivity() {
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        if (isBundleCart()) {
+        if (Switch.isBundleToggleOn()) {
             fragment = CartFragment.newInstance(bundle, "")
             return fragment
         } else {
             oldFragment = com.tokopedia.cart.old.view.CartFragment.newInstance(bundle, "")
             return oldFragment
         }
-    }
-
-    @Keep
-    fun isBundleCart(): Boolean {
-        return true
     }
 
     companion object {

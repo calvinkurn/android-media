@@ -91,6 +91,7 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
+import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -729,11 +730,6 @@ public class MainParentActivity extends BaseActivity implements
         startActivity(getIntent());
     }
 
-    @Keep
-    public boolean isBundleCart() {
-        return true;
-    }
-
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
@@ -741,7 +737,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            if (isBundleCart()) {
+            if (Switch.INSTANCE.isBundleToggleOn()) {
                 fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             } else {
                 fragmentList.add(com.tokopedia.cart.old.view.CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
