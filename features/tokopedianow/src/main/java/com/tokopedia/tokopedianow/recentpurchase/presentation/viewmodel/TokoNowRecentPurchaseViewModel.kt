@@ -43,10 +43,12 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSelectedCategoryFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -94,6 +96,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val _productAddToCartQuantity = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
+    private var selectedCategoryFilter: SelectedSortFilter? = null
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
@@ -145,32 +148,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun getProductListAsync(
-        warehouseID: Int,
-        queryParam: String,
-        totalScan: Int,
-        page: Int
-    ): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
-                queryParam,
-                totalScan,
-                page
-            ).productList
-
-            if (getProductListResponse.isNullOrEmpty()) {
-                getEmptyState(
-                    id = EMPTY_STATE_NO_RESULT,
-                    warehouseId = warehouseID.toString()
-                )
-            } else {
-                layoutList.addProductGrid(getProductListResponse)
-            }
-        }) {
-
-        }
-    }
-
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
@@ -200,47 +177,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         },{
             _chooseAddress.postValue(Fail(it))
         }, source)
-    }
-
-    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = pageName,
-                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
-                )
-            )
-
-            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
-                layoutList.addProductRecom(pageName, recommendationWidgets.first())
-
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    nextPage = INITIAL_PAGE,
-                    state = TokoNowLayoutState.SHOW
-                )
-
-                _getLayout.postValue(Success(layout))
-            }
-        }) { /* nothing to do */ }
-    }
-
-    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-            layoutList.addCategoryGrid(response)
-
-            val layout = RepurchaseLayoutUiModel(
-                layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.SHOW
-            )
-
-            _getLayout.postValue(Success(layout))
-        }) {
-            /* nothing to do */
-        }
     }
 
     fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "") {
@@ -308,9 +244,101 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
+    fun setSelectedCategoryFilter(selectedFilter: SelectedSortFilter?) {
+        launchCatchError(block = {
+            layoutList.setSelectedCategoryFilter(selectedFilter)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.LOADED
+            )
+
+            selectedCategoryFilter = selectedFilter
+            _getLayout.postValue(Success(layout))
+        }) {
+
+        }
+    }
+
+    fun getSelectedCategoryFilter(): SelectedSortFilter? {
+        return selectedCategoryFilter
+    }
+
+    fun clearSelectedFilters() {
+        selectedCategoryFilter = null
+    }
+
     private fun getMiniCartItem(productId: String): MiniCartItem? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.firstOrNull { it.productId == productId }
+    }
+
+    private fun getProductListAsync(
+        warehouseID: Int,
+        queryParam: String,
+        totalScan: Int,
+        page: Int
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
+                queryParam,
+                totalScan,
+                page
+            ).productList
+
+            if (getProductListResponse.isNullOrEmpty()) {
+                getEmptyState(
+                    id = EMPTY_STATE_NO_RESULT,
+                    warehouseId = warehouseID.toString()
+                )
+            } else {
+                layoutList.addProductGrid(getProductListResponse)
+            }
+        }) {
+
+        }
+    }
+
+    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val recommendationWidgets = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
+                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
+                )
+            )
+
+            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+                layoutList.addProductRecom(pageName, recommendationWidgets.first())
+
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    nextPage = INITIAL_PAGE,
+                    state = TokoNowLayoutState.SHOW
+                )
+
+                _getLayout.postValue(Success(layout))
+            }
+        }) { /* nothing to do */ }
+    }
+
+    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+            layoutList.addCategoryGrid(response)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _getLayout.postValue(Success(layout))
+        }) {
+            /* nothing to do */
+        }
     }
 
     private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
