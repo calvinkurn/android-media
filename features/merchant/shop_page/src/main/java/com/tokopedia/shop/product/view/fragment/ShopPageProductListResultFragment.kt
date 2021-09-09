@@ -91,6 +91,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -184,21 +185,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
+        val userSession = UserSession(context)
+        val _shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
+
         return ShopProductAdapterTypeFactory(
-                null,
-                this,
-                this,
-                null,
-                this,
-                this,
-                null,
-                null,
-                this,
-                this,
-                this,
-                true,
-                0,
-                ShopTrackProductTypeDef.PRODUCT
+                membershipStampAdapterListener = null,
+                shopProductClickedListener = this,
+                shopProductImpressionListener = this,
+                shopCarouselSeeAllClickedListener = null,
+                emptyProductOnClickListener = this,
+                shopProductEtalaseListViewHolderListener = this,
+                shopProductAddViewHolderListener = null,
+                shopProductsEmptyViewHolderListener = null,
+                shopProductEmptySearchListener = this,
+                shopProductChangeGridSectionListener = this,
+                shopShowcaseEmptySearchListener = this,
+                isGridSquareLayout = true,
+                deviceWidth = 0,
+                shopTrackType = ShopTrackProductTypeDef.PRODUCT,
+                isShowTripleDot = !_isMyShop
         )
     }
 
@@ -986,8 +992,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     return
                 }
                 data?.let {
-                    selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                    selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                    selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID) ?: ""
+                    selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME) ?: ""
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 

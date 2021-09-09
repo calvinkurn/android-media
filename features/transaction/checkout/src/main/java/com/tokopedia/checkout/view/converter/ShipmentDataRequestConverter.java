@@ -73,6 +73,7 @@ public class ShipmentDataRequestConverter {
         shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
         shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
         shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
+        shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
         return shopProductCheckout;
     }
@@ -115,6 +116,7 @@ public class ShipmentDataRequestConverter {
                 shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                 shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
                 shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
+                shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
                 ArrayList<String> promoCodes = new ArrayList<>();
                 List<PromoRequest> promoRequests = new ArrayList<>();
