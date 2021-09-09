@@ -70,10 +70,8 @@
         app:layout_constraintEnd_toStartOf="@id/vertical_guideline"
         tools:text="Lihat Kategori"
         app:unifyButtonSize="small"
-        app:unifyButtonType="main"
+        app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
-        android:enabled="false"
-        android:textColor="@color/Unify_NN600"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
