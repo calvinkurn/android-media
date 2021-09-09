@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -51,8 +52,13 @@ class ReviewBasicInfoWidget : BaseCustomView {
         timeStamp?.text = createTime
     }
 
-    fun setReviewerName(name: String) {
-        reviewerName?.text = name
+    fun setReviewerName(name: String, userId: String = "", listener: ReviewBasicInfoListener? = null) {
+        reviewerName?.apply {
+            text = name
+            setOnClickListener {
+                listener?.onUserNameClicked(context, userId)
+            }
+        }
     }
 
     fun invertColors() {

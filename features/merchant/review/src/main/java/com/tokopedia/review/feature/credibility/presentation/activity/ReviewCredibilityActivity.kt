@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.credibility.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -24,12 +22,6 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     ReviewPerformanceMonitoringListener {
 
     companion object {
-        fun getIntent(context: Context, userId: String, source: String): Intent {
-            return Intent(context, ReviewCredibilityActivity::class.java).apply {
-                putExtra("userId", userId)
-                putExtra("source", source)
-            }
-        }
         const val REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG = "ReviewCredibilityBottomSheetTag"
     }
 
@@ -121,9 +113,6 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
             val uriSegment = uri.pathSegments
             userId = uriSegment.getOrNull(uriSegment.size - 2) ?: ""
             source = uriSegment.getOrNull(uriSegment.size - 1) ?: ""
-        } else {
-            userId = intent.getStringExtra("userId") ?: ""
-            source = intent.getStringExtra("source") ?: ""
         }
     }
 

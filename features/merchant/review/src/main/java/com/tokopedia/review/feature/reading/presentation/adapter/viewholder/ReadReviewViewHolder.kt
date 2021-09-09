@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
@@ -25,7 +26,11 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSeller
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
+class ReadReviewViewHolder(view: View,
+                           private val readReviewItemListener: ReadReviewItemListener,
+                           private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
+                           private val reviewBasicInfoListener: ReviewBasicInfoListener
+) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_read_review
@@ -70,7 +75,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             }
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
-            setReviewerName(user.fullName)
+            setReviewerName(user.fullName, user.userID)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -145,8 +150,8 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         }
     }
 
-    private fun setReviewerName(name: String) {
-        basicInfo?.setReviewerName(name)
+    private fun setReviewerName(name: String, userId: String) {
+        basicInfo?.setReviewerName(name, userId, reviewBasicInfoListener)
     }
 
     private fun setVariantName(variantName: String) {

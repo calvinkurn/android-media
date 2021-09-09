@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -63,8 +64,8 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         basicInfo?.setCreateTime(timeStamp)
     }
 
-    fun setReviewerName(reviewerName: String) {
-        basicInfo?.setReviewerName(reviewerName)
+    fun setReviewerName(reviewerName: String, userId: String, basicInfoListener: ReviewBasicInfoListener) {
+        basicInfo?.setReviewerName(reviewerName, userId, basicInfoListener)
     }
 
     fun setLikeCount(totalLike: String) {

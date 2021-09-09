@@ -23,6 +23,7 @@ import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ToggleProductReviewLike
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
@@ -53,7 +54,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImagePreviewComponent>,
-    ReviewReportBottomSheetListener,
+    ReviewReportBottomSheetListener, ReviewBasicInfoListener,
     ReviewImagePreviewSwipeListener, ReviewImagePreviewListener,
     OnBackPressedListener, ReviewImagePreviewLoadMoreListener {
 
@@ -357,7 +358,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             reviewImagePreviewDetail?.apply {
                 setPhotoCount(index, imageAttachments.size.toLong())
                 setRating(productRating)
-                setReviewerName(user.fullName)
+                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment)
                 setTimeStamp(reviewCreateTimestamp)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
@@ -617,7 +618,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
                         setRating(rating)
-                        setReviewerName(reviewerName)
+                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment)
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setLikeCount(totalLiked.toString())

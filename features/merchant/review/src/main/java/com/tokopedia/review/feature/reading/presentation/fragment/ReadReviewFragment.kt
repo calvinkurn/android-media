@@ -33,6 +33,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
@@ -70,7 +71,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
     ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
-    ReadReviewAttachedImagesListener, ReviewPerformanceMonitoringContract {
+    ReadReviewAttachedImagesListener, ReviewPerformanceMonitoringContract, ReviewBasicInfoListener {
 
     companion object {
         const val MAX_RATING = 5
@@ -85,7 +86,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
         const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
-        fun createNewInstance(productId: String = "", shopId: String = "", isProductReview: Boolean): ReadReviewFragment {
+        const val READING_SOURCE = "review-list"
+        fun createNewInstance(
+            productId: String = "",
+            shopId: String = "",
+            isProductReview: Boolean
+        ): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
@@ -140,7 +146,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun getAdapterTypeFactory(): ReadReviewAdapterTypeFactory {
-        return ReadReviewAdapterTypeFactory(this, this)
+        return ReadReviewAdapterTypeFactory(this, this, this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ReadReviewUiModel, ReadReviewAdapterTypeFactory> {
@@ -185,31 +191,31 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         ReadReviewTracking.trackOnClickProductInfoThreeDots(reviewId, shopId)
         activity?.supportFragmentManager?.let {
             ReviewReportBottomSheet.newInstance(
-                    reviewId,
-                    shopId,
-                    this
+                reviewId,
+                shopId,
+                this
             ).show(it, ReviewReportBottomSheet.TAG)
         }
     }
 
     override fun onProductInfoClicked(
-            reviewId: String,
-            shopName: String,
-            productName: String,
-            position: Int,
-            shopId: String,
-            productId: String
+        reviewId: String,
+        shopName: String,
+        productName: String,
+        position: Int,
+        shopId: String,
+        productId: String
     ) {
         ReadReviewTracking.trackOnClickProductInfo(
-                reviewId,
-                shopName,
-                productName,
-                position,
-                "",
-                shopId,
-                productId,
-                viewModel.userId,
-                trackingQueue
+            reviewId,
+            shopName,
+            productName,
+            position,
+            "",
+            shopId,
+            productId,
+            viewModel.userId,
+            trackingQueue
 
         )
         redirectToPDP(productId)
@@ -217,7 +223,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun redirectToPDP(productId: String) {
         context?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val intent = RouteManager.getIntent(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+            )
             startActivity(intent)
         }
     }
@@ -228,11 +238,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 showLoading()
                 loadData(page)
             }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val firstCompletelyVisibleItemPosition = (getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition().orZero()
+                val firstCompletelyVisibleItemPosition =
+                    (getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
+                        .orZero()
                 currentScrollPosition += dy
-                if(currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0) {
+                if (currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0) {
                     goToTopFab?.hide()
                 } else {
                     goToTopFab?.show()
@@ -259,15 +272,21 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
     }
 
-    override fun onShopReviewLikeButtonClicked(reviewId: String, shopId: String, productId: String, likeStatus: Int, index: Int) {
+    override fun onShopReviewLikeButtonClicked(
+        reviewId: String,
+        shopId: String,
+        productId: String,
+        likeStatus: Int,
+        index: Int
+    ) {
         if (!viewModel.isLoggedIn) {
             goToLogin()
             return
         }
         ReadReviewTracking.trackOnShopReviewLikeClicked(
-                reviewId,
-                isLiked(likeStatus),
-                shopId
+            reviewId,
+            isLiked(likeStatus),
+            shopId
         )
         viewModel.toggleLikeShopReview(reviewId, shopId, productId, likeStatus, index)
     }
@@ -281,29 +300,29 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         if (isProductReview) {
             with(getRatingAndTopics().rating) {
                 ReadReviewTracking.trackOnItemImpressed(
-                        reviewId,
-                        position,
-                        viewModel.userId,
-                        totalRating,
-                        totalRatingTextAndImage,
-                        characterCount,
-                        imageCount,
-                        viewModel.getProductId(),
-                        trackingQueue
+                    reviewId,
+                    position,
+                    viewModel.userId,
+                    totalRating,
+                    totalRatingTextAndImage,
+                    characterCount,
+                    imageCount,
+                    viewModel.getProductId(),
+                    trackingQueue
                 )
             }
         } else {
             with(getShopRatingAndTopics().rating) {
                 ReadReviewTracking.trackOnShopReviewItemImpressed(
-                        reviewId,
-                        position,
-                        viewModel.userId,
-                        totalRating,
-                        totalRatingTextAndImage,
-                        characterCount,
-                        imageCount,
-                        viewModel.getShopId(),
-                        trackingQueue
+                    reviewId,
+                    position,
+                    viewModel.userId,
+                    totalRating,
+                    totalRatingTextAndImage,
+                    characterCount,
+                    imageCount,
+                    viewModel.getShopId(),
+                    trackingQueue
                 )
             }
         }
@@ -312,17 +331,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun openStatisticsBottomSheet() {
         if (isProductReview) {
             ReadReviewTracking.trackOnClickPositiveReviewPercentage(
-                    getSatisfactionRate(),
-                    getRatingAndTopics().rating.totalRating,
-                    getRatingAndTopics().rating.totalRatingTextAndImage,
-                    viewModel.getProductId()
+                getSatisfactionRate(),
+                getRatingAndTopics().rating.totalRating,
+                getRatingAndTopics().rating.totalRatingTextAndImage,
+                viewModel.getProductId()
             )
         } else {
             ReadReviewTracking.trackOnClickShopPositiveReviewPercentage(
-                    getSatisfactionRate(),
-                    getShopRatingAndTopics().rating.totalRating,
-                    getShopRatingAndTopics().rating.totalRatingTextAndImage,
-                    viewModel.getShopId()
+                getSatisfactionRate(),
+                getShopRatingAndTopics().rating.totalRating,
+                getShopRatingAndTopics().rating.totalRatingTextAndImage,
+                viewModel.getShopId()
             )
         }
         if (statisticsBottomSheet == null) {
@@ -341,17 +360,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onFilterWithAttachmentClicked(isActive: Boolean) {
         clearAllData()
-        if(isProductReview) {
+        if (isProductReview) {
             ReadReviewTracking.trackOnFilterClicked(
-                    context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
-                    isActive,
-                    viewModel.getProductId()
+                context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
+                isActive,
+                viewModel.getProductId()
             )
         } else {
             ReadReviewTracking.trackOnFilterShopReviewClicked(
-                    context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
-                    isActive,
-                    viewModel.getProductId()
+                context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
+                isActive,
+                viewModel.getProductId()
             )
         }
         viewModel.setFilterWithImage(isActive, isProductReview)
@@ -365,18 +384,18 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         isActive: Boolean
     ) {
         val topicFilterTitle = getString(R.string.review_reading_topic_filter_title)
-        if(isProductReview) {
+        if (isProductReview) {
 
             ReadReviewTracking.trackOnFilterClicked(
-                    topicFilterTitle,
-                    isActive,
-                    viewModel.getProductId()
+                topicFilterTitle,
+                isActive,
+                viewModel.getProductId()
             )
         } else {
             ReadReviewTracking.trackOnFilterShopReviewClicked(
-                    topicFilterTitle,
-                    isActive,
-                    viewModel.getProductId()
+                topicFilterTitle,
+                isActive,
+                viewModel.getProductId()
             )
         }
         val filterOptions = readReviewFilterFactory.getTopicFilters(topics)
@@ -395,17 +414,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onFilterWithRatingClicked(index: Int, isActive: Boolean) {
         val ratingFilterTitle = getString(R.string.review_reading_rating_filter_title)
-        if(isProductReview) {
+        if (isProductReview) {
             ReadReviewTracking.trackOnFilterClicked(
-                    ratingFilterTitle,
-                    isActive,
-                    viewModel.getProductId()
+                ratingFilterTitle,
+                isActive,
+                viewModel.getProductId()
             )
         } else {
             ReadReviewTracking.trackOnFilterShopReviewClicked(
-                    ratingFilterTitle,
-                    isActive,
-                    viewModel.getProductId()
+                ratingFilterTitle,
+                isActive,
+                viewModel.getProductId()
             )
         }
         val filterOptions =
@@ -430,23 +449,23 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         index: Int
     ) {
         clearAllData()
-        if(isProductReview) {
+        if (isProductReview) {
             ReadReviewTracking.trackOnApplyFilterClicked(
-                    filterName,
-                    selectedFilter.joinToString { it.listTitleText },
-                    viewModel.getProductId()
+                filterName,
+                selectedFilter.joinToString { it.listTitleText },
+                viewModel.getProductId()
             )
         } else {
-            when(filterName){
+            when (filterName) {
                 context?.getString(R.string.review_reading_rating_filter_title) -> ReadReviewTracking.trackOnShopReviewApplyRatingFilter(
-                        filterName,
-                        selectedFilter.joinToString { it.listTitleText },
-                        viewModel.getShopId()
+                    filterName,
+                    selectedFilter.joinToString { it.listTitleText },
+                    viewModel.getShopId()
                 )
                 context?.getString(R.string.review_reading_topic_filter_title) -> ReadReviewTracking.trackOnShopReviewApplyTopicFilter(
-                        filterName,
-                        selectedFilter.joinToString { it.listTitleText },
-                        viewModel.getShopId()
+                    filterName,
+                    selectedFilter.joinToString { it.listTitleText },
+                    viewModel.getShopId()
                 )
             }
         }
@@ -457,15 +476,15 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onSortSubmitted(selectedSort: ListItemUnify) {
         clearAllData()
-        if(isProductReview) {
+        if (isProductReview) {
             ReadReviewTracking.trackOnApplySortClicked(
-                    selectedSort.listTitleText,
-                    viewModel.getProductId()
+                selectedSort.listTitleText,
+                viewModel.getProductId()
             )
         } else {
             ReadReviewTracking.trackOnShopReviewApplySortClicked(
-                    selectedSort.listTitleText,
-                    viewModel.getShopId()
+                selectedSort.listTitleText,
+                viewModel.getShopId()
             )
         }
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
@@ -474,7 +493,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
-        if(isProductReview)
+        if (isProductReview)
             ReadReviewTracking.trackOnReportClicked(reviewId, viewModel.getProductId())
         else
             ReadReviewTracking.trackOnShopReviewReportClicked(reviewId, shopId)
@@ -505,18 +524,18 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onClearFiltersClicked() {
         clearAllData()
-        if(isProductReview)
+        if (isProductReview)
             ReadReviewTracking.trackOnClearFilter(viewModel.getProductId())
         else
             ReadReviewTracking.trackOnShopReviewClearFilter(viewModel.getShopId())
         viewModel.clearFilters()
         viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM, isProductReview)
         viewModel.getSelectedRatingFilter()
-        if(isProductReview) {
+        if (isProductReview) {
             with(getRatingAndTopics()) {
                 reviewHeader?.setAvailableFilters(topics, availableFilters, this@ReadReviewFragment)
             }
-        }else{
+        } else {
             with(getShopRatingAndTopics()) {
                 reviewHeader?.setAvailableFilters(topics, availableFilters, this@ReadReviewFragment)
             }
@@ -530,8 +549,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         reviewItemPosition: Int
     ) {
         imageClickedPosition = reviewItemPosition
-        if(isProductReview)
-            ReadReviewTracking.trackOnImageClicked(productReview.feedbackID, viewModel.getProductId())
+        if (isProductReview)
+            ReadReviewTracking.trackOnImageClicked(
+                productReview.feedbackID,
+                viewModel.getProductId()
+            )
         else
             ReadReviewTracking.trackOnShopReviewImageClicked(productReview.feedbackID, shopId)
         context?.let {
@@ -539,7 +561,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(PRODUCT_REVIEW_KEY, productReview)
             cacheManager.put(INDEX_KEY, positionClicked)
             cacheManager.put(SHOP_ID_KEY, shopId)
-            if(isProductReview)
+            if (isProductReview)
                 cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
             else {
                 cacheManager.put(PRODUCT_ID_KEY, productReview.shopProductId)
@@ -588,12 +610,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isProductReview = arguments?.getBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, false).orTrue()
-        if(isProductReview)
+        isProductReview =
+            arguments?.getBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, false).orTrue()
+        if (isProductReview)
             getProductIdFromArguments()
         else
             getShopIdFromArguments()
-        if(isProductReview)
+        if (isProductReview)
             ReadReviewTracking.trackOpenScreen(screenName, viewModel.getProductId())
         else
             ReadReviewTracking.trackOpenScreenShopReview(viewModel.getShopId())
@@ -634,7 +657,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         adapter.clearAllElements()
         hideError()
         showFullPageLoading()
-        if(isProductReview)
+        if (isProductReview)
             getProductIdFromArguments()
         else
             getShopIdFromArguments()
@@ -664,7 +687,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                                 ReviewImagePreviewFinalLikeCount::class.java
                             )
                         finalLikeCount?.let { likeCount ->
-                            updateLikeFromImagePreview(likeCount.totalLikeCount, likeCount.likeStatus)
+                            updateLikeFromImagePreview(
+                                likeCount.totalLikeCount,
+                                likeCount.likeStatus
+                            )
                         }
                     }
                 }
@@ -684,16 +710,26 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         loadData(defaultInitialPage)
     }
 
-    override fun onHighlightedTopicClicked(topicName:String, topicPosition: Int) {
+    override fun onHighlightedTopicClicked(topicName: String, topicPosition: Int) {
         clearAllData()
         showListOnlyLoading()
-        ReadReviewTracking.trackOnClickTopicRating(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
+        ReadReviewTracking.trackOnClickTopicRating(
+            topicName,
+            topicPosition,
+            viewModel.userId,
+            viewModel.getProductId()
+        )
         reviewHeader?.updateFilterFromHighlightedTopic(topicName)
         viewModel.setFilterFromHighlightedTopic(topicName, isProductReview)
     }
 
     override fun onHighlightedTopicImpressed(topicName: String, topicPosition: Int) {
-        ReadReviewTracking.trackOnImpressHighlightedTopic(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
+        ReadReviewTracking.trackOnImpressHighlightedTopic(
+            topicName,
+            topicPosition,
+            viewModel.userId,
+            viewModel.getProductId()
+        )
     }
 
     private fun getProductIdFromArguments() {
@@ -828,9 +864,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             setRatingData(shopRatingAndTopics.rating)
             setListener(this@ReadReviewFragment)
             setAvailableFilters(
-                    shopRatingAndTopics.topics,
-                    shopRatingAndTopics.availableFilters,
-                    this@ReadReviewFragment
+                shopRatingAndTopics.topics,
+                shopRatingAndTopics.availableFilters,
+                this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
             show()
@@ -876,11 +912,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         hideFilteredEmpty()
         with(productrevGetShopReviewList) {
             renderList(
-                    viewModel.mapShopReviewToReadReviewUiModel(
-                            shopReviewList,
-                            viewModel.getShopId(),
-                            shopName
-                    ), hasNext
+                viewModel.mapShopReviewToReadReviewUiModel(
+                    shopReviewList,
+                    viewModel.getShopId(),
+                    shopName
+                ), hasNext
             )
             if (isListEmpty || currentPage == 0) hideFab() else showFab()
         }
@@ -910,7 +946,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun showToasterError(message: String, action: () -> Unit) {
         reviewReadingCoordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_refresh)) { action.invoke() }.show()
+            Toaster.build(
+                it,
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_refresh)
+            ) { action.invoke() }.show()
         }
     }
 
@@ -999,14 +1041,16 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun getSatisfactionRate(): String {
         return if (isProductReview) {
-            val satisfactionRateInt = (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
-                it.isDigit()
-            }.orEmpty()
+            val satisfactionRateInt =
+                (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
+                    it.isDigit()
+                }.orEmpty()
             "$satisfactionRateInt$PRODUCT_SATISFACTION_RATE"
         } else {
-            val satisfactionRateInt = (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
-                it.isDigit()
-            }.orEmpty()
+            val satisfactionRateInt =
+                (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
+                    it.isDigit()
+                }.orEmpty()
             val satisfactionStringFormat = "$satisfactionRateInt% pembeli puas belanja di toko ini"
             satisfactionStringFormat
         }
@@ -1019,11 +1063,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun getShopRatingAndTopics(): ProductrevGetShopRatingAndTopic {
         return (viewModel.shopRatingAndTopic.value as? Success)?.data
-                ?: ProductrevGetShopRatingAndTopic()
+            ?: ProductrevGetShopRatingAndTopic()
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)

@@ -31,6 +31,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
     private var reviewerName = ""
     private var reviewMessage = ""
     private var variantName = ""
+    private var userId = ""
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
