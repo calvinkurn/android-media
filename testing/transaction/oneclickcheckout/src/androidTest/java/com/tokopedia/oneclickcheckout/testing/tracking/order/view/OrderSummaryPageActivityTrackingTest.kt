@@ -13,14 +13,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
-import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
-import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
-import com.tokopedia.oneclickcheckout.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
-import com.tokopedia.oneclickcheckout.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
-import com.tokopedia.oneclickcheckout.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_RED_STATE_RESPONSE
+import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
+import com.tokopedia.oneclickcheckout.testing.interceptor.*
+import com.tokopedia.oneclickcheckout.testing.robot.orderSummaryPage
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.junit.After

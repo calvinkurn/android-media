@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.robot
+package com.tokopedia.oneclickcheckout.testing.robot
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView

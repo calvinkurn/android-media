@@ -12,11 +12,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
-import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.testing.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.testing.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.testing.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.testing.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

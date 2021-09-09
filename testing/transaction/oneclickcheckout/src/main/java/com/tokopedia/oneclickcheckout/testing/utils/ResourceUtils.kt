@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.utils
+package com.tokopedia.oneclickcheckout.testing.utils
 
 import java.io.IOException
 

@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.rule
+package com.tokopedia.oneclickcheckout.testing.rule
 
 import androidx.test.espresso.IdlingRegistry
 import org.junit.rules.TestRule

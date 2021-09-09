@@ -11,12 +11,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
-import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.testing.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.testing.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.testing.interceptor.RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.testing.order.view.TestOrderSummaryPageActivity
+import com.tokopedia.oneclickcheckout.testing.robot.orderSummaryPage
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.junit.After

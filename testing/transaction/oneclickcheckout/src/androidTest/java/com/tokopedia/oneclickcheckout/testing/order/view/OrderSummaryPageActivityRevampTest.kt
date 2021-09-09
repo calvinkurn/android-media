@@ -10,11 +10,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
-import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
-import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
+import com.tokopedia.oneclickcheckout.testing.interceptor.*
+import com.tokopedia.oneclickcheckout.testing.robot.orderSummaryPage
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

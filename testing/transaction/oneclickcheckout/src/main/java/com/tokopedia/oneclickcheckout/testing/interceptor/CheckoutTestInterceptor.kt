@@ -1,7 +1,6 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.testing.interceptor
 
-import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
-import com.tokopedia.oneclickcheckout.interceptor.BaseOccInterceptor
+import com.tokopedia.oneclickcheckout.testing.utils.ResourceUtils.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

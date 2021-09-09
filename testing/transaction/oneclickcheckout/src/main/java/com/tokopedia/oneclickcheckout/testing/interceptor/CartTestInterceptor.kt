@@ -1,7 +1,6 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.testing.interceptor
 
-import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
-import com.tokopedia.oneclickcheckout.interceptor.BaseOccInterceptor
+import com.tokopedia.oneclickcheckout.testing.utils.ResourceUtils.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -24,7 +23,9 @@ class CartTestInterceptor : BaseOccInterceptor() {
             } else if (customGetOccCartResponsePath != null) {
                 return mockResponse(copy, getJsonFromResource(customGetOccCartResponsePath!!))
             }
-            return mockResponse(copy, getJsonFromResource(GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(
+                GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+            ))
         }
         if (requestString.contains(UPDATE_CART_OCC_QUERY)) {
             if (customUpdateCartOccThrowable != null) {

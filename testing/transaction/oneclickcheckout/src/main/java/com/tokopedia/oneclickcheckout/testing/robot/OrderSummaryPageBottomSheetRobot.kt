@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.robot
+package com.tokopedia.oneclickcheckout.testing.robot
 
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.action.scrollTo
+import com.tokopedia.oneclickcheckout.testing.action.scrollTo
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher

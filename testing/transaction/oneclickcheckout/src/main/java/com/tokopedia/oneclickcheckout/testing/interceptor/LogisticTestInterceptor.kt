@@ -1,7 +1,6 @@
-package com.tokopedia.oneclickcheckout.common.interceptor
+package com.tokopedia.oneclickcheckout.testing.interceptor
 
-import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
-import com.tokopedia.oneclickcheckout.interceptor.BaseOccInterceptor
+import com.tokopedia.oneclickcheckout.testing.utils.ResourceUtils.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -43,7 +42,9 @@ class LogisticTestInterceptor : BaseOccInterceptor() {
             } else if (customGetShippingDurationResponsePath != null) {
                 return mockResponse(copy, getJsonFromResource(customGetShippingDurationResponsePath!!))
             }
-            return mockResponse(copy, getJsonFromResource(GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(
+                GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH
+            ))
         }
         if (requestString.contains(SET_CHOSEN_ADDRESS_QUERY)) {
             return mockResponse(copy, getJsonFromResource(SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH))

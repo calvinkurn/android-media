@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.action
+package com.tokopedia.oneclickcheckout.testing.action
 
 import android.view.View
 import android.widget.HorizontalScrollView

@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.action
+package com.tokopedia.oneclickcheckout.testing.action
 
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.*

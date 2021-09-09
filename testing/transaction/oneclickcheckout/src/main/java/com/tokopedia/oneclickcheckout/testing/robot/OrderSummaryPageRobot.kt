@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.robot
+package com.tokopedia.oneclickcheckout.testing.robot
 
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
+import com.tokopedia.oneclickcheckout.testing.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.unifycomponents.Label
