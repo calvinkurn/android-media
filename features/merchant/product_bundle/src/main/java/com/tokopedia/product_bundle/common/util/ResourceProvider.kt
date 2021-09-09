@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.common.util
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product_bundle.R
 import javax.inject.Inject
 
@@ -26,5 +27,9 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     fun getProductVariantNotSelected(): String {
         return getString(R.string.error_bundle_variant_not_selected) ?: ""
+    }
+
+    fun getErrorMessage(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessage(context, throwable)
     }
 }

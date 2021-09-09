@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.single.presentation
+package com.tokopedia.product_bundle.single.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -22,6 +22,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
@@ -99,6 +100,7 @@ class SingleProductBundleFragment(
         observeToasterError()
         observeDialogError()
         observePageError()
+        observeThrowableError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -109,7 +111,7 @@ class SingleProductBundleFragment(
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
         }
         hideLoadingDialog()
     }
@@ -237,6 +239,19 @@ class SingleProductBundleFragment(
         })
     }
 
+    private fun observeThrowableError() {
+        viewModel.throwableError.observe(viewLifecycleOwner, {
+            Toaster.build(
+                requireView(),
+                ErrorHandler.getErrorMessage(context, it),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+            hideLoadingDialog()
+            // TODO: log error
+        })
+    }
+
     private fun setupTotalSold(view: View) {
         tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
         updateTotalPO(null) // set null to hide
@@ -341,7 +356,7 @@ class SingleProductBundleFragment(
             val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
             startActivityForResult(intent, LOGIN_REQUEST_CODE)
         } else {
-            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
         }
     }
 

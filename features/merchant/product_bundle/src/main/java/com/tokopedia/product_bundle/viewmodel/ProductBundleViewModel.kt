@@ -214,8 +214,8 @@ class ProductBundleViewModel @Inject constructor(
                     }
             )
         }, onError = {
-            // TODO: log error, provide default error message
-
+            // TODO: log error
+            errorMessageLiveData.value = rscProvider.getErrorMessage(it)
         })
     }
 

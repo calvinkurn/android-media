@@ -52,6 +52,10 @@ class SingleProductBundleViewModel @Inject constructor(
     val pageError: LiveData<SingleProductBundleErrorEnum>
         get() = mPageError
 
+    private val mThrowableError = MutableLiveData<Throwable>()
+    val throwableError: LiveData<Throwable>
+        get() = mThrowableError
+
     fun setBundleInfo(
         context: Context,
         bundleInfo: List<BundleInfo>,
@@ -105,7 +109,7 @@ class SingleProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun validateAndCheckout(parentProductID: String, selectedDataList: List<SingleProductBundleSelectedItem>) {
+    fun validateAndAddToCart(parentProductID: String, selectedDataList: List<SingleProductBundleSelectedItem>) {
         val selectedData = selectedDataList.firstOrNull {
             it.isSelected
         }
@@ -170,15 +174,11 @@ class SingleProductBundleViewModel @Inject constructor(
                         )
                     },
                     onFailedWithException = {
-                        // Todo : show toaster error with error message from throwable
+                        mThrowableError.value = it
                     }
             )
         }, onError = {
-            mDialogError.value = SingleProductBundleDialogModel(
-                message = it.localizedMessage,
-                type = SingleProductBundleDialogModel.DialogType.DIALOG_NORMAL
-            )
+            mThrowableError.value = it
         })
     }
-
 }
