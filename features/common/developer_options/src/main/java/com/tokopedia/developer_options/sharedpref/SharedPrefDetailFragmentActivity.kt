@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActi
 import com.tokopedia.developer_options.remote_config.KeyValueEditorDialog
 import com.tokopedia.developer_options.remote_config.KeyValueListener
 import com.tokopedia.developer_options.remote_config.adapters.KeyValueListAdapter
+import com.tokopedia.unifycomponents.Toaster
 
 class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
 
@@ -63,7 +65,10 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
                     TYPE_STRING_SET -> sharedPref.getStringSet(keyToEdit, setOf())
                         ?.joinToString("#") ?: ""
                     TYPE_STRING -> sharedPref.getString(keyToEdit, "").toString()
-                    else -> return
+                    else -> {
+                        Toast.makeText(this, "No Data Type is not recognized", Toast.LENGTH_SHORT).show()
+                        ""
+                    }
                 }
                 sharedPrefValueType = i
                 success = true
@@ -89,12 +94,11 @@ class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
                     TYPE_FLOAT -> editor.putFloat(editedConfigKey, editedConfigValue.toFloat()).apply()
                     TYPE_BOOLEAN -> editor.putBoolean(editedConfigKey, editedConfigValue.toBoolean()).apply()
                     TYPE_STRING_SET -> editor.putStringSet(editedConfigKey, editedConfigValue.split("#").toSet()).apply()
-                    TYPE_STRING -> editor.putString(editedConfigKey, editedConfigValue).apply()
-                    else -> return
+                    else -> editor.putString(editedConfigKey, editedConfigValue).apply()
                 }
                 updateListAdapterData()
             } catch (e: Exception) {
-
+                Toast.makeText(this, "Data Type is not correct", Toast.LENGTH_SHORT).show()
             }
         }
     }
