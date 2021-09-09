@@ -467,7 +467,6 @@ class NewOtherMenuViewHolder(
     }
 
     interface Listener {
-        // TODO: Add listener for status bar color
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()

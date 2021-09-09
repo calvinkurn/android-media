@@ -27,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -176,6 +177,8 @@ class NewOtherMenuViewModel @Inject constructor(
     val shopShareInfoLiveData: LiveData<UserShopInfoWrapper.UserShopUniversalShareInfo>
         get() = _shopShareInfoLiveData
 
+    private var topadsTopupToggleJob: Job? = null
+
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
         setSuccessStateMapDefaultValue()
@@ -271,9 +274,12 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     fun startToggleTopadsCredit() {
-        launchCatchError(block = {
-            toggleTopadsTopupWithDelay()
-        }) {}
+        if (topadsTopupToggleJob == null || topadsTopupToggleJob?.isCompleted == true) {
+            topadsTopupToggleJob =
+                launchCatchError(block = {
+                    toggleTopadsTopupWithDelay()
+                }) {}
+        }
     }
 
     private fun getFreeShippingStatusData() {
@@ -473,6 +479,7 @@ class NewOtherMenuViewModel @Inject constructor(
     private fun resetTopadsToggleCount() {
         _kreditTopAdsLiveData.value = null
         _numberOfTopupToggleCounts.value = null
+        topadsTopupToggleJob?.cancel()
     }
 
     private fun setShopShareInfo(shopShareInfo: UserShopInfoWrapper.UserShopUniversalShareInfo) {
