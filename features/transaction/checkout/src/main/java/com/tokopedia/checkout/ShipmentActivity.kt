@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
-import com.tokopedia.checkout.old.view.ShipmentFragment
+import com.tokopedia.checkout.bundle.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -25,8 +25,13 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
         val bundle = intent.extras
-        shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
-        return shipmentFragment
+        if (isBundleCheckout()) {
+            shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            return shipmentFragment
+        } else {
+            oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            return oldShipmentFragment
+        }
     }
 
     @Keep
@@ -38,6 +43,10 @@ class ShipmentActivity : BaseCheckoutActivity() {
         if (shipmentFragment != null) {
             shipmentFragment?.onBackPressed()
             setResult(shipmentFragment?.resultCode ?: Activity.RESULT_CANCELED)
+            finish()
+        } else if (oldShipmentFragment != null) {
+            oldShipmentFragment?.onBackPressed()
+            setResult(oldShipmentFragment?.resultCode ?: Activity.RESULT_CANCELED)
             finish()
         } else {
             super.onBackPressed()
