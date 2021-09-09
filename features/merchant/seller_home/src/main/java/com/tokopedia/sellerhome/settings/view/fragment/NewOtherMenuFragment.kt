@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -34,6 +42,7 @@ import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
@@ -41,6 +50,7 @@ import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.analytics.NewOtherMenuTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
@@ -52,6 +62,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,11 +75,14 @@ import javax.inject.Inject
 //TODO: Preserve name OtherMenuFragment and move the older one to different path
 class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, NewOtherMenuViewHolder.Listener,
-    StatusBarCallback, SellerHomeFragmentListener {
+    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
         private const val TAB_PM_PARAM = "tab"
+
+        private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
+        private const val DELIMITER = " - "
 
         @JvmStatic
         fun createInstance(): NewOtherMenuFragment = NewOtherMenuFragment()
@@ -105,10 +122,11 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     private var viewHolder: NewOtherMenuViewHolder? = null
 
     private var multipleErrorSnackbar: Snackbar? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var canShowErrorToaster = true
 
-    private var shopSnippetUrl: String? = null
+    private var shopShareInfo: UserShopInfoWrapper.UserShopUniversalShareInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -241,10 +259,6 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         context.let { RouteManager.route(context, appLinkPMTab) }
     }
 
-    override fun onRefreshData() {
-        // TODO("Not yet implemented")
-    }
-
     override fun onRefreshShopInfo() {
         viewModel.getUserShopInfo()
     }
@@ -294,7 +308,17 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         viewModel.startToggleTopadsCredit()
     }
 
-    override fun getIsShopShareReady(): Boolean = shopSnippetUrl?.isNotBlank() == true
+    override fun onShareButtonClicked() {
+        val isSharingEnabled =
+            context?.let {
+                UniversalShareBottomSheet.isCustomSharingEnabled(it)
+            } == true
+        if (isSharingEnabled) {
+            showUniversalShareBottomSheet()
+        }
+    }
+
+    override fun getIsShopShareReady(): Boolean = shopShareInfo != null
 
 
     override fun onScrollToTop() {
@@ -313,6 +337,54 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
     }
 
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.SHOP_TYPE
+            uri = shopShareInfo?.coreUrl
+            id = userSession.shopId
+            //set and share in the Linker Data
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            ogTitle = getShareBottomSheetOgTitle()
+            ogDescription = getShareBottomSheetOgDescription()
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    checkUsingCustomBranchLinkDomain(linkerShareData)
+                    val shareString = getString(
+                        R.string.sah_new_other_share_text,
+                        userSession.shopName,
+                        linkerShareData?.shareContents
+                    )
+                    shareModel.subjectName = userSession.shopName
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        activity,
+                        view,
+                        shareString
+                    )
+                    // TODO: send gql tracker
+
+                    // TODO: send gtm tracker
+
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        // TODO("Add tracking")
+    }
+
     private fun observeLiveData() {
         observeShopBadge()
         observeShopTotalFollowers()
@@ -323,7 +395,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         observeFreeShipping()
         observeIsTopAdsAutoTopup()
         observeShopPeriod()
-        observeShopSnippet()
+        observeShopShareInfo()
         observeShouldSwipeSecondaryInfo()
         observeMultipleErrorToaster()
         observeToasterAlreadyShown()
@@ -433,10 +505,10 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         viewModel.getShopPeriodType()
     }
 
-    private fun observeShopSnippet() {
-        viewModel.shopSnippetUrl.observe(viewLifecycleOwner) { url ->
-            if (url.isNotBlank()) {
-                shopSnippetUrl = url
+    private fun observeShopShareInfo() {
+        viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
+            if (shareInfo != null) {
+                shopShareInfo = shareInfo
                 viewHolder?.runShareButtonAnimation()
             }
         }
@@ -523,7 +595,8 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 view?.run {
                     Toaster.build(
                         this,
-                        context?.getString(R.string.setting_header_multiple_error_message).orEmpty(),
+                        context?.getString(R.string.setting_header_multiple_error_message)
+                            .orEmpty(),
                         Snackbar.LENGTH_INDEFINITE,
                         Toaster.TYPE_NORMAL,
                         context?.getString(R.string.setting_toaster_error_retry).orEmpty()
@@ -546,6 +619,73 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
             } ?: resources.getString(R.string.setting_toaster_error_message)
             view?.showToasterError(errorMessage, onRetryAction)
         }
+    }
+
+    private fun showUniversalShareBottomSheet() {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@NewOtherMenuFragment)
+            setUtmCampaignData(
+                NewOtherMenuTracker.OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME,
+                userSession.userId,
+                userSession.shopId,
+                NewOtherMenuTracker.OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME
+            )
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopShareInfo?.shopSnippetUrl.orEmpty())
+        }.also { shareBottomSheet ->
+            activity?.supportFragmentManager?.let {
+                shareBottomSheet.show(it, this)
+            }
+        }
+    }
+
+    private fun getShareBottomSheetOgTitle(): String {
+        return shopShareInfo?.let {
+            "${
+                joinStringWithDelimiter(
+                    userSession.shopName,
+                    it.location,
+                    delimiter = DELIMITER
+                )
+            } $TOKOPEDIA_SUFFIX"
+        }.orEmpty()
+    }
+
+    private fun getShareBottomSheetOgDescription(): String {
+        return shopShareInfo?.let {
+            joinStringWithDelimiter(it.description, it.tagline, delimiter = DELIMITER)
+        }.orEmpty()
+    }
+
+    private fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
+        val filteredListString = listString.filter {
+            it.isNotEmpty()
+        }
+        return TextUtils.join(delimiter, filteredListString)
+    }
+
+    private fun checkUsingCustomBranchLinkDomain(linkerShareData: LinkerShareResult?) {
+        val shopBranchLinkDomain = shopShareInfo?.branchLinkDomain.orEmpty()
+        if(shopBranchLinkDomain.isNotEmpty())
+            changeLinkerShareDataContent(linkerShareData, shopBranchLinkDomain)
+    }
+
+    private fun changeLinkerShareDataContent(linkerShareData: LinkerShareResult?, shopBranchLinkDomain: String) {
+        linkerShareData?.apply {
+            shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
+            url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri.orEmpty(), shopBranchLinkDomain)
+        }
+    }
+
+    private fun replaceLastUrlSegment(urlString: String, replacementValue: String): String{
+        return urlString.split("/").toMutableList().also { list ->
+            list[list.lastIndex] = replacementValue
+        }.joinToString("/")
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {

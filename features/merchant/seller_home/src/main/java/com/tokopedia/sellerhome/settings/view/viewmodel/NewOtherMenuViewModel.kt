@@ -14,6 +14,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
@@ -61,7 +62,7 @@ class NewOtherMenuViewModel @Inject constructor(
 
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
-    private val _shopSnippetUrl = MutableLiveData<String>()
+    private val _shopShareInfoLiveData = MutableLiveData<UserShopInfoWrapper.UserShopUniversalShareInfo>()
 
     private val _freeShippingLiveData =
         MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
@@ -172,8 +173,8 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _shopPeriodType
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
-    val shopSnippetUrl: LiveData<String>
-        get() = _shopSnippetUrl
+    val shopShareInfoLiveData: LiveData<UserShopInfoWrapper.UserShopUniversalShareInfo>
+        get() = _shopShareInfoLiveData
 
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
@@ -355,8 +356,8 @@ class NewOtherMenuViewModel @Inject constructor(
                         GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
-                userShopInfoWrapper.shopSnippetUrl?.let {
-                    setShopSnippetUrl(it)
+                userShopInfoWrapper.shareInfo?.let {
+                    setShopShareInfo(it)
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
                     ShopStatusUiModel(
@@ -474,9 +475,9 @@ class NewOtherMenuViewModel @Inject constructor(
         _numberOfTopupToggleCounts.value = null
     }
 
-    private fun setShopSnippetUrl(shopSnippetUrl: String) {
-        if (_shopSnippetUrl.value == null) {
-            _shopSnippetUrl.value = shopSnippetUrl
+    private fun setShopShareInfo(shopShareInfo: UserShopInfoWrapper.UserShopUniversalShareInfo) {
+        if (_shopShareInfoLiveData.value == null) {
+            _shopShareInfoLiveData.value = shopShareInfo
         }
     }
 

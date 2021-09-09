@@ -19,15 +19,23 @@ import javax.inject.Inject
 class UserShopInfoMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun mapToUserShopInfoUiModel(userShopInfoResponse: UserShopInfoResponse): UserShopInfoWrapper {
+        val userShopInfoResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()
         val targetDateText = "2021-06-14"
         val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
-        val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
-        val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
+        val goldOsResult = userShopInfoResult?.goldOS
+        val txStatsValue = userShopInfoResult?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
         val dateCreated = userShopInfoResponse.userShopInfo.info.dateShopCreated
-        val shopSnippetUrl = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.shopSnippetUrl
+        val shopSnippetUrl = userShopInfoResult?.shopSnippetUrl.orEmpty()
+        val location = userShopInfoResult?.location.orEmpty()
+        val description = userShopInfoResult?.shopCore?.description.orEmpty()
+        val tagline = userShopInfoResult?.shopCore?.tagLine.orEmpty()
+        val coreUrl = userShopInfoResult?.shopCore?.url.orEmpty()
+        val branchLinkDomain = userShopInfoResult?.branchLinkDomain.orEmpty()
         return UserShopInfoWrapper(
                 shopType = getShopType(userShopInfoResponse),
-                shopSnippetUrl = shopSnippetUrl,
+                shareInfo = UserShopInfoWrapper.UserShopUniversalShareInfo(
+                    shopSnippetUrl, location, description, tagline, coreUrl, branchLinkDomain
+                ),
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
                         isBeforeOnDate = isBeforeOnDate,
                         onDate = targetDateText,

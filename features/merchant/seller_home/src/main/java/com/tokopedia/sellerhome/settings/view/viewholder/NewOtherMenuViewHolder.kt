@@ -452,8 +452,18 @@ class NewOtherMenuViewHolder(
     }
 
     private fun showShareButtons() {
-        shareButtonImage?.show()
-        headerShopShareButton?.show()
+        shareButtonImage?.run {
+            show()
+            setOnClickListener {
+                listener.onShareButtonClicked()
+            }
+        }
+        headerShopShareButton?.run {
+            show()
+            setOnClickListener {
+                listener.onShareButtonClicked()
+            }
+        }
     }
 
     interface Listener {
@@ -469,7 +479,6 @@ class NewOtherMenuViewHolder(
         fun onFreeShippingClicked()
         fun onShopOperationalClicked()
         fun onGoToPowerMerchantSubscribe(tab: String)
-        fun onRefreshData()
         fun onShopBadgeRefresh()
         fun onShopTotalFollowersRefresh()
         fun onUserInfoRefresh()
@@ -479,6 +488,7 @@ class NewOtherMenuViewHolder(
         fun onFreeShippingRefresh()
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onTopadsValueSet()
+        fun onShareButtonClicked()
         fun getIsShopShareReady(): Boolean
     }
 

@@ -25,7 +25,7 @@ class GetUserShopInfoUseCase @Inject constructor(
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos", "shopstats-limited", "shop-snippet"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link"]
                 }
               ) {
                 result {
@@ -43,6 +43,13 @@ class GetUserShopInfoUseCase @Inject constructor(
                     startTime
                   }
                   shopSnippetURL
+                  location
+                  branchLinkDomain
+                  shopCore {
+                    description
+                    tagLine
+                    url
+                  }
                 }
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source: "goldmerchant") {
