@@ -65,14 +65,13 @@
     <string name="tokopedianow_date_filter_item_last_one_month_bottomsheet">30 Hari Terakhir</string>
     <string name="tokopedianow_date_filter_item_last_three_months_bottomshet">90 Hari Terakhir</string>
     <string name="tokopedianow_date_filter_item_custom_date_bottomshet">Pilih Tanggal Sendiri</string>
+    <string name="tokopedianow_date_filter_apply_filter_bottomshet">Terapkan</string>
+    <string name="tokopedianow_date_filter_item_start_date_bottomshet">Mulai dari</string>
+    <string name="tokopedianow_date_filter_item_end_date_bottomshet">Sampai</string>
 
     <string name="tokopedianow_repurchase_sort_chip_title">Paling sering dibeli</string>
     <string name="tokopedianow_repurchase_category_filter_chip_title">Semua Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
-
-    <string name="uoh_apply_filter_label">Terapkan</string>
-    <string name="uoh_custom_start_date">Mulai dari</string>
-    <string name="uoh_custom_end_date">Sampai</string>
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>

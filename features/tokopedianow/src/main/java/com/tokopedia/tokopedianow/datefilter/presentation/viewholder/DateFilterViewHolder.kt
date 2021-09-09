@@ -38,14 +38,14 @@ class DateFilterViewHolder(
         rbSort?.isChecked = element.isChecked == true
         divider?.showWithCondition(!element.isLastItem)
         container?.setOnClickListener {
-            listener.onClickItem(rbSort?.isChecked == true, adapterPosition, 0)
+            listener.onClickItem(rbSort?.isChecked == true, adapterPosition, element.startDate, element.endDate)
         }
         rbSort?.setOnClickListener {
-            listener.onClickItem(rbSort?.isChecked == true, adapterPosition, 0)
+            listener.onClickItem(rbSort?.isChecked == true, adapterPosition, element.startDate, element.endDate)
         }
     }
 
     interface DateFilterViewHolderListener {
-        fun onClickItem(isChecked: Boolean, position: Int, value: Int)
+        fun onClickItem(isChecked: Boolean, position: Int, startDate: String, endDate: String)
     }
 }
