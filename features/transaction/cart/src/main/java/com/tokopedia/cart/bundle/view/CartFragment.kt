@@ -244,6 +244,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val ANIMATED_SCALE_FULL = 1.0f
         const val IMAGE_ANIMATION_DURATION = 1250L
         const val COORDINATE_HEIGHT_DIVISOR = 3
+        const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
+        const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -455,8 +457,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val oldBundleId = data?.getStringExtra("old_bundle_id") ?: ""
-            val newBundleId = data?.getStringExtra("new_bundle_id") ?: ""
+            val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             if (oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) {
                 val cartItems = cartAdapter.getCartItemByBundleId(oldBundleId)
                 if (cartItems.isNotEmpty()) {
