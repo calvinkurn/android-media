@@ -432,13 +432,12 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapPromoLastApply(promoData: Data?): LastApplyUiModel {
-        // TODO: listRedPromos
         return LastApplyUiModel().apply {
             codes = mapPromoGlobalCodes(promoData)
             voucherOrders = mapPromoVoucherOrders(promoData)
             additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData?.additionalInfo)
             message = mapLastApplyMessageUiModel(promoData?.message)
-//            listRedPromos = mapListRedPromos(promoData)
+            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
         }
     }
