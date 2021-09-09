@@ -12,5 +12,10 @@ data class ShipmentInputModel (
         var weight: Int = 0,
         var weightUnit: Int = 0,
         var isMustInsurance: Boolean = false,
-        var shipperServices: ArrayList<Int>? = arrayListOf()
+        var cpl: CPLModel = CPLModel()
 ) : Parcelable
+
+@Parcelize
+data class CPLModel (
+        var shipperServices: ArrayList<Int>? = arrayListOf()
+): Parcelable

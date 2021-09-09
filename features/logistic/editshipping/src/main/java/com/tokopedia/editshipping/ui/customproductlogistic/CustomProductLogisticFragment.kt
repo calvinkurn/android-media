@@ -124,10 +124,30 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
-        cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
-        cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-        cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
-        cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        if (data.shipperList.size == 1) {
+            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else {
+            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
+            cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        }
+        updateLayoutShipment()
+    }
+
+    private fun updateLayoutShipment() {
+        if (cplItemOnDemandAdapter.checkActivatedSpIds().isEmpty()) {
+            binding.shippingEditorLayoutOndemand.gone()
+        } else {
+            binding.shippingEditorLayoutOndemand.visible()
+        }
+
+        if (cplItemConventionalAdapter.checkActivatedSpIds().isEmpty()) {
+            binding.shippingEditorLayoutConventional.gone()
+        } else {
+            binding.shippingEditorLayoutConventional.visible()
+        }
     }
 
     private fun validateSaveButton() {

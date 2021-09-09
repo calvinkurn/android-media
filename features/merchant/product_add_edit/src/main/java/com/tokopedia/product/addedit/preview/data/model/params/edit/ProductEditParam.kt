@@ -75,10 +75,17 @@ data class ProductEditParam (
         @SerializedName("variant")
         @Expose
         var variant: Variant? = null,
-        @SerializedName("shipper_services")
+        @SerializedName("cpl")
         @Expose
-        var shipperServices: ArrayList<Int>? = arrayListOf(),
+        var cpl: CPLInput = CPLInput(),
         @SerializedName("annotations")
         @Expose
         var annotations: List<String>? = null
 ) : Parcelable
+
+@Parcelize
+data class CPLInput (
+        @SerializedName("shipperServices")
+        @Expose
+        var shipperServices: ArrayList<Int>? = arrayListOf()
+): Parcelable

@@ -341,10 +341,15 @@ class AddEditProductShipmentFragment:
     }
 
     private fun updateShipmentData(data: CustomProductLogisticModel) {
-        shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-        shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
-        shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        if (data.shipperList.size == 1) {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        }
         updateLayoutShipment()
     }
 
@@ -458,8 +463,10 @@ class AddEditProductShipmentFragment:
         if (isStandardShipment) {
             layoutCustomShipmentOnDemand?.gone()
             layoutCustomShipmentConventional?.gone()
+            shipperServices = arrayListOf()
         } else {
-            updateLayoutShipment()
+            layoutCustomShipmentOnDemand?.visible()
+            layoutCustomShipmentConventional?.visible()
         }
     }
 
@@ -550,7 +557,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition
-            shipmentServices = shipperServices
+            cplModel.shipmentServices = shipperServices
         }
     }
 

@@ -91,4 +91,5 @@
     <!--Custom Product Logistic-->
     <string name="title_activity_cpl">Pengiriman Per Produk</string>
     <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
+    <string name="antar_ke_agen">Antar ke Kantor Agen</string>
 </resources>
