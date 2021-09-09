@@ -50,7 +50,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var actionUrl: String = ""
     private var productUrl: String = ""
     private var partnerName: String? = ""
-    private lateinit var  howToUseList:HowToUse
+    private  var  listOfSteps: ArrayList<String>? = ArrayList()
     private  var noteData:String =""
 
 
@@ -73,10 +73,20 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url?:""
-            if(it.gateway_detail?.how_toUse?.notes?.size  != 0)
-                noteData = it.gateway_detail?.how_toUse?.notes?.get(0)?:""
-            it.gateway_detail?.how_toUse?.let { howToUseDetail->
-                howToUseList = howToUseDetail
+            if(it.cta?.cta_type == 4) {
+                if (it.gateway_detail?.how_toUse?.notes?.size != 0)
+                    noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
+                it.gateway_detail?.how_toUse?.let { howToUseDetail ->
+                    listOfSteps = howToUseDetail.steps as ArrayList<String>
+                }
+            }
+            else (it.cta?.cta_type == 3)
+            {
+                if (it.gateway_detail?.how_toApply?.notes?.size != 0)
+                    noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
+                it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
+                    listOfSteps = howToApplyDetail.steps as ArrayList<String>
+                }
             }
 
         }
@@ -139,7 +149,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initAdapter() {
 
-        howToUseList.steps?.let {
+        listOfSteps?.let {
             rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it as ArrayList<String>)
             rvPayLaterRegisterSteps.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

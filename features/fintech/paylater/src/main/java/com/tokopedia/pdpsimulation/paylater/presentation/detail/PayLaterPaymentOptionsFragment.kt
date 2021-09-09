@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -33,7 +35,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
     }
 
-    private var isClickableButton:Boolean? = false
+   private var buttonStatus:RedirectionType? = null
+    private var urlToRedirect:String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +71,16 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            if(isClickableButton == true)
-                openActionBottomSheet()
+            buttonStatus?.let {
+                if(it == RedirectionType.HowToDetail)
+                    openActionBottomSheet()
+                 else if(it == RedirectionType.RedirectionWebView)
+                {
+                    if(!urlToRedirect.isNullOrEmpty())
+                        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlToRedirect)
+                }
+            }
+
         }
 
         faqList.setOnClickListener {
@@ -116,9 +127,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
+            urlToRedirect = data.cta?.android_url?:""
             data.cta?.cta_type?.let{
-                if(it in 1..4)
-                    isClickableButton = true
+                buttonStatus = when (it) {
+                    in 1..2 -> RedirectionType.RedirectionWebView
+                    in 3..4 -> RedirectionType.HowToDetail
+                    else -> RedirectionType.NonClickable
+                }
             }
             interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -182,4 +197,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
         }
     }
+}
+
+enum class RedirectionType {
+    HowToDetail, RedirectionWebView, NonClickable
 }
