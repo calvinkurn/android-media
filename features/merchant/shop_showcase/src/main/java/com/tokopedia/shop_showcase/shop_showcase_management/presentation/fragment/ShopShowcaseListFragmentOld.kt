@@ -86,6 +86,7 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
         }
 
         const val REQUEST_EDIT_SHOWCASE_CODE = 1
+        private const val LOAD_DATA_DELAY_MILLIS = 500L
     }
 
     private val userSession: UserSessionInterface by lazy {
@@ -290,14 +291,12 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-                val HAS_ELEVATION = 16.0f
-                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout?.cardElevation = NO_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout?.cardElevation = HAS_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }
@@ -462,7 +461,7 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
             checkTotalProduct()
             Handler().postDelayed({
                 viewModel.getShopShowcaseListAsSeller()
-            }, 500)
+            }, LOAD_DATA_DELAY_MILLIS)
         } else {
             if (!isMyShop) {
                 viewModel.getShopShowcaseListAsBuyer(
