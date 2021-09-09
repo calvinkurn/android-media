@@ -13,7 +13,7 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.di.component.DaggerCategoryFilterComponent
-import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_FILTER
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categoryfilter.presentation.view.CategoryFilterChipView
@@ -33,7 +33,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
             return TokoNowCategoryFilterBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_WAREHOUSE_ID, warehouseId)
-                    putParcelable(EXTRA_SELECTED_FILTER, selectedFilterId)
+                    putParcelable(EXTRA_SELECTED_CATEGORY_FILTER, selectedFilterId)
                 }
             }
         }
@@ -110,7 +110,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
 
         observe(viewModel.applyFilter) {
             val intent = Intent().apply {
-                putExtra(EXTRA_SELECTED_FILTER, it)
+                putExtra(EXTRA_SELECTED_CATEGORY_FILTER, it)
             }
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
@@ -132,7 +132,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun setSelectedFilter() {
-        val selectedFilter = arguments?.getParcelable<SelectedSortFilter>(EXTRA_SELECTED_FILTER)
+        val selectedFilter = arguments?.getParcelable<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.setSelectedFilterIds(selectedFilter)
     }
 

@@ -9,13 +9,13 @@ class TokoNowCategoryFilterActivity: BaseTokoNowActivity() {
 
     companion object {
         const val PARAM_WAREHOUSE_ID = "warehouse_id"
-        const val EXTRA_SELECTED_FILTER = "selected_filter"
+        const val EXTRA_SELECTED_CATEGORY_FILTER = "extra_selected_category_filter"
         const val REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET = 1001
     }
 
     override fun getFragment(): Fragment {
         val warehouseId = intent?.data?.getQueryParameter(PARAM_WAREHOUSE_ID).orEmpty()
-        val selectedFilter = intent?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_FILTER)
+        val selectedFilter = intent?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         return TokoNowCategoryFilterFragment.newInstance(warehouseId, selectedFilter)
     }
 }

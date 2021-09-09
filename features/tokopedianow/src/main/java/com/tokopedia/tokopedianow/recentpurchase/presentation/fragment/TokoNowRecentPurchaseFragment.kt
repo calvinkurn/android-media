@@ -38,7 +38,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_FILTER
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
@@ -268,7 +268,7 @@ class TokoNowRecentPurchaseFragment:
             localCacheModel?.warehouse_id.orEmpty()
         )
         val selectedFilter = viewModel.getSelectedCategoryFilter()
-        intent.putExtra(EXTRA_SELECTED_FILTER, selectedFilter)
+        intent.putExtra(EXTRA_SELECTED_CATEGORY_FILTER, selectedFilter)
         startActivityForResult(intent, REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET)
     }
 
@@ -483,7 +483,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun onCategoryFilterActivityResult(data: Intent?) {
-        val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_FILTER)
+        val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.setSelectedCategoryFilter(selectedFilter)
     }
 
