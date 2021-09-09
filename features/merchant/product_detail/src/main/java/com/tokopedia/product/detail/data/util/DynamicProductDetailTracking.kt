@@ -1937,18 +1937,17 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
-                    DataLayer.mapOf(
-                            ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
-                            ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID
-                            ?: "",
-                            ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
-                            ProductTrackingConstant.Tracking.POSITION, 1
+                        ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                    ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                                    ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
+                                    ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                                    ProductTrackingConstant.Tracking.POSITION, 1
+                                )
+                            )
+                        )
                     )
-            )
-            )
-            )
             )
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
@@ -1966,18 +1965,17 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.PROMO_CLICK, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
-                    DataLayer.mapOf(
-                            ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
-                            ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID
-                            ?: "",
-                            ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
-                            ProductTrackingConstant.Tracking.POSITION, 1
+                        ProductTrackingConstant.Tracking.PROMO_CLICK, DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                    ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                                    ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
+                                    ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                                    ProductTrackingConstant.Tracking.POSITION, 1
+                                )
+                            )
+                        )
                     )
-            )
-            )
-            )
             )
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
