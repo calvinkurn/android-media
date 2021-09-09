@@ -4,5 +4,6 @@
     android:id="@+id/sort_filter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sort_filter_relationship="OR"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    app:sort_filter_relationship="AND"
     app:sort_filter_type="quick" />
