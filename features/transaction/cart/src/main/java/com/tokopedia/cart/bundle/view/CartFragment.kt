@@ -244,6 +244,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val ANIMATED_SCALE_FULL = 1.0f
         const val IMAGE_ANIMATION_DURATION = 1250L
         const val COORDINATE_HEIGHT_DIVISOR = 3
+        const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
+        const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -455,13 +457,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val bundleId = data?.getStringExtra("bundle_id")
-            bundleId?.let {
-                val cartItems = cartAdapter.getCartItemByBundleId(it)
+            val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
+            if (oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) {
+                val cartItems = cartAdapter.getCartItemByBundleId(oldBundleId)
                 if (cartItems.isNotEmpty()) {
                     val allCartItemDataList = cartAdapter.allCartItemData
-                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItems, false, false, true)
+                    dPresenter.processDeleteCartItem(
+                            allCartItemData = allCartItemDataList,
+                            removedCartItems = cartItems,
+                            addWishList = false,
+                            forceExpandCollapsedUnavailableItems = false,
+                            isFromGlobalCheckbox = true,
+                            isFromEditBundle = true
+                    )
                 }
+            } else {
+                refreshCartWithSwipeToRefresh()
             }
         }
     }
@@ -490,7 +502,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 ?: false
         if (fromActivity) {
             return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION ||
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION2
+                    RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION2
         } else {
             return try {
                 return (context as? MainParentStateListener)?.isNavigationRevamp ?: false
@@ -542,7 +554,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
 
-    // Navigation Section
+// Navigation Section
 
     private fun routeToHome() {
         activity?.let {
@@ -2643,7 +2655,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          isMoveToWishlist: Boolean,
                                          isFromGlobalCheckbox: Boolean,
-                                         forceReloadCart: Boolean) {
+                                         isFromEditBundle: Boolean) {
         var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
         if (isMoveToWishlist) {
@@ -2651,10 +2663,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             refreshWishlistAfterItemRemoveAndMoveToWishlist()
         }
 
-        if (isFromGlobalCheckbox) {
-            showToastMessageGreen(message)
-        } else {
-            showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+        if (!isFromEditBundle) {
+            if (isFromGlobalCheckbox) {
+                showToastMessageGreen(message)
+            } else {
+                showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+            }
         }
 
         val updateListResult = cartAdapter.removeProductByCartId(deletedCartIds)
@@ -2664,7 +2678,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         setTopLayoutVisibility()
 
-        if (forceReloadCart || removeAllItems) {
+        if (removeAllItems || isFromEditBundle) {
             refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()

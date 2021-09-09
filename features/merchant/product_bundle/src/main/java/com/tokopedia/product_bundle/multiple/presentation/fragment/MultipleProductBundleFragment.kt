@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -25,7 +24,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_BUNDLE_ID
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
@@ -78,15 +78,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             }
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModelProvider by lazy {
-        ViewModelProvider(this, viewModelFactory)
-    }
-
     private val viewModel by lazy {
-        viewModelProvider.get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this.requireActivity()).get(ProductBundleViewModel::class.java)
     }
 
     private var processDayView: Typography? = null
@@ -189,7 +182,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             atcResult?.let {
                 if (viewModel.pageSource == PAGE_SOURCE_CART) {
                     val intent = Intent()
-                    intent.putExtra(EXTRA_BUNDLE_ID, atcResult.requestParams.bundleId)
+                    val oldBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
+                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
                     activity?.setResult(Activity.RESULT_OK, intent)
                 } else {
                     RouteManager.route(context, ApplinkConst.CART)
