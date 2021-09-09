@@ -683,11 +683,6 @@ class PlayViewModel @Inject constructor(
         _observableUpcomingInfo.value = channelData.upcomingInfo
 
         if(channelData.upcomingInfo.isUpcoming) {
-            /**
-             * Handling upcoming fragment here
-             * 1. Show Upcoming Fragment
-             * 2. Start SSE
-             */
             startSSE(channelData.id)
         }
         else {
