@@ -268,7 +268,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
-        postProgressUpdateView?.registerBroadcastReceiver()
+        if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
+            updateVisibility(true)
+        } else {
+            updateVisibility(false)
+            postProgressUpdateView?.registerBroadcastReceiver()
+        }
     }
 
     override fun onDestroy() {

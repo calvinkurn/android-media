@@ -177,13 +177,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
+        goToFeed()
         finish()
     }
 
     private fun goToFeed() {
         this.let {
-            val applink = ApplinkConst.FEED.plus("?after_post=true")
+            val applink = ApplinkConst.HOME_FEED
             val intent = RouteManager.getIntent(it, applink)
+            intent.putExtra("show_posting_progress_bar",true)
             startActivity(intent)
         }
     }
