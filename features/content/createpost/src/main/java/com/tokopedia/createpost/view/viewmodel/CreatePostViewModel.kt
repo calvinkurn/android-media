@@ -5,21 +5,21 @@ import android.os.Parcelable
 import java.util.*
 
 data class CreatePostViewModel(
-        var postId: String = "",
-        var token: String = "",
-        var authorType: String = "",
-        var caption: String = "",
-        var maxImage: Int = 5,
-        var maxProduct: Int = 1,
-        var allowImage: Boolean = false,
-        var allowVideo: Boolean = false,
-        val productIdList: MutableList<String> = arrayListOf(),
-        val adIdList: MutableList<String> = arrayListOf(),
-        val fileImageList: MutableList<MediaModel> = arrayListOf(),
-        val urlImageList: MutableList<MediaModel> = arrayListOf(),
-        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
-        var defaultPlaceholder: String = "",
-        var currentCorouselIndex: Int = 0
+    var postId: String = "",
+    var token: String = "",
+    var authorType: String = "",
+    var caption: String = "",
+    var maxImage: Int = 5,
+    var maxProduct: Int = 1,
+    var allowImage: Boolean = false,
+    var allowVideo: Boolean = false,
+    val productIdList: MutableList<String> = arrayListOf(),
+    val adIdList: MutableList<String> = arrayListOf(),
+    val fileImageList: MutableList<MediaModel> = arrayListOf(),
+    val urlImageList: MutableList<MediaModel> = arrayListOf(),
+    val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
+    var defaultPlaceholder: String = "",
+    var currentCorouselIndex: Int = 0
 ) : Parcelable {
     val isEditState: Boolean
         get() = postId.isNotBlank()
@@ -47,7 +47,7 @@ data class CreatePostViewModel(
             source.createTypedArrayList(MediaModel.CREATOR) ?: arrayListOf(),
             source.createTypedArrayList(MediaModel.CREATOR) ?: arrayListOf(),
             source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf(),
-            source.readString() ?: ""
+            source.readString() ?: "",
             )
 
     override fun describeContents() = 0

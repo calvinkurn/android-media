@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.fragment.ImagePickerFragement
@@ -28,6 +30,11 @@ import java.util.concurrent.TimeUnit
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        UploadMultipleImageUsecaseNew.mContext =applicationContext as Application?
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         this.intent = intent
@@ -85,6 +92,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
             return intent
         }
+
+        var application_one: Context? = null
     }
 
     override fun getNewFragment(): Fragment {
@@ -169,7 +178,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             intent.extras?.get(CreatePostViewModel.TAG), TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(this, cacheManager.id!!)
-        goToFeed()
+      //  goToFeed()
         finish()
     }
 

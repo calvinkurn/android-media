@@ -269,6 +269,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onResume() {
         super.onResume()
         postProgressUpdateView?.registerBroadcastReceiver()
+        postProgressUpdateView?.registerBroadcastReceiverProgress()
     }
 
     override fun onDestroy() {
@@ -276,6 +277,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.whitelistResp.removeObservers(this)
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
+        postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         super.onDestroy()
     }
 
@@ -663,8 +665,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun swipeOnPostUpdate() {
-        swipe_refresh_layout?.isRefreshing = true
-        updateVisibility(false)
+   //     swipe_refresh_layout?.isRefreshing = true
+        recycler_view.scrollToPosition(0)
+        updateVisibility(true)
     }
 
     override fun updateVisibility(flag: Boolean) {
