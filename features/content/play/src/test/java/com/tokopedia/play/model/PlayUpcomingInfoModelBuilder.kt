@@ -9,7 +9,7 @@ class PlayUpcomingInfoModelBuilder {
 
     fun buildUpcomingInfo(
         title: String = "Test Upcoming",
-        isUpcoming: Boolean = true,
+        isUpcoming: Boolean = false,
         isReminderSet: Boolean = false,
         coverUrl: String = "cover_url.com",
         startTime: String = "2021-12-12'T'12:23:45",
