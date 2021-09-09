@@ -33,5 +33,6 @@ annotation class RepurchaseStaticLayoutId {
         const val ERROR_STATE_FAILED_TO_FETCH_DATA = "4"
         const val PRODUCT_RECOM_OOC = "5"
         const val PRODUCT_RECOM_NO_RESULT = "6"
+        const val SORT_FILTER = "7"
     }
 }
