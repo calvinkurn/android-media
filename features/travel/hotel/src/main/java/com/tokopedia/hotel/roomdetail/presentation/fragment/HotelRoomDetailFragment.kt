@@ -82,6 +82,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     private var roomIndex = 0
 
+    private lateinit var imagePreviewSlider: ImagePreviewSlider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -220,7 +222,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
-                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
+                    imagePreviewSlider.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
         }
@@ -437,6 +439,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         dialog.setCancelable(false)
         dialog.setOverlayClose(false)
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(::imagePreviewSlider.isInitialized){
+            imagePreviewSlider.destroy()
+        }
     }
 
     companion object {

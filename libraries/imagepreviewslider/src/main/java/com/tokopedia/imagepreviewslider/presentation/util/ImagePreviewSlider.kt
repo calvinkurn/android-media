@@ -19,9 +19,12 @@ class ImagePreviewSlider {
         val instance by lazy { ImagePreviewSlider() }
     }
 
+    private var context: Context? = null
+
     fun start(context: Context?, title: String = "", imageUrls: List<String>,
               imageThumbnailUrls: List<String>, imagePosition: Int = 0, imageViewTransitionFrom: ImageView?) {
-        context?.let {
+        this.context = context
+        this.context?.let {
             if (Build.VERSION.SDK_INT < 19) {
                 it.run {
                     startActivity(ImagePreviewSliderActivity.getCallingIntent(it, title, imageUrls, imageThumbnailUrls, imagePosition))
@@ -30,5 +33,9 @@ class ImagePreviewSlider {
                 ImagePreviewViewer.instance.startImagePreviewViewer(title, imageViewTransitionFrom, imageUrls, it, imagePosition)
             }
         }
+    }
+
+    fun destroy(){
+        context = null
     }
 }
