@@ -51,9 +51,12 @@ object DigitalCheckoutMapper {
         return promoData
     }
 
-    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response): CartDigitalInfoData {
+    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response, isSpecialProduct: Boolean)
+            : CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
+
+            cartDigitalInfoData.isSpecialProduct = isSpecialProduct
 
             responseRechargeGetCart.response.mainnInfo.let { mainInfos ->
                 cartDigitalInfoData.mainInfo = mainInfos.map {

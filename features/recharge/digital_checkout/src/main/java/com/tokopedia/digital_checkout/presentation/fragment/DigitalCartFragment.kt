@@ -145,7 +145,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         cartPassData?.let {
             if (it.isFromPDP || it.needGetCart) {
                 viewModel.getCart(cartPassData?.categoryId
-                        ?: "", getString(R.string.digital_cart_login_message))
+                        ?: "", getString(R.string.digital_cart_login_message),
+                        cartPassData?.isSpecialProduct ?: false
+                )
             } else {
                 hideContent()
                 loaderCheckout.visibility = View.VISIBLE
@@ -157,7 +159,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun getCartAfterCheckout() {
         cartPassData?.let {
             viewModel.getCart(cartPassData?.categoryId
-                    ?: "", getString(R.string.digital_cart_login_message))
+                    ?: "", getString(R.string.digital_cart_login_message),
+                    cartPassData?.isSpecialProduct ?: false
+            )
         }
     }
 
@@ -166,7 +170,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> viewModel.getCart(it.data)
+                is Success -> viewModel.getCart(it.data, isSpecialProduct = cartPassData?.isSpecialProduct
+                        ?: false)
                 is Fail -> closeViewWithMessageAlert(it.throwable)
             }
         })
@@ -330,7 +335,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun showError(error: Throwable) {
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            requireContext(), error, ErrorHandler.Builder().build())
+                requireContext(), error, ErrorHandler.Builder().build())
         if (viewEmptyState != null) {
             viewEmptyState.setPrimaryCTAClickListener {
                 viewEmptyState.visibility = View.GONE
@@ -342,12 +347,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
                 viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errCode)")
+                        "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errCode)")
             } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
                 viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errCode)")
+                        "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errCode)")
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
                 viewEmptyState.setImageUrl(getString(R.string.digital_cart_default_error_img_url))
@@ -409,7 +414,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         } else if (requestCode == REQUEST_CODE_OTP) {
             if (resultCode == Activity.RESULT_OK) {
                 cartPassData?.let {
-                    viewModel.processPatchOtpCart(getDigitalIdentifierParam(), it, getString(R.string.digital_cart_login_message))
+                    viewModel.processPatchOtpCart(getDigitalIdentifierParam(), it,
+                            getString(R.string.digital_cart_login_message),
+                            cartPassData?.isSpecialProduct ?: false)
                 }
             } else activity?.finish()
 

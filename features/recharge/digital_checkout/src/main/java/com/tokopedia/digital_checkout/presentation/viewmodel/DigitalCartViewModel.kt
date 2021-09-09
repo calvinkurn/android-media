@@ -108,7 +108,8 @@ class DigitalCartViewModel @Inject constructor(
     private val paymentSummary = PaymentSummary(mutableListOf())
 
     fun getCart(categoryId: String,
-                errorNotLoginMessage: String = "") {
+                errorNotLoginMessage: String = "",
+                isSpecialProduct: Boolean) {
         if (!userSession.isLoggedIn) {
             _errorThrowable.postValue(Fail(MessageErrorException(errorNotLoginMessage)))
         } else {
@@ -116,7 +117,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(categoryId),
+                    onSuccessGetCart(categoryId, isSpecialProduct),
                     onErrorGetCart()
             )
         }
@@ -124,7 +125,8 @@ class DigitalCartViewModel @Inject constructor(
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
                             digitalCheckoutPassData: DigitalCheckoutPassData,
-                            errorNotLoginMessage: String = "") {
+                            errorNotLoginMessage: String = "",
+                            isSpecialProduct: Boolean) {
         launchCatchError(block = {
             val otpResponse = withContext(dispatcher) {
                 val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
@@ -140,7 +142,8 @@ class DigitalCartViewModel @Inject constructor(
             val responsePatchOtpSuccess = data.data as ResponsePatchOtpSuccess
 
             if (responsePatchOtpSuccess.success) {
-                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage)
+                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage,
+                        isSpecialProduct)
             }
 
         }) {
@@ -151,9 +154,10 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String, isSpecialProduct: Boolean)
+            : (RechargeGetCart.Response) -> Unit {
         return {
-            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
+            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it, isSpecialProduct)
             mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
