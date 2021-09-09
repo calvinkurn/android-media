@@ -3,6 +3,7 @@ package com.tokopedia.play.robot.play.result
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.robot.RobotResult
+import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -97,4 +98,13 @@ class PlayViewModelRobotResult(
     }
 
     suspend fun state() = viewModel.uiState.first()
+
+    fun withEvent(
+        dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+        fn: suspend PlayViewerNewUiEvent.() -> Unit
+    ) = runBlockingTest(dispatcher.coroutineDispatcher) {
+        event().fn()
+    }
+
+    suspend fun event() = viewModel.uiEvent.first()
 }
