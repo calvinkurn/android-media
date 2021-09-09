@@ -1,20 +1,21 @@
-package com.tokopedia.developer_options.remote_config
+package com.tokopedia.developer_options.sharedpref
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.text.TextUtils
-import android.view.View
 import com.tokopedia.developer_options.R
-
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.SHARED_PREF_FILE
+import com.tokopedia.developer_options.remote_config.KeyValueEditorDialog
+import com.tokopedia.developer_options.remote_config.KeyValueListener
 import com.tokopedia.developer_options.remote_config.adapters.KeyValueListAdapter
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 
-class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
+class SharedPrefDetailFragmentActivity : FragmentActivity(), KeyValueListener {
 
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
@@ -22,8 +23,8 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
     }
 
     private lateinit var listAdapter: KeyValueListAdapter
-    private var remoteConfig: RemoteConfig? = null
     private var isListEmpty: Boolean = false
+    private lateinit var sharedPref: SharedPreferences
     private var rvConfigList:RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +35,13 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
     }
 
     override fun onListItemClick(selectedConfigKey: String) {
-        showEditRemoteConfigDialog(selectedConfigKey)
+        showEditDialog(selectedConfigKey)
     }
 
-    fun showEditRemoteConfigDialog(keyToEdit:String) {
+    fun showEditDialog(keyToEdit:String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, keyToEdit)
-        fragmentBundle.putString(ARGS_SELECTED_VALUE, remoteConfig?.getString(keyToEdit) ?: "")
+        fragmentBundle.putString(ARGS_SELECTED_VALUE, sharedPref.getString(keyToEdit, ""))
 
         val dialog = KeyValueEditorDialog()
         dialog.arguments = fragmentBundle
@@ -49,44 +50,21 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
 
     override fun onEditorSaveButtonClick(editedConfigKey: String, editedConfigValue: String) {
         if (!TextUtils.isEmpty(editedConfigKey)) {
-            remoteConfig?.setString(editedConfigKey, editedConfigValue)
-
+            sharedPref.edit().putString(editedConfigKey, editedConfigValue).apply()
             updateListAdapterData()
         }
     }
 
-    private fun getPrefixes(vararg prefixes: String): Set<String> {
-        val keysSet: MutableSet<String> = mutableSetOf()
-
-        remoteConfig?.let {
-            for (prefix in prefixes) {
-                keysSet.apply { addAll(remoteConfig!!.getKeysByPrefix(prefix) ?: setOf()) }
-            }
-        }
-
-        if (keysSet.isEmpty()) {
-            isListEmpty = true
-        }
-
-        return keysSet
-    }
-
     private fun updateListAdapterData() {
-        if (remoteConfig != null) {
-            val prefix = intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: ""
-
-            val configListData = when {
-                prefix.isNotEmpty() -> getPrefixes(prefix)
-                else -> getPrefixes("mainapp", "android", "app")
-            }
-
-            updateVisibility(configListData.isNotEmpty())
-            listAdapter.setConfigData(remoteConfig, configListData)
-        }
+        val keyList = sharedPref.all.map { it ->
+            Pair(it.key, it.value.toString())
+        }.toList()
+        updateVisibility(keyList.isNotEmpty())
+        listAdapter.setData(keyList)
     }
 
     private fun initView() {
-        remoteConfig = FirebaseRemoteConfigImpl(this)
+        sharedPref = this.getSharedPreferences(intent.extras?.getString(SHARED_PREF_FILE), Context.MODE_PRIVATE)
         listAdapter = KeyValueListAdapter(this)
 
         updateListAdapterData()
@@ -98,7 +76,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
         rvConfigList?.addItemDecoration(dividerItemDecoration)
         rvConfigList?.adapter = listAdapter
         findViewById<View>(R.id.button_add_empty)?.setOnClickListener {
-            showEditRemoteConfigDialog(intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: "")
+            showEditDialog("")
         }
         updateVisibility(!isListEmpty)
     }

@@ -6,7 +6,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +13,11 @@ import android.widget.FrameLayout
 
 import com.tokopedia.developer_options.R
 
-class RemoteConfigEditorDialog : BottomSheetDialogFragment() {
+class KeyValueEditorDialog : BottomSheetDialogFragment() {
 
-    private lateinit var listener: RemoteConfigListener
+    private lateinit var listener: KeyValueListener
 
-    fun showDialog(fragmentManager: FragmentManager, listener: RemoteConfigListener) {
+    fun showDialog(fragmentManager: FragmentManager, listener: KeyValueListener) {
         this.listener = listener
 
         super.show(fragmentManager, "RemoteConfigEditorDialog")
