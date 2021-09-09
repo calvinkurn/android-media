@@ -1,12 +1,11 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.model
+package com.tokopedia.developer_options.sharedpref
 
-import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.SimpleTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class IdViewModel(var id: String = "") : Visitable<SimpleTypeFactory>, Parcelable {
+data class IdViewModel(var id: String = "") : Visitable<SimpleTypeFactory> {
 
     override fun type(typeFactory: SimpleTypeFactory): Int {
         return typeFactory.type(this)

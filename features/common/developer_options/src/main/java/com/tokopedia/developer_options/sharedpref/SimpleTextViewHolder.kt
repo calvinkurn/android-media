@@ -1,19 +1,14 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.viewholder
+package com.tokopedia.developer_options.sharedpref
 
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.ui.model.IdViewModel
+import com.tokopedia.developer_options.R
 
 class SimpleTextViewHolder(itemView: View) : AbstractViewHolder<IdViewModel>(itemView) {
 
-    private val tvName: TextView
-
-    init {
-        tvName = itemView.findViewById(R.id.name)
-    }
+    private val tvName: TextView = itemView.findViewById(R.id.name)
 
     override fun bind(element: IdViewModel) {
         tvName.text = element.id
