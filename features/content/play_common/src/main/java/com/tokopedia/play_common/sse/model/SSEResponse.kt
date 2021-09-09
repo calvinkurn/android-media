@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.sse
+package com.tokopedia.play_common.sse.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

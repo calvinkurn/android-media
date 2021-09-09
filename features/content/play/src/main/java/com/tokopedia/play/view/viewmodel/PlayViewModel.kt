@@ -13,8 +13,8 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
-import com.tokopedia.play.data.sse.PlayChannelSSE
-import com.tokopedia.play.data.sse.PlayChannelSSEPageSource
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
 import com.tokopedia.play.data.ssemapper.PlaySSEMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.UpcomingChannelUpdateActive
@@ -58,6 +58,9 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.sse.model.SSEAction
+import com.tokopedia.play_common.sse.model.SSECloseReason
+import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -74,31 +77,31 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        playVideoBuilder: PlayVideoWrapper.Builder,
-        videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
-        channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
-        videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-        private val getChannelStatusUseCase: GetChannelStatusUseCase,
-        private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-        private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
-        private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
-        private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
-        private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val playChannelReminderUseCase: PlayChannelReminderUseCase,
-        private val playSocketToModelMapper: PlaySocketToModelMapper,
-        private val playUiModelMapper: PlayUiModelMapper,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
-        private val remoteConfig: RemoteConfig,
-        private val playPreference: PlayPreference,
-        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        private val playChannelWebSocket: PlayChannelWebSocket,
-        private val playChannelSSE: PlayChannelSSE,
-        private val interactiveRepo: PlayViewerInteractiveRepository,
-        private val partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
-        private val playAnalytic: PlayNewAnalytic,
+    playVideoBuilder: PlayVideoWrapper.Builder,
+    videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+    channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+    videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
+    private val getChannelStatusUseCase: GetChannelStatusUseCase,
+    private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
+    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getCartCountUseCase: GetCartCountUseCase,
+    private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
+    private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
+    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+    private val playChannelReminderUseCase: PlayChannelReminderUseCase,
+    private val playSocketToModelMapper: PlaySocketToModelMapper,
+    private val playUiModelMapper: PlayUiModelMapper,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
+    private val remoteConfig: RemoteConfig,
+    private val playPreference: PlayPreference,
+    private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
+    private val playChannelWebSocket: PlayChannelWebSocket,
+    private val playChannelSSE: PlayChannelSSE,
+    private val interactiveRepo: PlayViewerInteractiveRepository,
+    private val partnerRepo: PlayViewerPartnerRepository,
+    private val likeRepo: PlayViewerLikeRepository,
+    private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/

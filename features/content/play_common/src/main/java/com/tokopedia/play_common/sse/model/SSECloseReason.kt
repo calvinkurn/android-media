@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.sse
+package com.tokopedia.play_common.sse.model
 
 /**
  * Created By : Jonathan Darwin on September 08, 2021

@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.UpcomingChannelUpdateLive
 import com.tokopedia.play.data.UpcomingChannelUpdateActive
-import com.tokopedia.play_common.sse.SSEResponse
+import com.tokopedia.play_common.sse.model.SSEResponse
 
 /**
  * Created By : Jonathan Darwin on September 08, 2021

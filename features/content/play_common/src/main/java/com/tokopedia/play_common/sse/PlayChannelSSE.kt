@@ -1,6 +1,6 @@
-package com.tokopedia.play.data.sse
+package com.tokopedia.play_common.sse
 
-import com.tokopedia.play_common.sse.SSEAction
+import com.tokopedia.play_common.sse.model.SSEAction
 import kotlinx.coroutines.flow.Flow
 
 /**
