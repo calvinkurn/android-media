@@ -27,13 +27,13 @@ class RepurchaseSortFilterViewHolder(
     private val sortFilter: SortFilter? by lazy { itemView.findViewById(R.id.sort_filter) }
 
     override fun bind(data: RepurchaseSortFilterUiModel) {
+        clearSortFilterItems()
         addSortFilterItems(data)
-        setupSortFilterLayout()
+        setupChipRightIcon()
+        setupClearButton(data)
     }
 
     private fun addSortFilterItems(data: RepurchaseSortFilterUiModel) {
-        filterItems.clear()
-
         data.sortFilterList.forEach {
             val selectedItems = it.selectedItem?.title.orEmpty()
 
@@ -49,10 +49,6 @@ class RepurchaseSortFilterViewHolder(
             filterItems.add(item)
             sortFilter?.addItem(filterItems)
 
-            sortFilter?.sortFilterPrefix?.setOnClickListener {
-                clearAllFilters(data)
-            }
-
             item.apply {
                 type = if(selectedItems.isNotEmpty()) {
                     ChipsUnify.TYPE_SELECTED
@@ -60,35 +56,29 @@ class RepurchaseSortFilterViewHolder(
                     it.chipType
                 }
                 listener = {
-                    toggleSortFilterChip(it)
                     onClickSortFilterItem(it)
                 }
                 refChipUnify.setChevronClickListener {
-                    toggleSortFilterChip(it)
                     onClickSortFilterItem(it)
                 }
             }
         }
     }
 
-    private fun setupSortFilterLayout() {
+    private fun setupClearButton(data: RepurchaseSortFilterUiModel) {
+        sortFilter?.sortFilterPrefix?.setOnClickListener {
+            clearAllFilters(data)
+        }
+    }
+
+    private fun setupChipRightIcon() {
         filterItems.forEach { item ->
             item.refChipUnify.chip_right_icon.show()
         }
     }
 
-    private fun SortFilterItem.toggleSortFilterChip(data: RepurchaseSortFilter) {
-        val selectedItems = data.selectedItem?.title.orEmpty()
-
-        type = when {
-            selectedItems.isNotEmpty() -> ChipsUnify.TYPE_SELECTED
-            type == ChipsUnify.TYPE_SELECTED -> ChipsUnify.TYPE_NORMAL
-            else -> ChipsUnify.TYPE_SELECTED
-        }
-    }
-
-    private fun onClickSortFilterItem(data: RepurchaseSortFilter) {
-        when (data.filterType) {
+    private fun onClickSortFilterItem(filter: RepurchaseSortFilter) {
+        when (filter.type) {
             RepurchaseSortFilterType.SORT -> listener.onClickSortFilter()
             RepurchaseSortFilterType.DATE_FILTER -> listener.onClickDateFilter()
             RepurchaseSortFilterType.CATEGORY_FILTER -> listener.onClickCategoryFilter()
@@ -96,11 +86,17 @@ class RepurchaseSortFilterViewHolder(
     }
 
     private fun clearAllFilters(data: RepurchaseSortFilterUiModel) {
-        filterItems.forEachIndexed { index, item ->
-            item.title = getString(data.sortFilterList[index].title)
-        }
         sortFilter?.resetAllFilters()
+        filterItems.forEachIndexed { index, item ->
+            val sortFilter = data.sortFilterList[index]
+            val title = getString(sortFilter.title)
+            item.title = title
+        }
         listener.onClearAllFilter()
+    }
+
+    private fun clearSortFilterItems() {
+        filterItems.clear()
     }
 
     interface SortFilterListener {

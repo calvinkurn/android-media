@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.categoryfilter.domain.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -10,7 +9,7 @@ object CategoryFilterMapper {
 
     fun mapToCategoryList(
         response: CategoryListResponse,
-        selectedFilterIds: List<Int>
+        selectedFilterIds: List<String>
     ): List<CategoryFilterChip> {
         return response.data.map {
             val categoryChild = mapCategoryChild(it.childList.orEmpty(), selectedFilterIds)
@@ -20,10 +19,10 @@ object CategoryFilterMapper {
 
     private fun mapCategoryChild(
         categoryList: List<CategoryResponse>,
-        selectedFilterIds: List<Int>
+        selectedFilterIds: List<String>
     ): List<CategoryFilterChip> {
         return categoryList.map {
-            val filterId = it.id.toIntOrZero()
+            val filterId = it.id
             val isSelected = selectedFilterIds.contains(filterId)
 
             val chipType = if(isSelected) {

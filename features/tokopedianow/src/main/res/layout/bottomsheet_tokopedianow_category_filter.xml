@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_apply"
-        android:text="@string/tokopedianow_button_apply"
+        android:text="@string/tokopedianow_text_apply"
         android:layout_margin="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

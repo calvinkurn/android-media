@@ -92,7 +92,7 @@ object RepurchaseLayoutMapper {
             val sortFilterIndex = indexOf(item)
             val sortFilter = (item as RepurchaseSortFilterUiModel)
             val sortFilterList = sortFilter.sortFilterList.toMutableList()
-            val categoryFilter = sortFilterList.firstOrNull { it.filterType == CATEGORY_FILTER }
+            val categoryFilter = sortFilterList.firstOrNull { it.type == CATEGORY_FILTER }
             val categoryFilterIndex = sortFilterList.indexOf(categoryFilter)
             val updatedCategoryFilter = categoryFilter?.copy(selectedItem = selectedFilter)
 

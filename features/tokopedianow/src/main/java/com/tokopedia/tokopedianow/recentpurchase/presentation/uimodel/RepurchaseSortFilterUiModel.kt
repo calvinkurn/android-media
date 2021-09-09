@@ -21,12 +21,12 @@ data class RepurchaseSortFilterUiModel(
         @StringRes val qtyFormat: Int? = null,
         val selectedItem: SelectedSortFilter? = null,
         val chipType: String = ChipsUnify.TYPE_NORMAL,
-        val filterType: RepurchaseSortFilterType
+        val type: RepurchaseSortFilterType
     )
 
     @Parcelize
     data class SelectedSortFilter(
-        val id: List<Int> = emptyList(),
+        val id: List<String> = emptyList(),
         val title: List<String> = emptyList()
     ) : Parcelable
 

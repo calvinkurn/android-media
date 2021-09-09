@@ -12,19 +12,18 @@ object RepurchaseSortFilterFactory {
         val sortFilterList = mutableListOf<RepurchaseSortFilter>().apply {
             val sortFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_sort_chip_title,
-                chipType = ChipsUnify.TYPE_SELECTED,
-                filterType = RepurchaseSortFilterType.SORT
+                type = RepurchaseSortFilterType.SORT
             )
 
             val categoryFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_all_category_filter_chip_title,
                 qtyFormat = R.string.tokopedianow_repurchase_category_filter_chip_format,
-                filterType = RepurchaseSortFilterType.CATEGORY_FILTER
+                type = RepurchaseSortFilterType.CATEGORY_FILTER
             )
 
             val dateFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_date_filter_chip_title,
-                filterType = RepurchaseSortFilterType.DATE_FILTER
+                type = RepurchaseSortFilterType.DATE_FILTER
             )
 
             add(sortFilter)

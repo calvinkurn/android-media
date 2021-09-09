@@ -29,8 +29,11 @@ class CategoryFilterChipViewHolder(
     }
 
     private fun setChipText(data: CategoryFilterChip) {
-        chipFilter?.chipText = data.title
-        chipFilter?.chipType = data.chipType
+        chipFilter?.run {
+            chipFilter?.chipText = data.title
+            chipFilter?.chipType = data.chipType
+            chipFilter?.requestLayout()
+        }
     }
 
     private fun setOnClickListener(data: CategoryFilterChip) {

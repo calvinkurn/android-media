@@ -64,5 +64,6 @@
     <string name="tokopedianow_header_background_content_description">Header Background</string>
 
     <string name="tokopedianow_category_filter_title">Pilih Kategori</string>
-    <string name="tokopedianow_button_apply">Terapkan</string>
+    <string name="tokopedianow_text_apply">Terapkan</string>
+    <string name="tokopedianow_text_reset">Reset</string>
 </resources>

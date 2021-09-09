@@ -6,6 +6,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.accordion.AccordionDataUnify
@@ -60,9 +62,9 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        setupApplyButton()
         observeLiveData()
-        setSelectedFilter()
+        setupActionButton()
+        setupApplyButton()
         getCategoryList()
     }
 
@@ -83,6 +85,25 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     private fun initView() {
         accordionFilter = view?.findViewById(R.id.accordion_filter)
         btnApply = view?.findViewById(R.id.btn_apply)
+    }
+
+    private fun setupActionButton() {
+        setAction(getString(R.string.tokopedianow_text_reset)) {
+            viewModel.clearSelectedFilter()
+        }
+    }
+
+    private fun enableResetButton() {
+        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+    }
+
+    private fun disableResetButton() {
+        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+    }
+
+    private fun setActionTextColor(@ColorRes colorId: Int) {
+        val textColor = ContextCompat.getColor(requireContext(), colorId)
+        bottomSheetAction.setTextColor(textColor)
     }
 
     private fun setupApplyButton() {
@@ -115,11 +136,17 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
+
+        observe(viewModel.selectedFilter) {
+            toggleResetButton(it)
+        }
     }
 
     private fun createFilterChipView(category: CategoryFilterChip): CategoryFilterChipView {
         val categoryFilterChipView = CategoryFilterChipView(requireContext())
-        categoryFilterChipView.setOnClickListener { viewModel.updateSelectedFilter(it) }
+        categoryFilterChipView.setOnClickListener {
+            viewModel.updateSelectedFilter(it)
+        }
         categoryFilterChipView.submitList(category.childList)
         return categoryFilterChipView
     }
@@ -131,14 +158,18 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun setSelectedFilter() {
+    private fun getCategoryList() {
         val selectedFilter = arguments
             ?.getParcelable<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
-        viewModel.setSelectedFilter(selectedFilter)
+        val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
+        viewModel.getCategoryList(warehouseId, selectedFilter)
     }
 
-    private fun getCategoryList() {
-        val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
-        viewModel.getCategoryList(warehouseId)
+    private fun toggleResetButton(selectedFilter: SelectedSortFilter?) {
+        if (selectedFilter == null) {
+            disableResetButton()
+        } else {
+            enableResetButton()
+        }
     }
 }
