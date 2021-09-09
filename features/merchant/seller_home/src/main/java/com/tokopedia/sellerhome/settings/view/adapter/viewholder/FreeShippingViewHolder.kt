@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -14,7 +15,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class FreeShippingViewHolder(itemView: View?,
                              private val onFreeShippingClicked: () -> Unit,
-                             private val onErrorClicked: () -> Unit) :
+                             private val onErrorClicked: () -> Unit,
+                             private val onFreeShippingImpression: () -> Unit) :
     AbstractViewHolder<FreeShippingWidgetUiModel>(itemView) {
 
     companion object {
@@ -31,7 +33,12 @@ class FreeShippingViewHolder(itemView: View?,
 
     override fun bind(element: FreeShippingWidgetUiModel) {
         when(val state = element.state) {
-            is SettingResponseState.SettingSuccess -> setFreeShippingImage(state.data)
+            is SettingResponseState.SettingSuccess -> {
+                setFreeShippingImage(state.data)
+                itemView.addOnImpressionListener(element.impressHolder) {
+                    onFreeShippingImpression()
+                }
+            }
             is SettingResponseState.SettingError -> setWidgetError()
             else -> setWidgetLoading()
         }

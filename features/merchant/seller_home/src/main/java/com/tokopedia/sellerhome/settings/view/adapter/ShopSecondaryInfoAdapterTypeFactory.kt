@@ -36,7 +36,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: NewOtherMenuView
             ShopStatusViewHolder.LAYOUT_RES -> ShopStatusViewHolder(
                 parent,
                 listener::onGoToPowerMerchantSubscribe,
-                listener::onRefreshShopInfo
+                listener::onRefreshShopInfo,
+                listener::onShopStatusImpression
             )
             RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(
                 parent,
@@ -55,7 +56,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: NewOtherMenuView
             FreeShippingViewHolder.LAYOUT_RES -> FreeShippingViewHolder(
                 parent,
                 listener::onFreeShippingClicked,
-                listener::onFreeShippingRefresh
+                listener::onFreeShippingRefresh,
+                listener::onFreeShippingImpression
             )
             else -> super.createViewHolder(parent, type)
         }

@@ -82,13 +82,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val SHOP_BADGE = "shop badge"
-        private const val SHOP_FOLLOWERS = "shop followers"
-        private const val SHOP_INFO = "shop info"
-        private const val OPERATIONAL_HOUR = "operational hour"
-        private const val SALDO_BALANCE = "saldo balance"
-        private const val TOPADS_BALANCE = "topads balance"
-        private const val TOPADS_AUTO_TOPUP = "topads auto topup"
+        const val SHOP_BADGE = "shop badge"
+        const val SHOP_FOLLOWERS = "shop followers"
+        const val SHOP_INFO = "shop info"
+        const val OPERATIONAL_HOUR = "operational hour"
+        const val SALDO_BALANCE = "saldo balance"
+        const val TOPADS_BALANCE = "topads balance"
+        const val TOPADS_AUTO_TOPUP = "topads auto topup"
+        const val FREE_SHIPPING = "free shipping"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()

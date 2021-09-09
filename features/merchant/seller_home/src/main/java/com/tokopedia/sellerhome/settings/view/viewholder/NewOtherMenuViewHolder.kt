@@ -21,13 +21,13 @@ import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
@@ -91,6 +91,10 @@ class NewOtherMenuViewHolder(
 
     private var hasInitialAnimationCompleted = false
     private var hasShareButtonAnimationCompleted = false
+
+    private val saldoImpressHolder = ImpressHolder()
+    private val topadsImpressHolder = ImpressHolder()
+    private val shopAvatarImpressHolder = ImpressHolder()
 
     init {
         initView()
@@ -327,6 +331,7 @@ class NewOtherMenuViewHolder(
             listener.onShopInfoClicked()
         }
         shopAvatarImage?.setOnClickListener {
+            NewOtherMenuTracking.sendEventClickShopAvatar()
             listener.onShopInfoClicked()
         }
         shopNameTextView?.setOnClickListener {
@@ -364,6 +369,9 @@ class NewOtherMenuViewHolder(
         balanceSaldoTextView?.run {
             text = saldoString
             show()
+            addOnImpressionListener(saldoImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionSaldoBalance()
+            }
         }
         errorLayoutSaldo?.gone()
         shimmerSaldo?.gone()
@@ -373,6 +381,9 @@ class NewOtherMenuViewHolder(
         balanceTopadsTopupView?.run {
             setTopadsValue(topadsValueString)
             show()
+            addOnImpressionListener(topadsImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionTopadsBalance()
+            }
             listener.onTopadsValueSet()
         }
         errorLayoutTopads?.gone()
@@ -404,7 +415,12 @@ class NewOtherMenuViewHolder(
     }
 
     private fun setShopAvatar() {
-        shopAvatarImage?.urlSrc = userSession.shopAvatar
+        shopAvatarImage?.run {
+            urlSrc = userSession.shopAvatar
+            addOnImpressionListener(shopAvatarImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionShopAvatar()
+            }
+        }
     }
 
     private fun setShopName() {
@@ -488,6 +504,8 @@ class NewOtherMenuViewHolder(
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onTopadsValueSet()
         fun onShareButtonClicked()
+        fun onShopStatusImpression(shopType: ShopType)
+        fun onFreeShippingImpression()
         fun getIsShopShareReady(): Boolean
     }
 

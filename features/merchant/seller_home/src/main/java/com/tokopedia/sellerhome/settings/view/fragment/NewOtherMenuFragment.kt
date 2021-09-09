@@ -36,21 +36,27 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.analytics.NewOtherMenuTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
@@ -84,6 +90,9 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
+        const val OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME = "Seller App - Lainnya"
+        const val OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME = "Share"
+
         @JvmStatic
         fun createInstance(): NewOtherMenuFragment = NewOtherMenuFragment()
     }
@@ -97,12 +106,20 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
+    @Inject
+    lateinit var freeShippingTracker: SettingFreeShippingTracker
+
+    @Inject
+    lateinit var shopOperationalTracker: SettingShopOperationalTracker
+
+    @Inject
+    lateinit var settingPerformanceTracker: SettingPerformanceTracker
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NewOtherMenuViewModel::class.java)
     }
 
     private val topAdsBottomSheet by lazy {
-        // TODO: tidy up this
         BottomSheetUnify().apply {
             setCloseClickListener {
                 this.dismiss()
@@ -209,10 +226,12 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     override fun onShopBadgeClicked() {
+        NewOtherMenuTracking.sendEventClickShopReputationBadge()
         goToReputationHistory()
     }
 
     override fun onFollowersCountClicked() {
+        NewOtherMenuTracking.sendEventClickTotalFollowers()
         goToShopFavouriteList()
     }
 
@@ -227,6 +246,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
             )
             context?.startActivity(intent)
         }
+        NewOtherMenuTracking.sendEventClickSaldoBalance()
     }
 
     override fun onKreditTopadsClicked() {
@@ -238,9 +258,11 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         } else {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
+        NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
 
     override fun onFreeShippingClicked() {
+        freeShippingTracker.trackFreeShippingClick()
         val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
         if (isActivityResumed()) {
             freeShippingBottomSheet.show(childFragmentManager)
@@ -309,6 +331,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     override fun onShareButtonClicked() {
+        NewOtherMenuTracking.sendEventClickShareButton(userSession.shopId, userSession.userId)
         val isSharingEnabled =
             context?.let {
                 UniversalShareBottomSheet.isCustomSharingEnabled(it)
@@ -369,9 +392,12 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                         view,
                         shareString
                     )
-                    // TODO: send gql tracker
 
-                    // TODO: send gtm tracker
+                    NewOtherMenuTracking.sendEventClickSharingChannel(
+                        shopId = userSession.shopId,
+                        userId = userSession.userId,
+                        channel = shareModel.channel.orEmpty()
+                    )
 
                     universalShareBottomSheet?.dismiss()
                 }
@@ -382,7 +408,18 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     override fun onCloseOptionClicked() {
-        // TODO("Add tracking")
+        NewOtherMenuTracking.sendEventClickCloseShareBottomSheet(
+            userSession.shopId,
+            userSession.userId
+        )
+    }
+
+    override fun onShopStatusImpression(shopType: ShopType) {
+        NewOtherMenuTracking.sendEventImpressionShopStatus(shopType)
+    }
+
+    override fun onFreeShippingImpression() {
+        freeShippingTracker.trackFreeShippingImpression()
     }
 
     private fun observeLiveData() {
@@ -409,6 +446,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onShopBadgeRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.SHOP_BADGE)
             }
         }
     }
@@ -420,6 +458,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onShopTotalFollowersRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.SHOP_FOLLOWERS)
             }
         }
     }
@@ -431,6 +470,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onRefreshShopInfo()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.SHOP_INFO)
             }
         }
     }
@@ -442,6 +482,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onOperationalHourRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.OPERATIONAL_HOUR)
             }
         }
     }
@@ -453,6 +494,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onSaldoBalanceRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
             }
         }
     }
@@ -464,6 +506,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onKreditTopAdsRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
             }
         }
     }
@@ -475,6 +518,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 showErrorToaster(it.throwable) {
                     onFreeShippingRefresh()
                 }
+                logHeaderError(it.throwable, OtherMenuFragment.FREE_SHIPPING)
             }
         }
     }
@@ -486,7 +530,8 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                     viewHolder?.setIsTopadsAutoTopup(result.data)
                 }
                 is Fail -> {
-                    // TODO: Show toaster error
+                    showErrorToaster(result.throwable)
+                    logHeaderError(result.throwable, OtherMenuFragment.TOPADS_AUTO_TOPUP)
                 }
             }
         }
@@ -496,10 +541,9 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         observe(viewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
-                    // TODO: Set tracker
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
-                is Fail -> {
-                }
+                is Fail -> { }
             }
         }
         viewModel.getShopPeriodType()
@@ -621,14 +665,35 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
     }
 
+    private fun logHeaderError(throwable: Throwable, errorType: String) {
+        SellerHomeErrorHandler.logException(
+            throwable,
+            context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty()
+        )
+    }
+
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
+    }
+
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@NewOtherMenuFragment)
             setUtmCampaignData(
-                NewOtherMenuTracker.OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME,
+                OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME,
                 userSession.userId,
                 userSession.shopId,
-                NewOtherMenuTracker.OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME
+                OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
             setMetaData(
                 userSession.shopName,
@@ -639,6 +704,10 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }.also { shareBottomSheet ->
             activity?.supportFragmentManager?.let {
                 shareBottomSheet.show(it, this)
+
+                NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
+                    userSession.shopId, userSession.userId
+                )
             }
         }
     }
@@ -670,11 +739,14 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private fun checkUsingCustomBranchLinkDomain(linkerShareData: LinkerShareResult?) {
         val shopBranchLinkDomain = shopShareInfo?.branchLinkDomain.orEmpty()
-        if(shopBranchLinkDomain.isNotEmpty())
+        if (shopBranchLinkDomain.isNotEmpty())
             changeLinkerShareDataContent(linkerShareData, shopBranchLinkDomain)
     }
 
-    private fun changeLinkerShareDataContent(linkerShareData: LinkerShareResult?, shopBranchLinkDomain: String) {
+    private fun changeLinkerShareDataContent(
+        linkerShareData: LinkerShareResult?,
+        shopBranchLinkDomain: String
+    ) {
         linkerShareData?.apply {
             shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
             url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
@@ -682,7 +754,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
     }
 
-    private fun replaceLastUrlSegment(urlString: String, replacementValue: String): String{
+    private fun replaceLastUrlSegment(urlString: String, replacementValue: String): String {
         return urlString.split("/").toMutableList().also { list ->
             list[list.lastIndex] = replacementValue
         }.joinToString("/")

@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -19,7 +20,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShopStatusViewHolder(itemView: View?,
                            private val onGoToPowerMerchant: (String) -> Unit,
-                           private val onErrorClicked: () -> Unit) :
+                           private val onErrorClicked: () -> Unit,
+                           private val onShopStatusImpression: (ShopType) -> Unit) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
 
     companion object {
@@ -49,7 +51,12 @@ class ShopStatusViewHolder(itemView: View?,
 
     override fun bind(element: ShopStatusWidgetUiModel) {
         when(val state = element.state) {
-            is SettingResponseState.SettingSuccess -> setShopStatusSuccessLayout(state.data)
+            is SettingResponseState.SettingSuccess -> {
+                itemView.addOnImpressionListener(element.impressHolder) {
+                    onShopStatusImpression(state.data)
+                }
+                setShopStatusSuccessLayout(state.data)
+            }
             is SettingResponseState.SettingError -> setShopStatusErrorLayout()
             is SettingResponseState.SettingLoading -> setShopStatusLoadingLayout()
         }
