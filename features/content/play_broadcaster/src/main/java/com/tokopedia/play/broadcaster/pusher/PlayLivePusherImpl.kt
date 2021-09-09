@@ -292,7 +292,10 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun stopStream() {
-        mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+        try {
+            mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+        } catch (ignored: IllegalStateException) {}
+
         stopCalculateAdaptiveBitrate()
         cancelStatsJob()
     }
