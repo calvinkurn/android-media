@@ -1,6 +1,7 @@
 package com.tokopedia.play.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 
 
 /**
@@ -12,5 +13,11 @@ data class TotalLike(
         val totalLike: Long = 0,
 
         @SerializedName("total_like_formatted")
-        var totalLikeFormatted: String = ""
+        var totalLikeFormatted: String = "",
+
+        @SerializedName("channel_id")
+        val channelId: Long = 0L,
+
+        @SerializedName("configuration")
+        val configuration: MultipleLikeConfig = MultipleLikeConfig()
 )

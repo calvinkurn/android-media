@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -115,7 +116,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapMultipleLikeConfig(
-        configs: List<ChannelDetailsWithRecomResponse.MultipleLikeConfig>
+        configs: List<MultipleLikeConfig>
     ) = PlayMultipleLikesConfig(
         bubbles = configs.map { config ->
             PlayLikeBubbleUiModel(

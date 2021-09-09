@@ -868,8 +868,8 @@ class PlayUserInteractionFragment @Inject constructor(
                     is AnimateLikeEvent -> {
                         likeView.playLikeAnimation(event.fromIsLiked)
                     }
-                    ShowLikeBubbleEvent -> {
-
+                    is ShowLikeBubbleEvent -> {
+                        spamLikeView.shot(event.batchCount, event.isOpaque)
                     }
                 }
             }

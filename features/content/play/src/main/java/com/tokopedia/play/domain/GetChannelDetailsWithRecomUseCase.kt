@@ -12,6 +12,12 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/01/21
  */
+/*
+multiple_like{
+  icon
+  background_color
+}
+ */
 @GqlQuery(GetChannelDetailsWithRecomUseCase.QUERY_NAME, GetChannelDetailsWithRecomUseCase.QUERY)
 class GetChannelDetailsWithRecomUseCase @Inject constructor(
         gqlRepository: GraphqlRepository

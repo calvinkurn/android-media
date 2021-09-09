@@ -2,6 +2,7 @@ package com.tokopedia.play.data.detail.recom
 
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 
 /**
@@ -225,13 +226,5 @@ data class ChannelDetailsWithRecomResponse(
     data class RealTimeNotificationConfig(
         @SerializedName("lifespan")
         val lifespan: Long = 0L,
-    )
-
-    data class MultipleLikeConfig(
-        @SerializedName("icon")
-        val icon: String = "",
-
-        @SerializedName("background_color")
-        val bgColor: String = "#FF000000",
     )
 }

@@ -24,6 +24,9 @@ import kotlinx.coroutines.*
 
 class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
 
+    private val job = SupervisorJob()
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + job)
+    
     private val view: View = View.inflate(context, R.layout.layout_play_spam_like, this)
 
     /**
@@ -47,7 +50,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     private var blurOpacity: Float = 0.5F
 
     private var parentView: ViewGroup? = null
-    private val job = SupervisorJob()
 
     private val imageList = mutableListOf<ImageView>()
 
@@ -139,7 +141,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     fun getMaxShot(): Int = maxShot
 
     fun shotWithDelay(likeAmount: Int, shotPerBatch: Int, delay: Long, reduceOpacity: Boolean) {
-        CoroutineScope(Dispatchers.IO + job).launch {
+        scope.launch {
             for(i in 1..likeAmount) {
                 delay(delay)
                 for(j in 1..shotPerBatch) {
@@ -153,7 +155,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     }
 
     fun shotAll(likeAmount: Int, shotPerBatch: Int, reduceOpacity: Boolean) {
-        CoroutineScope(Dispatchers.IO + job).launch {
+        scope.launch {
             for(i in 1..likeAmount) {
                 for(j in 1..shotPerBatch) {
                     delay(DEFAULT_DELAY)
@@ -198,7 +200,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
                 setShot(INCREASE_SHOT)
 
-                CoroutineScope(Dispatchers.IO + job).launch {
+                scope.launch {
                     delay(duration)
                     removeImageFromView(image)
                 }
@@ -216,7 +218,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     }
 
     private fun shotAdditional() {
-        CoroutineScope(Dispatchers.IO + job).launch {
+        scope.launch {
             delay((50..200).random().toLong())
 
             withContext(Dispatchers.Main) {
@@ -229,7 +231,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                     startAnimate(image)
                     imageList.add(image)
 
-                    CoroutineScope(Dispatchers.IO + job).launch {
+                    scope.launch {
                         delay(duration)
                         removeImageFromView(image, false)
                     }
