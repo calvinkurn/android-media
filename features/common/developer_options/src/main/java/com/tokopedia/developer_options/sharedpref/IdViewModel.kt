@@ -1,7 +1,6 @@
 package com.tokopedia.developer_options.sharedpref
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.debugger.ui.adapter.SimpleTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
