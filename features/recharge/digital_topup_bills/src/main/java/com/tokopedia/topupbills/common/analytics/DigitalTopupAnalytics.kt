@@ -435,7 +435,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME,
-                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.pricePlain}")
+                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.productPromo?.newPricePlain ?: ""}")
         })
 
         val eventDataLayer = Bundle().apply {
@@ -457,7 +457,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME,
-                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.pricePlain}")
+                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.productPromo?.newPricePlain ?: ""}")
         })
 
         val eventDataLayer = Bundle().apply {
