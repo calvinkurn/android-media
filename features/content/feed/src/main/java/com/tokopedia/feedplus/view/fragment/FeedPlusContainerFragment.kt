@@ -268,8 +268,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
-        postProgressUpdateView?.registerBroadcastReceiver()
-        postProgressUpdateView?.registerBroadcastReceiverProgress()
+        if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
+            updateVisibility(true)
+        } else {
+            updateVisibility(false)
+            postProgressUpdateView?.registerBroadcastReceiver()
+            postProgressUpdateView?.registerBroadcastReceiverProgress()
+
+        }
     }
 
     override fun onDestroy() {
@@ -665,9 +671,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun swipeOnPostUpdate() {
-   //     swipe_refresh_layout?.isRefreshing = true
-        recycler_view.scrollToPosition(0)
-        updateVisibility(true)
+        updateVisibility(false)
     }
 
     override fun updateVisibility(flag: Boolean) {

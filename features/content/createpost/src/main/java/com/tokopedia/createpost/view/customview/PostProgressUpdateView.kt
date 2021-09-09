@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
@@ -115,10 +117,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun registerBroadcastReceiver() {
         context?.applicationContext?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(BROADCAST_SUBMIT_POST_NEW)
-
-            LocalBroadcastManager
-                .getInstance(it)
+            intentFilter.addAction(BROADCAST_SUBMIT_POST_NEW
                 .registerReceiver(submitPostReceiver, intentFilter)
         }
     }
