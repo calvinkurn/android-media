@@ -33,10 +33,7 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -164,24 +161,17 @@ class MixTopComponentViewHolder(
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
         if(bannerItem.gradientColor.isEmpty() || bannerItem.gradientColor[0] == "#FFFFFF") {
             background.invisible()
-            val layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT
-            )
-            layoutParams.setMargins(0, 0, 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.dp_16))
+            val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.setMargins(0, 0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_16_dp_product_card))
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
         }
         else {
             background.visible()
-            background.setGradientBackground(bannerItem.gradientColor)
-            val layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT
-            )
-            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.dp_12), 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.dp_16))
+            val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_16_dp_product_card))
             recyclerView.layoutParams = layoutParams
-            recyclerView.translationY = 0f
+            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
