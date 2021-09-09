@@ -689,7 +689,6 @@ class PlayViewModel @Inject constructor(
              * 2. Start SSE
              */
             startSSE(channelData.id)
-            startWebSocket(channelData.id)
         }
         else {
             focusVideoPlayer(channelData)

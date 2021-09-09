@@ -45,7 +45,7 @@ class PlayUpcomingRemindMeTest {
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val upcomingInfoModelBuilder = PlayUpcomingInfoModelBuilder()
-    private val mockUpcomingInfo = upcomingInfoModelBuilder.buildUpcomingInfo(isUpcoming = true)
+    private val mockUpcomingInfo = upcomingInfoModelBuilder.buildUpcomingInfo(isUpcoming = false)
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
@@ -138,37 +138,6 @@ class PlayUpcomingRemindMeTest {
         } thenVerify {
             val value = viewModel.observableUpcomingInfo.value
             value?.isReminderSet?.isFalse() ?: fail(Exception("No Upcoming Info"))
-        }
-    }
-
-    /**
-     * Not Done Yet
-     */
-    @Test
-    fun `given a upcoming channel, when logged in user click remind me button and get exception, then uiEvent should trigger error reminder`() {
-        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
-
-        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } throws Exception("Network Error")
-
-        givenPlayViewModelRobot(
-            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
-            dispatchers = testDispatcher,
-            userSession = mockUserSession
-        ) {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhen {
-            submitAction(ClickRemindMeUpcomingChannel)
-        } thenVerify {
-            withEvent {
-                print("testing")
-//                print(this)
-//                if(this is RemindMeEvent) {
-//                    this.isSuccess.isEqualTo(false)
-//                }
-//                else fail("Emitted event is not RemindMeEvent")
-            }
         }
     }
 }
