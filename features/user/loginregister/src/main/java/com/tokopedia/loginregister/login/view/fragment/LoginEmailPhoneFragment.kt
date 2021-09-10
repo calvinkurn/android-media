@@ -1551,7 +1551,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
             } else if (requestCode == LoginConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
+                println("resetFlow, LoginEmailPhoneFragment@onActivityResult(LoginConstants.Request.REQUEST_SECURITY_QUESTION)")
                 data.extras?.let {
+                    println("resetFlow, LoginEmailPhoneFragment@onActivityResult(LoginConstants.Request.REQUEST_SECURITY_QUESTION) data: ${it.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
                     isLoginAfterSq = true
                     tempValidateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     viewModel.reloginAfterSQ(tempValidateToken)
@@ -1584,11 +1586,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     goToChooseAccountPage(accessToken, phoneNumber)
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+                println("resetFlow, LoginEmailPhoneFragment@onActivityResult(LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)")
+
                 activityShouldEnd = false
                 isFromChooseAccount = true
 
                 if (data != null) {
                     data.extras?.let {
+                        println("resetFlow, LoginEmailPhoneFragment@onActivityResult(LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) data: ${it.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
+
                         if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             onGoToSecurityQuestion("")
                         } else {

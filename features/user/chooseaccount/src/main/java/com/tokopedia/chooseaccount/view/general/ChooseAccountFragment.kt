@@ -186,6 +186,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun loginToken(account: UserDetailDataModel?, phone: String) {
+        println("resetFlow, ChooseAccountFragment@loginToken")
+
         account?.let {
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
@@ -215,6 +217,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun onSuccessLoginToken() {
+        println("resetFlow, ChooseAccountFragment@onSuccessLoginToken")
         activity?.apply {
             setResult(Activity.RESULT_OK)
             finish()
@@ -222,6 +225,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
+        println("resetFlow, ChooseAccountFragment@onErrorLoginToken")
+
         checkExceptionType(throwable)
         val logException = Throwable("Failed LoginPN using token", throwable)
         logUnknownError(logException)

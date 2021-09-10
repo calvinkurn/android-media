@@ -309,6 +309,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     open fun goToSuccessPage() {
+
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             if(source < 1) {
@@ -317,6 +318,8 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             source = 0
         }
+        println("resetFlow, ChangePinFragment@goToSuccessPage data: ${intent.getIntExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
+
         startActivity(intent)
         activity?.finish()
     }
