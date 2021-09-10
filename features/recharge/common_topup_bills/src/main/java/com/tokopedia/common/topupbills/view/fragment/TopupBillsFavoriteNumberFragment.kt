@@ -195,6 +195,9 @@ class TopupBillsFavoriteNumberFragment:
                 is Fail -> onFailedUndoDeleteFavoriteNumber()
             }
         })
+
+        savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { keyword ->
+            filterData(keyword) })
     }
 
     private fun loadData() {
@@ -307,8 +310,6 @@ class TopupBillsFavoriteNumberFragment:
                 } else {
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
-            } else {
-                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
             }
             binding?.commonTopupbillsFavoriteNumberClue?.hide()
         }
