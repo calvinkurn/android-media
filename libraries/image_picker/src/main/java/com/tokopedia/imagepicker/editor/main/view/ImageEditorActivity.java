@@ -246,7 +246,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         userSession = new UserSession(getApplicationContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
 
-//        remoteConfigEditor();
+        remoteConfigEditor();
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
