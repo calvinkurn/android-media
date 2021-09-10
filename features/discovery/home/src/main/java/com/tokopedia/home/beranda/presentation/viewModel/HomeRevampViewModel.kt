@@ -1079,7 +1079,7 @@ open class HomeRevampViewModel @Inject constructor(
         isUsingWalletApp: suspend () -> Unit,
         isUsingOldWallet: suspend () -> Unit
     ) {
-        if (useWalletApp) {
+        if (useWalletApp || isGopayEligible) {
             isUsingWalletApp.invoke()
         } else {
             isUsingOldWallet.invoke()
