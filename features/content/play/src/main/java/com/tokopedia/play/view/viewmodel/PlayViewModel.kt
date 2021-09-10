@@ -192,9 +192,10 @@ class PlayViewModel @Inject constructor(
                         totalLike = channelReport.totalLikeFmt,
                 ),
                 totalView = channelReport.totalViewFmt,
-                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
+                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown &&
+                                (status.isActive || (upcomingInfo != null && upcomingInfo?.isUpcoming == true)),
                 cart = PlayCartUiState(
-                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown && (upcomingInfo != null && upcomingInfo?.isUpcoming == false),
                         count = if (cartInfo.itemCount > 0) {
                             val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
                             PlayCartCount.Show(countText)

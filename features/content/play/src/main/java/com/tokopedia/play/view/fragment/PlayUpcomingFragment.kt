@@ -22,8 +22,10 @@ import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
+import com.tokopedia.play.view.uimodel.action.ClickShareAction
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.state.PlayCartUiState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -116,8 +118,6 @@ class PlayUpcomingFragment @Inject constructor(
 
             upcomingTimer.setupTimer(it.startTime)
         }
-
-        toolbarView.setShareInfo(playViewModel.latestCompleteChannelData.shareInfo)
     }
 
     private fun setupObserver() {
@@ -131,7 +131,7 @@ class PlayUpcomingFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderToolbarView(state.followStatus, state.partnerName)
+                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
             }
         }
 
@@ -139,6 +139,7 @@ class PlayUpcomingFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when(event) {
                     is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                    is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is RemindMeEvent -> {
                         if(event.isSuccess) {
                             analytic.clickRemindMe()
@@ -154,6 +155,7 @@ class PlayUpcomingFragment @Inject constructor(
                             ) { actionButton.onButtonClick() }
                         }
                     }
+                    is ShowToasterEvent -> handleToasterEvent(event)
                     else -> { }
                 }
             }
@@ -203,10 +205,16 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun renderToolbarView(
         followStatus: PlayPartnerFollowStatus,
-        partnerName: String
+        partnerName: String,
+        isShareable: Boolean,
+        cartState: PlayCartUiState,
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
+
+        toolbarView.setIsShareable(isShareable)
+
+        toolbarView.showCart(cartState.shouldShow)
     }
 
     override fun onClickActionButton() {
@@ -237,9 +245,8 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) { }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
-        copyToClipboard(content)
-        showLinkCopiedToaster()
+    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+        playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
     }
@@ -249,8 +256,15 @@ class PlayUpcomingFragment @Inject constructor(
             .setPrimaryClip(ClipData.newPlainText("play-room", content))
     }
 
-    private fun showLinkCopiedToaster() {
-        doShowToaster(message = getString(R.string.play_link_copied))
+    private fun handleToasterEvent(event: ShowToasterEvent) {
+        val text = getTextFromUiString(event.message)
+        doShowToaster(
+            toasterType = when (event) {
+                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+            },
+            message = text
+        )
     }
 
     private fun doShowToaster(
