@@ -217,8 +217,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             nonVariant: ProductCardModel.NonVariant
     ) {
         val userQuantity = editText.text.toString().replace(".", "").toIntOrZero()
-        val quantityRange = nonVariant.minQuantity..nonVariant.maxQuantity
-        val coercedQuantity = userQuantity.coerceIn(quantityRange)
+        val coercedQuantity = userQuantity.coerceIn(nonVariant.quantityRange)
         val coercedQuantityString = coercedQuantity.toString()
 
         editText.setText(coercedQuantityString, TextView.BufferType.EDITABLE)
