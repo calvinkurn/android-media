@@ -1,5 +1,6 @@
 package com.tokopedia.play.robot.play
 
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
@@ -10,6 +11,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -66,6 +68,7 @@ class PlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
+        castPlayerHelper: CastPlayerHelper
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -93,7 +96,8 @@ class PlayViewModelRobot(
                 videoLatencyPerformanceMonitoring,
                 playChannelWebSocket,
                 repo,
-                playAnalytic
+                playAnalytic,
+                castPlayerHelper
         )
     }
 
@@ -101,8 +105,8 @@ class PlayViewModelRobot(
         viewModel.createPage(channelData)
     }
 
-    fun focusPage(channelData: PlayChannelData) {
-        viewModel.focusPage(channelData)
+    fun focusPage(channelData: PlayChannelData, castContext: CastContext = mockk(relaxed = true)) {
+        viewModel.focusPage(channelData, castContext)
     }
 
     fun setMockResponseReportSummaries(response: ReportSummaries) {
@@ -237,6 +241,7 @@ fun givenPlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
+        castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -260,7 +265,8 @@ fun givenPlayViewModelRobot(
             videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
             playChannelWebSocket = playChannelWebSocket,
             repo = repo,
-            playAnalytic = playAnalytic
+            playAnalytic = playAnalytic,
+            castPlayerHelper = castPlayerHelper
     ).apply(fn)
 }
 
