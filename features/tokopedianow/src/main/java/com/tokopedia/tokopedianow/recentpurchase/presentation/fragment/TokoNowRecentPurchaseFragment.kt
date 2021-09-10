@@ -62,6 +62,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
 
@@ -398,6 +399,7 @@ class TokoNowRecentPurchaseFragment:
             if(it is Success) {
                 onSuccessGetLayout(it.data)
             }
+            resetSwipeLayout()
         }
 
         observe(viewModel.miniCart) {
@@ -483,7 +485,8 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun onCategoryFilterActivityResult(data: Intent?) {
-        val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
+        val selectedFilter = data
+            ?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.setSelectedCategoryFilter(selectedFilter)
     }
 
@@ -492,7 +495,7 @@ class TokoNowRecentPurchaseFragment:
 
         when(data.state) {
             TokoNowLayoutState.LOADING -> onLoadingLayout()
-            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
+            TokoNowLayoutState.SHOW -> viewModel.getLayoutData()
         }
     }
 
@@ -523,6 +526,7 @@ class TokoNowRecentPurchaseFragment:
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let {
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            viewModel.setLocalCacheModel(localCacheModel)
         }
     }
 
@@ -621,5 +625,12 @@ class TokoNowRecentPurchaseFragment:
     private fun refreshLayout() {
         carouselScrollPosition.clear()
         viewModel.showLoading()
+    }
+
+    private fun resetSwipeLayout() {
+        swipeRefreshLayout?.apply {
+            isEnabled = true
+            isRefreshing = false
+        }
     }
 }

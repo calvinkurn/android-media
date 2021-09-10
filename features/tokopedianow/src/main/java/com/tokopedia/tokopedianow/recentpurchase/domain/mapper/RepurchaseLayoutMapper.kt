@@ -10,6 +10,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.factory.RepurchaseSortFilterFactory
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
@@ -22,12 +23,20 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addLayoutList() {
-        val sortFilter = RepurchaseSortFilterFactory.createSortFilter()
+        val sortFilter = RepurchaseSortFilterUiModel(SORT_FILTER, emptyList())
         val productGrid = RepurchaseProductGridUiModel(emptyList())
 
         add(sortFilter)
         addChooseAddress()
         add(productGrid)
+    }
+
+    fun MutableList<Visitable<*>>.addSortFilter() {
+        val sortFilter = RepurchaseSortFilterFactory.createSortFilter()
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let {
+            val index = indexOf(it)
+            set(index, sortFilter)
+        }
     }
 
     fun MutableList<Visitable<*>>.addProductGrid(response: List<RepurchaseProduct>) {
@@ -92,6 +101,7 @@ object RepurchaseLayoutMapper {
             val sortFilterIndex = indexOf(item)
             val sortFilter = (item as RepurchaseSortFilterUiModel)
             val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
             val categoryFilter = sortFilterList.firstOrNull { it.type == CATEGORY_FILTER }
             val categoryFilterIndex = sortFilterList.indexOf(categoryFilter)
             val updatedCategoryFilter = categoryFilter?.copy(selectedItem = selectedFilter)
