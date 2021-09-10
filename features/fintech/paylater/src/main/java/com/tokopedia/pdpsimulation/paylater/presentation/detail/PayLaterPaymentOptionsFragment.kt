@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     private var buttonStatus: RedirectionType? = null
+    private var gatewayType: GatewayStatusType? = null
     private var urlToRedirect: String = ""
 
     override fun onCreateView(
@@ -72,16 +74,21 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun initListener() {
         btnHowToUse.setOnClickListener {
             buttonStatus?.let {
-                if (it == RedirectionType.HowToDetail)
-                    openActionBottomSheet()
-                else if (it == RedirectionType.RedirectionWebView) {
-                    if (!urlToRedirect.isNullOrEmpty())
-                        RouteManager.route(
-                            activity,
-                            ApplinkConstInternalGlobal.WEBVIEW,
-                            urlToRedirect
-                        )
+                when (it) {
+                    RedirectionType.HowToDetail -> {
+                        openActionBottomSheet()
+                    }
+                    RedirectionType.RedirectionWebView -> {
+                        if (!urlToRedirect.isNullOrEmpty())
+                            RouteManager.route(
+                                activity,
+                                ApplinkConstInternalGlobal.WEBVIEW,
+                                urlToRedirect
+                            )
+                    }
+
                 }
+
             }
 
         }
@@ -129,6 +136,17 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
+            interestText.text = "Interest(${(data.interest_pct?:0)}%)"
+            gatewayType =
+                if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
+                    GatewayStatusType.Rejected
+                else if (data.activation_status == 1)
+                    GatewayStatusType.Processing
+                else
+                    GatewayStatusType.Accepted
+
+            updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
+
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
             urlToRedirect = data.cta?.android_url ?: ""
             data.cta?.cta_type?.let {
@@ -180,6 +198,26 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         }
     }
 
+    private fun updateSubHeader(gatewayType: GatewayStatusType?, subheader: String) {
+        when (gatewayType) {
+            GatewayStatusType.Processing -> {
+                tvSubTitlePaylaterPartner.text = context?.getString(R.string.gateway_processing)
+                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_Y200))
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_Y500))
+            }
+            GatewayStatusType.Rejected -> {
+                tvSubTitlePaylaterPartner.text = context?.getString(R.string.rejected_gateway)
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_R500))
+                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_R100))
+            }
+            else -> {
+                tvSubTitlePaylaterPartner.text = subheader
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_N700))
+                tvSubTitlePaylaterPartner.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+    }
+
 
     private fun setPartnerImage(data: GatewayDetail) {
         val imageUrl: String? = if (context.isDarkMode())
@@ -204,4 +242,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
 enum class RedirectionType {
     HowToDetail, RedirectionWebView, NonClickable
+}
+
+enum class GatewayStatusType {
+    Processing, Rejected, Accepted
 }

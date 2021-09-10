@@ -74,6 +74,8 @@
     <string name="credit_card_view_more">Lihat Selengkapnya</string>
     <!-- Application Status -->
     <string name="pay_later_status_active">Aktif</string>
+    <string name="gateway_processing">Diproses</string>
+    <string name="rejected_gateway">Belum Disetujui</string>
     <string name="pay_later_status_waiting">Menunggu persetujuan</string>
     <string name="pay_later_status_rejected">Pengajuan ditolak</string>
     <string name="pay_later_status_cancelled">Pengajuan dibatalkan</string>
