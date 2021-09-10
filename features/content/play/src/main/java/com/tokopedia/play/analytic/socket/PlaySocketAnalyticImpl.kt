@@ -17,7 +17,7 @@ class PlaySocketAnalyticImpl @Inject constructor(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "error state",
-                "$channelId - $error - ${channelType.value}"
+                "$channelId - Socket Connection: $error - ${channelType.value}"
         )
     }
 }
