@@ -24,42 +24,29 @@ class RepurchaseProductViewHolder(
     }
 
     override fun bind(item: RepurchaseProductUiModel) {
-//        productCard?.setProductModel(
-//            ProductCardModel(
-//                productImageUrl = data.imageUrl300,
-//                productName = data.name,
-//                formattedPrice = data.price,
-//                slashedPrice = data.originalPrice,
-//                discountPercentage = data.discountPercentageString,
-//                countSoldRating = data.ratingAverage,
-//                labelGroupList = data.labelGroupDataViewList,
-//                labelGroupVariantList = data.labelGroupVariantDataViewList,
-//                variant = data.variantATC,
-//                nonVariant = data.nonVariantATC,
-//            )
-//        )
+        productCard?.apply {
+            setProductModel(item.productCard)
 
-        productCard?.setProductModel(item.productCard)
-
-        productCard?.setImageProductViewHintListener(item, object: ViewHintListener {
-            override fun onViewHint() {
-                listener?.onProductImpressed(item)
+            setOnClickListener {
+                listener?.onClickProduct(item)
             }
-        })
 
-        productCard?.setOnClickListener {
-            listener?.onClickProduct(item)
-        }
-
-        productCard?.setAddVariantClickListener {
-            listener?.onAddToCartVariant(item)
-        }
-
-        productCard?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-            override fun onQuantityChanged(quantity: Int) {
-                listener?.onAddToCartNonVariant(item, quantity)
+            setAddVariantClickListener {
+                listener?.onAddToCartVariant(item)
             }
-        })
+
+            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    listener?.onAddToCartNonVariant(item, quantity)
+                }
+            })
+
+            setImageProductViewHintListener(item, object: ViewHintListener {
+                override fun onViewHint() {
+                    listener?.onProductImpressed(item)
+                }
+            })
+        }
     }
 
     interface RepurchaseProductCardListener {
