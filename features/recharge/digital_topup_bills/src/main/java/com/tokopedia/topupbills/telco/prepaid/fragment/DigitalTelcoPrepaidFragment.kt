@@ -496,7 +496,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClickFilterChip() {
-
+//            generateCheckoutPassData(
+//                telcoClientNumberWidget.getInputNumber(),
+//                "0",
+//                categoryId.toString(),
+//                operatorId,
+//                productId.toString()
+//            )
         }
     }
 
