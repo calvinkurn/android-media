@@ -67,4 +67,6 @@
     <string name="deals_brand_detail_share_web_link">https://www.tokopedia.com/deals/b/%s</string>
     <string name="deals_brand_detail_share_app_link">tokopedia://deals/brand/%s</string>
 
+    <string name="deals_error_reload">Ulangi</string>
+
 </resources>

@@ -23,6 +23,7 @@ import com.tokopedia.deals.brand_detail.ui.adapter.DealsBrandDetailAdapter
 import com.tokopedia.deals.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
 import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.brand_detail.util.DealsBrandDetailShare
+import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnection
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -30,11 +31,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.Math.abs
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.DealsBrandDetailCallback {
@@ -180,15 +184,30 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
             when (it) {
                 is Success -> {
                     brandDetail = it.data.data.brand
-                    val products = it.data.data.products
                     hideShimmering()
                     setCollapsingLayout(brandDetail.title)
                     setHeaderSection(brandDetail)
-                    setRVBrandList(products)
+                    setRVBrandList(it.data.data.products)
                 }
 
                 is Fail -> {
-
+                    val throwable = it.throwable
+                    if(throwable is UnknownHostException){
+                        context?.let { context ->
+                            fragmentManager?.let {
+                                DealsBottomSheetNoInternetConnection().showErroNoConnection(context, it,
+                                        object: DealsBottomSheetNoInternetConnection.
+                                        DealsOnClickBottomSheetNoConnectionListener{
+                                            override fun onClick() {
+                                                showShimmering()
+                                                loadData()
+                                            }
+                                        })
+                            }
+                        }
+                    } else {
+                        showToaster(throwable)
+                    }
                 }
             }
         }
@@ -241,6 +260,19 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
 
     private fun showShimmering(){
         binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.show()
+    }
+
+    private fun showToaster(throwable: Throwable){
+        context?.let {
+            val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+            view?.let {
+                Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.deals_error_reload), View.OnClickListener {
+                            showShimmering()
+                            loadData()
+                }).show()
+            }
+        }
     }
 
     companion object {
