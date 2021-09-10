@@ -203,14 +203,12 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-                val HAS_ELEVATION = 16.0f
-                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout?.cardElevation = NO_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout?.cardElevation = HAS_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }

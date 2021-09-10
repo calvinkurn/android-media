@@ -486,6 +486,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             thumbNailImageUrl = tnImage
             previewImageUrl = previewImgUrl
             imageOptionsList = imageList
+            imageOptionsList?.let {
+                if (it.size > 0){
+                    imageSaved(it[0])
+                }
+            }
         }
         if(takeSS == null){
             takeViewSS = (SharingUtil)::triggerSS

@@ -185,6 +185,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             DialogUnify.WITH_ILLUSTRATION).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
             setPrimaryCTAClickListener {
+                this.setOnDismissListener {  }
                 display?.invoke()
                 requestPermission(fragment)
                 dismiss()
@@ -192,6 +193,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
+                this.setOnDismissListener {  }
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
                 Handler().postDelayed({
