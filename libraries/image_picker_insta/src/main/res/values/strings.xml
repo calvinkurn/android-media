@@ -1,7 +1,11 @@
 <resources>
-<string name="imagepicker_insta_lanjut">Lanjut</string>
-<string name="imagepicker_insta_post_sebagai">Post sebagai</string>
-<string name="imagepicker_insta_fellow_official">Fellow Official</string>
-<string name="imagepicker_insta_kamera">Kamera</string>
+    <string name="imagepicker_insta_lanjut">Lanjut</string>
+    <string name="imagepicker_insta_post_sebagai">Post sebagai</string>
+    <string name="imagepicker_insta_fellow_official">Fellow Official</string>
+    <string name="imagepicker_insta_kamera">Kamera</string>
+    <string name="imagepicker_insta_aktifikan">Aktifkan</string>
+    <string name="imagepicker_insta_akt">Aktifkan akses ke galeri</string>
+    <string name="imagepicker_insta_sup">Supaya kamu bisa upload foto untuk membuat postingan Feed.</string>
+
 
 </resources>

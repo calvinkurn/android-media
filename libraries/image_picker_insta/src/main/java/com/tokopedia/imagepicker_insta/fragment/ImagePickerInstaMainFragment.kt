@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -25,8 +23,8 @@ import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.activity.MainActivity
-import com.tokopedia.imagepicker_insta.activity.MainActivity.Companion.MAX_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity.Companion.MAX_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
@@ -46,7 +44,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 
 
-class MainFragment : Fragment(), MainFragmentContract {
+class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
     val EDITOR_REQUEST_CODE = 221
 
@@ -95,7 +93,7 @@ class MainFragment : Fragment(), MainFragmentContract {
                 imageAdapter.dataList[it].asset.contentUri
             }
 
-            val applink = (activity as? MainActivity)?.applinkForGalleryProceed
+            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedMediaUriList)
@@ -125,8 +123,8 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun handleCameraPermissionCallback() {
-        if (activity is MainActivity) {
-            (activity as MainActivity).cameraPermissionCallback = { hasAllPermission ->
+        if (activity is ImagePickerInstaActivity) {
+            (activity as ImagePickerInstaActivity).cameraPermissionCallback = { hasAllPermission ->
                 if (hasAllPermission) {
                     openCamera()
                 } else {
@@ -149,8 +147,21 @@ class MainFragment : Fragment(), MainFragmentContract {
         initViews(v)
         setObservers()
         setClicks()
-        getPhotos()
+        if (hasPermission()) {
+            getPhotos()
+        } else {
+            v.visibility = View.GONE
+        }
+
         return v
+    }
+
+    private fun hasPermission(): Boolean {
+        if (context != null) {
+            return PermissionUtil.isReadPermissionGranted(requireContext())
+        }
+        return false
+
     }
 
     private fun initViews(v: View) {
@@ -180,7 +191,7 @@ class MainFragment : Fragment(), MainFragmentContract {
             activity?.finish()
         }
 
-        (activity as MainActivity).run {
+        (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbar)
             setToolbarIcon(this, toolbarIcon)
             toolbarTitle.text = this.toolbarTitle
@@ -188,7 +199,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    private fun setToolbarIcon(activity: MainActivity, imageView: AppCompatImageView) {
+    private fun setToolbarIcon(activity: ImagePickerInstaActivity, imageView: AppCompatImageView) {
         if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
             imageView.setImageResource(activity.toolbarIconRes)
         } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
@@ -250,8 +261,8 @@ class MainFragment : Fragment(), MainFragmentContract {
         val contentHeight = width / columnCount
 
         var maxMultiSelect: Int = MAX_MULTI_SELECT_LIMIT
-        if ((activity as? MainActivity)?.maxMultiSelectAllowed != null) {
-            maxMultiSelect = (activity as MainActivity).maxMultiSelectAllowed
+        if ((activity as? ImagePickerInstaActivity)?.maxMultiSelectAllowed != null) {
+            maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
 
         imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect)
@@ -263,12 +274,12 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun openCamera() {
         cameraCaptureFilePath = null
-        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture)
+        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture)
     }
 
     override fun handleOnCameraIconTap() {
-        if (activity is MainActivity) {
-            PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
+        if (activity is ImagePickerInstaActivity) {
+            PermissionUtil.requestCameraAndWritePermission(activity as ImagePickerInstaActivity)
         }
     }
 
@@ -361,7 +372,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun handleCameraSuccessResponse(data: Intent?) {
 //        val urlList = data?.extras?.putParcelableArrayList(BundleData.URIS, null)
-        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
             //Update current UI
             //TODO  Rahul means media is captured
@@ -376,7 +387,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun handleCameraErrorResponse(data: Intent?) {
-        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
             //DO nothing
         } else {

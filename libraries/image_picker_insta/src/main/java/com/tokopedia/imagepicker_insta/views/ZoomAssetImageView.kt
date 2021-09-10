@@ -100,7 +100,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
             //INVALID
             if ((left + newWidth > bmp.width) || top + newHeight > bmp.height) return
 
-            val dstBmp = Bitmap.createBitmap(bmp, left, top, newWidth, newHeight)
+//            val dstBmp = Bitmap.createBitmap(bmp, left, top, newWidth, newHeight)
             Timber.d("cropped bmp")
         }
     }

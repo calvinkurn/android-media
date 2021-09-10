@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fm_root"
+    android:background="#E4EBF5"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:name="com.tokopedia.imagepicker_insta.fragment.MainFragment"
-    tools:context=".activity.MainActivity">
+    android:layout_height="match_parent">
 
-</fragment>
+    <com.tokopedia.imagepicker_insta.views.NoPermissionsView
+        android:id="@+id/no_permission_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
+</FrameLayout>

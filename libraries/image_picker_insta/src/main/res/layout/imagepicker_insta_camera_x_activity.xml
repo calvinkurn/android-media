@@ -5,7 +5,7 @@
     android:name="com.tokopedia.imagepicker_insta.fragment.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.ImagePickerInstaActivity">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera_view"

@@ -4,15 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.models.BundleData
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 
-class MainActivity : AppCompatActivity() {
+class ImagePickerInstaActivity : AppCompatActivity() {
 
     var toolbarTitle = ""
     var toolbarSubTitle = ""
@@ -23,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
+
+    lateinit var noPermissionView: NoPermissionsView
+    lateinit var fmRoot: FrameLayout
 
     companion object {
 
@@ -40,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             applinkForGalleryProceed: String? = null,
             applinkForBackNavigation: String? = null,
         ): Intent {
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, ImagePickerInstaActivity::class.java)
             intent.putExtra(BundleData.TITLE, title)
             intent.putExtra(BundleData.SUB_TITLE, subtitle)
             intent.putExtra(BundleData.TOOLBAR_ICON_RES, toolbarIconRes)
@@ -55,13 +61,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     var cameraPermissionCallback: ((Boolean) -> Unit)? = null
+    var canRequestPermissionFromOnResume = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.imagepicker_insta_activity_main)
+        noPermissionView = findViewById(R.id.no_permission_view)
+        fmRoot = findViewById(R.id.fm_root)
+
+        noPermissionView.btnPermission.setOnClickListener {
+            PermissionUtil.requestReadPermission(this)
+        }
+
         if (PermissionUtil.isReadPermissionGranted(this)) {
             renderUi()
         } else {
             PermissionUtil.requestReadPermission(this)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (canRequestPermissionFromOnResume && !PermissionUtil.isReadPermissionGranted(this)) {
+            noPermissionView.visibility = View.VISIBLE
+            removeExistingFragment()
+            canRequestPermissionFromOnResume = false
+        } else {
+            canRequestPermissionFromOnResume = true
         }
     }
 
@@ -71,20 +97,44 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PermissionUtil.READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Read permission granted", Toast.LENGTH_SHORT).show()
                     renderUi()
+                } else {
+                    renderPermissionUi()
                 }
             }
             PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
                 cameraPermissionCallback?.invoke(PermissionUtil.hasAllPermission(this))
             }
-
         }
     }
 
-    fun renderUi() {
+    private fun renderUi() {
+        removeExistingFragment()
+        noPermissionView.visibility = View.GONE
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(fmRoot.id, ImagePickerInstaMainFragment())
+            .commit()
+
         processIntentData()
-        setContentView(R.layout.imagepicker_insta_activity_main)
+    }
+
+    private fun removeExistingFragment() {
+        if (!supportFragmentManager.fragments.isNullOrEmpty()) {
+            val fragment = supportFragmentManager.fragments.first()
+            if (fragment != null) {
+                supportFragmentManager
+                    .beginTransaction()
+                    .remove(fragment)
+                    .commit()
+            }
+        }
+    }
+
+    private fun renderPermissionUi() {
+        removeExistingFragment()
+        noPermissionView.visibility = View.VISIBLE
     }
 
     private fun processIntentData() {

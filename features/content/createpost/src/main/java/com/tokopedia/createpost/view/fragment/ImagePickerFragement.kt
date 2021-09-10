@@ -11,8 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaModel
-import com.tokopedia.imagepicker_insta.activity.MainActivity
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.models.BundleData
 
 class ImagePickerFragement: BaseCreatePostFragmentNew() {
@@ -42,7 +41,7 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
     }
 
     private fun openImagePicker(title:String, subtitle:String, iconUrl:String){
-        val intent = MainActivity.getIntent(requireContext(),
+        val intent = ImagePickerInstaActivity.getIntent(requireContext(),
             title = title,
             subtitle = subtitle,
             toolbarIconUrl = iconUrl,
