@@ -15,32 +15,36 @@ class HotelUtils {
             var updatedCheckInDate = checkInDate
             var updatedCheckOutDate = checkOutDate
 
-            //if check in and / or check out param is empty
-            if (updatedCheckInDate.isBlank() && updatedCheckOutDate.isBlank()) {
-                updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
-                updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
-            } else if (updatedCheckInDate.isBlank()) {
-                val checkout = updatedCheckOutDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayBeforeCheckOut = checkout.addTimeToSpesificDate(Calendar.DATE, -1)
-                updatedCheckInDate = dayBeforeCheckOut.toString(DateUtil.YYYY_MM_DD)
-            } else if (updatedCheckOutDate.isBlank()) {
-                val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
-                updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
-            }
+            try {//if check in and / or check out param is empty
+                if (updatedCheckInDate.isBlank() && updatedCheckOutDate.isBlank()) {
+                    updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+                    updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
+                } else if (updatedCheckInDate.isBlank()) {
+                    val checkout = updatedCheckOutDate.toDate(DateUtil.YYYY_MM_DD)
+                    val dayBeforeCheckOut = checkout.addTimeToSpesificDate(Calendar.DATE, -1)
+                    updatedCheckInDate = dayBeforeCheckOut.toString(DateUtil.YYYY_MM_DD)
+                } else if (updatedCheckOutDate.isBlank()) {
+                    val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
+                    val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
+                    updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
+                }
 
-            //if check in date has passed
-            if (DateUtil.getDayDiffFromToday(updatedCheckInDate) < 0) {
-                updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
-            }
-            //if check out date has passed or check out date < check in date
-            if (DateUtil.getDayDiffFromToday(updatedCheckOutDate) < 1) {
-                val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
-                updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
-            }
+                //if check in date has passed
+                if (DateUtil.getDayDiffFromToday(updatedCheckInDate) < 0) {
+                    updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+                }
+                //if check out date has passed or check out date < check in date
+                if (DateUtil.getDayDiffFromToday(updatedCheckOutDate) < 1) {
+                    val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
+                    val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
+                    updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
+                }
 
-            if (DateUtil.getDayDiff(updatedCheckInDate, updatedCheckOutDate) < 1) {
+                if (DateUtil.getDayDiff(updatedCheckInDate, updatedCheckOutDate) < 1) {
+                    updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+                    updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
+                }
+            }catch (t: Throwable){
                 updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
                 updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
             }

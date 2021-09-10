@@ -51,7 +51,7 @@ class SomBottomSheetCourierProblem(
 
             setupTicker()
 
-            fl_btn_primary?.show()
+            btn_primary?.show()
             btn_primary?.setOnClickListener {
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
