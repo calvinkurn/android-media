@@ -52,7 +52,7 @@ class PlayChannelSSEImpl @Inject constructor(
             override fun onComment(sse: ServerSentEvent, comment: String) { }
 
             override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                return false
+                return true
             }
 
             override fun onRetryError(
@@ -60,7 +60,6 @@ class PlayChannelSSEImpl @Inject constructor(
                 throwable: Throwable,
                 response: Response?
             ): Boolean {
-                sseFlow.tryEmit(SSEAction.Close(SSECloseReason.ERROR))
                 return true
             }
 
