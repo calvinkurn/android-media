@@ -31,19 +31,19 @@ class SurfaceAspectRatioView : FrameLayout {
 
     fun setCallback(callback: Callback) {
         mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback{
-            override fun surfaceCreated(holder: SurfaceHolder?) {
+            override fun surfaceCreated(holder: SurfaceHolder) {
                 callback.onSurfaceCreated()
             }
 
             override fun surfaceChanged(
-                holder: SurfaceHolder?,
+                holder: SurfaceHolder,
                 format: Int,
                 width: Int,
                 height: Int
             ) {
             }
 
-            override fun surfaceDestroyed(holder: SurfaceHolder?) {
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
                 callback.onSurfaceDestroyed()
             }
         })
