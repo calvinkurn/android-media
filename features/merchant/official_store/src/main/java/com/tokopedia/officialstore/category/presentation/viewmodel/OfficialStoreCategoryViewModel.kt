@@ -40,17 +40,37 @@ class OfficialStoreCategoryViewModel @Inject constructor(
         launchCatchError(block = {
             onCacheStartLoad.invoke()
             onCloudStartLoad.invoke()
+
             val cacheResponse = async(dispatchers.io) {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
+                try {
+                    val data = getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
+                    Success(data)
+                } catch (e: Throwable) {
+                    Fail(e)
+                }
             }
             val cloudResponse = async(dispatchers.io) {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
+                try {
+                    val data = getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
+                    Success(data)
+                } catch (e: Throwable) {
+                    Fail(e)
+                }
             }
             val cacheData = cacheResponse.await()
-            cacheData.isCache = true
-            _officialStoreCategoriesResult.value = Success(cacheData)
+            if (cacheData is Fail) {
+                throw cacheData.throwable
+            } else {
+                (cacheData as Success).data.isCache = true
+                _officialStoreCategoriesResult.value = cacheData
+            }
             onCacheStopLoad.invoke()
-            _officialStoreCategoriesResult.value = Success(cloudResponse.await())
+            val cloudData = cloudResponse.await()
+            if (cloudData is Fail) {
+                throw cloudData.throwable
+            } else {
+                _officialStoreCategoriesResult.value = cloudData
+            }
             onCloudStopLoad.invoke()
         }) {
             _officialStoreCategoriesResult.value = Fail(it)
