@@ -14,7 +14,9 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -41,11 +43,15 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductGrid
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSelectedCategoryFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
+import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam.Companion.SORT_FREQUENTLY_BOUGHT
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
+import com.tokopedia.tokopedianow.recentpurchase.presentation.model.RepurchaseProductListMeta
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
@@ -96,6 +102,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val _productAddToCartQuantity = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
+    private var localCacheModel: LocalCacheModel? = null
+    private var productListMeta: RepurchaseProductListMeta? = null
     private var selectedCategoryFilter: SelectedSortFilter? = null
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
@@ -126,13 +134,11 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int) {
+    fun getLayoutData() {
         launchCatchError(block = {
             layoutList.filter { it.isNotStaticLayout() }.forEach {
                 when (it) {
-                    is RepurchaseProductGridUiModel -> {
-                        getProductListAsync(warehouseID, queryParam, totalScan, page).await()
-                    }
+                    is RepurchaseProductGridUiModel -> getProductListAsync().await()
                 }
 
                 val layout = RepurchaseLayoutUiModel(
@@ -261,9 +267,11 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedCategoryFilter(): SelectedSortFilter? {
-        return selectedCategoryFilter
+    fun setLocalCacheModel(localCacheModel: LocalCacheModel?) {
+        this.localCacheModel = localCacheModel
     }
+
+    fun getSelectedCategoryFilter() = selectedCategoryFilter
 
     fun clearSelectedFilters() {
         selectedCategoryFilter = null
@@ -274,26 +282,28 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         return items.firstOrNull { it.productId == productId }
     }
 
-    private fun getProductListAsync(
-        warehouseID: Int,
-        queryParam: String,
-        totalScan: Int,
-        page: Int
-    ): Deferred<Unit?> {
+    private fun getProductListAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
-                queryParam,
-                totalScan,
-                page
-            ).productList
+            val requestParam = createProductListRequestParam()
+            val response = getRepurchaseProductListUseCase.execute(requestParam)
 
-            if (getProductListResponse.isNullOrEmpty()) {
+            val productList = response.products
+            val productMeta = response.meta
+
+            productListMeta = RepurchaseProductListMeta(
+                productMeta.page,
+                productMeta.hasNext,
+                productMeta.totalScan
+            )
+
+            if (productList.isNullOrEmpty()) {
                 getEmptyState(
                     id = EMPTY_STATE_NO_RESULT,
-                    warehouseId = warehouseID.toString()
+                    warehouseId = requestParam.warehouseID
                 )
             } else {
-                layoutList.addProductGrid(getProductListResponse)
+                layoutList.addSortFilter()
+                layoutList.addProductGrid(productList)
             }
         }) {
 
@@ -384,6 +394,21 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
+    }
+
+    private fun createProductListRequestParam(): GetRepurchaseProductListParam {
+        val warehouseID = localCacheModel?.warehouse_id.orEmpty()
+        val totalScan = productListMeta?.totalScan.orZero()
+        val page = productListMeta?.page ?: INITIAL_PAGE
+        val categoryIds = selectedCategoryFilter?.id
+
+        return GetRepurchaseProductListParam(
+            warehouseID = "11528221", // Temporary hardcoded
+            sort = SORT_FREQUENTLY_BOUGHT,
+            totalScan = totalScan,
+            page = page,
+            catIds = categoryIds
+        )
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
