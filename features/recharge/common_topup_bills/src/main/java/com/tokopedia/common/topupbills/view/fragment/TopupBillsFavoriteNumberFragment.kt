@@ -141,8 +141,6 @@ class TopupBillsFavoriteNumberFragment:
         initView()
         loadData()
         KeyboardHandler.showSoftKeyboard(activity)
-
-        savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,6 +179,7 @@ class TopupBillsFavoriteNumberFragment:
                 is Success -> onSuccessGetFavoriteNumber(it.data.favoriteNumbers)
                 is Fail -> onFailedGetFavoriteNumber(it.throwable)
             }
+            savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
         })
 
         topUpBillsViewModel.seamlessFavNumberDeleteData.observe(viewLifecycleOwner, Observer {
@@ -289,13 +288,11 @@ class TopupBillsFavoriteNumberFragment:
         }
     }
 
-
-    // TODO: [Misael] extract NotFoundDataView keluar
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
 
         searchClientNumbers.addAll(clientNumbers.filter {
-            it.clientNumber.contains(query)
+            it.clientName.contains(query, true) || it.clientNumber.contains(query, true)
         })
 
         if (searchClientNumbers.isNotEmpty()) {
