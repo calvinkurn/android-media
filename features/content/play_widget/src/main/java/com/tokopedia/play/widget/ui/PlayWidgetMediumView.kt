@@ -150,6 +150,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
     private val spacing16 by lazy { resources.getDimensionPixelSize(R.dimen.dp_16) }
+    private val spacingPlay by lazy { resources.getDimensionPixelSize(R.dimen.play_widget_medium_overlay)}
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -186,35 +187,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         recyclerViewItem.adapter = adapter
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
-
-        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() != 0) return
-
-                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
-                firstView?.let {
-                    val distanceFromLeft = it.left
-                    val translateX = distanceFromLeft * 0.2f
-                    overlay.translationX = translateX
-
-                    if (distanceFromLeft <= 0) {
-                        val itemSize = it.width.toFloat()
-                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                        overlayImage.alpha = 1 - alpha
-                    }
-                }
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
-                }
-            }
-        })
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
@@ -258,11 +230,40 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             configureBackgroundOverlay(data)
         }
         recyclerViewItem.setMargin(
-                left = 0,
-                top = if (shouldAddSpacing(data)) spacing16 else resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card),
+                left = if (shouldAddSpacing(data)) 0 else spacingPlay,
+                top = if (shouldAddSpacing(data)) spacing16 else 0,
                 right = 0,
                 bottom = spacing16,
         )
+        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (layoutManager.findFirstVisibleItemPosition() != 0) return
+
+                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+                firstView?.let {
+                    val distanceFromLeft = it.left
+                    val translateX = distanceFromLeft * 0.2f
+                    if (shouldAddSpacing(data))
+                        overlay.translationX = translateX
+
+                    if (distanceFromLeft <= 0) {
+                        val itemSize = it.width.toFloat()
+                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                        overlayImage.alpha = 1 - alpha
+                    }
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
+                }
+            }
+        })
         mLastOverlayImageUrl = data.overlayImageUrl
     }
 
@@ -294,7 +295,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.loadImage(data.backgroundUrl)
         } else {
             overlayBackground.setImageDrawable(null)
-            itemContainer.background = null
+            overlayBackground.background = null
         }
     }
 
