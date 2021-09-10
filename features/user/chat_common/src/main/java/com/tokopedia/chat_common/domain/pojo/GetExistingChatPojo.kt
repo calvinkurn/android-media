@@ -41,7 +41,7 @@ data class ChatReplies(
         @Expose
         @SerializedName("block")
         val block: Block = Block(),
-        @SerializedName("replyIDs")
+        @SerializedName("replyIDsAttachment")
         val replyIDs: String = "",
 )
 
