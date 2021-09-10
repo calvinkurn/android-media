@@ -55,6 +55,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val overlay: FrameLayout
     private val overlayBackground: AppCompatImageView
     private val overlayImage: AppCompatImageView
+    private val overlayRecycler: FrameLayout
 
     private val recyclerViewItem: RecyclerView
 
@@ -160,6 +161,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         overlay = view.findViewById(R.id.play_widget_overlay)
         overlayBackground = view.findViewById(R.id.play_widget_overlay_bg)
         overlayImage = view.findViewById(R.id.play_widget_overlay_image)
+        overlayRecycler = view.findViewById(R.id.play_widget_recycler)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
 
@@ -245,8 +247,10 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 firstView?.let {
                     val distanceFromLeft = it.left
                     val translateX = distanceFromLeft * 0.2f
-                    if (shouldAddSpacing(data))
+                    if (shouldAddSpacing(data)) {
                         overlay.translationX = translateX
+                        overlayRecycler.translationX = -(translateX)
+                    }
 
                     if (distanceFromLeft <= 0) {
                         val itemSize = it.width.toFloat()
