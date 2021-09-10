@@ -27,7 +27,7 @@ class PlayChannelSSEImpl @Inject constructor(
     private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
     override fun connect(channelId: String, pageSource: String, gcToken: String) {
-        var url = "https://sse-staging.tokopedia.com/play-sse?page=$pageSource&channel_id=$channelId"
+        var url = "https://sse-staging.tokopedia.com/${PLAY_SSE}?page=$pageSource&channel_id=$channelId"
         if(gcToken.isNotEmpty()) url += "&token=${gcToken}"
 
         val request = Request.Builder().get().url(url)
@@ -79,5 +79,9 @@ class PlayChannelSSEImpl @Inject constructor(
 
     override fun listen(): Flow<SSEAction> {
         return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+    }
+
+    private companion object {
+        const val PLAY_SSE = "play-sse"
     }
 }
