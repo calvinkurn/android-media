@@ -40,6 +40,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -69,8 +70,8 @@ import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -83,10 +84,10 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFacto
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -94,6 +95,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -114,7 +116,7 @@ class TokoNowHomeFragment: Fragment(),
         MiniCartWidgetListener,
         BannerComponentListener,
         HomeProductRecomViewHolder.HomeProductRecomListener,
-        HomeProductCardViewHolder.HomeProductCardListener,
+        TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
         ScreenShotListener
 {
@@ -124,7 +126,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
-        private const val ITEM_VIEW_CACHE_SIZE = 20
+        private const val ITEM_VIEW_CACHE_SIZE = 0
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -156,7 +158,7 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
-                homeProductCardListener = this
+                tokoNowProductCardListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -168,6 +170,7 @@ class TokoNowHomeFragment: Fragment(),
     private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
+    private var rvHome: RecyclerView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
@@ -175,6 +178,7 @@ class TokoNowHomeFragment: Fragment(),
     private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollPosition = SparseIntArray()
 
     private val homeMainToolbarHeight: Int
@@ -219,7 +223,9 @@ class TokoNowHomeFragment: Fragment(),
         updateCurrentPageLocalCacheModelData()
 
         loadLayout()
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+        }
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -237,16 +243,16 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
-        UniversalShareBottomSheet.getScreenShotDetector()?.start()
+        screenshotDetector?.start()
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState()
+        UniversalShareBottomSheet.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearScreenShotDetector()
+        UniversalShareBottomSheet.clearState(screenshotDetector)
         super.onDestroy()
     }
 
@@ -281,7 +287,7 @@ class TokoNowHomeFragment: Fragment(),
             grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -374,7 +380,7 @@ class TokoNowHomeFragment: Fragment(),
                 recomItem.productId.toString(),
                 quantity,
                 recomItem.shopId.toString(),
-                HomeLayoutType.PRODUCT_RECOM
+                TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -389,7 +395,7 @@ class TokoNowHomeFragment: Fragment(),
         return carouselScrollPosition.get(adapterPosition)
     }
 
-    override fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int) {
+    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
                 data.productId,
@@ -402,16 +408,27 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onProductCardImpressed(data: HomeProductCardUiModel) {
+    override fun onProductCardImpressed(data: TokoNowProductCardUiModel) {
         when(data.type) {
             RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
         }
     }
 
-    override fun onProductCardClicked(position: Int, data: HomeProductCardUiModel) {
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
             RECENT_PURCHASE -> trackRecentPurchaseClick(position, data)
         }
+    }
+
+    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = data.productId,
+            pageSource = SOURCE,
+            isTokoNow = true,
+            shopId = data.shopId,
+            startActivitResult = this::startActivityForResult
+        )
     }
 
     override fun isMainViewVisible(): Boolean = true
@@ -659,7 +676,8 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupRecyclerView() {
         context?.let {
-            with(rvHome) {
+            rvHome = view?.findViewById(R.id.rv_home)
+            rvHome?.apply {
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
@@ -689,7 +707,9 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome.submitProduct(it.data)
+                rvHome?.post {
+                    rvHome?.submitProduct(it.data)
+                }
             }
         }
 
@@ -776,7 +796,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
-                is HomeProductCardUiModel -> trackRecentPurchaseAddToCart(
+                is TokoNowProductCardUiModel -> trackRecentPurchaseAddToCart(
                     it.position,
                     it.quantity,
                     it.data
@@ -803,16 +823,16 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackRecentPurchaseImpression(data: HomeProductCardUiModel) {
+    private fun trackRecentPurchaseImpression(data: TokoNowProductCardUiModel) {
         val productList = viewModelTokoNow.getRecentPurchaseProducts()
         analytics.onImpressRecentPurchase(userSession.userId, data, productList)
     }
 
-    private fun trackRecentPurchaseClick(position: Int, data: HomeProductCardUiModel) {
+    private fun trackRecentPurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
         analytics.onClickRecentPurchase(position, userSession.userId, data)
     }
 
-    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: HomeProductCardUiModel) {
+    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
         analytics.onRecentPurchaseAddToCart(position, quantity, userSession.userId, data)
     }
 
@@ -921,7 +941,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.items.map { it.layout }
+        val items = data.items.toMutableList().map { it.layout }
         adapter.submitList(items)
     }
 
@@ -966,7 +986,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadVisibleLayoutData(index: Int?) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
@@ -974,7 +994,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadMoreLayoutData() {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
@@ -1198,7 +1218,7 @@ class TokoNowHomeFragment: Fragment(),
             //set the Image Url of the Image that represents page
             setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
         }
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, this, screenshotDetector)
     }
 
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {

@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
@@ -320,10 +321,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun isNavRevamp(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:
-            (getAbTestPlatform().getString(
+            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                    (getAbTestPlatform().getString(
+                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -1876,7 +1879,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString(),
                     list = list
@@ -1895,7 +1898,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString()), topAds, it)
         }
@@ -1919,7 +1922,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 quantity = recommendationItem.quantity,
                 shopId = recommendationItem.shopId,
                 category = recommendationItem.categoryBreadcrumbs,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION)
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION)
         uohListViewModel.doAtc(atcParam)
 
         // analytics
@@ -1929,7 +1932,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name
-        val productPrice = recommendationItem.price
+        val productPrice = recommendationItem.priceInt.toString()
         val productCategory = recommendationItem.categoryBreadcrumbs
         val qty = recommendationItem.quantity.toString()
         val imageUrl = recommendationItem.imageUrl

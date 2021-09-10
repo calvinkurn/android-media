@@ -93,7 +93,13 @@ data class ShopProduct(
                 val text: String = "",
                 @SerializedName("query")
                 @Expose
-                val query: String = ""
+                val query: String = "",
+                @SerializedName("response_code")
+                @Expose
+                val responseCode: String = "",
+                @SerializedName("keyword_process")
+                @Expose
+                val keywordProcess: String = ""
         )
 
         data class Price(

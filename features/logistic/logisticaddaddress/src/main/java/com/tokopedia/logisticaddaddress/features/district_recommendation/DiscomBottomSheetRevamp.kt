@@ -226,6 +226,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     override fun onZipCodeClicked(zipCode: String) {
+        AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         this.postalCode = zipCode
         viewBinding.rvKodeposChips.visibility = View.GONE
         viewBinding.etKodepos.textFieldInput.run {
@@ -287,6 +288,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     override fun onDistrictItemRevampClicked(districtModel: Address) {
+        AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
         context?.let {
             setTitle("Kode Pos")
             isKodePosShown = true

@@ -5,18 +5,18 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 
 object RecentPurchaseMapper {
 
     fun mapRecentPurchaseUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val uiModel = HomeRecentPurchaseUiModel(
+        val uiModel = TokoNowRecentPurchaseUiModel(
             id = response.id,
             productList = emptyList(),
             state = TokoNowLayoutState.LOADING
@@ -24,21 +24,21 @@ object RecentPurchaseMapper {
         return HomeLayoutItemUiModel(uiModel, state)
     }
 
-    fun mapToRecentPurchaseUiModel(item: HomeRecentPurchaseUiModel, response: RecentPurchaseData): HomeRecentPurchaseUiModel {
+    fun mapToRecentPurchaseUiModel(item: TokoNowRecentPurchaseUiModel, response: RecentPurchaseData): TokoNowRecentPurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(response)
         return item.copy(title = response.title, productList = productList, state = state)
     }
 
-    private fun mapToProductCardUiModel(response: RecentPurchaseData): List<HomeProductCardUiModel> {
+    private fun mapToProductCardUiModel(response: RecentPurchaseData): List<TokoNowProductCardUiModel> {
         return response.products.map {
-            HomeProductCardUiModel(
+            TokoNowProductCardUiModel(
                 it.id,
                 it.shop.id,
                 it.stock.toInt(),
                 it.parentProductId,
                 createProductCardModel(it),
-                HomeLayoutType.RECENT_PURCHASE
+                TokoNowLayoutType.RECENT_PURCHASE
             )
         }
     }

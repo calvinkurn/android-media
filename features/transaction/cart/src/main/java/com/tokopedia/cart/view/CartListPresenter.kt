@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view
 
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -299,8 +300,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
-            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null) {
                 var shopWeight = 0.0
                 if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
                     cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
@@ -325,19 +325,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var errorProductCount = 0
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null) {
-                if (cartShopHolderData.shopGroupAvailableData?.isError == false) {
-                    if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
-                        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                            for (cartItemHolderData in it) {
-                                if (cartItemHolderData.cartItemData.isError) {
-                                    errorProductCount++
-                                }
+                if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+                    cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.cartItemData.isError) {
+                                errorProductCount++
                             }
                         }
                     }
-                } else {
-                    errorProductCount += cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.size
-                            ?: 0
                 }
             }
         }
@@ -1103,14 +1098,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productCategory = productModel.category
             productPrice = productModel.price
             quantity = productModel.minOrder
-            externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
+            externalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
             productId = productModel.id.toLongOrZero()
             shopId = productModel.shopId.toIntOrZero()
             productName = productModel.name
             productPrice = productModel.price
             quantity = productModel.minOrder
-            externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
+            externalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
             val clickUrl = productModel.clickUrl
             if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
@@ -1121,7 +1116,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productCategory = recommendationItem.categoryBreadcrumbs
             productPrice = recommendationItem.price
             quantity = productModel.recommendationItem.minOrder
-            externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+            externalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
@@ -1132,7 +1127,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productCategory = productModel.productCategory
             productPrice = productModel.productPrice
             quantity = productModel.productMinOrder
-            externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+            externalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
 
             val clickUrl = productModel.adsClickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)

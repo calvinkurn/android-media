@@ -76,6 +76,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
+                player.shouldCache = !mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener

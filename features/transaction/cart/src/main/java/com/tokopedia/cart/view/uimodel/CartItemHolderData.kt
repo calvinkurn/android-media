@@ -13,44 +13,10 @@ import java.util.*
 @Parcelize
 data class CartItemHolderData(
         var cartItemData: CartItemData = CartItemData(),
-        var errorFormItemValidationType: Int = 0,
-        var errorFormItemValidationMessage: String = "",
         var isEditableRemark: Boolean = false,
         var isStateHasNotes: Boolean = false,
         var isStateNotesOnFocuss: Boolean = false,
         var isSelected: Boolean = false,
         var actionsData: List<ActionData> = emptyList(),
         var errorType: String = ""
-) : Parcelable {
-
-    companion object {
-        val ERROR_FIELD_BETWEEN = 1
-        val ERROR_FIELD_MAX_CHAR = 2
-        val ERROR_FIELD_REQUIRED = 3
-        val ERROR_FIELD_AVAILABLE_STOCK = 4
-        val ERROR_PRODUCT_MAX_QUANTITY = 5
-        val ERROR_PRODUCT_MIN_QUANTITY = 6
-        val ERROR_EMPTY = 0
-    }
-
-    fun getErrorFormItemValidationTypeValue(): Int {
-        if (cartItemData.updatedData.remark.length > cartItemData.updatedData.maxCharRemark) {
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData.errorFieldMaxChar
-                    .replace("{{value}}", cartItemData.updatedData.maxCharRemark.toString())
-            return ERROR_FIELD_MAX_CHAR
-        } else if (cartItemData.updatedData.quantity > cartItemData.originData.maxOrder) {
-            val formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData.originData.maxOrder).replace(',', '.')
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData.errorProductMaxQuantity
-                    .replace("{{value}}", formattedMaxCharRemark)
-            return ERROR_PRODUCT_MAX_QUANTITY
-        } else if (cartItemData.updatedData.quantity < cartItemData.originData.minOrder) {
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData.errorProductMinQuantity
-                    .replace("{{value}}", cartItemData.originData.minOrder.toString())
-            return ERROR_PRODUCT_MIN_QUANTITY
-        } else {
-            this.errorFormItemValidationMessage = ""
-            return ERROR_EMPTY
-        }
-    }
-
-}
+) : Parcelable

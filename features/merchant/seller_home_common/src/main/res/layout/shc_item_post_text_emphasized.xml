@@ -81,6 +81,7 @@
             android:layout_height="@dimen/layout_lvl5"
             android:adjustViewBounds="true"
             android:contentDescription="@string/shc_content_desc_image_post"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvShcPostTextTitle"

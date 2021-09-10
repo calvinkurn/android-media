@@ -14,6 +14,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                 name = channel.name,
                 layout = channel.layout,
                 widgetParam = channel.widgetParam,
+                contextualInfo = channel.contextualInfo,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),

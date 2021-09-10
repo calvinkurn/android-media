@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.action.*
@@ -272,7 +273,7 @@ open class WishlistViewModel @Inject constructor(
                     addToCartRequestParams.shopId = it.shop.id.toInt()
                     addToCartRequestParams.quantity = it.minimumOrder
                     addToCartRequestParams.notes = ""
-                    addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
+                    addToCartRequestParams.atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
                     addToCartRequestParams.productName = it.name
                     addToCartRequestParams.category = it.categoryBreadcrumb
                     addToCartRequestParams.price = it.price

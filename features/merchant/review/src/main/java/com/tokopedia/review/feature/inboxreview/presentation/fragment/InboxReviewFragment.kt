@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -341,7 +341,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun setupViewInteraction(){
         buttonReviewReminder?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+            RouteManager.route(context, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
         }
     }
 
