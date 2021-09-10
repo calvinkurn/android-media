@@ -153,9 +153,10 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
-        officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
-        if (savedInstanceState == null)
-            super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
+        super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
