@@ -8,7 +8,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="300dp"
+        android:layout_width="@dimen/pm_spacing_310dp"
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
