@@ -22,7 +22,7 @@ class SellerMenuTracker(
 
         // name
         private const val EVENT_CLICK_SHOP_ACCOUNT = "clickShopAccount"
-        private const val EVENT_CLICK_SHOP_SETTING = "clickPowerMerchant"
+        private const val EVENT_CLICK_SHOP_SETTING = "clickShopSetting"
         private const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         private const val EVENT_VIEW_SHOP_ACCOUNT = "viewShopAccountIris"
 
