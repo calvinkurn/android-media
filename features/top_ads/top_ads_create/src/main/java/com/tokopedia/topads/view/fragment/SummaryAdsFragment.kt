@@ -27,6 +27,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.common.data.internal.ParamObject.ADDED_PRODUCTS
 import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.BUDGET_LIMITED
+import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.NAME_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_CREATE
@@ -442,16 +444,20 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun getGroupData() : HashMap<String, Any?> {
         var dataMap = HashMap<String, Any?>()
 
-        bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
-        bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+        dataMap[BUDGET_LIMITED] = toggle?.isChecked
+
+        dataMap[DAILY_BUDGET] = daily_budget.textFieldInput.text.toString().replace(".","")
         dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
-        dataMap[BID_TYPE] =  bidTypeData
         dataMap[GROUPID] = ""
         dataMap[NAME_EDIT] = true
         dataMap[ParamObject.ACTION_TYPE] = ACTION_CREATE
         if (stepperModel?.autoBidState?.isNotEmpty() == true) {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
+        } else {
+            bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+            dataMap[BID_TYPE] =  bidTypeData
         }
 
         dataMap[STRATEGIES] = strategies

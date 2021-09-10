@@ -87,7 +87,7 @@ open class TopChatViewStateImpl constructor(
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
-    override fun getRecyclerViewId() = R.id.recycler_view
+    override fun getRecyclerViewId() = R.id.recycler_view_chatroom
     override fun getNewCommentId() = R.id.new_comment
     override fun getReplyBoxId() = R.id.reply_box
     override fun getActionBoxId() = R.id.add_comment_area
@@ -634,15 +634,24 @@ open class TopChatViewStateImpl constructor(
         lastMessageSrwBubble: Boolean,
         amIBuyer: Boolean
     ) {
-        val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
-        if (!templateRecyclerView.isVisible &&
-            templateAdapter.hasTemplateChat() &&
-            !isLastMsgFromBroadcastAndIamBuyer &&
-            fragmentView?.shouldShowSrw() == false &&
-            !lastMessageSrwBubble
-        ) {
+        if (isTemplateReady(lastMessageBroadcast, lastMessageSrwBubble, amIBuyer)) {
             showTemplateChat()
         }
+    }
+
+    private fun isTemplateReady(
+        lastMessageBroadcast: Boolean,
+        lastMessageSrwBubble: Boolean,
+        amIBuyer: Boolean,
+        separatedTemplateVisible: Boolean = false
+    ): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
+        return !templateRecyclerView.isVisible &&
+                templateAdapter.hasTemplateChat() &&
+                !isLastMsgFromBroadcastAndIamBuyer &&
+                fragmentView?.shouldShowSrw() == false &&
+                !lastMessageSrwBubble &&
+                !separatedTemplateVisible
     }
 
     override fun attachFragmentView(fragmentView: TopChatContract.View) {
@@ -658,21 +667,28 @@ open class TopChatViewStateImpl constructor(
             isLastMessageBroadcast: Boolean = false,
             amIBuyer: Boolean = true
     ) {
-        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            if (
-                    templateAdapter.hasTemplateChat() &&
-                    !isLastMsgFromBroadcastAndIamBuyer &&
-                    (fragmentView?.hasProductPreviewShown() == false ||
-                            fragmentView?.hasNoSrw() == true)
-            ) {
+            if (setTemplateChecker(isLastMessageBroadcast, amIBuyer)) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()
             }
         }
+    }
+
+    private fun setTemplateChecker(
+        isLastMessageBroadcast: Boolean,
+        amIBuyer: Boolean,
+        separatedTemplateVisible: Boolean = false
+    ): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
+        return templateAdapter.hasTemplateChat() &&
+                !isLastMsgFromBroadcastAndIamBuyer &&
+                (fragmentView?.hasProductPreviewShown() == false ||
+                        fragmentView?.hasNoSrw() == true) &&
+                !separatedTemplateVisible
     }
 
     fun showTemplateChat() {

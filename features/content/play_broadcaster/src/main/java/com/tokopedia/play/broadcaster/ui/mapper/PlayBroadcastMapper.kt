@@ -33,7 +33,10 @@ interface PlayBroadcastMapper {
             response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel
+    fun mapLiveStream(
+        channelId: String,
+        media: CreateLiveStreamChannelResponse.GetMedia
+    ): LiveStreamInfoUiModel
 
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
 

@@ -22,20 +22,23 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
@@ -135,19 +138,20 @@ class TokoNowCategoryViewModel @Inject constructor (
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
         navigation = categoryModel.categoryDetail.data.navigation
 
+        val searchProduct = categoryModel.searchProduct
         val headerDataView = HeaderDataView(
                 title = categoryModel.categoryDetail.data.name,
-                aceSearchProductHeader = categoryModel.searchProduct.header,
+                aceSearchProductHeader = searchProduct.header,
                 categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
                 bannerChannel = categoryModel.bannerChannel,
         )
 
         val contentDataView = ContentDataView(
-                aceSearchProductData = categoryModel.searchProduct.data,
+                aceSearchProductData = searchProduct.data,
         )
 
-        onGetFirstPageSuccess(headerDataView, contentDataView)
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
@@ -258,6 +262,9 @@ class TokoNowCategoryViewModel @Inject constructor (
     fun onCategoryGridRetry() {
         processEmptyState(true)
     }
+
+    override fun getPageSourceForGeneralSearchTracking() =
+        "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(

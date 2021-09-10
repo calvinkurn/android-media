@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -25,6 +25,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewConstants.ALL_RATINGS
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
@@ -33,8 +34,7 @@ import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
-import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener
+import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent
@@ -341,7 +341,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun setupViewInteraction(){
         buttonReviewReminder?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+            RouteManager.route(context, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
         }
     }
 

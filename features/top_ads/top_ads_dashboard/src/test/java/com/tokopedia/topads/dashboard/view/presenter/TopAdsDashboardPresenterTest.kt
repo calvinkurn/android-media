@@ -59,6 +59,7 @@ class TopAdsDashboardPresenterTest {
     private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse> = mockk(relaxed = true)
     private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
     private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> = mockk(relaxed = true)
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
     private var userSession: UserSessionInterface = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
 
@@ -75,7 +76,7 @@ class TopAdsDashboardPresenterTest {
                 validGroupUseCase, createGroupUseCase,
                 bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
                 autoAdsStatusUseCase, getExpiryDateUseCase,
-                getHiddenTrialUseCase, userSession)
+                getHiddenTrialUseCase, whiteListedUserUseCase, userSession)
     }
 
     @Before

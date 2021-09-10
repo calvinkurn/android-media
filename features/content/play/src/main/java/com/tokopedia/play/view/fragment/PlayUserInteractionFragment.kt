@@ -47,6 +47,7 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -64,11 +65,10 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.uimodel.state.ViewVisibility
+import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
+import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -117,6 +117,7 @@ class PlayUserInteractionFragment @Inject constructor(
         PinnedVoucherViewComponent.Listener,
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
+        RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
@@ -138,6 +139,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
 
     /**
      * Interactive
@@ -309,12 +311,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
-        shouldOpenCartPage()
+        playViewModel.submitAction(ClickCartAction)
+        analytic.clickCartIcon()
     }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
-        copyToClipboard(content)
-        showLinkCopiedToaster()
+    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+        playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
     }
@@ -334,7 +336,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Like View Component Listener
      */
     override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
-        doClickLike(shouldLike)
+        playViewModel.submitAction(ClickLikeAction)
     }
 
     /**
@@ -474,6 +476,17 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
+     * RealTimeNotification View Component Listener
+     */
+    override fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float) {
+        chatListView?.setMask(height + offset8, true)
+    }
+
+    override fun onHideNotification(view: RealTimeNotificationViewComponent) {
+        chatListView?.setMask(MASK_NO_CUT_HEIGHT, true)
+    }
+
+    /**
      * Cast View Component Listener
      */
     override fun onCastClicked() {
@@ -504,6 +517,13 @@ class PlayUserInteractionFragment @Inject constructor(
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
+
+        if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
+            val height = rtnView?.getRtnHeight() ?: return
+            chatListView?.setMask(height.toFloat() + offset8, false)
+        } else {
+            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
+        }
     }
 
     private fun initAnalytic() {
@@ -529,7 +549,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         handleVideoHorizontalTopBounds()
 
-        likeView.setEnabled(false)
         videoSettingsView.setFullscreen(orientation.isLandscape)
 
         if (orientation.isLandscape) setupLandscapeView()
@@ -603,16 +622,12 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoProperty()
         observeChannelInfo()
         observeQuickReply()
-        observeLikeStatus()
-        observeTotalViews()
         observeNewChat()
         observeChatList()
         observePinnedMessage()
         observePinnedProduct()
-        observeCartInfo()
         observeBottomInsetsState()
         observeStatusInfo()
-        observeShareInfo()
         observeProductContent()
 
         observeUiState()
@@ -704,27 +719,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeLikeStatus() {
-        playViewModel.observableLikeStatusInfo.observe(viewLifecycleOwner, object : Observer<PlayLikeStatusInfoUiModel> {
-            private var isFirstTime = true
-
-            override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                if (isFirstTime) likeView.setEnabled(true)
-
-                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
-                isFirstTime = false
-
-                likeView.setTotalLikes(it)
-            }
-        })
-    }
-
-    private fun observeTotalViews() {
-        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
-            statsInfoView.setTotalViews(it)
-        })
-    }
-
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             chatListView?.showNewChat(it)
@@ -780,7 +774,6 @@ class PlayUserInteractionFragment @Inject constructor(
             toolbarViewOnStateChanged(bottomInsets = map)
             statsInfoViewOnStateChanged(bottomInsets = map)
             videoControlViewOnStateChanged(bottomInsets = map)
-            likeViewOnStateChanged(bottomInsets = map)
             sendChatViewOnStateChanged(bottomInsets = map)
             quickReplyViewOnStateChanged(bottomInsets = map)
             chatListViewOnStateChanged(bottomInsets = map)
@@ -832,18 +825,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeCartInfo() {
-        playViewModel.observableCartInfo.observe(viewLifecycleOwner, DistinctObserver {
-            toolbarView.setCartInfo(it)
-        })
-    }
-
-    private fun observeShareInfo() {
-        playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
-            toolbarView.setShareInfo(it)
-        })
-    }
-
     private fun observeProductContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
@@ -865,9 +846,14 @@ class PlayUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
+                val prevState = cachedState.prevValue
+
                 renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
                 renderWinnerBadgeView(state.showWinnerBadge)
-                renderToolbarView(state.followStatus, state.partnerName)
+                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
+                renderLikeView(prevState?.like, state.like)
+                renderStatsInfoView(state.totalView)
+                renderRealTimeNotificationView(state.rtn)
             }
         }
     }
@@ -893,6 +879,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     }
                     is ShowToasterEvent -> handleToasterEvent(event)
+                    is CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is ShowRealTimeNotificationEvent -> {
+                        rtnView?.queueNotification(event.notification)
+                    }
                 }
             }
         }
@@ -914,7 +904,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             cast.currentState == PlayCastState.CONNECTED -> {
                 val channelData = playViewModel.latestCompleteChannelData
-                analytic.connectCast(true, channelData.id, channelData.channelInfo.channelType)
+                analytic.connectCast(true, channelData.id, channelData.channelDetail.channelInfo.channelType)
                 castAnalyticHelper.startRecording()
             }
             cast.previousState == PlayCastState.CONNECTED -> {
@@ -1028,15 +1018,6 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
-    private fun doClickLike(shouldLike: Boolean) {
-        viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
-    }
-
-    private fun shouldOpenCartPage() {
-        analytic.clickCartIcon()
-        viewModel.doInteractionEvent(InteractionEvent.CartPage)
-    }
-
     private fun doSendChat(message: String) {
         playViewModel.sendChat(message)
     }
@@ -1053,24 +1034,11 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
-            is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
         }
     }
 
     private fun shouldComposeChat() {
         sendChatView?.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
-    }
-
-    private fun doLikeUnlike(shouldLike: Boolean) {
-        //Used to show mock like when user click like
-        playViewModel.changeLikeCount(shouldLike)
-
-        viewModel.doLikeUnlike(
-                likeParamInfo = playViewModel.likeParamInfo,
-                shouldLike = shouldLike
-        )
-
-        analytic.clickLike(shouldLike)
     }
 
     private fun openLoginPage() {
@@ -1191,10 +1159,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room", content))
-    }
-
-    private fun showLinkCopiedToaster() {
-        doShowToaster(message = getString(R.string.play_link_copied))
     }
 
     private fun doShowToaster(
@@ -1359,12 +1323,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else statsInfoView.hide()
     }
 
-    private fun likeViewOnStateChanged(
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
-    ) {
-        if (bottomInsets.isAnyShown) likeView.hide() else likeView.show()
-    }
-
     private fun sendChatViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
@@ -1476,7 +1434,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderWinnerBadgeView(
-            shouldShow: Boolean
+            shouldShow: Boolean,
     ) {
         if (shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
@@ -1484,10 +1442,45 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderToolbarView(
             followStatus: PlayPartnerFollowStatus,
-            partnerName: String
+            partnerName: String,
+            isShareable: Boolean,
+            cartState: PlayCartUiState,
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
+
+        toolbarView.setIsShareable(isShareable)
+
+        toolbarView.showCart(cartState.shouldShow)
+        toolbarView.setCartCount(cartState.count)
+    }
+
+    private fun renderLikeView(
+            prevState: PlayLikeUiState?,
+            likeState: PlayLikeUiState,
+    ) {
+        if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
+
+        if (prevState?.isLiked != likeState.isLiked) {
+            likeView.playLikeAnimation(likeState.isLiked, likeState.animate)
+        }
+
+        likeView.setTotalLikes(likeState.totalLike)
+
+        if (likeState.shouldShow) likeView.show()
+        else likeView.hide()
+    }
+
+    private fun renderStatsInfoView(
+            totalView: String,
+    ) {
+        statsInfoView.setTotalViews(totalView)
+    }
+
+    private fun renderRealTimeNotificationView(rtn: PlayRtnUiState) {
+        rtnView?.setLifespan(rtn.lifespanInMs)
+        if (rtn.shouldShow) rtnView?.show()
+        else rtnView?.invisible()
     }
 
     private fun castViewOnStateChanged(
@@ -1606,5 +1599,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val FADE_TRANSITION_DELAY = 3000L
 
         private const val AUTO_SWIPE_DELAY = 500L
+
+        private const val MASK_NO_CUT_HEIGHT = 0f
     }
 }
