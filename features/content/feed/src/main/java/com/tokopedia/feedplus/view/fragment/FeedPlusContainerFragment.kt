@@ -269,11 +269,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onResume() {
         super.onResume()
         if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
+            activity?.intent?.putExtra("show_posting_progress_bar", false)
             updateVisibility(true)
-        } else {
-            updateVisibility(false)
             postProgressUpdateView?.registerBroadcastReceiver()
             postProgressUpdateView?.registerBroadcastReceiverProgress()
+        } else {
+            updateVisibility(false)
 
         }
     }
@@ -677,7 +678,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun updateVisibility(flag: Boolean) {
         if (flag) {
             postProgressUpdateView?.show()
-        } else
+        } else {
             postProgressUpdateView?.hide()
+        }
     }
 }
