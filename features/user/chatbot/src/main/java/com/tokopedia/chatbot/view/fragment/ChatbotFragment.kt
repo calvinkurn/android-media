@@ -78,9 +78,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -355,6 +353,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
