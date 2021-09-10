@@ -3,7 +3,6 @@ package com.tokopedia.seller.menu.common.view.uimodel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 
 data class UserShopInfoWrapper(val shopType: ShopType?,
-                               val shareInfo: UserShopUniversalShareInfo? = UserShopUniversalShareInfo(),
                                val userShopInfoUiModel: UserShopInfoUiModel? = UserShopInfoUiModel()) {
     data class UserShopInfoUiModel(
             var isBeforeOnDate: Boolean = false,
@@ -16,14 +15,5 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
             var pmProGradeName: String = "",
             var periodTypePmPro: String = "",
             var isNewSeller: Boolean = false
-    )
-
-    data class UserShopUniversalShareInfo(
-        val shopSnippetUrl: String = "",
-        val location: String = "",
-        val description: String = "",
-        val tagline: String = "",
-        val coreUrl: String = "",
-        val branchLinkDomain: String = ""
     )
 }

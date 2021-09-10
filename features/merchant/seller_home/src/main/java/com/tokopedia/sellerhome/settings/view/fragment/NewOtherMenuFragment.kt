@@ -59,6 +59,7 @@ import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.NewOtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.NewOtherMenuViewModel
@@ -143,7 +144,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private var canShowErrorToaster = true
 
-    private var shopShareInfo: UserShopInfoWrapper.UserShopUniversalShareInfo? = null
+    private var shopShareInfo: OtherMenuShopShareData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -551,10 +552,10 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            if (shareInfo != null) {
-                shopShareInfo = shareInfo
+            if (shopShareInfo == null && shareInfo != null) {
                 viewHolder?.runShareButtonAnimation()
             }
+            shopShareInfo = shareInfo
         }
     }
 

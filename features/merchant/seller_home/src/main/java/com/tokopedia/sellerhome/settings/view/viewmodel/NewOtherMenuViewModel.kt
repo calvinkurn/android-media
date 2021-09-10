@@ -19,6 +19,8 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.NewGetShopOperationalUseCase
+import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
@@ -44,6 +46,7 @@ class NewOtherMenuViewModel @Inject constructor(
     private val getUserShopInfoUseCase: GetUserShopInfoUseCase,
     private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+    private val shopShareInfoUseCase: ShareInfoOtherUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) : BaseViewModel(dispatcher.main) {
@@ -63,7 +66,7 @@ class NewOtherMenuViewModel @Inject constructor(
 
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
-    private val _shopShareInfoLiveData = MutableLiveData<UserShopInfoWrapper.UserShopUniversalShareInfo>()
+    private val _shopShareInfoLiveData = MutableLiveData<OtherMenuShopShareData>()
 
     private val _freeShippingLiveData =
         MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
@@ -174,7 +177,7 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _shopPeriodType
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
-    val shopShareInfoLiveData: LiveData<UserShopInfoWrapper.UserShopUniversalShareInfo>
+    val shopShareInfoLiveData: LiveData<OtherMenuShopShareData>
         get() = _shopShareInfoLiveData
 
     private var topadsTopupToggleJob: Job? = null
@@ -192,6 +195,7 @@ class NewOtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
+        getShopShareInfoData()
     }
 
     fun onReloadErrorData() {
@@ -362,9 +366,6 @@ class NewOtherMenuViewModel @Inject constructor(
                         GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
-                userShopInfoWrapper.shareInfo?.let {
-                    setShopShareInfo(it)
-                }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
                     ShopStatusUiModel(
                         userShopInfoWrapper,
@@ -442,6 +443,20 @@ class NewOtherMenuViewModel @Inject constructor(
         )
     }
 
+    private fun getShopShareInfoData() {
+        launchCatchError(
+            block = {
+                val shopShareInfo = withContext(dispatcher.io) {
+                    shopShareInfoUseCase.execute(userSession.shopId)
+                }
+                _shopShareInfoLiveData.value = shopShareInfo
+            },
+            onError = {
+                _shopShareInfoLiveData.value = null
+            }
+        )
+    }
+
     private fun setErrorStateMapDefaultValue() {
         if (_errorStateMap.value == null) {
             _errorStateMap.value = mutableMapOf(
@@ -480,12 +495,6 @@ class NewOtherMenuViewModel @Inject constructor(
         _kreditTopAdsLiveData.value = null
         _numberOfTopupToggleCounts.value = null
         topadsTopupToggleJob?.cancel()
-    }
-
-    private fun setShopShareInfo(shopShareInfo: UserShopInfoWrapper.UserShopUniversalShareInfo) {
-        if (_shopShareInfoLiveData.value == null) {
-            _shopShareInfoLiveData.value = shopShareInfo
-        }
     }
 
     private suspend fun toggleTopadsTopupWithDelay() {
