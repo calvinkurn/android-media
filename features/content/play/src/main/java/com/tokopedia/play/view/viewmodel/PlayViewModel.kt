@@ -13,11 +13,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -39,9 +38,6 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -60,6 +56,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import com.tokopedia.play.extensions.combine
+import com.tokopedia.play.view.uimodel.state.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -74,7 +72,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -86,9 +83,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val interactiveRepo: PlayViewerInteractiveRepository,
-        private val partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
+        private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
@@ -100,8 +95,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
-    val observableTotalViews: LiveData<PlayTotalViewUiModel> /**Changed**/
-        get() = _observableTotalViews
     val observableQuickReply: LiveData<PlayQuickReplyInfoUiModel> /**Changed**/
         get() = _observableQuickReply
     val observableStatusInfo: LiveData<PlayStatusInfoUiModel> /**Changed**/
@@ -116,12 +109,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<PlayResult<PlayProductTagsUiModel.Complete>>
         get() = _observableProductSheetContent
-    val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
-        get() = _observableCartInfo
-    val observableShareInfo: LiveData<PlayShareInfoUiModel> /**Added**/
-        get() = _observableShareInfo
-    val observableLikeStatusInfo: LiveData<PlayLikeStatusInfoUiModel> /**Added**/
-        get() = _observableLikeStatusInfo
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
@@ -139,11 +126,15 @@ class PlayViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
 
+    private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
+    private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
+    private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
+    private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
+    private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -152,12 +143,16 @@ class PlayViewModel @Inject constructor(
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
+            _channelDetail,
             _partnerInfo,
             _bottomInsets,
             _interactive,
             _leaderboardInfo,
-            _status
-    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status ->
+            _status,
+            _likeInfo,
+            _channelReport,
+            _cartInfo,
+    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport, cartInfo ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
@@ -174,11 +169,35 @@ class PlayViewModel @Inject constructor(
                 },
                 leaderboards = leaderboardInfo.leaderboardWinners,
                 showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
-                status = status
+                status = status,
+                like = PlayLikeUiState(
+                        isLiked = likeInfo.status == PlayLikeStatus.Liked,
+                        shouldShow = !bottomInsets.isAnyShown && status.isActive,
+                        canLike = likeInfo.status != PlayLikeStatus.Unknown,
+                        animate = likeInfo.source == LikeSource.UserAction,
+                        totalLike = channelReport.totalLikeFmt,
+                ),
+                totalView = channelReport.totalViewFmt,
+                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
+                cart = PlayCartUiState(
+                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+                        count = if (cartInfo.itemCount > 0) {
+                            val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
+                            PlayCartCount.Show(countText)
+                        } else PlayCartCount.Hide
+                ),
+                rtn = PlayRtnUiState(
+                        shouldShow = channelType.isLive &&
+                                !bottomInsets.isAnyShown &&
+                                status.isActive &&
+                                !channelDetail.videoInfo.orientation.isHorizontal &&
+                                !videoPlayer.isYouTube,
+                        lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+                )
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.filter { isActive.get() }
+        get() = _uiEvent.filter { isActive.get() || it is AllowedWhenInactiveEvent }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -191,10 +210,7 @@ class PlayViewModel @Inject constructor(
             return channelStatus?.statusType ?: error("Not Possible")
         }
     val channelType: PlayChannelType
-        get() {
-            val channelInfo = _observableChannelInfo.value
-            return channelInfo?.channelType ?: PlayChannelType.Unknown
-        }
+        get() = _channelDetail.value.channelInfo.channelType
     val videoPlayer: PlayVideoPlayerUiModel
         get() {
             val videoPlayer = _observableVideoMeta.value?.videoPlayer
@@ -204,11 +220,6 @@ class PlayViewModel @Inject constructor(
         get() {
             val videoState = _observableVideoProperty.value?.state
             return videoState ?: PlayViewerVideoState.Unknown
-        }
-    val likeParamInfo: PlayLikeParamInfoUiModel
-        get() {
-            val likeParamInfo = _observableLikeInfo.value?.param
-            return likeParamInfo ?: error("Not Possible")
         }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
         get() {
@@ -223,13 +234,16 @@ class PlayViewModel @Inject constructor(
     val partnerId: Long?
         get() = mChannelData?.partnerInfo?.id
 
-    val totalView: String?
-        get() = _observableTotalViews.value?.totalViewFmt
+    val totalView: String
+        get() = _channelReport.value.totalViewFmt
 
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
     private var mChannelData: PlayChannelData? = null
+
+    private val channelId: String
+        get() = _channelDetail.value.channelInfo.id
 
     val latestCompleteChannelData: PlayChannelData
         get() {
@@ -250,11 +264,10 @@ class PlayViewModel @Inject constructor(
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
 
             return channelData.copy(
-                    channelInfo = _observableChannelInfo.value ?: channelData.channelInfo,
                     partnerInfo = channelData.partnerInfo,
-                    likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
-                    totalViewInfo = _observableTotalViews.value ?: channelData.totalViewInfo,
-                    cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
+                    likeInfo = _likeInfo.value,
+                    channelReportInfo = _channelReport.value,
+                    cartInfo = _cartInfo.value,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
                             pinnedProduct = pinnedProduct,
@@ -285,7 +298,6 @@ class PlayViewModel @Inject constructor(
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
-    private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>() /**Changed**/
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
@@ -294,19 +306,11 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableProductSheetContent = MutableLiveData<PlayResult<PlayProductTagsUiModel.Complete>>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
-    private val _observableLikeInfo = MutableLiveData<PlayLikeInfoUiModel>() /**Added**/
-    private val _observableLikeStatusInfo = MediatorLiveData<PlayLikeStatusInfoUiModel>().apply {
-        addSource(_observableLikeInfo) { likeInfo ->
-            if (likeInfo is PlayLikeInfoUiModel.Complete) value = likeInfo.status
-        }
-    }
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
-    private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
@@ -599,6 +603,7 @@ class PlayViewModel @Inject constructor(
 
     fun submitAction(action: PlayViewerNewAction) {
         when (action) {
+            SetChannelActiveAction -> handleSetChannelActive()
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
@@ -609,6 +614,9 @@ class PlayViewModel @Inject constructor(
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
+            ClickLikeAction -> handleClickLike()
+            ClickShareAction -> handleClickShare()
+            ClickCartAction -> handleClickCart()
         }
     }
 
@@ -640,13 +648,13 @@ class PlayViewModel @Inject constructor(
 
     fun createPage(channelData: PlayChannelData) {
         mChannelData = channelData
+        handleChannelDetail(channelData.channelDetail)
         handleStatusInfo(channelData.statusInfo)
-        handleChannelInfo(channelData.channelInfo)
+        handleChannelInfo(channelData.channelDetail.channelInfo)
         handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
-        handleShareInfo(channelData.shareInfo)
-        handleTotalViewInfo(channelData.totalViewInfo)
+        handleChannelReportInfo(channelData.channelReportInfo)
         handleLikeInfo(channelData.likeInfo)
         handleCartInfo(channelData.cartInfo)
         handlePinnedInfo(channelData.pinnedInfo)
@@ -695,7 +703,7 @@ class PlayViewModel @Inject constructor(
         updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze) {
             updateVideoMetaInfo(channelData.videoMetaInfo)
-            updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
+            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
     }
@@ -722,34 +730,6 @@ class PlayViewModel @Inject constructor(
         )
     }
 
-    fun changeLikeCount(shouldLike: Boolean) {
-        val likeInfo = _observableLikeInfo.value
-        if (likeInfo !is PlayLikeInfoUiModel.Complete) return
-
-        val currentTotalLike = likeInfo.status.totalLike
-        val currentTotalLikeFmt = likeInfo.status.totalLikeFormatted
-        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-            val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = finalTotalLike,
-                            totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction
-                    )
-            )
-        } else {
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = likeInfo.status.totalLike,
-                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction
-                    )
-            )
-        }
-    }
-
     /**
      * @return true means that back has been consumed/handled
      * false means that back is allowed
@@ -770,8 +750,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun updateBadgeCart() {
-        val cartInfo = _observableCartInfo.value
-        if (cartInfo != null) updateCartInfo(cartInfo)
+        val cartInfo = _cartInfo.value
+        updateCartInfo(cartInfo)
     }
 
     fun getVideoPlayer() = playVideoPlayer
@@ -816,6 +796,10 @@ class PlayViewModel @Inject constructor(
     /**
      * Handle existing channel data
      */
+    private fun handleChannelDetail(channelDetail: PlayChannelDetailUiModel) {
+        _channelDetail.value = channelDetail
+    }
+
     private fun handleStatusInfo(statusInfo: PlayStatusInfoUiModel) {
         _observableStatusInfo.value = statusInfo
     }
@@ -846,27 +830,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
-        _observableShareInfo.value = shareInfo
-    }
-
-    private fun handleTotalViewInfo(totalViewInfo: PlayTotalViewUiModel) {
-        _observableTotalViews.value = totalViewInfo
+    private fun handleChannelReportInfo(channelReport: PlayChannelReportUiModel) {
+        _channelReport.value = channelReport
     }
 
     private fun handleLikeInfo(likeInfo: PlayLikeInfoUiModel) {
-        _observableLikeInfo.value = when (likeInfo) {
-            is PlayLikeInfoUiModel.Incomplete -> likeInfo
-            is PlayLikeInfoUiModel.Complete -> likeInfo.copy(
-                    status = likeInfo.status.copy(
-                            source = LikeSource.Storage
-                    )
-            )
-        }
+        _likeInfo.value = likeInfo
     }
 
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
-        _observableCartInfo.value = cartInfo
+        _cartInfo.value = cartInfo
     }
 
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
@@ -900,7 +873,7 @@ class PlayViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = partnerRepo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
@@ -915,51 +888,39 @@ class PlayViewModel @Inject constructor(
         else playVideoPlayer.release()
     }
 
-    private fun updateLikeAndTotalViewInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
+    private fun updateLikeAndTotalViewInfo(likeInfo: PlayLikeInfoUiModel, channelId: String) {
         viewModelScope.launchCatchError(block = {
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
                 val deferredIsLiked = async {
-                    likeRepo.getIsLiked(contentId = likeParamInfo.contentId.toLong(), contentType = likeParamInfo.contentType)
+                    repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
                 }
 
-                val (totalView, totalLike, totalLikeFormatted) = try {
+                try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    Triple(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
+                    _channelReport.value = PlayChannelReportUiModel(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
-                    Triple("0", 0 , "0")
+
                 }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
-                val newLikeStatus = PlayLikeStatusInfoUiModel(
-                        totalLike = totalLike.toLong(),
-                        totalLikeFormatted = totalLikeFormatted,
-                        isLiked = isLiked,
-                        source = LikeSource.Network
-                )
-                _observableLikeInfo.value = likeParamInfo + newLikeStatus
-
-                _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
+                _likeInfo.setValue {
+                    copy(status = if (isLiked) PlayLikeStatus.Liked else PlayLikeStatus.NotLiked, source = LikeSource.Network)
+                }
             }
         }, onError = {
-            _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
-                    totalLike = 0,
-                    totalLikeFormatted = "0",
-                    isLiked = false,
-                    source = LikeSource.Network
-            )
+            _likeInfo.setValue {
+                copy(status = PlayLikeStatus.NotLiked, source = LikeSource.Network)
+            }
         })
     }
 
     private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
         if (cartInfo.shouldShow) {
             viewModelScope.launchCatchError(block = {
-                val cartCount = getCartCount()
-                _observableCartInfo.value = PlayCartInfoUiModel.Complete(
-                        shouldShow = cartInfo.shouldShow,
-                        count = cartCount
-                )
+                val cartItemCount = repo.getItemCountInCart()
+                _cartInfo.setValue { copy(itemCount = cartItemCount) }
             }, onError = {
 
             })
@@ -1004,14 +965,6 @@ class PlayViewModel @Inject constructor(
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
         getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
         getReportSummariesUseCase.executeOnBackground()
-    }
-
-    private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
-        try {
-            getCartCountUseCase.executeOnBackground()
-        } catch (e: Exception) {
-            0
-        }
     }
 
     private suspend fun getProductTagItems(productTagsBasicInfo: PlayProductTagsBasicInfoUiModel, channelId: String) {
@@ -1063,7 +1016,7 @@ class PlayViewModel @Inject constructor(
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = interactiveLeaderboard
         }) {}
     }
@@ -1073,7 +1026,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _interactive.value = PlayInteractiveUiState.Loading
 
-            val interactive = interactiveRepo.getCurrentInteractive(channelId)
+            val interactive = repo.getCurrentInteractive(channelId)
             handleInteractiveFromNetwork(interactive)
         }) {
             _interactive.value = PlayInteractiveUiState.Error
@@ -1091,20 +1044,20 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         if (!isInteractiveAllowed) return
         val interactiveUiState = mapInteractiveToState(interactive)
-        interactiveRepo.setDetail(interactive.id.toString(), interactive)
+        repo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
-            interactiveRepo.setActive(interactive.id.toString())
+            repo.setActive(interactive.id.toString())
         } else {
-            interactiveRepo.setFinished(interactive.id.toString())
+            repo.setFinished(interactive.id.toString())
         }
 
-        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
+        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return
 
             try {
-                val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
                 _leaderboardInfo.value = interactiveLeaderboard
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
@@ -1130,7 +1083,14 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
-            is WebSocketAction.Closed -> if (response.reason == WebSocketClosedReason.Error) connectWebSocket(channelId, socketCredential)
+            is WebSocketAction.Closed -> {
+                val reason = response.reason
+                if (reason is WebSocketClosedReason.Error) {
+                    playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
+
+                    connectWebSocket(channelId, socketCredential)
+                }
+            }
         }
     }
 
@@ -1141,19 +1101,16 @@ class PlayViewModel @Inject constructor(
         }
         when (result) {
             is TotalLike -> {
-                val currentLikeInfo = _observableLikeInfo.value ?: return@withContext
-                val mappedResult = playSocketToModelMapper.mapTotalLike(result)
+                val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
 
-                _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
-                        status = currentLikeInfo.status.copy(
-                                totalLike = mappedResult.totalLike,
-                                totalLikeFormatted = mappedResult.totalLikeFormatted,
-                                source = mappedResult.source
-                        )
-                ) else currentLikeInfo.param + mappedResult
+                _channelReport.setValue {
+                    copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
+                }
             }
             is TotalView -> {
-                _observableTotalViews.value = PlayTotalViewUiModel.Complete(playSocketToModelMapper.mapTotalView(result))
+                _channelReport.setValue {
+                    copy(totalViewFmt = playSocketToModelMapper.mapTotalView(result))
+                }
             }
             is PlayChat -> {
                 setNewChat(playUiModelMapper.mapChat(result))
@@ -1232,6 +1189,10 @@ class PlayViewModel @Inject constructor(
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
             }
+            is RealTimeNotification -> {
+                val notif = playSocketToModelMapper.mapRealTimeNotification(result)
+                _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
+            }
         }
     }
 
@@ -1240,12 +1201,12 @@ class PlayViewModel @Inject constructor(
      */
     private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
         try {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@withContext
-            if (interactiveRepo.hasJoined(activeInteractiveId)) return@withContext
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@withContext
+            if (repo.hasJoined(activeInteractiveId)) return@withContext
 
             val channelId = mChannelData?.id ?: return@withContext
-            val isSuccess = interactiveRepo.postInteractiveTap(channelId, activeInteractiveId)
-            if (isSuccess) interactiveRepo.setJoined(activeInteractiveId)
+            val isSuccess = repo.postInteractiveTap(channelId, activeInteractiveId)
+            if (isSuccess) repo.setJoined(activeInteractiveId)
         } catch (ignored: MessageErrorException) {}
     }
 
@@ -1260,7 +1221,7 @@ class PlayViewModel @Inject constructor(
         _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
 
         viewModelScope.launchCatchError(block = {
-            partnerRepo.postFollowStatus(
+            repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
             )
@@ -1269,13 +1230,21 @@ class PlayViewModel @Inject constructor(
         return followAction
     }
 
+    private fun handleSetChannelActive() {
+        if (!userSession.isLoggedIn) return
+        viewModelScope.launch {
+            val welcomeFormat = _channelDetail.value.rtnConfigInfo.welcomeNotification
+            _uiEvent.emit(ShowRealTimeNotificationEvent(welcomeFormat))
+        }
+    }
+
     /**
      * When pre-start finished, interactive should be played (e.g. TapTap)
      */
     private fun handleInteractivePreStartFinished() {
         viewModelScope.launch {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launch
-            val interactiveDetail = interactiveRepo.getDetail(activeInteractiveId) ?: return@launch
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launch
+            val interactiveDetail = repo.getDetail(activeInteractiveId) ?: return@launch
             if (!interactiveDetail.timeStatus.isScheduled()) return@launch
 
             _interactive.value = PlayInteractiveUiState.Ongoing(
@@ -1286,7 +1255,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleInteractiveOngoingFinished() {
         fun setInteractiveToFinished(interactiveId: String) {
-            interactiveRepo.setFinished(interactiveId)
+            repo.setFinished(interactiveId)
 
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_initial_text,
@@ -1310,7 +1279,7 @@ class PlayViewModel @Inject constructor(
             delay(interactive.endGameDelayInMs)
 
             val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
-            val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
+            val deferredInteractiveLeaderboard = async { repo.getInteractiveLeaderboard(channelId) }
 
             deferredDelay.await()
             val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
@@ -1335,10 +1304,9 @@ class PlayViewModel @Inject constructor(
         }
 
         viewModelScope.launchCatchError(block = {
-            val channelId = mChannelData?.id ?: return@launchCatchError
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
-            val isUserJoined = interactiveRepo.hasJoined(activeInteractiveId)
-            val activeInteractive = interactiveRepo.getDetail(activeInteractiveId) ?: return@launchCatchError
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
+            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
@@ -1354,10 +1322,9 @@ class PlayViewModel @Inject constructor(
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
 
-        val channelData = mChannelData ?: return
         playAnalytic.clickWinnerBadge(
-            channelId = channelData.id,
-            channelType = channelData.channelInfo.channelType
+                channelId = channelId,
+                channelType = channelType,
         )
     }
 
@@ -1366,12 +1333,11 @@ class PlayViewModel @Inject constructor(
             interactiveFlow.emit(Unit)
         }
 
-        val channelData = mChannelData ?: return
-        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return
+        val interactiveId = repo.getActiveInteractiveId() ?: return
         playAnalytic.clickTapTap(
-            channelId = channelData.id,
-            channelType = channelData.channelInfo.channelType,
-            interactiveId = interactiveId
+                channelId = channelId,
+                channelType = channelType,
+                interactiveId = interactiveId,
         )
     }
 
@@ -1385,9 +1351,8 @@ class PlayViewModel @Inject constructor(
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val channelData = mChannelData ?: return@needLogin
-        val shopId = channelData.partnerInfo.id
-        playAnalytic.clickFollowShop(channelData.id, channelData.channelInfo.channelType, shopId.toString(), action.value)
+        val shopId = _partnerInfo.value.id
+        playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
     }
 
     /**
@@ -1402,23 +1367,21 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        val channelData = mChannelData ?: return@needLogin
-        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return@needLogin
+        val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
         playAnalytic.clickFollowShopInteractive(
-            channelData.id,
-            channelData.channelInfo.channelType,
-            interactiveId
+                channelId,
+                channelType,
+                interactiveId,
         )
     }
 
     private fun handleClickPartnerName() {
         viewModelScope.launch {
-            val channelData = mChannelData ?: return@launch
-            val partnerInfo = channelData.partnerInfo
+            val partnerInfo = _partnerInfo.value
 
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
-                    playAnalytic.clickShop(channelData.id, channelData.channelInfo.channelType, channelData.partnerInfo.id.toString())
+                    playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
                     _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
                 }
                 PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
@@ -1438,6 +1401,70 @@ class PlayViewModel @Inject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             else -> {}
+        }
+    }
+
+    private fun handleClickLike() = needLogin(REQUEST_CODE_LOGIN_LIKE) {
+        val likeInfo = _likeInfo.value
+        if (likeInfo.status == PlayLikeStatus.Unknown) return@needLogin
+
+        val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
+        _likeInfo.setValue {
+            copy(status = newStatus, source = LikeSource.UserAction)
+        }
+
+        val currentTotalLike = _channelReport.value.totalLike
+        val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
+        val (newTotalLike, newTotalLikeFmt) = if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
+            val totalLike = (_channelReport.value.totalLike + (if (newStatus == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(0)
+            val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
+            totalLike to fmt
+        } else {
+            currentTotalLike to currentTotalLikeFmt
+        }
+
+        _channelReport.setValue {
+            copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+        }
+
+        viewModelScope.launch {
+            repo.postLike(
+                    contentId = likeInfo.contentId.toLongOrZero(),
+                    contentType = likeInfo.contentType,
+                    likeType = likeInfo.likeType,
+                    shouldLike = newStatus == PlayLikeStatus.Liked
+            )
+        }
+
+        playAnalytic.clickLike(
+                channelId = channelId,
+                channelType = channelType,
+                channelName = _channelDetail.value.channelInfo.title,
+                likeStatus = newStatus,
+        )
+    }
+
+    private fun handleClickShare() {
+        val shareInfo = _channelDetail.value.shareInfo
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                    CopyToClipboardEvent(shareInfo.content)
+            )
+
+            _uiEvent.emit(
+                    ShowToasterEvent.Info(
+                            UiString.Resource(R.string.play_link_copied)
+                    )
+            )
+        }
+    }
+
+    private fun handleClickCart() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                    OpenPageEvent(applink = ApplinkConst.CART)
+            )
         }
     }
 
@@ -1464,10 +1491,18 @@ class PlayViewModel @Inject constructor(
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
+        private const val MAX_CART_COUNT = 99
+
+        /**
+         * Real Time Notif
+         */
+        private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 300L
+
         /**
          * Request Code When need login
          */
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
+        private const val REQUEST_CODE_LOGIN_LIKE = 573
     }
 }

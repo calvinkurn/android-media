@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -78,7 +78,7 @@ class BroadcastViewHolder constructor(
     private val paddingSender: Int by lazy(LazyThreadSafetyMode.NONE) {
         itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_3)?.toInt() ?: 0
     }
-    private val movementMethod = ChatLinkHandlerMovementMethod(chatMessageListener)
+    private val onTouchListener = MessageOnTouchListener(chatMessageListener)
 
     init {
         ProductCarouselListAttachmentViewHolderBinder.initRecyclerView(
@@ -241,7 +241,8 @@ class BroadcastViewHolder constructor(
         val message: MessageViewModel? = element.messageUiModel
         if (message != null) {
             broadcastText?.show()
-            ChatMessageViewHolderBinder.bindChatMessage(message, broadcastText, movementMethod)
+            ChatMessageViewHolderBinder.bindChatMessage(message, broadcastText)
+            ChatMessageViewHolderBinder.bindOnTouchMessageListener(broadcastText, onTouchListener)
             ChatMessageViewHolderBinder.bindHour(message, broadcastText)
             ChatMessageViewHolderBinder.bindChatReadStatus(message, broadcastText)
         } else {
