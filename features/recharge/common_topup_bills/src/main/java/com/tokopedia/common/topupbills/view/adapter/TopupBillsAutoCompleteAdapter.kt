@@ -86,7 +86,7 @@ class TopupBillsAutoCompleteAdapter(
             val contact = getItem(pos) as TopupBillsAutoCompleteContactDataView
             if (contact.name.isNotEmpty()) {
                 setToTwoLineView(
-                    getSpandableBoldText(contact.name, listener.getFilterText(), isTitle = true),
+                    getSpandableBoldText(contact.name, listener.getFilterText()),
                     getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
                 )
             } else {
@@ -181,11 +181,7 @@ class TopupBillsAutoCompleteAdapter(
         }
     }
 
-    private fun getSpandableBoldText(
-        strToPut: String,
-        stringToHighlighted: String,
-        isTitle: Boolean = false
-    ): CharSequence {
+    private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String): CharSequence {
         val start = strToPut.indexOf(stringToHighlighted, ignoreCase = true)
         val end = start + stringToHighlighted.length
 
@@ -198,12 +194,6 @@ class TopupBillsAutoCompleteAdapter(
                 spannableStringBuilder
                     .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                         end, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        } else {
-            if (isTitle) {
-                spannableStringBuilder
-                    .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                        0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         return spannableStringBuilder
