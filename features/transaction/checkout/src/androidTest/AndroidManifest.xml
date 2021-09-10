@@ -7,6 +7,10 @@
     <application
         android:label="Checkout Test"
         tools:replace="android:label">
-
+        <activity
+            android:name="com.tokopedia.checkout.old.OldShipmentActivity"
+            android:label="@string/checkout_module_title_activity_checkout"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>
