@@ -101,8 +101,9 @@ class BroadcastCampaignLabelView : LinearLayout {
     }
 
     private fun bindLabelBackgroundColor(banner: ImageAnnouncementViewModel) {
-        val colorRes = when (banner.statusCampaign) {
-            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_T200
+        val colorRes = when {
+            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_T200
+            banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
             else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
         }
         setBackgroundResource(colorRes)

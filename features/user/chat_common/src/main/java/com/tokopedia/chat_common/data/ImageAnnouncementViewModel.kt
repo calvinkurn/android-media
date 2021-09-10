@@ -128,15 +128,19 @@ constructor(
     }
 
     fun hasStartedCampaign(): Boolean {
-        return statusCampaign == CampaignStatus.STARTED
+        return statusCampaign == STARTED
     }
 
     fun hasOngoingCampaign(): Boolean {
-        return statusCampaign == CampaignStatus.ON_GOING
+        return statusCampaign == ON_GOING
+    }
+
+    fun hasEndedCampaign(): Boolean {
+        return statusCampaign == ENDED
     }
 
     fun endCampaign() {
-        statusCampaign = CampaignStatus.ENDED
+        statusCampaign = ENDED
     }
 
     fun eligibleToRenderCampaignLabel(): Boolean {
