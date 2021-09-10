@@ -1,14 +1,12 @@
 package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -25,32 +23,30 @@ import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.VideoData
 import timber.log.Timber
-import java.io.File
 
 class MediaView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs), LifecycleObserver {
 
     private lateinit var playerView: PlayerView
-    private lateinit var assetView: AssetImageView
+    private lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory
 
     fun getLayout() = R.layout.imagepicker_insta_media_view
 
-    /**
-     * pass only one of the two  ImageView.ScaleType.CENTER_CROP or ImageView.ScaleType.CENTER_INSIDE
-     * */
-    var scaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_CROP
+    @MediaScaleType
+    var mediaScaleType: Int = MediaScaleType.MEDIA_CENTER_CROP
         set(value) {
             //Add logic for scaling in exoplayer as well
-            if (value == ImageView.ScaleType.CENTER_CROP) {
+            if (value == MediaScaleType.MEDIA_CENTER_CROP) {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                assetView.centerCrop()
             } else {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                assetView.centerInside()
             }
-            assetView.scaleType = value
             field = value
         }
 
@@ -67,6 +63,13 @@ class MediaView @JvmOverloads constructor(
     private fun initViews() {
         playerView = findViewById(R.id.media_player_view)
         assetView = findViewById(R.id.media_asset_view)
+        assetView.initListeners()
+        assetView.mediaScaleTypeContract = object : MediaScaleTypeContract {
+            override fun getCurrentMediaScaleType(): Int {
+                return mediaScaleType
+            }
+
+        }
         initializePlayer()
         setListeners()
     }
@@ -119,14 +122,14 @@ class MediaView @JvmOverloads constructor(
                 playerView.player = it
             }
 
-        simpleExoPlayer?.addListener(object :Player.EventListener{
+        simpleExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
                 Timber.e(error.message)
                 Timber.e(error.rendererException)
             }
         })
-        scaleType = ImageView.ScaleType.CENTER_CROP
+        mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
     }
 
     fun loadAsset(asset: Asset) {
@@ -144,10 +147,10 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun toggleScaleType() {
-        if (scaleType == ImageView.ScaleType.CENTER_CROP) {
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
+        if (mediaScaleType == MediaScaleType.MEDIA_CENTER_CROP) {
+            mediaScaleType = MediaScaleType.MEDIA_CENTER_INSIDE
         } else {
-            scaleType = ImageView.ScaleType.CENTER_CROP
+            mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
         }
     }
 
@@ -164,7 +167,7 @@ class MediaView @JvmOverloads constructor(
 
     fun createVideoItem(videoData: VideoData) {
         //TODO Rahul remove dummy
-        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
+//        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
 //        val tmpUri = Uri.fromFile(tmpFile)
         val tmpUri = videoData.uri
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
@@ -172,7 +175,7 @@ class MediaView @JvmOverloads constructor(
         simpleExoPlayer?.playWhenReady = true
     }
 
-    fun stopPlayer() {
+    private fun stopPlayer() {
         simpleExoPlayer?.stop()
     }
 
@@ -205,5 +208,13 @@ class MediaView @JvmOverloads constructor(
 
     private fun releasePlayer() {
         simpleExoPlayer?.release()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (MeasureSpec.getSize(widthMeasureSpec) < MeasureSpec.getSize(heightMeasureSpec)) {
+            super.onMeasure(widthMeasureSpec, widthMeasureSpec)
+        } else {
+            super.onMeasure(heightMeasureSpec, heightMeasureSpec)
+        }
     }
 }

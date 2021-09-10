@@ -39,6 +39,7 @@ import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -191,9 +192,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
             imageView.setImageResource(activity.toolbarIconRes)
         } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
-            Glide.with(this)
-                .load(activity.toolbarIconUrl)
-                .into(imageView)
+            imageView.loadImageCircle(activity.toolbarIconUrl)
         } else {
             imageView.visibility = View.GONE
         }
@@ -217,11 +216,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
         imageFitCenter.setOnClickListener {
             if (selectedMediaView.asset != null) {
-                if (selectedMediaView.scaleType == ImageView.ScaleType.CENTER_CROP) {
-                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                } else {
-                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_CROP
-                }
+                selectedMediaView.toggleScaleType()
             }
         }
 
