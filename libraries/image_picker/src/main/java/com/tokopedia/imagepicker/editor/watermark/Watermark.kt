@@ -172,7 +172,7 @@ data class Watermark(
             drawBitmap(bitmap, 0f, 0f, paint)
         }
 
-        scaledWatermarkBitmap(textLength).apply {
+        scaledWatermarkBitmap().apply {
             canvasBitmap = this
             outputImage = this
         }
@@ -222,7 +222,7 @@ data class Watermark(
         }
     }
 
-    private fun scaledWatermarkBitmap(textLength: Int): Bitmap {
+    private fun scaledWatermarkBitmap(): Bitmap {
         scaledWatermarkBitmap =
                 watermarkBitmap!!.downscaleToAllowedDimension(this.type)
 

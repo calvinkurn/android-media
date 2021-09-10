@@ -18,7 +18,7 @@ object BitmapHelper {
 
     const val RESIZE_BITMAP_DEFAULT = 0.035f
     const val THRESHOLD_WHITE_SPACE = 20
-    const val HEIGHT_MULTIPLIER_TEXT = 0.72f
+    const val HEIGHT_MULTIPLIER_TEXT = 0.68f
 
     fun String.textAsBitmap(context: Context, properties: TextUIModel, height: Int = 0): Bitmap {
         // created TextPaint for painting the watermark text
