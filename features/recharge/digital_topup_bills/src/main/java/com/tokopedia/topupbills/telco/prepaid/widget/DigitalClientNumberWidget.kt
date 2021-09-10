@@ -160,7 +160,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
                 setInputNumber(number.clientNumber)
                 clearFocusAutoComplete()
-                listener.onClickFilterChip()
+                listener.onRenderOperator()
             }
             sortFilter.add(sortFilterItem)
         }

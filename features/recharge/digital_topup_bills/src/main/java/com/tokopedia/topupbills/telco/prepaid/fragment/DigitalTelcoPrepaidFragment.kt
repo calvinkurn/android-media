@@ -406,17 +406,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
                 // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
 //                hitTrackingForInputNumber(selectedOperator)
-                if (operatorId != selectedOperator.operator.id) {
-                    operatorId = selectedOperator.operator.id
-                    productId = 0
-                    sharedModelPrepaid.setVisibilityTotalPrice(false)
-                    telcoClientNumberWidget.run {
-                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
-                        clearErrorState()
-                    }
-                    renderProductViewPager()
-                    getProductListData()
+                operatorId = selectedOperator.operator.id
+                productId = 0
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
+                telcoClientNumberWidget.run {
+                    setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    clearErrorState()
                 }
+                renderProductViewPager()
+                getProductListData()
             }
         } catch (exception: NoSuchElementException) {
             operatorId = ""
