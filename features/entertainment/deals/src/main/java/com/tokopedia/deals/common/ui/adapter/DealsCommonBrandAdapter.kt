@@ -27,7 +27,7 @@ class DealsCommonBrandAdapter(private val brandActionListener: DealsBrandActionL
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsBrandViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = when(viewType){
+        val view = when(layoutType){
             DealsBrandViewHolder.LAYOUT -> ItemDealsBrandPopularItemBinding.inflate(layoutInflater, parent, false)
             else -> ItemDealsBrandHomeBinding.inflate(layoutInflater, parent, false)
         }
