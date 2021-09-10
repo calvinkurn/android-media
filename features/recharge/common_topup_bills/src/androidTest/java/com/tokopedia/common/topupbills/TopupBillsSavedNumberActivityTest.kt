@@ -140,7 +140,7 @@ class TopupBillsSavedNumberActivityTest {
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NUMBER_PREFIX))
-        assertTrue(getRecyclerViewItemCount(R.id.common_topupbills_favorite_number_rv) == 5)
+        assertTrue(getRecyclerViewItemCount(R.id.common_topupbills_favorite_number_rv) == 3)
 
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
