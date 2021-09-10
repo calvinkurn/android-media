@@ -147,7 +147,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
             REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
                 data?.let {
-                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
+                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)?: ""
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
                     selectedImage = arrayListOf(newUri.toString())
