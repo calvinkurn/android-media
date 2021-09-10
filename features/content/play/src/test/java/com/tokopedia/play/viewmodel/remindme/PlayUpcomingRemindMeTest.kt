@@ -3,9 +3,11 @@ package com.tokopedia.play.viewmodel.remindme
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
 import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
 import com.tokopedia.play_common.domain.model.PlayReminder
