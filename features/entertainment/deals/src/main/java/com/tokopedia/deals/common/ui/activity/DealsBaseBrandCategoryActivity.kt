@@ -39,7 +39,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityBaseBrandCategoryDealsBinding.bind(root)
+        binding = ActivityBaseBrandCategoryDealsBinding.bind(viewGroup)
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         dealBrandCategoryActivityViewModel = viewModelProvider.get(DealsBrandCategoryActivityViewModel::class.java)

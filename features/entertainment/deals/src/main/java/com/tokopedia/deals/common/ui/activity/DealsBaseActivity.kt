@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -39,7 +40,7 @@ import kotlin.math.abs
 
 abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback {
 
-    protected lateinit var root : View
+    lateinit var viewGroup : ViewGroup
     private lateinit var binding: ActivityBaseDealsBinding
     private lateinit var dealsComponent: DealsComponent
     private var permissionCheckerHelper = PermissionCheckerHelper()
@@ -85,8 +86,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     open fun isHomePage(): Boolean = false
 
     private fun setupView() {
-        root = findViewById<View>(android.R.id.content).getRootView()
-        binding = ActivityBaseDealsBinding.bind(root)
+        viewGroup =
+            (findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+        binding = ActivityBaseDealsBinding.bind(viewGroup)
         setUpScrollView()
         handleToolbarVisibilityWihLocName(currentLoc.name)
         setupLocation()
