@@ -186,8 +186,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun loginToken(account: UserDetailDataModel?, phone: String) {
-        println("resetFlow, ChooseAccountFragment@loginToken")
-
         account?.let {
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
@@ -217,7 +215,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun onSuccessLoginToken() {
-        println("resetFlow, ChooseAccountFragment@onSuccessLoginToken")
         activity?.apply {
             setResult(Activity.RESULT_OK)
             finish()
@@ -225,8 +222,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
-        println("resetFlow, ChooseAccountFragment@onErrorLoginToken")
-
         checkExceptionType(throwable)
         val logException = Throwable("Failed LoginPN using token", throwable)
         logUnknownError(logException)
@@ -261,7 +256,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
-                println("resetFlow, ChooseAccountFragment@onActivityResult data: ${data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
                 val isResetPin2FA = data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0) == 4
                 if(isResetPin2FA) {
                     onSuccessLoginToken()

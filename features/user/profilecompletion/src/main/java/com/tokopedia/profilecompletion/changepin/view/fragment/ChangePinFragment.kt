@@ -318,7 +318,6 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             source = 0
         }
-        println("resetFlow, ChangePinFragment@goToSuccessPage data: ${intent.getIntExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
 
         startActivity(intent)
         activity?.finish()
