@@ -25,7 +25,6 @@
         <activity android:name=".activity.CameraActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.CameraXActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

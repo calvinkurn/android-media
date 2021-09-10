@@ -42,7 +42,7 @@ class CameraActivity : BaseActivity() {
     lateinit var parent: View
     lateinit var cameraButton: CameraButton
     lateinit var imageFlash: AppCompatImageView
-    lateinit var imageCaptureRegion: AppCompatImageView
+    lateinit var imageCaptureRegion: View
     lateinit var imageSelfieCamera: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
     lateinit var viewModel: CameraViewModel
