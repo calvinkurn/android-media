@@ -134,8 +134,8 @@ class CarouselViewAllCardViewHolder(view: View,
 
     companion object{
         val LAYOUT = R.layout.home_banner_item_carousel_view_all
-        private const val CONTENT_TITLE_AS_STRING = "title-with-string"
-        private const val CONTENT_TITLE_AS_INTEGER = "title-with-number"
+        private const val CONTENT_TITLE_AS_STRING = "title-as-string"
+        private const val CONTENT_TITLE_AS_INTEGER = "title-as-integer"
         private const val CONTENT_SINGLE_IMAGE = "single-image"
         const val CONTENT_DEFAULT = "default"
         const val DEFAULT_VIEW_ALL_ID = "0"
