@@ -226,8 +226,8 @@ internal class ProductCardModelTest {
         val userQuantity = 1
 
         val coercedQty = userQuantity.coerceIn(nonVariant.quantityRange)
-        assertThat(coercedQty, `is`(nonVariant.minQuantity))
-        assertThat(nonVariant.maxQuantity, `is`(nonVariant.minQuantity))
+        assertThat(coercedQty, `is`(nonVariant.minQuantityFinal))
+        assertThat(nonVariant.maxQuantityFinal, `is`(nonVariant.minQuantityFinal))
     }
 
     @Test
@@ -238,7 +238,7 @@ internal class ProductCardModelTest {
             quantity = 0,
         )
 
-        assertThat(nonVariant.minQuantity, `is`(MIN_QUANTITY_NON_VARIANT))
-        assertThat(nonVariant.maxQuantity, `is`(MIN_QUANTITY_NON_VARIANT))
+        assertThat(nonVariant.minQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
+        assertThat(nonVariant.maxQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
     }
 }
