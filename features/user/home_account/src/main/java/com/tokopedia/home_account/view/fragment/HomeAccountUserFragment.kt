@@ -447,8 +447,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         id: String,
         applink: String?,
         weblink: String?,
-        isFailed: Boolean
+        isFailed: Boolean,
+        isActive: Boolean
     ) {
+        homeAccountAnalytic.eventClickAccountPage(id, isActive, isFailed)
         if (isFailed) {
             viewModel.getBalanceAndPoint(id)
         } else {
@@ -945,19 +947,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
-            AccountConstants.SettingCode.SETTING_OVO -> {
-                homeAccountAnalytic.eventViewOvoHomepage()
-                goToApplink(item.applink)
-            }
-            AccountConstants.SettingCode.SETTING_SALDO -> {
-                homeAccountAnalytic.eventClickBalance()
-                goToApplink(item.applink)
-            }
-            AccountConstants.SettingCode.SETTING_TOKOPOINTS -> {
-                homeAccountAnalytic.eventClickTokopoints()
-                goToApplink(item.applink)
-            }
             AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE -> {
+                homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
                 goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1254,6 +1245,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         itemView.findViewById<LocalLoad>(R.id.home_account_balance_and_point_local_load)?.let {
             balanceAndPointLocalLoad = it
             balanceAndPointLocalLoad?.refreshBtn?.setOnClickListener {
+                homeAccountAnalytic.eventClickLocalLoadWalletAccountPage()
                 balanceAndPointLocalLoad?.progressState =
                     !(balanceAndPointLocalLoad?.progressState ?: false)
                 onBalanceAndPointErrorClicked()

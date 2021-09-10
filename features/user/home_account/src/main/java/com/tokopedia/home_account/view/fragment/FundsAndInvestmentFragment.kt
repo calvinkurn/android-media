@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS_AND_INVESTMENT
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
@@ -41,6 +43,8 @@ import javax.inject.Inject
 open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     @Inject
+    lateinit var homeAccountAnalytic: HomeAccountAnalytics
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -51,7 +55,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     var appBarCollapseListener: onAppBarCollapseListener? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = SCREEN_FUNDS_AND_INVESTMENT
 
     override fun initInjector() {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
@@ -77,7 +81,20 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
     }
 
-    override fun onClickWallet(id: String, applink: String?, weblink: String?, isFailed: Boolean) {
+    override fun onStart() {
+        super.onStart()
+        homeAccountAnalytic.trackScreen(screenName)
+        homeAccountAnalytic.eventViewAssetPage()
+    }
+
+    override fun onClickWallet(
+        id: String,
+        applink: String?,
+        weblink: String?,
+        isFailed: Boolean,
+        isActive: Boolean
+    ) {
+        homeAccountAnalytic.eventClickAssetPage(id, isActive, isFailed)
         if (isFailed) {
             viewModel.getBalanceAndPoint(id)
         } else {

@@ -10,6 +10,7 @@ import com.tokopedia.home_account.databinding.HomeAccountItemBalanceAndPointBind
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BalanceAndPointItemViewHolder(
@@ -28,6 +29,7 @@ class BalanceAndPointItemViewHolder(
             item?.applink,
             item?.weblink,
             item?.isFailed.orFalse(),
+            item?.isActive.orTrue(),
             balanceAndPointListener
         )
     }
@@ -72,10 +74,11 @@ class BalanceAndPointItemViewHolder(
         applink: String?,
         weblink: String?,
         isFailed: Boolean,
+        isActive: Boolean,
         listener: BalanceAndPointListener
     ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, weblink, isFailed) }
+            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, weblink, isFailed, isActive) }
         }
     }
 
