@@ -21,6 +21,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,6 +99,7 @@ class SellerHomeViewModel @Inject constructor(
         MutableLiveData<Result<List<RecommendationDataUiModel>>>()
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
+    private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -135,6 +137,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _milestoneWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
+    val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
+        get() = _shopShareTracker
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
@@ -533,7 +537,9 @@ class SellerHomeViewModel @Inject constructor(
     fun getShopInfoById() {
         launchCatchError(context = dispatcher.io, block = {
             val shopId = userSession.get().shopId.toLongOrZero()
-            val result = getShopInfoByIdUseCase.get().execute(shopId)
+            val result = withContext(dispatcher.io) {
+                getShopInfoByIdUseCase.get().execute(shopId)
+            }
             val shopShareData = ShopShareDataUiModel(
                 shopUrl = result.coreInfo?.url.orEmpty(),
                 shopSnippetURL = result.shopSnippetURL.orEmpty()
@@ -553,9 +559,12 @@ class SellerHomeViewModel @Inject constructor(
                 channel = socialMediaName,
                 input = ShopQuestGeneralTrackerInput(shopId)
             )
-            useCase.executeOnBackground()
+            val result = withContext(dispatcher.io) {
+                useCase.executeOnBackground()
+            }
+            _shopShareTracker.postValue(Success(result))
         }, onError = {
-            //no op
+            _shopShareTracker.postValue(Fail(it))
         })
     }
 

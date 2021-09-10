@@ -251,6 +251,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
+        observeShopShareTracker()
 
         context?.let { UpdateShopActiveService.startService(it) }
         setupPMShopScoreInterrupt()
@@ -923,6 +924,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun initShopShareBottomSheet() {
         if (universalShareBottomSheet == null) {
             val shareListener = object : ShareBottomsheetListener {
+
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     val shareDataModel = ShopShareHelper.DataModel(
                         shareModel, shopShareData?.shopUrl.orEmpty(), shopImageFilePath
@@ -981,7 +983,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (result) {
                 is Success -> setOnSuccessGetShopLocation(result.data)
                 is Fail -> {
-                    result.throwable.printStackTrace()
+                    SellerHomeErrorHandler.logException(
+                        result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
+                    )
                 }
             }
             setProgressBarVisibility(false)
@@ -1318,13 +1322,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeShopShareData() {
         observe(sellerHomeViewModel.shopShareData) {
-            if (it is Success) {
-                shopShareData = it.data
+            when (it) {
+                is Success -> {
+                    shopShareData = it.data
+                }
+                is Fail -> {
+                    SellerHomeErrorHandler.logException(
+                        it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
+                    )
+                }
             }
             val milestoneWidget = adapter.data.firstOrNull { widget ->
                 widget is MilestoneWidgetUiModel
             } as? MilestoneWidgetUiModel
             dismissMilestoneShareMissionLoading(milestoneWidget)
+        }
+    }
+
+    private fun observeShopShareTracker() {
+        observe(sellerHomeViewModel.shopShareTracker) {
+            if (it is Fail) {
+                SellerHomeErrorHandler.logException(
+                    it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
+                )
+            }
         }
     }
 
