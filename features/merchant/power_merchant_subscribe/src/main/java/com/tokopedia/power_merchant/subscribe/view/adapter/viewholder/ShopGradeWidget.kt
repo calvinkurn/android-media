@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -146,9 +147,15 @@ class ShopGradeWidget(
 
         val shopGradeInfo = getPmShopGradeInfo(element)
         if (isPmProActive) {
+            tvPmShopGradeThreshold.showWithCondition(isPmActive && is30FirstMondayNewSeller)
             if (is30FirstMondayNewSeller) {
-                tvPmShopGradeThreshold.show()
                 tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
+            } else {
+                val layoutParams =
+                    tvPmShopGradeThreshold?.layoutParams as? ConstraintLayout.LayoutParams
+                layoutParams?.topMargin =
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                tvPmShopGradeThreshold?.layoutParams = layoutParams
             }
             pmProStatusInfoView.visible()
             pmProStatusInfoView.setOnClickListener {

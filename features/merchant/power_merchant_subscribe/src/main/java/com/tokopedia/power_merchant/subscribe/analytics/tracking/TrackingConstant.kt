@@ -33,6 +33,7 @@ object TrackingConstant {
 
     const val ACTION_PROMO_CLICK = "promoClick"
     const val ACTION_PROMO_VIEW = "promoView"
+    const val ACTION_SELECT_CONTENT = "select_content"
     const val CLICK_LEARN_MORE_PM_PRO = "click pelajari selengkapnya PM Pro"
 
     const val KEY_EVENT_ECOMMERCE = "ecommerce"

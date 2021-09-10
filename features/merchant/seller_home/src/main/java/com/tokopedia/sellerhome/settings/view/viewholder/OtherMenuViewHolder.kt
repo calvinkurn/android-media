@@ -504,7 +504,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -515,7 +515,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -523,6 +523,9 @@ class OtherMenuViewHolder(private val itemView: View,
                 listener.onStatusBarNeedDarkColor(false)
                 layoutInflater?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        sellerMenuTracker.sendEventClickShopSettingNew()
+                    }
                 }
             }
             is PowerMerchantProStatus.Advanced -> {
@@ -531,7 +534,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
 
@@ -542,7 +545,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -552,7 +555,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -562,7 +565,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker.sendEventClickShopType()
+                        sellerMenuTracker.sendEventClickShopSettingNew()
                     }
                 }
             }

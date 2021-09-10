@@ -55,14 +55,12 @@ class UpgradePmProWidget(
             if (shopInfo.isNewSeller) {
                 if (shopInfo.is30DaysFirstMonday) {
                     if (shopInfo.isEligiblePmPro) {
-                        viewPmUpgradeTermSection?.tvTermStatus?.show()
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_eligible_benefit_package)
                     } else {
-                        viewPmUpgradeTermSection?.tvTermStatus?.hide()
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
@@ -78,11 +76,9 @@ class UpgradePmProWidget(
                         R.string.pm_desc_new_seller_before_30_days,
                         getDaysDate(shopInfo.shopAge)
                     )
-                    viewPmUpgradeTermSection?.tvTermStatus?.hide()
                     hidePmProUpgradeSection()
                 }
             } else {
-                viewPmUpgradeTermSection?.tvTermStatus?.hide()
                 tvPmUpgradePmProDesc?.hide()
             }
         }

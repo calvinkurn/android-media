@@ -217,7 +217,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -227,12 +227,16 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
             is ShopType.OfficialStore -> {
                 itemView?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
+                    }
                 }
             }
 
@@ -242,7 +246,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
 
@@ -253,7 +257,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -263,7 +267,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -273,7 +277,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }

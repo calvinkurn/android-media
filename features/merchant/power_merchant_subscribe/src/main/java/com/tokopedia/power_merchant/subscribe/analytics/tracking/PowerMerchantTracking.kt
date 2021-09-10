@@ -329,7 +329,7 @@ class PowerMerchantTracking @Inject constructor(
 
         event[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
         event[TrackingConstant.KEY_USER_ID] = userSession.userId
-        sendEvent(event)
+        sendEventEcommerce(event)
     }
 
     fun sendEventImpressUpsellPmPro(shopScore: String) {
@@ -358,7 +358,7 @@ class PowerMerchantTracking @Inject constructor(
 
         event[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
         event[TrackingConstant.KEY_USER_ID] = userSession.userId
-        sendEvent(event)
+        sendEventEcommerce(event)
     }
 
     private fun getEventLabelCTAPmUpgrade(shopScore: String): String {
@@ -392,5 +392,9 @@ class PowerMerchantTracking @Inject constructor(
 
     private fun sendEvent(map: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun sendEventEcommerce(map: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 }
