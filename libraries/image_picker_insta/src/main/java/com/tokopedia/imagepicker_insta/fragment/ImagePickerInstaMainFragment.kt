@@ -219,6 +219,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             bottomSheet.setChild(folderView)
             bottomSheet.show(childFragmentManager, "BottomSheet Tag")
             folderView.setData(folders)
+            bottomSheet.setTitle(it.context?.getString(R.string.imagepicker_insta_pilih) ?: "")
             folderView.itemOnClick { folderData ->
                 refreshImages(folderData?.folderTitle)
                 bottomSheet.dismiss()
@@ -323,7 +324,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                             tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
-                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
                     } else {
                         tvSelectedFolder.text = "No Media available"
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()

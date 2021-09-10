@@ -117,11 +117,13 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_selected_folder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Loading..." />
+                android:text="Loading..."
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
