@@ -141,7 +141,8 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         fun newInstance(
             clientNumberType: String, number: String,
             operatorData: TelcoCatalogPrefixSelect?,
-            categoryName: String, digitalCategoryIds: ArrayList<String>
+            categoryName: String, digitalCategoryIds: ArrayList<String>,
+            isSwitchChecked: Boolean
         ): Fragment {
 
             val fragment = TopupBillsSavedNumberFragment()
@@ -150,6 +151,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(
                     Locale.getDefault()))
+            bundle.putBoolean(ARG_PARAM_IS_SWITCH_CHECKED, isSwitchChecked)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle
@@ -161,6 +163,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
+        const val ARG_PARAM_IS_SWITCH_CHECKED = "ARG_PARAM_IS_SWITCH_CHECKED"
 
         const val POSITION_CONTACT_LIST = 0
         const val POSITION_FAVORITE_NUMBER = 1

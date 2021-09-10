@@ -20,7 +20,6 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
-import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactPermissionDataView
 import com.tokopedia.common.topupbills.view.typefactory.ContactListTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
