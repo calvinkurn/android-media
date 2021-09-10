@@ -332,7 +332,7 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventImpressCTAPmUpgradeLearnMore(shopScore: String) {
+    fun sendEventImpressUpsellPmPro(shopScore: String) {
         val event = createEvent(
             event = TrackingConstant.ACTION_PROMO_VIEW,
             action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,

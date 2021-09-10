@@ -111,7 +111,7 @@ class UpgradePmProWidget(
 
     private fun setupUpgradeCta(element: WidgetUpgradePmProUiModel) = with(itemView) {
         val shopScore = element.shopInfo.shopScore.toString()
-        powerMerchantTracking.sendEventImpressCTAPmUpgradeLearnMore(shopScore)
+        powerMerchantTracking.sendEventImpressUpsellPmPro(shopScore)
         ctaPmUpgradeLearnMore.setOnClickListener {
             powerMerchantTracking.sendEventClickCTAPmUpgradeLearnMore(shopScore)
             RouteManager.route(context, Constant.Url.POWER_MERCHANT_PRO_EDU)
