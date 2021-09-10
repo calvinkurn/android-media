@@ -13,10 +13,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
 import com.tokopedia.oneclickcheckout.testing.interceptor.*
 import com.tokopedia.oneclickcheckout.testing.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.testing.rule.FreshIdlingResourceTestRule
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.junit.After
@@ -87,6 +87,7 @@ class OrderSummaryPageActivityTrackingTest {
             }
 
             clickChangeCourierRevamp {
+                Thread.sleep(2000)
                 promoInterceptor.customValidateUseResponsePath =
                     VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
                 chooseCourierWithText("AnterAja")
