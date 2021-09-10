@@ -123,6 +123,7 @@ abstract class BaseSearchCategoryFragment:
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
     protected val carouselScrollPosition = SparseIntArray()
+    protected val recycledViewPool = RecyclerView.RecycledViewPool()
 
     private var movingPosition = 0
 
@@ -317,9 +318,13 @@ abstract class BaseSearchCategoryFragment:
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
         params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
     }
+
+    protected open fun getKeyword() =
+        getViewModel().queryParam[SearchApiConst.Q] ?: ""
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
@@ -443,6 +448,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().addToCartRecommendationItemTrackingLiveData.observe(
                 this::sendAddToCartRecommendationTrackingEvent
         )
+        getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -899,4 +905,8 @@ abstract class BaseSearchCategoryFragment:
     abstract fun getAtcEventAction(isOOC: Boolean): String
     abstract fun getEventCategory(isOOC: Boolean): String
     abstract fun getEventLabel(isOOC: Boolean): String
+
+    private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
 }

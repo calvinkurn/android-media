@@ -219,7 +219,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        webView.setInitialScale(1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -227,8 +226,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setUseWideViewPort(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -345,7 +342,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+            if(resultCode == RESULT_OK){
+                webView.loadAuthUrl(getUrl(), userSession);
+            }else {
+                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+                    ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
+            }
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();

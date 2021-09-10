@@ -37,7 +37,6 @@ import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.device.info.DeviceScreenInfo;
@@ -71,9 +70,9 @@ import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -98,10 +97,8 @@ import javax.inject.Inject;
 import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
-import timber.log.Timber;
 
 import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -266,7 +263,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();

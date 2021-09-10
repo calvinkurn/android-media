@@ -582,6 +582,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_ss_permission_attempt_counter</key>
+        <value>10</value>
+    </entry>
+    <entry>
         <key>android_branch_callback_timeout_key</key>
         <value>5000</value>
     </entry>
@@ -591,6 +595,14 @@
     </entry>
     <entry>
         <key>android_main_app_enable_tokopedia_now</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_sticky_login_tokonow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_sticky_login_reminder_tokonow</key>
         <value>true</value>
     </entry>
 </defaultsMap>

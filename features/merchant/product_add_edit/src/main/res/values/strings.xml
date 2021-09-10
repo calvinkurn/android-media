@@ -374,7 +374,8 @@
 
     <!-- Product Limitation -->
     <string name="label_product_limitation_start_date">10 Mei 2021</string>
-    <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><a href="tokopedia://bottomsheet_product_limitation">Selengkapnya</a></font>.]]></string>
+    <string name="label_product_limitation_ticker_more_info">Hindari berjualan produk palsu/melanggar Hak Kekayaan Intelektual, supaya produkmu tidak dihapus. <![CDATA[<font color=\'#42b549\'><a href="https://www.tokopedia.com/intellectual-property-protection/prevention">Pelajari Selengkapnya</a></font>.]]></string>
     <string name="action_product_limitation_item">Pelajari</string>
     <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
     <string name="title_product_limitation_item_upgradepm">Tingkatkan kuota dengan upgrade ke Power Merchant</string>

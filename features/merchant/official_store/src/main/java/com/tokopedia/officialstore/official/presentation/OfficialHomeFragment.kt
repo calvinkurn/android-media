@@ -31,6 +31,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
@@ -118,6 +119,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
     private var localChooseAddress: OSChooseAddressData? = null
+    private var recommendationWishlistItem: RecommendationItem? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -172,13 +174,14 @@ class OfficialHomeFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.os_child_recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
+                RecommendationWidgetCallback(this, this.context, userSession.userId),
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
@@ -201,11 +204,28 @@ class OfficialHomeFragment :
         observeProductRecommendation()
         observeFeaturedShopSuccessDC()
         observeFeaturedShopRemoveDC()
+        observeRecomwidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun observeRecomwidget() {
+        viewModel.recomWidget.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingRecomWidget(it.data, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+        })
     }
 
     override fun onPause() {
@@ -869,7 +889,6 @@ class OfficialHomeFragment :
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
-
                             Handler().postDelayed({
                                 isScrolling = false
                             }, DELAY_200L)
@@ -899,7 +918,7 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 !productCardOptionsModel.isWishlisted,
                 viewModel.isLoggedIn(),
-                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.productId.toLongOrZero(),
                 productCardOptionsModel.isTopAds
         )
     }
@@ -978,6 +997,26 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onBestSellerClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem,
+        widgetPosition: Int) {
+        recommendationWishlistItem = recommendationItem
+        showProductCardOptions(
+            this,
+            recommendationItem.createProductCardOptionsModel(widgetPosition))
+    }
+
+    override fun onBestSellerSeeMoreTextClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerSeeAllCardClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
@@ -990,5 +1029,17 @@ class OfficialHomeFragment :
         }
         return false
 
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }

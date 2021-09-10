@@ -572,7 +572,13 @@ class ProductListFragment: BaseDaggerFragment(),
         productItemDataViews.add(item)
 
         trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId, userId)
+            SearchTracking.eventImpressionSearchResultProduct(
+                it,
+                dataLayerList,
+                eventLabel,
+                irisSessionId,
+                userId
+            )
         }
     }
 
@@ -733,16 +739,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
-        val irisSessionId = irisSession?.getSessionId() ?: ""
-
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(
-                trackingQueue,
-                queryKey,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId,
-                getUserId(),
-        )
-
         trackingQueue?.sendAll()
     }
 
@@ -751,8 +747,20 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
+        val irisSessionId = irisSession?.getSessionId() ?: ""
+
+        TopAdsGtmTracker.getInstance().eventImpressionSearchResultProduct(
+            trackingQueue,
+            product,
+            item.position,
+            item.dimension90,
+            queryKey,
+            getUserId(),
+            irisSessionId,
+            item.topadsTag,
+        )
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -823,6 +831,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 item.position,
                 getUserId(),
                 item.dimension90,
+                item.topadsTag,
         )
     }
 
@@ -839,6 +848,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
+                item.topadsTag,
                 eventLabel,
                 filterSortParams,
                 userId,
@@ -1134,8 +1144,6 @@ class ProductListFragment: BaseDaggerFragment(),
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE)
         presenter?.loadData(searchParameter.getSearchParameterMap())
 
-        TopAdsGtmTracker.getInstance().clearDataLayerList()
-
         setSortFilterIndicatorCounter()
     }
 
@@ -1200,11 +1208,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingEventAppsFlyerViewListingSearch(
-            afProdIds: JSONArray?,
-            query: String?,
-            prodIdArray: ArrayList<String?>?,
+        afProdIds: JSONArray?,
+        query: String?,
+        prodIdArray: ArrayList<String?>?,
+        allProdIdArray: ArrayList<String?>?
     ) {
-        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!)
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!, allProdIdArray)
     }
 
     override fun sendTrackingEventMoEngageSearchAttempt(

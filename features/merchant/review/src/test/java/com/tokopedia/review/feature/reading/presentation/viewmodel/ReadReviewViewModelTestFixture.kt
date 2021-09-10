@@ -6,6 +6,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
+import com.tokopedia.review.feature.reading.domain.usecase.GetShopRatingAndTopicsUseCase
+import com.tokopedia.review.feature.reading.domain.usecase.GetShopReviewListUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -28,6 +30,12 @@ abstract class ReadReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
+    @RelaxedMockK
+    lateinit var getShopRatingAndTopicsUseCase: GetShopRatingAndTopicsUseCase
+
+    @RelaxedMockK
+    lateinit var getShopReviewListUseCase: GetShopReviewListUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -36,9 +44,11 @@ abstract class ReadReviewViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReadReviewViewModel(getProductRatingAndTopicsUseCase, getProductReviewListUseCase, toggleLikeReviewUseCase, userSessionInterface, CoroutineTestDispatchersProvider)
+        viewModel = ReadReviewViewModel(getProductRatingAndTopicsUseCase, getShopRatingAndTopicsUseCase, getProductReviewListUseCase, getShopReviewListUseCase, toggleLikeReviewUseCase, userSessionInterface, CoroutineTestDispatchersProvider)
         viewModel.productReviews.observeForever { }
+        viewModel.shopReviews.observeForever { }
         viewModel.ratingAndTopic.observeForever { }
+        viewModel.shopRatingAndTopic.observeForever { }
         mockkStatic(Resources::class)
         val resources = mockk<Resources>()
         val displayMetrics = mockk<DisplayMetrics>()

@@ -20,8 +20,12 @@ data class FeedXMedia(
     var tagging: List<FeedXMediaTagging>,
     @SerializedName("mods")
     var mods: List<String>,
-    var videoTime: Long = 0L,
+    @Transient
     var videoView: View? = null,
-    var canPlay: Boolean = false
+    @Transient
+    var imageView: View? = null,
+    var canPlay: Boolean = false,
+    var isImageImpressedFirst: Boolean = true
+
 )
 

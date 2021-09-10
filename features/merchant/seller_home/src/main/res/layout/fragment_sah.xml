@@ -16,15 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_sah_home_thematic"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/sah_thematic_height"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/relTicker"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:src="@tools:sample/avatars"/>
-
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"

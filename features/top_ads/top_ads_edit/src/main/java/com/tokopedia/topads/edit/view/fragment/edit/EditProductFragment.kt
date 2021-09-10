@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS

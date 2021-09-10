@@ -203,13 +203,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
                 tag_count.visible()
                 tag_picture.gone()
-                val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.min() ?: 0
+                val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.minOrNull() ?: 0
 
                 tag_rating.shouldShowWithAction(minRate > 0){
                     tag_rating.rating = minRate.toFloat()
                 }
 
-                val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }.min() ?: 0
+                val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }
+                    .minOrNull() ?: 0
                 tag_title.text = getString(R.string.kol_template_start_price,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
 

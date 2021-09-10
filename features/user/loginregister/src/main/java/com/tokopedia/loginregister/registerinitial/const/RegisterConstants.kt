@@ -7,7 +7,6 @@ package com.tokopedia.loginregister.registerinitial.const
 object RegisterConstants {
     object Request {
         const val REQUEST_REGISTER_EMAIL = 101
-        const val REQUEST_CREATE_PASSWORD = 102
         const val REQUEST_SECURITY_QUESTION = 103
         const val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
         const val REQUEST_ADD_NAME_REGISTER_PHONE = 107

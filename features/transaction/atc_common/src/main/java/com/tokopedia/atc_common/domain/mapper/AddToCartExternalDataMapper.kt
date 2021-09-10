@@ -1,7 +1,9 @@
 package com.tokopedia.atc_common.domain.mapper
 
-import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalDataResponse
-import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
+import com.tokopedia.atc_common.data.model.response.atcexternal.*
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import javax.inject.Inject
@@ -36,6 +38,33 @@ class AddToCartExternalDataMapper @Inject constructor() {
             isMultiOrigin = dataResponse.isMultiOrigin
             isFreeOngkir = dataResponse.isFreeOngkir
             isFreeOngkirExtra = dataResponse.isFreeOngkirExtra
+        }
+    }
+
+    fun map(response: AddToCartOccMultiExternalGqlResponse): AddToCartOccMultiDataModel {
+        return AddToCartOccMultiDataModel(
+                errorMessage = response.response.errorMessage,
+                status = response.response.status,
+                data = mapData(response.response.data)
+        )
+    }
+
+    private fun mapData(dataResponse: OccMultiExternalDataResponse): AddToCartOccMultiData {
+        return AddToCartOccMultiData(
+                success = dataResponse.success,
+                message = dataResponse.message,
+                cart = mapCartData(dataResponse.data)
+        )
+    }
+
+    private fun mapCartData(data: List<AddToCartOccMultiExternalDataResponse>): List<AddToCartOccMultiCartData> {
+        return data.map {
+            AddToCartOccMultiCartData(
+                    cartId = it.cartId,
+                    productId = it.productId,
+                    quantity = it.quantity,
+                    shopId = it.shopId,
+            )
         }
     }
 }

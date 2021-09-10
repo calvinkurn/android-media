@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
@@ -41,7 +42,7 @@ class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUs
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
                 /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {

@@ -34,10 +34,16 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO +
-            CoroutineExceptionHandler { _, ex ->
-                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString()))
-            }
+    override val coroutineContext: CoroutineContext by lazy {
+               getCoroutineContextIO()
+    }
+
+    fun getCoroutineContextIO():CoroutineContext {
+        return  Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
+            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString()))
+        }
+    }
+
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 

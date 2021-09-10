@@ -384,9 +384,9 @@ class MultiLineGraphViewHolder(
 
         lineChartDataSets.forEach {
             if (lineChartData != it) {
-                val maxValueCurrent = lineChartData?.yAxisLabel?.maxBy { axis -> axis.value }?.value
+                val maxValueCurrent = lineChartData?.yAxisLabel?.maxByOrNull { axis -> axis.value }?.value
                         ?: 0f
-                val maxValue = it.yAxisLabel.maxBy { axis -> axis.value }?.value ?: 0f
+                val maxValue = it.yAxisLabel.maxByOrNull { axis -> axis.value }?.value ?: 0f
 
                 if (maxValue >= maxValueCurrent) {
                     lineChartData = it
