@@ -13,6 +13,7 @@
       backgroundColor
     }
     dynamicActionList {
+      id
       cta {
         icon
         text

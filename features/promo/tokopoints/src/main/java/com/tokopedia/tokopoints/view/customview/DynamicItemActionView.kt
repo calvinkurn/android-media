@@ -72,57 +72,57 @@ class DynamicItemActionView @JvmOverloads constructor(
         addView(view)
     }
 
-    fun setLayoutText(title: String, position: Int) {
-        when (position) {
-            FIRST_TAB -> tvTLLayout.text = title
-            SECOND_TAB -> tvBLLayout.text = title
-            THIRD_TAB -> tvBRLayout.text = title
-            else ->tvTRLayout.text = title
+    fun setLayoutText(title: String, id: Int) {
+        when (id) {
+            TOKOMEMBER -> tvTLLayout.text = title
+            TOPQUEST -> tvBLLayout.text = title
+            KUPON -> tvBRLayout.text = title
+            BBO -> tvTRLayout.text = title
         }
     }
 
-    fun setLayoutLabel(label: String, position: Int) {
-        when (position) {
-            FIRST_TAB -> {
+    fun setLayoutLabel(label: String, id: Int) {
+        when (id) {
+            TOKOMEMBER -> {
                 tvTLLabel.show()
                 tvTLLabel.text = label
             }
-            SECOND_TAB -> {
+            TOPQUEST -> {
                 tvBLLabel.show()
                 tvBLLabel.text = label
             }
-            THIRD_TAB -> {
+            KUPON -> {
                 tvBRLabel.show()
                 tvBRLabel.text = label
             }
-            else ->{
+            BBO -> {
                 tvTRLabel.show()
                 tvTRLabel.text = label
             }
         }
     }
 
-    fun setLayoutIcon(imgUrl: String, position: Int) {
-        when (position) {
-            FIRST_TAB -> ivTLLayout.loadImage(imgUrl)
-            SECOND_TAB -> ivBLLayout.loadImage(imgUrl)
-            THIRD_TAB -> ivBRLayout.loadImage(imgUrl)
-            else -> ivTRLayout.loadImage(imgUrl)
+    fun setLayoutIcon(imgUrl: String, id: Int) {
+        when (id) {
+            TOKOMEMBER -> ivTLLayout.loadImage(imgUrl)
+            TOPQUEST -> ivBLLayout.loadImage(imgUrl)
+            KUPON -> ivBRLayout.loadImage(imgUrl)
+            BBO -> ivTRLayout.loadImage(imgUrl)
         }
     }
 
-    fun setLayoutVisibility(visibility: Int, position: Int) {
-        when (position) {
-            FIRST_TAB -> holderTLLayout.visibility = visibility
-            SECOND_TAB -> holderBLLayout.visibility = visibility
-            THIRD_TAB -> holderBRLayout.visibility = visibility
-            else -> holderTRLayout.visibility = visibility
+    fun setLayoutVisibility(visibility: Int, id: Int) {
+        when (id) {
+            TOKOMEMBER -> holderTLLayout.visibility = visibility
+            TOPQUEST -> holderBLLayout.visibility = visibility
+            KUPON -> holderBRLayout.visibility = visibility
+            BBO -> holderTRLayout.visibility = visibility
         }
     }
 
-    fun setLayoutNotification(notif: String, position: Int) {
-        when (position) {
-            FIRST_TAB -> {
+    fun setLayoutNotification(notif: String, id: Int) {
+        when (id) {
+            TOKOMEMBER -> {
                 notifTLLayout.show()
                 notifTLLayout.setNotification(
                     notif,
@@ -130,7 +130,7 @@ class DynamicItemActionView @JvmOverloads constructor(
                     NotificationUnify.COLOR_PRIMARY
                 )
             }
-            SECOND_TAB -> {
+            TOPQUEST -> {
                 notifBLLayout.show()
                 notifBLLayout.setNotification(
                     notif,
@@ -138,7 +138,7 @@ class DynamicItemActionView @JvmOverloads constructor(
                     NotificationUnify.COLOR_PRIMARY
                 )
             }
-            THIRD_TAB -> {
+            KUPON -> {
                 notifBRLayout.show()
                 notifBRLayout.setNotification(
                     notif,
@@ -146,7 +146,7 @@ class DynamicItemActionView @JvmOverloads constructor(
                     NotificationUnify.COLOR_PRIMARY
                 )
             }
-            else ->{
+            BBO -> {
                 notifTRLayout.show()
                 notifTRLayout.setNotification(
                     notif,
@@ -157,17 +157,17 @@ class DynamicItemActionView @JvmOverloads constructor(
         }
     }
 
-    fun hideNotification(position: Int) {
-        when (position) {
-            FIRST_TAB -> notifTLLayout.hide()
-            SECOND_TAB -> notifBLLayout.hide()
-            THIRD_TAB -> notifBRLayout.hide()
-            else -> notifTRLayout.hide()
+    fun hideNotification(id: Int) {
+        when (id) {
+            TOKOMEMBER -> notifTLLayout.hide()
+            TOPQUEST -> notifBLLayout.hide()
+            KUPON -> notifBRLayout.hide()
+            BBO -> notifTRLayout.hide()
         }
     }
 
-    fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
-        hideNotification(position)
+    fun setLayoutClicklistener(applink: String?, text: String?, id: Int) {
+        hideNotification(id)
         RouteManager.route(context, applink)
         text?.let {
             AnalyticsTrackerUtil.sendEvent(
@@ -182,9 +182,9 @@ class DynamicItemActionView @JvmOverloads constructor(
     }
 
     companion object {
-        const val FIRST_TAB = 0
-        const val SECOND_TAB = 1
-        const val THIRD_TAB = 2
+        const val TOKOMEMBER = 1
+        const val TOPQUEST = 2
+        const val KUPON = 3
+        const val BBO = 4
     }
-
 }
