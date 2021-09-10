@@ -1,6 +1,5 @@
 package com.tokopedia.play.analytic
 
-import android.util.Log
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -508,9 +507,7 @@ class PlayAnalytic(
     /**
      * Cast
      */
-
     fun impressCast() {
-        Log.d("<TRACK>", "impressCast")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
@@ -526,7 +523,6 @@ class PlayAnalytic(
     }
 
     fun clickCast() {
-        Log.d("<TRACK>", "clickCast")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
@@ -542,13 +538,12 @@ class PlayAnalytic(
     }
 
     fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
-        Log.d("<TRACK>", "connectCast : $isSuccess, channelId: $id, channelType: ${type.value}")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                 KEY_EVENT_ACTION to "chromecast connecting state",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value} - $isSuccess",
+                KEY_EVENT_LABEL to "$id - ${type.value} - ${if(isSuccess) "success" else "failed"}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -558,7 +553,6 @@ class PlayAnalytic(
     }
 
     fun recordCastDuration(duration: Long) {
-        Log.d("<TRACK>", "recordCastDuration : $duration, channelId: $channelId, channelType: ${mChannelType.value}")
         /**
          * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
          * So, it will send tracking from the previous screen
