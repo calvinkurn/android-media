@@ -141,7 +141,8 @@ class UpgradePmProWidget(
     private fun setupView(element: WidgetUpgradePmProUiModel) = with(itemView) {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
-        viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
+        val isShowTermStatus = element.registrationTerms.all { it.isChecked }
+        viewPmUpgradeTermSection.setTermStatus(isShowTermStatus)
 
         if (element.shopInfo.isNewSeller) {
             if (element.shopInfo.is30DaysFirstMonday) {

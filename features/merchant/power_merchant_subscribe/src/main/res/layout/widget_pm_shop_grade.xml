@@ -140,7 +140,7 @@
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
-        app:layout_constraintTop_toBottomOf="@+id/pmProStatusInfoView"
+        app:layout_constraintTop_toBottomOf="@+id/wrapperPmShopScore"
         app:layout_constraintVertical_bias="0.16"
         app:typographyType="body_2"
         tools:text="@string/pm_shop_grade_shop_score_threshold_description_pm_active" />

@@ -52,7 +52,7 @@ class TermHeaderView : LinearLayout {
         changeIconExpandedStatus()
     }
 
-    fun setEligibility(isEligible: Boolean) {
+    fun setTermStatus(isEligible: Boolean) {
         tvTermStatus.isVisible = isEligible
     }
 
