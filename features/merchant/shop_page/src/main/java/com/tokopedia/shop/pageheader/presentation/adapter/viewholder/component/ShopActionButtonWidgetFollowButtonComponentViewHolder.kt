@@ -79,7 +79,12 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
             isLoading = isShowLoading
             if (!isShowLoading)
                 text = model.label
-            setDrawableLeft(this, model.leftDrawableUrl)
+            if (isFollowing) {
+                removeCompoundDrawableFollowButton()
+                model.leftDrawableUrl = ""
+            } else {
+                setDrawableLeft(this, model.leftDrawableUrl, model.isNeverFollow)
+            }
             setOnClickListener {
                 if (!isLoading)
                     listener.onClickFollowUnFollowButton(
@@ -98,8 +103,8 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         }
     }
 
-    private fun setDrawableLeft(button: UnifyButton, leftDrawableUrl: String) {
-        if (leftDrawableUrl.isNotBlank()) {
+    private fun setDrawableLeft(button: UnifyButton, leftDrawableUrl: String, isUserNeverFollow: Boolean) {
+        if (leftDrawableUrl.isNotBlank() && isUserNeverFollow) {
             convertUrlToBitmapAndLoadImage(
                     itemView.context,
                     leftDrawableUrl,

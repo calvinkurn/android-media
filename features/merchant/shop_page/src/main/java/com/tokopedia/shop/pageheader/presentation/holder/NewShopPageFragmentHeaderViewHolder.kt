@@ -51,6 +51,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
+    private var isUserNeverFollow = false
     private val chooseAddressWidget: ChooseAddressWidget?
         get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
@@ -103,11 +104,13 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setFollowStatus(followStatus: FollowStatus?) {
         isShopFavorite = followStatus?.status?.userIsFollowing == true
+        isUserNeverFollow = followStatus?.status?.userNeverFollow == true
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
                     it.followButton?.buttonLabel.orEmpty(),
                     it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite
+                    isShopFavorite,
+                    isUserNeverFollow
             )
         }
     }
