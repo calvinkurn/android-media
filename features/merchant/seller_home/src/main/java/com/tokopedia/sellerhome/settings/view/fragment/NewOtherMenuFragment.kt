@@ -636,7 +636,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     private fun showMultipleErrorToaster() {
-        if (multipleErrorSnackbar?.isShown == false) {
+        if (multipleErrorSnackbar == null || multipleErrorSnackbar?.isShown == false) {
             multipleErrorSnackbar =
                 view?.run {
                     Toaster.build(
