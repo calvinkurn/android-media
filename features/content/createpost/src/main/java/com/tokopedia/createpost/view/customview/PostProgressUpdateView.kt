@@ -46,11 +46,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setFirstIcon(productImage: String) {
-        postIcon?.loadImage(productImage)
+        postIcon?.setImageUrl(productImage)
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
-        progressBar?.setValue(progress, true)
+
+        progressBar?.setValue((progress / maxCount) * 100, true)
     }
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
