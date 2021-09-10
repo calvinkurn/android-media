@@ -20,6 +20,7 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
+import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
@@ -148,7 +149,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     private fun initListeners() {
-        cardUnifyDateContainer.setOnClickListener {
+        cardUnifyDateContainer.setSafeOnClickListener {
             openCalender()
         }
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
