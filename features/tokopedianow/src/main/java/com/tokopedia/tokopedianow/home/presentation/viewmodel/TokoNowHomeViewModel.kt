@@ -386,6 +386,19 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun removeSharingEducationWidget(id: String) {
+        launchCatchError(block = {
+            homeLayoutItemList.removeItem(id)
+
+            val data = HomeLayoutListUiModel(
+                items = homeLayoutItemList,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {}
+    }
+
     fun getRecentPurchaseProducts(): List<TokoNowProductCardUiModel> {
         val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRecentPurchaseUiModel }
         val recentPurchase = item?.layout as? TokoNowRecentPurchaseUiModel

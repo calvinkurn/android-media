@@ -49,8 +49,10 @@
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
 
+    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>2 jam tiba</b> dan <b>gratis ongkir!</b>]]></string>
+    <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
+
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
-    <string name="tokopedianow_home_sharing_education_title">Yay! Gimana pengalaman belanja pertamamu di tokonow? Share the experience to people around u :)</string>
-    <string name="tokopedianow_home_sharing_education_button">Share to others</string>
+    <string name="tokopedianow_sharing_education_background_content_description">sharing education background</string>
 </resources>

@@ -85,6 +85,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
@@ -451,6 +452,17 @@ class TokoNowHomeFragment: Fragment(),
             analytics.onImpressBannerPromo(userSession.userId, channelModel)
             isFirstImpressionOnBanner = false
         }
+    }
+
+    override fun onShareBtnSharingEducationClicked() {
+        shareClicked(shareHomeTokonow())
+    }
+
+    override fun onCloseBtnSharingEducationClicked(id: String) {
+        activity?.let {
+            SharedPreferencesUtil.setSharingEducationState(it)
+        }
+        viewModelTokoNow.removeSharingEducationWidget(id)
     }
 
     private fun initInjector() {
@@ -1277,9 +1289,5 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onCloseOptionClicked() {
         //you will use this to implement the GA events
-    }
-
-    override fun onBtnSharingEducationClicked() {
-        shareClicked(shareHomeTokonow())
     }
 }
