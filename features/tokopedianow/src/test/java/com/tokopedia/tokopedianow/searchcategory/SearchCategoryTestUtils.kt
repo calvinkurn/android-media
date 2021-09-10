@@ -187,7 +187,7 @@ private fun assertATCConfiguration(
 
     if (expectedHasNonVariantATC) {
         assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
-        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.stock))
+        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.maxOrder))
     }
 }
 
