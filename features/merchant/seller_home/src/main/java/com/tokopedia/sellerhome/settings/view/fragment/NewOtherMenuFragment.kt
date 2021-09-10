@@ -145,6 +145,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
+    private var canShowShareBottomSheet = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -689,10 +690,12 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private fun saveImageToStorageBeforeShowBottomsheet() {
         shopShareInfo?.shopSnippetUrl?.let { snippetUrl ->
-            if (snippetUrl.isNotEmpty() && shopSnippetImageUrl != snippetUrl) {
+            if (snippetUrl.isNotEmpty() && canShowShareBottomSheet) {
+                canShowShareBottomSheet = false
                 shopSnippetImageUrl = snippetUrl
                 context?.let {
                     SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImage ->
+                        canShowShareBottomSheet = true
                         showUniversalShareBottomSheet(storageImage)
                     }
                 }
