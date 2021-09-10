@@ -553,10 +553,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            if (shopShareInfo == null && shareInfo != null) {
-                viewHolder?.runShareButtonAnimation()
-            }
-            shopShareInfo = shareInfo
+            animateShareButtonFromShareData(shareInfo)
         }
     }
 
@@ -685,6 +682,15 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
         shopPerformanceData?.clickSendTracker = {
             settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
+    }
+
+    private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
+        if (shareInfo != null) {
+            if (shopShareInfo == null) {
+                viewHolder?.runShareButtonAnimation()
+            }
+            shopShareInfo = shareInfo
         }
     }
 
