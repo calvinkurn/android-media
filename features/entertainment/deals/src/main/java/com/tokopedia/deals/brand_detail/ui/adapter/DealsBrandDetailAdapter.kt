@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.databinding.ItemDealsBrandDetailBinding
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
@@ -16,21 +17,26 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
     var listProduct = emptyList<Product>()
 
     inner class DealsBrandDetailViewHolder(private val callback: DealsBrandDetailCallback,
-                                           private val binding: ItemDealsBrandDetailBinding):
+                                           private val binding: ItemDealsBrandDetailBinding) :
             RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             with(itemView) {
-                with(binding){
+                with(binding) {
                     imgItemBrandDetail.loadImage(product.imageApp)
                     tgItemTitleBrandDetail.text = product.title
                     tgItemValidDate.text = DateFormatUtils.getFormattedDate(product.maxEndDate.toString(), DATE_FORMAT)
                     tgItemPriceBrandDetail.text = product.price
-                    labelItemPercentageBrandDetail.text = product.savingPercentage
-                    tgSlashPriceBrandDetail.apply {
-                        val rupiahResult = resources.getString(R.string.deals_brand_detail_item_slash_price,
-                                CurrencyFormatHelper.convertToRupiah(product.mrp.toString()) )
-                        text = rupiahResult
-                        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    if (product.savingPercentage.isNotEmpty()) {
+                        labelItemPercentageBrandDetail.text = product.savingPercentage
+                        tgSlashPriceBrandDetail.apply {
+                            val rupiahResult = resources.getString(R.string.deals_brand_detail_item_slash_price,
+                                    CurrencyFormatHelper.convertToRupiah(product.mrp.toString()))
+                            text = rupiahResult
+                            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                        }
+                    } else {
+                        labelItemPercentageBrandDetail.gone()
+                        tgSlashPriceBrandDetail.gone()
                     }
                 }
                 setOnClickListener {
@@ -39,6 +45,7 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
             }
         }
     }
+
     override fun getItemCount(): Int {
         return listProduct.size
     }
@@ -56,7 +63,7 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
         const val DATE_FORMAT = "dd MMM yyyy"
     }
 
-    interface DealsBrandDetailCallback{
+    interface DealsBrandDetailCallback {
         fun clickProduct(applink: String)
     }
 }

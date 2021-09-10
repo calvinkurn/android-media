@@ -181,6 +181,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
                 is Success -> {
                     brandDetail = it.data.data.brand
                     val products = it.data.data.products
+                    hideShimmering()
                     setCollapsingLayout(brandDetail.title)
                     setHeaderSection(brandDetail)
                     setRVBrandList(products)
@@ -232,6 +233,14 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
 
     private fun showShareLoading() {
         binding?.loaderBrandDetail?.show()
+    }
+
+    private fun hideShimmering(){
+        binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.hide()
+    }
+
+    private fun showShimmering(){
+        binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.show()
     }
 
     companion object {
