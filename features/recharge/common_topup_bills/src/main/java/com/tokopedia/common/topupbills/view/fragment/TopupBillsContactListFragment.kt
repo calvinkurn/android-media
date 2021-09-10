@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.data.TopupBillsContact
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
-import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactPermissionDataView
 import com.tokopedia.common.topupbills.view.typefactory.ContactListTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,17 +29,15 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 
-class TopupBillsContactListFragment:
+open class TopupBillsContactListFragment:
     BaseDaggerFragment(),
     TopupBillsContactListAdapter.ContactNumberClickListener,
     TopupBillsContactListAdapter.ContactPermissionListener
 {
-    private var contacts: MutableList<Contact> = mutableListOf()
-    private val contactsProjection: Array<out String> = arrayOf(
-        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
-        ContactsContract.CommonDataKinds.Phone.NUMBER,
-        ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
-    )
+    private var contacts: MutableList<TopupBillsContact> = mutableListOf()
+
+    @Inject
+    lateinit var contactDataSource: ContactDataSource
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -109,24 +107,8 @@ class TopupBillsContactListFragment:
         }
     }
 
-    private fun loadContacts() {
-        val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + MOD_ASCENDING
-        val cursor = activity?.contentResolver?.query(uri, contactsProjection, null, null, sort)
-
-        val contacts = mutableListOf<Contact>()
-
-        if (cursor != null && cursor.count > 0) {
-            while (cursor.moveToNext()) {
-                val name = cursor.getString(cursor.getColumnIndex(
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                val phoneNumber = cursor.getString(cursor.getColumnIndex(
-                    ContactsContract.CommonDataKinds.Phone.NUMBER))
-                contacts.add(Contact(name, formatPrefixClientNumber(phoneNumber)))
-            }
-        }
-        cursor?.close()
-        this.contacts = contacts
+    protected open fun loadContacts() {
+        this.contacts = contactDataSource.getContactList()
         if (this.contacts.isEmpty()) {
             contactListAdapter.setEmptyState()
             binding?.commonTopupbillsFavoriteNumberClue?.hide()
@@ -135,31 +117,6 @@ class TopupBillsContactListFragment:
                 CommonTopupBillsDataMapper.mapContactToDataView(this.contacts))
             binding?.commonTopupbillsFavoriteNumberClue?.show()
         }
-    }
-
-    private fun formatPrefixClientNumber(phoneNumber: String?): String {
-        phoneNumber?.run {
-            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
-                return phoneNumber
-            }
-            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
-            if (!phoneNumberWithPrefix.startsWith("0")) {
-                phoneNumberWithPrefix = "0$phoneNumber"
-            }
-            return phoneNumberWithPrefix
-        }
-        return ""
-    }
-
-    private fun validatePrefixClientNumber(phoneNumber: String): String {
-        var phoneNumber = phoneNumber
-        if (phoneNumber.startsWith("62")) {
-            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
-        }
-        if (phoneNumber.startsWith("+62")) {
-            phoneNumber = phoneNumber.replace("+62", "0")
-        }
-        return phoneNumber.replace("[^0-9]+".toRegex(), "")
     }
 
     override fun onContactNumberClick(name: String, number: String) {
@@ -199,7 +156,7 @@ class TopupBillsContactListFragment:
     }
 
     private fun filterData(query: String) {
-        val searchClientNumbers = ArrayList<Contact>()
+        val searchClientNumbers = ArrayList<TopupBillsContact>()
 
         searchClientNumbers.addAll(contacts.filter {
             it.name.contains(query, true) || it.phoneNumber.contains(query, true)
@@ -221,6 +178,5 @@ class TopupBillsContactListFragment:
         fun newInstance(): Fragment {
             return TopupBillsContactListFragment()
         }
-        private const val MOD_ASCENDING = " ASC"
     }
 }

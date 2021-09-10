@@ -19,7 +19,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
+open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
 
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
@@ -86,9 +86,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     }
 
     private fun initViewPager() {
-        pagerAdapter = TopupBillsSavedNumTabAdapter(
-            this, clientNumberType, number,
-            dgCategoryIds, currentCategoryName, operatorData)
+        pagerAdapter = getSavedNumTabAdapter()
         binding?.commonTopupBillsSavedNumViewpager?.adapter = pagerAdapter
     }
 
@@ -107,6 +105,12 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
                 getSearchTextWatcher
             )
         }
+    }
+
+    private fun getSavedNumTabAdapter(): TopupBillsSavedNumTabAdapter {
+        return TopupBillsSavedNumTabAdapter(
+            this, clientNumberType, number,
+            dgCategoryIds, currentCategoryName, operatorData)
     }
 
     private fun saveTelcoOperator(rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect) {
