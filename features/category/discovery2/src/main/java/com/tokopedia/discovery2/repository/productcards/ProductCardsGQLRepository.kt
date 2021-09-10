@@ -12,14 +12,15 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?>{
         val response = (getGQLData(GQL_COMPONENT,
                 DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME) as DataResponse)
 
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
-        return when (productComponentName) {
+        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val list = when (productComponentName) {
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName)
@@ -37,5 +38,6 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName)
 
         }
+        return Pair(list,nextPage)
     }
 }
