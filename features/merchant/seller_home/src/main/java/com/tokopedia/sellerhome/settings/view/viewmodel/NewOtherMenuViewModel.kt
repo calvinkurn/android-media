@@ -287,7 +287,6 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     private fun getFreeShippingStatusData() {
-
         val freeShippingDisabled =
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         val inTransitionPeriod =
@@ -295,13 +294,7 @@ class NewOtherMenuViewModel @Inject constructor(
         launchCatchError(block = {
             val freeShippingPair = withContext(dispatcher.io) {
                 if (freeShippingDisabled || inTransitionPeriod) {
-                    val userId = userSession.userId.toIntOrZero()
-                    val shopId = userSession.shopId.toIntOrZero()
-                    val params =
-                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
-                    getShopFreeShippingInfoUseCase.execute(params).first().let {
-                        it.freeShipping.isActive to it.freeShipping.imgUrl
-                    }
+                    false to ""
                 } else {
                     val userId = userSession.userId.toIntOrZero()
                     val shopId = userSession.shopId.toIntOrZero()

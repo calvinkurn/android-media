@@ -44,7 +44,6 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
@@ -145,6 +144,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     private var canShowErrorToaster = true
 
     private var shopShareInfo: OtherMenuShopShareData? = null
+    private var shopSnippetImageUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -338,7 +338,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 UniversalShareBottomSheet.isCustomSharingEnabled(it)
             } == true
         if (isSharingEnabled) {
-            showUniversalShareBottomSheet()
+            saveImageToStorageBeforeShowBottomsheet()
         }
     }
 
@@ -687,7 +687,20 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
+    private fun saveImageToStorageBeforeShowBottomsheet() {
+        shopShareInfo?.shopSnippetUrl?.let { snippetUrl ->
+            if (snippetUrl.isNotEmpty() && shopSnippetImageUrl != snippetUrl) {
+                shopSnippetImageUrl = snippetUrl
+                context?.let {
+                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImage ->
+                        showUniversalShareBottomSheet(storageImage)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showUniversalShareBottomSheet(storageImageUrl: String) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@NewOtherMenuFragment)
             setUtmCampaignData(
@@ -701,14 +714,17 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
                 userSession.shopAvatar,
                 ""
             )
-            setOgImageUrl(shopShareInfo?.shopSnippetUrl.orEmpty())
+            setOgImageUrl(shopSnippetImageUrl)
         }.also { shareBottomSheet ->
-            activity?.supportFragmentManager?.let {
-                shareBottomSheet.show(it, this)
+            activity?.supportFragmentManager?.let { fm ->
+                shareBottomSheet.run {
+                    imageSaved(storageImageUrl)
+                    show(fm, this)
 
-                NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
-                    userSession.shopId, userSession.userId
-                )
+                    NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
+                        userSession.shopId, userSession.userId
+                    )
+                }
             }
         }
     }
