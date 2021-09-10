@@ -1165,6 +1165,7 @@ public class MainParentActivity extends BaseActivity implements
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();
+            reportFullyDrawn();
         }
     }
 
