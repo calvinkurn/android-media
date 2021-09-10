@@ -20,7 +20,7 @@ import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.common.extension.showUnifyDialog
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
-import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
+import com.tokopedia.product_bundle.single.presentation.fragment.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

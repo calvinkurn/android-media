@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.single.presentation
+package com.tokopedia.product_bundle.single.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -22,10 +22,12 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
@@ -38,7 +40,6 @@ import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
-import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -65,8 +66,8 @@ class SingleProductBundleFragment(
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var tvBundleSold: Typography? = null
-    private var swipeRefreshLayout: SwipeToRefresh? = null
+    private var tvBundlePreorder: Typography? = null
+    private var bundleListLayout: LinearLayoutCompat? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
@@ -87,7 +88,7 @@ class SingleProductBundleFragment(
         super.onViewCreated(view, savedInstanceState)
         activity.setBackgroundToWhite()
 
-        setupTotalSold(view)
+        setupTotalPO(view)
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
@@ -99,6 +100,7 @@ class SingleProductBundleFragment(
         observeToasterError()
         observeDialogError()
         observePageError()
+        observeThrowableError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -109,7 +111,7 @@ class SingleProductBundleFragment(
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
         }
         hideLoadingDialog()
     }
@@ -160,7 +162,6 @@ class SingleProductBundleFragment(
 
     private fun observeSingleProductBundleUiModel() {
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
-            swipeRefreshLayout?.isRefreshing = false
             adapter.setData(it.items, it.selectedItems)
         })
     }
@@ -233,16 +234,27 @@ class SingleProductBundleFragment(
         viewModel.pageError.observe(viewLifecycleOwner, { errorType ->
             val isError = errorType != SingleProductBundleErrorEnum.NO_ERROR
             geBundlePage?.isVisible = isError
-            swipeRefreshLayout?.isVisible = !isError
-            tvBundleSold?.isVisible = !isError
-            totalAmount?.isVisible = !isError
+            bundleListLayout?.isVisible = !isError
             hideLoadingDialog()
         })
     }
 
-    private fun setupTotalSold(view: View) {
-        tvBundleSold = view.findViewById(R.id.tv_bundle_sold)
-        updateTotalPO(null)
+    private fun observeThrowableError() {
+        viewModel.throwableError.observe(viewLifecycleOwner, {
+            Toaster.build(
+                requireView(),
+                ErrorHandler.getErrorMessage(context, it),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+            hideLoadingDialog()
+            // TODO: log error
+        })
+    }
+
+    private fun setupTotalPO(view: View) {
+        tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
+        updateTotalPO(null) // set null to hide
     }
 
     private fun setupRecyclerViewItems(view: View) {
@@ -250,8 +262,7 @@ class SingleProductBundleFragment(
         rvBundleItems.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvBundleItems.adapter = adapter
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        swipeRefreshLayout?.isEnabled = false
+        bundleListLayout = view.findViewById(R.id.bundle_list_layout)
     }
 
     private fun setupTotalAmount(view: View) {
@@ -301,9 +312,10 @@ class SingleProductBundleFragment(
         }
     }
 
+    // only visible when totalPOWording not null or empty
     private fun updateTotalPO(totalPOWording: String?) {
-        tvBundleSold?.isVisible = totalPOWording != null
-        tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
+        tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
+        tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
     }
 
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
@@ -344,7 +356,7 @@ class SingleProductBundleFragment(
             val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
             startActivityForResult(intent, LOGIN_REQUEST_CODE)
         } else {
-            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
         }
     }
 

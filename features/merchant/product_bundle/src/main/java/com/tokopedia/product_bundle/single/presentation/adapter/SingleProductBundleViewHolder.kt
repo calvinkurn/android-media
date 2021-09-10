@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
-import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.MIN_DISPLAYED_QTY
+import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.MIN_DISPLAYED_QTY
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.unifycomponents.ImageUnify

@@ -3,4 +3,5 @@
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_minus16">-16dp</dimen>
 </resources>

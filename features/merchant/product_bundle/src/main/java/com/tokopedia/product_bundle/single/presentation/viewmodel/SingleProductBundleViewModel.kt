@@ -15,7 +15,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.*
-import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_QTY
+import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.BUNDLE_QTY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
@@ -51,6 +51,10 @@ class SingleProductBundleViewModel @Inject constructor(
     private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
     val pageError: LiveData<SingleProductBundleErrorEnum>
         get() = mPageError
+
+    private val mThrowableError = MutableLiveData<Throwable>()
+    val throwableError: LiveData<Throwable>
+        get() = mThrowableError
 
     fun setBundleInfo(
         context: Context,
@@ -105,7 +109,7 @@ class SingleProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun validateAndCheckout(parentProductID: String, selectedDataList: List<SingleProductBundleSelectedItem>) {
+    fun validateAndAddToCart(parentProductID: String, selectedDataList: List<SingleProductBundleSelectedItem>) {
         val selectedData = selectedDataList.firstOrNull {
             it.isSelected
         }
@@ -170,15 +174,11 @@ class SingleProductBundleViewModel @Inject constructor(
                         )
                     },
                     onFailedWithException = {
-                        // Todo : show toaster error with error message from throwable
+                        mThrowableError.value = it
                     }
             )
         }, onError = {
-            mDialogError.value = SingleProductBundleDialogModel(
-                message = it.localizedMessage,
-                type = SingleProductBundleDialogModel.DialogType.DIALOG_NORMAL
-            )
+            mThrowableError.value = it
         })
     }
-
 }
