@@ -32,9 +32,9 @@ class ImageAdapter(
         return selectedPositionMap.isEmpty()
     }
 
-    fun addSelectedItem(position: Int):Boolean {
-        if(dataList[position].asset is VideoData){
-            if(!(dataList[position].asset as VideoData).canBeSelected){
+    fun addSelectedItem(position: Int): Boolean {
+        if (dataList[position].asset is VideoData) {
+            if (!(dataList[position].asset as VideoData).canBeSelected) {
                 return false
             }
         }
@@ -150,8 +150,8 @@ class ImageAdapter(
     }
 
     private fun selectItem(position: Int, holder: PhotosViewHolder) {
-        if(dataList[position].asset is VideoData){
-            if(!(dataList[position].asset as VideoData).canBeSelected){
+        if (dataList[position].asset is VideoData) {
+            if (!(dataList[position].asset as VideoData).canBeSelected) {
                 mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoImporter.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
                 return
             }
@@ -169,7 +169,7 @@ class ImageAdapter(
             holder.setChecked(selectedPositionMap.size, canMultiSelect)
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
-            mainFragmentContract.showToast("Max selection limit reached")
+            mainFragmentContract.showToast("Max selection limit reached", Toaster.TYPE_ERROR)
         }
     }
 

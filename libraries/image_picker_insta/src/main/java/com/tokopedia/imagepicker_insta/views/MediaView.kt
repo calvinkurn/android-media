@@ -120,6 +120,7 @@ class MediaView @JvmOverloads constructor(
             .build()
             .also {
                 playerView.player = it
+                playerView.player?.audioComponent?.volume = 0f
             }
 
         simpleExoPlayer?.addListener(object : Player.EventListener {
@@ -127,6 +128,14 @@ class MediaView @JvmOverloads constructor(
                 super.onPlayerError(error)
                 Timber.e(error.message)
                 Timber.e(error.rendererException)
+            }
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                super.onPlayerStateChanged(playWhenReady, playbackState)
+                if (playbackState == Player.STATE_ENDED) {
+                    playerView.player?.seekTo(0)
+                    playerView.player?.playWhenReady
+                }
             }
         })
         mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
@@ -139,8 +148,10 @@ class MediaView @JvmOverloads constructor(
 
         if (asset is VideoData) {
             playerView.visibility = View.VISIBLE
+            assetView.visibility = View.GONE
             createVideoItem(asset)
         } else if (asset is PhotosData) {
+            assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
             createPhotoItem(asset)
         }

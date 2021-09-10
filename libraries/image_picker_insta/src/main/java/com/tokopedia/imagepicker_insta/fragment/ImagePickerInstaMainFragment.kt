@@ -103,7 +103,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 activity?.finish()
             }
         } else {
-            Toast.makeText(context, "Select any image first", Toast.LENGTH_SHORT).show()
+            showToast("Select any media first",Toaster.TYPE_NORMAL)
         }
     }
 
@@ -128,7 +128,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 if (hasAllPermission) {
                     openCamera()
                 } else {
-                    Toast.makeText(context, "Please allow Permissions", Toast.LENGTH_SHORT).show()
+                    showToast("Please allow Permissions",Toaster.TYPE_NORMAL)
                 }
             }
         }
@@ -296,7 +296,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
 
@@ -327,12 +327,13 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 //                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
                     } else {
                         tvSelectedFolder.text = "No Media available"
+//                        showToast("No Media available",Toaster.TYPE_ERROR)
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                    showToast("Error",Toaster.TYPE_ERROR)
                 }
             }
         })
