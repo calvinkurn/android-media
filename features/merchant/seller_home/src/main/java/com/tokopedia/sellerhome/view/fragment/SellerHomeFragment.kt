@@ -503,12 +503,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
             is MilestoneFinishMissionUiModel -> {
                 activity?.let {
-                    it.startActivityForResult(
-                        RouteManager.getIntent(it, mission.missionButton.appLink),
-                        REQ_CODE_MILESTONE_WIDGET
-                    )
+                    val mIntent = RouteManager.getIntent(it, mission.getWebViewAppLink())
+                    it.startActivityForResult(mIntent, REQ_CODE_MILESTONE_WIDGET)
+                    SellerHomeTracking.sendMilestoneFinishedMissionCtaClickEvent()
                 }
-                SellerHomeTracking.sendMilestoneFinishedMissionCtaClickEvent()
             }
         }
         val position = element.data?.milestoneMissions?.indexOf(mission) ?: RecyclerView.NO_POSITION
@@ -1122,7 +1120,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 Unit
                             }
                         }
-                        handleShopShareMilestoneWidget(newWidget)
+                        recyclerView?.post {
+                            handleShopShareMilestoneWidget(newWidget)
+                        }
                     }
                 }
                 newWidgets

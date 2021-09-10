@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
@@ -78,9 +75,7 @@ class MilestoneMissionAdapter(
             with(itemView) {
                 when (mission) {
                     is MilestoneMissionUiModel -> setupMissionButton(mission)
-                    is MilestoneFinishMissionUiModel -> {
-                        btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
-                    }
+                    is MilestoneFinishMissionUiModel -> setupFinishedMissionButton()
                 }
 
                 btnShcMissionCta.isLoading = mission.missionButton.isLoading
@@ -88,6 +83,16 @@ class MilestoneMissionAdapter(
                 btnShcMissionCta.setOnClickListener {
                     onCtaClick(mission)
                 }
+            }
+        }
+
+        private fun setupFinishedMissionButton() {
+            with(itemView) {
+                btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
+                /*btnShcMissionCta.setTextColor(
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                )*/
+                btnShcMissionCta.isEnabled = true
             }
         }
 

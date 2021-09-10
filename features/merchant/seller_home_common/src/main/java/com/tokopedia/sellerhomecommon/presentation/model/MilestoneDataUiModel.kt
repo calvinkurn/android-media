@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class MilestoneDataUiModel(
@@ -85,7 +87,20 @@ data class MilestoneFinishMissionUiModel(
     override val missionCompletionStatus: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
     override val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseMilestoneMissionUiModel
+) : BaseMilestoneMissionUiModel {
+
+    companion object {
+        private const val WEB_VIEW_FORMAT = "%s?url=%s"
+    }
+
+    fun getWebViewAppLink(): String {
+        return String.format(
+            WEB_VIEW_FORMAT,
+            ApplinkConst.WEBVIEW,
+            missionButton.url.encodeToUtf8()
+        )
+    }
+}
 
 data class MilestoneCtaUiModel(
     val text: String = "",
