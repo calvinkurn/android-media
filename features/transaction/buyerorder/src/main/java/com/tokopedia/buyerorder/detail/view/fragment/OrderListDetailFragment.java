@@ -202,14 +202,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
-                setPayMethodInfo(payMethod);
+                setPayMethodInfo(payMethod, false);
         }
 
         for (Pricing pricing : details.pricing()) {
-            setPricing(pricing);
+            setPricing(pricing, false);
         }
 
-        setPaymentData(details.paymentData());
+        setPaymentData(details.paymentData(), false);
         setContactUs(details.contactUs(), details.getHelpLink());
 
         if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
@@ -350,12 +350,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setPricing(Pricing pricing) {
+    public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
         // no-op
     }
 
     @Override
-    public void setPayMethodInfo(PayMethod payMethod) {
+    public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
@@ -410,7 +410,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setPaymentData(PaymentData paymentData) {
+    public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
         doubleTextView.setBottomText(paymentData.value());
