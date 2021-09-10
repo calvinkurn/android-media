@@ -262,8 +262,13 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
                 println("resetFlow, ChooseAccountFragment@onActivityResult data: ${data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
-                if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
-                    loginToken(selectedAccount, selectedPhoneNo ?: "")
+                val isResetPin2FA = data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0) == 4
+                if(isResetPin2FA) {
+                    onSuccessLoginToken()
+                } else {
+                    if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
+                        loginToken(selectedAccount, selectedPhoneNo ?: "")
+                    }
                 }
             }
         } else {
