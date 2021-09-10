@@ -83,6 +83,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
         inputNumberField.clearIconView.setOnClickListener {
             inputNumberField.editText.setText("")
+            inputNumberField.isInputError = false
             inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
             imgOperator.hide()
@@ -158,6 +159,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     setContactName(number.clientName)
                 }
                 setInputNumber(number.clientNumber)
+                clearFocusAutoComplete()
+                listener.onClickFilterChip()
             }
             sortFilter.add(sortFilterItem)
         }
@@ -339,6 +342,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onNavigateToContact(isSwitchChecked: Boolean)
         fun onRenderOperator()
         fun onClearAutoComplete()
+        fun onClickFilterChip()
     }
 
     companion object {

@@ -494,6 +494,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             operatorId = ""
             sharedModelPrepaid.setVisibilityTotalPrice(false)
         }
+
+        override fun onClickFilterChip() {
+
+        }
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
