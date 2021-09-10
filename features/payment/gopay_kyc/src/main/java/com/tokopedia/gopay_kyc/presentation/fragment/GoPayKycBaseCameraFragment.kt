@@ -4,31 +4,53 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.gopay_kyc.di.GoPayKycComponent
+import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayKycActivity
+import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
+import com.tokopedia.gopay_kyc.viewmodel.GoPayKycViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
+    private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(GoPayKycViewModel::class.java)
+    }
+
+    private var mCaptureNativeSize: Size? = null
     protected var cameraView: CameraView? = null
     protected var isCameraOpen = false
+    private var canGoBack = true
     protected var mCapturingPicture = false
-    private var mCaptureNativeSize: Size? = null
-    protected var capturedImageView: ImageUnify? = null
+    protected var capturedImageView: ImageView? = null
     protected var shutterImageView: ImageUnify? = null
     protected var reverseCamera: IconUnify? = null
     protected var retakeButton: UnifyButton? = null
@@ -36,6 +58,10 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     protected var reviewPhotoLayout: Group? = null
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
+
+    abstract fun setCaptureInstruction()
+    abstract fun setVerificationInstruction()
+    abstract fun proceedToNextStep()
 
     private val cameraListener = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
@@ -57,16 +83,56 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun generateImage(data: ByteArray) {
-        // process Photo
-        hideCameraProp()
-        resetCapture()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupOnBackPressed()
+        viewModel.cameraImageResultLiveData.observe(viewLifecycleOwner, {
+            loadImageFromBitmap(requireContext(), it)
+            hideCameraProp()
+            resetCapture()
+        })
     }
 
-    abstract fun setCaptureInstruction()
-    abstract fun setVerificationInstruction()
+    protected fun getCapturedImagePath() = viewModel.getCapturedImagePath()
+
+    private fun loadImageFromBitmap(context: Context, cameraImageResult: CameraImageResult) {
+        val width = cameraImageResult.bitmapWidth
+        val height = cameraImageResult.bitmapHeight
+        val min: Int
+        val max: Int
+        if (width > height) {
+            min = height
+            max = width
+        } else {
+            min = width
+            max = height
+        }
+        val loadFitCenter = min != 0 && max / min > 2
+        capturedImageView?.let {
+            if (loadFitCenter)
+                Glide.with(context).load(cameraImageResult.compressedByteArray?.toByteArray())
+                    .fitCenter()
+                    .into(it)
+            else Glide.with(context).load(cameraImageResult.compressedByteArray?.toByteArray())
+                .into(it)
+        }
+    }
+
+    private fun generateImage(data: ByteArray) {
+        // process Photo
+        if (mCaptureNativeSize == null)
+            mCaptureNativeSize = cameraView?.pictureSize
+        viewModel.processAndSaveImage(
+            data,
+            mCaptureNativeSize?.width ?: -1,
+            mCaptureNativeSize?.height ?: -1,
+            cameraView?.facing?.ordinal ?: 1
+        )
+
+    }
 
     private fun reInitCamera() {
+        canGoBack = true
         cameraView?.open()
         cameraLayout?.visible()
         capturedImageView?.gone()
@@ -76,8 +142,8 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun hideCameraProp() {
+        canGoBack = false
         cameraView?.close()
-        cameraLayout?.gone()
         capturedImageView?.visible()
         cameraControlLayout?.gone()
         reviewPhotoLayout?.visible()
@@ -120,7 +186,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     private fun resetCapture() {
         mCapturingPicture = false
         mCaptureNativeSize = null
-        //
         hideLoading()
     }
 
@@ -153,6 +218,30 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (canGoBack)
+                        activity?.finish()
+                    else
+                        ReviewCancelDialog.showReviewDialog(
+                            requireContext(),
+                            { proceedToNextStep() },
+                            { exitKycFlow() }
+                        )
+                }
+            })
+    }
+
+    private fun exitKycFlow() {
+        val intent = GoPayKycActivity.getIntent(requireContext())
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
+        startActivity(intent)
+    }
+
     @TargetApi(23)
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -178,12 +267,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         super.onDestroy()
     }
 
-    companion object {
-        private const val IMAGE_QUALITY = 95
-        private const val FOLDER_NAME = "extras"
-        private const val FILE_EXTENSIONS = ".jpg"
-    }
-
     override fun getScreenName() = null
-    override fun initInjector() {}
+    override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
+
 }

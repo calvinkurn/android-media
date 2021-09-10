@@ -25,12 +25,6 @@ class GoPayReviewActivity : BaseSimpleActivity() {
     override fun getNewFragment() = GoPayReviewAndUploadFragment.newInstance()
     override fun getScreenName() = null
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun setupOldToolbar() {
         ktpHeader.isShowBackButton = true
         toolbar = ktpHeader

@@ -1,4 +1,136 @@
 package com.tokopedia.gopay_kyc.domain.usecase
 
-class SaveCaptureImageUseCase {
+import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.otaliastudios.cameraview.controls.Facing
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import javax.inject.Inject
+
+class SaveCaptureImageUseCase @Inject constructor(
+    @ApplicationContext val context: Context,
+) : UseCase<CameraImageResult>() {
+
+    fun parseAndSaveCapture(
+        onSuccess: (CameraImageResult) -> Unit,
+        onError: (Throwable) -> Unit,
+        imageByte: ByteArray,
+        ordinal: Int
+    ) {
+        useCaseRequestParams = RequestParams().apply {
+            putObject(PARAM_IMAGE, imageByte)
+            putObject(PARAM_IMAGE_PROPERTIES, ordinal)
+        }
+        execute({ onSuccess(it) }, { onError(it) }, useCaseRequestParams)
+    }
+
+    override suspend fun executeOnBackground(): CameraImageResult {
+        try {
+            val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
+            val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
+            return generateImage(imageByte, facingOrdinal)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    private fun generateImage(
+        imageByte: ByteArray,
+        ordinal: Int
+    ): CameraImageResult {
+        try {
+            var bmp = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.size)
+
+            val cameraResultFile = saveToCacheDirectory(imageByte)
+            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
+            return CameraImageResult(
+                finalBitmap?.width ?: 0,
+                finalBitmap?.height ?: 0,
+                cameraResultFile?.absolutePath,
+                ArrayList(bitmapToByte(finalBitmap))
+            )
+        } catch (e: Throwable) {
+            val cameraResultFile = saveToCacheDirectory(imageByte)
+            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
+            return CameraImageResult(
+                finalBitmap?.width ?: 0,
+                finalBitmap?.height ?: 0,
+                cameraResultFile?.absolutePath,
+                ArrayList(bitmapToByte(finalBitmap))
+            )
+        }
+    }
+
+    private fun onSuccessImageTakenFromCamera(imageFile: File, ordinal: Int): Bitmap? {
+        try {
+            val file = File(imageFile.absolutePath)
+            if (file.exists()) {
+                val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                myBitmap?.let {
+                    return if (ordinal == Facing.FRONT.ordinal) {
+                        val flippedBitmap = ImageHandler.flip(myBitmap, true, false)
+                        myBitmap.recycle()
+                        flippedBitmap
+                    } else myBitmap
+                }
+            }
+        } catch (e: Throwable) {
+
+        }
+        return null
+    }
+
+    private fun saveToCacheDirectory(imageByte: ByteArray): File? {
+        var out: FileOutputStream? = null
+        try {
+            val file = getFileLocationFromDirectory()
+            out = FileOutputStream(file)
+            out.write(imageByte)
+            return file
+        } catch (e: Exception) {
+            return null
+        } finally {
+            out?.let {
+                try {
+                    out.flush()
+                    out.close()
+                } catch (e: Exception) {
+                }
+            }
+        }
+    }
+
+    private fun getFileLocationFromDirectory(): File {
+        val directory = ContextWrapper(context).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
+        if (!directory.exists()) directory.mkdir()
+        val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
+        return File(directory.absolutePath, imageName)
+    }
+
+    private fun bitmapToByte(bitmap: Bitmap?): List<Byte> {
+        val stream = ByteArrayOutputStream()
+        bitmap?.compress(
+            Bitmap.CompressFormat.JPEG,
+            IMAGE_QUALITY,
+            stream
+        )
+        return stream.toByteArray().toList()
+    }
+
+    companion object {
+        const val PARAM_IMAGE = "byte array"
+        const val PARAM_IMAGE_PROPERTIES = "image properties"
+        const val FOLDER_NAME = "extras"
+        const val FILE_EXTENSIONS = ".jpg"
+        const val IMAGE_QUALITY = 95
+    }
 }
+

@@ -9,16 +9,13 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.*
 import kotlinx.android.synthetic.main.gopay_camera_action_layout.*
 
 class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,16 +34,13 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
 
     private fun handleProceedButton() {
         proceedPhotoButton.setOnClickListener {
-            // proceed
-            val intent = Intent().apply { putExtra("PATH", "dummyPath") }
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+            proceedToNextStep()
         }
     }
 
     private fun initViews() {
         cameraView = camera
-        cameraView?.facing = Facing.BACK
+        cameraView?.facing = Facing.FRONT
         cameraView?.zoom = 0f
         capturedImageView = capturedImage
         reverseCamera = cameraSwitchImage
@@ -77,9 +71,19 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
             getString(R.string.gopay_kyc_selfie_ktp_capture_verification_text)
     }
 
+    override fun proceedToNextStep() {
+        val intent = Intent().apply {
+            putExtra(
+                GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH,
+                getCapturedImagePath()
+            )
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
 
     override fun getScreenName() = null
-    override fun initInjector() {}
 
     companion object {
         const val HEIGHT_RATIO_CUTOUT = 496 / 640f

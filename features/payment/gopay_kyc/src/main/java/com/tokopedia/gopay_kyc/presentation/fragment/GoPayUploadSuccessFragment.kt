@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycFlowListener
 import kotlinx.android.synthetic.main.fragment_gopay_kyc_upload_success_layout.*
 
 class GoPayUploadSuccessFragment : BaseDaggerFragment() {
@@ -20,15 +22,24 @@ class GoPayUploadSuccessFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        setupOnBackPressed()
+
         finishButton.setOnClickListener {
             // finish whole process
         }
 
     }
 
-    private fun initViews() {
-
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.let {
+                        (it as GoPayKycFlowListener).exitKycFlow()
+                    }
+                }
+            })
     }
 
     override fun getScreenName() = null

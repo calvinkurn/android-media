@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.REQUEST_KTP_SELFIE_ACTIVITY
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
+import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 
@@ -37,8 +41,9 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        setupOnBackPressed()
         takePhotoButton.setOnClickListener {
-
+            openSelfieKtpCamera()
         }
 
     }
@@ -77,11 +82,29 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+
+                    ReviewCancelDialog.showReviewDialog(requireContext(), { openSelfieKtpCamera() }, {
+                        // finish All Activities
+                    })
+                }
+            })
+    }
+
+    private fun openSelfieKtpCamera() {
+        context?.let {
+            startActivityForResult(GoPayCameraKtpActivity.getIntent(it, true), REQUEST_KTP_SELFIE_ACTIVITY)
+        }
+    }
+
     override fun getScreenName() = null
     override fun initInjector() {}
 
     companion object {
-
         fun newInstance() = GoPayPlusSelfieKtpInstructionsFragment()
     }
 }

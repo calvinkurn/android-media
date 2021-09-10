@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.REQUEST_KTP_ACTIVITY
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
@@ -40,10 +41,9 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
         initViews()
         takePhotoButton.setOnClickListener {
             context?.let {
-                it.startActivity(GoPayCameraKtpActivity.getIntent(it))
+                startActivityForResult(GoPayCameraKtpActivity.getIntent(it, false), REQUEST_KTP_ACTIVITY)
             }
         }
-
     }
 
     private fun initViews() {
@@ -52,7 +52,6 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         context?.let {
-            //stepDivider.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             goPayKtpStep1.text = it.getString(R.string.gopay_kyc_step_1)
             goPayUploadPhotoTitle.text = it.getString(R.string.gopay_kyc_ktp_upload_header_text)
             goPayKycTypeTitle.text = it.getString(R.string.gopay_kyc_ktp_text)

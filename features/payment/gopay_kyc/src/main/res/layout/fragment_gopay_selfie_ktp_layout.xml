@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ImageView
+        android:id="@+id/capturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        android:contentDescription="@string/gopay_kyc_captured_image_description" />
+
     <FrameLayout
         android:id="@+id/gopayCameraLayout"
         android:layout_width="match_parent"
@@ -29,16 +38,6 @@
             app:unify_image_type="rect" />
 
     </FrameLayout>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/capturedImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="centerInside"
-        android:visibility="gone"
-        app:unify_image_corner_radius="0"
-        app:unify_image_type="rect" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/photoInstructionTV"

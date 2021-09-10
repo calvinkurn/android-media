@@ -25,7 +25,7 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        customPeekHeight = getScreenHeight() / 2.toDp()
+        customPeekHeight = getScreenHeight().toDp()
     }
 
     private fun initBottomSheet() {

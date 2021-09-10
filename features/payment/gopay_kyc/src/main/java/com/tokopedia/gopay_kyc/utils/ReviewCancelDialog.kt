@@ -17,6 +17,7 @@ object ReviewCancelDialog {
         }
         dialog.setSecondaryCTAText(context.getString(R.string.exit_gopay_kyc))
         dialog.setSecondaryCTAClickListener {
+            onExit.invoke()
             dialog.dismiss()
         }
         dialog.show()
