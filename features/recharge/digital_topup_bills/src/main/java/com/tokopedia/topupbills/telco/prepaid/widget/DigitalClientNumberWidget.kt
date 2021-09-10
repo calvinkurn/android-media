@@ -6,6 +6,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -176,10 +177,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         sortFilterChip.addItem(sortFilter)
 
         if (isMoreThanFive) {
-
             val chevronRight = IconUnify(
                 context, IconUnify.CHEVRON_RIGHT,
                 ContextCompat.getColor(context, R.color.Unify_GN500))
+            chevronRight.layoutParams = ViewGroup.LayoutParams(
+                resources.getDimensionPixelSize(R.dimen.layout_lvl3),
+                resources.getDimensionPixelSize(R.dimen.layout_lvl3)
+            )
             sortFilterChip.chipItems?.last()?.refChipUnify?.addCustomView(chevronRight)
         }
     }
