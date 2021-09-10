@@ -19,15 +19,6 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-
-        testInstrumentationRunnerArguments clearPackageData: 'true',
-                // Leak Canary Listener, if do not want to use, just comment the code below
-                'listener': 'leakcanary.FailTestOnLeakRunListener'
-    }
-
-    testOptions {
-        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
     buildFeatures {
@@ -83,21 +74,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
-    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

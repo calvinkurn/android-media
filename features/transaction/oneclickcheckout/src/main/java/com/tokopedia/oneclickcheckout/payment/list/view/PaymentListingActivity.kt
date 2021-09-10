@@ -47,7 +47,7 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
         internal const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         internal const val EXTRA_PAYMENT_BID = "payment_bid"
 
-        internal const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
-        internal const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
+        const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
+        const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
     }
 }
