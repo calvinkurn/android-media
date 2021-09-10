@@ -12,6 +12,7 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -31,19 +32,26 @@ class OfficialStoreCategoryViewModel @Inject constructor(
         officialStoreCategoriesResult.removeObservers(lifecyclerOwner)
     }
 
-    fun getOfficialStoreCategories(doQueryHashing : Boolean) {
+    fun getOfficialStoreCategories(doQueryHashing: Boolean,
+                                   onCacheStartLoad: () -> Unit = {},
+                                   onCacheStopLoad: () -> Unit = {},
+                                   onCloudStartLoad: () -> Unit = {},
+                                   onCloudStopLoad: () -> Unit = {}) {
         launchCatchError(block = {
-            val cacheResponse = withContext(dispatchers.io) {
+            onCacheStartLoad.invoke()
+            onCloudStartLoad.invoke()
+            val cacheResponse = async(dispatchers.io) {
                 getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
             }
-            cacheResponse.isCache = true
-            _officialStoreCategoriesResult.value = Success(cacheResponse)
-
-            val cloudResponse = withContext(dispatchers.io) {
+            val cloudResponse = async(dispatchers.io) {
                 getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
             }
-            _officialStoreCategoriesResult.value = Success(cloudResponse)
-
+            val cacheData = cacheResponse.await()
+            cacheData.isCache = true
+            _officialStoreCategoriesResult.value = Success(cacheData)
+            onCacheStopLoad.invoke()
+            _officialStoreCategoriesResult.value = Success(cloudResponse.await())
+            onCloudStopLoad.invoke()
         }) {
             _officialStoreCategoriesResult.value = Fail(it)
         }

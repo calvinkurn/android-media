@@ -36,12 +36,15 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertTo
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -149,12 +152,14 @@ class OfficialHomeFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        if (savedInstanceState == null)
+            super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
-        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
@@ -208,6 +213,8 @@ class OfficialHomeFragment :
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+        if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+
     }
 
     private fun observeRecomwidget() {
@@ -731,7 +738,19 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(category, getLocation())
+                viewModel.loadFirstData(category, getLocation(),
+                        onBannerCacheStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCacheStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCloudStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        },
+                        onBannerCloudStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        })
                 isLoadedOnce = true
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
