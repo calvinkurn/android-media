@@ -125,8 +125,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * [onOptionsItemSelected] is override from [BaseSimpleActivity]
      * this function will handle options item selected
      */
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
             android.R.id.home -> {
                 onBackPressed()
                 true
