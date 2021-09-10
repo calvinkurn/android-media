@@ -832,9 +832,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
-                renderWinnerBadgeView(state.showWinnerBadge)
-                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
+                renderInteractiveView(prevState?.interactive, state.interactive, state.partner)
+                renderWinnerBadgeView(state.winnerBadge)
+                renderToolbarView(state.partner, state.share, state.cart)
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
@@ -1353,13 +1353,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-            isStateChanged: Boolean,
-            state: PlayInteractiveUiState,
-            followStatus: PlayPartnerFollowStatus,
-            visibility: ViewVisibility,
+        prevState: PlayInteractiveViewUiState?,
+        state: PlayInteractiveViewUiState,
+        partner: PlayPartnerUiState,
     ) {
-        if (isStateChanged) {
-            when (state) {
+        if (prevState?.interactive != state.interactive) {
+            when (val interactive = state.interactive) {
                 PlayInteractiveUiState.Loading -> {
                     interactiveView?.setLoading()
                 }
@@ -1367,17 +1366,18 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveView?.setError()
                 }
                 is PlayInteractiveUiState.PreStart -> {
-                    interactiveView?.setPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
-                        playViewModel.submitAction(InteractivePreStartFinishedAction)
-                    }
+                    interactiveView?.setPreStart(
+                        title = interactive.title,
+                        timeToStartInMs = interactive.timeToStartInMs
+                    ) { playViewModel.submitAction(InteractivePreStartFinishedAction) }
                 }
                 is PlayInteractiveUiState.Ongoing -> {
-                    interactiveView?.setTapTap(durationInMs = state.timeRemainingInMs) {
+                    interactiveView?.setTapTap(durationInMs = interactive.timeRemainingInMs) {
                         playViewModel.submitAction(InteractiveOngoingFinishedAction)
                     }
                 }
                 is PlayInteractiveUiState.Finished -> {
-                    interactiveView?.setFinish(info = getString(state.info))
+                    interactiveView?.setFinish(info = getString(interactive.info))
                 }
                 else -> {}
             }
@@ -1387,7 +1387,7 @@ class PlayUserInteractionFragment @Inject constructor(
              * and because of that, the distance between interactive view and winner badge increase significantly
              */
             val winnerBadgeView = interactiveWinnerBadgeView?.rootView
-            if (winnerBadgeView != null && state !is PlayInteractiveUiState.Ongoing) {
+            if (winnerBadgeView != null && state.interactive !is PlayInteractiveUiState.Ongoing) {
                 view?.changeConstraint {
                     val bottomAnchor = interactiveView?.id ?: return@changeConstraint
                     connect(winnerBadgeView.id, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.TOP)
@@ -1396,35 +1396,35 @@ class PlayUserInteractionFragment @Inject constructor(
 
         }
 
-        interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
+        interactiveView?.showFollowMode(
+            partner.followStatus is PlayPartnerFollowStatus.Followable &&
+                    !partner.followStatus.isFollowing
+        )
 
-        when (visibility) {
+        when (state.visibility) {
             ViewVisibility.Visible -> interactiveView?.show()
             ViewVisibility.Invisible -> interactiveView?.invisible()
             ViewVisibility.Gone -> interactiveView?.hide()
         }
     }
 
-    private fun renderWinnerBadgeView(
-            shouldShow: Boolean,
-    ) {
-        if (shouldShow) interactiveWinnerBadgeView?.show()
+    private fun renderWinnerBadgeView(state: PlayWinnerBadgeUiState) {
+        if (state.shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
 
     private fun renderToolbarView(
-            followStatus: PlayPartnerFollowStatus,
-            partnerName: String,
-            isShareable: Boolean,
-            cartState: PlayCartUiState,
+        partner: PlayPartnerUiState,
+        share: PlayShareUiState,
+        cart: PlayCartUiState,
     ) {
-        toolbarView.setFollowStatus(followStatus)
-        toolbarView.setPartnerName(partnerName)
+        toolbarView.setFollowStatus(partner.followStatus)
+        toolbarView.setPartnerName(partner.name)
 
-        toolbarView.setIsShareable(isShareable)
+        toolbarView.setIsShareable(share.shouldShow)
 
-        toolbarView.showCart(cartState.shouldShow)
-        toolbarView.setCartCount(cartState.count)
+        toolbarView.showCart(cart.shouldShow)
+        toolbarView.setCartCount(cart.count)
     }
 
     private fun renderLikeView(
@@ -1445,10 +1445,8 @@ class PlayUserInteractionFragment @Inject constructor(
         else likeView.hide()
     }
 
-    private fun renderStatsInfoView(
-            totalView: String,
-    ) {
-        statsInfoView.setTotalViews(totalView)
+    private fun renderStatsInfoView(totalView: PlayTotalViewUiState) {
+        statsInfoView.setTotalViews(totalView.viewCountStr)
     }
 
     private fun renderRealTimeNotificationView(rtn: PlayRtnUiState) {

@@ -138,6 +138,90 @@ class PlayViewModel @Inject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
 
+    private val _interactiveUiState = combine(
+        _interactive, _bottomInsets, _status
+    ) { interactive, bottomInsets, status ->
+        PlayInteractiveViewUiState(
+            interactive = interactive,
+            visibility = when {
+                /**
+                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                 */
+                bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                else -> ViewVisibility.Visible
+            },
+        )
+    }
+
+    private val _partnerUiState = _partnerInfo.map {
+        PlayPartnerUiState(it.name, it.status)
+    }
+
+    private val _winnerBadgeUiState = combine(
+        _leaderboardInfo, _bottomInsets, _status, _channelDetail
+    ) { leaderboardInfo, bottomInsets, status, channelDetail ->
+        PlayWinnerBadgeUiState(
+            leaderboards = leaderboardInfo.leaderboardWinners,
+            shouldShow = !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    leaderboardInfo.leaderboardWinners.isNotEmpty() &&
+                    channelDetail.channelInfo.channelType.isLive,
+        )
+    }
+
+    private val _likeUiState = combine(
+        _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
+    ) { likeInfo, channelDetail, bottomInsets, status, channelReport ->
+        PlayLikeUiState(
+            shouldShow = !bottomInsets.isAnyShown && status.isActive,
+            canLike = likeInfo.status != PlayLikeStatus.Unknown,
+            totalLike = channelReport.totalLikeFmt,
+            likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
+            else PlayLikeMode.Single,
+            isLiked = likeInfo.status == PlayLikeStatus.Liked,
+        )
+    }
+
+    private val _totalViewUiState = _channelReport.map {
+        PlayTotalViewUiState(it.totalViewFmt)
+    }
+
+    private val _shareUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayShareUiState(shouldShow = channelDetail.shareInfo.shouldShow &&
+                !bottomInsets.isAnyShown &&
+                status.isActive
+        )
+    }
+
+    private val _cartUiState = combine(_cartInfo, _bottomInsets) { cartInfo, bottomInsets ->
+        PlayCartUiState(
+            shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+            count = if (cartInfo.itemCount > 0) {
+                val countText =
+                    if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+"
+                    else cartInfo.itemCount.toString()
+                PlayCartCount.Show(countText)
+            } else PlayCartCount.Hide
+        )
+    }
+
+    private val _rtnUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayRtnUiState(
+            shouldShow = channelType.isLive &&
+                    !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    !channelDetail.videoInfo.orientation.isHorizontal &&
+                    !videoPlayer.isYouTube,
+            lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+        )
+    }
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -145,60 +229,26 @@ class PlayViewModel @Inject constructor(
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
-            _channelDetail,
-            _partnerInfo,
-            _bottomInsets,
-            _interactive,
-            _leaderboardInfo,
-            _status,
-            _likeInfo,
-            _channelReport,
-            _cartInfo,
-    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport, cartInfo ->
+        _interactiveUiState.distinctUntilChanged(),
+        _partnerUiState.distinctUntilChanged(),
+        _winnerBadgeUiState.distinctUntilChanged(),
+        _bottomInsets,
+        _likeUiState.distinctUntilChanged(),
+        _totalViewUiState.distinctUntilChanged(),
+        _shareUiState.distinctUntilChanged(),
+        _cartUiState.distinctUntilChanged(),
+        _rtnUiState.distinctUntilChanged(),
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, cart, rtn ->
         PlayViewerNewUiState(
-                partnerName = partnerInfo.name,
-                followStatus = partnerInfo.status,
-                bottomInsets = bottomInsets,
-                interactive = interactive,
-                showInteractive = when {
-                    /**
-                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
-                     */
-                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
-                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
-                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
-                    else -> ViewVisibility.Visible
-                },
-                leaderboards = leaderboardInfo.leaderboardWinners,
-                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
-                status = status,
-                like = PlayLikeUiState(
-                    shouldShow = !bottomInsets.isAnyShown && status.isActive,
-                    canLike = likeInfo.status != PlayLikeStatus.Unknown,
-                    totalLike = channelReport.totalLikeFmt,
-                    shouldAnimate = false,
-                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
-                    else PlayLikeMode.Single,
-                    isLiked = likeInfo.status == PlayLikeStatus.Liked,
-                ),
-                totalView = channelReport.totalViewFmt,
-                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
-                cart = PlayCartUiState(
-                    shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
-                    count = if (cartInfo.itemCount > 0) {
-                        val countText =
-                            if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
-                        PlayCartCount.Show(countText)
-                    } else PlayCartCount.Hide
-                ),
-                rtn = PlayRtnUiState(
-                    shouldShow = channelType.isLive &&
-                            !bottomInsets.isAnyShown &&
-                            status.isActive &&
-                            !channelDetail.videoInfo.orientation.isHorizontal &&
-                            !videoPlayer.isYouTube,
-                    lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
-                )
+            interactive = interactive,
+            partner = partner,
+            winnerBadge = winnerBadge,
+            bottomInsets = bottomInsets,
+            like = like,
+            totalView = totalView,
+            share = share,
+            cart = cart,
+            rtn = rtn,
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
