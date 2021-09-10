@@ -38,40 +38,39 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/toolbar_icon"
                 android:layout_width="32dp"
-                android:layout_height="0dp"
+                android:layout_height="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_nav_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/imagepicker_insta_toolbar_icon" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.5" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/toolbar_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/imagepicker_insta_post_sebagai"
-                android:textColor="@color/imagepicker_insta_toolbar_title"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_icon"
-                app:typographyType="heading_6"
-                app:typographyWeight="reguler" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/toolbar_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/imagepicker_insta_fellow_official"
-                app:layout_constraintStart_toStartOf="@+id/toolbar_title"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
-                app:typographyType="body_1"
-                app:typographyWeight="bold" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/imagepicker_insta_post_sebagai"
+                    android:textColor="@color/imagepicker_insta_toolbar_title"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/toolbar_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-1dp"
+                    android:text="@string/imagepicker_insta_fellow_official"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>

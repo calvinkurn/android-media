@@ -234,12 +234,11 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         imageMultiSelect.setOnClickListener {
             imageMultiSelect.toggle()
-            imageAdapter.canMultiSelect = imageMultiSelect.isChecked
             imageAdapter.selectedPositionMap.keys.map {
                 imageAdapter.dataList[it].isSelected = false
             }
             imageAdapter.dataList.forEach {
-                it.isInMultiSelectMode = imageAdapter.canMultiSelect
+                it.isInMultiSelectMode = isMultiSelectEnable()
             }
             val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
             imageAdapter.clearSelectedItems()
@@ -288,6 +287,14 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType).show()
         }
+    }
+
+    override fun isMultiSelectEnable():Boolean {
+        return imageMultiSelect.isChecked
+    }
+
+    override fun getAssetInPreview(): Asset? {
+        return selectedMediaView.asset
     }
 
     private fun setObservers() {
@@ -345,6 +352,26 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 selectedMediaView.removeAsset()
             }
         }
+
+        imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData->
+            if(!isMultiSelectEnable()){
+                /**
+                 * 1. tell adapter that multiselect is active by doing step 2
+                 * 2. toggle multi-select icon
+                 * 2. update all items except selected one to show empty circle
+                * */
+                imageMultiSelect.toggle(true)
+//                imageAdapter.dataList.forEach {
+//                    if(it != imageAdapterData){
+//                        it.isInMultiSelectMode = true
+//                    }
+//                }
+            }
+        }
+    }
+
+    fun enableMultiSelectMode(){
+
     }
 
     private fun getPhotos() {

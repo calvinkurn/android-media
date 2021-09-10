@@ -30,8 +30,8 @@ data class FolderData(val folderTitle: String, val folderSubtitle: String, val t
 
 data class ImageAdapterData(
     val asset: Asset,
-    var isSelected: Boolean = false,
-    var isInMultiSelectMode: Boolean = false,
+    var isSelected: Boolean = false, //TODO Rahul need to remove
+    var isInMultiSelectMode: Boolean = false, //TODO Rahul need to remove
     var checkedPosition: Int = 0
 )
 

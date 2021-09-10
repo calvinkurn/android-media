@@ -22,7 +22,7 @@ class ImagePickerInstaActivity : AppCompatActivity() {
     var menuTitle = ""
     var toolbarIconRes = 0
     var toolbarIconUrl = ""
-    var maxMultiSelectAllowed = 0
+    var maxMultiSelectAllowed = MAX_MULTI_SELECT_LIMIT
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
@@ -40,7 +40,7 @@ class ImagePickerInstaActivity : AppCompatActivity() {
             toolbarIconRes: Int? = null,
             toolbarIconUrl: String? = null,
             menuTitle: String? = null,
-            @IntRange(from = 0L, to = MAX_MULTI_SELECT_LIMIT.toLong())
+            @IntRange(from = 1L, to = MAX_MULTI_SELECT_LIMIT.toLong())
             maxMultiSelectAllowed: Int = 5,
             applinkToNavigateAfterMediaCapture: String? = null,
             applinkForGalleryProceed: String? = null,

@@ -20,6 +20,7 @@ class ImageAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var itemSelectCallback: Function2<ImageAdapterData, Boolean, Unit>? = null
+    var onItemLongClick: Function1<ImageAdapterData, Unit>? = null
 
     /**
      *Position and count
@@ -46,8 +47,6 @@ class ImageAdapter(
         selectedPositionMap.clear()
     }
 
-    var canMultiSelect = false
-
     private val TYPE_CAMERA = 0
     private val TYPE_PHOTO = 1
     private val TYPE_VIDEO = 2
@@ -73,16 +72,44 @@ class ImageAdapter(
             holder.setData()
         } else if (holder is PhotosViewHolder) {
             holder.setData(dataList[position])
-            holder.setChecked(selectedPositionMap[position], canMultiSelect)
+            holder.setChecked(selectedPositionMap[position], mainFragmentContract.isMultiSelectEnable())
 
             holder.itemView.setOnClickListener {
-                if (selectedPositionMap.contains(position)) {
-                    unSelectItem(position, holder)
-                } else {
-                    selectItem(position, holder)
+                handleSelectionUnSelection(holder, position)
+            }
+
+            holder.itemView.setOnLongClickListener {
+
+                if (!mainFragmentContract.isMultiSelectEnable()) {
+
+                    onItemLongClick?.invoke(dataList[position])
+
+                    //Remove previously selected items
+                    if (selectedPositionMap.isNotEmpty()) {
+                        val selectedItemKey = selectedPositionMap.keys.first()
+                        dataList[selectedItemKey].isSelected = false
+                        selectedPositionMap.clear()
+                    }
                 }
 
+                handleSelectionUnSelection(holder, position)
+
+                return@setOnLongClickListener true
             }
+        }
+    }
+
+    private fun handleSelectionUnSelection(holder: PhotosViewHolder, position: Int) {
+        if (selectedPositionMap.contains(position)) {
+
+            if (dataList[position].asset != mainFragmentContract.getAssetInPreview()) {
+                itemSelectCallback?.invoke(dataList[position], true)
+            } else {
+                unSelectItem(position, holder)
+            }
+
+        } else {
+            selectItem(position, holder)
         }
     }
 
@@ -102,7 +129,7 @@ class ImageAdapter(
             }
         }
 
-        holder?.setChecked(null, canMultiSelect)
+        holder?.setChecked(null, mainFragmentContract.isMultiSelectEnable())
         if (!isSelectedNextItem) {
             itemSelectCallback?.invoke(dataList[position], false)
         }
@@ -110,7 +137,7 @@ class ImageAdapter(
     }
 
     private fun selectNextItem(circleCount: Int?): Boolean {
-        if (canMultiSelect && circleCount != null) {
+        if (mainFragmentContract.isMultiSelectEnable() && circleCount != null) {
             val previousSelectedPos = findPreviousSelectedAdapterPosition(circleCount)
             val nextSelectedPos = findNextSelectedAdapterPosition(circleCount)
 
@@ -156,17 +183,16 @@ class ImageAdapter(
                 return
             }
         }
-//        if (selectedPositionMap.size != maxMultiSelectLimit) {
-        if (selectedPositionMap.size != 5) { //TODO Rahul only for debug - remove this line
+        if (selectedPositionMap.size != maxMultiSelectLimit) {
 
-            if (!canMultiSelect && selectedPositionMap.isNotEmpty()) {
+            if (!mainFragmentContract.isMultiSelectEnable() && selectedPositionMap.isNotEmpty()) {
                 //Remove previously selected item
                 val previouslySelectedItemPosition = selectedPositionMap.keys.first()
                 unSelectItem(previouslySelectedItemPosition)
                 notifyItemChanged(previouslySelectedItemPosition)
             }
             addSelectedItem(position)
-            holder.setChecked(selectedPositionMap.size, canMultiSelect)
+            holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
             mainFragmentContract.showToast("Max selection limit reached", Toaster.TYPE_ERROR)
