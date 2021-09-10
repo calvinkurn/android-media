@@ -10,5 +10,5 @@ data class PlayChannelInfoUiModel(
         val channelType: PlayChannelType = PlayChannelType.Unknown,
         val backgroundUrl: String = "",
         val title: String = "",
-        val coverUrl: String,
+        val coverUrl: String = "",
 )

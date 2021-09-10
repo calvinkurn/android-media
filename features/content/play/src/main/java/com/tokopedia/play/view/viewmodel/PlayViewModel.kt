@@ -721,7 +721,7 @@ class PlayViewModel @Inject constructor(
                     channelId = channelData.id,
                     title = videoStream.title,
                     partnerName = channelData.partnerInfo.name,
-                    coverUrl = channelData.channelInfo.coverUrl,
+                    coverUrl = channelData.channelDetail.channelInfo.coverUrl,
                     videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
                                     channelData.videoMetaInfo.videoPlayer.params.videoUrl
                                 else "",
@@ -731,7 +731,7 @@ class PlayViewModel @Inject constructor(
 
             if(channelData.videoMetaInfo.videoPlayer.isGeneral())
                 _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelInfo.coverUrl)
+                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelDetail.channelInfo.coverUrl)
                 )
         }
 
