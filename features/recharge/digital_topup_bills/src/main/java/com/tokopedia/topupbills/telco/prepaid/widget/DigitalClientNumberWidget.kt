@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
@@ -66,7 +67,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
         sortFilterChip.run {
             sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_16.toPx() ,0)
+                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_8.toPx() ,0)
             sortFilterHorizontalScrollView.clipToPadding = false
         }
 
@@ -161,19 +162,26 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
 
         val isMoreThanFive = favnum.size > 5
-
         if (isMoreThanFive) {
             val sortFilterItem = SortFilterItem(
                 "",
                 type = ChipsUnify.TYPE_ALTERNATE
             )
-            sortFilterItem.initIconDrawable = getIconUnifyDrawable(context, IconUnify.CHEVRON_RIGHT)
             sortFilterItem.listener = {
                 listener.onNavigateToContact(true)
             }
             sortFilter.add(sortFilterItem)
         }
+
         sortFilterChip.addItem(sortFilter)
+
+        if (isMoreThanFive) {
+
+            val chevronRight = IconUnify(
+                context, IconUnify.CHEVRON_RIGHT,
+                ContextCompat.getColor(context, R.color.Unify_GN500))
+            sortFilterChip.chipItems?.last()?.refChipUnify?.addCustomView(chevronRight)
+        }
     }
 
     fun clearFocusAutoComplete() {
@@ -331,6 +339,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val SORT_FILTER_PADDING_8 = 8
         private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
