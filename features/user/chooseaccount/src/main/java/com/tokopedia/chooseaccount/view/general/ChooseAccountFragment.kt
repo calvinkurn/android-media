@@ -261,6 +261,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
+                println("resetFlow, ChooseAccountFragment@onActivityResult data: ${data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
                 if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
                     loginToken(selectedAccount, selectedPhoneNo ?: "")
                 }

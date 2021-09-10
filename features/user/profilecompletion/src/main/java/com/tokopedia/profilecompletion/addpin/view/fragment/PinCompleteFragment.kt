@@ -60,6 +60,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
+        println("resetFlow, PinCompleteFragment@initViews data: ${arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0)}")
         when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
             SOURCE_CHANGE_PIN -> {
                 titleComplete.text = getString(R.string.change_pin_success)
