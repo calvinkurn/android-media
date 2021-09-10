@@ -47,12 +47,15 @@ class LayananSectionView : RelativeLayout {
         }catch (e: Exception){ }
         title.text = it.title
         subTitle.text = it.subtitle
-        if (it.type.equals("vertical")) {
+        if (it.type.equals(VERTICAL)) {
             recycler_view.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
         } else {
             recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        recycler_view.adapter = LayananAdapter(it.list ?: mutableListOf())
+        recycler_view.adapter = LayananAdapter(it.list ?: mutableListOf(),it.type ?: "")
     }
 
+    companion object{
+        const val VERTICAL = "vertical"
+    }
 }

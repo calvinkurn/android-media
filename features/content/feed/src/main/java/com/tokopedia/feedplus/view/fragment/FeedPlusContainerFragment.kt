@@ -33,6 +33,7 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
+import com.tokopedia.createpost.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
@@ -58,10 +59,12 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import javax.inject.Inject
@@ -73,11 +76,13 @@ import javax.inject.Inject
 private const val FEED_PAGE = "feed"
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
 
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
+    private var postProgressUpdateView:PostProgressUpdateView? = null
+    private var mInProgress = false
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
@@ -261,10 +266,25 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         hideAllFab(false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
+            activity?.intent?.putExtra("show_posting_progress_bar", false)
+            updateVisibility(true)
+            postProgressUpdateView?.registerBroadcastReceiver()
+            postProgressUpdateView?.registerBroadcastReceiverProgress()
+        } else {
+            updateVisibility(false)
+
+        }
+    }
+
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
         viewModel.flush()
+        postProgressUpdateView?.unregisterBroadcastReceiver()
+        postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         super.onDestroy()
     }
 
@@ -347,6 +367,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initView() {
+        postProgressUpdateView= view?.findViewById(R.id.postUpdateView)
+        postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
+        postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
         isSeller = userSession.hasShop() || userSession.isAffiliate
         if (!userSession.isLoggedIn && !isSeller) {
@@ -377,6 +400,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             LocalBroadcastManager.getInstance(it.applicationContext)
                                 .sendBroadcast(intent)
                         }
+                        postProgressUpdateView?.hide()
+                    } else if (position == 0 && mInProgress) {
+                        postProgressUpdateView?.show()
                     }
                 }
 
@@ -506,6 +532,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val isLoggedIn = userSession.isLoggedIn
         if (isSeller && isLoggedIn)
             fab_feed.show()
+        else
+            fab_feed.hide()
         isFabExpanded = true
                 fab_feed.setOnClickListener {
                     val intent = this?.context?.let { it1 ->
@@ -567,9 +595,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             return
         }
 
-        if (isInitial) {
-            fab_feed.hide()
-        } else {
+        if (!isInitial) {
             fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_backward)
         }
         fab_feed_byme.hide()
@@ -643,5 +669,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onNotificationClick() {
         toolBarAnalytics.eventClickNotification()
+    }
+
+    override fun swipeOnPostUpdate() {
+        updateVisibility(false)
+    }
+
+    override fun updateVisibility(flag: Boolean) {
+        if (flag) {
+            postProgressUpdateView?.show()
+        } else {
+            postProgressUpdateView?.hide()
+        }
     }
 }

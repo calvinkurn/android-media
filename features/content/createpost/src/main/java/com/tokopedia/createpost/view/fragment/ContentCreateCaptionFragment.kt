@@ -2,7 +2,6 @@ package com.tokopedia.createpost.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,28 +14,24 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
-import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import kotlinx.android.synthetic.main.content_caption_page_preview.*
 
-class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentPostCOmmonLIstener {
-    private lateinit var contentProductTagBS: ContentCreationProductTagBottomSheet
-
+class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
     private val adapter: CaptionPagePreviewImageAdapter by lazy {
-        CaptionPagePreviewImageAdapter(onTagProductClick = this::openBottomSheet)
+        CaptionPagePreviewImageAdapter()
     }
 
 
     override fun fetchContentForm() {
-//        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
+        presenter.fetchContentForm(createPostModel.productIdList,
+            createPostModel.authorType,
+            createPostModel.postId)
     }
 
     companion object {
-        private const val MAX_CHAR = 2000
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ContentCreateCaptionFragment()
             fragment.arguments = bundle
@@ -65,10 +60,10 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun initVar() {
-        createContentViewModelPresenter._createPostViewModelData.also { viewModel = it.value!! }
+        createPostModel = createContentPostViewModel.getPostData() ?: CreatePostViewModel()
     }
     private fun initView() {
-        adapter.updateProduct(viewModel.completeImageList)
+        adapter.updateProduct(createPostModel.completeImageList)
         content_post_image_rv.setHasFixedSize(true)
         content_post_image_rv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -77,18 +72,14 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
         updateCaption()
 
     }
-    private fun openBottomSheet(productList: List<RelatedProductItem>) {
-        contentProductTagBS = ContentCreationProductTagBottomSheet()
-        contentProductTagBS.show(Bundle.EMPTY,
-            childFragmentManager,
-            productList,
-            this)
 
-    }
     @SuppressLint("ClickableViewAccessibility")
-    private fun updateCaption(){
+    private fun updateCaption() {
+        if (createPostModel.caption.isNotEmpty())
+            caption.setText(createPostModel.caption)
+
         caption.afterTextChanged {
-            viewModel.caption = it
+            createPostModel.caption = it
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
@@ -100,17 +91,6 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
             }
             false
         }
-    }
-
-    override fun deleteItemFromProductTagList(position: Int) {
-    }
-
-    override fun updateHeader(header: HeaderViewModel) {
-        TODO("Not yet implemented")
-    }
-
-    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
-        TODO("Not yet implemented")
     }
 
     override fun onPause() {
@@ -125,15 +105,9 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
                 InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
-    private inline val isPostEnabled: Boolean
-        get() = viewModel.postId.isNotBlank() ||
-                (viewModel.completeImageList.isNotEmpty()
-                        && viewModel.relatedProducts.isNotEmpty()
-                        && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
-
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
     }
 
-    }
+}

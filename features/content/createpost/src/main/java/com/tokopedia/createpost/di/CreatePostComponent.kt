@@ -5,6 +5,7 @@ import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.service.SubmitPostService
+import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import dagger.Component
 
 /**
@@ -16,6 +17,8 @@ interface CreatePostComponent {
     fun inject(fragment: BaseCreatePostFragment)
 
     fun inject(service: SubmitPostService)
+
+    fun inject(service: SubmitPostServiceNew)
 
     fun provideAffiliateAnalytics(): AffiliateAnalytics
 

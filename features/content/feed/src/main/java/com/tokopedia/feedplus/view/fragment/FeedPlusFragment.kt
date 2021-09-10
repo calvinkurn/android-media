@@ -36,6 +36,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.createpost.view.customview.PostProgressUpdateView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -185,14 +186,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     EmptyFeedViewHolder.EmptyFeedListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener,
-    ShareCallback {
+    ShareCallback{
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
     private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
-
+    private lateinit var postUpdateSwipe: PostProgressUpdateView.PostUpdateSwipe
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
@@ -3056,5 +3057,4 @@ class FeedPlusFragment : BaseDaggerFragment(),
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
 
     }
-
 }

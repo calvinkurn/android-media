@@ -17,7 +17,7 @@ import com.tokopedia.imagepicker_insta.models.BundleData
 class ImagePickerFragement: BaseCreatePostFragmentNew() {
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
+        presenter.fetchContentForm(createPostModel.productIdList, createPostModel.authorType, createPostModel.postId)
     }
     companion object {
         private const val REQUEST_IMAGE_PICKER = 1234
@@ -26,11 +26,6 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-       // openImagePicker("","","")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,7 +52,7 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
         initVar()
     }
     private fun initVar() {
-        viewModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
+        createPostModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
 
     }
 
@@ -67,8 +62,8 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
         isFromTemplateToken: Boolean,
     ) {
         val authors = feedContentForm.authors
-        openImagePicker(authors.first().name,
-            getString(R.string.feed_content_post_sebagai),
+        openImagePicker(
+            getString(R.string.feed_content_post_sebagai),authors.first().name,
             authors.first().thumbnail)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,5 +80,5 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
             }
         }
     }
-    }
+}
 

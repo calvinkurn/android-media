@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -7,22 +8,36 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
+import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.fragment.ImagePickerFragement
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.view.viewmodel.MediaModel
+import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.common.model.MimeType
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post_new.*
+import java.util.concurrent.TimeUnit
 
-class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener  {
+class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        UploadMultipleImageUsecaseNew.mContext =applicationContext as Application?
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         this.intent = intent
@@ -45,17 +60,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun updateHeader(header: HeaderViewModel) {
         content_post_avatar.loadImageCircle(header.avatar)
         content_post_avatar.showWithCondition(header.avatar.isNotBlank())
-
         content_post_name.text = header.title
-
     }
 
     override fun launchProductTagFragment(data: ArrayList<Uri>?) {
         val createPostViewModel = CreatePostViewModel()
         data?.forEach { uri ->
-            val  mediaModel  = MediaModel(path = uri.toString())
+            val type = if (isVideoFile(uri)) MediaType.VIDEO else MediaType.IMAGE
+            val mediaModel = MediaModel(path = uri.toString(), type = type)
             createPostViewModel.fileImageList.add(mediaModel)
-            createPostViewModel.urlImageList.add((mediaModel))
         }
         intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
@@ -63,6 +76,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         if (!create_post_toolbar.isVisible)
             create_post_toolbar?.visibility = View.VISIBLE
         inflateFragment()
+    }
+
+    private fun isVideoFile(uri: Uri):Boolean{
+        val cR = contentResolver
+        return MimeType.isVideo(cR.getType(uri))
     }
 
     companion object {
@@ -156,13 +174,26 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
 
     }
-    private fun postFeed(){
 
+    private fun postFeed() {
+        (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
+        val cacheManager = SaveInstanceCacheManager(this, true)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData(),
+            TimeUnit.DAYS.toMillis(7)
+        )
+        SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
+        goToFeed()
+        finish()
     }
 
-
-
-
-
-
+    private fun goToFeed() {
+        this.let {
+            val applink = ApplinkConst.HOME_FEED
+            val intent = RouteManager.getIntent(it, applink)
+            intent.putExtra("show_posting_progress_bar",true)
+            startActivity(intent)
+        }
+    }
 }
