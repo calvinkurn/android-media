@@ -30,5 +30,8 @@
     <string name="telco_content_desc_content_book">contact book</string>
     <string name="digital_client_label">Nomor Telepon</string>
     <string name="telco_pick_product">Beli</string>
+    <string name="digital_client_filter_chip_see_all">Lihat Semua</string>
+    <string name="digital_client_filter_chip_coachmark_title">Ini nomor yang sering kamu isi &#9757;</string>
+    <string name="digital_client_filter_chip_coachmark_desc">Kalau mau diisi lagi, tinggal klik di sini aja.</string>
     <string name="telco_number_error_prefix_not_found">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
 </resources>

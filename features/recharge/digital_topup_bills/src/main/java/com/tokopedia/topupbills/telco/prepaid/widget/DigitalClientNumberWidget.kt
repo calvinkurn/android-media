@@ -12,16 +12,21 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
 
@@ -35,10 +40,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val imgOperator: ImageView
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
+    protected val sortFilterChip: SortFilter
+    protected val sortFilterChipShimmer: LoaderTextView
 
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
+    private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -48,14 +56,26 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         view = View.inflate(context, getLayout(), this)
         imgOperator = view.findViewById(R.id.telco_img_operator)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
+        sortFilterChip = view.findViewById(R.id.telco_filter_chip)
+        sortFilterChipShimmer = view.findViewById(R.id.telco_filter_chip_shimmer)
 
         layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
         imgOperatorResult = view.findViewById(R.id.telco_img_operator_result)
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
         inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
+        sortFilterChip.run {
+            sortFilterHorizontalScrollView.setPadding(
+                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_16.toPx() ,0)
+            sortFilterHorizontalScrollView.clipToPadding = false
+        }
+
+        initListener()
+    }
+
+    private fun initListener() {
         inputNumberField.icon1.run {
-            setOnClickListener { listener.onNavigateToContact() }
+            setOnClickListener { listener.onNavigateToContact(false) }
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
             show()
         }
@@ -116,6 +136,44 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
 
         initClientNumberAutoComplete(context)
+    }
+
+    fun setFavoriteNumber(favNumberItems: List<TopupBillsSeamlessFavNumberItem>) {
+        this.favoriteNumbers = favNumberItems
+        initSortFilterChip(favNumberItems)
+    }
+
+    private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
+        val sortFilter = arrayListOf<SortFilterItem>()
+        for (number in favnum.take(5)) {
+            val chipText = if (number.clientName.isEmpty())
+                number.clientNumber else number.clientName
+            val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
+            sortFilterItem.listener = {
+                if (number.clientName.isEmpty()) {
+                    setContactName(context.getString(R.string.digital_client_label))
+                } else {
+                    setContactName(number.clientName)
+                }
+                setInputNumber(number.clientNumber)
+            }
+            sortFilter.add(sortFilterItem)
+        }
+
+        val isMoreThanFive = favnum.size > 5
+
+        if (isMoreThanFive) {
+            val sortFilterItem = SortFilterItem(
+                "",
+                type = ChipsUnify.TYPE_ALTERNATE
+            )
+            sortFilterItem.initIconDrawable = getIconUnifyDrawable(context, IconUnify.CHEVRON_RIGHT)
+            sortFilterItem.listener = {
+                listener.onNavigateToContact(true)
+            }
+            sortFilter.add(sortFilterItem)
+        }
+        sortFilterChip.addItem(sortFilter)
     }
 
     fun clearFocusAutoComplete() {
@@ -192,6 +250,16 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
+    fun setFilterChipShimmer(show: Boolean) {
+        if (show) {
+            sortFilterChip.hide()
+            sortFilterChipShimmer.show()
+        } else {
+            sortFilterChip.show()
+            sortFilterChipShimmer.hide()
+        }
+    }
+
     private fun initClientNumberAutoComplete(context: Context) {
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
@@ -256,13 +324,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun onNavigateToContact()
+        fun onNavigateToContact(isSwitchChecked: Boolean)
         fun onRenderOperator()
         fun onClearAutoComplete()
     }
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
 

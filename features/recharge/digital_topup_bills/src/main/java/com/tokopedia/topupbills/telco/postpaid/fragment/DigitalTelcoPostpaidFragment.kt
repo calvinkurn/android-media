@@ -238,6 +238,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
+        postpaidClientNumberWidget.setFilterChipShimmer(true)
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
         getFavoriteNumber(
             categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
@@ -283,13 +284,15 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private fun renderClientNumber() {
         postpaidClientNumberWidget.resetClientNumberPostpaid()
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
-            override fun onNavigateToContact() {
+            override fun onNavigateToContact(isSwitchChecked: Boolean) {
                 inputNumberActionType = InputNumberActionType.CONTACT
 
                 val clientNumber = postpaidClientNumberWidget.getInputNumber()
                 navigateContact(
                     clientNumber, favNumberList,
-                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId))
+                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId),
+                    isSwitchChecked
+                )
             }
 
             override fun onRenderOperator() {
@@ -517,11 +520,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
+        postpaidClientNumberWidget.setFilterChipShimmer(false)
     }
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
+        postpaidClientNumberWidget.setFilterChipShimmer(false)
+        postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
     }
 

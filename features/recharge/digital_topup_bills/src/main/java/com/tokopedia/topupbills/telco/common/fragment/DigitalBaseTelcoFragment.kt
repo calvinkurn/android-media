@@ -164,7 +164,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         clientNumber: String,
         favNumberList: MutableList<TopupBillsFavNumberItem>,
         dgCategoryIds: ArrayList<String>,
-        categoryName: String
+        categoryName: String,
+        isSwitchChecked: Boolean
     ) {
         // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
@@ -188,11 +189,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                     override fun onPermissionGranted() {
                         navigateSavedNumber(
-                            clientNumber, favNumberList, dgCategoryIds, categoryName)
+                            clientNumber, favNumberList,
+                            dgCategoryIds, categoryName, isSwitchChecked)
                     }
                 })
         } else {
-            navigateSavedNumber(clientNumber, favNumberList, dgCategoryIds, categoryName)
+            navigateSavedNumber(
+                clientNumber, favNumberList,
+                dgCategoryIds, categoryName, isSwitchChecked)
         }
     }
 
@@ -200,11 +204,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         clientNumber: String,
         favNumberList: MutableList<TopupBillsFavNumberItem>,
         dgCategoryIds: ArrayList<String>,
-        categoryName: String)
-    {
+        categoryName: String,
+        isSwitchChecked: Boolean = false
+    ) {
         context?.let {
             val intent = TopupBillsSavedNumberActivity.createInstance(
-                it, clientNumber, favNumberList, dgCategoryIds, categoryName, operatorData
+                it, clientNumber, favNumberList,
+                dgCategoryIds, categoryName, operatorData, isSwitchChecked
             )
 
             val requestCode = if (isSeamlessFavoriteNumber(requireContext()))

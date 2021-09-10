@@ -10,15 +10,16 @@ import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent
  * @author by resakemal on 21/08/19
  */
 object CommonTopupBillsComponentInstance {
+    private lateinit var commonTopupBillsComponent: CommonTopupBillsComponent
 
     fun getCommonTopupBillsComponent(application: Application): CommonTopupBillsComponent {
-        val commonTopupBillsComponent: CommonTopupBillsComponent by lazy {
+        if (!::commonTopupBillsComponent.isInitialized) {
+
             val digitalCommonComponent = DaggerDigitalCommonComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .build()
-            DaggerCommonTopupBillsComponent.builder()
-                    .digitalCommonComponent(digitalCommonComponent)
-                    .build()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+            commonTopupBillsComponent = DaggerCommonTopupBillsComponent.builder()
+                .digitalCommonComponent(digitalCommonComponent)
+                .build()
         }
         return commonTopupBillsComponent
     }
