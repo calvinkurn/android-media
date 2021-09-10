@@ -10,6 +10,7 @@ data class LastApplyUiModel(
 		var voucherOrders: List<LastApplyVoucherOrdersItemUiModel> = emptyList(),
 		var additionalInfo: LastApplyAdditionalInfoUiModel = LastApplyAdditionalInfoUiModel(),
 		var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
+		var listRedPromos: List<String> = emptyList(),
         var listAllPromoCodes: List<String> = emptyList(),
 		var defaultEmptyPromoMessage: String = "",
 		var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
