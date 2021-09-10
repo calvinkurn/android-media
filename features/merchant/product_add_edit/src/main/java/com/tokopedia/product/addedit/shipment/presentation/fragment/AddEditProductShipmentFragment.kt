@@ -242,8 +242,6 @@ class AddEditProductShipmentFragment:
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
                 shipperServices = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
-                Log.d("__LIST OF SERVICES", shipperServices.toString())
-
             }
         }
     }
@@ -457,7 +455,18 @@ class AddEditProductShipmentFragment:
         } else {
             layoutCustomShipmentOnDemand?.visible()
             layoutCustomShipmentConventional?.visible()
+            if (shipperServices?.isEmpty() == true) {
+                val newShipperServices = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
+                shipperServices = ArrayList(newShipperServices)
+            }
         }
+    }
+
+    private fun getListActivatedSpIds(onDemandList: List<Int>, conventionalList: List<Int>): List<Int> {
+        val activatedListShipperIds = mutableListOf<Int>()
+        activatedListShipperIds.addAll(onDemandList)
+        activatedListShipperIds.addAll(conventionalList)
+        return activatedListShipperIds
     }
 
     private fun showDialogStandardShipment() {

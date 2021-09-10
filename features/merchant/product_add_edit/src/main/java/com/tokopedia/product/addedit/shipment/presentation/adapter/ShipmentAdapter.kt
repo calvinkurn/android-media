@@ -72,6 +72,18 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         return activatedListIds
     }
 
+    fun getActivateSpIds(): List<Int> {
+        val activatedListIds = mutableListOf<Int>()
+        shipmentCPLitem.forEach { courier ->
+            courier.shipperProduct.forEach { product ->
+                if (product.isActive) {
+                    activatedListIds.add(product.shipperProductId)
+                }
+            }
+        }
+        return activatedListIds
+    }
+
     inner class ShipmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val shipmentItemImage = itemView.findViewById<ImageUnify>(R.id.img_shipment_item)
