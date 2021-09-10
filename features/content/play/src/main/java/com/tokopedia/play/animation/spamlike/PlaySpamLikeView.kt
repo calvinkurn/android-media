@@ -140,27 +140,19 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
     fun getMaxShot(): Int = maxShot
 
-    fun shotWithDelay(likeAmount: Int, shotPerBatch: Int, delay: Long, reduceOpacity: Boolean) {
+    fun shot(
+        likeAmount: Int,
+        shotPerBatch: Int,
+        delayInMs: Long = 0L,
+        isOpaque: Boolean = false
+    ) {
         scope.launch {
             for(i in 1..likeAmount) {
-                delay(delay)
+                if (delayInMs > 0) delay(delayInMs)
                 for(j in 1..shotPerBatch) {
                     delay(DEFAULT_DELAY)
                     withContext(Dispatchers.Main) {
-                        shot(reduceOpacity)
-                    }
-                }
-            }
-        }
-    }
-
-    fun shotAll(likeAmount: Int, shotPerBatch: Int, reduceOpacity: Boolean) {
-        scope.launch {
-            for(i in 1..likeAmount) {
-                for(j in 1..shotPerBatch) {
-                    delay(DEFAULT_DELAY)
-                    withContext(Dispatchers.Main) {
-                        shot(reduceOpacity)
+                        shot(isOpaque)
                     }
                 }
             }

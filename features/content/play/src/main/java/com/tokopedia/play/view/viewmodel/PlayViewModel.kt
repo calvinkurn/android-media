@@ -1112,9 +1112,20 @@ class PlayViewModel @Inject constructor(
             is TotalLike -> {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
 
+                val totalLikeCoerced = totalLike.coerceAtLeast(_channelReport.value.totalLike)
+
                 _channelReport.setValue {
-                    copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
+                    copy(totalLike = totalLikeCoerced, totalLikeFmt = totalLikeFmt)
                 }
+
+                val diffLike = totalLikeCoerced - totalLike
+                val bubbleEvent = if (diffLike >= LIKE_BURST_THRESHOLD) {
+                    ShowLikeBubbleEvent.Burst(LIKE_BURST_THRESHOLD, isOpaque = true)
+                } else {
+                    ShowLikeBubbleEvent.Single(diffLike.toInt(), isOpaque = true)
+                }
+
+                viewModelScope.launch { _uiEvent.emit(bubbleEvent) }
             }
             is TotalView -> {
                 _channelReport.setValue {
@@ -1440,7 +1451,7 @@ class PlayViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
-                _uiEvent.emit(ShowLikeBubbleEvent(1, false))
+                _uiEvent.emit(ShowLikeBubbleEvent.Single(count = 1, isOpaque = false))
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
@@ -1558,6 +1569,8 @@ class PlayViewModel @Inject constructor(
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
         private const val MAX_CART_COUNT = 99
+
+        private const val LIKE_BURST_THRESHOLD = 30
 
         /**
          * Request Code When need login

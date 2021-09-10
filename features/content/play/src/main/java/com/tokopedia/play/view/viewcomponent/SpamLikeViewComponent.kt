@@ -24,12 +24,27 @@ class SpamLikeViewComponent(
         spamLike.setParentView(container)
     }
 
-    val maxShot: Long
-        get() = spamLike.getMaxShot().toLong()
+    fun shot(
+        amount: Int = 1,
+        reduceOpacity: Boolean = false
+    ) {
+        spamLike.shot(
+            likeAmount = amount,
+            shotPerBatch = SHOT_PER_BATCH,
+            delayInMs = SPAMMING_LIKE_DELAY,
+            reduceOpacity
+        )
+    }
 
-    fun shot(amount: Int = 1, reduceOpacity: Boolean = false) {
-        if(amount == spamLike.getMaxShot()) spamLike.shotAll(amount, SHOT_PER_BATCH, reduceOpacity)
-        else spamLike.shotWithDelay(amount, SHOT_PER_BATCH, SPAMMING_LIKE_DELAY, reduceOpacity)
+    fun shotBurst(
+        amount: Int = 1,
+        isOpaque: Boolean = false
+    ) {
+        spamLike.shot(
+            likeAmount = amount,
+            shotPerBatch = SHOT_PER_BATCH,
+            isOpaque = isOpaque
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
