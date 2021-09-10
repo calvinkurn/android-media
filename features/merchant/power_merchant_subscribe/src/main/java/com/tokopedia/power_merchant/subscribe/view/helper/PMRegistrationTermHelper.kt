@@ -54,11 +54,10 @@ object PMRegistrationTermHelper {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isNewSeller = shopInfo.isNewSeller
 
-        val resDrawableIcon: Int = getResDrawableIcon(shopInfo, isEligibleOrder)
+        val (resDrawableIcon, isChecked) = getResDrawableIcon(shopInfo, isEligibleOrder)
 
         val title: String
         val description: String
-        var isChecked = false
 
         if (isNewSeller) {
             if (!isFirstMondayNewSeller) {
@@ -72,13 +71,11 @@ object PMRegistrationTermHelper {
                 val getItemOrderTerm = getItemOrderTerm(shopInfo, isEligibleOrder, context)
                 title = getItemOrderTerm.first
                 description = getItemOrderTerm.second
-                isChecked = getItemOrderTerm.third
             }
         } else {
             val getItemOrderTerm = getItemOrderTerm(shopInfo, isEligibleOrder, context)
             title = getItemOrderTerm.first
             description = getItemOrderTerm.second
-            isChecked = getItemOrderTerm.third
         }
         return RegistrationTermUiModel.Order(
             title = title,
@@ -141,11 +138,10 @@ object PMRegistrationTermHelper {
     ): RegistrationTermUiModel.NetItemValue {
         val isEligible = shopInfo.netItemValueOneMonth >= shopInfo.netItemValuePmProThreshold
 
-        val resDrawableIcon: Int = getResDrawableIcon(shopInfo, isEligible)
+        val (resDrawableIcon, isChecked) = getResDrawableIcon(shopInfo, isEligible)
 
         val title: String
         val description: String
-        var isChecked = false
         val netItemValueFmt =
             CurrencyFormatHelper.convertToRupiah(shopInfo.netItemValueOneMonth.toString())
 
@@ -161,13 +157,11 @@ object PMRegistrationTermHelper {
                 val netItemValueTerm = getNetItemValueTerm(shopInfo, isEligible, context)
                 title = netItemValueTerm.first
                 description = netItemValueTerm.second
-                isChecked = netItemValueTerm.third
             }
         } else {
             val netItemValueTerm = getNetItemValueTerm(shopInfo, isEligible, context)
             title = netItemValueTerm.first
             description = netItemValueTerm.second
-            isChecked = netItemValueTerm.third
         }
 
         return RegistrationTermUiModel.NetItemValue(
@@ -226,7 +220,7 @@ object PMRegistrationTermHelper {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isEligibleShopScore =
             (isPmProSelected && shopInfo.isEligibleShopScorePmPro()) || (!isPmProSelected && shopInfo.isEligibleShopScore())
-        val shopScoreResIcon: Int = getResDrawableIcon(shopInfo, isEligibleShopScore)
+        val (shopScoreResIcon, isChecked) = getResDrawableIcon(shopInfo, isEligibleShopScore)
 
         val title: String
         val description: String
@@ -303,27 +297,27 @@ object PMRegistrationTermHelper {
             resDrawableIcon = shopScoreResIcon,
             clickableText = ctaText,
             appLinkOrUrl = ctaAppLink,
-            isChecked = isEligibleShopScore,
+            isChecked = isChecked,
             isFirstMondayNewSeller = isFirstMondayNewSeller,
             isNewSeller = shopInfo.isNewSeller
         )
     }
 
 
-    private fun getTermIcon(isEligible: Boolean): Int {
+    private fun getTermIcon(isEligible: Boolean): Pair<Int, Boolean> {
         return if (isEligible) {
-            R.drawable.ic_pm_checked
+            Pair(R.drawable.ic_pm_checked, true)
         } else {
-            R.drawable.ic_pm_not_checked
+            Pair(R.drawable.ic_pm_not_checked, false)
         }
     }
 
-    private fun getResDrawableIcon(shopInfo: PMShopInfoUiModel, isEligible: Boolean): Int {
+    private fun getResDrawableIcon(shopInfo: PMShopInfoUiModel, isEligible: Boolean): Pair<Int, Boolean> {
         val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         return if (isNewSeller) {
             if (!isFirstMondayNewSeller) {
-                R.drawable.ic_not_completed_new_seller
+                Pair(R.drawable.ic_not_completed_new_seller, false)
             } else {
                 getTermIcon(isEligible)
             }
