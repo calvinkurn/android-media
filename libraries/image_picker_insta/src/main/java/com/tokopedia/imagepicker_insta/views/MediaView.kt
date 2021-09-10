@@ -29,6 +29,7 @@ class MediaView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs), LifecycleObserver {
 
     private lateinit var playerView: PlayerView
+    private lateinit var playPauseIcon: View
     private lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
@@ -63,6 +64,7 @@ class MediaView @JvmOverloads constructor(
     private fun initViews() {
         playerView = findViewById(R.id.media_player_view)
         assetView = findViewById(R.id.media_asset_view)
+        playPauseIcon = findViewById(R.id.play_icon)
         assetView.initListeners()
         assetView.mediaScaleTypeContract = object : MediaScaleTypeContract {
             override fun getCurrentMediaScaleType(): Int {
@@ -77,11 +79,13 @@ class MediaView @JvmOverloads constructor(
     fun togglePlayPause() {
         if (simpleExoPlayer?.isPlaying == true) {
             simpleExoPlayer?.playWhenReady = false
+            playPauseIcon.visibility = View.VISIBLE
         } else if (simpleExoPlayer?.isPlaying == false) {
             if (simpleExoPlayer?.playbackState == Player.STATE_ENDED) {
                 simpleExoPlayer?.seekTo(0)
             }
             simpleExoPlayer?.playWhenReady = true
+            playPauseIcon.visibility = View.GONE
         }
     }
 
@@ -184,6 +188,7 @@ class MediaView @JvmOverloads constructor(
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)
         simpleExoPlayer?.playWhenReady = true
+        playPauseIcon.visibility = View.GONE
     }
 
     private fun stopPlayer() {
