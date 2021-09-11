@@ -10,16 +10,10 @@ data class MockProperty(var name: String, var value: Any) {
     }
 }
 
-fun Field.isPrivateOrProtected(): Boolean {
-    return modifiers.and(Modifier.PRIVATE) > 0 || modifiers.and(Modifier.PROTECTED) > 0
-}
-
 infix fun Any.setPrivateProperty(property: MockProperty): Any {
-    javaClass.declaredFields
-        .filter { it.isPrivateOrProtected() }
-        .firstOrNull { it.name == property.name }
-        ?.also { it.isAccessible = true }
-        ?.set(this, property.value)
+    javaClass.getDeclaredField(property.name)
+        .also { it.isAccessible = true }
+        .set(this, property.value)
 
     property.afterSet()
 
@@ -27,11 +21,9 @@ infix fun Any.setPrivateProperty(property: MockProperty): Any {
 }
 
 inline fun <reified T> Any.getPrivateProperty(propertyName: String): T? {
-    return javaClass.declaredFields
-        .filter { it.isPrivateOrProtected() }
-        .firstOrNull { it.name == propertyName }
-        ?.also { it.isAccessible = true }
-        ?.get(this) as T
+    return javaClass.getDeclaredField(propertyName)
+        .also { it.isAccessible = true }
+        .get(this) as T
 }
 
 fun mockBuildValue(field: Field, value: Any) {
