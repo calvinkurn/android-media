@@ -1,6 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.analytics.tracking
 
-import com.tokopedia.analyticconstant.DataLayer
+import android.os.Bundle
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -304,61 +304,51 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun sendEventClickCTAPmUpgradeLearnMore(shopScore: String) {
-        val event = createEvent(
-            event = TrackingConstant.ACTION_PROMO_CLICK,
-            action = TrackingConstant.CLICK_LEARN_MORE_PM_PRO,
-            category = TrackingConstant.getPowerMerchantCategory(),
-            label = getEventLabelCTAPmUpgrade(shopScore)
-        )
-
-        event[TrackingConstant.KEY_EVENT_ECOMMERCE] = DataLayer.mapOf(
-            TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOCLICK, DataLayer.mapOf(
-                TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION, DataLayer.listOf(
-                    DataLayer.mapOf(
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_ID,
-                        "",
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_NAME,
-                        TrackingConstant.PM_PRO_ACTIVATION_PAGE,
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE,
-                        TrackingConstant.PM_PRO_LEARN_MORE,
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_POSITION, ""
-                    )
-                )
+        val eventBundle = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, TrackingConstant.CLICK_LEARN_MORE_PM_PRO)
+            putString(TrackAppUtils.EVENT_CATEGORY, TrackingConstant.getPowerMerchantCategory())
+            putString(TrackAppUtils.EVENT_LABEL, getEventLabelCTAPmUpgrade(shopScore))
+            putParcelableArrayList(
+                TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION,
+                arrayListOf(getPromotionsBundle())
             )
-        )
-
-        event[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
-        event[TrackingConstant.KEY_USER_ID] = userSession.userId
-        sendEventEcommerce(event)
+            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS)
+            putString(TrackingConstant.KEY_CURRENT_SITE, TrackingConstant.TOKOPEDIA_SELLER)
+            putString(TrackingConstant.KEY_SHOP_ID, userSession.shopId)
+            putString(TrackingConstant.KEY_USER_ID, userSession.userId)
+        }
+        sendEventEcommerce(TrackingConstant.EVENT_SELECT_CONTENT, eventBundle)
     }
 
     fun sendEventImpressUpsellPmPro(shopScore: String) {
-        val event = createEvent(
-            event = TrackingConstant.ACTION_PROMO_VIEW,
-            action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
-            category = TrackingConstant.getPowerMerchantCategory(),
-            label = getEventLabelCTAPmUpgrade(shopScore)
-        )
-
-        event[TrackingConstant.KEY_EVENT_ECOMMERCE] = DataLayer.mapOf(
-            TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOVIEW, DataLayer.mapOf(
-                TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION, DataLayer.listOf(
-                    DataLayer.mapOf(
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_ID,
-                        "",
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_NAME,
-                        TrackingConstant.PM_PRO_ACTIVATION_PAGE,
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE,
-                        TrackingConstant.PM_PRO_LEARN_MORE,
-                        TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_POSITION, ""
-                    )
-                )
+        val eventBundle = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE)
+            putString(TrackAppUtils.EVENT_CATEGORY, TrackingConstant.getPowerMerchantCategory())
+            putString(TrackAppUtils.EVENT_LABEL, getEventLabelCTAPmUpgrade(shopScore))
+            putParcelableArrayList(
+                TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION,
+                arrayListOf(getPromotionsBundle())
             )
-        )
+            putString(TrackingConstant.KEY_SHOP_ID, userSession.shopId)
+            putString(TrackingConstant.KEY_USER_ID, userSession.userId)
+            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS)
+            putString(TrackingConstant.KEY_CURRENT_SITE, TrackingConstant.TOKOPEDIA_SELLER)
+        }
 
-        event[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
-        event[TrackingConstant.KEY_USER_ID] = userSession.userId
-        sendEventEcommerce(event)
+        sendEventEcommerce(TrackingConstant.EVENT_VIEW_ITEM, eventBundle)
+    }
+
+    private fun getPromotionsBundle() = Bundle().apply {
+        putString(TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_ID, "")
+        putString(
+            TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_NAME,
+            TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        )
+        putString(
+            TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_NAME,
+            TrackingConstant.PM_PRO_LEARN_MORE
+        )
+        putString(TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_SLOT, "")
     }
 
     private fun getEventLabelCTAPmUpgrade(shopScore: String): String {
@@ -394,7 +384,7 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    private fun sendEventEcommerce(map: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    private fun sendEventEcommerce(eventName: String, value: Bundle) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, value)
     }
 }

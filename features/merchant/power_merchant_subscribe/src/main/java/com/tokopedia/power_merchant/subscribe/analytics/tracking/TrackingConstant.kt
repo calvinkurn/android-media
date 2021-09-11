@@ -31,21 +31,18 @@ object TrackingConstant {
     const val CATEGORY_MAIN_APP = "tokopedia main app"
     const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant pro opt out questionnaire"
 
-    const val ACTION_PROMO_CLICK = "promoClick"
-    const val ACTION_PROMO_VIEW = "promoView"
-    const val ACTION_SELECT_CONTENT = "select_content"
+    const val EVENT_SELECT_CONTENT = "select_content"
+    const val EVENT_VIEW_ITEM = "view_item"
     const val CLICK_LEARN_MORE_PM_PRO = "click pelajari selengkapnya PM Pro"
 
-    const val KEY_EVENT_ECOMMERCE = "ecommerce"
-    const val KEY_EVENT_ECOMMERCE_PROMOCLICK = "promoClick"
     const val KEY_EVENT_ECOMMERCE_PROMOTION = "promotions"
-    const val KEY_EVENT_ECOMMERCE_PROMOTION_ID = "id"
-    const val KEY_EVENT_ECOMMERCE_PROMOTION_NAME = "name"
-    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE = "creative"
-    const val KEY_EVENT_ECOMMERCE_PROMOTION_POSITION = "position"
     const val PM_PRO_ACTIVATION_PAGE = "PM Pro Activation Page"
     const val PM_PRO_LEARN_MORE = "pelajari selengkapnya PM Pro"
-    const val KEY_EVENT_ECOMMERCE_PROMOVIEW = "promoView"
+
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_ID = "item_id"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_NAME = "item_name"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_NAME = "creative_name"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_SLOT = "creative_slot"
 
     const val IMPRESSION_PM_PRO_LEARN_MORE = "impression pelajari selengkapnya PM Pro"
 
