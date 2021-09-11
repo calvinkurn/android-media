@@ -90,7 +90,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         if (!imageAdapter.isSelectedPositionsEmpty()) {
 
             val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
-                imageAdapter.dataList[it].asset.contentUri
+                it.asset.contentUri
             }
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
@@ -103,13 +103,13 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 activity?.finish()
             }
         } else {
-            showToast("Select any media first",Toaster.TYPE_NORMAL)
+            showToast("Select any media first", Toaster.TYPE_NORMAL)
         }
     }
 
     fun openEditor() {
         val assets = imageAdapter.selectedPositionMap.keys.map {
-            imageAdapter.dataList[it].asset.assetPath
+            it.asset.assetPath
         }
         val assetList = ArrayList<String>(assets)
         val intent = ImageEditorActivity.getIntent(
@@ -128,7 +128,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 if (hasAllPermission) {
                     openCamera()
                 } else {
-                    showToast("Please allow Permissions",Toaster.TYPE_NORMAL)
+                    showToast("Please allow Permissions", Toaster.TYPE_NORMAL)
                 }
             }
         }
@@ -234,18 +234,43 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         imageMultiSelect.setOnClickListener {
             imageMultiSelect.toggle()
-            imageAdapter.selectedPositionMap.keys.map {
-                imageAdapter.dataList[it].isSelected = false
-            }
-            imageAdapter.dataList.forEach {
-                it.isInMultiSelectMode = isMultiSelectEnable()
-            }
-            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
-            imageAdapter.clearSelectedItems()
-            if (hasSelectedItems) {
-                imageAdapter.notifyDataSetChanged()
-            }
-            selectedMediaView.removeAsset()
+//            imageAdapter.selectedPositionMap.keys.map {
+//                it.isSelected = false
+//            }
+//            imageAdapter.dataList.forEach {
+//                it.isInMultiSelectMode = isMultiSelectEnable()
+//            }
+//            if (isMultiSelectEnable()) {
+                val anyMediaIsSelected = selectedMediaView.asset != null
+                if (anyMediaIsSelected) {
+                    val selectedImageData = imageAdapter.selectedPositionMap.keys.filter { it.asset == selectedMediaView.asset }.first()
+
+                    if (selectedImageData != null) {
+
+                        //Clear previous selected
+                        val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
+                        imageAdapter.clearSelectedItems()
+
+                        if(!selectedItemIndexList.isNullOrEmpty()){
+                            selectedItemIndexList.forEach {
+                                imageAdapter.notifyItemChanged(it)
+                            }
+                        }
+
+                        imageAdapter.addSelectedItem(selectedImageData)
+                        imageAdapter.getListOfIndexWhichAreSelected().forEach {
+                            imageAdapter.notifyItemChanged(it)
+                        }
+                    }
+                }
+
+
+//            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
+//            imageAdapter.clearSelectedItems()
+//            if (hasSelectedItems) {
+//                imageAdapter.notifyDataSetChanged()
+//            }
+//            selectedMediaView.removeAsset()
         }
     }
 
@@ -256,7 +281,8 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     fun setupRv() {
 
         val columnCount = 3
-        rv.layoutManager = GridLayoutManager(context, columnCount)
+        val lm = GridLayoutManager(context, columnCount)
+        rv.layoutManager = lm
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
         val contentHeight = width / columnCount
 
@@ -265,7 +291,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
 
-        imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect)
+        imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect, lm)
         rv.adapter = imageAdapter
         val itemPadding = 4.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
@@ -289,7 +315,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    override fun isMultiSelectEnable():Boolean {
+    override fun isMultiSelectEnable(): Boolean {
         return imageMultiSelect.isChecked
     }
 
@@ -319,10 +345,13 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
                     if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
-                        imageAdapter.clearSelectedItems()
+//                        imageAdapter.clearSelectedItems()
 
-                        if (imageAdapter.addSelectedItem(1)) {
-                            selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                        if (!isMultiSelectEnable()) {
+                            imageAdapter.clearSelectedItems()
+                            if (imageAdapter.addSelectedItem(1)) {
+                                selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                            }
                         }
 
                         //update folders
@@ -340,7 +369,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                     imageAdapter.notifyDataSetChanged()
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    showToast("Error",Toaster.TYPE_ERROR)
+                    showToast("Error", Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -353,13 +382,13 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             }
         }
 
-        imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData->
-            if(!isMultiSelectEnable()){
+        imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData ->
+            if (!isMultiSelectEnable()) {
                 /**
                  * 1. tell adapter that multiselect is active by doing step 2
                  * 2. toggle multi-select icon
                  * 2. update all items except selected one to show empty circle
-                * */
+                 * */
                 imageMultiSelect.toggle(true)
 //                imageAdapter.dataList.forEach {
 //                    if(it != imageAdapterData){
@@ -370,7 +399,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    fun enableMultiSelectMode(){
+    fun enableMultiSelectMode() {
 
     }
 

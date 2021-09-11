@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
 import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
@@ -16,16 +17,17 @@ class ImageAdapter(
     val dataList: List<ImageAdapterData>,
     val contentHeight: Int,
     val mainFragmentContract: MainFragmentContract,
-    val maxMultiSelectLimit: Int
+    val maxMultiSelectLimit: Int,
+    val layoutManager: GridLayoutManager
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var itemSelectCallback: Function2<ImageAdapterData, Boolean, Unit>? = null
     var onItemLongClick: Function1<ImageAdapterData, Unit>? = null
 
     /**
-     *Position and count
+     * Data and count
      * */
-    val selectedPositionMap = mutableMapOf<Int, Int>()
+    val selectedPositionMap = mutableMapOf<ImageAdapterData, Int>()
 
     val INVALID_KEY = -1
 
@@ -39,8 +41,12 @@ class ImageAdapter(
                 return false
             }
         }
-        selectedPositionMap[position] = selectedPositionMap.size + 1
+        selectedPositionMap[dataList[position]] = selectedPositionMap.size + 1
         return true
+    }
+
+    fun addSelectedItem(data:ImageAdapterData){
+        selectedPositionMap[data] = selectedPositionMap.size + 1
     }
 
     fun clearSelectedItems() {
@@ -71,8 +77,9 @@ class ImageAdapter(
         if (holder is CameraViewHolder) {
             holder.setData()
         } else if (holder is PhotosViewHolder) {
-            holder.setData(dataList[position])
-            holder.setChecked(selectedPositionMap[position], mainFragmentContract.isMultiSelectEnable())
+            val currentImageAdapterData = dataList[position]
+            holder.setData(currentImageAdapterData)
+            holder.setChecked(selectedPositionMap[currentImageAdapterData], mainFragmentContract.isMultiSelectEnable())
 
             holder.itemView.setOnClickListener {
                 handleSelectionUnSelection(holder, position)
@@ -82,12 +89,12 @@ class ImageAdapter(
 
                 if (!mainFragmentContract.isMultiSelectEnable()) {
 
-                    onItemLongClick?.invoke(dataList[position])
+                    onItemLongClick?.invoke(currentImageAdapterData)
 
                     //Remove previously selected items
                     if (selectedPositionMap.isNotEmpty()) {
-                        val selectedItemKey = selectedPositionMap.keys.first()
-                        dataList[selectedItemKey].isSelected = false
+//                        val selectedItem = selectedPositionMap.keys.first()
+//                        selectedItem.isSelected = false
                         selectedPositionMap.clear()
                     }
                 }
@@ -100,10 +107,11 @@ class ImageAdapter(
     }
 
     private fun handleSelectionUnSelection(holder: PhotosViewHolder, position: Int) {
-        if (selectedPositionMap.contains(position)) {
+        val item = dataList[position]
+        if (selectedPositionMap.contains(item)) {
 
-            if (dataList[position].asset != mainFragmentContract.getAssetInPreview()) {
-                itemSelectCallback?.invoke(dataList[position], true)
+            if (item.asset != mainFragmentContract.getAssetInPreview()) {
+                itemSelectCallback?.invoke(item, true)
             } else {
                 unSelectItem(position, holder)
             }
@@ -114,47 +122,75 @@ class ImageAdapter(
     }
 
     private fun unSelectItem(position: Int, holder: PhotosViewHolder? = null) {
-        val circleCount = selectedPositionMap[position]
+        val item = dataList[position]
+        val circleCount = selectedPositionMap[item]
 
         val isSelectedNextItem = selectNextItem(circleCount)
 
-        selectedPositionMap.remove(position)
+        selectedPositionMap.remove(item)
 
+        //Notify items to update circle count
         for ((k, v) in selectedPositionMap) {
             if (circleCount != null) {
                 if (v > circleCount) {
                     selectedPositionMap[k] = v - 1
-                    notifyItemChanged(k)
+//                    notifyItemChanged(k)
                 }
             }
         }
+
+        //Logic to notify items
+        notifyItems()
 
         holder?.setChecked(null, mainFragmentContract.isMultiSelectEnable())
         if (!isSelectedNextItem) {
             itemSelectCallback?.invoke(dataList[position], false)
         }
+    }
 
+    private fun notifyItems(){
+        val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
+        val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
+        (firstPos..lastPos).forEach { index ->
+            val isSelected = selectedPositionMap[dataList[index]]
+            if (isSelected != null) {
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun getListOfIndexWhichAreSelected():List<Int>{
+        val list = arrayListOf<Int>()
+        val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
+        val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
+        (firstPos..lastPos).forEach { index ->
+            val isSelected = selectedPositionMap[dataList[index]]
+            if (isSelected != null) {
+                list.add(index)
+            }
+        }
+        return list
     }
 
     private fun selectNextItem(circleCount: Int?): Boolean {
         if (mainFragmentContract.isMultiSelectEnable() && circleCount != null) {
-            val previousSelectedPos = findPreviousSelectedAdapterPosition(circleCount)
-            val nextSelectedPos = findNextSelectedAdapterPosition(circleCount)
+            val previousSelectedItem = findPreviousSelectedAdapterPosition(circleCount)
+            val nextSelectedItem = findNextSelectedAdapterPosition(circleCount)
 
-            if (nextSelectedPos != INVALID_KEY) {
-                itemSelectCallback?.invoke(dataList[nextSelectedPos], true)
+            if (nextSelectedItem != null) {
+                itemSelectCallback?.invoke(nextSelectedItem, true)
                 return true
-            } else if (previousSelectedPos != INVALID_KEY) {
-                itemSelectCallback?.invoke(dataList[previousSelectedPos], true)
+            } else if (previousSelectedItem != null) {
+                itemSelectCallback?.invoke(previousSelectedItem, true)
                 return true
             }
         }
         return false
     }
 
-    fun findPreviousSelectedAdapterPosition(circleCount: Int): Int {
+    fun findPreviousSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
         var tempLowCount = 0
-        var key = INVALID_KEY
+        var key :ImageAdapterData? = null
         for ((k, v) in selectedPositionMap) {
             if (v < circleCount && v > tempLowCount) {
                 tempLowCount = v
@@ -164,9 +200,9 @@ class ImageAdapter(
         return key
     }
 
-    fun findNextSelectedAdapterPosition(circleCount: Int): Int {
+    fun findNextSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
         var tempHighCount = selectedPositionMap.size + 1
-        var key = INVALID_KEY
+        var key :ImageAdapterData?= null
         for ((k, v) in selectedPositionMap) {
             if (v > circleCount && v < tempHighCount) {
                 tempHighCount = v
@@ -187,9 +223,16 @@ class ImageAdapter(
 
             if (!mainFragmentContract.isMultiSelectEnable() && selectedPositionMap.isNotEmpty()) {
                 //Remove previously selected item
-                val previouslySelectedItemPosition = selectedPositionMap.keys.first()
-                unSelectItem(previouslySelectedItemPosition)
-                notifyItemChanged(previouslySelectedItemPosition)
+                val rangeList = getListOfIndexWhichAreSelected()
+                selectedPositionMap.clear()
+                if(!rangeList.isNullOrEmpty()){
+                    notifyItemChanged(rangeList.first())
+                }
+//                   selectedPositionMap.clear()
+//                val previouslySelectedItemPosition = selectedPositionMap.keys.first()
+//                unSelectItem(previouslySelectedItemPosition)
+//                notifyItemChanged(previouslySelectedItemPosition)
+//                notifyItems()
             }
             addSelectedItem(position)
             holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())
