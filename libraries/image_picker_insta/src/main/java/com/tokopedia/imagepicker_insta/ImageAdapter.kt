@@ -93,9 +93,11 @@ class ImageAdapter(
 
                     //Remove previously selected items
                     if (selectedPositionMap.isNotEmpty()) {
-//                        val selectedItem = selectedPositionMap.keys.first()
-//                        selectedItem.isSelected = false
+                        val listOfIndexes = getListOfIndexWhichAreSelected()
                         selectedPositionMap.clear()
+                        listOfIndexes.forEach {
+                            notifyItemChanged(it)
+                        }
                     }
                 }
 

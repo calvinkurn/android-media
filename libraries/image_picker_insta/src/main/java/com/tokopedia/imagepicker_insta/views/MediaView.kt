@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.VideoData
 import timber.log.Timber
@@ -51,7 +52,7 @@ class MediaView @JvmOverloads constructor(
             field = value
         }
 
-    var asset: Asset? = null
+    var imageAdapterData: ImageAdapterData? = null
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {})
 
@@ -145,9 +146,9 @@ class MediaView @JvmOverloads constructor(
         mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
     }
 
-    fun loadAsset(asset: Asset) {
-        this.asset = asset
-
+    fun loadAsset(imageAdapterData: ImageAdapterData) {
+        this.imageAdapterData = imageAdapterData
+        val asset = imageAdapterData.asset
         stopPlayer()
 
         if (asset is VideoData) {
@@ -170,7 +171,7 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun removeAsset() {
-        this.asset = null
+        this.imageAdapterData = null
         playerView.visibility = View.GONE
         stopPlayer()
         assetView.removeAsset()

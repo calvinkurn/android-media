@@ -227,7 +227,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         }
 
         imageFitCenter.setOnClickListener {
-            if (selectedMediaView.asset != null) {
+            if (selectedMediaView.imageAdapterData != null) {
                 selectedMediaView.toggleScaleType()
             }
         }
@@ -241,11 +241,8 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 //                it.isInMultiSelectMode = isMultiSelectEnable()
 //            }
 //            if (isMultiSelectEnable()) {
-                val anyMediaIsSelected = selectedMediaView.asset != null
-                if (anyMediaIsSelected) {
-                    val selectedImageData = imageAdapter.selectedPositionMap.keys.filter { it.asset == selectedMediaView.asset }.first()
 
-                    if (selectedImageData != null) {
+                    if (selectedMediaView.imageAdapterData != null) {
 
                         //Clear previous selected
                         val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
@@ -257,12 +254,12 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                             }
                         }
 
-                        imageAdapter.addSelectedItem(selectedImageData)
+                        imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
                         imageAdapter.getListOfIndexWhichAreSelected().forEach {
                             imageAdapter.notifyItemChanged(it)
                         }
                     }
-                }
+
 
 
 //            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
@@ -320,7 +317,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     }
 
     override fun getAssetInPreview(): Asset? {
-        return selectedMediaView.asset
+        return selectedMediaView.imageAdapterData?.asset
     }
 
     private fun setObservers() {
@@ -350,7 +347,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                         if (!isMultiSelectEnable()) {
                             imageAdapter.clearSelectedItems()
                             if (imageAdapter.addSelectedItem(1)) {
-                                selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                                selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first())
                             }
                         }
 
@@ -376,9 +373,10 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
             if (isSelected) {
-                selectedMediaView.loadAsset(imageAdapterData.asset)
+                selectedMediaView.loadAsset(imageAdapterData)
             } else {
-                selectedMediaView.removeAsset()
+                //DO nothing
+//                selectedMediaView.removeAsset()
             }
         }
 
@@ -464,7 +462,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         if (!cameraCaptureFilePath.isNullOrEmpty()) {
             val imageAdapterData = viewModel.mediaUseCaseData?.mediaImporterData?.addCameraImage(cameraCaptureFilePath!!)
             if (imageAdapterData != null) {
-                selectedMediaView.loadAsset(imageAdapterData.asset)
+                selectedMediaView.loadAsset(imageAdapterData)
                 addAssetToGallery(imageAdapterData.asset)
                 addToCurrnetDisplayedList(imageAdapterData)
             }
@@ -490,7 +488,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun reset() {
-        if (selectedMediaView.asset != null) {
+        if (selectedMediaView.imageAdapterData != null) {
             selectedMediaView.removeAsset()
         }
         imageAdapter.clearSelectedItems()
