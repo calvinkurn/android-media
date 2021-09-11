@@ -22,6 +22,8 @@ fun MacrobenchmarkRule.measureStartup(
     iterations = iterations,
     startupMode = startupMode
 ) {
-    pressHome()
     startActivityAndWait(intent.invoke())
+    Thread.sleep(5000)
+    pressHome()
+    Thread.sleep(5000)
 }
