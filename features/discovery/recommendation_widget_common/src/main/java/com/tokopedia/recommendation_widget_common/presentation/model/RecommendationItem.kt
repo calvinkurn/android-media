@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
-        val productId: String = "",
+        val productId: Long = 0L,
         val name: String = "",
         val categoryBreadcrumbs: String = "",
         val url: String = "",
