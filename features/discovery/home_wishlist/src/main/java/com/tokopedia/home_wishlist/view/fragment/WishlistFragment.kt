@@ -238,7 +238,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
-                        id.toInt(),
+                        id,
                         wishlistStatusFromPdp
                 )
             }

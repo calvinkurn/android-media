@@ -496,7 +496,7 @@ open class WishlistViewModel @Inject constructor(
      *
      * This function will update selected recommendation item with new wishlist state
      */
-    open fun updateRecommendationItemWishlist(productId: Int, parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
+    open fun updateRecommendationItemWishlist(productId: String, parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
         val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.copy()
 
         if (parentPosition == DEFAULT_PARENT_POSITION_EMPTY_RECOM) {
@@ -925,7 +925,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                updateRecommendationItemWishlist(productId?.toInt()?:-1, parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId, parentPosition, childPosition, !currentWishlistState)
                 addWishlistRecommendationActionData.value = Event(
                         AddWishlistRecommendationData(
                                 message = "",
@@ -986,7 +986,7 @@ open class WishlistViewModel @Inject constructor(
         )
     }
 
-    fun onPDPActivityResultForWishlist(productId: Int, wishlistState: Boolean) {
+    fun onPDPActivityResultForWishlist(productId: String, wishlistState: Boolean) {
         if (tempSelectedParentPositionInPDP != null &&
                 tempSelectedPositionInPdp != null &&
                 tempSelectedProductIdInPdp != null) {

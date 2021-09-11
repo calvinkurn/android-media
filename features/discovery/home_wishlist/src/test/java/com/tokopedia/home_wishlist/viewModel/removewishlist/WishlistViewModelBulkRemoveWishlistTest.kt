@@ -71,11 +71,11 @@ class WishlistViewModelBulkRemoveWishlistTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = 33),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = "11"),
+                        RecommendationItem(productId = "22"),
+                        RecommendationItem(productId = "33"),
+                        RecommendationItem(productId = "44"),
+                        RecommendationItem(productId = "55")
                 )
         )
 
@@ -243,11 +243,11 @@ class WishlistViewModelBulkRemoveWishlistTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = 33),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = "11"),
+                        RecommendationItem(productId = "22"),
+                        RecommendationItem(productId = "33"),
+                        RecommendationItem(productId = "44"),
+                        RecommendationItem(productId = "55")
                 )
         )
 
@@ -412,11 +412,11 @@ class WishlistViewModelBulkRemoveWishlistTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = 33),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = "11"),
+                        RecommendationItem(productId = "22"),
+                        RecommendationItem(productId = "33"),
+                        RecommendationItem(productId = "44"),
+                        RecommendationItem(productId = "55")
                 )
         )
 
