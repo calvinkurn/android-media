@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.settings.view.adapter.viewholder.*
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.*
-import com.tokopedia.sellerhome.settings.view.viewholder.NewOtherMenuViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 
-class ShopSecondaryInfoAdapterTypeFactory(private val listener: NewOtherMenuViewHolder.Listener) :
+class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHolder.Listener) :
     BaseAdapterTypeFactory(),
     ShopSecondaryInfoAdapterFactory {
 

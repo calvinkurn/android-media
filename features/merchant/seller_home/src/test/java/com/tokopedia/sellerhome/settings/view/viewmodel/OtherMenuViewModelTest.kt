@@ -15,7 +15,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.domain.usecase.old.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
