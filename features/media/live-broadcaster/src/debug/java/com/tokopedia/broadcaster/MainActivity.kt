@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.SurfaceHolder
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
+import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
 import com.tokopedia.broadcaster.databinding.ActivityMainBinding
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 binding.debugView.updateState(state)
             }
 
-            override fun onUpdateLivePusherStatistic(log: BroadcasterDataLog) {
+            override fun onUpdateLivePusherStatistic(log: LiveBroadcasterLogger) {
                 binding.debugView.updateStats(log)
             }
         })

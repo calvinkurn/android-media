@@ -10,7 +10,7 @@ sealed class BroadcasterState {
     object Stop: BroadcasterState()
 
     data class Error(
-        val reason: String
+        val reason: String = ""
     ): BroadcasterState()
 }
 

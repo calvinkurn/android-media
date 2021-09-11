@@ -4,13 +4,13 @@ import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
-interface BroadcasterLogger {
+interface BroadcasterTracker {
     fun priority(): Priority
     fun tag(): String
     fun track(data: ChuckerLogUIModel)
 }
 
-class BroadcasterLoggerImpl : BroadcasterLogger {
+class BroadcasterTrackerImpl : BroadcasterTracker {
 
     override fun priority(): Priority {
         return Priority.P2

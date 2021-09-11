@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.ARM_64
@@ -15,19 +16,17 @@ import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlin.test.*
+import org.json.JSONObject
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-@ExperimentalCoroutinesApi
 open class BaseLiveBroadcasterManagerTest {
-
-    protected val testDispatcher = TestCoroutineDispatcher()
 
     val broadcaster = LiveBroadcasterManager(
         streamer = mockk(relaxUnitFun = true),
-        dataLogCentralized = mockk(relaxUnitFun = true),
-        dispatcher = testDispatcher,
+        logger = mockk(relaxUnitFun = true),
     )
 
     protected val context = mockk<Context>(relaxed = true)
@@ -41,15 +40,20 @@ open class BaseLiveBroadcasterManagerTest {
         broadcaster.mConfig = newConfig
     }
 
-    fun `Given create streamer connection with id`(id: Int = 123) {
+    fun `Given create streamer connection with id`(id: Int = 123, block: (Int) -> Unit = {}) {
         every {
-            broadcaster.streamer?.createConnection(any())
+            broadcaster.streamer?.createConnection(any() as BroadcasterConnection)
         } returns id
+
+        broadcaster.mConnection.connectionId = id
+
+        // seamless with the same of connection id
+        block(id)
     }
 
     fun `Given data logger`() {
         justRun {
-            broadcaster.dataLogCentralized.init(
+            broadcaster.logger.init(
                 any(),
                 any()
             )
@@ -135,6 +139,28 @@ open class BaseLiveBroadcasterManagerTest {
         justRun { broadcaster.streamer?.startAudioCapture() }
     }
 
+    fun `Given last state as`(state: BroadcasterState) {
+        broadcaster.broadcastState(state)
+    }
+
+    fun `Given the state of isPushStarted`(value: Boolean) {
+        broadcaster.isPushStarted = value
+    }
+
+    fun `When connection changed with state and status`(
+        connectionId: Int,
+        state: Streamer.CONNECTION_STATE,
+        status: Streamer.STATUS? = null,
+        infoJson: JSONObject? = null
+    ) {
+        broadcaster.onConnectionStateChanged(
+            connectionId,
+            state,
+            status,
+            infoJson
+        )
+    }
+
     fun `Then stop audio capture is called`() {
         verify(exactly = 1) { broadcaster.streamer?.stopAudioCapture() }
     }
@@ -178,7 +204,7 @@ open class BaseLiveBroadcasterManagerTest {
     }
 
     fun `Then the state should be`(state: BroadcasterState) {
-        assertTrue { broadcaster.mState == state }
+        assertTrue { broadcaster.mState.javaClass == state.javaClass }
     }
 
     fun `Then a property from BroadcasterConfig equals of`(broadcasterConfig: BroadcasterConfig) {
@@ -187,7 +213,7 @@ open class BaseLiveBroadcasterManagerTest {
 
     fun `Then data log is succeed to init`() {
         verify(exactly = 1) {
-            broadcaster.dataLogCentralized.init(
+            broadcaster.logger.init(
                 any(),
                 any()
             )

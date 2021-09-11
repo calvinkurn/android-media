@@ -1,11 +1,10 @@
 package com.tokopedia.broadcaster.utils
 
-import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class BroadcasterUtilTest {

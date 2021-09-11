@@ -16,8 +16,7 @@ import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
-import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
-import com.tokopedia.broadcaster.tracker.BroadcasterLoggerImpl
+import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
@@ -39,17 +38,14 @@ class LiveBroadcasterManager constructor(
     var streamer: LibStreamerGL? = null,
     var mConfig: BroadcasterConfig = BroadcasterConfig(),
     var mConnection: BroadcasterConnection = BroadcasterConnection(),
-    var dispatcher: CoroutineDispatcher = Dispatchers.Main,
-    val dataLogCentralized: BroadcasterDataLog = BroadcasterDataLog()
+    val logger: LiveBroadcasterLogger = LiveBroadcasterLogger(),
 ) : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
-    private var mContext: Context? = null
-
     private var mListener: BroadcasterListener? = null
-    private var mHandler: Handler? = null
     private var mBitrateAdapter: BitrateAdapter? = null
 
-    private val newRelicTracker = BroadcasterLoggerImpl()
+    private var mContext: Context? = null
+    private var mHandler: Handler? = null
     private var statisticUpdateTimer: Timer? = null
 
     var mAvailableCameras = mutableListOf<CameraInfo>()
@@ -59,7 +55,7 @@ class LiveBroadcasterManager constructor(
     private val job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = job + dispatcher
+        get() = job + Dispatchers.IO
 
     override val connection: BroadcasterConnection
         get() = mConnection
@@ -189,7 +185,7 @@ class LiveBroadcasterManager constructor(
                 broadcastState(BroadcasterState.Connecting)
             }
             Streamer.CONNECTION_STATE.CONNECTED -> {
-                dataLogCentralized.init(streamer, connectionId)
+                logger.init(streamer, connectionId)
             }
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
@@ -315,7 +311,9 @@ class LiveBroadcasterManager constructor(
         streamer = LibStreamerGLFactory(builder.build())
     }
 
-    private fun safeStartPreview() {
+    private fun safeStartPreview(
+        dispatcher: CoroutineDispatcher = Dispatchers.Main
+    ) {
         launch(dispatcher) {
             delay(SAFE_OPEN_CAMERA_DELAYED)
 
@@ -358,7 +356,7 @@ class LiveBroadcasterManager constructor(
         )
     }
 
-    private fun broadcastState(state: BroadcasterState) {
+    fun broadcastState(state: BroadcasterState) {
         mState = state
         mListener?.onNewLivePusherState(state)
     }
@@ -404,8 +402,8 @@ class LiveBroadcasterManager constructor(
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { dataLogCentralized.update(it, mConfig, newRelicTracker) }
-                    mListener?.onUpdateLivePusherStatistic(dataLogCentralized)
+                    mContext?.let { logger.update(it, mConfig) }
+                    mListener?.onUpdateLivePusherStatistic(logger)
                 }
             }
 

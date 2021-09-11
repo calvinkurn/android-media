@@ -10,7 +10,7 @@ import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
-class BroadcasterDataLog {
+class LiveBroadcasterLogger {
 
     private var mStreamer: LibStreamerGL? = null
     private var mConnectionId: Int? = null
@@ -25,6 +25,8 @@ class BroadcasterDataLog {
     private var mPacketLossIncreased = false
 
     private val mLocale = Locale.getDefault()
+
+    private val tracker: BroadcasterTracker = BroadcasterTrackerImpl()
 
     private fun Int?.orZero(): Int {
         if (this == null) return 0
@@ -70,7 +72,7 @@ class BroadcasterDataLog {
 
     fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    fun update(context: Context, config: BroadcasterConfig, logger: BroadcasterLogger) {
+    fun update(context: Context, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
@@ -118,7 +120,7 @@ class BroadcasterDataLog {
         }
 
         // track data
-        logger.track(dataUIModel)
+        tracker.track(dataUIModel)
     }
 
 }

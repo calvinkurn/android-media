@@ -9,13 +9,12 @@ import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.wmspanel.libstream.Streamer
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import com.wmspanel.libstream.Streamer.CONNECTION_STATE as streamerState
 
-@ExperimentalCoroutinesApi
 class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
     /**
@@ -37,11 +36,11 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
      * ✅ connection state changed init
      * ✅ connection state changed setup
      * ✅ connection state changed connected
-     * ⏳ connection state changed record
-     * ⏳ connection state changed disconnected
-     * ⏳ connection state changed started
-     * ⏳ connection state changed resumed
-     * ⏳ connection state changed recovered
+     * ✅ connection state changed record
+     * ✅ connection state changed disconnected
+     * ✅ connection state changed started
+     * ✅ connection state changed resumed
+     * ✅ connection state changed recovered
      * ⏳ video capture state changed
      * ⏳ audio capture state changed
      * ⏳ create streamer
@@ -129,17 +128,19 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
     @Test
     // Ignored for now
-    fun `Should be able to start preview if streamer non-null`() = testDispatcher.runBlockingTest {
-        // Given
-        //`Given start video capture from streamerGL`()
-        //`Given start audio capture from streamerGL`()
-
-        // When
-        //broadcaster.startPreview(SurfaceView(context))
-
-        // Then
-        //`Then startVideoCapture of streamer is called`()
-        //`Then startAudioCapture of streamer is called`()
+    fun `Should be able to start preview if streamer non-null`() {
+//        runBlocking {
+//            // Given
+//            `Given start video capture from streamerGL`()
+//            `Given start audio capture from streamerGL`()
+//
+//            // When
+//            broadcaster.startPreview(SurfaceView(context))
+//
+//            // Then
+//            `Then startVideoCapture of streamer is called`()
+//            `Then startAudioCapture of streamer is called`()
+//        }
     }
 
     @Test
@@ -180,7 +181,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         // Given
         `Given isDeviceSupported as`(true)
         `Given device has available cameras as`(true)
-        `Given create streamer connection with id`()
+        `Given create streamer connection with id`(123)
 
         // When
         broadcaster.init(context, Handler())
@@ -197,7 +198,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     @Test
     fun `Should not be able to start live streaming without init`() {
         // Given
-        `Given create streamer connection with id`()
+        `Given create streamer connection with id`(0)
 
         // Then
         `Then should be throw fails as`<IllegalAccessException> {
@@ -208,7 +209,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     @Test
     fun `Should be able to resume the live stream`() {
         // Given
-        `Given create streamer connection with id`()
+        `Given create streamer connection with id`(123)
 
         // When
         broadcaster.resume()
@@ -220,7 +221,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     @Test
     fun `Should be able to pause the live stream`() {
         // Given
-        `Given create streamer connection with id`()
+        `Given create streamer connection with id`(123)
 
         // When
         broadcaster.pause()
@@ -243,7 +244,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     fun `Should be connection state changed return as Idle when streamer is Idle`() {
         // Given
         val connectionId = 123
-        val streamerState = Streamer.CONNECTION_STATE.IDLE
+        val streamerState = streamerState.IDLE
         `Given create streamer connection with id`(connectionId)
 
         // When
@@ -259,19 +260,32 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     }
 
     @Test
+    fun `Should be connection state changed return as Connecting when streamer is initialized`() {
+        // Given
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.INITIALIZED
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Connecting)
+    }
+
+    @Test
     fun `Should be connection state changed return as Connecting when streamer is setup`() {
         // Given
-        val connectionId = 123
-        val streamerState = Streamer.CONNECTION_STATE.SETUP
-        `Given create streamer connection with id`(connectionId)
+        `Given create streamer connection with id`(456) {
 
-        // When
-        broadcaster.onConnectionStateChanged(
-            connectionId,
-            streamerState,
-            null,
-            null
-        )
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.SETUP
+            )
+        }
 
         // Then
         `Then the state should be`(BroadcasterState.Connecting)
@@ -280,22 +294,177 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     @Test
     fun `Should be init the data log when state of streamer as Connected`() {
         // Given
-        val connectionId = 123
-        val streamerState = Streamer.CONNECTION_STATE.CONNECTED
-
         `Given data logger`()
-        `Given create streamer connection with id`(connectionId)
+        `Given create streamer connection with id`(456) {
 
-        // When
-        broadcaster.onConnectionStateChanged(
-            connectionId,
-            streamerState,
-            null,
-            null
-        )
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.CONNECTED
+            )
+        }
 
         // Then
         `Then data log is succeed to init`()
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Recovered when streamer as record and last state is error`() {
+        // Given
+        `Given last state as`(BroadcasterState.Error())
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.RECORD
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Recovered)
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Resumed when when streamer as record`() {
+        // Given
+        `Given the state of isPushStarted`(true)
+        `Given create streamer connection with id`(456) {
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.RECORD
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Resumed)
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Started when when streamer as record and push has not started`() {
+        // Given
+        `Given the state of isPushStarted`(false)
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.RECORD
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Started)
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when pusher has started, state as disconnected and status as connection fail`() {
+        // Given
+        `Given the state of isPushStarted`(true)
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.CONN_FAIL
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when pusher has not started, state as disconnected and status as connection fail`() {
+        // Given
+        `Given the state of isPushStarted`(false)
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.CONN_FAIL
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when state as disconnected and status as auth fail`() {
+        // Given
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.AUTH_FAIL
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when there is info, state as disconnected and status as unknown fail`() {
+        // Given
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.UNKNOWN_FAIL
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when there is no info, state as disconnected and status as unknown fail`() {
+        // Given
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.UNKNOWN_FAIL,
+                infoJson = JSONObject("""
+                {
+                    "reason": "loren ipsum"
+                }
+            """.trimIndent())
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
+    }
+
+    @Test
+    fun `Should be onConnectionStateChanged return as Error when streamer successful disconnected`() {
+        // Given
+        `Given create streamer connection with id`(456) {
+
+            // When
+            `When connection changed with state and status`(
+                connectionId = it,
+                state = Streamer.CONNECTION_STATE.DISCONNECTED,
+                status = Streamer.STATUS.SUCCESS
+            )
+        }
+
+        // Then
+        `Then the state should be`(BroadcasterState.Error())
     }
 
     @After
