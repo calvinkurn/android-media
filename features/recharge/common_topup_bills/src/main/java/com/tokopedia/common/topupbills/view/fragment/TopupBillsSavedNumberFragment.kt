@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
@@ -36,6 +37,13 @@ open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val savedNumberViewModel by lazy {
         viewModelFragmentProvider.get(TopupBillsSavedNumberViewModel::class.java) }
+
+    private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            binding?.commonTopupBillsSavedNumSwitcher?.isChecked = (position == POSITION_FAVORITE_NUMBER)
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
@@ -86,8 +94,13 @@ open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     }
 
     private fun initViewPager() {
-        pagerAdapter = getSavedNumTabAdapter()
-        binding?.commonTopupBillsSavedNumViewpager?.adapter = pagerAdapter
+        pagerAdapter = TopupBillsSavedNumTabAdapter(
+            this, clientNumberType, number,
+            dgCategoryIds, currentCategoryName, operatorData)
+        binding?.commonTopupBillsSavedNumViewpager?.run {
+            adapter = pagerAdapter
+            registerOnPageChangeCallback(viewPagerCallback)
+        }
     }
 
     private fun initListener() {
@@ -95,22 +108,18 @@ open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
             commonTopupBillsSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     commonTopupBillsSavedNumViewpager.setCurrentItem(
-                        POSITION_FAVORITE_NUMBER, true)
+                        POSITION_FAVORITE_NUMBER, true
+                    )
                 } else {
                     commonTopupBillsSavedNumViewpager.setCurrentItem(
-                        POSITION_CONTACT_LIST, true)
+                        POSITION_CONTACT_LIST, true
+                    )
                 }
             }
             commonTopupBillsSavedNumSearchbar.searchBarTextField.addTextChangedListener(
                 getSearchTextWatcher
             )
         }
-    }
-
-    private fun getSavedNumTabAdapter(): TopupBillsSavedNumTabAdapter {
-        return TopupBillsSavedNumTabAdapter(
-            this, clientNumberType, number,
-            dgCategoryIds, currentCategoryName, operatorData)
     }
 
     private fun saveTelcoOperator(rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect) {
@@ -139,6 +148,14 @@ open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             //do nothing
         }
+    }
+
+    override fun onDestroy() {
+        binding?.commonTopupBillsSavedNumViewpager?.run {
+            adapter = null
+            unregisterOnPageChangeCallback(viewPagerCallback)
+        }
+        super.onDestroy()
     }
 
     companion object {
