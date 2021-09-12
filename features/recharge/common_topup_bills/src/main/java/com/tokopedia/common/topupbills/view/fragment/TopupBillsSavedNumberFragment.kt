@@ -20,7 +20,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
+class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
 
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>

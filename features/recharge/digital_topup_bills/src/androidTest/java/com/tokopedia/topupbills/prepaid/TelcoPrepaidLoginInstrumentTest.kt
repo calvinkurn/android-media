@@ -6,10 +6,12 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -25,6 +27,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.R.id.*
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -43,6 +46,7 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithT
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.PREFERENCES_NAME
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.TELCO_COACH_MARK_HAS_SHOWN
 import com.tokopedia.topupbills.utils.CommonTelcoActions
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickFilterChip_withText
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -106,6 +110,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
         validate_coachmark()
         validate_pdp_client_number_widget_interaction()
+        validate_filter_chip()
         validate_interaction_saved_number()
         validate_tab_menu_login()
         interaction_product_login()
@@ -122,19 +127,19 @@ class TelcoPrepaidLoginInstrumentTest {
         if (!localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)) {
             Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_client_number)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
+            onView(withId(text_next)).perform(click())
 
             Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_previous)).perform(click())
+            onView(withId(text_previous)).perform(click())
 
             Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_client_number)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
+            onView(withId(text_next)).perform(click())
 
             Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
+            onView(withId(text_next)).perform(click())
         }
     }
 
@@ -148,6 +153,28 @@ class TelcoPrepaidLoginInstrumentTest {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+
+        // validate autocomplete
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER)
+        Thread.sleep(2000)
+        onView(withText("Danur Kebab 2"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        clientNumberWidget_clickClearBtn()
+    }
+
+    fun validate_filter_chip() {
+        clientNumberWidget_clickFilterChip_withText("Tokopedia")
+        clientNumberWidget_validateText("081232323239")
+
+        onView(withId(telco_filter_chip)).perform(swipeLeft())
+        Thread.sleep(1000)
+
+        clientNumberWidget_clickFilterChip_withText("Make it Happen")
+        clientNumberWidget_validateText("085612309812")
     }
 
     fun validate_interaction_saved_number() {
@@ -177,9 +204,9 @@ class TelcoPrepaidLoginInstrumentTest {
         clientNumberWidget_validateText(EMPTY_TEXT)
 
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        onView(AllOf.allOf(withId(tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(2000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        onView(AllOf.allOf(withId(tab_item_text_id), withText("Promo"))).perform(click())
     }
 
     fun interaction_product_login() {
@@ -192,7 +219,7 @@ class TelcoPrepaidLoginInstrumentTest {
         // click on product item on pulsa
         Thread.sleep(2000)
         pdp_validateProductViewDisplayed()
-        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.telco_product_rv))).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(telco_product_rv))).check(matches(isDisplayed()))
 
         productItem_click(viewInteraction, 1)
         Thread.sleep(2000)
@@ -211,27 +238,29 @@ class TelcoPrepaidLoginInstrumentTest {
         pdp_validateBuyWidgetNotDisplayed()
         productItem_clickSeeMore(viewInteraction, 2)
         Thread.sleep(2000)
-        onView(AllOf.allOf(withId(R.id.telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_button_select_item)).perform(click())
+        onView(AllOf.allOf(withId(telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
+        onView(withId(telco_button_select_item)).perform(click())
+
+        productItemRv_scrollToPosition(viewInteraction, 0)
     }
 
     fun interaction_product_mccm() {
         // click tab paket data, click lihat detail and close bottom sheet
-        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.telco_mccm_rv))).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(telco_mccm_rv))).check(matches(isDisplayed()))
         Thread.sleep(2000)
 
         // click item, should show buy widget
         productItem_click(viewInteraction, 0)
         Thread.sleep(2000)
         pdp_validateBuyWidgetDisplayed()
-        onView(withId(R.id.txt_recharge_checkout_price)).check(matches(withText("Rp 15.500")))
+        onView(withId(txt_recharge_checkout_price)).check(matches(withText("Rp 15.500")))
         Thread.sleep(1000)
 
         // click see more button, should show see more item
         productItem_clickSeeMore(viewInteraction, 0)
         Thread.sleep(2000)
-        onView(AllOf.allOf(withId(R.id.telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_button_select_item)).perform(click())
+        onView(AllOf.allOf(withId(telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
+        onView(withId(telco_button_select_item)).perform(click())
     }
 
 
@@ -245,8 +274,8 @@ class TelcoPrepaidLoginInstrumentTest {
     }
 
     private fun clickFirstRecentItem() {
-        val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
-            withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(layout_widget)),
+            withId(recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions
             .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
     }
@@ -260,7 +289,7 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val EMPTY_TEXT = ""
 
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        private const val KEY_QUERY_FAV_NUMBER = "rechargeFetchFavoriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
         private const val KEY_QUERY_PRODUCT_MULTI_TAB = "telcoProductMultiTab"
 
@@ -272,6 +301,7 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val VALID_PHONE_NUMBER_3 = "081234567890"
+        private const val PREFIX_PHONE_NUMBER = "0812"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_prepaid_login.json"
     }
 }

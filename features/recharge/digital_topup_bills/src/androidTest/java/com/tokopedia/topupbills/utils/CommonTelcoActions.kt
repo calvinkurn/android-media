@@ -15,6 +15,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.withParentIndex
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -24,6 +26,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 
@@ -82,6 +85,10 @@ object CommonTelcoActions {
     fun clientNumberWidget_validateErrorMessage(text: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.textinput_helper_text))
             .check(matches(ViewMatchers.withText(text)))
+    }
+
+    fun clientNumberWidget_clickFilterChip_withText(text: String) {
+        onView(ViewMatchers.withText(text)).perform(click())
     }
 
     fun kebabMenu_validateContents() {

@@ -4,12 +4,16 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -24,12 +28,14 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.prepaid.TelcoPrepaidLoginInstrumentTest
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickFilterChip_withText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_clickBuyWidget
@@ -94,6 +100,7 @@ class TelcoPostpaidLoginInstrumentTest {
         Thread.sleep(3000)
 
         validate_pdp_client_number_widget_interaction()
+        validate_filter_chip()
         enquiry_phone_number()
         enquiry_new_input_phone_number()
         validate_interaction_saved_number()
@@ -110,6 +117,22 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+
+        // validate autocomplete
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER)
+        Thread.sleep(2000)
+        onView(withText("Danur Kebab 2"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        clientNumberWidget_clickClearBtn()
+    }
+
+    fun validate_filter_chip() {
+        clientNumberWidget_clickFilterChip_withText("Tokopedia")
+        clientNumberWidget_validateText("081232323239")
     }
 
     fun click_on_tab_menu_login() {
@@ -125,8 +148,9 @@ class TelcoPostpaidLoginInstrumentTest {
         Thread.sleep(2000)
         clientNumberWidget_clickEnquiryButton()
         Thread.sleep(1000)
-        onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
-        onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
+        clientNumberWidget_validateEnquiryButtonNotDisplayed()
+        clientNumberWidget_validateEnquiryResultDisplayed()
+        closeSoftKeyboard()
         pdp_validateBuyWidgetDisplayed()
         pdp_clickBuyWidget()
     }
@@ -144,6 +168,7 @@ class TelcoPostpaidLoginInstrumentTest {
         Thread.sleep(2000)
         clientNumberWidget_validateEnquiryButtonNotDisplayed()
         clientNumberWidget_validateEnquiryResultDisplayed()
+        closeSoftKeyboard()
         pdp_validateBuyWidgetDisplayed()
         pdp_clickBuyWidget()
 
@@ -206,7 +231,7 @@ class TelcoPostpaidLoginInstrumentTest {
     companion object {
         private const val EMPTY_TEXT = ""
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        private const val KEY_QUERY_FAV_NUMBER = "rechargeFetchFavoriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
         private const val KEY_QUERY_ENQUIRY = "enquiry"
 
@@ -218,6 +243,7 @@ class TelcoPostpaidLoginInstrumentTest {
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val VALID_PHONE_NUMBER_3 = "081234567890"
+        private const val PREFIX_PHONE_NUMBER = "0812"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
 }
