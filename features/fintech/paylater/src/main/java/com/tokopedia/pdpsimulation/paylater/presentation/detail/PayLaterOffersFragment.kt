@@ -18,6 +18,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
@@ -68,9 +69,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         paylaterProduct.productList?.let {
             for (i in it.indices) {
                 it[i].text?.let { name ->
-                    filterData.add(SortFilterItem(name) {
-                        selectOtherTenure(i)
-                    })
+                    if(i == 0)
+                        filterData.add(SortFilterItem(name,ChipsUnify.TYPE_SELECTED,ChipsUnify.SIZE_SMALL) {
+                            selectOtherTenure(i)
+                        })
+                    else {
+                        filterData.add(SortFilterItem(name) {
+                            selectOtherTenure(i)
+                        })
+                    }
                 }
             }
         }
