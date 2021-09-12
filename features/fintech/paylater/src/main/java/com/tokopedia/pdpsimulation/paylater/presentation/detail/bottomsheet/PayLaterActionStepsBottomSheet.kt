@@ -71,7 +71,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
-            } else (it.cta?.cta_type == 3)
+            }
+           else
             {
                 if (it.gateway_detail?.how_toApply?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
@@ -79,6 +80,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                     listOfSteps = howToApplyDetail.steps as ArrayList<String>
                 }
             }
+
 
         }
     }
