@@ -84,6 +84,7 @@
     <string name="pay_later_status_failed">Pengajuan gagal</string>
     <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
     <string name="see_more">Selengkapnya</string>
+    <string name="whyGateway">Kenapa</string>
 
 
 </resources>

@@ -136,6 +136,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
+            whyText.text = resources.getString(R.string.whyGateway)+" ${data.gateway_detail?.name?:""}"
             interestText.text = "Interest(${(data.interest_pct?:0)}%)"
             gatewayType =
                 if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
