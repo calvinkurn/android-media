@@ -18,14 +18,19 @@ import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_CPL_A
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOP_ID
+import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLItemAdapterListener {
@@ -101,6 +106,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 is Success -> {
                     populateView(it.data)
                 }
+                is Fail -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
+                }
                 else -> {
                     binding.swipeRefresh.isRefreshing = true
                     binding.shippingEditorLayoutOndemand.gone()
@@ -114,6 +125,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun populateView(data: CustomProductLogisticModel) {
         updateShipperData(data)
         binding.swipeRefresh.isRefreshing = false
+        binding.svShippingEditor.visible()
         binding.btnSaveShipper.visible()
         binding.globalError.gone()
         if (cplItemOnDemandAdapter.getShownShippers().isNotEmpty()) {
@@ -126,35 +138,25 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
-        if (data.shipperList.size == 1 && !isCPLActivated) {
-            populateShipperData(data, 1)
-            cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-        } else if (data.shipperList.size == 1 && isCPLActivated) {
-            populateShipperData(data, 1)
-            cplItemOnDemandAdapter.setAllProductIdsActivated()
-        } else if (isCPLActivated) {
-            populateShipperData(data, 3)
-            cplItemOnDemandAdapter.setAllProductIdsActivated()
-            cplItemConventionalAdapter.setAllProductIdsActivated()
-        } else {
-            populateShipperData(data, 3)
-            cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-            cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
-        }
-
         if (isCPLActivated) {
-            if (data.shipperList.size == SHIPPER_ON_DEMAND) {
+            if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
                 populateShipperData(data, SHIPPER_ON_DEMAND)
                 cplItemOnDemandAdapter.setAllProductIdsActivated()
+            } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
+                populateShipperData(data, SHIPPER_CONVENTIONAL)
+                cplItemConventionalAdapter.setAllProductIdsActivated()
             } else {
                 populateShipperData(data, ALL_SHIPPER_AVAILABLE)
                 cplItemOnDemandAdapter.setAllProductIdsActivated()
                 cplItemConventionalAdapter.setAllProductIdsActivated()
             }
         } else {
-            if (data.shipperList.size == 1) {
+            if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
                 populateShipperData(data, SHIPPER_ON_DEMAND)
                 cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
+                populateShipperData(data, SHIPPER_CONVENTIONAL)
+                cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
             } else {
                 populateShipperData(data, ALL_SHIPPER_AVAILABLE)
                 cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
@@ -230,10 +232,68 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                        GlobalError.NO_CONNECTION
+                    )
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.build(
+                                it,
+                                DEFAULT_ERROR_MESSAGE,
+                                Toaster.LENGTH_SHORT,
+                                type = Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.build(
+                        it,
+                        throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        binding.globalError.setType(type)
+        binding.globalError.setActionClickListener {
+            context?.let {
+                viewModel.getCPLList(shopId, productId.toString())
+            }
+        }
+        binding.globalError.visible()
+        binding.svShippingEditor.gone()
+        binding.btnSaveShipper.gone()
+    }
+
+
     companion object {
         const val SHIPPER_ON_DEMAND = 1
         const val SHIPPER_CONVENTIONAL = 2
         const val ALL_SHIPPER_AVAILABLE = 3
+        const val ON_DEMAND_VALIDATION = "Dijemput Kurir"
+        const val CONVENTIONAL_VALIDATION = "Antar ke Kantor Agen"
 
         fun newInstance(extra: Bundle): CustomProductLogisticFragment {
             return CustomProductLogisticFragment().apply {

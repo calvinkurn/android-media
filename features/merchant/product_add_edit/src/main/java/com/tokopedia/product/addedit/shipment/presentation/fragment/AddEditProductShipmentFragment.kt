@@ -71,6 +71,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.dialog.Produ
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CONVENTIONAL_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_ACTIVATED
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
@@ -78,6 +79,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.ON_DEMAND_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
@@ -621,9 +623,12 @@ class AddEditProductShipmentFragment:
     }
 
     private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
-        if (data.shipperList.size == 1) {
+        if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
             shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
             shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
+            shipmentConventionalAdapter.updateData(data.shipperList[0].shipper)
+            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
         } else {
             shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
             shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])

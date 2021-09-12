@@ -18,5 +18,7 @@ class AddEditProductShipmentConstants {
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"
         const val EXTRA_CPL_ACTIVATED = "EXTRA_CPL_ACTIVATED"
         const val EXTRA_SHIPPER_SERVICES = "EXTRA_SHIPPER_SERVICES"
+        const val ON_DEMAND_VALIDATION = "Dijemput Kurir"
+        const val CONVENTIONAL_VALIDATION = "Antar ke Kantor Agen"
     }
 }
