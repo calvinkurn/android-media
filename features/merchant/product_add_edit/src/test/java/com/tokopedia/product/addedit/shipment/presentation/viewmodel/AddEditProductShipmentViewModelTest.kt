@@ -110,18 +110,4 @@ class AddEditProductShipmentViewModelTest {
         Assert.assertTrue(viewModel.isFirstMoved)
         Assert.assertTrue(viewModel.shipmentInputModel == shipmentInputModel)
     }
-
-    @Test
-    fun `Get CPL List success`() {
-        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        viewModel.getCPLList(1234, "9876")
-        verify { cplListObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get CPL List failed`() {
-        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } throws Throwable("test error")
-        viewModel.getCPLList(1234, "9876")
-        verify { cplListObserver.onChanged(match { it is Fail }) }
-    }
 }
