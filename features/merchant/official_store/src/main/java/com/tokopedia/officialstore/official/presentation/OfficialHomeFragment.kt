@@ -898,7 +898,7 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 !productCardOptionsModel.isWishlisted,
                 viewModel.isLoggedIn(),
-                productCardOptionsModel.productId.toLong(),
+                productCardOptionsModel.productId.toLongOrZero(),
                 productCardOptionsModel.isTopAds
         )
     }

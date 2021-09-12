@@ -986,12 +986,12 @@ open class WishlistViewModel @Inject constructor(
         )
     }
 
-    fun onPDPActivityResultForWishlist(productId: String, wishlistState: Boolean) {
+    fun onPDPActivityResultForWishlist(productId: Long, wishlistState: Boolean) {
         if (tempSelectedParentPositionInPDP != null &&
                 tempSelectedPositionInPdp != null &&
                 tempSelectedProductIdInPdp != null) {
             updateRecommendationItemWishlist(
-                    productId.toLong(),
+                    productId,
                     tempSelectedParentPositionInPDP!!,
                     tempSelectedPositionInPdp!!,
                     wishlistState)
