@@ -5,14 +5,14 @@
     {
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
-      "eventAction": "remove wishlist - wishlist - login",
+      "eventAction": "click batalkan hapus wishlist",
       "sessionIris": ".*",
       "eventLabel": ".*"
     },
     {
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
-      "eventAction": "click batalkan hapus wishlist",
+      "eventAction": "remove wishlist - wishlist - login",
       "sessionIris": ".*",
       "eventLabel": ".*"
     }
