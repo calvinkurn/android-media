@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -50,6 +51,7 @@ import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPri
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CPL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
@@ -89,6 +91,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -194,11 +197,15 @@ class AddEditProductShipmentFragment:
         setupWeightInput()
         setupInsuranceTicker()
         setupInsuranceRadios()
-        setupShipment()
+
         setupSubmitButton()
         setupOnBackPressed()
 
-        initShipmentData()
+        if (GlobalConfig.isSellerApp()) {
+            setupShipment()
+            initShipmentData()
+        }
+
         initObserver()
 
         // PLT monitoring
@@ -240,7 +247,7 @@ class AddEditProductShipmentFragment:
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 1234) {
+            if (requestCode == REQUEST_CODE_CPL) {
                 shipperServices = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
             }
         }
@@ -325,7 +332,6 @@ class AddEditProductShipmentFragment:
     }
 
     private fun initShipmentData() {
-//        shipmentViewModel.getCPLList(2649340, "1685435966")
         shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
     }
 
@@ -334,6 +340,9 @@ class AddEditProductShipmentFragment:
             when (it) {
                 is Success -> {
                     applyShipmentValue(it.data)
+                }
+                is Fail -> {
+                    hideShipment()
                 }
             }
         })
@@ -397,29 +406,11 @@ class AddEditProductShipmentFragment:
         }
 
         btnChangeOnDemandShipment?.setOnClickListener {
-            startActivityForResult(
-                RouteManager.getIntent(
-                    context,
-                    ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
-                ).apply {
-                    putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
-                    putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
-                }, 1234
-            )
+            goToCustomProductLogistic()
         }
 
         btnChangeConventionalShipment?.setOnClickListener {
-            startActivityForResult(
-                RouteManager.getIntent(
-                    context,
-                    ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
-                ).apply {
-                    putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
-                    putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
-                }, 1234
-            )
+            goToCustomProductLogistic()
         }
 
         btnIconOnDemand?.setOnClickListener {
@@ -435,6 +426,19 @@ class AddEditProductShipmentFragment:
                 ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE
             )
         }
+    }
+
+    private fun goToCustomProductLogistic() {
+        startActivityForResult(
+            RouteManager.getIntent(
+                context,
+                ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
+            ).apply {
+                putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
+                putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
+            }, REQUEST_CODE_CPL
+        )
     }
 
     private fun setupShipmentRadios() {
@@ -601,6 +605,12 @@ class AddEditProductShipmentFragment:
             shipmentRadioValue(false)
             updateShipmentDataCustom(data)
         }
+    }
+
+
+    private fun hideShipment() {
+        layoutCustomShipmentOnDemand?.gone()
+        layoutCustomShipmentConventional?.gone()
     }
 
     private fun updateShipmentDataStandard(data: CustomProductLogisticModel) {

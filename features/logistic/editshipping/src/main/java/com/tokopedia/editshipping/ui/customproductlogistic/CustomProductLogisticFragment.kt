@@ -81,7 +81,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-//        viewModel.getCPLList(2649340, "1685435966")
         viewModel.getCPLList(shopId, productId.toString())
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
@@ -128,23 +127,56 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
         if (data.shipperList.size == 1 && !isCPLActivated) {
-            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            populateShipperData(data, 1)
             cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
         } else if (data.shipperList.size == 1 && isCPLActivated) {
-            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            populateShipperData(data, 1)
             cplItemOnDemandAdapter.setAllProductIdsActivated()
         } else if (isCPLActivated) {
-            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            populateShipperData(data, 3)
             cplItemOnDemandAdapter.setAllProductIdsActivated()
-            cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
             cplItemConventionalAdapter.setAllProductIdsActivated()
         } else {
-            cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            populateShipperData(data, 3)
             cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-            cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
             cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
         }
+
+        if (isCPLActivated) {
+            if (data.shipperList.size == SHIPPER_ON_DEMAND) {
+                populateShipperData(data, SHIPPER_ON_DEMAND)
+                cplItemOnDemandAdapter.setAllProductIdsActivated()
+            } else {
+                populateShipperData(data, ALL_SHIPPER_AVAILABLE)
+                cplItemOnDemandAdapter.setAllProductIdsActivated()
+                cplItemConventionalAdapter.setAllProductIdsActivated()
+            }
+        } else {
+            if (data.shipperList.size == 1) {
+                populateShipperData(data, SHIPPER_ON_DEMAND)
+                cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            } else {
+                populateShipperData(data, ALL_SHIPPER_AVAILABLE)
+                cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+                cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+            }
+        }
         updateLayoutShipment()
+    }
+
+    private fun populateShipperData(data: CustomProductLogisticModel, shipperCase: Int) {
+        when (shipperCase) {
+            SHIPPER_ON_DEMAND -> {
+                cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+            }
+            SHIPPER_CONVENTIONAL -> {
+                cplItemConventionalAdapter.addData(data.shipperList[0].shipper)
+            }
+            else -> {
+                cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+                cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
+            }
+        }
     }
 
     private fun updateLayoutShipment() {
@@ -162,7 +194,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun validateSaveButton() {
-        val activatedSpIds = getListActivatedSpIds(cplItemOnDemandAdapter.getActivateSpIds(), cplItemConventionalAdapter.getActivateSpIds())
+        val activatedSpIds = getListActivatedSpIds(
+            cplItemOnDemandAdapter.getActivateSpIds(),
+            cplItemConventionalAdapter.getActivateSpIds()
+        )
         if (activatedSpIds.isEmpty()) {
             Toaster.build(
                 requireView(),
@@ -176,7 +211,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
-    private fun getListActivatedSpIds(onDemandList: List<Int>, conventionalList: List<Int>): List<Int> {
+    private fun getListActivatedSpIds(
+        onDemandList: List<Int>,
+        conventionalList: List<Int>
+    ): List<Int> {
         val activatedListShipperIds = mutableListOf<Int>()
         activatedListShipperIds.addAll(onDemandList)
         activatedListShipperIds.addAll(conventionalList)
@@ -193,6 +231,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     companion object {
+        const val SHIPPER_ON_DEMAND = 1
+        const val SHIPPER_CONVENTIONAL = 2
+        const val ALL_SHIPPER_AVAILABLE = 3
+
         fun newInstance(extra: Bundle): CustomProductLogisticFragment {
             return CustomProductLogisticFragment().apply {
                 arguments = Bundle().apply {
