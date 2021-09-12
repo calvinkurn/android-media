@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker_insta.fragment
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
@@ -87,19 +88,24 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun proceedNextStep() {
+        val selectedUris = arrayListOf<Uri>()
         if (!imageAdapter.isSelectedPositionsEmpty()) {
-
-            val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
-                it.asset.contentUri
+            imageAdapter.selectedPositionMap.keys.forEach {
+                selectedUris.add(it.asset.contentUri)
             }
+        }else if (selectedMediaView.imageAdapterData!=null){
+            selectedUris.add(selectedMediaView.imageAdapterData!!.asset.contentUri)
+        }
+
+        if (!selectedUris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
-                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedMediaUriList)
+                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedUris)
                 RouteManager.route(activity, finalApplink)
             } else {
-                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(selectedMediaUriList)))
+                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(selectedUris)))
                 activity?.finish()
             }
         } else {
@@ -234,13 +240,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         imageMultiSelect.setOnClickListener {
             imageMultiSelect.toggle()
-//            imageAdapter.selectedPositionMap.keys.map {
-//                it.isSelected = false
-//            }
-//            imageAdapter.dataList.forEach {
-//                it.isInMultiSelectMode = isMultiSelectEnable()
-//            }
-//            if (isMultiSelectEnable()) {
 
                     if (selectedMediaView.imageAdapterData != null) {
 
@@ -259,15 +258,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                             imageAdapter.notifyItemChanged(it)
                         }
                     }
-
-
-
-//            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
-//            imageAdapter.clearSelectedItems()
-//            if (hasSelectedItems) {
-//                imageAdapter.notifyDataSetChanged()
-//            }
-//            selectedMediaView.removeAsset()
         }
     }
 
@@ -364,6 +354,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
+                    rv.post { rv.scrollTo(0,0) }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     showToast("Error", Toaster.TYPE_ERROR)
@@ -376,7 +367,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 selectedMediaView.loadAsset(imageAdapterData)
             } else {
                 //DO nothing
-//                selectedMediaView.removeAsset()
             }
         }
 
@@ -388,17 +378,8 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                  * 2. update all items except selected one to show empty circle
                  * */
                 imageMultiSelect.toggle(true)
-//                imageAdapter.dataList.forEach {
-//                    if(it != imageAdapterData){
-//                        it.isInMultiSelectMode = true
-//                    }
-//                }
             }
         }
-    }
-
-    fun enableMultiSelectMode() {
-
     }
 
     private fun getPhotos() {
