@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
@@ -10,12 +11,15 @@
         android:id="@+id/searchBarRemoteConfig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3" />
+        app:search_bar_show_icon="false"
+        app:search_bar_placeholder="@string/search_remote_config_here"
+        android:layout_margin="@dimen/spacing_lvl4" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/empty_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/searchBarRemoteConfig"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible"
@@ -40,6 +44,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/config_list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchBarRemoteConfig" />
 
-</FrameLayout>
+</RelativeLayout>

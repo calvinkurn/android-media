@@ -14,11 +14,16 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.remote_config.RemoteConfigListener
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<RemoteConfigListAdapter.RemoteConfigItemViewHolder>(), Filterable {
+class RemoteConfigListAdapter(val listener: RemoteConfigListener) :
+    Adapter<RemoteConfigListAdapter.RemoteConfigItemViewHolder>(), Filterable {
 
     private var configListData = arrayListOf<Pair<String, String>>()
+    private var configFilterListData = arrayListOf<Pair<String, String>>()
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RemoteConfigItemViewHolder {
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        viewType: Int
+    ): RemoteConfigItemViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
         val view: View = inflater.inflate(R.layout.remote_config_list_item, viewGroup, false)
 
@@ -37,19 +42,24 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<Remo
         if (listData.isNotEmpty()) {
             configListData.clear()
 
-            for (configKey: String in listData) {
-                val configValue = remoteConfig?.getString(configKey) ?: ""
-
-                configListData.apply { add(Pair(configKey, configValue)) }
-            }
+            setConfigList(remoteConfig, listData)
 
             notifyDataSetChanged()
         }
     }
 
+    private fun setConfigList(remoteConfig: RemoteConfig?, listData: Set<String>) {
+        for (configKey: String in listData) {
+            val configValue = remoteConfig?.getString(configKey) ?: ""
+            val remoteConfigData = Pair(configKey, configValue)
+            configListData.add(remoteConfigData)
+            configFilterListData.add(remoteConfigData)
+        }
+    }
+
     class RemoteConfigItemViewHolder(
-            itemView: View,
-            listener: RemoteConfigListener
+        itemView: View,
+        listener: RemoteConfigListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val keyTextView: AppCompatTextView = itemView.findViewById(R.id.config_key)
@@ -58,7 +68,7 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<Remo
         init {
             val itemContainer: LinearLayout = itemView.findViewById(R.id.config_container)
             itemContainer.setOnClickListener {
-                listener.onListItemClick(keyTextView.text.toString().trim(), valueTextView.text.toString().trim())
+                listener.onListItemClick(keyTextView.text.toString().trim())
             }
         }
 
@@ -68,7 +78,34 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<Remo
         }
     }
 
-    override fun getFilter(): Filter {
-        TODO("Not yet implemented")
+    private val searchFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filteredList: MutableList<Pair<String, String>> = mutableListOf()
+            if (constraint.isNullOrBlank()) {
+                filteredList.addAll(configFilterListData)
+            } else {
+                val searchedWords = constraint.toString().trim()
+                for ((key, value) in configFilterListData) {
+                    val isContainsKey = key.contains(searchedWords, true)
+                    val isContainsValue = value.contains(searchedWords, true)
+                    if (isContainsKey || isContainsValue) {
+                        filteredList.add(Pair(key, value))
+                    }
+                }
+            }
+            val filterResults = FilterResults()
+            filterResults.values = filteredList
+            return filterResults
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            configListData.clear()
+            (results?.values as? MutableList<Pair<String, String>>)?.let {
+                configListData.addAll(it)
+                notifyDataSetChanged()
+            }
+        }
     }
+
+    override fun getFilter(): Filter = searchFilter
 }
