@@ -18,13 +18,14 @@
             android:layout_marginTop="@dimen/dp_10"
             android:padding="@dimen/dp_10">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:typographyType="body_2"
                 android:text="@string/title_courier_logistic_module" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/courier_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -32,6 +33,7 @@
                 android:gravity="end"
                 android:text="@string/title_choose_logistic_module"
                 android:textColor="@color/Unify_G400"
+                app:typographyType="body_2"
                 tools:text="Jne Reguler" />
 
         </LinearLayout>
@@ -56,9 +58,10 @@
                 android:layout_weight="8"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:typographyType="body_2"
                     android:text="@string/label_awb_number_logistic_module" />
 
                 <EditText
@@ -95,20 +98,22 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             android:gravity="center_horizontal"
+            app:typographyType="body_2"
             android:text="Biaya pergantian kurir sepenuhnya ditanggung Penjual" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/confirm_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:background="@drawable/green_button_rounded_unify_logistic_module"
             android:gravity="center"
             android:text="Konfirmasi"
+            app:typographyType="body_2"
             android:textColor="@color/Unify_N0" />
 
     </LinearLayout>
