@@ -27,7 +27,7 @@ data class RecommendationCarouselDataModel(
 
     fun contains(item: RecommendationItem) = products.any { it.productItem.productId == item.productId }
 
-    fun contains(id: Int) = products.any { it.productItem.productId == id }
+    fun contains(id: Long) = products.any { it.productItem.productId == id }
 
     override fun name(): String = title
 
