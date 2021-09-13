@@ -58,6 +58,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.view.uimodel.state.*
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -418,6 +419,8 @@ class PlayViewModel @Inject constructor(
     private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope, { channelType }, { videoPlayer })
     private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
+    private var likeReminderTimer: Job? = null
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -680,6 +683,7 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
 
         checkLeaderboard(channelData.id)
+        checkLikeReminderTimer()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -687,6 +691,7 @@ class PlayViewModel @Inject constructor(
 
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
+        cancelReminderLikeTimer()
 
         stopInteractive()
     }
@@ -1073,6 +1078,24 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun checkLikeReminderTimer() {
+        fun isLiked() = _likeInfo.value.status == PlayLikeStatus.Liked
+        suspend fun sendLikeReminder() = _uiEvent.emit(RemindToLikeEvent)
+
+        if (isLiked()) return
+        cancelReminderLikeTimer()
+        likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
+            delay(TimeUnit.MINUTES.toMillis(1))
+            while (isActive) {
+                if (isLiked()) break
+                sendLikeReminder()
+                delay(TimeUnit.MINUTES.toMillis(5))
+            }
+        }
+    }
+
+    private fun cancelReminderLikeTimer() = likeReminderTimer?.cancel()
+
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
         getChannelStatusUseCase.apply {
             setRequestParams(GetChannelStatusUseCase.createParams(arrayOf(channelId)))
@@ -1111,21 +1134,28 @@ class PlayViewModel @Inject constructor(
         when (result) {
             is TotalLike -> {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
+                val prevLike = _channelReport.value.totalLike
 
-                val totalLikeCoerced = totalLike.coerceAtLeast(_channelReport.value.totalLike)
+                if (channelType.isLive && totalLike < prevLike) return@withContext
 
                 _channelReport.setValue {
-                    copy(totalLike = totalLikeCoerced, totalLikeFmt = totalLikeFmt)
+                    copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
                 }
 
-                val diffLike = totalLikeCoerced - totalLike
-                val bubbleEvent = if (diffLike >= LIKE_BURST_THRESHOLD) {
-                    ShowLikeBubbleEvent.Burst(LIKE_BURST_THRESHOLD, isOpaque = true)
-                } else {
-                    ShowLikeBubbleEvent.Single(diffLike.toInt(), isOpaque = true)
-                }
+                if (!channelType.isLive) return@withContext
 
-                viewModelScope.launch { _uiEvent.emit(bubbleEvent) }
+                val diffLike = totalLike - prevLike
+                viewModelScope.launch {
+                    if (diffLike >= LIKE_BURST_THRESHOLD) {
+                        _uiEvent.emit(
+                            ShowLikeBubbleEvent.Burst(LIKE_BURST_THRESHOLD, isOpaque = true)
+                        )
+                    } else if (diffLike > 0) {
+                        _uiEvent.emit(
+                            ShowLikeBubbleEvent.Single(diffLike.toInt(), isOpaque = true)
+                        )
+                    }
+                }
             }
             is TotalView -> {
                 _channelReport.setValue {
@@ -1443,7 +1473,7 @@ class PlayViewModel @Inject constructor(
          * - New status will always be LIKE
          * - Send Data to BE via Socket
          */
-        fun handleClickLikeLive(analyticFn: (status: PlayLikeStatus) -> Unit) {
+        fun handleClickLikeLive(onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
             val newStatus = PlayLikeStatus.Liked
             _likeInfo.setValue {
                 copy(status = newStatus, source = LikeSource.UserAction)
@@ -1463,7 +1493,7 @@ class PlayViewModel @Inject constructor(
                 playSocketToModelMapper.mapSendLike(channelId)
             )
 
-            analyticFn(newStatus)
+            onNewStatusFn(newStatus)
         }
 
         /**
@@ -1471,7 +1501,7 @@ class PlayViewModel @Inject constructor(
          * - New status can be UNLIKE or LIKE
          * - Send Data to BE via GQL
          */
-        fun handleClickLikeNonLive(analyticFn: (status: PlayLikeStatus) -> Unit) {
+        fun handleClickLikeNonLive(onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
             val likeInfo = _likeInfo.value
             if (likeInfo.status == PlayLikeStatus.Unknown) return
 
@@ -1502,13 +1532,15 @@ class PlayViewModel @Inject constructor(
                 )
             }
 
-            analyticFn(newStatus)
+            onNewStatusFn(newStatus)
         }
 
         /**
          * Main Like Condition Logic
          */
-        val analyticHandler: (PlayLikeStatus) -> Unit = { status ->
+        val newStatusHandler: (PlayLikeStatus) -> Unit = { status ->
+            if (status == PlayLikeStatus.Liked) cancelReminderLikeTimer()
+
             playAnalytic.clickLike(
                 channelId = channelId,
                 channelType = channelType,
@@ -1517,8 +1549,8 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        if (channelType.isLive) handleClickLikeLive(analyticHandler)
-        else handleClickLikeNonLive(analyticHandler)
+        if (channelType.isLive) handleClickLikeLive(newStatusHandler)
+        else handleClickLikeNonLive(newStatusHandler)
     }
 
     private fun handleClickShare() {

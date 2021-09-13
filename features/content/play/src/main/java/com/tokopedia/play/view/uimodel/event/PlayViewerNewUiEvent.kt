@@ -33,6 +33,7 @@ data class ShowRealTimeNotificationEvent(
  * Multiple Likes
  */
 data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
+object RemindToLikeEvent : PlayViewerNewUiEvent()
 sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
 
     abstract val count: Int

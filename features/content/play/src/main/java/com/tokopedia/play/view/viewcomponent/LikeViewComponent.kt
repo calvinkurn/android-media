@@ -24,6 +24,8 @@ class LikeViewComponent(
     private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
+    private var mode: PlayLikeMode = PlayLikeMode.Unknown
+
     private val singleLikeAnimatorListener = object : DefaultAnimatorListener() {
 
         override fun onAnimationEnd(animation: Animator) {
@@ -35,10 +37,24 @@ class LikeViewComponent(
         }
     }
 
+    private val reminderLikeAnimatorListener = object : DefaultAnimatorListener() {
+
+        override fun onAnimationStart(animation: Animator) {
+            animationLike.isClickable = true
+        }
+
+        override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
+            if (!isCancelled) setIsLiked(false)
+            animationLike.removeAnimatorListener(this)
+        }
+    }
+
     fun setMode(mode: PlayLikeMode) {
+        this.mode = mode
         when (mode) {
             is PlayLikeMode.Single -> animationLike.addAnimatorListener(singleLikeAnimatorListener)
             is PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
+            else -> {}
         }
     }
 
@@ -72,7 +88,21 @@ class LikeViewComponent(
         if (!isPrevLiked) animationLike.setAnimation(R.raw.anim_outline_spam_like)
         else animationLike.setAnimation(R.raw.anim_spam_like)
 
+        animationLike.repeatCount = 0
         animationLike.progress = START_ANIMATED_PROGRESS
+
+        animationLike.removeAllAnimatorListeners()
+        if (mode is PlayLikeMode.Single) animationLike.addAnimatorListener(singleLikeAnimatorListener)
+
+        animationLike.playAnimation()
+    }
+
+    fun playReminderAnimation() {
+        animationLike.cancelAnimation()
+        animationLike.setAnimation(R.raw.anim_shaking_thumb)
+        animationLike.repeatCount = 3
+        animationLike.removeAllAnimatorListeners()
+        animationLike.addAnimatorListener(reminderLikeAnimatorListener)
         animationLike.playAnimation()
     }
 

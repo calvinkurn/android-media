@@ -59,6 +59,7 @@ sealed class PlayInteractiveUiState {
 sealed class PlayLikeMode {
     data class Single(val isLiked: Boolean) : PlayLikeMode()
     data class Multiple(val type: PlayMultipleLikeType) : PlayLikeMode()
+    object Unknown : PlayLikeMode()
 }
 
 sealed class PlayMultipleLikeType {
@@ -77,6 +78,7 @@ data class PlayLikeUiState(
         get() = when(likeMode) {
             is PlayLikeMode.Single -> likeMode.isLiked
             is PlayLikeMode.Multiple -> likeMode.type == PlayMultipleLikeType.Liked
+            PlayLikeMode.Unknown -> false
         }
 }
 

@@ -872,6 +872,9 @@ class PlayUserInteractionFragment @Inject constructor(
                         if (event is ShowLikeBubbleEvent.Burst) spamLikeView.shotBurst(event.count, event.isOpaque)
                         else if (event is ShowLikeBubbleEvent.Single) spamLikeView.shot(event.count, event.isOpaque)
                     }
+                    RemindToLikeEvent -> {
+                        likeView.playReminderAnimation()
+                    }
                 }
             }
         }
