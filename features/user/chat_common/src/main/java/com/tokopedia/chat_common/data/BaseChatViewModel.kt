@@ -30,17 +30,6 @@ open class BaseChatViewModel constructor(
         val localId: String = ""
 ) {
 
-    companion object {
-        const val SENDING_TEXT = "Sedang mengirim ..."
-        const val SOURCE_AUTO_REPLY = "auto_reply"
-        const val SOURCE_WELCOME_MESSAGE = "welcome_message"
-        const val SOURCE_TOPBOT = "topbot"
-        const val SOURCE_SMART_REPLY = "smart_reply"
-        const val SOURCE_BLAST_SELLER = "blast_seller"
-        const val SOURCE_REPLIED_BLAST = "replied_blast"
-    }
-
-
     /**
      * Set in [BaseChatAdapter]
      *
@@ -53,4 +42,14 @@ open class BaseChatViewModel constructor(
      * @param showTime set true to show time in chat
      */
     var isShowTime = true
+
+    companion object {
+        const val SENDING_TEXT = "Sedang mengirim ..."
+        const val SOURCE_AUTO_REPLY = "auto_reply"
+        const val SOURCE_WELCOME_MESSAGE = "welcome_message"
+        const val SOURCE_TOPBOT = "topbot"
+        const val SOURCE_SMART_REPLY = "smart_reply"
+        const val SOURCE_BLAST_SELLER = "blast_seller"
+        const val SOURCE_REPLIED_BLAST = "replied_blast"
+    }
 }
