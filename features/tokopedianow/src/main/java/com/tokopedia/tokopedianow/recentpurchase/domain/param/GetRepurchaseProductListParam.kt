@@ -40,7 +40,8 @@ data class GetRepurchaseProductListParam(
         paramMap[PARAM_PAGE] = page
 
         catIds?.let {
-            paramMap[PARAM_CAT_IDS] = it
+            val catIdsParam = "'${it.joinToString(",")}'"
+            paramMap[PARAM_CAT_IDS] = catIdsParam
         }
 
         val paramEntries = paramMap.entries.iterator()
