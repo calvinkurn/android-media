@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_SOURCE_PAGE;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IMAGES_FED_INTO_IMAGE_PICKER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
@@ -84,6 +85,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerPreviewWidget imagePickerPreviewWidget;
     private boolean isFinishEditting;
     private String imageTooLargeErrorMessage = "";
+    private String pageSource = "Unknown Page";
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -101,6 +103,9 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
             imagePickerBuilder = intent.getParcelableExtra(EXTRA_IMAGE_PICKER_BUILDER);
+            if (intent.getExtras().containsKey(EXTRA_SOURCE_PAGE)) {
+                pageSource = intent.getStringExtra(EXTRA_SOURCE_PAGE);
+            }
         } else {
             imagePickerBuilder = ImagePickerBuilder.getSquareImageBuilder(getContext());
         }
@@ -529,7 +534,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
                         imagePickerBuilder.getImageTooLargeErrorMessage(),
                         imagePickerBuilder.isRecheckSizeAfterResize(),
                         imagePickerBuilder.getConvertToWebp()
-                ));
+                ), pageSource);
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
