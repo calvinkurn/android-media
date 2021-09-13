@@ -67,6 +67,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     companion object {
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
+        const val INBOX_SOURCE = "inbox"
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -255,6 +256,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onDismissOvoIncentiveTicker(subtitle: String) {
         ReviewTracking.onClickDismissIncentiveOvoTracker(subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
+    }
+
+    override fun onReviewCredibilityWidgetClicked() {
+        goToCredibility()
     }
 
     override fun onSwipeRefresh() {
@@ -455,6 +460,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun goToHome() {
         RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    private fun goToCredibility() {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+            viewModel.getUserId(),
+            INBOX_SOURCE
+        )
     }
 
 }
