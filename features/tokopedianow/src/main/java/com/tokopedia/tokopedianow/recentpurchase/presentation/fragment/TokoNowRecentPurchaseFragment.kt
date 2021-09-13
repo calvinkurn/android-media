@@ -650,7 +650,7 @@ class TokoNowRecentPurchaseFragment:
         val layoutManager = rvRecentPurchase?.layoutManager as? StaggeredGridLayoutManager
         val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
         val itemCount = layoutManager?.itemCount.orZero()
-        viewModel.loadMoreProduct(index, itemCount)
+        viewModel.onScrollProductList(index, itemCount)
     }
 
     private fun refreshLayout() {

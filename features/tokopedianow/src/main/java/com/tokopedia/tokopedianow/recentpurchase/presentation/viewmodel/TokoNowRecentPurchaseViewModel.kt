@@ -348,39 +348,43 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun loadMoreProduct(index: IntArray?, itemCount: Int) {
+    fun onScrollProductList(index: IntArray?, itemCount: Int) {
         val lastItemIndex = itemCount - 1
         val containsLastItemIndex = index?.contains(lastItemIndex)
         val scrolledToLastItem = containsLastItemIndex == true
         val hasNextPage = productListMeta?.hasNext == true
 
         if(scrolledToLastItem && hasNextPage) {
-            launchCatchError(block = {
-                val page = productListMeta?.page.orZero() + 1
-                val requestParam = createProductListRequestParam(page)
-                val response = getRepurchaseProductListUseCase.execute(requestParam)
+            loadMoreProduct()
+        }
+    }
 
-                val productList = response.products
-                val productMeta = response.meta
+    private fun loadMoreProduct() {
+        launchCatchError(block = {
+            val page = productListMeta?.page.orZero() + 1
+            val requestParam = createProductListRequestParam(page)
+            val response = getRepurchaseProductListUseCase.execute(requestParam)
 
-                productListMeta = RepurchaseProductListMeta(
-                    productMeta.page,
-                    productMeta.hasNext,
-                    productMeta.totalScan
-                )
+            val productList = response.products
+            val productMeta = response.meta
 
-                layoutList.addProduct(productList)
+            productListMeta = RepurchaseProductListMeta(
+                productMeta.page,
+                productMeta.hasNext,
+                productMeta.totalScan
+            )
 
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    nextPage = page,
-                    state = TokoNowLayoutState.LOADED
-                )
+            layoutList.addProduct(productList)
 
-                _getLayout.postValue(Success(layout))
-            }) {
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = page,
+                state = TokoNowLayoutState.LOADED
+            )
 
-            }
+            _getLayout.postValue(Success(layout))
+        }) {
+
         }
     }
 
