@@ -110,7 +110,7 @@ class EditProductInputMapper @Inject constructor() {
 
     private fun mapCPLData(cpl: CPLModel): CPLData {
         return CPLData(
-            cpl.shipmentServices
+            cpl.shipmentServicesIds
         )
     }
 

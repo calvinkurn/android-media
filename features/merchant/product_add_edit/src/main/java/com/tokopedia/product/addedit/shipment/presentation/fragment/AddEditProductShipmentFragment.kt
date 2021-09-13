@@ -107,7 +107,7 @@ class AddEditProductShipmentFragment:
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var selectedWeightPosition: Int = 0
-    private var shipperServices: ArrayList<Int>? = arrayListOf()
+    private var shipperServicesIds: ArrayList<Int>? = arrayListOf()
     private var isCPLActivated: Boolean = false
 
     private var radiosInsurance: RadioGroup? = null
@@ -250,7 +250,7 @@ class AddEditProductShipmentFragment:
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
-                shipperServices = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                shipperServicesIds = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
             }
         }
     }
@@ -457,13 +457,13 @@ class AddEditProductShipmentFragment:
         if (isStandardShipment) {
             layoutCustomShipmentOnDemand?.gone()
             layoutCustomShipmentConventional?.gone()
-            shipperServices = arrayListOf()
+            shipperServicesIds = arrayListOf()
         } else {
             layoutCustomShipmentOnDemand?.visible()
             layoutCustomShipmentConventional?.visible()
-            if (shipperServices?.isEmpty() == true) {
-                val newShipperServices = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
-                shipperServices = ArrayList(newShipperServices)
+            if (shipperServicesIds?.isEmpty() == true) {
+                val newShipperServiceIds = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
+                shipperServicesIds = ArrayList(newShipperServiceIds)
             }
         }
     }
@@ -562,7 +562,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition
-            cplModel.shipmentServices = shipperServices
+            cplModel.shipmentServicesIds = shipperServicesIds
         }
     }
 

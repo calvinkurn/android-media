@@ -21,7 +21,7 @@ data class GetCPLData (
 
 data class CPLProduct(
     @SerializedName("product_id")
-    var productId: Int = 0,
+    var productId: Long = 0,
     @SerializedName("cpl_status")
     var cplStatus: Int = 0,
     @SerializedName("shipper_services")

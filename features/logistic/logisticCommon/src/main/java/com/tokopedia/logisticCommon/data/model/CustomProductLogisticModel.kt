@@ -6,7 +6,7 @@ data class CustomProductLogisticModel (
 )
 
 data class CPLProductModel(
-    var productId: Int = 0,
+    var productId: Long = 0,
     var cplStatus: Int = 0,
     var shipperServices: List<Int> = listOf()
 )
