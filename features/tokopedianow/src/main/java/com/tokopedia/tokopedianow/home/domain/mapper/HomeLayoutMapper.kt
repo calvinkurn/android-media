@@ -35,8 +35,11 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemB
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_EDUCATIONAL_INFORMATION_WIDGET
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_SHARING_EDUCATION_WIDGET
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -55,7 +58,9 @@ object HomeLayoutMapper {
         EMPTY_STATE_NO_ADDRESS,
         EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE,
         EMPTY_STATE_FAILED_TO_FETCH_DATA,
-        PRODUCT_RECOM_OOC
+        PRODUCT_RECOM_OOC,
+        HOME_EDUCATIONAL_INFORMATION_WIDGET,
+        HOME_SHARING_EDUCATION_WIDGET
     )
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
@@ -75,7 +80,6 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(id: String) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         val homeEmptyStateUiModel = HomeEmptyStateUiModel(id = id)
-        add(HomeLayoutItemUiModel(HomeEducationalInformationWidgetUiModel(id = "ssss"), HomeLayoutItemState.LOADED))
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         add(HomeLayoutItemUiModel(homeEmptyStateUiModel, HomeLayoutItemState.LOADED))
     }
@@ -91,6 +95,9 @@ object HomeLayoutMapper {
     ) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+        // temp hardcoded
+        add(HomeLayoutItemUiModel(HomeEducationalInformationWidgetUiModel(id = HOME_EDUCATIONAL_INFORMATION_WIDGET), HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(HomeSharingEducationWidgetUiModel(id = HOME_SHARING_EDUCATION_WIDGET), HomeLayoutItemState.LOADED))
 
         if (!hasTickerBeenRemoved) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
