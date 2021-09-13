@@ -167,6 +167,10 @@ class MediaView @JvmOverloads constructor(
         }
     }
 
+    fun stopVideo(){
+        stopPlayer()
+    }
+
     fun removeAsset() {
         this.imageAdapterData = null
         playerView.visibility = View.GONE
@@ -190,6 +194,7 @@ class MediaView @JvmOverloads constructor(
     }
 
     private fun stopPlayer() {
+        playPauseIcon.visibility = View.VISIBLE
         simpleExoPlayer?.stop()
     }
 
