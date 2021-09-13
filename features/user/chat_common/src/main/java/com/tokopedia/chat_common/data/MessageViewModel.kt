@@ -37,6 +37,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
         isSender = !reply.isOpposite,
         message = reply.msg,
         source = reply.source,
+        replyId = reply.replyId
     ) {
         blastId = reply.blastId
         fraudStatus = reply.fraudStatus
