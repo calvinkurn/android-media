@@ -8,7 +8,7 @@ import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockRespon
 import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
@@ -45,7 +45,7 @@ class MainParentScreenshotLoggedInTest {
         val userSession = UserSession(context)
         userSession.setFirstTimeUserOnboarding(false)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                AbTestPlatform.HOME_EXP, AbTestPlatform.HOME_VARIANT_REVAMP)
+                RollenceKey.HOME_EXP, RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -73,17 +73,17 @@ class MainParentScreenshotLoggedInTest {
 
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV,
-                AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                RollenceKey.NAVIGATION_EXP_TOP_NAV,
+                RollenceKey.NAVIGATION_VARIANT_REVAMP)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 CHOOSE_ADDRESS_ROLLENCE_KEY,
                 CHOOSE_ADDRESS_ROLLENCE_KEY)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                AbTestPlatform.BALANCE_EXP,
-                AbTestPlatform.BALANCE_VARIANT_NEW)
+                RollenceKey.BALANCE_EXP,
+                RollenceKey.BALANCE_VARIANT_NEW)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                AbTestPlatform.HOME_EXP,
-                AbTestPlatform.HOME_VARIANT_REVAMP)
+                RollenceKey.HOME_EXP,
+                RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private fun fileName(suffix: String? = null): String {

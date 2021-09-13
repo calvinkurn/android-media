@@ -21,6 +21,8 @@ class CategoryFilterViewHolder(
 ): AbstractViewHolder<CategoryFilterDataView>(itemView) {
 
     companion object {
+        const val NO_ITEM_DECORATION_COUNT = 0
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
     }
@@ -37,7 +39,7 @@ class CategoryFilterViewHolder(
         filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
         filterRecyclerView.scrollToSelected(element)
 
-        if (filterRecyclerView.itemDecorationCount == 0) {
+        if (filterRecyclerView.itemDecorationCount == NO_ITEM_DECORATION_COUNT) {
             val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
             val spacing = context.resources.getDimensionPixelSize(unifySpace16)
             filterRecyclerView.addItemDecoration(ItemDecoration(spacing))
@@ -111,6 +113,10 @@ class CategoryFilterViewHolder(
 
     private class ItemDecoration(private val spacing: Int): RecyclerView.ItemDecoration() {
 
+        companion object {
+            const val FIRST_CHILD_ADAPTER_POSITION = 0
+        }
+
         override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
@@ -120,19 +126,25 @@ class CategoryFilterViewHolder(
             val adapter = parent.adapter ?: return
 
             when (parent.getChildAdapterPosition(view)) {
-                0 -> {
+                FIRST_CHILD_ADAPTER_POSITION -> {
                     outRect.left = spacing
-                    outRect.right = spacing / 4
+                    outRect.right = quarterSpacingOffset()
                 }
-                (adapter.itemCount - 1) -> {
-                    outRect.left = spacing / 4
+                getLastItemIndexInAdapter(adapter) -> {
+                    outRect.left = quarterSpacingOffset()
                     outRect.right = spacing
                 }
                 else -> {
-                    outRect.left = spacing / 4
-                    outRect.right = spacing / 4
+                    outRect.left = quarterSpacingOffset()
+                    outRect.right = quarterSpacingOffset()
                 }
             }
         }
+
+        @Suppress("MagicNumber")
+        private fun getLastItemIndexInAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) = (adapter.itemCount - 1)
+
+        @Suppress("MagicNumber")
+        private fun quarterSpacingOffset() = spacing / 4
     }
 }

@@ -8,7 +8,12 @@ interface ItemDetailPenaltyListener {
 }
 
 interface FilterPenaltyBottomSheetListener {
-    fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int)
+    fun onChipsFilterItemClick(
+        nameFilter: String,
+        chipType: String,
+        chipTitle: String,
+        position: Int
+    )
 }
 
 interface ItemHeaderCardPenaltyListener {

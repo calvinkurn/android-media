@@ -21,8 +21,8 @@ import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.iris.Iris
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 class SuggestionFragment :
         BaseDaggerFragment(), SuggestionContract.View,
-        SuggestionClickListener, SuggestionTopShopListener {
+        SuggestionListener, SuggestionTopShopListener {
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
 
@@ -45,6 +45,9 @@ class SuggestionFragment :
     private lateinit var adapter: SuggestionAdapter
 
     private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
+
+    @Inject
+    lateinit var iris: Iris
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +146,14 @@ class SuggestionFragment :
         presenter.onSuggestionItemClicked(item)
     }
 
+    override fun onChipClicked(item: BaseSuggestionDataView.ChildItem) {
+        presenter.onSuggestionChipClicked(item)
+    }
+
+    override fun onItemImpressed(item: BaseSuggestionDataView) {
+        presenter.onSuggestionItemImpressed(item)
+    }
+
     override fun dropKeyBoard() {
         suggestionViewUpdateListener?.dropKeyboard()
     }
@@ -234,5 +245,13 @@ class SuggestionFragment :
 
     override fun trackTokoNowEventClickKeyword(eventLabel: String) {
         AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
+    }
+
+    override fun trackClickChip(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickChipSuggestion(eventLabel, dimension90)
+    }
+
+    override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {
+        AutocompleteTracking.eventImpressCurated(iris, label, campaignCode, pageSource)
     }
 }

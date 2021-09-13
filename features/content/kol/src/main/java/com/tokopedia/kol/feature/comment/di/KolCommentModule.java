@@ -9,6 +9,9 @@ import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentType
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactoryImpl;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.presenter.KolCommentPresenter;
+import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase;
+import com.tokopedia.kol.feature.report.view.listener.ContentReportContract;
+import com.tokopedia.kol.feature.report.view.presenter.ContentReportPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -33,12 +36,20 @@ public class KolCommentModule {
     KolComment.Presenter providesPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
                                            SendKolCommentUseCase sendKolCommentUseCase,
                                            DeleteKolCommentUseCase deleteKolCommentUseCase,
-                                           GetMentionableUserUseCase getMentionableUserUseCase) {
+                                           GetMentionableUserUseCase getMentionableUserUseCase,
+                                           SendReportUseCase sendReportUseCase) {
         return new KolCommentPresenter(getKolCommentsUseCase,
                 sendKolCommentUseCase,
                 deleteKolCommentUseCase,
-                getMentionableUserUseCase
+                getMentionableUserUseCase,
+                sendReportUseCase
         );
+    }
+
+    @Provides
+    @KolCommentScope
+    public ContentReportContract.Presenter providePresenter(ContentReportPresenter contentReportPresenter) {
+        return contentReportPresenter;
     }
 
     @KolCommentScope

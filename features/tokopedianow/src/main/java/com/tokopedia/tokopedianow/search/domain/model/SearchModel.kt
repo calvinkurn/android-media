@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
+import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class SearchModel(
@@ -22,4 +23,14 @@ data class SearchModel(
         @SerializedName("channel")
         @Expose
         val bannerChannel: Channels = Channels(),
-)
+
+        @SerializedName("searchJumper")
+        @Expose
+        val searchCategoryJumper: SearchCategoryJumperData = SearchCategoryJumperData(),
+) {
+        fun getResponseCode() = searchProduct.header.responseCode
+
+        fun getSuggestion() = searchProduct.data.suggestion
+
+        fun getRelated() = searchProduct.data.related
+}

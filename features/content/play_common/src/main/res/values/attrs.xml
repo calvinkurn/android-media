@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="cornerRadius" format="dimension" />
-
     <declare-styleable name="RoundedImageView">
-        <attr name="cornerRadius" />
+        <attr name="rImg_cornerRadius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RoundedConstraintLayout">
-        <attr name="cornerRadius" />
+        <attr name="rcl_cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundedFrameLayout">
+        <attr name="rfl_cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="RemoteImageView">
+        <attr name="imageUrl" format="string"/>
+        <attr name="cacheStrategy" format="enum">
+            <enum name="none" value="0"/>
+            <enum name="data" value="1"/>
+            <enum name="resource" value="2"/>
+        </attr>
     </declare-styleable>
 </resources>

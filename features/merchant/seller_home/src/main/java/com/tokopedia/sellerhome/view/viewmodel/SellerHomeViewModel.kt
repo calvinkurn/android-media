@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -302,7 +303,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
+    fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
@@ -336,7 +337,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getTableWidgetData(dataKeys: List<Pair<String, String>>) {
+    fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
@@ -676,10 +677,10 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun getPostData(widgets: List<BaseWidgetUiModel<*>>): List<PostListDataUiModel> {
         widgets.setLoading()
-        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
+        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
             val postFilter = it.postFilter.find { filter -> filter.isSelected }
             val postFilters = postFilter?.value.orEmpty()
-            return@map Pair(it.dataKey, postFilters)
+            return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
         }
         val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getPostDataUseCase.get().params = params
@@ -702,10 +703,10 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
         widgets.setLoading()
-        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<TableWidgetUiModel>().map {
             val postFilter = it.tableFilters.find { filter -> filter.isSelected }
             val postFilters = postFilter?.value.orEmpty()
-            return@map Pair(it.dataKey, postFilters)
+            return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
         }
         val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getTableDataUseCase.get().params = params

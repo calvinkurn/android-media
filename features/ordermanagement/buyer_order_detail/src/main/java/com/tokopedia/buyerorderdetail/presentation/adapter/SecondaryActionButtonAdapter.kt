@@ -8,7 +8,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListener) : RecyclerView.Adapter<SecondaryActionButtonAdapter.ViewHolder>() {
+class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListener?) : RecyclerView.Adapter<SecondaryActionButtonAdapter.ViewHolder>() {
 
     private var secondaryActionButtons: List<ActionButtonsUiModel.ActionButton> = emptyList()
 
@@ -31,14 +31,14 @@ class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListen
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, private val listener: ActionButtonClickListener) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val listener: ActionButtonClickListener?) : RecyclerView.ViewHolder(itemView) {
         private val tvBuyerOrderDetailSecondaryActionButton = itemView.findViewById<Typography>(R.id.tvBuyerOrderDetailSecondaryActionButton)
 
         fun bind(button: ActionButtonsUiModel.ActionButton?) {
             tvBuyerOrderDetailSecondaryActionButton.text = button?.label.orEmpty()
             tvBuyerOrderDetailSecondaryActionButton.setOnClickListener {
                 button?.let {
-                    listener.onActionButtonClicked(false, button)
+                    listener?.onActionButtonClicked(false, button)
                 }
             }
         }

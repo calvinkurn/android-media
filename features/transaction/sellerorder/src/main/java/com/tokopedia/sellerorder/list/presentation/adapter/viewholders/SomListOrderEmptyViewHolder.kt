@@ -27,10 +27,6 @@ class SomListOrderEmptyViewHolder(
         const val PAYLOAD_SHOW_BUTTON_CHANGES = "payload_show_button_changes"
     }
 
-    init {
-        itemView?.somEmptyStateContainer?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-    }
-
     @Suppress("NAME_SHADOWING")
     override fun bind(element: SomListEmptyStateUiModel?) {
         element?.let { element ->
@@ -51,6 +47,7 @@ class SomListOrderEmptyViewHolder(
         if (payloads.isNotEmpty()) {
             val changes = payloads.firstOrNull()
             if (changes is Bundle) {
+                itemView?.somEmptyStateContainer?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                 if (changes.containsKey(PAYLOAD_TITLE_CHANGES)) setTitle(changes.getString(PAYLOAD_TITLE_CHANGES, ""))
                 if (changes.containsKey(PAYLOAD_DESCRIPTION_CHANGES)) setDescription(changes.getString(PAYLOAD_DESCRIPTION_CHANGES, ""))
                 if (changes.containsKey(PAYLOAD_ILLUSTRATION_CHANGES)) setIllustration(changes.getString(PAYLOAD_ILLUSTRATION_CHANGES, ""))
@@ -62,6 +59,7 @@ class SomListOrderEmptyViewHolder(
                 } else {
                     itemView.btnEmptyState.gone()
                 }
+                itemView?.somEmptyStateContainer?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                 return
             }
         }

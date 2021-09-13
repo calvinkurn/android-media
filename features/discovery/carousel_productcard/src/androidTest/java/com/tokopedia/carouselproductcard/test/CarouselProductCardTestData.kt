@@ -19,6 +19,8 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardGridLabelCategory())
     it.add(createCarouselProductCardGridLabelCostPerUnit())
     it.add(createCarouselProductCardGridLabelCategoryAndCostPerUnit())
+    it.add(createCarouselProductCardGridATCNonVariant())
+    it.add(createCarouselProductCardGridAddVariant())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -437,6 +439,74 @@ private fun createCarouselProductCardGridLabelCategoryAndCostPerUnit(): List<Pro
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
                             LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
                     ),
+            ),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardGridATCNonVariant(): List<ProductCardModel> {
+    return listOf(
+            ProductCardModel(
+                    productName = "Add To Cart Non Variant with button",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+                    nonVariant = ProductCardModel.NonVariant(
+                            quantity = 0,
+                            minQuantity = 1,
+                            maxQuantity = 10,
+                    )
+            ),
+            ProductCardModel(
+                    productName = "Add To Cart Non Variant with Qty editor",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+                    nonVariant = ProductCardModel.NonVariant(
+                            quantity = 4,
+                            minQuantity = 1,
+                            maxQuantity = 10,
+                    )
+            ),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardGridAddVariant(): List<ProductCardModel> {
+    return listOf(
+            ProductCardModel(
+                    productName = "Add To Cart Variant with button",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+                    variant = ProductCardModel.Variant(quantity = 0)
+            ),
+            ProductCardModel(
+                    productName = "Add To Cart Non with quantity",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+                    variant = ProductCardModel.Variant(quantity = 2)
             ),
             createSmallProductCard(),
             createSmallProductCard(),

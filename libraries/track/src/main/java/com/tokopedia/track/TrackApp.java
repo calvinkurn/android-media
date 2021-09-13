@@ -117,8 +117,7 @@ public class TrackApp {
 
         synchronized (LOCK) {
             // get TrackApp object
-            for (Iterator<String> iterator = INSTANCES.keySet().iterator(); iterator.hasNext(); ) {
-                String key = iterator.next();
+            for (String key : INSTANCES.keySet()) {
                 ContextAnalytics analytics = trackApp.getValue(key);
                 analytics.initialize();
             }
@@ -151,10 +150,7 @@ public class TrackApp {
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException(className.getName()
                         + ": Unable to find LayoutManager " + className, e);
-            } catch (InvocationTargetException e) {
-                throw new IllegalStateException(className.getName()
-                        + ": Could not instantiate the LayoutManager: " + className, e);
-            } catch (InstantiationException e) {
+            } catch (InvocationTargetException | InstantiationException e) {
                 throw new IllegalStateException(className.getName()
                         + ": Could not instantiate the LayoutManager: " + className, e);
             } catch (IllegalAccessException e) {
@@ -200,8 +196,8 @@ public class TrackApp {
      * @param TAG
      * @return
      */
-    @Deprecated @NonNull
-    public ContextAnalytics getValue(String TAG) {
+    @NonNull
+    ContextAnalytics getValue(String TAG) {
         if (!INSTANCES.containsKey(TAG)) {
             throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ", TAG));
         }

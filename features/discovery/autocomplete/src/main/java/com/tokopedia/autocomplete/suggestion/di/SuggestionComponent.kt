@@ -12,7 +12,8 @@ import dagger.Component
     SuggestionRepositoryModule::class,
     SuggestionNetModule::class,
     SuggestionUserSessionInterfaceModule::class,
-    SuggestionContextModule::class
+    SuggestionContextModule::class,
+    SuggestionIrisAnalyticsModule::class
 ], dependencies = [BaseAppComponent::class])
 interface SuggestionComponent {
     fun inject(fragment: SuggestionFragment)

@@ -1,0 +1,28 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.moneyin">
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity"
+            android:label="@string/tukar_tambah">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_moneyin"
+                    android:pathPattern="@string/path_device_validation"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tokopedia.moneyin.viewcontrollers.activity.FinalPriceActivity"
+            android:label="@string/harga_final" >
+        </activity>
+        <activity
+            android:name="com.tokopedia.moneyin.viewcontrollers.activity.MoneyInCheckoutActivity"
+            android:label="@string/checkout" />
+    </application>
+</manifest>

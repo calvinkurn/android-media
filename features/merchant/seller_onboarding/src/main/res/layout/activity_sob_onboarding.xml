@@ -1,6 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/onboardingContainer"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSob"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Neutral_N0" />
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/backgroundSob"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg_sob_full" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/sob_dimen_112"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/bg_sob_slide_header_home" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/sobViewPager"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/sob_view_pager_bottom_margin"
+        app:layout_constraintBottom_toTopOf="@+id/btnSobNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSobSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sob_skip_btn_top_margin"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:focusable="true"
+        android:padding="@dimen/unify_space_4"
+        android:text="@string/sob_skip"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnSobPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:padding="@dimen/layout_lvl1"
+        android:text="@string/sob_previous"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSobNext"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSobNext" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pageIndicatorSob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSobNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSobNext" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSobNext"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:text="@string/sob_next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyButtonSize="medium" />
+</androidx.constraintlayout.widget.ConstraintLayout>

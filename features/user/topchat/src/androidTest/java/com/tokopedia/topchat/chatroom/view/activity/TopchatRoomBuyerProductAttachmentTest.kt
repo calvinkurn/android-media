@@ -44,7 +44,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             false,
             "",
             "Rp 50.000.000",
-            500000,
+            500000.0,
             "50%",
             false
         )

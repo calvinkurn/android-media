@@ -3,15 +3,17 @@ package com.tokopedia.play.view.uimodel.mapper
 import com.google.gson.JsonObject
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.data.*
-import com.tokopedia.play.data.websocket.PlaySocket
-import com.tokopedia.play.data.websocket.PlaySocketCache
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.websocket.WebSocketException
 import javax.inject.Inject
 
 /**
@@ -22,15 +24,12 @@ class PlaySocketToModelMapper @Inject constructor(
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
         private val channelStatusMapper: PlayChannelStatusMapper,
+        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
 ) {
 
-    fun mapTotalLike(input: TotalLike): PlayLikeStatusInfoUiModel {
-        return PlayLikeStatusInfoUiModel(
-                totalLike = input.totalLike,
-                totalLikeFormatted = input.totalLikeFormatted,
-                isLiked = false, /**Skip**/
-                source = LikeSource.Network
-        )
+    fun mapTotalLike(input: TotalLike): Pair<Long, String> {
+        return input.totalLike to input.totalLikeFormatted
     }
 
     fun mapTotalView(input: TotalView): String {
@@ -68,6 +67,14 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapSendChat(message: String, channelId: String): String {
         return parseSendMessage(message, channelId)
+    }
+
+    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
+        return channelInteractiveMapper.mapInteractive(input)
+    }
+
+    fun mapRealTimeNotification(input: RealTimeNotification): RealTimeNotificationUiModel {
+        return realTimeNotificationMapper.mapRealTimeNotification(input)
     }
 
     private fun parseSendMessage(message: String, channelId: String): String {

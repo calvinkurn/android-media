@@ -53,6 +53,7 @@ object Tracker {
 
     object Action {
         const val CLICK_COUPON_ENTRY_POINT = "click coupon entry point"
+        const val CLICK_TOKOMEMBER_ENTRY_POINT = "click coupon tokomember"
         const val CLICK_COUPON = "click coupon"
         const val VIEW_FOLLOW_WIDGET = "view follow widget"
         const val VIEW_MEMBERSHIP_WIDGET = "view membership widget"
@@ -72,6 +73,7 @@ object Tracker {
         const val CLICK_CEK_TOKO = "click cek toko"
         const val CLICK_LIHAT_SELENGKAPNYA = "click lihat selengkapnya"
         const val CLICK_MULAI_BELANJA = "click mulai belanja"
+        const val VIEW_TOKOMEMBER = "view coupon tokomember"
     }
 
     object Label {
@@ -92,20 +94,30 @@ object Tracker {
 
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int) {
+    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean) {
         val map = mutableMapOf<String, Any>()
         when (source) {
             MvcSource.PDP -> {
                 map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
-                map[Constants.EVENT_ACTION] = Action.CLICK_COUPON_ENTRY_POINT
+                if(isTokomember){
+                    map[Constants.EVENT_ACTION] = Action.CLICK_TOKOMEMBER_ENTRY_POINT
+                }else{
+                    map[Constants.EVENT_ACTION] = Action.CLICK_COUPON_ENTRY_POINT
+                }
+
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
 
             }
             MvcSource.SHOP -> {
                 map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
-                map[Constants.EVENT_ACTION] = Action.CLICK_COUPON
+                if(isTokomember){
+                    map[Constants.EVENT_ACTION] = Action.CLICK_TOKOMEMBER_ENTRY_POINT
+                }else{
+                    map[Constants.EVENT_ACTION] = Action.CLICK_COUPON
+                }
+
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
 
             }
@@ -410,6 +422,17 @@ object Tracker {
         map[Constants.EVENT_LABEL] = label
 
         fillCommonItems(map, userId, TOKOPOINT_BUSINESSUNIT)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.VIEW_SHOP
+        map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+        map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+        map[Constants.EVENT_ACTION] = Action.VIEW_TOKOMEMBER
+
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 

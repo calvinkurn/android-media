@@ -1,7 +1,7 @@
 package com.tokopedia.homenav.common.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.EXPERIMENT_NAME_TOKOPOINT
+import com.tokopedia.remoteconfig.RollenceKey.EXPERIMENT_NAME_TOKOPOINT
 
 /**
  * Created by Lukas on 3/2/21.

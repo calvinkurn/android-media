@@ -78,6 +78,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.adapter = quickReplyAdapter
 
         super.initView()
+        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
     }
 
     private fun getQuickReplyList(): List<QuickReplyViewModel> {
@@ -96,14 +97,42 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
         updateHeader(chatroomViewModel) {}
-        showReplyBox(chatroomViewModel.replyable)
         checkShowQuickReply(chatroomViewModel)
+    }
+
+    override fun handleReplyBox(isEnable: Boolean) {
+       showReplyBox(isEnable)
     }
 
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.chatbot_avatar)
+    }
+
+    override fun clearChatOnLoadChatHistory() {
+        adapter.data.clear()
+    }
+
+    override fun clearDuplicate(list: List<Visitable<*>>): ArrayList<Visitable<*>> {
+        val filteredList = ArrayList<Visitable<*>>(list)
+        list.forEach { api ->
+            adapter.data.forEach { ws ->
+                when {
+                    ws is MessageViewModel && api is MessageViewModel -> {
+                        if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
+                            filteredList.remove(api)
+                        }
+                    }
+                    ws is BaseChatViewModel && api is BaseChatViewModel -> {
+                        if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
+                            filteredList.remove(api)
+                        }
+                    }
+                }
+            }
+        }
+        return filteredList
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {

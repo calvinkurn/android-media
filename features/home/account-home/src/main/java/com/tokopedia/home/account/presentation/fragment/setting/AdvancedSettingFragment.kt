@@ -60,7 +60,7 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
             showDialogClearCache()
         } else if (settingId == SettingConstant.SETTING_APP_ADVANCED_SCREEN_RECORDER) {
             context?.let {
-                accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.SCREEN_RECORDER)
+                accountAnalytics.eventClickScreenRecorder()
                 RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER)
             }
         }

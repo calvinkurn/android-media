@@ -14,7 +14,6 @@ buildscript {
 }
 
 dependencies {
-
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

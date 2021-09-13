@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.mvcwidget.LiveDataResult
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -19,7 +20,9 @@ import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
+import junit.framework.Assert
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -34,7 +37,7 @@ class TokoPointsHomeViewModelTest {
 
     lateinit var viewModel: TokoPointsHomeViewModel
     val repository = mockk<TokopointsHomeUsecase>()
-    val recomUsecase = mockk<RewardsRecommUsecase>()
+    val recomUsecase = mockk<RewardsRecommUsecase>(relaxed = true)
     val requestParams: RequestParams = mockk()
     val productCardModel = mockk<ProductCardModel>()
     val productItem = mockk<RecommendationItem>()
@@ -44,96 +47,17 @@ class TokoPointsHomeViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         viewModel = TokoPointsHomeViewModel(repository,recomUsecase)
     }
 
+    @ExperimentalCoroutinesApi
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-    }
-
-    @Test
-    fun `getTokoPointDetail for success data`() {
-        val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
-            every { isShowIntroActivity } returns false
-            every { isShowSavingPage } returns false
-        }
-        val dataSection = mockk<List<SectionContent>>()
-
-        coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
-                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
-            }
-            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns mockk {
-                    every { sectionContent } returns dataSection
-                }
-            }
-        }
-        commonRecomDatacall()
-        viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
-        viewModel.getTokoPointDetail()
-
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
-
-        val result = viewModel.tokopointDetailLiveData.value as Success
-        assert(result.data.sectionList == dataSection)
-        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.recomData?.recommendationWrapper == recommendationList)
-    }
-
-    @Test
-    fun `getTokoPointDetail for userSavingVisible`() {
-        val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
-            every { isShowIntroActivity } returns false
-            every { isShowSavingPage } returns true
-        }
-        val dataSection = mockk<List<SectionContent>>()
-        val dataUserSavingResponse = mockk<TokopointsUserSaving>()
-
-        coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
-                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
-            }
-            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns mockk {
-                    every { sectionContent } returns dataSection
-                }
-            }
-
-        }
-        coEvery { repository.getUserSavingData() } returns mockk {
-            every { getData<UserSavingResponse>(UserSavingResponse::class.java) } returns mockk {
-                every { tokopointsUserSaving } returns dataUserSavingResponse
-            }
-        }
-
-        commonRecomDatacall()
-        viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
-        viewModel.getTokoPointDetail()
-
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
-
-        val result = viewModel.tokopointDetailLiveData.value as Success
-        assert(result.data.sectionList == dataSection)
-        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.topSectionResponse.userSavingResponse == dataUserSavingResponse)
-        assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
     @Test
@@ -192,10 +116,4 @@ class TokoPointsHomeViewModelTest {
         verify(exactly = 1) { tokopointIntroObserver.onChanged(any()) }
     }
 
-    fun `commonRecomDatacall`(){
-        coEvery {  recomUsecase.getRequestParams(1, "", "") } returns requestParams
-        every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
-        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
-
-    }
 }

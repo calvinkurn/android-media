@@ -1,0 +1,16 @@
+{
+  "readme": "Tracker Seamless Favorite Number Detail Unhappy",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "view deletion failed toaster",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    }
+  ]
+}

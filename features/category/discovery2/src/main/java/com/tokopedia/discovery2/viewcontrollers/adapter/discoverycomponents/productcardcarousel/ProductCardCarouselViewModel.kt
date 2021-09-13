@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
@@ -47,6 +48,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         handleLihatSemuaHeader()
         handleErrorState()
         fetchProductCarouselData()
@@ -157,7 +159,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         productLoadState.addAll(productDataList)
-        if (productDataList.size.isMoreThanZero() && productDataList.size.rem(PRODUCT_PER_PAGE) == 0) {
+        if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
             productLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
                 pageEndPoint = components.pageEndPoint
                 parentComponentId = components.id
@@ -184,10 +186,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun isUserLoggedIn() = UserSession(application).isLoggedIn
 
     fun isLastPage(): Boolean {
-        getProductList()?.let {
-            if (it.size.isMoreThanZero() && it.size.rem(PRODUCT_PER_PAGE) == 0) return false
-        }
-        return true
+        return !Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)
     }
 
     fun isLoadingData() = isLoading
@@ -207,6 +206,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             isLoading = false
             productCarouselList.value = it
             syncData.value = true
+        }
+    }
+
+    fun areFitterApplied():Boolean{
+        return ((components.selectedSort != null && components.selectedFilters != null) &&
+            (components.selectedSort?.isNotEmpty() == true ||
+                    components.selectedFilters?.isNotEmpty() == true))
+    }
+
+    fun getErrorStateComponent():ComponentsItem{
+        return ComponentsItem(name = ComponentNames.ProductListEmptyState.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.ProductListEmptyState.componentName
         }
     }
 }

@@ -59,7 +59,7 @@ abstract class InboxTest {
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         baseComponent = null
         inboxComponent = null
         chatListComponent = null
@@ -93,6 +93,8 @@ abstract class InboxTest {
     ) {
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        } else {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         }
         val uri = buildIntent().build()
         val intent = Intent().apply {
@@ -161,6 +163,12 @@ object InboxAssertion {
 
     fun assertTotalSwitchRoleCounter(text: String) {
         onView(withId(R.id.unread_header_counter)).check(
+            matches(withText(text))
+        )
+    }
+
+    fun assertInboxTitle(text: String) {
+        onView(withId(R.id.toolbar_title)).check(
             matches(withText(text))
         )
     }

@@ -10,6 +10,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.viewhol
 class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Adapter<DiscomAdapterViewHolder>() {
 
     private var districtData = mutableListOf<Address>()
+    private var keyword = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscomAdapterViewHolder {
         val binding = ItemDistrictRecommendationRevampBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,16 +30,18 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: DiscomAdapterViewHolder, position: Int) {
-        holder.bindData(districtData[position])
+        holder.bindData(districtData[position], keyword)
     }
 
-    fun setData(data: List<Address>) {
+    fun setData(data: List<Address>, keyword: String) {
+        this.keyword = keyword
         districtData.clear()
         districtData.addAll(data)
         notifyDataSetChanged()
     }
 
-    fun appendData(data: List<Address>) {
+    fun appendData(data: List<Address>, keyword: String) {
+        this.keyword = keyword
         districtData.addAll(data)
         notifyDataSetChanged()
     }

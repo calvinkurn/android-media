@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RollenceKey
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -240,8 +241,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 false)
         if(isNewNavigationEnabled) {
             getAbTestPlatform()?.let {
-                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                return (it.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                        == RollenceKey.NAVIGATION_VARIANT_REVAMP)
             }
         }
         return false

@@ -21,7 +21,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_pie_chart_widget.view.*
 
 /**
@@ -158,7 +157,37 @@ class PieChartViewHolder(
             pieChartShc.init(PieChartConfig.getDefaultConfig())
             pieChartShc.setData(getPieChartData(element))
             pieChartShc.invalidateChart()
+
+            setupSeeMoreCta(element)
         }
+    }
+
+    private fun setupSeeMoreCta(element: PieChartWidgetUiModel) {
+        with(itemView) {
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnShcPieChartSeeMore.visibility = ctaVisibility
+            icShcPieChartSeeMore.visibility = ctaVisibility
+            btnShcPieChartSeeMore.text = element.ctaText
+
+            if (isCtaVisible) {
+                btnShcPieChartSeeMore.setOnClickListener {
+                    onSeeMoreClicked(element)
+                }
+                icShcPieChartSeeMore.setOnClickListener {
+                    onSeeMoreClicked(element)
+                }
+            }
+        }
+    }
+
+    private fun onSeeMoreClicked(element: PieChartWidgetUiModel) {
+        listener.sendPieChartSeeMoreClickEvent(element)
+        openAppLink(element.appLink)
+    }
+
+    private fun openAppLink(appLink: String) {
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun showEmptyState(element: PieChartWidgetUiModel) {
@@ -193,6 +222,6 @@ class PieChartViewHolder(
 
         fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {}
         fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {}
-
+        fun sendPieChartSeeMoreClickEvent(model: PieChartWidgetUiModel) {}
     }
 }

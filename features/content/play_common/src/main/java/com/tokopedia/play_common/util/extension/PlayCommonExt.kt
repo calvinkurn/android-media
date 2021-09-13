@@ -156,6 +156,22 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
     }
 }
 
+suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { cont ->
+    val vto = viewTreeObserver
+    val listener = object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            cont.resume(Unit)
+            when {
+                vto.isAlive -> vto.removeOnPreDrawListener(this)
+                else -> viewTreeObserver.removeOnPreDrawListener(this)
+            }
+            return true
+        }
+    }
+    cont.invokeOnCancellation { vto.removeOnPreDrawListener(listener) }
+    vto.addOnPreDrawListener(listener)
+}
+
 val View.globalVisibleRect: Rect
     get() {
         val rect = Rect()

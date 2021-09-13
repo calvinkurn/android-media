@@ -14,7 +14,7 @@ class GetProfileCompletionUseCase @Inject constructor(
 ) {
 
     fun getData(onSuccess: (ProfileDataModel) -> Unit, onError: (Throwable) -> Unit) {
-        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_profile_has_password)
+        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_is_created_password)
         useCase.apply {
             setTypeClass(ProfileDataModel::class.java)
             setGraphqlQuery(rawQuery)

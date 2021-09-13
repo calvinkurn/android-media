@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.recommendation_widget_common.R
 import kotlinx.android.synthetic.main.view_specs.view.*
@@ -14,7 +15,7 @@ class SpecsView: FrameLayout  {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_specs, this)
+        LayoutInflater.from(context).inflate(R.layout.view_specs, this)
     }
 
     fun setSpecsInfo(specsListModel: SpecsListModel) {

@@ -9,8 +9,10 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyLi
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import kotlinx.android.synthetic.main.item_shop_score_penalty.view.*
 
-class ItemPenaltyViewHolder(view: View,
-                            private val itemDetailPenaltyListener: ItemDetailPenaltyListener) : AbstractViewHolder<ItemPenaltyUiModel>(view) {
+class ItemPenaltyViewHolder(
+    view: View,
+    private val itemDetailPenaltyListener: ItemDetailPenaltyListener
+) : AbstractViewHolder<ItemPenaltyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_shop_score_penalty

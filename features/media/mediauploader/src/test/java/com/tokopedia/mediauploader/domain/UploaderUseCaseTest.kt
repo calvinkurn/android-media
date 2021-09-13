@@ -71,7 +71,7 @@ class UploaderUseCaseTest: Spek({
             }
             Given("data policy with file not found") {
                 coEvery {
-                    dataPolicyUseCase(RequestParams.EMPTY)
+                    dataPolicyUseCase(mapOf())
                 } answers {
                     DataUploaderPolicy()
                 }

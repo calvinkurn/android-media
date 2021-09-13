@@ -27,7 +27,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -69,7 +68,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var remoteConfig: RemoteConfig? = null
-    private var shopPageConfig: ShopPageConfig? = null
     private var shopViewModel: ShopInfoViewModel? = null
     private var shopPageTracking: ShopPageTrackingShopPageInfo? = null
     private var noteAdapter: BaseListAdapter<ShopNoteUiModel, ShopNoteAdapterTypeFactory>? = null
@@ -97,7 +95,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
         shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(requireContext()))
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        shopPageConfig = ShopPageConfig(context)
         initViewModel()
         initObservers()
         initView()

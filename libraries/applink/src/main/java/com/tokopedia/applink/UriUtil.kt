@@ -348,11 +348,14 @@ object UriUtil {
      * @return b=234
      */
     fun getDiffQuery(query: String, uri: Uri): String {
+        if (uri.query.isNullOrEmpty()) {
+            return query
+        }
         return try {
             val queryList = query.split("&")
             val strResultList: MutableList<String> = mutableListOf()
             for (q in queryList) {
-                val keyValueSplit = q.split("=")
+                val keyValueSplit = q.split("=".toRegex(), 2)
                 val key = keyValueSplit[0]
                 val value = keyValueSplit[1]
                 val valueOriginalUri = uri.getQueryParameter(key)

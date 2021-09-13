@@ -5,19 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.marginTop
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
-import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.stringToDateRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.fragment_event_redeem.*
 import javax.inject.Inject
 
@@ -83,10 +86,11 @@ class EventRedeemFragment : BaseDaggerFragment() {
         })
 
         eventRedeemViewModel.isError.observe(viewLifecycleOwner, Observer {
-            it?.let {
+            it?.let { error ->
                 progressDialog.dismiss()
-                NetworkErrorHelper.showEmptyState(context, view?.rootView, it.message) {
-                    requestData()
+                context?.let {
+                    EventGlobalError.errorEventHandlerGlobalError(it, error, container_error_event_redeem,
+                            global_error_redeem_event, { requestData() })
                 }
             }
         })
@@ -103,6 +107,8 @@ class EventRedeemFragment : BaseDaggerFragment() {
     }
 
     private fun requestData() {
+        container_error_event_redeem.hide()
+        global_error_redeem_event.hide()
         urlRedeem?.let {
             eventRedeemViewModel.getDataRedeem(it)
         }
@@ -154,12 +160,25 @@ class EventRedeemFragment : BaseDaggerFragment() {
 
     private fun renderNotLogin(){
         renderError()
-        tg_event_redeem_product.text = resources.getString(R.string.ent_redeem_not_login)
+
+        tg_event_redeem_product.apply {
+            text = resources.getString(R.string.ent_redeem_not_login)
+            setMargin(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_128).toInt(),
+                    0,0
+            )
+        }
     }
 
     private fun renderUrlNull(){
         renderError()
-        tg_event_redeem_product.text = resources.getString(R.string.ent_redeem_url_null)
+        tg_event_redeem_product.apply {
+            text = resources.getString(R.string.ent_redeem_url_null)
+            setMargin(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_128).toInt(),
+                    0,0
+            )
+        }
     }
 
     companion object {

@@ -12,7 +12,8 @@ import com.tokopedia.shop.score.performance.presentation.adapter.SectionFaqListe
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import kotlinx.android.synthetic.main.section_faq_shop_score.view.*
 
-class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener) : AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
+class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener) :
+    AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
 
     companion object {
         val LAYOUT = R.layout.section_faq_shop_score
@@ -24,7 +25,8 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
         with(itemView) {
             itemFaqAdapter = ItemFaqAdapter(this@SectionFaqViewHolder)
 
-            tv_label_help_center.text = MethodChecker.fromHtml(getString(R.string.title_help_center_tokopedia))
+            tv_label_help_center.text =
+                MethodChecker.fromHtml(getString(R.string.title_help_center_tokopedia))
 
             rv_faq_shop_score?.apply {
                 layoutManager = LinearLayoutManager(context)

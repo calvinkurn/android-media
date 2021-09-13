@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError.errorEventHandlerGlobalError
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
@@ -33,6 +34,11 @@ import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.EventHomeViewModel
 import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.showUnifyError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,7 +108,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
                 }
 
                 is Fail -> {
-                    onErrorGetData()
+                    onErrorGetData(it.throwable)
                 }
             }
         })
@@ -129,21 +135,21 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem>) {
+        global_error_home_event.hide()
+        container_event_home.show()
         renderList(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout_home?.isRefreshing = false
         startShowCase()
     }
 
-    private fun onErrorGetData() {
+    private fun onErrorGetData(throwable: Throwable) {
+        container_event_home.hide()
         swipe_refresh_layout_home?.isRefreshing = false
         performanceMonitoring.stopTrace()
-        errorHandler()
-    }
-
-    private fun errorHandler(){
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-            loadAllData()
+        context?.let {
+            errorEventHandlerGlobalError(it, throwable, container_error_home,
+                    global_error_home_event, { loadAllData() })
         }
     }
 

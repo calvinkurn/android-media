@@ -61,7 +61,6 @@ class GetAllShopInfoUseCaseTest {
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
                 getUserShopInfoUseCase,
-                topAdsAutoTypeUseCase,
                 topAdsDashboardDepositUseCase,
                 coroutineTestRule.dispatchers
         )
@@ -75,12 +74,10 @@ class GetAllShopInfoUseCaseTest {
         val totalFollowersSuccess = anyLong()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
-        val isTopAdsAutoTopupSuccess = anyBoolean()
 
         val partialTopAdsInfo = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
                 balanceSuccess,
-                topAdsDepositSuccess,
-                isTopAdsAutoTopupSuccess
+                topAdsDepositSuccess
         )
 
         val partialShopInfo = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
@@ -112,10 +109,6 @@ class GetAllShopInfoUseCaseTest {
         } returns topAdsDepositSuccess
 
         coEvery {
-            topAdsAutoTypeUseCase.executeOnBackground()
-        } returns isTopAdsAutoTopupSuccess
-
-        coEvery {
             getUserShopInfoUseCase.executeOnBackground()
         } returns userShopInfoWrapper
 
@@ -126,7 +119,6 @@ class GetAllShopInfoUseCaseTest {
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()
             topAdsDashboardDepositUseCase.executeOnBackground()
-            topAdsAutoTypeUseCase.executeOnBackground()
             getUserShopInfoUseCase.executeOnBackground()
         }
 

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GroupStatisticsResponse(
 
-        @field:SerializedName("GetTopadsDashboardGroupStatistics")
+        @field:SerializedName("GetTopadsDashboardGroupStatisticsV2")
         val getTopadsDashboardGroupStatistics: GetTopadsDashboardGroupStatistics = GetTopadsDashboardGroupStatistics()
 )
 

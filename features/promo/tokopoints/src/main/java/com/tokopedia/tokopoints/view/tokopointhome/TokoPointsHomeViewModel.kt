@@ -29,9 +29,8 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
-    var deferredSavingData: Deferred<UserSavingResponse>? = null
-    var recomData: Deferred<RewardsRecommendation>? = null
-
+    var deferredSavingData: UserSavingResponse? = null
+    var recomData: RewardsRecommendation? = null
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -43,13 +42,12 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
             }
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data.tokopediaRewardTopSection?.isShowSavingPage == true) {
-                deferredSavingData = async(Dispatchers.IO) { getUserSavingData() }
+                deferredSavingData = getUserSavingData().await()
             }
-            recomData = async(Dispatchers.IO) {  getRecommendationData()}
-            val recomReponseData = recomData?.await()
+            recomData = getRecommendationData().await()
             if (data != null && dataSection != null && dataSection.sectionContent != null && data.tokopediaRewardTopSection != null) {
                 tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection,
-                        deferredSavingData?.await()?.tokopointsUserSaving), dataSection.sectionContent.sectionContent, recomReponseData))
+                    deferredSavingData?.tokopointsUserSaving), dataSection.sectionContent.sectionContent,recomData))
             } else {
                 throw NullPointerException("error in data")
             }
@@ -67,18 +65,32 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
         }
     }
 
-    private suspend fun getRecommendationData(): RewardsRecommendation {
-        val response = recommUsecase.getData(recommUsecase.getRequestParams(1, "", ""))
-        val recomWidget = response.first()
-        val title = recomWidget.title
-        val appLink = recomWidget.seeMoreAppLink
-        val list = recommUsecase.mapper.recommWidgetToListOfVisitables(recomWidget)
-        return RewardsRecommendation(list,title,appLink)
+    private suspend fun getRecommendationData(): Deferred<RewardsRecommendation> {
+        return async(Dispatchers.IO) {
+            var recommendation = RewardsRecommendation(listOf(), "", "")
+            try {
+                val response = recommUsecase.getData(recommUsecase.getRequestParams(1, "", ""))
+                val recomWidget = response.first()
+                val title = recomWidget.title
+                val appLink = recomWidget.seeMoreAppLink
+                val list = recommUsecase.mapper.recommWidgetToListOfVisitables(recomWidget)
+                recommendation = RewardsRecommendation(list, title, appLink)
+            } catch (e: Exception) {
+            }
+            recommendation
+        }
     }
 
-    private suspend fun getUserSavingData(): UserSavingResponse {
-        val response = tokopointsHomeUsecase.getUserSavingData()
-        return response.getData(UserSavingResponse::class.java)
+    private suspend fun getUserSavingData(): Deferred<UserSavingResponse> {
+        return async(Dispatchers.IO) {
+            var userSavingResponse = UserSavingResponse()
+            try {
+                val response = tokopointsHomeUsecase.getUserSavingData()
+                userSavingResponse = response.getData(UserSavingResponse::class.java)
+            } catch (e: Exception) {
+            }
+            userSavingResponse
+        }
     }
 }
 

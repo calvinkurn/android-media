@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -24,9 +25,41 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     companion object {
         val QUERY = """
-        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
-            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
-                variantData { 
+        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
+            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
+                    basicInfo {
+                          shopID
+                          shopName
+                          category {
+                            id
+                            name
+                            title
+                            breadcrumbURL
+                            isAdult
+                            lastUpdateCategory
+                            detail {
+                              id
+                              name
+                              breadcrumbURL
+                              isAdult
+                            }
+                          }
+                    }
+                    bebasOngkir {
+                          products{
+                            productID
+                            boType
+                          }
+                          images{
+                            boType
+                            imageURL
+                            tokoCabangImageURL
+                          }
+                    }
+                    shopInfo {
+                        shopType
+                    }
+                    variantData { 
                       errorCode
                       parentID
                       defaultChild
@@ -129,6 +162,32 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     geolocation
                   }
                 }
+                ratesEstimate {
+                  warehouseID
+                  products
+                  data {
+                    totalService
+                    isSupportInstantCourier
+                    destination
+                    icon
+                    title
+                    subtitle
+                    eTAText
+                    errors {
+                      Code
+                      Message
+                      DevMessage
+                    }
+                    courierLabel
+                    cheapestShippingPrice
+                  }
+                  bottomsheet {
+                    title
+                    iconURL
+                    subtitle
+                    buttonCopy
+                  }
+               }
                 callsError{
                   cartRedirection{
                     Code
@@ -143,6 +202,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
     fun createRequestParams(productId: String,
                             source: String,
                             isTokoNow:Boolean,
+                            shopId: String,
                             warehouseId: String? = null,
                             pdpSession: String? = null): Map<String, Any?> = mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
@@ -150,7 +210,14 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
-            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
+            ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
+                    chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
+            )
+
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
@@ -185,7 +252,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 variantData = data.variantData,
                 cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
                 nearestWarehouse = data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
-                alternateCopy = data.cardRedirection.alternateCopy
+                alternateCopy = data.cardRedirection.alternateCopy,
+                simpleBasicInfo = data.basicInfo,
+                shopType = data.shopInfo.shopType,
+                boData = data.bebasOngkir,
+                rates = data.ratesEstimate
         )
     }
 }

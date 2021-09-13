@@ -44,9 +44,4 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
         else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
     }
 
-    companion object {
-        fun createIntent(context: Context, bundle: Bundle): Intent {
-            return Intent(context, AddressFormActivity::class.java).putExtra(EXTRA_BUNDLE, bundle)
-        }
-    }
 }

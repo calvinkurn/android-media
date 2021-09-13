@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
@@ -155,8 +156,8 @@ class SearchActivity: BaseActivity(),
             (RemoteConfigInstance
                     .getInstance()
                     .abTestPlatform
-                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                    .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP)
         } catch (e: Exception) {
             e.printStackTrace()
             false

@@ -67,7 +67,7 @@ public class DeeplinkUTMUtils {
 
     public static Map<String, String> splitQuery(Uri url) {
         Map<String, String> queryPairs = new LinkedHashMap<>();
-        String query = url.getQuery();
+        String query = (url != null) ? url.getQuery() : "";
         if (!TextUtils.isEmpty(query)) {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
@@ -100,27 +100,26 @@ public class DeeplinkUTMUtils {
 
         Uri referrerUri = getReferrer(activity);
 
-        boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
+        boolean isAmpUri = "true".equalsIgnoreCase(maps.get(KEY_AMP));
 
         if (isOriginalUrlAmp) {
             campaign = createAmpOrganicCampaign(maps);
         } else if (uri1 != null && isValidCampaignUrl(uri1) && !isAmpUri) {
             //iuf valida campaign and amp is false
-            campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
-            campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
-            campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
-            campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-            campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-
             if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                 campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+            } else {
+                campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                        maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+                campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                        maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+                campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                        maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+                campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                        maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                        maps.get(AppEventTracking.GTM.UTM_TERM) : "");
             }
-
         } else {
             // App was referred via a deep link
             if (referrerUri != null && referrerUri.getScheme() != null && (referrerUri.getScheme().equals("http") || referrerUri.getScheme().equals("https"))) {
@@ -132,36 +131,34 @@ public class DeeplinkUTMUtils {
                 if (host.contains("tokopedia-com.cdn.ampproject.org")) {
                     campaign = createAmpOrganicCampaign(maps);
                 } else if (host.contains("www.google")) {
-
-                    campaign.setUtmSource("google.com");
-                    campaign.setUtmMedium("organic");
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-
                     if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
-                    }
-
-                } else if (host.contains(TOKOPEDIA_DOMAIN)) {
-                    //send event if client id is present
-                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.X_CLID))) {
-                        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                                maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
-                        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+                    } else {
+                        campaign.setUtmSource("google.com");
+                        campaign.setUtmMedium("organic");
                         campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
                         campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
                                 maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                         campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                                 maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+                    }
+                } else if (host.contains(TOKOPEDIA_DOMAIN)) {
+                    //send event if client id is present
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.X_CLID))) {
                         if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+                        } else {
+                            campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                                    maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
+                            campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                                    maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+                            campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+                            campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                                    maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                            campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                                    maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                         }
                         campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
                                 maps.get(AppEventTracking.GTM.X_CLID) : "");
@@ -169,25 +166,24 @@ public class DeeplinkUTMUtils {
                                 maps.get(AppEventTracking.GTM.X_ATTR) : "");
                     }
                 } else {
-
-                    campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
-                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+                    } else {
+                        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
+                        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+                        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+                        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
                             maps.get(AppEventTracking.GTM.X_CLID) : "");
                     campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
                             maps.get(AppEventTracking.GTM.X_ATTR) : "");
-
                 }
 
             } else if (referrerUri != null && referrerUri.getScheme() != null && referrerUri.getScheme().equals("android-app")) {
@@ -204,47 +200,41 @@ public class DeeplinkUTMUtils {
                     //do nothing
                 } else if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
-
-                    campaign.setUtmSource("google_app");
-                    campaign.setUtmMedium("organic");
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+                    } else {
+                        campaign.setUtmSource("google_app");
+                        campaign.setUtmMedium("organic");
+                        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
+                        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
                             maps.get(AppEventTracking.GTM.X_CLID) : "");
                     campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
                             maps.get(AppEventTracking.GTM.X_ATTR) : "");
-
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
-                    campaign.setUtmSource(referrerPackage == null ? "" : referrerPackage);
-
-                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
-
-
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+                    } else {
+                        campaign.setUtmSource(referrerPackage == null ? "" : referrerPackage);
+                        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+                        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
+                        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
                             maps.get(AppEventTracking.GTM.X_CLID) : "");
                     campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
                             maps.get(AppEventTracking.GTM.X_ATTR) : "");
-
                 }
             }
         }
@@ -261,40 +251,19 @@ public class DeeplinkUTMUtils {
         return campaign;
     }
 
-    public static Campaign convertUrlCampaign(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
-        Campaign campaign = new Campaign();
-
-        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
-        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
-        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
-        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-        if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
-            campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
-        }
-
-        return campaign;
-    }
-
     private static Campaign createAmpOrganicCampaign(Map<String, String> maps) {
         Campaign campaign = new Campaign();
-        campaign.setUtmSource("amp");
-        campaign.setUtmMedium("organic");
-        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
-        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
         if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+        } else {
+            campaign.setUtmSource("amp");
+            campaign.setUtmMedium("organic");
+            campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
+            campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+            campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_TERM) : "");
         }
         campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
                 maps.get(AppEventTracking.GTM.X_CLID) : "");

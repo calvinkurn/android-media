@@ -15,6 +15,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
+import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
@@ -23,6 +24,8 @@ import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellati
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
 import javax.inject.Inject
 
@@ -76,15 +79,22 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onActivityCreated(savedInstanceState)
 
         flightCancellationPassengerViewModel.cancellationPassengerList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it.isNotEmpty()) {
-                renderCancellationList(it)
-                setupNextButton()
-            } else {
-                activity?.let { mActivity ->
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
-                    mActivity.setResult(Activity.RESULT_CANCELED, intent)
-                    mActivity.finish()
+            when (it) {
+                is Success -> {
+                    if (it.data.isNotEmpty()) {
+                        renderCancellationList(it.data)
+                        setupNextButton()
+                    } else {
+                        activity?.let { mActivity ->
+                            val intent = Intent()
+                            intent.putExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR, true)
+                            mActivity.setResult(Activity.RESULT_CANCELED, intent)
+                            mActivity.finish()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
                 }
             }
         })
