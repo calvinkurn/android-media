@@ -110,11 +110,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-
-//    implementation rootProject.ext.tkpdInternalLibDependencies.alivcCorePusher
-//    implementation rootProject.ext.tkpdInternalLibDependencies.alivcReporter
-//    implementation rootProject.ext.tkpdInternalLibDependencies.livePusher
-
     implementation files('libs/libstream-release.aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
