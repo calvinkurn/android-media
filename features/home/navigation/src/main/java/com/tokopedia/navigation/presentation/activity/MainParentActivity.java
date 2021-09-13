@@ -116,6 +116,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import timber.log.Timber;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
@@ -235,6 +236,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private boolean isNewNavigation;
 
+    private Boolean isBundleToggleOn = null;
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -348,6 +351,13 @@ public class MainParentActivity extends BaseActivity implements
         if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
+        }
+        try {
+            if (isBundleToggleOn != null && isBundleToggleOn != Switch.INSTANCE.isBundleToggleOn()) {
+                recreate();
+            }
+        } catch (Throwable t) {
+            Timber.d(t);
         }
     }
 
@@ -737,7 +747,8 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            if (Switch.INSTANCE.isBundleToggleOn()) {
+            isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn();
+            if (isBundleToggleOn) {
                 fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             } else {
                 fragmentList.add(com.tokopedia.cart.old.view.CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
