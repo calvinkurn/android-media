@@ -55,6 +55,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxKotlin
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation project(path: ':libraries:common_network')
+    implementation project(path: ':libraries:common_network')
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)

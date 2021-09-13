@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.presenter
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.util.Log
@@ -7,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -36,6 +38,7 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -55,6 +58,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
@@ -69,19 +73,18 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.WebSocket
+import okhttp3.*
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
-import java.util.Calendar
+import java.lang.reflect.Type
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * @author by nisie on 05/12/18.
@@ -102,7 +105,10 @@ class ChatbotPresenter @Inject constructor(
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
         private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
         private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
+        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+        private val uploadSecureImageUploadUseCase:UploadSecureImageUploadUseCase,
+        private val uploadPaymentProofUseCase2:UploadPaymentProofUseCase2
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -223,6 +229,7 @@ class ChatbotPresenter @Inject constructor(
                     view.showErrorWebSocket(true)
 
                 }
+                connectWebSocket(messageId)
             }
 
             override fun onClose() {
@@ -472,6 +479,61 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
+    override fun uploadImageSecureUpload(
+        imageUploadViewModel: ImageUploadViewModel,
+        messageId: String,
+        opponentId: String,
+        onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
+        path: String?
+    ) {
+//        launchCatchError(
+//            block = {
+//                path?.let {
+//                    val s = uploadSecureImageUploadUseCase.getSecureImageUploadUrl(
+//                        getMultiPartObject(it, messageId), imageUploadViewModel, view.context
+//                    )
+//                    Log.d("uploadImageS", s.toString())
+//                }
+//            },
+//            onError = {
+//
+//            }
+//
+//        )
+        uploadPaymentProofUseCase2.setRequestParams(messageId, path?:"")
+        uploadPaymentProofUseCase2.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
+            override fun onCompleted() {}
+            override fun onError(e: Throwable) {
+
+            }
+
+//            override fun onNext(typeRestResponseMap: Map<Type?, RestResponse?>) {
+
+//            }
+
+            override fun onNext(t: Map<Type?, RestResponse?>?) {
+                                val token = object : TypeToken<UploadSecureResponse?>() {}.type
+                val restResponse = t?.get(token)
+                val paymentProofResponse: UploadSecureResponse = restResponse!!.getData()
+                Log.d("wdewfrf", "onNext: $paymentProofResponse ")
+            }
+
+        })
+
+    }
+
+    private fun getMultiPartObject(pathFile: String, messageId: String): Map<String, RequestBody> {
+
+        val file = File(pathFile)
+        val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
+        val id: RequestBody = RequestBody.create(
+            MediaType.parse("text/plain"),
+            messageId
+        )
+       return mapOf("file" to reqFile, "msg_id" to id)
+//        return MultipartBody.Part.createFormData("file_upload", file.name, reqFile)
+    }
+
     override fun cancelImageUpload() {
         uploadImageUseCase.unsubscribe()
     }
@@ -627,5 +689,20 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleNewSession(isNewSession: Boolean) {
         if (isNewSession) view.startNewSession() else view.loadChatHistory()
+    }
+
+    override fun checkUploadSecure(messageId: String, data: Intent) {
+        val params = checkUploadSecureUseCase.createRequestParams(messageId)
+        launchCatchError(
+            block = {
+                val response = checkUploadSecureUseCase.checkUploadSecure(params)
+                val isSecureUpload = response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
+                if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
+            },
+            onError = {
+                view.loadChatHistory()
+                view.enableTyping()
+            }
+        )
     }
 }

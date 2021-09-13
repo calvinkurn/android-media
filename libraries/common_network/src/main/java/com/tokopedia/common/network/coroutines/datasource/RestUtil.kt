@@ -10,6 +10,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 
@@ -20,6 +21,7 @@ object RestUtil {
         val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             for (interceptor in interceptors) {
                 if (interceptor == null) {
                     continue

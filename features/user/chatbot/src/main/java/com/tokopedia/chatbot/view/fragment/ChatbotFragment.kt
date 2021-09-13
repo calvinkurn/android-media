@@ -689,6 +689,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             return
         }
 
+        presenter.checkUploadSecure(messageId, data)
+
+    }
+
+    override fun uploadUsingSecureUpload(data: Intent) {
+        //hit new api
+        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList[0]
+        processImagePathToUpload(data)?.let {
+            getViewState()?.onImageUpload(it)
+            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(),path)
+        }
+    }
+
+    override fun uploadUsingOldMechanism(data: Intent) {
         processImagePathToUpload(data)?.let {
             getViewState()?.onImageUpload(it)
             presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())

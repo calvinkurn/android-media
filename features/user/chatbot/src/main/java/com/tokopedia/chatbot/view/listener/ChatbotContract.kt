@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.listener
 
+import android.content.Intent
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -54,6 +55,10 @@ interface ChatbotContract {
         fun blockTyping()
 
         fun enableTyping()
+
+        fun uploadUsingSecureUpload(data: Intent)
+
+        fun uploadUsingOldMechanism(data: Intent)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -122,6 +127,14 @@ interface ChatbotContract {
                                     onError: (Throwable) -> Unit)
 
         fun checkForSession(messageId: String)
+        fun checkUploadSecure(messageId: String, data: Intent)
+        fun uploadImageSecureUpload(
+            imageUploadViewModel: ImageUploadViewModel,
+            messageId: String,
+            opponentId: String,
+            onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
+            path: String?
+        )
 
     }
 }

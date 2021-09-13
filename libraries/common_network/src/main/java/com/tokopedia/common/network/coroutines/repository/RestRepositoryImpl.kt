@@ -17,7 +17,7 @@ import javax.inject.Inject
 class RestRepositoryImpl(private val mCloud: RestCloudDataStore,
                          private val mCache: RestCacheDataStore) : RestRepository {
 
-    fun updateInterceptors(interceptors: List<Interceptor>, context: Context){
+    override fun updateInterceptors(interceptors: List<Interceptor>, context: Context){
         mCloud.updateInterceptor(interceptors, context)
     }
 
