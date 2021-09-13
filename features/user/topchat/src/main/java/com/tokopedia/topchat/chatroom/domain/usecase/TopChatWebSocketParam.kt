@@ -8,7 +8,7 @@ import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -34,7 +34,8 @@ object TopChatWebSocketParam {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("message_id", thisMessageId.toLong())
+            addProperty("local_id", IdentifierUtil.generateLocalId())
+            addProperty("message_id", thisMessageId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
