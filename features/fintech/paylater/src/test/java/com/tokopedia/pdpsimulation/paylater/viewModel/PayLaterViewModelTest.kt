@@ -4,10 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.tokopedia.pdpsimulation.PayLaterHelper
-import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationStatusResponse
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -145,6 +142,33 @@ class PayLaterViewModelTest {
             (viewModel.productDetailLiveData.value as Fail).throwable,
             mockThrowable
         )
+    }
+
+
+    @Test
+    fun successPayLaterOptions()
+    {
+        val payLaterGetSimulation = mockk<PayLaterGetSimulation>(relaxed = true)
+        coEvery {
+            payLaterSimulationData.getPayLaterProductDetails(any(), any(), 0)
+        } coAnswers {
+            firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
+        }
+        viewModel.getPayLaterAvailableDetail(0)
+        Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data,payLaterGetSimulation)
+    }
+
+    @Test
+    fun failPayLaterOptions()
+    {
+
+        coEvery {
+            payLaterSimulationData.getPayLaterProductDetails(any(), any(), 0)
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getPayLaterAvailableDetail(0)
+        Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }
 
 
