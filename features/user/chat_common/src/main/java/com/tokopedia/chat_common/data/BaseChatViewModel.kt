@@ -31,7 +31,8 @@ constructor(
         var replyTime: String?,
         var message: String,
         var source: String,
-        val replyId: String = ""
+        val replyId: String = "",
+        val localId: String = ""
 ) {
 
     companion object {
