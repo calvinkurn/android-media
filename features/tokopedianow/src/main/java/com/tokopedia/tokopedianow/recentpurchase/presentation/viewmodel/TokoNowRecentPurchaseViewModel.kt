@@ -435,7 +435,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         val categoryIds = selectedCategoryFilter?.id
 
         return GetRepurchaseProductListParam(
-            warehouseID = "11528221", // Temporary hardcoded
+            warehouseID = warehouseID,
             sort = SORT_FREQUENTLY_BOUGHT,
             totalScan = totalScan,
             page = page,
