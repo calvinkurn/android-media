@@ -1,9 +1,8 @@
 package com.tokopedia.gopay_kyc.presentation.listener
 
-interface GoPayKycFlowListener {
+interface GoPayKycReviewListener {
 
     fun showKycSuccessScreen()
     fun showKycFailedBottomSheet()
-    fun exitKycFlow()
 
 }

@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.REQUEST_KTP_ACTIVITY
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
@@ -40,9 +39,7 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         takePhotoButton.setOnClickListener {
-            context?.let {
-                startActivityForResult(GoPayCameraKtpActivity.getIntent(it, false), REQUEST_KTP_ACTIVITY)
-            }
+            openKtpCamera()
         }
     }
 
@@ -75,6 +72,10 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
                 )
             }
         }
+    }
+
+    private fun openKtpCamera() {
+        activity?.let { (it as GoPayKycOpenCameraListener).openKtpCameraScreen() }
     }
 
     override fun getScreenName() = null

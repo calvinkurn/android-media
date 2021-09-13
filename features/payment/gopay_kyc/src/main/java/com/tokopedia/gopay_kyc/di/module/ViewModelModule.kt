@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.gopay_kyc.viewmodel.GoPayKycImageUploadViewModel
 import com.tokopedia.gopay_kyc.viewmodel.GoPayKycViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,5 +20,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GoPayKycViewModel::class)
     internal abstract fun bindsKycCameraViewModel(viewModel: GoPayKycViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(GoPayKycImageUploadViewModel::class)
+    internal abstract fun bindsKycImageUploadViewModel(viewModel: GoPayKycImageUploadViewModel): ViewModel
 
 }

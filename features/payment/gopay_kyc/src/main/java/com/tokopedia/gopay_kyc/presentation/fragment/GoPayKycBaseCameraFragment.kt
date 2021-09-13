@@ -236,10 +236,12 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun exitKycFlow() {
-        val intent = GoPayKycActivity.getIntent(requireContext())
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
-        startActivity(intent)
+        context?.let {
+            val intent = GoPayKycActivity.getIntent(it)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
+            startActivity(intent)
+        }
     }
 
     @TargetApi(23)

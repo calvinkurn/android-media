@@ -47,8 +47,6 @@ class SaveCaptureImageUseCase @Inject constructor(
         ordinal: Int
     ): CameraImageResult {
         try {
-            var bmp = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.size)
-
             val cameraResultFile = saveToCacheDirectory(imageByte)
             val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
             return CameraImageResult(
@@ -122,6 +120,8 @@ class SaveCaptureImageUseCase @Inject constructor(
             IMAGE_QUALITY,
             stream
         )
+
+        //@Todo should we recycle bitmap here
         return stream.toByteArray().toList()
     }
 
@@ -130,7 +130,7 @@ class SaveCaptureImageUseCase @Inject constructor(
         const val PARAM_IMAGE_PROPERTIES = "image properties"
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"
-        const val IMAGE_QUALITY = 95
+        const val IMAGE_QUALITY = 100
     }
 }
 

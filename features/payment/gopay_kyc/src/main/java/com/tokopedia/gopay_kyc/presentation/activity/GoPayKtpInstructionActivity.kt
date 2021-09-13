@@ -4,22 +4,26 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.gopay_kyc.R
-import com.tokopedia.gopay_kyc.presentation.bottomsheet.GoPayKycUploadFailedBottomSheet
+import com.tokopedia.gopay_kyc.di.DaggerGoPayKycComponent
+import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusKtpInstructionsFragment
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusSelfieKtpInstructionsFragment
-import com.tokopedia.gopay_kyc.presentation.fragment.GoPayReviewAndUploadFragment
-import com.tokopedia.gopay_kyc.presentation.fragment.GoPayUploadSuccessFragment
-import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycFlowListener
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
 
-class GoPayKtpInstructionActivity : BaseSimpleActivity(), GoPayKycFlowListener {
+class GoPayKtpInstructionActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent>,
+    GoPayKycOpenCameraListener {
 
+    private val kycComponent: GoPayKycComponent by lazy { initInjector() }
     private var shouldOpenSelfieKtpScreen = false
     private var shouldOpenReviewScreen = false
-    private var shouldOpenSuccessScreen = false
+    private var ktpPath = ""
+    private var selfieKtpPath = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,17 +37,20 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), GoPayKycFlowListener {
     override fun getNewFragment() =
         when {
             shouldOpenSelfieKtpScreen -> GoPayPlusSelfieKtpInstructionsFragment.newInstance()
-            shouldOpenReviewScreen -> GoPayReviewAndUploadFragment.newInstance()
-            shouldOpenSuccessScreen -> GoPayUploadSuccessFragment.newInstance()
             else -> GoPayPlusKtpInstructionsFragment.newInstance()
         }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                if (it.hasExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH)) {
+                if (requestCode == REQUEST_KTP_ACTIVITY && it.hasExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH)) {
+                    ktpPath =
+                        it.getStringExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH) ?: ""
                     shouldOpenSelfieKtpScreen = true
-                } else if (it.hasExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH)) {
+                } else if (requestCode == REQUEST_KTP_SELFIE_ACTIVITY && it.hasExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH)) {
+                    selfieKtpPath =
+                        it.getStringExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH) ?: ""
                     shouldOpenReviewScreen = true
                 }
             }
@@ -52,34 +59,51 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), GoPayKycFlowListener {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    //@TODO can we observe it here ??
     override fun onPostResume() {
         super.onPostResume()
         when {
-            shouldOpenSelfieKtpScreen -> openSelfieKtpCameraScreen()
+            shouldOpenSelfieKtpScreen -> openSelfieKtpInstructionScreen()
             shouldOpenReviewScreen -> openKycReviewPage()
-            shouldOpenSuccessScreen -> openKycSuccessScreen()
         }
     }
 
-    private fun openKycSuccessScreen() {
-        ktpHeader.title = ""
-        ktpHeader.subtitle = ""
-        ktpHeader.subheaderView?.gone()
-        inflateFragment()
-        shouldOpenSuccessScreen = false
+    override fun openKtpCameraScreen() {
+        startActivityForResult(
+            GoPayCameraKtpActivity.getIntent(this, false),
+            REQUEST_KTP_ACTIVITY
+        )
     }
 
-    private fun openSelfieKtpCameraScreen() {
+    override fun openSelfieKtpCameraScreen() {
+        startActivityForResult(
+            GoPayCameraKtpActivity.getIntent(this, true),
+            REQUEST_KTP_SELFIE_ACTIVITY
+        )
+    }
+
+    private fun openSelfieKtpInstructionScreen() {
         ktpHeader.subtitle = SUBTITLE_STEP_2
         inflateFragment()
         shouldOpenSelfieKtpScreen = false
     }
 
     private fun openKycReviewPage() {
-        ktpHeader.title = REVIEW_TITLE
-        ktpHeader.subheaderView?.gone()
-        inflateFragment()
+        startActivity(
+            GoPayReviewActivity.getIntent(
+                this,
+                ktpPath,
+                selfieKtpPath
+            )
+        )
         shouldOpenReviewScreen = false
+    }
+
+    override fun exitKycFlow() {
+        val intent = GoPayKycActivity.getIntent(this)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
+        startActivity(intent)
     }
 
     private fun setupOldToolbar() {
@@ -94,31 +118,25 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), GoPayKycFlowListener {
         ktpHeader.subtitle = SUBTITLE_STEP_1
     }
 
+    override fun getScreenName() = null
+    override fun getComponent() = kycComponent
+
+    private fun initInjector() =
+        DaggerGoPayKycComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
+
     companion object {
         const val UPGRADE_GOPAY_TITLE = "Upgrade GoPay Plus"
-        const val REVIEW_TITLE = "Ringkasan Pengajuan"
         const val SUBTITLE_STEP_1 = "Langkah 1 dari 2"
         const val SUBTITLE_STEP_2 = "Langkah 2 dari 2"
+        const val REQUEST_KTP_ACTIVITY = 1000
+        const val REQUEST_KTP_SELFIE_ACTIVITY = 1001
+
         fun getIntent(context: Context): Intent {
             return Intent(context, GoPayKtpInstructionActivity::class.java)
         }
-    }
-
-    override fun showKycSuccessScreen() {
-        shouldOpenSuccessScreen = true
-        openKycSuccessScreen()
-    }
-
-    override fun showKycFailedBottomSheet() {
-        GoPayKycUploadFailedBottomSheet.show(Bundle(), supportFragmentManager)
-    }
-
-    override fun getScreenName() = null
-
-    override fun exitKycFlow() {
-        val intent = GoPayKycActivity.getIntent(this)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
-        startActivity(intent)
     }
 }

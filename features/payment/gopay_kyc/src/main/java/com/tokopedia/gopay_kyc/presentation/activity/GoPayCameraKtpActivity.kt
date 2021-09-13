@@ -65,8 +65,6 @@ class GoPayCameraKtpActivity : BaseSimpleActivity(), HasComponent<GoPayKycCompon
 
     companion object {
         const val REQUEST_CAMERA_PERMISSIONS = 932
-        const val REQUEST_KTP_ACTIVITY = 1000
-        const val REQUEST_KTP_SELFIE_ACTIVITY = 1001
         const val IS_SELFIE = "isSelfie"
         const val KTP_IMAGE_PATH = "ktp_image_path"
         const val SELFIE_KTP_IMAGE_PATH = "selfie_ktp_image_path"

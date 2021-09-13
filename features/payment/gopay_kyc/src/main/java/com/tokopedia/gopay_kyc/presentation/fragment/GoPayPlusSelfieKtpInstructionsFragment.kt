@@ -8,8 +8,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.REQUEST_KTP_SELFIE_ACTIVITY
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
 import com.tokopedia.kotlin.extensions.view.gone
@@ -83,22 +83,23 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
+        activity?.let {
+            (it as GoPayKtpInstructionActivity).onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        ReviewCancelDialog.showReviewDialog(it,
+                            { openSelfieKtpCamera() },
+                            { (it as GoPayKycOpenCameraListener).exitKycFlow() }
+                        )
+                    }
+                })
+        }
 
-                    ReviewCancelDialog.showReviewDialog(requireContext(), { openSelfieKtpCamera() }, {
-                        // finish All Activities
-                    })
-                }
-            })
     }
 
     private fun openSelfieKtpCamera() {
-        context?.let {
-            startActivityForResult(GoPayCameraKtpActivity.getIntent(it, true), REQUEST_KTP_SELFIE_ACTIVITY)
-        }
+        activity?.let { (it as GoPayKycOpenCameraListener).openSelfieKtpCameraScreen() }
     }
 
     override fun getScreenName() = null
