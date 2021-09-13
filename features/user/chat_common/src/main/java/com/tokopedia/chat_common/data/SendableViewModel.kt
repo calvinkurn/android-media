@@ -4,10 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * @author by nisie on 5/16/18.
- */
-open class SendableViewModel
-/**
  * Constructor for WebSocketResponse / API Response
  * [ChatWebSocketListenerImpl]
  * [GetReplyListUseCase]
@@ -23,7 +19,8 @@ open class SendableViewModel
  * sending messages
  * @see AttachmentType for attachment types.
  */
-constructor(
+
+open class SendableViewModel constructor(
     messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
     attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
     var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
