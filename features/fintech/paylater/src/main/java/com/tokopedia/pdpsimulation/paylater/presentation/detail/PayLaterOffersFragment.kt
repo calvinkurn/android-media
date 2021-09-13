@@ -13,6 +13,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
@@ -125,6 +126,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             payLaterOffersGlobalError.hide()
             payLaterOffersShimmerGroup.visible()
             payLaterViewModel.getPayLaterAvailableDetail(productAmount)
+            val parentFrag: PdpSimulationFragment =
+                this.parentFragment as PdpSimulationFragment
+            parentFrag.reloadProductDetail()
         }
     }
 

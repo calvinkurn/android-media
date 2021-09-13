@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
 
+
 class PdpSimulationFragment : BaseDaggerFragment(),
     PdpSimulationCallback,
     CompoundButton.OnCheckedChangeListener {
@@ -75,7 +76,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         arguments?.getString(PARAM_PRODUCT_ID) ?: ""
     }
 
-    private val isCreditCardModeAvailable: Boolean = true
+    private val isCreditCardModeAvailable: Boolean = false
     private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
@@ -147,17 +148,20 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun productDetailSuccess(data: GetProductV3) {
         productInfoShimmer.gone()
-        data.pictures?.get(0)?.let { pictures ->
-            pictures.urlThumbnail?.let { urlThumbnail -> productDetail.productImage.loadImage(urlThumbnail) }
-        }
-        data.productName?.let {
-            productDetail.productName.text = it
-        }
-        data.price?.let {
-            productDetail.productPrice.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
-        }
-
+            data.pictures?.get(0)?.let { pictures ->
+                pictures.urlThumbnail?.let { urlThumbnail ->
+                    productDetail.productImage.loadImage(
+                        urlThumbnail
+                    )
+                }
+            }
+            data.productName.let {
+                productDetail.productName.text = it
+            }
+            data.price?.let {
+                productDetail.productPrice.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
+            }
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
@@ -277,7 +281,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
 
-
     private fun hideDataGroup() {
         payLaterViewPager.gone()
     }
@@ -303,6 +306,13 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 //            payLaterParentGlobalError.gone()
 //            getSimulationProductInfo()
 //        }
+    }
+
+    fun reloadProductDetail() {
+        productInfoShimmer.visible()
+        productDetail.visible()
+        payLaterViewModel.getProductDetail(productId = productId)
+
     }
 
     companion object {
