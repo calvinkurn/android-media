@@ -995,7 +995,6 @@ class ShopScoreMapper @Inject constructor(
 
     companion object {
         const val SHOP_AGE_NINETY = 90
-        const val SHOP_AGE_ONE_HUNDRED_THREE = 103
         const val SHOP_AGE_NINETY_SIX = 96
         const val SHOP_AGE_FIFTY_NINE = 59
         const val SHOP_AGE_THREE = 3
