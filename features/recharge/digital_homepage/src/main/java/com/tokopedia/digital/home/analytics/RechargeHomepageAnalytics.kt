@@ -98,7 +98,8 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, convertToBundle(data))
     }
 
-    fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int, userId: String) {
+    fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int,
+                                   userId: String, screenName: String) {
         val promotions = listOf(mapOf(
                 ITEM_ID to item.id,
                 ITEM_NAME to item.label,
@@ -113,7 +114,7 @@ class RechargeHomepageAnalytics {
                 TrackAppUtils.EVENT_LABEL to "${item.label} - $position",
                 PROMOTIONS to promotions
         )
-        data.putAll(getDefaultFields(userId))
+        data.putAll(getDefaultFields(userId, screenName))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, convertToBundle(data))
     }
@@ -149,11 +150,11 @@ class RechargeHomepageAnalytics {
         return bundle
     }
 
-    private fun getDefaultFields(userId: String): Map<String, Any> {
+    private fun getDefaultFields(userId: String, screenName: String = SCREEN_NAME_TOPUP_BILLS): Map<String, Any> {
         return mapOf(
                 CURRENT_SITE to CURRENT_SITE_RECHARGE,
                 BUSINESS_UNIT to BUSINESS_UNIT_RECHARGE,
-                SCREEN_NAME to SCREEN_NAME_TOPUP_BILLS,
+                SCREEN_NAME to screenName,
                 USER_ID to userId
         )
     }

@@ -230,7 +230,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                         renderList(it)
                     }
                 }
-                is Fail -> tickerList =  RechargeTickerHomepageModel()
+                is Fail -> tickerList = RechargeTickerHomepageModel()
             }
         })
     }
@@ -398,11 +398,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (sectionIds.isNotEmpty()) {
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
                     requireContext(), platformId, enablePersonalize,
-                    sectionIds, viewModel.getSearchBarPlaceholder()))
+                    sectionIds, viewModel.getSearchBarPlaceholder(),
+                    viewModel.getSearchBarScreenName()))
         }
     }
 
-    private fun renderList(sections: List<RechargeHomepageSections.Section>){
+    private fun renderList(sections: List<RechargeHomepageSections.Section>) {
         val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList)
         val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
             homeComponent.visitableId()?.toInt()

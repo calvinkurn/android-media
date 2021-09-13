@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
@@ -35,17 +36,22 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home_search.*
 import javax.inject.Inject
 
-open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
+open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: DigitalHomePageSearchViewModel
+
+    var searchBarScreenName: String = SCREEN_NAME_TOPUP_BILLS
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.view_recharge_home_search, container, false)
@@ -53,6 +59,11 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        savedInstanceState?.let {
+            if (it.containsKey(PARAM_SEARCH_BAR_SCREEN_NAME))
+                searchBarScreenName = it.getString(PARAM_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS)
+        }
 
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -91,7 +102,14 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    open fun onSearchBarTextChanged(text: String) { searchCategory(text) }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(PARAM_SEARCH_BAR_SCREEN_NAME, searchBarScreenName)
+    }
+
+    open fun onSearchBarTextChanged(text: String) {
+        searchCategory(text)
+    }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
@@ -109,7 +127,7 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
 
     private fun observeSearchCategoryList() {
         viewModel.searchCategoryList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     clearAllData()
                     renderList(it.data)
@@ -131,13 +149,15 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
             onGetListErrorWithExistingData(throwable)
         } else {
             val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                context, throwable, ErrorHandler.Builder().build())
+                    context, throwable, ErrorHandler.Builder().build())
             val errorNetworkModel = ErrorNetworkModel()
 
             errorNetworkModel.run {
                 errorMessage = errMsg
-                subErrorMessage = "${getString(
-                    com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+                subErrorMessage = "${
+                    getString(
+                            com.tokopedia.kotlin.extensions.R.string.title_try_again)
+                }. Kode Error: ($errCode)"
                 onRetryListener = ErrorNetworkModel.OnRetryListener {
                     showLoading()
                     loadInitialData()
@@ -180,7 +200,8 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
     }
 
     override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
-        rechargeHomepageAnalytics.eventSearchResultPageClick(category, position, userSession.userId)
+        rechargeHomepageAnalytics.eventSearchResultPageClick(category, position,
+                userSession.userId, searchBarScreenName)
         RouteManager.route(context, category.applink)
     }
 
@@ -193,6 +214,8 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
     }
 
     companion object {
+        private const val PARAM_SEARCH_BAR_SCREEN_NAME = "search_bar_screen_name"
+
         fun getInstance() = DigitalHomePageSearchFragment()
     }
 }
