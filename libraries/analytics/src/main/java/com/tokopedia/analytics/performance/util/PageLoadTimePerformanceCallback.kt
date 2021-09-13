@@ -211,6 +211,12 @@ open class PageLoadTimePerformanceCallback(
                 }
             }
         }
+
+        try {
+            Trace.beginSection("reportFullyDrawn() for $traceName")
+        } finally {
+            Trace.endSection()
+        }
     }
 
     override fun getAttribution(): HashMap<String, String> {
