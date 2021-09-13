@@ -42,7 +42,8 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
             adapter = smartBillsAddBillsAdapter
             layoutManager = GridLayoutManager(context, SMART_BILLS_CATALOG_SPAN)
             addItemDecoration(
-                SpacingItemDecoration(getDimens(R.dimen.smart_bills_space_20), getDimens(R.dimen.smart_bills_space_30))
+                SpacingItemDecoration(getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
+                        getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5))
             )
         }
     }
