@@ -281,7 +281,6 @@
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <!-- incentive -->
-    <string name="incentive_review_pending">Dapatkan TokoPoints</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
     <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>

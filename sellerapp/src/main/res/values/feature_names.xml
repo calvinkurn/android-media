@@ -277,6 +277,7 @@
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
     <string name="title_activity_search_address">Kota atau kecamatan</string>
+    <string name="title_activity_cpl">Pengiriman Per Produk</string>
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
