@@ -1,5 +1,7 @@
 package com.tokopedia.home_account.linkaccount.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.dialog.DialogUnify
@@ -14,19 +16,25 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
-            url.contains(GOJEK_PAGE) -> {
+            url.contains(GOJEK_PAGE, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
                 (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
                 (activity as LinkAccountWebViewActivity).showToolbar()
             }
-            url.contains(GOPAY_PAGE) -> {
+            url.contains(GOPAY_PAGE, ignoreCase = true) -> {
                 // Check gopay input pin page, and hide back btn
                 (activity as LinkAccountWebViewActivity).showToolbar()
                 (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
                 (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
             }
-            url.contains(BACK_BTN_APPLINK) -> {
+            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
                 // Finish activity from webview
+                activity?.finish()
+            }
+            url.startsWith(GOJEK_LINK, ignoreCase = true) -> {
+                // Check for gojek.link url
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
                 activity?.finish()
             }
             else -> {
@@ -59,6 +67,8 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
         const val GOPAY_PAGE = "gws-app.gopayapi.com/app"
         const val GOJEK_PAGE = "accounts.gojek.com"
+
+        const val GOJEK_LINK = "https://gojek.link/"
 
         const val BACK_BTN_APPLINK = "tokopedia://back"
 
