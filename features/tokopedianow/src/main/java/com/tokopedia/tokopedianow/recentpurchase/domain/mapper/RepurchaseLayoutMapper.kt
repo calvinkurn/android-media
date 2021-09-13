@@ -46,8 +46,15 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateNoHistory(@StringRes description: Int) {
-        removeAll { it is RepurchaseProductUiModel }
         add(RepurchaseEmptyStateNoHistoryUiModel(description))
+    }
+
+    fun MutableList<Visitable<*>>.removeEmptyStateNoHistory() {
+        removeFirstLayout(RepurchaseEmptyStateNoHistoryUiModel::class.java)
+    }
+
+    fun MutableList<Visitable<*>>.removeAllProduct()  {
+        removeAll { it is RepurchaseProductUiModel }
     }
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
@@ -93,7 +100,7 @@ object RepurchaseLayoutMapper {
         removeFirstLayout(TokoNowChooseAddressWidgetUiModel::class.java)
     }
 
-    fun MutableList<Visitable<*>>.setSelectedCategoryFilter(selectedFilter: SelectedSortFilter?) {
+    fun MutableList<Visitable<*>>.setCategoryFilter(selectedFilter: SelectedSortFilter?) {
         firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
             val sortFilterIndex = indexOf(item)
             val sortFilter = (item as RepurchaseSortFilterUiModel)
