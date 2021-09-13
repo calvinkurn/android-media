@@ -157,7 +157,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
-                    getString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
+                    putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
                 }
             }
         }
