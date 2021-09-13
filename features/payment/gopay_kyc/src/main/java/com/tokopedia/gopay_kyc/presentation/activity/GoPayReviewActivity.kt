@@ -102,16 +102,11 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
     override fun getComponent() = kycComponent
     override fun getScreenName() = null
 
-    override fun showKycSuccessScreen() {
-        shouldOpenSuccessScreen = true
-        ktpHeader.title = ""
-        ktpHeader.subheaderView?.gone()
-        inflateFragment()
-    }
 
-    override fun showKycFailedBottomSheet() {
-        GoPayKycUploadFailedBottomSheet.show(Bundle(), supportFragmentManager)
-    }
+    override fun showKycFailedBottomSheet() = GoPayKycUploadFailedBottomSheet
+        .show(viewModel.ktpPath, viewModel.selfieKtpPath,supportFragmentManager)
+
+    override fun uploadImageToServer() = viewModel.uploadImage()
 
     override fun openKtpCameraScreen() {
         startActivityForResult(
@@ -132,6 +127,13 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
         startActivity(intent)
+    }
+
+    override fun showKycSuccessScreen() {
+        shouldOpenSuccessScreen = true
+        ktpHeader.title = ""
+        ktpHeader.subheaderView?.gone()
+        inflateFragment()
     }
 
     companion object {

@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.gopay_kyc.di.module.GoPayKycModule
 import com.tokopedia.gopay_kyc.di.module.ViewModelModule
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity
+import com.tokopedia.gopay_kyc.presentation.bottomsheet.GoPayKycUploadFailedBottomSheet
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayKycBaseCameraFragment
+import com.tokopedia.gopay_kyc.presentation.fragment.GoPayReviewAndUploadFragment
 import dagger.Component
 
 @GoPayKycScope
@@ -16,5 +18,7 @@ interface GoPayKycComponent {
 
     fun inject(goPayKycBaseCameraFragment: GoPayKycBaseCameraFragment)
     fun inject(goPayReviewActivity: GoPayReviewActivity)
+    fun inject(goPayKycUploadFailedBottomSheet: GoPayKycUploadFailedBottomSheet)
+    fun inject(goPayReviewAndUploadFragment: GoPayReviewAndUploadFragment)
 
 }

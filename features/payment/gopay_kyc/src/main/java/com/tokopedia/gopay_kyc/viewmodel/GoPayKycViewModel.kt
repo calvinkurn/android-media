@@ -14,6 +14,10 @@ class GoPayKycViewModel @Inject constructor(
     @CoroutineMainDispatcher val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
+    var isCameraOpen = false
+    var canGoBack = true
+    var mCapturingPicture = false
+
     val cameraImageResultLiveData = MutableLiveData<CameraImageResult>()
     fun getCapturedImagePath() = cameraImageResultLiveData.value?.finalCameraResultPath ?: ""
 

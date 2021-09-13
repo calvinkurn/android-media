@@ -4,7 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
@@ -13,12 +17,23 @@ import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity.Compani
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycReviewListener
 import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
+import com.tokopedia.gopay_kyc.viewmodel.GoPayKycImageUploadViewModel
 import kotlinx.android.synthetic.main.fragment_gopay_review_layout.*
+import java.io.File
+import javax.inject.Inject
 
 class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
 
     private var ktpImagePath = ""
     private var ktpSelfieImagePath = ""
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val viewModel: GoPayKycImageUploadViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(GoPayKycImageUploadViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,49 +48,47 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
         setImagePath()
         initViews()
         initListeners()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.uploadSuccessLiveData.observe(viewLifecycleOwner, { isKycUploaded ->
+            sendKycButton.isLoading = false
+            if (isKycUploaded) showKycSuccessScreen() else showKycErrorBottomSheet()
+        })
     }
 
     private fun initListeners() {
         setupOnBackPressed()
-        sendKycButton.setOnClickListener {
-            uploadPhotoForKyc()
-        }
         retryKtpIcon.setOnClickListener { openKtpCameraScreen() }
         retryKtpText.setOnClickListener { openKtpCameraScreen() }
         retryKtpSelfieIcon.setOnClickListener { openSelfieKtpCameraScreen() }
         retryKtpSelfieText.setOnClickListener { openSelfieKtpCameraScreen() }
+
+        sendKycButton.setOnClickListener {
+            sendKycButton.isLoading = true
+            uploadPhotoForKyc()
+        }
     }
 
-    private fun uploadPhotoForKyc() {
-        // @TODO remove afterwards
-        var success = true
-        if (success)
-            showKycSuccessScreen()
-        else showKycErrorBottomSheet()
-    }
+    private fun uploadPhotoForKyc() =
+        activity?.let { (it as GoPayKycReviewListener).uploadImageToServer() }
 
-    private fun openKtpCameraScreen() {
+    private fun openKtpCameraScreen() =
         activity?.let { (it as GoPayKycOpenCameraListener).openKtpCameraScreen() }
-    }
 
-    private fun openSelfieKtpCameraScreen() {
+    private fun openSelfieKtpCameraScreen() =
         activity?.let { (it as GoPayKycOpenCameraListener).openSelfieKtpCameraScreen() }
-    }
 
-    private fun showKycErrorBottomSheet() {
-        activity?.let {
-            (it as GoPayKycReviewListener).showKycFailedBottomSheet()
-        }
-    }
+    private fun showKycErrorBottomSheet()  =
+        activity?.let { (it as GoPayKycReviewListener).showKycFailedBottomSheet() }
 
-    private fun showKycSuccessScreen() {
-        activity?.let {
-            (it as GoPayKycReviewListener).showKycSuccessScreen()
-        }
-    }
+    private fun showKycSuccessScreen() =
+        activity?.let { (it as GoPayKycReviewListener).showKycSuccessScreen() }
+
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
+        activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -89,7 +102,12 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
+        setImageFromFile(ktpImagePath, ktpImage)
+        setImageFromFile(ktpSelfieImagePath, ktpSelfieImage)
+    }
 
+    private fun setImageFromFile(filePath: String, imageview: ImageView) {
+        context?.let { Glide.with(it).load(File(filePath)).fitCenter().into(imageview) }
     }
 
     private fun setImagePath() {
@@ -100,15 +118,16 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName() = null
-    override fun initInjector() {}
+    override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
 
     fun updateKtpImage(ktpPath: String) {
         ktpImagePath = ktpPath
+        setImageFromFile(ktpImagePath, ktpImage)
     }
 
     fun updateSelfieKtpImage(selfieKtpPath: String) {
         ktpSelfieImagePath = selfieKtpPath
-
+        setImageFromFile(ktpSelfieImagePath, ktpSelfieImage)
     }
 
     companion object {

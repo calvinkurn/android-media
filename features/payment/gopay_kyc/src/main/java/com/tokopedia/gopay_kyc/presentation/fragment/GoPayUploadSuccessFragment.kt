@@ -8,7 +8,6 @@ import androidx.activity.OnBackPressedCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
-import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycReviewListener
 import kotlinx.android.synthetic.main.fragment_gopay_kyc_upload_success_layout.*
 
 class GoPayUploadSuccessFragment : BaseDaggerFragment() {
@@ -26,13 +25,13 @@ class GoPayUploadSuccessFragment : BaseDaggerFragment() {
         setupOnBackPressed()
 
         finishButton.setOnClickListener {
-            // finish whole process
+            (activity as GoPayKycOpenCameraListener).exitKycFlow()
         }
 
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
+        activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -47,7 +46,7 @@ class GoPayUploadSuccessFragment : BaseDaggerFragment() {
     override fun initInjector() {}
 
     companion object {
-        const val TAG = "GopayUplaodSuccess"
+        const val TAG = "GopayUploadSuccess"
         fun newInstance() = GoPayUploadSuccessFragment()
     }
 }

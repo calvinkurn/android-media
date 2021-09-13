@@ -23,6 +23,7 @@ import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKycActivity
@@ -31,6 +32,7 @@ import com.tokopedia.gopay_kyc.viewmodel.GoPayKycViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -47,9 +49,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private var mCaptureNativeSize: Size? = null
     protected var cameraView: CameraView? = null
-    protected var isCameraOpen = false
-    private var canGoBack = true
-    protected var mCapturingPicture = false
     protected var capturedImageView: ImageView? = null
     protected var shutterImageView: ImageUnify? = null
     protected var reverseCamera: IconUnify? = null
@@ -58,6 +57,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     protected var reviewPhotoLayout: Group? = null
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
+    private var loader: LoaderDialog? = null
 
     abstract fun setCaptureInstruction()
     abstract fun setVerificationInstruction()
@@ -65,18 +65,18 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private val cameraListener = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
-            isCameraOpen = true
+            viewModel.isCameraOpen = true
         }
 
         override fun onCameraClosed() {
             super.onCameraClosed()
-            isCameraOpen = false
+            viewModel.isCameraOpen = false
         }
 
         override fun onPictureTaken(result: PictureResult) {
             try {
                 generateImage(result.data)
-                mCapturingPicture = false
+                viewModel.mCapturingPicture = false
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -87,7 +87,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupOnBackPressed()
         viewModel.cameraImageResultLiveData.observe(viewLifecycleOwner, {
-            loadImageFromBitmap(requireContext(), it)
+            context?.let { context -> loadImageFromBitmap(context, it) }
             hideCameraProp()
             resetCapture()
         })
@@ -132,7 +132,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun reInitCamera() {
-        canGoBack = true
+        viewModel.canGoBack = true
         cameraView?.open()
         cameraLayout?.visible()
         capturedImageView?.gone()
@@ -142,7 +142,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun hideCameraProp() {
-        canGoBack = false
+        viewModel.canGoBack = false
         cameraView?.close()
         capturedImageView?.visible()
         cameraControlLayout?.gone()
@@ -155,44 +155,45 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         reverseCamera?.setOnClickListener { toggleCamera() }
         retakeButton?.setOnClickListener { reInitCamera() }
         cameraView?.addCameraListener(cameraListener)
+
     }
 
     private fun capturePicture() {
-        if (mCapturingPicture || !isCameraOpen) return
+        if (viewModel.mCapturingPicture || !viewModel.isCameraOpen) return
         showLoading()
-        mCapturingPicture = true
+        viewModel.mCapturingPicture = true
         mCaptureNativeSize = cameraView?.pictureSize
         cameraView?.takePicture()
     }
 
     protected open fun toggleCamera() {
-        if (mCapturingPicture) return
+        if (viewModel.mCapturingPicture) return
         cameraView?.toggleFacing()
     }
 
 
     protected open fun showLoading() {
-        if (isAdded) {
-            //progressDialog.show()
+        context?.let {
+            loader = LoaderDialog(it)
+            loader?.setLoadingText(getString(R.string.gopay_kyc_image_capture_loading_text))
+            loader?.dialog?.setOverlayClose(false)
+            loader?.show()
         }
     }
 
     protected open fun hideLoading() {
-        if (isAdded) {
-            //progressDialog.dismiss()
-        }
+        loader?.dialog?.dismiss()
+        loader = null
     }
 
     private fun resetCapture() {
-        mCapturingPicture = false
+        viewModel.mCapturingPicture = false
         mCaptureNativeSize = null
         hideLoading()
     }
 
     private fun onVisible() {
-        if (activity?.isFinishing == true) {
-            return
-        }
+        if (activity?.isFinishing == true) return
         context?.let {
             val permission = Manifest.permission.CAMERA
             if (ActivityCompat.checkSelfPermission(
@@ -214,16 +215,15 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             cameraView?.open();
         } catch (e: Throwable) {
             e.printStackTrace();
-
         }
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
+        activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (canGoBack)
+                    if (viewModel.canGoBack)
                         activity?.finish()
                     else
                         ReviewCancelDialog.showReviewDialog(

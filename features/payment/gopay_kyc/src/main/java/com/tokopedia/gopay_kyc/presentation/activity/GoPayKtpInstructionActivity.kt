@@ -13,7 +13,6 @@ import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusKtpInstructionsFragment
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusSelfieKtpInstructionsFragment
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
-import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
 
 class GoPayKtpInstructionActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent>,
