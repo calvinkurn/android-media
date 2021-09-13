@@ -157,7 +157,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
-                    putInt(FILTER_ORDER_TYPE, bundle.getInt(FILTER_ORDER_TYPE))
+                    getString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
                 }
             }
         }
@@ -360,7 +360,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
+            filterOrderType = arguments?.getString(FILTER_ORDER_TYPE, "0").toIntOrZero()
         } else if (savedInstanceState != null) {
             skipSearch = true
             tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
