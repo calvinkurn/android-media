@@ -862,6 +862,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (data?.data?.variant?.isVariant == false) {
                 onTradeinClickedAfter(componentTrackDataModel)
             } else {
+                if (!viewModel.isUserSessionActive) {
+                    doLoginWhenUserClickButton()
+                    return
+                }
+
                 viewModel.variantData?.let {
                     goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
                             productVariant = it,
@@ -2192,9 +2197,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         if (pdpUiUpdater?.productSingleVariant != null) {
-            SingleClick.doSomethingBeforeTime {
-                goToAtcVariant()
-            }
+            goToAtcVariant()
         } else {
             selectVariantInPdp(variantOptions, state)
         }
@@ -2211,40 +2214,43 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
-        context?.let {
-            if (viewModel.getDynamicProductInfoP1 != null) {
-                DynamicProductDetailTracking.Click.onSingleVariantClicked(
-                        viewModel.getDynamicProductInfoP1,
-                        pdpUiUpdater?.productSingleVariant,
-                        viewModel.variantData,
-                        getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
+        SingleClick.doSomethingBeforeTime {
+            context?.let {
+                if (viewModel.getDynamicProductInfoP1 != null) {
+                    DynamicProductDetailTracking.Click.onSingleVariantClicked(
+                            viewModel.getDynamicProductInfoP1,
+                            pdpUiUpdater?.productSingleVariant,
+                            viewModel.variantData,
+                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
 
-                val p2Data = viewModel.p2Data.value
-                val cartTypeData = if (customCartRedirection != null) customCartRedirection else
-                    p2Data?.cartRedirection
+                    val p2Data = viewModel.p2Data.value
+                    val cartTypeData = if (customCartRedirection != null) customCartRedirection else
+                        p2Data?.cartRedirection
 
-                viewModel.clearCacheP2Data()
+                    viewModel.clearCacheP2Data()
 
-                AtcVariantHelper.pdpToAtcVariant(
-                        context = it,
-                        pageSource = AtcVariantHelper.PDP_PAGESOURCE,
-                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
-                        warehouseId = warehouseId ?: "",
-                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                        isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
-                        isShopOwner = viewModel.isShopOwner(),
-                        productVariant = viewModel.variantData ?: ProductVariant(),
-                        warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
-                        cartRedirection = cartTypeData ?: mapOf(),
-                        miniCart = p2Data?.miniCart,
-                        alternateCopy = p2Data?.alternateCopy,
-                        boData = p2Data?.bebasOngkir ?: BebasOngkir(),
-                        rates = p2Data?.ratesEstimate ?: listOf(),
-                        restrictionData = p2Data?.restrictionInfo,
-                        isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
-                        uspImageUrl = p2Data?.uspImageUrl ?: ""
-                ) { data, code ->
-                    startActivityForResult(data, code)
+                    AtcVariantHelper.pdpToAtcVariant(
+                            context = it,
+                            pageSource = AtcVariantHelper.PDP_PAGESOURCE,
+                            productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                            warehouseId = warehouseId ?: "",
+                            pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+                            isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow
+                                    ?: false,
+                            isShopOwner = viewModel.isShopOwner(),
+                            productVariant = viewModel.variantData ?: ProductVariant(),
+                            warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
+                            cartRedirection = cartTypeData ?: mapOf(),
+                            miniCart = p2Data?.miniCart,
+                            alternateCopy = p2Data?.alternateCopy,
+                            boData = p2Data?.bebasOngkir ?: BebasOngkir(),
+                            rates = p2Data?.ratesEstimate ?: listOf(),
+                            restrictionData = p2Data?.restrictionInfo,
+                            isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
+                            uspImageUrl = p2Data?.uspImageUrl ?: ""
+                    ) { data, code ->
+                        startActivityForResult(data, code)
+                    }
                 }
             }
         }
