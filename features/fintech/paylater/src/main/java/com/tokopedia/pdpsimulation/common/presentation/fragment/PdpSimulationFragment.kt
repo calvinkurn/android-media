@@ -25,11 +25,7 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCard
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
-import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,8 +74,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private val isCreditCardModeAvailable: Boolean = false
     private var paymentMode: PaymentMode = PayLater
-    private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
-    private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
     private var pagerAdapter: PayLaterPagerAdapter? = null
 
     override fun getScreenName(): String {
@@ -126,12 +120,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModel() {
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> onApplicationStatusLoaded(it.data)
-                is Fail -> onApplicationStatusLoadingFail(it.throwable)
-            }
-        })
+
 
         payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
@@ -164,12 +153,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             }
     }
 
-    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-    }
 
-    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        applicationStatusList = data.applicationDetailList ?: arrayListOf()
-    }
 
     private fun isPayLaterSimulationPage(): Boolean {
         return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX &&
@@ -254,21 +238,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRegisterWidgetClicked() {
-        if (payLaterDataList.isNotEmpty()) {
-            pdpSimulationAnalytics.get()
-                .sendPdpSimulationEvent(PdpSimulationEvent.PayLater.RegisterWidgetClickEvent("click"))
-            openBottomSheet(populatePayLaterBundle(), PayLaterSignupBottomSheet::class.java)
-        }
-    }
 
-    private fun populatePayLaterBundle() = Bundle().apply {
-        putParcelableArrayList(
-            PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA,
-            applicationStatusList
-        )
-        putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
-    }
+
 
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {

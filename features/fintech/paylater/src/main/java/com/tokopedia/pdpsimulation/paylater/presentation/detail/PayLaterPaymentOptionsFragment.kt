@@ -19,7 +19,6 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
@@ -33,9 +32,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private val responseData by lazy {
         arguments?.getParcelable<Detail>(PAY_LATER_PARTNER_DATA)
     }
-    private val applicationStatusData: PayLaterApplicationDetail? by lazy {
-        arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
-    }
+
 
     private var buttonStatus: RedirectionType? = null
     private var gatewayType: GatewayStatusType? = null

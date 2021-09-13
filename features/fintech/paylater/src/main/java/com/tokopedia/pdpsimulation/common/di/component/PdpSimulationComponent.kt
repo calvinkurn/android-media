@@ -9,7 +9,6 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsh
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
-import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import dagger.Component
 
 @PdpSimulationScope
@@ -21,7 +20,6 @@ interface PdpSimulationComponent {
 
     fun inject(pdpSimulationFragment: PdpSimulationFragment)
     fun inject(payLaterOffersFragment: PayLaterOffersFragment)
-    fun inject(payLaterSignupBottomSheet: PayLaterSignupBottomSheet)
     fun inject(creditCardRegistrationBottomSheet: CreditCardRegistrationBottomSheet)
     fun inject(creditCardSimulationFragment: CreditCardSimulationFragment)
     fun inject(creditCardTncFragment: CreditCardTncFragment)

@@ -9,7 +9,6 @@ import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,10 +24,6 @@ class PayLaterViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _payLaterApplicationStatusResultLiveData =
-        MutableLiveData<Result<UserCreditApplicationStatus>>()
-    val payLaterApplicationStatusResultLiveData: LiveData<Result<UserCreditApplicationStatus>> =
-        _payLaterApplicationStatusResultLiveData
 
     private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
     val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =

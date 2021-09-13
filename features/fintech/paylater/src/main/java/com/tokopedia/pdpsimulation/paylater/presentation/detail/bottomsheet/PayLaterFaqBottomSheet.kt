@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.Faq
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerFaq
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -94,18 +93,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun populateFaqData(): ArrayList<PayLaterPartnerFaq> {
-        val faqList = ArrayList<PayLaterPartnerFaq>()
-        for (i in 1..5)
-            faqList.add(
-                PayLaterPartnerFaq(
-                    "Berapa lama proses persetujuan aplikasi kredit online Kredivo?",
-                    "Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya",
-                    false
-                )
-            )
-        return faqList
-    }
+
 
     private fun openUrlWebView(urlString: String) {
         val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
