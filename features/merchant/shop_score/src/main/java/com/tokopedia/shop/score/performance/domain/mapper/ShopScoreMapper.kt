@@ -963,16 +963,39 @@ class ShopScoreMapper @Inject constructor(
 
     private fun getIsShowPopupEndTenure(shopAge: Long): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
-            val isEndTenureDay = shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
-            if (isEndTenureDay) {
-                val calendar = Calendar.getInstance(getLocale())
-                calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
+            val calendar = Calendar.getInstance(getLocale())
+            if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX) {
+                calendar.getIsRangeCurrentWeekAfterMonday()
+            } else if (shopAge > SHOP_AGE_NINETY_SIX &&
+                shopAge <= (SHOP_AGE_NINETY_SIX + calendar.getNNextDaysPopupEndTenure())
+            ) {
+                calendar.getIsRangeCurrentWeekAfterMonday()
             } else false
         } else false
     }
 
+    private fun Calendar.getIsRangeCurrentWeekAfterMonday(): Boolean {
+        return if (this.get(Calendar.DAY_OF_WEEK) >= Calendar.MONDAY) {
+            this.get(Calendar.DAY_OF_WEEK) in Calendar.MONDAY..Calendar.SATURDAY
+        } else {
+            false
+        }
+    }
+
+    private fun Calendar.getNNextDaysPopupEndTenure(): Int {
+        return when (this.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.TUESDAY -> ONE_NUMBER
+            Calendar.WEDNESDAY -> TWO_NUMBER
+            Calendar.THURSDAY -> THREE_NUMBER
+            Calendar.FRIDAY -> FOUR_NUMBER
+            Calendar.SATURDAY -> FIVE_NUMBER
+            else -> ZERO_NUMBER
+        }
+    }
+
     companion object {
         const val SHOP_AGE_NINETY = 90
+        const val SHOP_AGE_ONE_HUNDRED_THREE = 103
         const val SHOP_AGE_NINETY_SIX = 96
         const val SHOP_AGE_FIFTY_NINE = 59
         const val SHOP_AGE_THREE = 3
