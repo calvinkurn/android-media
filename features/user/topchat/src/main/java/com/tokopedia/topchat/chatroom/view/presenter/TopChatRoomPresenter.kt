@@ -628,17 +628,17 @@ open class TopChatRoomPresenter @Inject constructor(
         startTime: String, opponentId: String,
         intention: String?, products: List<SendablePreview>?
     ) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamSendMessage(
-                thisMessageId = messageId,
-                messageText = sendMessage,
-                startTime = startTime,
-                attachments = products ?: attachmentsPreview,
-                intention = intention,
-                userLocationInfo = userLocationInfo
-            )
+        val dummyMsg = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+        val requestParams = TopChatWebSocketParam.generateParamSendMessage(
+            thisMessageId = messageId,
+            messageText = sendMessage,
+            startTime = startTime,
+            attachments = products ?: attachmentsPreview,
+            intention = intention,
+            userLocationInfo = userLocationInfo
         )
+        processDummyMessage(dummyMsg)
+        sendMessageWebSocket(requestParams)
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
