@@ -15,11 +15,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-    private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
-    private val payLaterApplicationStatusMapperUseCase: PayLaterApplicationStatusMapperUseCase,
     private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
     private val productDetailUseCase: ProductDetailUseCase,
 
@@ -89,54 +88,9 @@ class PayLaterViewModel @Inject constructor(
     }
 
 
-    fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
-        idlingResourceProvider?.increment()
-        payLaterApplicationStatusUseCase.cancelJobs()
-        if (shouldFetch && payLaterApplicationStatusResultLiveData.value !is Success)
-            payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
-                ::onPayLaterApplicationStatusSuccess,
-                ::onPayLaterApplicationStatusError
-            )
-        else onPayLaterApplicationStatusError(
-            PdpSimulationException.PayLaterNullDataException(
-                DATA_FAILURE
-            )
-        )
-    }
-
-
-    private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
-        payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(
-            userCreditApplicationStatus,
-            onSuccess = {
-                when (it) {
-                    is StatusAppSuccess -> {
-                        isPayLaterProductActive = it.isPayLaterActive
-                        idlingResourceProvider?.decrement()
-                        _payLaterApplicationStatusResultLiveData.value =
-                            Success(it.userCreditApplicationStatus)
-                    }
-                    StatusFail -> onPayLaterApplicationStatusError(
-                        PdpSimulationException.PayLaterNullDataException(
-                            DATA_FAILURE
-                        )
-                    )
-                }
-            },
-            onError = {
-                onPayLaterApplicationStatusError(it)
-            })
-    }
-
-    private fun onPayLaterApplicationStatusError(throwable: Throwable) {
-        idlingResourceProvider?.decrement()
-        _payLaterApplicationStatusResultLiveData.value = Fail(throwable)
-    }
-
-
     override fun onCleared() {
-        payLaterApplicationStatusUseCase.cancelJobs()
-        payLaterApplicationStatusMapperUseCase.cancelJobs()
+        paylaterGetSimulationV2usecase.cancelJobs()
+        productDetailUseCase.cancelJobs()
         super.onCleared()
     }
 
