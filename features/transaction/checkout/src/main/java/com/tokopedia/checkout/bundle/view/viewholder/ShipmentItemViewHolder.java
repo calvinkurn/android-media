@@ -1277,7 +1277,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!cartItemModel.isError()) {
                 if (cartItemModel.isBundlingItem()) {
                     if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
-                        totalItemPrice += cartItemModel.getBundlePrice();
+                        totalItemPrice += (cartItemModel.getBundlePrice() * cartItemModel.getBundleQuantity());
                     }
                 } else {
                     totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());

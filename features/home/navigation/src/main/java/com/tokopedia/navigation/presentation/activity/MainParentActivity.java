@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -90,6 +91,7 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
+import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -735,7 +737,11 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+            if (Switch.INSTANCE.isBundleToggleOn()) {
+                fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+            } else {
+                fragmentList.add(com.tokopedia.cart.old.view.CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+            }
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
             Bundle bundleWishlist = new Bundle();

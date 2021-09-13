@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.robot
+package com.tokopedia.cart.robot
 
 import android.content.Context
 import android.view.View
@@ -18,13 +18,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.tokopedia.cart.R
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
-import com.tokopedia.cart.bundle.domain.mapper.CartSimplifiedMapper
-import com.tokopedia.cart.bundle.domain.model.cartlist.CartListData
-import com.tokopedia.cart.bundle.view.viewholder.CartItemViewHolder
-import com.tokopedia.cart.bundle.view.viewholder.CartSelectAllViewHolder
-import com.tokopedia.cart.bundle.view.viewholder.CartShopViewHolder
-import com.tokopedia.cart.bundle.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cart.old.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
+import com.tokopedia.cart.old.domain.mapper.CartSimplifiedMapper
+import com.tokopedia.cart.old.domain.model.cartlist.CartListData
+import com.tokopedia.cart.old.view.viewholder.CartItemViewHolder
+import com.tokopedia.cart.old.view.viewholder.CartSelectAllViewHolder
+import com.tokopedia.cart.old.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.old.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.CommonUtils
@@ -51,7 +51,7 @@ class CartPageRobot {
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.bundle.test.R.raw.cart_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.test.R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
                 jsonString,
                 JsonArray::class.java

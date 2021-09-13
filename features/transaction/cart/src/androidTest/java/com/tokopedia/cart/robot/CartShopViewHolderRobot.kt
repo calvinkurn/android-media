@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.robot
+package com.tokopedia.cart.robot
 
 import android.view.View
 import com.tokopedia.cart.R
