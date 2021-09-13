@@ -23,7 +23,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
