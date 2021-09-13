@@ -402,7 +402,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
-                validatePhoneNumber(operatorData, telcoClientNumberWidget)
+                validatePhoneNumber(operatorData, telcoClientNumberWidget, buyWidget)
 
                 // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
 //                hitTrackingForInputNumber(selectedOperator)
@@ -423,6 +423,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 getString(R.string.telco_number_error_prefix_not_found),
                 true
             )
+            buyWidget.setBuyButtonState(false)
         }
     }
 
