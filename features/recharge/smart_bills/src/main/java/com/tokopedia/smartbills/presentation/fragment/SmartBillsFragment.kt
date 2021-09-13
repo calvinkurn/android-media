@@ -395,7 +395,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 cb_smart_bills_select_all.setOnClickListener {
                     toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
-                view_smart_bills_select_all_checkbox_container.setOnClickListener {
+                tg_smart_bills_select_all.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
                     toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
