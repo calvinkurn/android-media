@@ -31,7 +31,8 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
@@ -185,18 +186,21 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, source)
     }
 
-    fun getEmptyState(id: String, isSearching: Boolean = false) {
+    fun getEmptyState(id: String) {
         launchCatchError(block = {
             layoutList.removeLoading()
             when(id) {
-                EMPTY_STATE_NO_HISTORY -> {
-                    val description = if (isSearching) {
-                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
-                    } else {
-                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
-                    }
-                    layoutList.removeAllProduct()
+                EMPTY_STATE_NO_HISTORY_SEARCH -> {
+                    val description = R.string
+                        .tokopedianow_repurchase_empty_state_no_history_desc_search
                     layoutList.addEmptyStateNoHistory(description)
+                    layoutList.removeAllProduct()
+                }
+                EMPTY_STATE_NO_HISTORY_FILTER -> {
+                    val description = R.string
+                        .tokopedianow_repurchase_empty_state_no_history_desc_filter
+                    layoutList.addEmptyStateNoHistory(description)
+                    layoutList.removeAllProduct()
                 }
                 EMPTY_STATE_OOC -> {
                     layoutList.clear()
@@ -258,7 +262,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             layoutList.removeLoading()
 
             if(productList.isEmpty()) {
-                getEmptyState(EMPTY_STATE_NO_HISTORY)
+                getEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
             } else {
                 layoutList.addProduct(productList)
             }
