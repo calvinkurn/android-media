@@ -19,6 +19,7 @@ object FragmentDFMapper {
 
     private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
     private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
+    private const val BUNDLE_ARGUMENTS_KEY_EXTRAS = "BUNDLE_ARGUMENTS_EXTRAS"
     private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
     private var manager: SplitInstallManager? = null
     val fragmentDfModuleMapper: List<FragmentDFPattern> by lazy {
@@ -47,7 +48,7 @@ object FragmentDFMapper {
     }
 
     @JvmStatic
-    fun getFragmentDFDownloader(activity: AppCompatActivity, classPathName: String): Fragment? {
+    fun getFragmentDFDownloader(activity: AppCompatActivity, classPathName: String, extras: Bundle): Fragment? {
         getSplitManager(activity)?.let {
             fragmentDfModuleMapper.firstOrNull {
                 it.logic(classPathName)
@@ -58,6 +59,7 @@ object FragmentDFMapper {
                     putString(BUNDLE_KEY_MODULE_ID, moduleId)
                     putString(BUNDLE_KEY_MODULE_NAME, moduleName)
                     putString(BUNDLE_KEY_CLASS_PATH_NAME, classPathName)
+                    putBundle(BUNDLE_ARGUMENTS_KEY_EXTRAS, extras)
                 }
                 return RouteManager.instantiateFragment(activity, DF_INSTALLER_FRAGMENT_CLASS_PATH, bundle)
             }

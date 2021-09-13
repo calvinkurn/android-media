@@ -188,7 +188,7 @@ public class RouteManager {
         if (isFragmentInstalled) {
             return instantiateFragment(activity, classPathName, extras);
         } else {
-            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName);
+            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
         }
     }
 

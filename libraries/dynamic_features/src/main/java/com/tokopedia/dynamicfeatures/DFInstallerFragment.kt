@@ -43,6 +43,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         const val TIMEOUT_ERROR_MESSAGE = "timeout"
         private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
         private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
+        private const val BUNDLE_ARGUMENTS_KEY_EXTRAS = "BUNDLE_ARGUMENTS_EXTRAS"
         private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
     }
 
@@ -69,6 +70,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
     private var fragmentClassPathName = ""
     private var moduleId = ""
     private var moduleName = ""
+    private var destinationFragmentExtras = Bundle()
     private var downloadTimes = 0
     private var startDownloadPercentage = -1f
     private var moduleSize = 0L
@@ -86,6 +88,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         manager?.registerListener(listener)
         moduleId = arguments?.getString(BUNDLE_KEY_MODULE_ID).orEmpty()
         moduleName = arguments?.getString(BUNDLE_KEY_MODULE_NAME).orEmpty()
+        destinationFragmentExtras = arguments?.getBundle(BUNDLE_ARGUMENTS_KEY_EXTRAS) ?: Bundle()
         fragmentClassPathName = arguments?.getString(BUNDLE_KEY_CLASS_PATH_NAME).orEmpty()
         allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId)
                 ?: false
@@ -145,13 +148,15 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
     }
 
     private fun redirectToDestinationFragment() {
-        val fragTrans = activity?.supportFragmentManager?.beginTransaction()
-        val destinationFragment = activity?.supportFragmentManager?.fragmentFactory?.instantiate(
+        activity?.supportFragmentManager?.fragmentFactory?.instantiate(
                 ClassLoader.getSystemClassLoader(),
                 fragmentClassPathName
-        )
-        fragTrans?.replace((view?.parent as ViewGroup).id, destinationFragment!!, tag)
-        fragTrans?.commit()
+        )?.let { destinationFragment ->
+            val fragTrans = activity?.supportFragmentManager?.beginTransaction()
+            destinationFragment.arguments = destinationFragmentExtras
+            fragTrans?.replace((view?.parent as ViewGroup).id, destinationFragment, tag)
+            fragTrans?.commit()
+        }
     }
 
     /**

@@ -1597,7 +1597,9 @@ class NewShopPageFragment :
                 activity as AppCompatActivity,
 //                    "com.example.test_fragment_df.TestDfFragment",
                 "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment",
-                null)
+                Bundle().apply {
+                    putString("GGZ", "GGZ")
+                })
         listShopPageTabModel.add(ShopPageTabModel(
                 getString(R.string.new_shop_info_title_tab_product),
                 iconTabProductInactive,
