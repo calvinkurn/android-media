@@ -19,10 +19,7 @@ import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
-import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
-import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
-import com.tokopedia.play.view.uimodel.action.ClickShareAction
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayCartUiState
@@ -221,6 +218,7 @@ class PlayUpcomingFragment @Inject constructor(
         playViewModel.observableUpcomingInfo.value?.let {
             if(it.isAlreadyLive)  {
                 analytic.clickWatchNow()
+                playViewModel.submitAction(ClickWatchNowUpcomingChannel)
                 playParentViewModel.refreshChannel()
             }
             else {

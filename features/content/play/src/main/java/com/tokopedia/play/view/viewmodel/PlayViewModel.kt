@@ -638,6 +638,7 @@ class PlayViewModel @Inject constructor(
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel()
+            ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike()
             ClickShareAction -> handleClickShare()
@@ -1495,6 +1496,10 @@ class PlayViewModel @Inject constructor(
         }) {
             _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
+    }
+
+    private fun handleWatchNowUpcomingChannel() {
+        stopSSE()
     }
 
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
