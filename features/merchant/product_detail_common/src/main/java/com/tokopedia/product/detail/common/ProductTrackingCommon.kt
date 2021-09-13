@@ -31,7 +31,7 @@ object ProductTrackingCommon {
         addAdditionalParams(productId, mapEvent, pageSource)
     }
 
-    fun eventClickPilihVariant(productId: String, pageSource: String, cartType: String) {
+    fun eventClickPilihVariant(productId: String, pageSource: String, cartType: String, parentId: String, productIdFromPreviousPage: String) {
         val source = when (cartType) {
             ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> ProductDetailCommonConstant.VALUE_PRODUCT_BUNDLING
             ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> ProductDetailCommonConstant.VALUE_TRADE_IN
@@ -42,8 +42,8 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.ACTION_CLICK_VARIANT,
-                String.format(ProductTrackingConstant.Label.EVENT_LABEL_FLOW_CHOOSE_VARIANT, source))
-        addAdditionalParams(productId, mapEvent, pageSource)
+                String.format(ProductTrackingConstant.Label.EVENT_LABEL_FLOW_CHOOSE_VARIANT, source, parentId, productId))
+        addAdditionalParams(productIdFromPreviousPage, mapEvent, pageSource)
     }
 
     fun eventActivationOvo(productId: String, userId: String) {

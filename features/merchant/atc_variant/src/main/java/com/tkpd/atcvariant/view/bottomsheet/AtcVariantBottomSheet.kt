@@ -637,15 +637,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        val productIdPreviousPage = sharedViewModel.aggregatorParams.value?.productId ?: ""
+        val parentId = viewModel.getVariantAggregatorData()?.variantData?.parentId ?: ""
+
         when (cartType) {
             ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
-                        ?: "", pageSource, cartType)
+                        ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 onSaveButtonClicked()
             }
             ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
-                        ?: "", pageSource, cartType)
+                        ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
                 onSaveButtonClicked()
             }
