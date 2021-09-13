@@ -235,14 +235,14 @@ class PlayFragment @Inject constructor(
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             if(playViewModel.upcomingInfo?.isUpcoming == true) {
-                fragmentUpcomingView.safeInit()
-
                 fragmentVideoView.safeRelease()
                 fragmentVideoView.hide()
                 fragmentYouTubeView.safeRelease()
                 fragmentYouTubeView.hide()
                 fragmentUserInteractionView.safeRelease()
                 fragmentUserInteractionView.hide()
+
+                fragmentUpcomingView.safeInit()
             } else if (playViewModel.videoPlayer.isYouTube) {
                 fragmentYouTubeView.safeInit()
                 fragmentYouTubeView.show()
