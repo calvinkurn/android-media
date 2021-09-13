@@ -10,6 +10,10 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.Repurch
 
 class RepurchaseGridItemDecoration : RecyclerView.ItemDecoration() {
 
+    companion object {
+        private const val LEFT_SPAN_INDEX = 0
+    }
+
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -35,7 +39,7 @@ class RepurchaseGridItemDecoration : RecyclerView.ItemDecoration() {
                 )
                 val lp = view.layoutParams as? StaggeredGridLayoutManager.LayoutParams
                 val spanIndex = lp?.spanIndex.orZero()
-                val positionLeft = spanIndex == 0
+                val positionLeft = spanIndex == LEFT_SPAN_INDEX
 
                 if (positionLeft) {
                     lp?.marginStart = horizontalSpacing
