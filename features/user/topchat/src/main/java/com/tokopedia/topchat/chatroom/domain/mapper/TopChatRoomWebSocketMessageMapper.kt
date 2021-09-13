@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
@@ -152,8 +153,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             startTime: String,
             messageText: String
     ): Visitable<*> {
+        val localId = IdentifierUtil.generateLocalId()
         return MessageViewModel(
-                messageId, userId, name, startTime, messageText
+                messageId, userId, name, startTime, messageText, localId
         )
     }
 }

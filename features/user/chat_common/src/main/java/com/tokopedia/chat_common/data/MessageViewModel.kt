@@ -126,14 +126,28 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
      * @param message   censored reply
      */
     constructor(
-        messageId: String, fromUid: String, from: String, startTime: String,
-        message: String
+        messageId: String,
+        fromUid: String,
+        from: String,
+        startTime: String,
+        message: String,
+        localId: String
     ) : super(
-        messageId, fromUid, from, "",
-        "", "", BaseChatViewModel.SENDING_TEXT, startTime,
-        false, true, true, message, ""
-    ) {
-    }
+        messageId = messageId,
+        fromUid = fromUid,
+        from = from,
+        fromRole = "",
+        attachmentId = "",
+        attachmentType = "",
+        replyTime = BaseChatViewModel.SENDING_TEXT,
+        startTime = startTime,
+        isRead = false,
+        isDummy = true,
+        isSender = true,
+        message = message,
+        source = "",
+        localId = localId
+    )
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)

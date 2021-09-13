@@ -25,6 +25,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.device.info.DeviceInfo
@@ -86,7 +87,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.ceil
 
 /**
  * @author : Steven 11/12/18
@@ -628,18 +628,37 @@ open class TopChatRoomPresenter @Inject constructor(
         startTime: String, opponentId: String,
         intention: String?, products: List<SendablePreview>?
     ) {
-        val dummyMsg = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+        val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(
             thisMessageId = messageId,
             messageText = sendMessage,
             startTime = startTime,
             attachments = products ?: attachmentsPreview,
+            localId = previewMsg.localId,
             intention = intention,
             userLocationInfo = userLocationInfo
         )
-        processDummyMessage(dummyMsg)
+        processPreviewMessage(previewMsg)
         sendMessageWebSocket(requestParams)
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+    }
+
+    private fun processPreviewMessage(previewMsg: SendableViewModel) {
+        view?.showPreviewMsg(previewMsg)
+    }
+
+    private fun generatePreviewMessage(
+        messageId: String, messageText: String, startTime: String
+    ): SendableViewModel {
+        val localId = IdentifierUtil.generateLocalId()
+        return MessageViewModel(
+            messageId = messageId,
+            fromUid = userSession.userId,
+            from = userSession.name,
+            startTime = startTime,
+            message = messageText,
+            localId = localId
+        )
     }
 
     private fun mapToDummyMessage(

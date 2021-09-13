@@ -341,6 +341,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun showPreviewMsg(previewMsg: SendableViewModel) {
+        adapter.addNewMessage(previewMsg)
+        topchatViewState?.scrollToBottom()
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }

@@ -21,6 +21,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -167,13 +168,15 @@ abstract class BaseChatViewStateImpl(
     }
 
     override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
+        val localId = IdentifierUtil.generateLocalId()
         getAdapter().addElement(
                 MessageViewModel(
                         messageId,
                         userId,
                         name,
                         startTime,
-                        sendMessage
+                        sendMessage,
+                        localId
                 )
         )
     }

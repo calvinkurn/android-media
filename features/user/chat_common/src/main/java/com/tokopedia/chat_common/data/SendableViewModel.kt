@@ -24,15 +24,22 @@ open class SendableViewModel
  * @see AttachmentType for attachment types.
  */
 constructor(
-        messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
-        attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
-        var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
-        replyId: String = ""
+    messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
+    attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
+    var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
+    replyId: String = "", localId: String = ""
 ) : BaseChatViewModel(
-        messageId, fromUid, from, fromRole,
-        attachmentId, attachmentType, replyTime, message,
-        source,
-        replyId = replyId
+    messageId = messageId,
+    fromUid = fromUid,
+    from = from,
+    fromRole = fromRole,
+    attachmentId = attachmentId,
+    attachmentType = attachmentType,
+    replyTime = replyTime,
+    message = message,
+    source = source,
+    replyId = replyId,
+    localId = localId
 ) {
 
     var startTime: String protected set

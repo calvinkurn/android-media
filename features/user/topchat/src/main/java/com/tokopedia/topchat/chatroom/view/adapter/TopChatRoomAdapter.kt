@@ -95,6 +95,14 @@ class TopChatRoomAdapter constructor(
         addTopData(visitables)
     }
 
+    fun addNewMessage(item: SendableViewModel) {
+        if (item is Visitable<*>) {
+            replyMap[item.localId] = item
+            visitables.add(0, item)
+            notifyItemInserted(0)
+        }
+    }
+
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {

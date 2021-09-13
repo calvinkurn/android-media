@@ -27,6 +27,7 @@ object TopChatWebSocketParam {
         messageText: String,
         startTime: String,
         attachments: List<SendablePreview>,
+        localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null
     ): String {
@@ -34,7 +35,7 @@ object TopChatWebSocketParam {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("local_id", IdentifierUtil.generateLocalId())
+            addProperty("local_id", localId)
             addProperty("message_id", thisMessageId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
