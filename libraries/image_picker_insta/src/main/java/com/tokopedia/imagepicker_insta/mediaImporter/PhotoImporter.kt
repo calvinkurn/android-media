@@ -19,7 +19,7 @@ import java.io.IOException
 
 class PhotoImporter:MediaImporter{
     companion object {
-        const val ALL = "All"
+        const val ALL = "Recents"
         const val FOLDER_KEY = "nw_st"
     }
 

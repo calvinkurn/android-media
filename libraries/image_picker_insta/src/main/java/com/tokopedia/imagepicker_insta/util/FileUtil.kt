@@ -18,27 +18,27 @@ object FileUtil {
         if (path == null || path.isEmpty()) {
             return "Others"
         }
-        if (path.endsWith("gif")) {
-            return "GIF"
-        } else if (path.toLowerCase().contains("whatsapp")) {
-            return "WhatsApp"
-        } else if (path.toLowerCase().contains("instagram")) {
-            return "Instagram"
-        } else if (path.toLowerCase().contains("facebook")) {
-            return "Facebook"
-        } else if (path.toLowerCase().contains("download")) {
-            return "Download"
-        } else if (path.toLowerCase().contains("screenshot")) {
-            return "Screenshots"
-        } else if (path.toLowerCase().contains("hike")) {
-            return "Hike"
-        } else if (path.toLowerCase().contains("shareit")) {
-            return "Share It"
-        } else if (path.toLowerCase().contains("gmail")) {
-            return "Gmail"
-        } else if (path.toLowerCase().contains("record")) {
-            return "Recordings"
-        }
+//        if (path.endsWith("gif")) {
+//            return "GIF"
+//        } else if (path.toLowerCase().contains("whatsapp")) {
+//            return "WhatsApp"
+//        } else if (path.toLowerCase().contains("instagram")) {
+//            return "Instagram"
+//        } else if (path.toLowerCase().contains("facebook")) {
+//            return "Facebook"
+//        } else if (path.toLowerCase().contains("download")) {
+//            return "Download"
+//        } else if (path.toLowerCase().contains("screenshot")) {
+//            return "Screenshots"
+//        } else if (path.toLowerCase().contains("hike")) {
+//            return "Hike"
+//        } else if (path.toLowerCase().contains("shareit")) {
+//            return "Share It"
+//        } else if (path.toLowerCase().contains("gmail")) {
+//            return "Gmail"
+//        } else if (path.toLowerCase().contains("record")) {
+//            return "Recordings"
+//        }
         val file = File(path)
         if (file.exists()) {
             val parent = file.parentFile

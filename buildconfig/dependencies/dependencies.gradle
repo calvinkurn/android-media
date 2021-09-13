@@ -289,7 +289,8 @@ ext {
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
-            window                : "androidx.window:window:$windowVersion"
+            window                : "androidx.window:window:$windowVersion",
+            zoomHeler             : "com.aghajari.zoomhelper:ZoomHelper:1.1.0",
     ]
 
     testDependencies = [

@@ -3,10 +3,10 @@ package com.tokopedia.imagepicker_insta.fragment
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -25,8 +24,8 @@ import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.activity.MainActivity
-import com.tokopedia.imagepicker_insta.activity.MainActivity.Companion.MAX_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity.Companion.MAX_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
@@ -39,13 +38,14 @@ import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 
 
-class MainFragment : Fragment(), MainFragmentContract {
+class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
     val EDITOR_REQUEST_CODE = 221
 
@@ -61,6 +61,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
     val folders = arrayListOf<FolderData>()
+    val zoomImageAdapterDataMap = mutableMapOf<ImageAdapterData, ZoomInfo>()
 
     var cameraCaptureFilePath: String? = null
 
@@ -88,29 +89,26 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun proceedNextStep() {
+        val selectedUris = arrayListOf<Uri>()
         if (!imageAdapter.isSelectedPositionsEmpty()) {
-
-            val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
-                imageAdapter.dataList[it].asset.contentUri
+            imageAdapter.selectedPositionMap.keys.forEach {
+                selectedUris.add(it.asset.contentUri)
             }
+        } else if (selectedMediaView.imageAdapterData != null) {
+            selectedUris.add(selectedMediaView.imageAdapterData!!.asset.contentUri)
+        }
 
-            val applink = (activity as? MainActivity)?.applinkForGalleryProceed
-            if (!applink.isNullOrEmpty()) {
 
-                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedMediaUriList)
-                RouteManager.route(activity, finalApplink)
-            } else {
-                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(selectedMediaUriList)))
-                activity?.finish()
-            }
-        } else {
-            Toast.makeText(context, "Select any image first", Toast.LENGTH_SHORT).show()
+        if (!selectedUris.isNullOrEmpty()) {
+            viewModel.getUriOfSelectedMedia(selectedMediaView.width, zoomImageAdapterDataMap)
+        }else{
+            showToast("Select any media first", Toaster.TYPE_NORMAL)
         }
     }
 
     fun openEditor() {
         val assets = imageAdapter.selectedPositionMap.keys.map {
-            imageAdapter.dataList[it].asset.assetPath
+            it.asset.assetPath
         }
         val assetList = ArrayList<String>(assets)
         val intent = ImageEditorActivity.getIntent(
@@ -124,12 +122,12 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun handleCameraPermissionCallback() {
-        if (activity is MainActivity) {
-            (activity as MainActivity).cameraPermissionCallback = { hasAllPermission ->
+        if (activity is ImagePickerInstaActivity) {
+            (activity as ImagePickerInstaActivity).cameraPermissionCallback = { hasAllPermission ->
                 if (hasAllPermission) {
                     openCamera()
                 } else {
-                    Toast.makeText(context, "Please allow Permissions", Toast.LENGTH_SHORT).show()
+                    showToast("Please allow Permissions", Toaster.TYPE_NORMAL)
                 }
             }
         }
@@ -148,8 +146,21 @@ class MainFragment : Fragment(), MainFragmentContract {
         initViews(v)
         setObservers()
         setClicks()
-        getPhotos()
+        if (hasPermission()) {
+            getPhotos()
+        } else {
+            v.visibility = View.GONE
+        }
+
         return v
+    }
+
+    private fun hasPermission(): Boolean {
+        if (context != null) {
+            return PermissionUtil.isReadPermissionGranted(requireContext())
+        }
+        return false
+
     }
 
     private fun initViews(v: View) {
@@ -179,7 +190,7 @@ class MainFragment : Fragment(), MainFragmentContract {
             activity?.finish()
         }
 
-        (activity as MainActivity).run {
+        (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbar)
             setToolbarIcon(this, toolbarIcon)
             toolbarTitle.text = this.toolbarTitle
@@ -187,13 +198,11 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    private fun setToolbarIcon(activity: MainActivity, imageView: AppCompatImageView) {
+    private fun setToolbarIcon(activity: ImagePickerInstaActivity, imageView: AppCompatImageView) {
         if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
             imageView.setImageResource(activity.toolbarIconRes)
         } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
-            Glide.with(this)
-                .load(activity.toolbarIconUrl)
-                .into(imageView)
+            imageView.loadImageCircle(activity.toolbarIconUrl)
         } else {
             imageView.visibility = View.GONE
         }
@@ -209,6 +218,7 @@ class MainFragment : Fragment(), MainFragmentContract {
             bottomSheet.setChild(folderView)
             bottomSheet.show(childFragmentManager, "BottomSheet Tag")
             folderView.setData(folders)
+            bottomSheet.setTitle(it.context?.getString(R.string.imagepicker_insta_pilih) ?: "")
             folderView.itemOnClick { folderData ->
                 refreshImages(folderData?.folderTitle)
                 bottomSheet.dismiss()
@@ -216,30 +226,39 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
 
         imageFitCenter.setOnClickListener {
-            if (selectedMediaView.asset != null) {
-                if (selectedMediaView.scaleType == ImageView.ScaleType.CENTER_CROP) {
-                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                } else {
-                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_CROP
-                }
+            if (selectedMediaView.imageAdapterData != null) {
+                selectedMediaView.toggleScaleType()
             }
         }
 
         imageMultiSelect.setOnClickListener {
             imageMultiSelect.toggle()
-            imageAdapter.canMultiSelect = imageMultiSelect.isChecked
-            imageAdapter.selectedPositionMap.keys.map {
-                imageAdapter.dataList[it].isSelected = false
+
+            if (selectedMediaView.imageAdapterData != null) {
+
+                //Clear previous selected
+                val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
+                imageAdapter.clearSelectedItems()
+
+                if (!selectedItemIndexList.isNullOrEmpty()) {
+                    selectedItemIndexList.forEach {
+                        imageAdapter.notifyItemChanged(it)
+                    }
+                }
+
+                imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
+                imageAdapter.getListOfIndexWhichAreSelected().forEach {
+                    imageAdapter.notifyItemChanged(it)
+                }
+
+
+                val zoomInfo = zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!]
+                zoomImageAdapterDataMap.clear()
+                if (zoomInfo != null) {
+                    zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!] = zoomInfo
+                }
+
             }
-            imageAdapter.dataList.forEach {
-                it.isInMultiSelectMode = imageAdapter.canMultiSelect
-            }
-            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
-            imageAdapter.clearSelectedItems()
-            if (hasSelectedItems) {
-                imageAdapter.notifyDataSetChanged()
-            }
-            selectedMediaView.removeAsset()
         }
     }
 
@@ -250,16 +269,17 @@ class MainFragment : Fragment(), MainFragmentContract {
     fun setupRv() {
 
         val columnCount = 3
-        rv.layoutManager = GridLayoutManager(context, columnCount)
+        val lm = GridLayoutManager(context, columnCount)
+        rv.layoutManager = lm
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
         val contentHeight = width / columnCount
 
         var maxMultiSelect: Int = MAX_MULTI_SELECT_LIMIT
-        if ((activity as? MainActivity)?.maxMultiSelectAllowed != null) {
-            maxMultiSelect = (activity as MainActivity).maxMultiSelectAllowed
+        if ((activity as? ImagePickerInstaActivity)?.maxMultiSelectAllowed != null) {
+            maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
 
-        imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect)
+        imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect, lm)
         rv.adapter = imageAdapter
         val itemPadding = 4.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
@@ -268,12 +288,12 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun openCamera() {
         cameraCaptureFilePath = null
-        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture)
+        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture)
     }
 
     override fun handleOnCameraIconTap() {
-        if (activity is MainActivity) {
-            PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
+        if (activity is ImagePickerInstaActivity) {
+            PermissionUtil.requestCameraAndWritePermission(activity as ImagePickerInstaActivity)
         }
     }
 
@@ -283,13 +303,21 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
+    override fun isMultiSelectEnable(): Boolean {
+        return imageMultiSelect.isChecked
+    }
+
+    override fun getAssetInPreview(): Asset? {
+        return selectedMediaView.imageAdapterData?.asset
+    }
+
     private fun setObservers() {
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
 
@@ -305,10 +333,18 @@ class MainFragment : Fragment(), MainFragmentContract {
 
                     if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
-                        imageAdapter.clearSelectedItems()
+//                        imageAdapter.clearSelectedItems()
 
-                        if (imageAdapter.addSelectedItem(1)) {
-                            selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                        if (!isMultiSelectEnable()) {
+                            imageAdapter.clearSelectedItems()
+
+                            if (imageAdapter.addSelectedItem(1)) {
+
+                                zoomImageAdapterDataMap.clear()
+
+                                val itemData = it.data.mediaImporterData.imageAdapterDataList.first()
+                                selectedMediaView.loadAsset(itemData, prepareZoomInfo(itemData))
+                            }
                         }
 
                         //update folders
@@ -317,26 +353,86 @@ class MainFragment : Fragment(), MainFragmentContract {
                             tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
-                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
                     } else {
                         tvSelectedFolder.text = "No Media available"
+//                        showToast("No Media available",Toaster.TYPE_ERROR)
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
+                    rv.post { rv.scrollTo(0, 0) }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                    showToast("Error", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+
+        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                LiveDataResult.STATUS.LOADING->{
+                    //Do nothing
+                }
+                LiveDataResult.STATUS.SUCCESS->{
+                    if(it.data!=null) {
+                        handleSuccessSelectedUri(it.data)
+                    }else{
+                        showToast("Something went wrong",Toaster.TYPE_ERROR)
+                    }
+                }
+                LiveDataResult.STATUS.ERROR->{
+                    showToast("Something went wrong",Toaster.TYPE_ERROR)
                 }
             }
         })
 
         imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
             if (isSelected) {
-                selectedMediaView.loadAsset(imageAdapterData.asset)
+
+                if (!isMultiSelectEnable()) {
+                    zoomImageAdapterDataMap.clear()
+                }
+
+                selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
             } else {
-                selectedMediaView.removeAsset()
+                //DO nothing
             }
         }
+
+        imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData ->
+            if (!isMultiSelectEnable()) {
+                /**
+                 * 1. tell adapter that multiselect is active by doing step 2
+                 * 2. toggle multi-select icon
+                 * 2. update all items except selected one to show empty circle
+                 * */
+                imageMultiSelect.toggle(true)
+            }
+        }
+    }
+
+    private fun handleSuccessSelectedUri(uris:List<Uri>){
+        if (!uris.isNullOrEmpty()) {
+
+            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
+            if (!applink.isNullOrEmpty()) {
+
+                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
+                RouteManager.route(activity, finalApplink)
+            } else {
+                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(uris)))
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun prepareZoomInfo(imageAdapterData: ImageAdapterData): ZoomInfo {
+        var zoomInfo = zoomImageAdapterDataMap[imageAdapterData]
+        if (zoomInfo == null) {
+            zoomInfo = ZoomInfo()
+            zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
+        }
+        return zoomInfo
     }
 
     private fun getPhotos() {
@@ -366,7 +462,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun handleCameraSuccessResponse(data: Intent?) {
 //        val urlList = data?.extras?.putParcelableArrayList(BundleData.URIS, null)
-        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
             //Update current UI
             //TODO  Rahul means media is captured
@@ -381,31 +477,12 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun handleCameraErrorResponse(data: Intent?) {
-        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
             //DO nothing
         } else {
             activity?.setResult(Activity.RESULT_CANCELED, data)
             activity?.finish()
-        }
-    }
-
-    private fun handleOldCameraSuccessResponse() {
-        /*
-        * 1. Add image to viewModel's list
-        * 2. add image to selected image
-        * 3. Add image to gallery
-        * 4. Clear current Image file path
-        * */
-        if (!cameraCaptureFilePath.isNullOrEmpty()) {
-            val imageAdapterData = viewModel.mediaUseCaseData?.mediaImporterData?.addCameraImage(cameraCaptureFilePath!!)
-            if (imageAdapterData != null) {
-                selectedMediaView.loadAsset(imageAdapterData.asset)
-                addAssetToGallery(imageAdapterData.asset)
-                addToCurrnetDisplayedList(imageAdapterData)
-            }
-
-            cameraCaptureFilePath = null
         }
     }
 
@@ -426,7 +503,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun reset() {
-        if (selectedMediaView.asset != null) {
+        if (selectedMediaView.imageAdapterData != null) {
             selectedMediaView.removeAsset()
         }
         imageAdapter.clearSelectedItems()

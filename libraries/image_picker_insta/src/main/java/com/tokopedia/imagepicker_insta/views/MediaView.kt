@@ -1,14 +1,12 @@
 package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -21,40 +19,37 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.tokopedia.imagepicker_insta.R
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.PhotosData
-import com.tokopedia.imagepicker_insta.models.VideoData
+import com.tokopedia.imagepicker_insta.models.*
 import timber.log.Timber
-import java.io.File
 
 class MediaView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs), LifecycleObserver {
 
     private lateinit var playerView: PlayerView
-    private lateinit var assetView: AssetImageView
+    private lateinit var playPauseIcon: View
+    private lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory
 
     fun getLayout() = R.layout.imagepicker_insta_media_view
 
-    /**
-     * pass only one of the two  ImageView.ScaleType.CENTER_CROP or ImageView.ScaleType.CENTER_INSIDE
-     * */
-    var scaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_CROP
+    @MediaScaleType
+    var mediaScaleType: Int = MediaScaleType.MEDIA_CENTER_CROP
         set(value) {
             //Add logic for scaling in exoplayer as well
-            if (value == ImageView.ScaleType.CENTER_CROP) {
+            if (value == MediaScaleType.MEDIA_CENTER_CROP) {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                assetView.centerCrop()
             } else {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                assetView.centerInside()
             }
-            assetView.scaleType = value
             field = value
         }
 
-    var asset: Asset? = null
+    var imageAdapterData: ImageAdapterData? = null
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {})
 
@@ -67,6 +62,14 @@ class MediaView @JvmOverloads constructor(
     private fun initViews() {
         playerView = findViewById(R.id.media_player_view)
         assetView = findViewById(R.id.media_asset_view)
+        playPauseIcon = findViewById(R.id.play_icon)
+        assetView.initListeners()
+        assetView.mediaScaleTypeContract = object : MediaScaleTypeContract {
+            override fun getCurrentMediaScaleType(): Int {
+                return mediaScaleType
+            }
+
+        }
         initializePlayer()
         setListeners()
     }
@@ -74,11 +77,13 @@ class MediaView @JvmOverloads constructor(
     fun togglePlayPause() {
         if (simpleExoPlayer?.isPlaying == true) {
             simpleExoPlayer?.playWhenReady = false
+            playPauseIcon.visibility = View.VISIBLE
         } else if (simpleExoPlayer?.isPlaying == false) {
             if (simpleExoPlayer?.playbackState == Player.STATE_ENDED) {
                 simpleExoPlayer?.seekTo(0)
             }
             simpleExoPlayer?.playWhenReady = true
+            playPauseIcon.visibility = View.GONE
         }
     }
 
@@ -117,62 +122,74 @@ class MediaView @JvmOverloads constructor(
             .build()
             .also {
                 playerView.player = it
+                playerView.player?.audioComponent?.volume = 0f
             }
 
-        simpleExoPlayer?.addListener(object :Player.EventListener{
+        simpleExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
                 Timber.e(error.message)
                 Timber.e(error.rendererException)
             }
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                super.onPlayerStateChanged(playWhenReady, playbackState)
+                if (playbackState == Player.STATE_ENDED) {
+                    playerView.player?.seekTo(0)
+                    playerView.player?.playWhenReady
+                }
+            }
         })
-        scaleType = ImageView.ScaleType.CENTER_CROP
+        mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
     }
 
-    fun loadAsset(asset: Asset) {
-        this.asset = asset
-
+    fun loadAsset(imageAdapterData: ImageAdapterData, zoomInfo:ZoomInfo) {
+        this.imageAdapterData = imageAdapterData
+        val asset = imageAdapterData.asset
         stopPlayer()
 
         if (asset is VideoData) {
             playerView.visibility = View.VISIBLE
+            assetView.visibility = View.GONE
             createVideoItem(asset)
         } else if (asset is PhotosData) {
+            assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
-            createPhotoItem(asset)
+            createPhotoItem(asset,zoomInfo)
         }
     }
 
     fun toggleScaleType() {
-        if (scaleType == ImageView.ScaleType.CENTER_CROP) {
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
+        if (mediaScaleType == MediaScaleType.MEDIA_CENTER_CROP) {
+            mediaScaleType = MediaScaleType.MEDIA_CENTER_INSIDE
         } else {
-            scaleType = ImageView.ScaleType.CENTER_CROP
+            mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
         }
     }
 
     fun removeAsset() {
-        this.asset = null
+        this.imageAdapterData = null
         playerView.visibility = View.GONE
         stopPlayer()
         assetView.removeAsset()
     }
 
-    fun createPhotoItem(asset: PhotosData) {
-        assetView.loadAsset(asset)
+    fun createPhotoItem(asset: PhotosData,zoomInfo:ZoomInfo) {
+        assetView.loadAsset(asset, zoomInfo)
     }
 
     fun createVideoItem(videoData: VideoData) {
         //TODO Rahul remove dummy
-        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
+//        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
 //        val tmpUri = Uri.fromFile(tmpFile)
         val tmpUri = videoData.uri
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)
         simpleExoPlayer?.playWhenReady = true
+        playPauseIcon.visibility = View.GONE
     }
 
-    fun stopPlayer() {
+    private fun stopPlayer() {
         simpleExoPlayer?.stop()
     }
 
@@ -205,5 +222,13 @@ class MediaView @JvmOverloads constructor(
 
     private fun releasePlayer() {
         simpleExoPlayer?.release()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (MeasureSpec.getSize(widthMeasureSpec) < MeasureSpec.getSize(heightMeasureSpec)) {
+            super.onMeasure(widthMeasureSpec, widthMeasureSpec)
+        } else {
+            super.onMeasure(heightMeasureSpec, heightMeasureSpec)
+        }
     }
 }

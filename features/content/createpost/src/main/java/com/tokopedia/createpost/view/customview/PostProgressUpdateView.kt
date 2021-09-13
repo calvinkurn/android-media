@@ -8,9 +8,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
+import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
@@ -45,12 +45,13 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mCreatePostViewModel = createPostViewModel
     }
 
-    fun setData(productImage: String) {
-        postIcon?.loadImage(productImage)
+    fun setFirstIcon(productImage: String) {
+        postIcon?.setImageUrl(productImage)
     }
 
-    fun setProgressUpdate(status: Int) {
-        progressBar?.setValue(status, true)
+    fun setProgressUpdate(progress: Int, maxCount: Int) {
+
+        progressBar?.setValue((progress / maxCount) * 100, true)
     }
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
@@ -77,7 +78,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (context == null || intent == null) {
                     return
                 }
-
                 if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == true
                 ) {
@@ -91,14 +91,48 @@ class PostProgressUpdateView @JvmOverloads constructor(
         }
     }
 
+    private val submitUpdateReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+                if (intent.action == UPLOAD_POST_NEW
+                    && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == true
+                ) {
+                    val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS,0)
+                    val maxCount=  intent.getIntExtra(MAX_FILE_UPLOAD,0)
+                    val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
+
+                    setFirstIcon(firstIcon)
+                    setProgressUpdate(progress,maxCount)
+                } else if (intent.action == UPLOAD_POST_NEW
+                    && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
+                ) {
+                    handleFailedState()
+                }
+            }
+        }
+    }
+
     fun registerBroadcastReceiver() {
         context?.applicationContext?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(BROADCAST_SUBMIT_POST)
-
+            intentFilter.addAction(BROADCAST_SUBMIT_POST_NEW)
             LocalBroadcastManager
                 .getInstance(it)
                 .registerReceiver(submitPostReceiver, intentFilter)
+        }
+    }
+
+    fun registerBroadcastReceiverProgress() {
+        context?.applicationContext?.let {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(UPLOAD_POST_NEW)
+
+            LocalBroadcastManager
+                .getInstance(it)
+                .registerReceiver(submitUpdateReceiver, intentFilter)
         }
     }
 
@@ -107,6 +141,14 @@ class PostProgressUpdateView @JvmOverloads constructor(
             LocalBroadcastManager
                 .getInstance(it)
                 .unregisterReceiver(submitPostReceiver)
+        }
+    }
+
+    fun unregisterBroadcastReceiverProgress() {
+        context?.applicationContext?.let {
+            LocalBroadcastManager
+                .getInstance(it)
+                .unregisterReceiver(submitUpdateReceiver)
         }
     }
 

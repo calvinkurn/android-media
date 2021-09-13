@@ -2,9 +2,11 @@ package com.tokopedia.createpost.view.service
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -14,9 +16,13 @@ import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.TYPE_AFFILIATE
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
+import com.tokopedia.createpost.domain.usecase.SubmitPostUseCaseNew
 import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
+import com.tokopedia.createpost.view.util.FileUtil
+import com.tokopedia.createpost.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,13 +30,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import rx.Subscriber
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class SubmitPostServiceNew : JobIntentService() {
 
     @Inject
-    lateinit var submitPostUseCase: SubmitPostUseCase
+    lateinit var submitPostUseCase: SubmitPostUseCaseNew
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -41,8 +47,11 @@ class SubmitPostServiceNew : JobIntentService() {
     @Inject
     lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
 
+    private var postUpdateProgressManager: PostUpdateProgressManager? = null
+
+
     companion object {
-        private const val JOB_ID = 13131313
+        private const val JOB_ID = 13131314
 
         fun startService(context: Context, draftId: String) {
             val work = Intent(context, SubmitPostService::class.java).apply {
@@ -64,9 +73,21 @@ class SubmitPostServiceNew : JobIntentService() {
             CreatePostViewModel.TAG,
             CreatePostViewModel::class.java
         ) ?: return
-        val notifId = Random().nextInt()
 
-        submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
+        postUpdateProgressManager = getProgressManager(viewModel)
+        submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
+
+        val tagList:ArrayList<FeedXMediaTagging> = ArrayList()
+        val products: ArrayList<RelatedProductItem> = ArrayList()
+
+        viewModel.fileImageList.forEach {
+            it.type = getFileType(contentResolver.getType(Uri.parse(it.path))?:"")
+            tagList.addAll(it.tags)
+            products.addAll(it.products)
+        }
+
+        submitPostUseCase.execute(
+            SubmitPostUseCaseNew.createRequestParams(
             viewModel.postId,
             viewModel.authorType,
             viewModel.token,
@@ -76,7 +97,7 @@ class SubmitPostServiceNew : JobIntentService() {
             (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
             else viewModel.fileImageList).map { it.path to it.type },
             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-            else viewModel.productIdList
+            else viewModel.productIdList, tagList,products
         ), getSubscriber())
     }
 
@@ -87,19 +108,36 @@ class SubmitPostServiceNew : JobIntentService() {
             .inject(this)
     }
 
+    private fun getFileType(mimeType:String):String{
+        val slashIndex = mimeType.indexOf("/")
+        return mimeType.substring(0,slashIndex)
+    }
+
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+
+    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager{
+        val firstImage = FileUtil.createFilePathFromUri(applicationContext,Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+        val maxCount = viewModel.fileImageList.size
+        return object: PostUpdateProgressManager(maxCount,firstImage,applicationContext){
+        }
+    }
 
     private fun getSubscriber(): Subscriber<SubmitPostData> {
         return object : Subscriber<SubmitPostData>() {
             override fun onNext(submitPostData: SubmitPostData?) {
                 if (submitPostData == null
                     || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-                    sendBroadcastFail()
+                    postUpdateProgressManager?.onFailedPost(
+                        ErrorHandler.getErrorMessage(
+                        this@SubmitPostServiceNew,
+                        RuntimeException()
+                    ))
                     return
                 } else if (!TextUtils.isEmpty(submitPostData.feedContentSubmit.error)) {
-                    sendBroadcastFail()
+                    postUpdateProgressManager?.onFailedPost(submitPostData.feedContentSubmit.error)
                     return
                 }
+                postUpdateProgressManager?.onSuccessPost()
                 sendBroadcast()
                 postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
                 addFlagOnCreatePostSuccess()
@@ -109,18 +147,15 @@ class SubmitPostServiceNew : JobIntentService() {
             }
 
             override fun onError(e: Throwable?) {
-                sendBroadcastFail()
+                postUpdateProgressManager?.onFailedPost(ErrorHandler.getErrorMessage(
+                    this@SubmitPostServiceNew,
+                    e
+                ))
             }
 
             private fun sendBroadcast() {
                 val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
                 intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)
-                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-            }
-
-            private fun sendBroadcastFail() {
-                val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
-                intent.putExtra(SUBMIT_POST_SUCCESS_NEW, false)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }

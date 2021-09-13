@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
+import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.fragment.ImagePickerFragement
@@ -31,6 +33,11 @@ import java.util.concurrent.TimeUnit
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        UploadMultipleImageUsecaseNew.mContext =applicationContext as Application?
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         this.intent = intent
@@ -177,13 +184,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
+        goToFeed()
         finish()
     }
 
     private fun goToFeed() {
         this.let {
-            val applink = ApplinkConst.FEED.plus("?after_post=true")
+            val applink = ApplinkConst.HOME_FEED
             val intent = RouteManager.getIntent(it, applink)
+            intent.putExtra("show_posting_progress_bar",true)
             startActivity(intent)
         }
     }

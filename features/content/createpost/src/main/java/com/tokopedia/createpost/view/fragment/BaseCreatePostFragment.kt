@@ -230,7 +230,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
+                        REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 

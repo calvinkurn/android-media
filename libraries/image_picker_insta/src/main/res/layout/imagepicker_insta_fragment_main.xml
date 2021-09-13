@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.ImagePickerInstaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/Unify_Static_White"
         android:theme="@style/ImagePickerInsta.ToolBarStyle"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -37,52 +38,52 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/toolbar_icon"
                 android:layout_width="32dp"
-                android:layout_height="0dp"
+                android:layout_height="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_nav_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/imagepicker_insta_toolbar_icon" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.5" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/toolbar_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/imagepicker_insta_post_sebagai"
-                android:textColor="@color/imagepicker_insta_toolbar_title"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_icon"
-                app:typographyType="heading_6"
-                app:typographyWeight="reguler" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/toolbar_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/imagepicker_insta_fellow_official"
-                app:layout_constraintStart_toStartOf="@+id/toolbar_title"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
-                app:typographyType="body_1"
-                app:typographyWeight="bold" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/imagepicker_insta_post_sebagai"
+                    android:textColor="@color/imagepicker_insta_toolbar_title"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/toolbar_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-1dp"
+                    android:text="@string/imagepicker_insta_fellow_official"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
     <com.tokopedia.imagepicker_insta.views.MediaView
         android:id="@+id/selected_image_view"
-        android:background="@color/imagepicker_insta_image_bg"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="0dp"
+        android:background="@color/imagepicker_insta_image_bg"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:layout_height="360dp" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_fit_center"
@@ -115,11 +116,13 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_selected_folder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Loading..." />
+                android:text="Loading..."
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"

@@ -11,7 +11,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
  */
 data class MediaModel(
     val path: String = "",
-    val type: String = "image",
+    var type: String = "image",
     var isPlaying: Boolean = false,
     var tags: MutableList<FeedXMediaTagging> = arrayListOf(),
     var products: MutableList<RelatedProductItem> = arrayListOf(),
