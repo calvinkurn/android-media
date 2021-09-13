@@ -666,7 +666,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
         context?.let {
-            startActivity(ImagePreviewActivity.getCallingIntent(it, listOfImage, arrayListOf("variant")))
+            val intent = ImagePreviewActivity.getCallingIntent(context = it, imageUris = listOfImage, disableDownloadButton = true)
+            startActivity(intent)
         }
     }
 
