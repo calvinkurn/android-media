@@ -3,10 +3,7 @@ package com.tokopedia.deals.brand_detail.ui.fragment
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +38,7 @@ import java.lang.Math.abs
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.DealsBrandDetailCallback {
+class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.DealsBrandDetailCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +113,18 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         observeBrandDetail()
     }
 
+    private fun showSuccessLayout(products: List<Product>) {
+        hideShimmering()
+        setCollapsingLayout(brandDetail.title)
+        setHeaderSection(brandDetail)
+        setRVBrandList(products)
+    }
+
+    private fun showEmptyLayout(){
+        hideShimmering()
+        showEmptyState()
+    }
+
     private fun setCollapsingLayout(title: String) {
         binding?.let {
             setHasOptionsMenu(true)
@@ -147,14 +156,14 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         }
     }
 
-    private fun setHeaderSection(brandDetail: Brand){
+    private fun setHeaderSection(brandDetail: Brand) {
         binding?.let {
             it.imgThumbnailBrandDetail.loadImage(brandDetail.featuredThumbnailImage)
             it.imgIconBrandDetail.loadImage(brandDetail.featuredImage)
             it.tgTitleBrandDetail.text = brandDetail.title
             it.tgDescBrandDetail.apply {
                 text = brandDetail.description
-                if (lineCount < MAX_LINE_COUNT){
+                if (lineCount < MAX_LINE_COUNT) {
                     it.tgDescBrandDetailMore.hide()
                 }
             }
@@ -164,9 +173,9 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         }
     }
 
-    private fun setRVBrandList(listProduct: List<Product>){
+    private fun setRVBrandList(listProduct: List<Product>) {
         binding?.let {
-            if(listProduct.size != 0) {
+            if (listProduct.size != 0) {
                 it.tgDescBrandDetailCount.text = getString(R.string.deals_brand_detail_count,
                         listProduct.size.toString())
             }
@@ -184,20 +193,23 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
             when (it) {
                 is Success -> {
                     brandDetail = it.data.data.brand
-                    hideShimmering()
-                    setCollapsingLayout(brandDetail.title)
-                    setHeaderSection(brandDetail)
-                    setRVBrandList(it.data.data.products)
+                    //val products = it.data.data.products
+                    val products = emptyList<Product>()
+                    if (products.isNotEmpty()) {
+                        showSuccessLayout(products)
+                    } else {
+                        showEmptyLayout()
+                    }
                 }
 
                 is Fail -> {
                     val throwable = it.throwable
-                    if(throwable is UnknownHostException){
+                    if (throwable is UnknownHostException) {
                         context?.let { context ->
                             fragmentManager?.let {
                                 DealsBottomSheetNoInternetConnection().showErroNoConnection(context, it,
-                                        object: DealsBottomSheetNoInternetConnection.
-                                        DealsOnClickBottomSheetNoConnectionListener{
+                                        object : DealsBottomSheetNoInternetConnection.
+                                        DealsOnClickBottomSheetNoConnectionListener {
                                             override fun onClick() {
                                                 showShimmering()
                                                 loadData()
@@ -230,7 +242,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         drawable?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
     }
 
-    private fun showBottomSheetBrandDescDetail(title:String, desc: String){
+    private fun showBottomSheetBrandDescDetail(title: String, desc: String) {
         fragmentManager?.let { fragmentManager ->
             context?.let {
                 DealsBrandDetailBottomSheet().showBottomSheet(it, getString(R.string.deals_brand_detail_title_bottom_sheet, title), desc, fragmentManager)
@@ -239,7 +251,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
     }
 
     private fun share(brandDetail: Brand) {
-        activity?.let{ activity ->
+        activity?.let { activity ->
             context?.let { context ->
                 DealsBrandDetailShare(activity).shareEvent(brandDetail, brandDetail.title, { showShareLoading() }, { hideShareLoading() })
             }
@@ -254,22 +266,37 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         binding?.loaderBrandDetail?.show()
     }
 
-    private fun hideShimmering(){
+    private fun hideShimmering() {
         binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.hide()
     }
 
-    private fun showShimmering(){
+    private fun showShimmering() {
         binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.show()
     }
 
-    private fun showToaster(throwable: Throwable){
+    private fun showEmptyState(){
+        binding?.emptyStateBrandDetailDeals?.geDealsEmpty?.apply {
+            show()
+            gravity = Gravity.CENTER
+            errorAction.text = getString(R.string.deals_empty_state_button)
+            setActionClickListener {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun hideEmptyState(){
+        binding?.emptyStateBrandDetailDeals?.geDealsEmpty?.hide()
+    }
+
+    private fun showToaster(throwable: Throwable) {
         context?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
             view?.let {
                 Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.deals_error_reload), View.OnClickListener {
-                            showShimmering()
-                            loadData()
+                    showShimmering()
+                    loadData()
                 }).show()
             }
         }

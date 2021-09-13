@@ -165,4 +165,12 @@
         android:layout_height="wrap_content"
         android:visibility="visible" />
 
+    <include
+        android:id="@+id/empty_state_brand_detail_deals"
+        layout="@layout/layout_empty_state_deals_brand_detail"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 </FrameLayout>
