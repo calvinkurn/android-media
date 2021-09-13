@@ -40,30 +40,37 @@ object CameraUtil {
     }
 
     @Throws(IOException::class)
-    fun createMediaFile(context: Context, isImage: Boolean = true): File {
+    fun createMediaFile(context: Context, isImage: Boolean = true, storeInCache:Boolean = false): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var storageDir: File? = null
 
-        when (StorageUtil.WRITE_LOCATION) {
-            WriteStorageLocation.INTERNAL -> {
-                storageDir = getInternalDir(context)
-            }
-            WriteStorageLocation.EXTERNAL -> {
-                storageDir = getExternalDir(context, isImage)
+        if(storeInCache){
+            storageDir = context.cacheDir
+        }else{
+            when (StorageUtil.WRITE_LOCATION) {
+                WriteStorageLocation.INTERNAL -> {
+                    storageDir = getInternalDir(context)
+                }
+                WriteStorageLocation.EXTERNAL -> {
+                    storageDir = getExternalDir(context, isImage)
+                }
             }
         }
+
         if (isImage) {
+            val prefix = "IMG"
             return File.createTempFile(
-                "IMG_${timeStamp}_", /* prefix */
-                ".jpg", /* suffix */
-                storageDir /* directory */
+                "${prefix}_${timeStamp}_",
+                ".jpg",
+                storageDir
             )
         } else {
+            val prefix = "VID"
             return File.createTempFile(
-                "VID_${timeStamp}_", /* prefix */
-                ".mp4", /* suffix */
-                storageDir /* directory */
+                "${prefix}_${timeStamp}_",
+                ".mp4",
+                storageDir
             )
         }
     }

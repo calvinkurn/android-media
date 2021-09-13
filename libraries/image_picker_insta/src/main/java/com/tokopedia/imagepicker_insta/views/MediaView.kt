@@ -19,10 +19,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.tokopedia.imagepicker_insta.R
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.ImageAdapterData
-import com.tokopedia.imagepicker_insta.models.PhotosData
-import com.tokopedia.imagepicker_insta.models.VideoData
+import com.tokopedia.imagepicker_insta.models.*
 import timber.log.Timber
 
 class MediaView @JvmOverloads constructor(
@@ -146,7 +143,7 @@ class MediaView @JvmOverloads constructor(
         mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
     }
 
-    fun loadAsset(imageAdapterData: ImageAdapterData) {
+    fun loadAsset(imageAdapterData: ImageAdapterData, zoomInfo:ZoomInfo) {
         this.imageAdapterData = imageAdapterData
         val asset = imageAdapterData.asset
         stopPlayer()
@@ -158,7 +155,7 @@ class MediaView @JvmOverloads constructor(
         } else if (asset is PhotosData) {
             assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
-            createPhotoItem(asset)
+            createPhotoItem(asset,zoomInfo)
         }
     }
 
@@ -177,8 +174,8 @@ class MediaView @JvmOverloads constructor(
         assetView.removeAsset()
     }
 
-    fun createPhotoItem(asset: PhotosData) {
-        assetView.loadAsset(asset)
+    fun createPhotoItem(asset: PhotosData,zoomInfo:ZoomInfo) {
+        assetView.loadAsset(asset, zoomInfo)
     }
 
     fun createVideoItem(videoData: VideoData) {

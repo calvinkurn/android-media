@@ -2,12 +2,12 @@ package com.tokopedia.imagepicker_insta.viewmodel
 
 import android.app.Application
 import android.content.ContentValues
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.MediaImporterData
-import com.tokopedia.imagepicker_insta.models.MediaUseCaseData
+import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.util.WriteStorageLocation
@@ -26,9 +26,13 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     lateinit var photosUseCase: PhotosUseCase
 
     @Inject
+    lateinit var cropUseCase: CropUseCase
+
+    @Inject
     lateinit var workerDispatcher: CoroutineDispatcher
 
     val photosLiveData: MutableLiveData<LiveDataResult<MediaUseCaseData>> = MutableLiveData()
+    val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
     var mediaUseCaseData: MediaUseCaseData? = null
 
     fun getImagesByFolderName(folderName: String?) {
@@ -64,6 +68,16 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
             photosLiveData.postValue(LiveDataResult.success(result))
         }, onError = {
             photosLiveData.postValue(LiveDataResult.error(it))
+        })
+    }
+
+    fun getUriOfSelectedMedia(imageSize: Int, map: Map<ImageAdapterData, ZoomInfo>) {
+        launchCatchError(block = {
+            selectedMediaUriLiveData.postValue(LiveDataResult.loading())
+            val uriList = cropUseCase.cropPhotos(app, imageSize, map)
+            selectedMediaUriLiveData.postValue(LiveDataResult.success(uriList))
+        }, onError = {
+            selectedMediaUriLiveData.postValue(LiveDataResult.error(it))
         })
     }
 

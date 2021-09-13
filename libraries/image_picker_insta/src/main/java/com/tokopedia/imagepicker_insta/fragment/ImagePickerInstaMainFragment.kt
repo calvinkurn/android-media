@@ -61,6 +61,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
     val folders = arrayListOf<FolderData>()
+    val zoomImageAdapterDataMap = mutableMapOf<ImageAdapterData, ZoomInfo>()
 
     var cameraCaptureFilePath: String? = null
 
@@ -93,22 +94,14 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             imageAdapter.selectedPositionMap.keys.forEach {
                 selectedUris.add(it.asset.contentUri)
             }
-        }else if (selectedMediaView.imageAdapterData!=null){
+        } else if (selectedMediaView.imageAdapterData != null) {
             selectedUris.add(selectedMediaView.imageAdapterData!!.asset.contentUri)
         }
 
+
         if (!selectedUris.isNullOrEmpty()) {
-
-            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
-            if (!applink.isNullOrEmpty()) {
-
-                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedUris)
-                RouteManager.route(activity, finalApplink)
-            } else {
-                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(selectedUris)))
-                activity?.finish()
-            }
-        } else {
+            viewModel.getUriOfSelectedMedia(selectedMediaView.width, zoomImageAdapterDataMap)
+        }else{
             showToast("Select any media first", Toaster.TYPE_NORMAL)
         }
     }
@@ -241,23 +234,31 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         imageMultiSelect.setOnClickListener {
             imageMultiSelect.toggle()
 
-                    if (selectedMediaView.imageAdapterData != null) {
+            if (selectedMediaView.imageAdapterData != null) {
 
-                        //Clear previous selected
-                        val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
-                        imageAdapter.clearSelectedItems()
+                //Clear previous selected
+                val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
+                imageAdapter.clearSelectedItems()
 
-                        if(!selectedItemIndexList.isNullOrEmpty()){
-                            selectedItemIndexList.forEach {
-                                imageAdapter.notifyItemChanged(it)
-                            }
-                        }
-
-                        imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
-                        imageAdapter.getListOfIndexWhichAreSelected().forEach {
-                            imageAdapter.notifyItemChanged(it)
-                        }
+                if (!selectedItemIndexList.isNullOrEmpty()) {
+                    selectedItemIndexList.forEach {
+                        imageAdapter.notifyItemChanged(it)
                     }
+                }
+
+                imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
+                imageAdapter.getListOfIndexWhichAreSelected().forEach {
+                    imageAdapter.notifyItemChanged(it)
+                }
+
+
+                val zoomInfo = zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!]
+                zoomImageAdapterDataMap.clear()
+                if (zoomInfo != null) {
+                    zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!] = zoomInfo
+                }
+
+            }
         }
     }
 
@@ -336,8 +337,13 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
                         if (!isMultiSelectEnable()) {
                             imageAdapter.clearSelectedItems()
+
                             if (imageAdapter.addSelectedItem(1)) {
-                                selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first())
+
+                                zoomImageAdapterDataMap.clear()
+
+                                val itemData = it.data.mediaImporterData.imageAdapterDataList.first()
+                                selectedMediaView.loadAsset(itemData, prepareZoomInfo(itemData))
                             }
                         }
 
@@ -354,7 +360,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
-                    rv.post { rv.scrollTo(0,0) }
+                    rv.post { rv.scrollTo(0, 0) }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     showToast("Error", Toaster.TYPE_ERROR)
@@ -362,9 +368,32 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             }
         })
 
+        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                LiveDataResult.STATUS.LOADING->{
+                    //Do nothing
+                }
+                LiveDataResult.STATUS.SUCCESS->{
+                    if(it.data!=null) {
+                        handleSuccessSelectedUri(it.data)
+                    }else{
+                        showToast("Something went wrong",Toaster.TYPE_ERROR)
+                    }
+                }
+                LiveDataResult.STATUS.ERROR->{
+                    showToast("Something went wrong",Toaster.TYPE_ERROR)
+                }
+            }
+        })
+
         imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
             if (isSelected) {
-                selectedMediaView.loadAsset(imageAdapterData)
+
+                if (!isMultiSelectEnable()) {
+                    zoomImageAdapterDataMap.clear()
+                }
+
+                selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
             } else {
                 //DO nothing
             }
@@ -380,6 +409,30 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                 imageMultiSelect.toggle(true)
             }
         }
+    }
+
+    private fun handleSuccessSelectedUri(uris:List<Uri>){
+        if (!uris.isNullOrEmpty()) {
+
+            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
+            if (!applink.isNullOrEmpty()) {
+
+                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
+                RouteManager.route(activity, finalApplink)
+            } else {
+                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(uris)))
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun prepareZoomInfo(imageAdapterData: ImageAdapterData): ZoomInfo {
+        var zoomInfo = zoomImageAdapterDataMap[imageAdapterData]
+        if (zoomInfo == null) {
+            zoomInfo = ZoomInfo()
+            zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
+        }
+        return zoomInfo
     }
 
     private fun getPhotos() {
@@ -430,25 +483,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         } else {
             activity?.setResult(Activity.RESULT_CANCELED, data)
             activity?.finish()
-        }
-    }
-
-    private fun handleOldCameraSuccessResponse() {
-        /*
-        * 1. Add image to viewModel's list
-        * 2. add image to selected image
-        * 3. Add image to gallery
-        * 4. Clear current Image file path
-        * */
-        if (!cameraCaptureFilePath.isNullOrEmpty()) {
-            val imageAdapterData = viewModel.mediaUseCaseData?.mediaImporterData?.addCameraImage(cameraCaptureFilePath!!)
-            if (imageAdapterData != null) {
-                selectedMediaView.loadAsset(imageAdapterData)
-                addAssetToGallery(imageAdapterData.asset)
-                addToCurrnetDisplayedList(imageAdapterData)
-            }
-
-            cameraCaptureFilePath = null
         }
     }
 

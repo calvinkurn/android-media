@@ -1,7 +1,6 @@
 package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -11,12 +10,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.otaliastudios.zoom.ZoomEngine
 import com.otaliastudios.zoom.ZoomImageView
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import timber.log.Timber
 
 class ZoomAssetImageView @JvmOverloads constructor(
@@ -27,14 +25,25 @@ class ZoomAssetImageView @JvmOverloads constructor(
         setMinZoom(1f)
     }
 
+    var zoomInfo: ZoomInfo? = null
     var mediaScaleTypeContract: MediaScaleTypeContract? = null
 
     fun initListeners() {
         engine.addListener(object : ZoomEngine.Listener {
             override fun onIdle(engine: ZoomEngine) {
 
-                Timber.d("panX = ${engine.panX}, panY=${engine.panY}, zoom = ${engine.realZoom}")
-                createTempBitmap(this@ZoomAssetImageView, engine)
+                val bmp = (drawable as? BitmapDrawable)?.bitmap
+                if(bmp!=null){
+                    this@ZoomAssetImageView.zoomInfo?.let {
+                        it.panX = engine.panX
+                        it.panY = engine.panY
+                        it.scale = engine.zoom
+                        it.bmpHeight = bmp.height
+                        it.bmpWidth = bmp.width
+                    }
+                }
+                createTempBitmap(engine)
+//                print("J")
             }
 
             override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
@@ -43,36 +52,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
         })
     }
 
-    fun centerCrop() {
-        val bmp = (drawable as? BitmapDrawable)?.bitmap
-        if (bmp != null) {
-
-            val dwidth = bmp.width
-            val dheight = bmp.height
-
-            val vwidth = width - paddingLeft - paddingRight;
-            val vheight = height - paddingTop - paddingBottom;
-
-            val scale: Float
-            var dx = 0f
-            var dy = 0f
-            if (dwidth * vheight > vwidth * dheight) {
-                scale = (vheight / dheight.toFloat())
-                dx = (vwidth - dwidth * scale) * 0.5f
-            } else {
-                scale = (vwidth / dwidth.toFloat())
-                dy = (vheight - dheight * scale) * 0.5f
-            }
-
-            engine.moveTo(scale, dx / 2f, dy / 2f, true)
-        }
-    }
-
-    fun centerInside() {
-        engine.zoomTo(1f, true)
-    }
-
-    fun createTempBitmap(zoomAssetImageView: ZoomAssetImageView, engine: ZoomEngine) {
+    fun createTempBitmap(engine: ZoomEngine) {
         val bmp = (drawable as? BitmapDrawable)?.bitmap
         if (bmp != null) {
             val matrixArray = FloatArray(9)
@@ -105,7 +85,39 @@ class ZoomAssetImageView @JvmOverloads constructor(
         }
     }
 
-    fun loadAsset(asset: Asset) {
+    fun centerCrop() {
+        val bmp = (drawable as? BitmapDrawable)?.bitmap
+        if (bmp != null) {
+
+            val dwidth = bmp.width
+            val dheight = bmp.height
+
+            val vwidth = width - paddingLeft - paddingRight;
+            val vheight = height - paddingTop - paddingBottom;
+
+            val scale: Float
+            var dx = 0f
+            var dy = 0f
+            if (dwidth * vheight > vwidth * dheight) {
+                scale = (vheight / dheight.toFloat())
+                dx = (vwidth - dwidth * scale) * 0.5f
+            } else {
+                scale = (vwidth / dwidth.toFloat())
+                dy = (vheight - dheight * scale) * 0.5f
+            }
+
+            engine.moveTo(scale, dx / 2f, dy / 2f, true)
+        }
+    }
+
+    fun centerInside() {
+//        engine.zoomTo(1f, true)
+        engine.moveTo(1f, 0f,0f,true)
+    }
+
+    fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
+        this.zoomInfo = zoomInfo
+
         Glide.with(this)
             .load(asset.contentUri)
             .fitCenter()
@@ -113,35 +125,23 @@ class ZoomAssetImageView @JvmOverloads constructor(
             .into(this)
     }
 
-    val requestListener = object :RequestListener<Drawable?>{
+    val requestListener = object : RequestListener<Drawable?> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
             return false
         }
 
         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-            post{
+            post {
                 scaleBitmapOnLoad()
             }
             return false
         }
     }
 
-    val customTarget = object : CustomTarget<Drawable?>() {
-        override fun onLoadCleared(placeholder: Drawable?) {
-            //Do nothing
-        }
-
-        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
-            setImageDrawable(resource)
-            post {
-                scaleBitmapOnLoad()
-            }
-
-        }
-    }
-
     fun scaleBitmapOnLoad() {
-        if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
+        if (zoomInfo != null && zoomInfo!!.hasData()) {
+            engine.moveTo(zoomInfo!!.scale!!,zoomInfo!!.panX!!,zoomInfo!!.panY!!,false)
+        } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
             centerCrop()
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
             centerInside()

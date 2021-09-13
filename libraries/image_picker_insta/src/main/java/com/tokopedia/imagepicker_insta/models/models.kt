@@ -7,7 +7,7 @@ import java.io.File
 abstract class Asset(val assetPath: String, val folder: String, val contentUri: Uri, val createdDate: Long)
 class Camera : Asset("", "", Uri.EMPTY, 0L)
 data class PhotosData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long) : Asset(filePath, folderName, uri, _createdDate)
-data class VideoData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long, val durationText: String, val canBeSelected:Boolean) :
+data class VideoData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long, val durationText: String, val canBeSelected: Boolean) :
     Asset(filePath, folderName, uri, _createdDate)
 
 data class MediaImporterData(
@@ -30,10 +30,27 @@ data class FolderData(val folderTitle: String, val folderSubtitle: String, val t
 
 data class ImageAdapterData(
     val asset: Asset,
-//    var isSelected: Boolean = false, //TODO Rahul need to remove
-//    var isInMultiSelectMode: Boolean = false, //TODO Rahul need to remove
     var checkedPosition: Int = 0
 )
+
+data class ZoomInfo(
+    var scale: Float? = null,
+    var panY: Float? = null,
+    var panX: Float? = null,
+    var bmpHeight: Int? = null,
+    var bmpWidth: Int? = null,
+) {
+    fun hasData(): Boolean {
+        return scale != null && panX != null && panY != null
+    }
+
+    fun hasChanged(): Boolean {
+        if (scale != null && scale == 1f) {
+            return false
+        }
+        return (panX != null && panX != 0f) || (panY != null && panY != 0f)
+    }
+}
 
 object BundleData {
     val TITLE = "title"
