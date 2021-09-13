@@ -56,7 +56,7 @@ data class Detail(
     @SerializedName("total_fee_ceil") val total_fee_ceil: Double?,
     @SerializedName("total_interest") val total_interest: Int?,
     @SerializedName("total_interest_ceil") val total_interest_ceil: Double?,
-    @SerializedName("interest_pct") val interest_pct: Int?,
+    @SerializedName("interest_pct") val interest_pct: Double?,
     @SerializedName("total_with_provision") val total_with_provision: Int?,
     @SerializedName("total_with_provision_ceil") val total_with_provision_ceil: Int?,
     @SerializedName("is_recommended") val is_recommended: Boolean?,

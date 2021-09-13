@@ -52,6 +52,7 @@
     <string name="pay_later_see_more">Pelajari Lebih Lanjut</string>
     <string name="pay_later_faq_see_more">Lihat Lebih Banyak</string>
     <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
+    <string name="monthText">bulan</string>
 
     <!-- BottomSheet title-->
     <string name="pay_later_find_out_more_heading">Hal yang sering ditanyakan</string>
@@ -85,6 +86,7 @@
     <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
     <string name="see_more">Selengkapnya</string>
     <string name="whyGateway">Kenapa</string>
+    <string name="cicilian">Cicilan</string>
 
 
 </resources>
