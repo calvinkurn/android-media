@@ -244,7 +244,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") as String
+        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") ?: ""
 
         initView()
         initCartLocalCacheHandler()
