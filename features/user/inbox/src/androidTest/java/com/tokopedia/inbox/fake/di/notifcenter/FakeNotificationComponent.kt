@@ -4,7 +4,6 @@ import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.NotificationQueryModule
-import com.tokopedia.notifcenter.di.module.NotificationTransactionModule
 import com.tokopedia.notifcenter.di.module.NotificationUpdateModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.di.scope.NotificationScope

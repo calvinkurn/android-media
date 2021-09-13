@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.notifcenter.di.scope.NotificationScope
-import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewModel
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.presentation.viewmodel.ProductStockHandlerViewModel
@@ -18,12 +17,6 @@ import dagger.multibindings.IntoMap
     @Binds
     @NotificationScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
-
-    @Binds
-    @IntoMap
-    @NotificationScope
-    @ViewModelKey(NotificationTransactionViewModel::class)
-    internal abstract fun notificationTransactionViewModel(viewModel: NotificationTransactionViewModel): ViewModel
 
     @Binds
     @IntoMap

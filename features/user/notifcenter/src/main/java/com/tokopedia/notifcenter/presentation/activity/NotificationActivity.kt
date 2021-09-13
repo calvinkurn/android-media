@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -31,7 +30,6 @@ import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
-import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.notifcenter.util.CacheManager
@@ -127,11 +125,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun initTabLayoutItem() {
-        // transaction
-        tabList.add(NotificationTabItem(
-                getString(R.string.title_notification_transaction),
-                NotificationTransactionFragment()
-        ))
+//        // transaction
+//        tabList.add(NotificationTabItem(
+//                getString(R.string.title_notification_transaction),
+//                NotificationTransactionFragment()
+//        ))
 
         // update
         tabList.add(NotificationTabItem(

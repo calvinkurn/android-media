@@ -28,18 +28,6 @@ import javax.inject.Named
 
     @Provides
     @NotificationScope
-    @Named(NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION)
-    fun provideRawQueryDrawerNotification(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_drawer_notification)
-
-    @Provides
-    @NotificationScope
-    @Named(NotificationQueriesConstant.TRANSACTION_NOTIFICATION)
-    fun provideNotificationViewBean(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update)
-
-    @Provides
-    @NotificationScope
     @Named(NotificationQueriesConstant.QUERY_IS_TAB_UPDATE)
     fun provideRawProductInfo(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)

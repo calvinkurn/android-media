@@ -4,8 +4,6 @@ object NotificationQueriesConstant {
     //query
     const val MUTATION_NOTIF_CENTER_PUSH_NOTIF = "notif_center_push_notif"
     const val SINGLE_NOTIFICATION_UPDATE = "single_notification_update"
-    const val TRANSACTION_NOTIFICATION = "transaction_notification"
-    const val DRAWER_PUSH_NOTIFICATION = "drawer_push_notification"
     const val PRODUCT_STOCK_REMINDER = "product_stock_reminder"
     const val PRODUCT_STOCK_HANDLER = "product_stock_handler"
     const val FILTER_NOTIFICATION = "filter_notification"
