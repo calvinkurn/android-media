@@ -1,14 +1,18 @@
 package com.tokopedia.library.baseadapter;
 
 import android.content.Context;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,7 +21,7 @@ import com.tokopedia.library.pagination.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     private static final int LOADING = -94567;
     private static final int ERROR_ITEM_COUNT = -1;
@@ -43,6 +47,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     private View mRetryView, mLoaderView;
 
     private List<T> mItems;
+    private final List<T> mOrigItems;
 
     protected BaseAdapter(AdapterCallback callback) {
         if (callback == null) {
@@ -50,8 +55,8 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         }
 
         this.mItems = new ArrayList<>();
+        this.mOrigItems = new ArrayList<>();
         this.mCallback = callback;
-
     }
 
     /**
@@ -64,10 +69,19 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     }
 
     /**
+     * Return list for current adapter
+     *
+     * @return List items
+     */
+    public final List<T> getOrigItems() {
+        return mOrigItems;
+    }
+
+    /**
      * Must have
      * To get itemviewholder this method must be implement by consumer
      *
-     * @param parent Parent view
+     * @param parent   Parent view
      * @param inflater inflater object
      * @return VH
      */
@@ -152,7 +166,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     /**
      * To get VH for footer
      *
-     * @param parent Parent View
+     * @param parent   Parent View
      * @param inflater inflater
      * @return ViewHolder
      */
@@ -223,7 +237,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     /**
      * <b>PLEASE DO NOT OVERRIDE<b/>
      *
-     * @param parent Parent view
+     * @param parent   Parent view
      * @param viewType View type which needs to be inflate default zero
      * @return BaseVH
      */
@@ -248,7 +262,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     /**
      * <b>PLEASE DO NOT OVERRIDE<b/>
      *
-     * @param holder ViewHolder extends BaseVH
+     * @param holder   ViewHolder extends BaseVH
      * @param position Adapter position
      */
     @Override
@@ -311,6 +325,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         setLoading(false);
         removeLoadingFooter();
         addAll(moreItems);
+        mOrigItems.addAll(moreItems);
     }
 
     /**
@@ -364,8 +379,8 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         return mCurrentPageIndex;
     }
 
-    public void setCurrentPageIndex(int currentPageIndex){
-        mCurrentPageIndex=currentPageIndex;
+    public void setCurrentPageIndex(int currentPageIndex) {
+        mCurrentPageIndex = currentPageIndex;
     }
 
     protected final boolean isLoading() {
@@ -447,10 +462,48 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         }
 
         /**
-         *
-         * @param item T
+         * @param item     T
          * @param position position of adapter
          */
         public abstract void bindView(T item, int position);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mItems = (List<T>) results.values;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<T> filteredResults = null;
+                if (constraint.length() == 0) {
+                    filteredResults = getOrigItems();
+                } else {
+                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+
+                return results;
+            }
+        };
+    }
+
+    public List<T> getFilteredResults(String constraint) {
+        List<T> results = new ArrayList<T>();
+
+        for (T item : getOrigItems()) {
+            if (item.getSearchQuery().contains(constraint)) {
+                results.add(item);
+            }
+        }
+
+        return results;
     }
 }

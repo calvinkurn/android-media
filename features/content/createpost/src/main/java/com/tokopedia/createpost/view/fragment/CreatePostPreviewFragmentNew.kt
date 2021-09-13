@@ -462,9 +462,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         return RelatedProductItem(
             id = item.pId!!,
             name = item.name!!,
-            price = item.price.priceIdr,
-            image = item.pImage.img,
-            priceOriginalFmt = item.campaign.oPriceFormatted,
+            price = item.price?.priceIdr!!,
+            image = item.pImage?.img!!,
+            priceOriginalFmt = item.campaign?.oPriceFormatted!!,
             priceDiscountFmt = item.campaign.dPriceFormatted,
             isDiscount = (item.campaign.dPrice.toInt() != 0)
         )
