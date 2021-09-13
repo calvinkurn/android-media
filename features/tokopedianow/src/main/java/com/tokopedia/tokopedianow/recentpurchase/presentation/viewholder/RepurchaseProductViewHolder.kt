@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -28,6 +30,7 @@ class RepurchaseProductViewHolder(
             setProductModel(item.productCard)
 
             setOnClickListener {
+                goToProductDetail(item)
                 listener?.onClickProduct(item)
             }
 
@@ -47,6 +50,14 @@ class RepurchaseProductViewHolder(
                 }
             })
         }
+    }
+
+    private fun goToProductDetail(item: RepurchaseProductUiModel) {
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.id
+        )
     }
 
     interface RepurchaseProductCardListener {
