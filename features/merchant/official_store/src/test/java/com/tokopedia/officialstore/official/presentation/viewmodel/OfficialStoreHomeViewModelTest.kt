@@ -8,6 +8,7 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
@@ -579,7 +580,7 @@ class OfficialStoreHomeViewModelTest {
 
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+        return RecommendationItem(productId = productId.toLongOrZero(), isTopAds = isTopAds)
     }
 
     private fun <T> mockObservable(data: T): Observable<T> {
