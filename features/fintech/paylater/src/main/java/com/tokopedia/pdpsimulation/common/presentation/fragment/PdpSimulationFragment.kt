@@ -308,10 +308,13 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 //        }
     }
 
+
     fun reloadProductDetail() {
-        productInfoShimmer.visible()
-        productDetail.visible()
-        payLaterViewModel.getProductDetail(productId = productId)
+        if(!productDetail.isVisible) {
+            productInfoShimmer.visible()
+            productDetail.visible()
+            payLaterViewModel.getProductDetail(productId = productId)
+        }
 
     }
 
