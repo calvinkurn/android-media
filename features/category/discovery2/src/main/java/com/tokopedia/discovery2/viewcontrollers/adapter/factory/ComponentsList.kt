@@ -91,4 +91,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
+    //Calendar Widget
+    CalendarWidget(R.layout.discovery_calendar_widget_layout, ComponentNames.CalendarWidget.componentName),
+    CalendarWidgetItem(R.layout.discovery_calendar_widget_item_layout, ComponentNames.CalendarWidgetItem.componentName),
+
 }

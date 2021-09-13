@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.calendarwidget.CalendarWidgetGQLRepository
+import com.tokopedia.discovery2.repository.calendarwidget.CalenderWidgetRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -85,6 +87,10 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return ClaimCouponGQLRepository(provideGetStringMethod(context))
     }
 
+    @Provides
+    fun provideCalendarWidgetRepository(): CalenderWidgetRepository {
+        return CalendarWidgetGQLRepository()
+    }
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

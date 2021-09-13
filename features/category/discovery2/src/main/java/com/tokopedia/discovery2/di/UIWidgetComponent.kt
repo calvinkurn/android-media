@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
@@ -49,5 +51,7 @@ interface UIWidgetComponent {
     fun inject(errorLoadViewModel: ErrorLoadViewModel)
     fun inject(categoryBestSellerViewModel: CategoryBestSellerViewModel)
     fun inject(topAdsHeadlineViewModel: TopAdsHeadlineViewModel)
+    fun inject(calendarWidgetViewModel: CalendarWidgetViewModel)
+    fun inject(calendarWidgetItemViewModel: CalendarWidgetItemViewModel)
 
 }
