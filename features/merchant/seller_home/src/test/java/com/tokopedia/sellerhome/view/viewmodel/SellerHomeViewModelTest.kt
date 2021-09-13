@@ -4,13 +4,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
+import com.tokopedia.sellerhome.domain.model.ShopCoreInfoResponse
+import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.utils.observeAwaitValue
+import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
+import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -27,6 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
 /**
@@ -48,6 +56,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_MULTI_LINE = "MULTI_LINE"
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
+        private const val DATA_KEY_MILESTONE = "MILESTONE"
     }
 
     @RelaxedMockK
@@ -99,6 +108,12 @@ class SellerHomeViewModelTest {
     lateinit var getMilestoneDataUseCase: GetMilestoneDataUseCase
 
     @RelaxedMockK
+    lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
+
+    @RelaxedMockK
+    lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -131,6 +146,8 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getShopInfoByIdUseCase },
+            { shopQuestGeneralTrackerUseCase },
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -243,6 +260,8 @@ class SellerHomeViewModelTest {
             AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
         val recommendationDataUiModel =
             RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -270,7 +289,8 @@ class SellerHomeViewModelTest {
             barChartDataUiModel,
             multiLineGraphDataUiModel,
             announcementDataUiModel,
-            recommendationDataUiModel
+            recommendationDataUiModel,
+            milestoneDataUiModel
         )
 
         viewModel.getWidgetLayout(0f)
@@ -295,6 +315,7 @@ class SellerHomeViewModelTest {
                 is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
                 else -> it
             }
         }.map {
@@ -330,6 +351,8 @@ class SellerHomeViewModelTest {
             AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
         val recommendationDataUiModel =
             RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -357,7 +380,8 @@ class SellerHomeViewModelTest {
             barChartDataUiModel,
             multiLineGraphDataUiModel,
             announcementDataUiModel,
-            recommendationDataUiModel
+            recommendationDataUiModel,
+            milestoneDataUiModel
         )
 
         viewModel.getWidgetLayout(5000f)
@@ -382,6 +406,7 @@ class SellerHomeViewModelTest {
                 is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
                 else -> it
             }
         }.map {
@@ -417,6 +442,8 @@ class SellerHomeViewModelTest {
                 AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
             val recommendationDataUiModel =
                 RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
             getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -446,7 +473,8 @@ class SellerHomeViewModelTest {
                 barChartDataUiModel,
                 multiLineGraphDataUiModel,
                 announcementDataUiModel,
-                recommendationDataUiModel
+                recommendationDataUiModel,
+                milestoneDataUiModel
             )
 
             viewModel.getWidgetLayout(5000f)
@@ -471,6 +499,7 @@ class SellerHomeViewModelTest {
                     is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
                     is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                     is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
                     else -> it
                 }
             }.map {
@@ -698,6 +727,134 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.shopLocation.value is Fail)
+    }
+
+    @Test
+    fun `when get milestone widget data then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
+
+            coEvery {
+                getMilestoneDataUseCase.executeOnBackground()
+            } returns result
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            val expected = Success(result)
+            viewModel.milestoneWidgetData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get milestone widget data then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val exception = RuntimeException("")
+            getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
+
+            coEvery {
+                getMilestoneDataUseCase.executeOnBackground()
+            } throws exception
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            val expected = Fail(exception)
+            viewModel.milestoneWidgetData.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when fetch shop info by id then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val shopInfo = ShopInfoResultResponse(
+                coreInfo = ShopCoreInfoResponse("abc"),
+                shopSnippetURL = "xyz"
+            )
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } returns shopInfo
+
+            viewModel.getShopInfoById()
+
+            val expected = Success(
+                ShopShareDataUiModel(
+                    shopUrl = shopInfo.coreInfo?.url.orEmpty(),
+                    shopSnippetURL = shopInfo.shopSnippetURL.orEmpty()
+                )
+            )
+            viewModel.shopShareData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when fetch shop info by id then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val exception = MessageErrorException()
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } throws exception
+
+            viewModel.getShopInfoById()
+
+            val expected = Fail(exception)
+            viewModel.shopShareData.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when send shop quest tracker then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val response = ShopQuestGeneralTracker()
+            shopQuestGeneralTrackerUseCase.params =
+                ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = anyString(),
+                    source = anyString(),
+                    channel = anyString(),
+                    input = ShopQuestGeneralTrackerInput(anyString())
+                )
+            coEvery {
+                shopQuestGeneralTrackerUseCase.executeOnBackground()
+            } returns response
+
+            viewModel.sendShopShareQuestTracker(anyString())
+
+            val expected = Success(response)
+            viewModel.shopShareTracker.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when send shop quest tracker then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = Exception()
+            shopQuestGeneralTrackerUseCase.params =
+                ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = anyString(),
+                    source = anyString(),
+                    channel = anyString(),
+                    input = ShopQuestGeneralTrackerInput(anyString())
+                )
+            coEvery {
+                shopQuestGeneralTrackerUseCase.executeOnBackground()
+            } throws exception
+
+            viewModel.sendShopShareQuestTracker(anyString())
+
+            val expected = Fail(exception)
+            viewModel.shopShareTracker.verifyErrorEquals(expected)
+        }
     }
 
     @Test
@@ -2356,6 +2513,23 @@ class SellerHomeViewModelTest {
                 isFromCache = false,
                 isNeedToBeRemoved = false,
                 emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+            ),
+            MilestoneWidgetUiModel(
+                id = DATA_KEY_MILESTONE,
+                widgetType = WidgetType.MILESTONE,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                appLink = "",
+                dataKey = DATA_KEY_MILESTONE,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
             )
         )
     }
@@ -2371,7 +2545,8 @@ class SellerHomeViewModelTest {
         barChartDataUiModel: BarChartDataUiModel,
         multiLineGraphDataUiModel: MultiLineGraphDataUiModel,
         announcementDataUiModel: AnnouncementDataUiModel,
-        recommendationDataUiModel: RecommendationDataUiModel
+        recommendationDataUiModel: RecommendationDataUiModel,
+        milestoneDataUiModel: MilestoneDataUiModel
     ) {
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -2406,5 +2581,8 @@ class SellerHomeViewModelTest {
         coEvery {
             getRecommendationDataUseCase.executeOnBackground()
         } returns listOf(recommendationDataUiModel)
+        coEvery {
+            getMilestoneDataUseCase.executeOnBackground()
+        } returns listOf(milestoneDataUiModel)
     }
 }
