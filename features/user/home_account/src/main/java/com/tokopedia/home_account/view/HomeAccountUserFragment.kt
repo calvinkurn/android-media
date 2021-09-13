@@ -307,6 +307,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
         })
+
+        viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()) {
+                getData()
+            }
+        })
+
     }
 
     private fun onSuccessGetUserPageAssetConfig(userPageAssetConfig: UserPageAssetConfig) {
@@ -1220,8 +1227,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     gotoSettingProfile()
                 }
             }
-            REQUEST_CODE_PROFILE_SETTING, REQUEST_CODE_LINK_ACCOUNT -> {
+            REQUEST_CODE_PROFILE_SETTING -> {
                 getData()
+            }
+            REQUEST_CODE_LINK_ACCOUNT -> {
+                viewModel.refreshPhoneNo()
             }
         }
 

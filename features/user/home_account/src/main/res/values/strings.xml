@@ -120,4 +120,5 @@
     <string name="desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
     <string name="label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
     <string name="label_secondary_btn_gopay_dialog">Kembali</string>
+    <string name="label_tkpd_care_footer">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
 </resources>

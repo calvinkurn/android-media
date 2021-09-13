@@ -12,6 +12,7 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountTokopointsUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -65,5 +66,10 @@ class HomeAccountUserUsecaseModules {
     @Provides
     fun provideTokopointUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): HomeAccountTokopointsUseCase {
         return HomeAccountTokopointsUseCase(graphqlRepository, dispatchers)
+    }
+
+    @Provides
+    fun provideGetUserProfile(repository: GraphqlRepository): GetUserProfile {
+        return GetUserProfile(repository)
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
@@ -41,6 +42,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
     private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
+    private val getPhoneUseCase: GetUserProfile,
     private val walletPref: WalletPref,
     private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -88,7 +90,23 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopoints: LiveData<Result<PointDataModel>>
         get() = _tokopoints
 
+    private val _phoneNo = MutableLiveData<String>()
+    val phoneNo: LiveData<String> get() = _phoneNo
+
     var internalBuyerData: UserAccountDataModel? = null
+
+    fun refreshPhoneNo() {
+        launchCatchError(block = {
+            val profile = getPhoneUseCase(RequestParams.EMPTY)
+            val phone = profile.profileInfo.phone
+            if (phone.isNotEmpty()) {
+                userSession.phoneNumber = phone
+                _phoneNo.postValue(phone)
+            }
+        }, onError = {
+            _phoneNo.postValue("")
+        })
+    }
 
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
