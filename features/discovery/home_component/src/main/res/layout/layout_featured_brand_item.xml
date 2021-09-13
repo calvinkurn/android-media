@@ -8,15 +8,33 @@
     android:foreground="?selectableItemBackground"
     tools:background="@color/Unify_N700_32">
 
-    <ImageView
-        android:id="@+id/item_logo"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+    <androidx.cardview.widget.CardView
+        app:cardElevation="0dp"
+        app:cardCornerRadius="8dp"
+        android:id="@+id/card_container_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="81dp"
+        app:layout_constraintHeight_max="@dimen/unify_space_32"
+        app:layout_constrainedHeight="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
-        android:contentDescription="@string/content_desc_featured_brand_icon"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_frame_image"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:contentDescription="@string/content_desc_featured_brand_icon">
+        <ImageView
+            android:src="@drawable/testimg"
+            android:adjustViewBounds="true"
+            android:id="@+id/item_logo"
+            android:scaleType="centerInside"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/content_desc_featured_brand_icon"/>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_desc"
@@ -28,9 +46,9 @@
         android:layout_marginTop="@dimen/dp_8"
         app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="@+id/item_frame_image"
-        app:layout_constraintLeft_toLeftOf="@+id/item_logo"
+        app:layout_constraintLeft_toLeftOf="@+id/card_container_logo"
         app:layout_constraintRight_toLeftOf="@+id/item_frame_image"
-        tools:text="test"/>
+        tools:text="tedwadsadawdwast"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_frame_image"
