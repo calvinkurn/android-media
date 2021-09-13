@@ -33,7 +33,7 @@
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
         app:layout_constraintTop_toBottomOf="@+id/divider_view" />
 
     <com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -61,7 +61,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/circular_view"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
         app:layout_constraintRight_toRightOf="parent"
         android:contentDescription="@string/discovery_top_to_bottom"
         tools:visibility="visible"/>
@@ -81,10 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:tabBackground="@color/Unify_N0"
         android:visibility="gone"
-        app:tabPaddingEnd="@dimen/dp_0"
-        app:tabMode="fixed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -104,4 +101,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:visibility="visible"/>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottomBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="bottomNav,miniCartWidget"
+        app:barrierDirection="top"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

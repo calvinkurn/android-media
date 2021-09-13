@@ -76,16 +76,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun openVariantSheet() {
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
-            AtcVariantHelper.goToAtcVariant(
-                itemView.context,
-                dataItem.productId ?: "",
-                AtcVariantHelper.DISCOVERY_PAGESOURCE,
-                true,
-                dataItem.shopId ?: "",
-                startActivitResult = { intent, reqCode ->
-                        fragment.startActivityForResult(intent, reqCode)
-                }
-            )
+            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
     }
 
@@ -241,8 +232,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     override fun onQuantityChanged(quantity: Int) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
         masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-            if (!productItem.productId.isNullOrEmpty() && !productItem.shopId.isNullOrEmpty())
-                (fragment as DiscoveryFragment).addOrUpdateItemCart(productItem.productId!!, productItem.shopId!!, quantity)
+            if (!productItem.productId.isNullOrEmpty())
+                (fragment as DiscoveryFragment).addOrUpdateItemCart(productItem.productId!!, productItem.shopId?:"", quantity)
         }
     }
 }

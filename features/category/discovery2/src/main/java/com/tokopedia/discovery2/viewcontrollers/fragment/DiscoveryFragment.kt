@@ -34,6 +34,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -71,6 +72,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -140,6 +142,8 @@ class DiscoveryFragment :
     private lateinit var parentLayout: FrameLayout
     private var pageInfoHolder:PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
+    private var miniCartData:MiniCartSimplifiedData? = null
+    private var miniCartInitialized:Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -426,6 +430,7 @@ class DiscoveryFragment :
                 is Success -> {
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
+                    addMiniCartToPageFirstTime()
                 }
                 is Fail -> {
                     discoveryAdapter.addDataList(ArrayList())
@@ -486,21 +491,59 @@ class DiscoveryFragment :
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
             if(it is Success) {
                 getMiniCart()
+                showToaster(
+                    message = it.data.errorMessage.joinToString(separator = ", "),
+                    type = Toaster.TYPE_NORMAL
+                )
+            }else if(it is Fail){
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                reSync()
             }
         })
 
         discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
             if(it is Success) {
-                val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                miniCartWidget?.updateData(shopIds)
+                getMiniCart()
+            }else if(it is Fail){
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+                reSync()
             }
         })
 
         discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
             if(it is Success) {
                 getMiniCart()
+                showToaster(
+                    message = it.data.second,
+                    type = Toaster.TYPE_NORMAL
+                )
+            }else if(it is Fail){
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+                reSync()
             }
         })
+    }
+
+    private fun showToaster(message: String,duration: Int= Toaster.LENGTH_SHORT, type: Int) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type
+                ).show()
+            }
+        }
     }
 
     private fun showLocalizingAddressCoachMark() {
@@ -869,9 +912,9 @@ class DiscoveryFragment :
     private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(true)
+        miniCartData = null
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -1025,7 +1068,7 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
-        getMiniCart()
+        addMiniCartToPage()
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -1184,7 +1227,18 @@ class DiscoveryFragment :
         }
     }
 
-    fun getMiniCart() {
+    private fun addMiniCartToPageFirstTime(){
+        if (miniCartData == null)
+            addMiniCartToPage()
+    }
+
+    private fun addMiniCartToPage(){
+        if(pageInfoHolder?.tokonowMiniCartActive == true){
+            getMiniCart()
+        }
+    }
+
+    private fun getMiniCart() {
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
         discoveryViewModel.getMiniCart(shopId, warehouseId)
@@ -1192,7 +1246,7 @@ class DiscoveryFragment :
 
     fun addOrUpdateItemCart(productId: String, shopId: String, quantity: Int) {
         if (UserSession(context).isLoggedIn) {
-            discoveryViewModel.addProductToCart(productId, quantity, shopId)
+            discoveryViewModel.addProductToCart(productId, quantity, localCacheModel?.shop_id?:"")
         } else {
             openLoginScreen()
         }
@@ -1207,21 +1261,45 @@ class DiscoveryFragment :
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+            if (!miniCartInitialized) {
 //            Todo: do we need to add pageName in Analytics?.
-            miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
-            miniCartWidget?.show()
+                miniCartWidget?.initialize(
+                    shopIds,
+                    this,
+                    this,
+                    pageName = MiniCartAnalytics.Page.HOME_PAGE
+                )
+                miniCartWidget?.show()
+            } else {
+                miniCartWidget?.updateData(data)
+            }
             bottomNav?.hide()
         } else {
             miniCartWidget?.hide()
         }
+        syncWithCart(data)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
-        // TODO: Update the product card with new data
+        syncWithCart(miniCartSimplifiedData)
+    }
 
+    private fun syncWithCart(data:MiniCartSimplifiedData){
+        val map = HashMap<String,MiniCartItem>()
+        data.miniCartItems.associateByTo (map,{ it.productId })
+        val variantMap = data.miniCartItems.groupBy { it.productParentId }
+        for((parentProductId,list) in variantMap){
+            if(parentProductId.isNotEmpty() && parentProductId!="0"){
+                val quantity = list.sumOf { it.quantity }
+                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
+            }
+        }
+        setCartData(map,pageEndPoint)
+        miniCartData = data
+        reSync()
     }
 
     private fun hideSystemUi() {
@@ -1244,6 +1322,21 @@ class DiscoveryFragment :
     private fun showSystemUi() {
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+
+    fun openVariantBottomSheet(productId: String) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                productId,
+                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                true,
+                localCacheModel?.shop_id?: "",
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
         }
     }
 }

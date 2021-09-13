@@ -22,6 +22,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
@@ -256,8 +257,8 @@ class DiscoveryDataMapper {
         }
     }
 
-    private fun checkForVariantProductCard(parentProductId: Int?): Boolean {
-        return parentProductId != null && parentProductId >= 0
+    private fun checkForVariantProductCard(parentProductId: String?): Boolean {
+        return parentProductId != null && parentProductId.toLongOrZero()>0
     }
 
     private fun setSlashPrice(discountedPrice: String?, price: String?): String {

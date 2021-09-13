@@ -380,17 +380,17 @@ data class DataItem(
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
 
-//        @SerializedName("hasAddToCardButton")
-        var hasATC: Boolean = true,
+        @SerializedName("hasAddToCartButton")
+        var hasATC: Boolean = false,
 
-//        @SerializedName("parentId")
-        var parentProductId: Int? = null,
+        @SerializedName("parent_id")
+        var parentProductId: String? = "",
 
-//        @SerializedName("max_quantity")
-        var maxQuantity: Int = 5,
+        @SerializedName("max_order")
+        var maxQuantity: Int = 0,
 
-//        @SerializedName("min_quantity")
-        var minQuantity: Int = 1,
+        @SerializedName("min_order")
+        var minQuantity: Int = 0,
 
         var quantity: Int = 0,
 

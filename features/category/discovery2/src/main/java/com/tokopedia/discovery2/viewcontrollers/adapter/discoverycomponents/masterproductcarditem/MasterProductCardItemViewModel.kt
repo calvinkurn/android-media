@@ -50,6 +50,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
