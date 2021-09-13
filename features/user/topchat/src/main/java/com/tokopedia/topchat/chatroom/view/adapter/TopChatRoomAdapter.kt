@@ -60,6 +60,12 @@ class TopChatRoomAdapter constructor(
     private var _srwUiModel: MutableLiveData<SrwBubbleUiModel?> = MutableLiveData()
     val srwUiModel: LiveData<SrwBubbleUiModel?> get() = _srwUiModel
 
+    /**
+     * String - the replyId or localId
+     * BaseChatViewModel - the bubble/reply
+     */
+    private var replyMap: ArrayMap<String, BaseChatViewModel> = ArrayMap()
+
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
 
@@ -246,6 +252,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addBottomData(listChat: List<Visitable<*>>) {
+        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(0, listChat)
@@ -257,6 +264,7 @@ class TopChatRoomAdapter constructor(
 
     private fun addTopData(listChat: List<Visitable<Any>>?) {
         if (listChat == null || listChat.isEmpty()) return
+        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(listChat)
@@ -264,6 +272,19 @@ class TopChatRoomAdapter constructor(
         val diffUtil = ChatRoomDiffUtil(oldList, newList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    private fun mapListChat(listChat: List<Visitable<*>>) {
+        listChat.filterIsInstance(BaseChatViewModel::class.java)
+            .forEach {
+                val id = if (it.replyId.isNotEmpty()) {
+                    it.replyId
+                } else {
+                    it.localId
+                }
+                if (id.isEmpty()) return@forEach
+                replyMap[id] = it
+            }
     }
 
     fun reset() {
