@@ -264,16 +264,18 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             setAdditionalInfo(additionalInfo);
         }
 
+        Boolean isCategoryEvent = (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT));
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
-                setPayMethodInfo(payMethod);
+                setPayMethodInfo(payMethod, isCategoryEvent);
         }
 
         for (Pricing pricing : details.pricing()) {
-            setPricing(pricing);
+            setPricing(pricing, isCategoryEvent);
         }
 
-        setPaymentData(details.paymentData());
+        setPaymentData(details.paymentData(), isCategoryEvent);
         setContactUs(details.contactUs(), details.getHelpLink());
 
         if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
@@ -377,20 +379,28 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setPricing(Pricing pricing) {
+    public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
-        doubleTextView.setBottomText(pricing.value());
+        String value = pricing.value();
+        if (pricing.value().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
     }
 
     @Override
-    public void setPaymentData(PaymentData paymentData) {
+    public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setBottomText(paymentData.value());
+        String value = paymentData.value();
+        if (paymentData.value().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         if (!paymentData.textColor().equals("")) {
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         }
@@ -520,10 +530,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setPayMethodInfo(PayMethod payMethod) {
+    public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
-        doubleTextView.setBottomText(payMethod.getValue());
+        ///change value from Rp0 to Gratis
+        String value = payMethod.getValue();
+        if (payMethod.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         doubleTextView.setBottomGravity(Gravity.END);
         paymentMethodInfo.addView(doubleTextView);
     }

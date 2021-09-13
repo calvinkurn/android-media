@@ -91,7 +91,7 @@ class NotificationChatService : JobIntentService() {
         val message = if (intent.getStringExtra(REPLY_KEY).isNullOrEmpty()) {
             remoteInput?.getCharSequence(REPLY_KEY).toString()
         } else {
-            intent.getStringExtra(REPLY_KEY)
+            intent.getStringExtra(REPLY_KEY) ?: ""
         }
 
         val messageId = intent.getStringExtra(MESSAGE_ID).orEmpty()
@@ -123,16 +123,12 @@ class NotificationChatService : JobIntentService() {
                                 checkWifi = true,
                                 checkCellular = true,
                                 checkEthernet = true)) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        jobScheduler?.cancelAll()
-                        if (isEnableReplyChatNotification()) {
-                            setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
-                        }
+                    jobScheduler?.cancelAll()
+                    if (isEnableReplyChatNotification()) {
+                        setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
                     }
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        jobScheduler?.cancelAll()
-                    }
+                    jobScheduler?.cancelAll()
                     ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to e?.message.orEmpty()))
                 }
             }

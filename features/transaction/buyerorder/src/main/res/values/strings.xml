@@ -156,4 +156,7 @@
     <string name="error_message_buyer_request_cancel_reason_should_not_contains_special_chars">Hindari penggunaan karakter spesial (@#$%^*)</string>
 
     <string name="page_name_uoh">Transaksi</string>
+
+    <string name="zero_rupiah">Rp0</string>
+    <string name="free_rupiah">Gratis</string>
 </resources>
