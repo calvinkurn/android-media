@@ -256,7 +256,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
-                val isResetPin2FA = data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0) == 4
+                val isResetPin2FA = data?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE, 0) == RESULT_CODE_RESET_PIN
                 if(isResetPin2FA) {
                     onSuccessLoginToken()
                 } else {
@@ -296,6 +296,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     companion object {
+        private const val RESULT_CODE_RESET_PIN = 4
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChooseAccountFragment()
             fragment.arguments = bundle
