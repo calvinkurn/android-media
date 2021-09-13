@@ -809,7 +809,7 @@ object SellerHomeTracking {
                 TrackingConstant.SELLER_APP,
                 TrackingConstant.HOME
             ).joinDashSeparator(),
-            action = TrackingConstant.CLICK_WIDGET_MILESTONE_CTA
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_SEE_MORE
         )
 
         TrackingHelper.sendGeneralEvent(eventMap)

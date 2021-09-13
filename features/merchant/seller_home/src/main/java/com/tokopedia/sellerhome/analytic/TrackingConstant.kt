@@ -71,7 +71,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_MILESTONE_CARD = "click widget milestone - card level"
     const val CLICK_WIDGET_MILESTONE_CARD_FINISHED =
         "click widget milestone - card level - finished state"
-    const val CLICK_WIDGET_MILESTONE_CTA = "click widget milestone - higher level - see more"
+    const val CLICK_WIDGET_MILESTONE_SEE_MORE = "click widget milestone - higher level - see more"
     const val CLICK_WIDGET_MILESTONE_MINIMIZE =
         "click widget milestone - higher level - minimize view"
     const val CLICK_WIDGET_MILESTONE_SHARE = "click widget milestone - share"
