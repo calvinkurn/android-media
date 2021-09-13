@@ -116,8 +116,11 @@ class AddEditProductShipmentViewModelTest {
         val testData = CustomProductLogisticModel()
 
         coEvery {
-            customProductLogisticRepository.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        every { customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data) } returns testData
+            customProductLogisticRepository.getCPLList(any(), any())
+        } returns OngkirGetCPLQGLResponse()
+        every {
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data)
+        } returns testData
         viewModel.getCPLList(1234, "9876")
         verify { cplListObserver.onChanged(Success(testData)) }
     }
@@ -125,7 +128,9 @@ class AddEditProductShipmentViewModelTest {
     @Test
     fun `Get CPL List failed`() {
         val testError = Throwable("test error")
-        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } throws testError
+        coEvery {
+            customProductLogisticRepository.getCPLList(any(), any())
+        } throws testError
         viewModel.getCPLList(1234, "9876")
         verify {
             cplListObserver.onChanged(Fail(testError))

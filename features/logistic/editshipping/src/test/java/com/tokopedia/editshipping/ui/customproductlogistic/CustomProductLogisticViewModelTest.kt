@@ -15,7 +15,9 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,6 +43,11 @@ class CustomProductLogisticViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         customProductLogisticViewModel = CustomProductLogisticViewModel(repo, mapper)
         customProductLogisticViewModel.cplList.observeForever(cplListObserver)
+    }
+
+    @After
+    fun setDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
