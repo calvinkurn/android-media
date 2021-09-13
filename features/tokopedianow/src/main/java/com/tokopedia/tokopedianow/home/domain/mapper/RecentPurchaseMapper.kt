@@ -35,7 +35,7 @@ object RecentPurchaseMapper {
             TokoNowProductCardUiModel(
                 it.id,
                 it.shop.id,
-                it.stock.toInt(),
+                it.maxOrder.toInt(),
                 it.parentProductId,
                 createProductCardModel(it),
                 TokoNowLayoutType.RECENT_PURCHASE
@@ -66,7 +66,7 @@ object RecentPurchaseMapper {
                 hasAddToCartButton = true,
                 labelGroupList = mapLabelGroup(data),
                 labelGroupVariantList = mapLabelGroupVariant(data),
-                nonVariant = NonVariant(minQuantity = data.minOrder.toInt(), maxQuantity = data.stock.toInt())
+                nonVariant = NonVariant(minQuantity = data.minOrder.toInt(), maxQuantity = data.maxOrder.toInt())
             )
         }
     }
