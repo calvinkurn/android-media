@@ -312,7 +312,7 @@ class PowerMerchantTracking @Inject constructor(
                 TrackingConstant.KEY_EVENT_ECOMMERCE_PROMOTION,
                 arrayListOf(getPromotionsBundle())
             )
-            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS)
+            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS_NEW)
             putString(TrackingConstant.KEY_CURRENT_SITE, TrackingConstant.TOKOPEDIA_SELLER)
             putString(TrackingConstant.KEY_SHOP_ID, userSession.shopId)
             putString(TrackingConstant.KEY_USER_ID, userSession.userId)
@@ -331,7 +331,7 @@ class PowerMerchantTracking @Inject constructor(
             )
             putString(TrackingConstant.KEY_SHOP_ID, userSession.shopId)
             putString(TrackingConstant.KEY_USER_ID, userSession.userId)
-            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS)
+            putString(TrackingConstant.KEY_BUSINESS_UNIT, TrackingConstant.PHYSICAL_GOODS_NEW)
             putString(TrackingConstant.KEY_CURRENT_SITE, TrackingConstant.TOKOPEDIA_SELLER)
         }
 

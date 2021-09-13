@@ -15,6 +15,7 @@ object TrackingConstant {
     const val POWER_MERCHANT_PRO = "power merchant pro"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val PHYSICAL_GOODS = "physicalgoods"
+    const val PHYSICAL_GOODS_NEW = "physical goods"
     const val BECOME_RM = "become RM"
     const val BECOME_PM = "become pm"
 
