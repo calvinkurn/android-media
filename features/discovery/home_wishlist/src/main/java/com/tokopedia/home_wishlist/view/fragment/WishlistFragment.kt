@@ -52,10 +52,7 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHS
 import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -201,10 +198,12 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     private fun isNavRevamp(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:
-            (getAbTestPlatform().getString(
+            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                    (getAbTestPlatform().getString(
+                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -236,7 +235,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
-                        id.toInt(),
+                        id.toLongOrZero(),
                         wishlistStatusFromPdp
                 )
             }
@@ -245,7 +244,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") as String
+        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") ?: ""
 
         initView()
         initCartLocalCacheHandler()

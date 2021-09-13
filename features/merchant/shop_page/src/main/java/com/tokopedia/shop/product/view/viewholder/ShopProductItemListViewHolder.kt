@@ -15,7 +15,8 @@ class ShopProductItemListViewHolder(
         itemView: View,
         private val shopProductClickedListener: ShopProductClickedListener?,
         private val shopProductImpressionListener: ShopProductImpressionListener?,
-        private val shopTrackType: Int
+        private val shopTrackType: Int,
+        private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -26,7 +27,11 @@ class ShopProductItemListViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         itemView.productCardView?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, false)
+                ShopPageProductListMapper.mapToProductCardModel(
+                        shopProductUiModel = shopProductUiModel,
+                        isWideContent = false,
+                        isShowThreeDots = isShowTripleDot
+                )
         )
         itemView.productCardView?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)
