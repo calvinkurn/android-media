@@ -20,6 +20,7 @@ import javax.inject.Inject
 open class WebsocketMessageMapper @Inject constructor() {
 
     open fun map(pojo: ChatSocketPojo): Visitable<*> {
+        pojo.generateLocalIdIfNotExist()
         return if (hasAttachment(pojo)) {
             val jsonAttributes = pojo.attachment!!.attributes
             mapAttachmentMessage(pojo, jsonAttributes!!)

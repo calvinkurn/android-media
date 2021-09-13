@@ -1,14 +1,17 @@
 package com.tokopedia.chat_common.domain.pojo
 
+import android.annotation.SuppressLint
 import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.util.IdentifierUtil
 
 /**
  * @author : Steven 06/12/18
  */
 
 data class ChatSocketPojo(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("msg_id")
         @Expose
         var msgId: Long = 0L,
@@ -45,6 +48,7 @@ data class ChatSocketPojo(
         @SerializedName("is_opposite")
         @Expose
         var isOpposite: Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("blast_id")
         @Expose
         var blastId: Long = 0L,
@@ -53,8 +57,19 @@ data class ChatSocketPojo(
         var source: String = "",
         @SerializedName("label")
         @Expose
-        var label: String = ""
-)
+        var label: String = "",
+        @SerializedName("local_id")
+        @Expose
+        var localId: String = ""
+) {
+
+        fun generateLocalIdIfNotExist() {
+            if (localId.isEmpty()) {
+                localId = IdentifierUtil.generateLocalId()
+            }
+        }
+
+}
 
 
 data class AttachmentPojo(
