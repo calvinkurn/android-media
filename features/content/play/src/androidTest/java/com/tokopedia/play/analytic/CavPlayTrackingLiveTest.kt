@@ -34,7 +34,7 @@ class CavPlayTrackingLiveTest {
             setup(intentsTestRule)
             setMockModel(PlayLiveMockModelConfig())
             launch("1")
-            setJsonAbsolutePath("tracker/content/play/play_live_analytic.json")
+            setJsonAbsolutePath("play_live_analytic.json")
         } test {
             fakeLogin()
             fakeLaunch()

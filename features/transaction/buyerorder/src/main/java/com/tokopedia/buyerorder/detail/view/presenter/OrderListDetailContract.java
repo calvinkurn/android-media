@@ -41,9 +41,9 @@ public interface OrderListDetailContract {
 
         void setAdditionalInfo(AdditionalInfo additionalInfo);
 
-        void setPricing(Pricing pricing);
+        void setPricing(Pricing pricing, Boolean isCategoryEvent);
 
-        void setPaymentData(PaymentData paymentData);
+        void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent);
 
         void setContactUs(ContactUs contactUs, String helpLink);
 
@@ -61,7 +61,7 @@ public interface OrderListDetailContract {
 
         Context getActivity();
 
-        void setPayMethodInfo(PayMethod payMethod);
+        void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent);
 
         void setButtonMargin();
 

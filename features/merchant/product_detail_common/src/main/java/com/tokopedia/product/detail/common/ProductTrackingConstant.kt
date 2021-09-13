@@ -36,6 +36,8 @@ object ProductTrackingConstant {
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
 
+        const val VALUE_BUSINESS_UNIT_SHARING = "sharingexperience"
+
         const val KEY_USER_ID_VARIANT = "userId"
 
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
@@ -189,7 +191,6 @@ object ProductTrackingConstant {
         const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"
 
         const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
-        const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
         const val VIEW_TICKER_OOS = "view - ticker on pdp"
         const val CLICK_BUTTON_OOS = "click - %s on pdp"
 

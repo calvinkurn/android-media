@@ -222,7 +222,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
-            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
+            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
     }
 

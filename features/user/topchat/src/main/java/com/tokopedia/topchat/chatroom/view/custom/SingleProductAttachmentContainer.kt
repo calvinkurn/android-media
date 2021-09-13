@@ -495,7 +495,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindFreeShipping(product: ProductAttachmentViewModel) {
-        if (product.hasFreeShipping()) {
+        if (product.hasFreeShipping() && commonListener?.isSeller() == false) {
             freeShippingImage?.show()
             ImageHandler.loadImageRounded2(context, freeShippingImage, product.getFreeShippingImageUrl())
         } else {

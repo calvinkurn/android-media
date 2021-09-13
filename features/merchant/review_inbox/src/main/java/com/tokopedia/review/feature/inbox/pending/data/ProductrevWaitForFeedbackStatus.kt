@@ -9,5 +9,8 @@ data class ProductrevWaitForFeedbackStatus(
         val seen: Boolean = false,
         @SerializedName("isEligible")
         @Expose
-        val isEligible: Boolean = false
+        val isEligible: Boolean = false,
+        @SerializedName("incentiveLabel")
+        @Expose
+        val incentiveLabel: String = ""
 )
