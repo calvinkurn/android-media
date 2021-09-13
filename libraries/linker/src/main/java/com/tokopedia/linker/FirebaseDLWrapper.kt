@@ -16,28 +16,32 @@ import java.util.*
 
 
 class FirebaseDLWrapper {
-    val urlPath = "link"
-    val androidUrlPath = "android_url"
-    val iosUrlPath = "ios_url"
+    private val urlPath = "link"
+    private val androidUrlPath = "android_url"
+    private val iosUrlPath = "ios_url"
+    private val firebaseBaseUrl= "https://tkpd.page.link"
     fun getFirebaseDynamicLink(activity: Activity, intent: Intent) {
         Firebase.dynamicLinks
             .getDynamicLink(intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
-                // Get deep link from result (may be null if no link is found)
-                var firebaseUrl: Uri? = null
+                // Get deep link from result ( null if no link found)
+                /* 3 cases
+                    1- Long link:  link = firebaseUrl.toString()
+                    2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
+                    3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
+                 */
+                var firebaseUrl: Uri?
                 if (pendingDynamicLinkData != null) {
                     firebaseUrl = pendingDynamicLinkData.link
                     if (firebaseUrl != null) {
-                        Log.d("FirebaseDLWrapper", firebaseUrl.toString())
-
                         var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
                         if (link == null) {
                             link = firebaseUrl.getQueryParameter(urlPath)
                             if (link != null) {
-                                var tempLink: String? =
+                                var internalLink: String? =
                                     firebaseUrl.getQueryParameter(androidUrlPath)
-                                if (tempLink != null) {
-                                    link = tempLink
+                                if (internalLink != null) {
+                                    link = internalLink
                                 }
                             }
                         }
@@ -70,22 +74,22 @@ class FirebaseDLWrapper {
         var utmCampaign: String? = null
         var utmTerm: String? = null
         if (linkUri != null) {
-            utmSource = linkUri.getQueryParameter("utm_source")
-            utmMedium = linkUri.getQueryParameter("utm_medium")
-            utmCampaign = linkUri.getQueryParameter("utm_campaign")
-            utmTerm = linkUri.getQueryParameter("utm_term")
+            utmSource = linkUri.getQueryParameter(LinkerConstants.UTM_SOURCE)
+            utmMedium = linkUri.getQueryParameter(LinkerConstants.UTM_MEDIUM)
+            utmCampaign = linkUri.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
+            utmTerm = linkUri.getQueryParameter(LinkerConstants.UTM_TERM)
         }
         if (utmSource == null) {
-            utmSource = firebaseUrl.getQueryParameter("utm_source")
+            utmSource = firebaseUrl.getQueryParameter(LinkerConstants.UTM_SOURCE)
         }
         if (utmMedium == null) {
-            utmMedium = firebaseUrl.getQueryParameter("utm_medium")
+            utmMedium = firebaseUrl.getQueryParameter(LinkerConstants.UTM_MEDIUM)
         }
         if (utmCampaign == null) {
-            utmCampaign = firebaseUrl.getQueryParameter("utm_campaign")
+            utmCampaign = firebaseUrl.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
         }
         if (utmTerm == null) {
-            utmTerm = firebaseUrl.getQueryParameter("utm_term")
+            utmTerm = firebaseUrl.getQueryParameter(LinkerConstants.UTM_TERM)
         }
 
         convertToCampaign(
@@ -97,7 +101,6 @@ class FirebaseDLWrapper {
     }
 
     fun createShortLink(shareCallback: ShareCallback, data: LinkerData) {
-        // [START create_short_link]
         Firebase.dynamicLinks.shortLinkAsync {
             var uri: String? = null
             uri = data.uri
@@ -115,9 +118,9 @@ class FirebaseDLWrapper {
                     uri = "$uri&$iosUrlPath=$deeplink"
                 }
                 uri = Uri.encode(uri)
-                var deeplinkdata = "https://tkpd.page.link/?$urlPath=$uri"
+                var deeplinkdata = "$firebaseBaseUrl/?$urlPath=$uri"
                 link = Uri.parse(deeplinkdata)
-                domainUriPrefix = "https://tkpd.page.link"
+                domainUriPrefix = firebaseBaseUrl
                 androidParameters { }
                 iosParameters("com.tokopedia.Tokopedia") { }
                 socialMetaTagParameters {
@@ -125,7 +128,7 @@ class FirebaseDLWrapper {
                     description = data.description
                 }
 
-                if (!uri.contains("utm_source")) {
+                if (!uri.contains(LinkerConstants.UTM_SOURCE)) {
                     googleAnalyticsParameters {
                         source = LinkerData.ARG_UTM_SOURCE
                         medium = LinkerData.ARG_UTM_MEDIUM
@@ -139,7 +142,7 @@ class FirebaseDLWrapper {
             // com.google.firebase.dynamiclinks.ktx.component2
 
             // Short link created
-            var link = shortLink.toString()
+            var link = shortLink.toString() // null check
             shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
 
         }.addOnFailureListener {
@@ -151,7 +154,6 @@ class FirebaseDLWrapper {
 
     fun createLinkProperties(data: LinkerData): String? {
         var deeplinkPath = getApplinkPath(data.renderShareUri(), "")
-        var desktopUrl = data.desktopUrl
         when {
             LinkerData.PRODUCT_TYPE.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.id)
@@ -190,7 +192,7 @@ class FirebaseDLWrapper {
         }
 
         if (deeplinkPath != null) {
-            if (!deeplinkPath.contains("utm_source")) {
+            if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
                 deeplinkPath = data.renderShareUri(deeplinkPath)
             }
         }
