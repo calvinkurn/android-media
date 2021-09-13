@@ -791,7 +791,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         if (cartItemModel.isBundlingItem()) {
                             if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
-                                totalItemPrice += cartItemModel.getBundlePrice();
+                                totalItemPrice += (cartItemModel.getBundleQuantity() * cartItemModel.getBundlePrice());
                             }
                         } else {
                             totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
