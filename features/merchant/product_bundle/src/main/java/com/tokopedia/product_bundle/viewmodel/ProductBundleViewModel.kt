@@ -3,20 +3,16 @@ package com.tokopedia.product_bundle.viewmodel
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
-import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -31,7 +27,6 @@ import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.common.util.ResourceProvider
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -78,8 +73,8 @@ class ProductBundleViewModel @Inject constructor(
     private val errorMessageLiveData: SingleLiveEvent<String> = SingleLiveEvent()
     val errorMessage: LiveData<String> get() = errorMessageLiveData
 
-    private val isBundleOutOfStockLiveData: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val isBundleOutOfStock: LiveData<Boolean> get() = isBundleOutOfStockLiveData
+    private val atcDialogMessagesLiveData: SingleLiveEvent<Pair<String,String>> = SingleLiveEvent()
+    val atcDialogMessages: LiveData<Pair<String,String>> get() = atcDialogMessagesLiveData
 
     fun getProductIdFromUri(uri: Uri?, pathSegments: List<String>): String {
         return if (pathSegments.size >= 2) {
@@ -107,12 +102,30 @@ class ProductBundleViewModel @Inject constructor(
         return selectedProductIdsStr.split(COMMA_DELIMITER).toList()
     }
 
+    fun getSelectedProductIds(productBundleDetails: List<ProductBundleDetail>): String {
+        return productBundleDetails.joinToString { it.productId.toString() }
+    }
+
     fun getSelectedProductBundleMaster(): ProductBundleMaster {
         return selectedProductBundleMaster.value ?: ProductBundleMaster()
     }
 
     fun getSelectedProductBundleDetails(): List<ProductBundleDetail> {
         return productBundleMap[selectedProductBundleMaster.value] ?: listOf()
+    }
+
+    fun getSelectedProductIdFromBundleDetail(productBundleDetail: ProductBundleDetail): String {
+        return productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString()
+    }
+
+    fun getVariantLevel(selectedProductVariant: ProductVariant): Int {
+        return selectedProductVariant.variants.size
+    }
+
+    fun getVariantTitle(selectedProductVariant: ProductVariant): String {
+        return selectedProductVariant.variants.joinToString { variant ->
+            variant.name?:""
+        }
     }
 
     fun isPreOrderActive(preOrderStatus: String): Boolean {
@@ -194,15 +207,15 @@ class ProductBundleViewModel @Inject constructor(
                         )
                     },
                     onFailedWithMessages = {
-                        isBundleOutOfStockLiveData.value = true
+                        atcDialogMessagesLiveData.value = Pair(first = it.firstOrNull() ?: "", it.lastOrNull() ?: "")
                     },
                     onFailedWithException = {
-                        // Todo : show toaster error with error message from throwable
+                        errorMessageLiveData.value = it.localizedMessage
                     }
             )
         }, onError = {
-            // TODO: log error, provide default error message
-            errorMessageLiveData.value = it.localizedMessage
+            // TODO: log error
+            errorMessageLiveData.value = rscProvider.getErrorMessage(it)
         })
     }
 
@@ -311,6 +324,10 @@ class ProductBundleViewModel @Inject constructor(
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {
         return originalPrice - bundlePrice
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSession.userId.isNotBlank()
     }
 
     fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {
