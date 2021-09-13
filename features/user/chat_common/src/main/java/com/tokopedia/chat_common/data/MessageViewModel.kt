@@ -21,22 +21,22 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
      * constructor for GQL response
      */
     constructor(
-            reply: Reply,
-            attachment: Any? = null
+        reply: Reply,
+        attachment: Any? = null
     ) : super(
-            messageId = reply.msgId.toString(),
-            fromUid = reply.senderId.toString(),
-            from = reply.senderName,
-            fromRole = reply.role,
-            attachmentId = reply.attachment.id,
-            attachmentType = reply.attachment.type.toString(),
-            replyTime = reply.replyTime,
-            startTime = "",
-            isRead = reply.isRead,
-            isDummy = false,
-            isSender = !reply.isOpposite,
-            message = reply.msg,
-            source = reply.source,
+        messageId = reply.msgId.toString(),
+        fromUid = reply.senderId.toString(),
+        from = reply.senderName,
+        fromRole = reply.role,
+        attachmentId = reply.attachment.id,
+        attachmentType = reply.attachment.type.toString(),
+        replyTime = reply.replyTime,
+        startTime = "",
+        isRead = reply.isRead,
+        isDummy = false,
+        isSender = !reply.isOpposite,
+        message = reply.msg,
+        source = reply.source,
     ) {
         blastId = reply.blastId
         fraudStatus = reply.fraudStatus
@@ -51,34 +51,34 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
         pojo: ChatSocketPojo,
         attachment: Any? = null
     ) : super(
-            messageId = pojo.msgId.toString(),
-            fromUid = pojo.fromUid,
-            from = pojo.from,
-            fromRole = pojo.fromRole,
-            attachmentId = "",
-            attachmentType = "",
-            replyTime = pojo.message.timeStampUnixNano,
-            startTime = pojo.startTime,
-            isRead = false,
-            isDummy = false,
-            isSender = !pojo.isOpposite,
-            message = pojo.message.censoredReply,
-            source = pojo.source
+        messageId = pojo.msgId.toString(),
+        fromUid = pojo.fromUid,
+        from = pojo.from,
+        fromRole = pojo.fromRole,
+        attachmentId = "",
+        attachmentType = "",
+        replyTime = pojo.message.timeStampUnixNano,
+        startTime = pojo.startTime,
+        isRead = false,
+        isDummy = false,
+        isSender = !pojo.isOpposite,
+        message = pojo.message.censoredReply,
+        source = pojo.source
     ) {
         label = pojo.label
         this.attachment = attachment
     }
 
     constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
-            source: String, blastId: Long = 0, fraudStatus: Int = 0
+        messageId: String, fromUid: String, from: String, fromRole: String,
+        attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+        isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
+        source: String, blastId: Long = 0, fraudStatus: Int = 0
     ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            isRead, isDummy, isSender, message,
-            source
+        messageId, fromUid, from, fromRole,
+        attachmentId, attachmentType, replyTime, startTime,
+        isRead, isDummy, isSender, message,
+        source
     ) {
         this.blastId = blastId
         this.fraudStatus = fraudStatus
@@ -103,14 +103,14 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
      * @param isSender       is own sender
      */
     constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            message: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean,
-            source: String
+        messageId: String, fromUid: String, from: String, fromRole: String,
+        attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+        message: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean,
+        source: String
     ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            isRead, isDummy, isSender, message, source
+        messageId, fromUid, from, fromRole,
+        attachmentId, attachmentType, replyTime, startTime,
+        isRead, isDummy, isSender, message, source
     ) {
     }
 
@@ -125,12 +125,12 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
      * @param message   censored reply
      */
     constructor(
-            messageId: String, fromUid: String, from: String, startTime: String,
-            message: String
+        messageId: String, fromUid: String, from: String, startTime: String,
+        message: String
     ) : super(
-            messageId, fromUid, from, "",
-            "", "", BaseChatViewModel.SENDING_TEXT, startTime,
-            false, true, true, message, ""
+        messageId, fromUid, from, "",
+        "", "", BaseChatViewModel.SENDING_TEXT, startTime,
+        false, true, true, message, ""
     ) {
     }
 
