@@ -675,4 +675,17 @@ class SearchActivity: BaseActivity(),
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
     }
+
+    override fun updateSearchParameter(searchParameter: SearchParameter?) {
+        if (searchParameter == null) return
+
+        this.searchParameter = searchParameter
+
+        updateKeyword()
+    }
+
+    private fun updateKeyword() {
+        searchTextView?.text = getToolbarTitle(searchParameter.getSearchQuery())
+        searchNavigationToolbar?.setToolbarTitle(searchParameter.getSearchQuery())
+    }
 }
