@@ -1,6 +1,5 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -134,11 +133,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
-            whyText.text = resources.getString(R.string.whyGateway)+" ${data.gateway_detail?.name?:""}"
-            if(data.tenure != 1 && data.tenure !=0)
-                duration.text = resources.getString(R.string.cicilian) +" ${data.tenure}x"
+            whyText.text =
+                resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}"
+            if (data.tenure != 1 && data.tenure != 0)
+                duration.text = resources.getString(R.string.cicilian) + " ${data.tenure}x"
 
-            interestText.text = "Interest(${(data.interest_pct?:0)}%)"
+            interestText.text = "Interest(${(data.interest_pct ?: 0)}%)"
             gatewayType =
                 if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
                     GatewayStatusType.Rejected
@@ -170,19 +170,18 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                         false
                     )
                 }
-             data.installment_per_month_ceil?.let { montlyInstallment ->
-                 if(data.tenure != 1 && data.tenure !=0)
-                 {
-                     totalAmount.text = "${CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    montlyInstallment, false
-                )}/${resources.getString(R.string.monthText)}"
-                 }
-                 else
-                 {
-                     totalAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                         montlyInstallment, false
-                     )
-                 }
+            data.installment_per_month_ceil?.let { montlyInstallment ->
+                if (data.tenure != 1 && data.tenure != 0) {
+                    totalAmount.text = "${
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            montlyInstallment, false
+                        )
+                    }/${resources.getString(R.string.monthText)}"
+                } else {
+                    totalAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        montlyInstallment, false
+                    )
+                }
 
             }
             if (!data.cta?.name.isNullOrEmpty())
@@ -206,8 +205,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             if (data.disableDetail?.status == true) {
                 disableVisibilityGroup.gone()
-                interestText.text = data.disableDetail.description?:""
-                simulasiHeading.text = data.disableDetail.header?:""
+                interestText.text = data.disableDetail.description ?: ""
+                simulasiHeading.text = data.disableDetail.header ?: ""
             }
 
         }

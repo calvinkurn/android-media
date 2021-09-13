@@ -5,16 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV2UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(

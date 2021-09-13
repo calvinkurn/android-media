@@ -71,9 +71,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
-            }
-           else
-            {
+            } else {
                 if (it.gateway_detail?.how_toApply?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toApply?.let { howToApplyDetail ->

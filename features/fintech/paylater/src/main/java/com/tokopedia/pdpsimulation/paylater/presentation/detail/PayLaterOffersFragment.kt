@@ -70,10 +70,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         paylaterProduct.productList?.let {
             for (i in it.indices) {
                 it[i].text?.let { name ->
-                    if(i == 0)
-                        filterData.add(SortFilterItem(name,ChipsUnify.TYPE_SELECTED,ChipsUnify.SIZE_SMALL) {
-                            selectOtherTenure(i)
-                        })
+                    if (i == 0)
+                        filterData.add(
+                            SortFilterItem(
+                                name,
+                                ChipsUnify.TYPE_SELECTED,
+                                ChipsUnify.SIZE_SMALL
+                            ) {
+                                selectOtherTenure(i)
+                            })
                     else {
                         filterData.add(SortFilterItem(name) {
                             selectOtherTenure(i)
