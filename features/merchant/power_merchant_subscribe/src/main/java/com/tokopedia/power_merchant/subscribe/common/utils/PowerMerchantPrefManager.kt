@@ -1,9 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.common.utils
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 
-class PowerMerchantPrefManager(@ApplicationContext private val context: Context) {
+class PowerMerchantPrefManager(private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "power_merchant_prefs"
