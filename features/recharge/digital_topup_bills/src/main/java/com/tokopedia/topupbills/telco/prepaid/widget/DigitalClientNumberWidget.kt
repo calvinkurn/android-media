@@ -160,7 +160,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
                 setInputNumber(number.clientNumber)
                 clearFocusAutoComplete()
-                listener.onRenderOperator()
             }
             sortFilter.add(sortFilterItem)
         }
@@ -342,7 +341,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onNavigateToContact(isSwitchChecked: Boolean)
         fun onRenderOperator()
         fun onClearAutoComplete()
-        fun onClickFilterChip()
     }
 
     companion object {

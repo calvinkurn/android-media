@@ -15,6 +15,8 @@ import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsSavedNumTabAdapter
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -84,6 +86,16 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewPager()
         initListener()
+        observeData()
+    }
+
+    private fun observeData() {
+        savedNumberViewModel.clueVisibility.observe(viewLifecycleOwner, { isVisible ->
+            if (isVisible)
+                binding?.commonTopupBillsFavoriteNumberClue?.show()
+            else
+                binding?.commonTopupBillsFavoriteNumberClue?.hide()
+        })
     }
 
     override fun onDestroyView() {

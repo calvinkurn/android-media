@@ -313,10 +313,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 buyWidget.setVisibilityLayout(false)
             }
-
-            override fun onClickFilterChip() {
-                // do nothing
-            }
         })
 
         enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {
