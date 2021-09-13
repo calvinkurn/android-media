@@ -165,6 +165,7 @@ class PlayUpcomingFragment @Inject constructor(
         return when (uiString) {
             is UiString.Text -> uiString.text
             is UiString.Resource -> getString(uiString.resource)
+            else -> ""
         }
     }
 
@@ -262,6 +263,7 @@ class PlayUpcomingFragment @Inject constructor(
             toasterType = when (event) {
                 is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
                 is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+                else -> Toaster.TYPE_NORMAL
             },
             message = text
         )
