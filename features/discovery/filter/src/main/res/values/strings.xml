@@ -39,6 +39,7 @@
     <string name="keyword_filter_use_add_icon_to_add">Tekan ikon (+) untuk tambah kata kunci.</string>
     <string name="keyword_filter_enter_different_keyword">Masukkan kata kunci yang berbeda.</string>
     <string name="keyword_filter_cannot_same_as_keyword">Tidak boleh sama dengan kata kunci pencarian.</string>
+    <string name="keyword_filter_contains_forbidden_char">Mengadung spesial character yang dilarang.</string>v
 
     <string name="content_desc_filterTitleTextView">text title filter</string>
     <string name="content_desc_filterSeeAll">button lihat semua filter</string>

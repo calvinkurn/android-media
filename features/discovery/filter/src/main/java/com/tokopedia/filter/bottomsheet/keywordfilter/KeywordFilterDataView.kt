@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet.keywordfilter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheetTypeFactory
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ExistsAsNegative
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ForbiddenCharacter
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.IsOriginalKeyword
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.MaxFiveNegative
 import com.tokopedia.filter.common.data.Filter
@@ -15,14 +16,21 @@ internal class KeywordFilterDataView(
 ): Visitable<SortFilterBottomSheetTypeFactory> {
 
     companion object {
-        const val KEYWORD_FILTER_SEPARATOR = " -"
         const val MAX_NEGATIVE_KEYWORD = 5
+
+        /**
+         * Regex Pattern to only allow one or more of these characters:
+         * 1. Alphanumeric characters
+         * 2. Whitelisted special characters: - . , / + % & [space]
+        */
+        const val WHITELISTED_CHARACTER_REGEX_PATTERN = "^[a-zA-Z0-9-.,/+%& ]+\$"
     }
 
     sealed class KeywordFilterError {
         object MaxFiveNegative: KeywordFilterError()
         object IsOriginalKeyword: KeywordFilterError()
         object ExistsAsNegative: KeywordFilterError()
+        object ForbiddenCharacter: KeywordFilterError()
     }
 
     override fun type(typeFactory: SortFilterBottomSheetTypeFactory?) =
@@ -51,6 +59,7 @@ internal class KeywordFilterDataView(
             isMaximum() -> onError(MaxFiveNegative)
             isContainedInOriginalKeyword(sanitizeKeyword) -> onError(IsOriginalKeyword)
             isExistsAsNegativeKeyword(sanitizeKeyword) -> onError(ExistsAsNegative)
+            isContainForbiddenCharacters(sanitizeKeyword) -> onError(ForbiddenCharacter)
             else -> {
                 mutableItemList.add(KeywordFilterItemDataView(sanitizeKeyword))
                 onSuccess()
@@ -73,6 +82,9 @@ internal class KeywordFilterDataView(
 
     private fun isExistsAsNegativeKeyword(sanitizeKeyword: String) =
         itemList.map { it.negativeKeyword }.contains(sanitizeKeyword)
+
+    private fun isContainForbiddenCharacters(sanitizeKeyword: String) =
+        !sanitizeKeyword.matches(Regex(WHITELISTED_CHARACTER_REGEX_PATTERN))
 
     fun generateKeyword() =
         "$originalKeyword ${generateNegativeKeyword()}".trim()

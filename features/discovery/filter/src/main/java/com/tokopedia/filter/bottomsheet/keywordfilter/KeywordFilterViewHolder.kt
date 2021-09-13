@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.filter.R
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ExistsAsNegative
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ForbiddenCharacter
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.IsOriginalKeyword
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.MaxFiveNegative
 import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
@@ -156,6 +157,7 @@ internal class KeywordFilterViewHolder(
             is MaxFiveNegative -> getString(R.string.keyword_filter_max_count)
             is ExistsAsNegative -> getString(R.string.keyword_filter_enter_different_keyword)
             is IsOriginalKeyword -> getString(R.string.keyword_filter_cannot_same_as_keyword)
+            is ForbiddenCharacter -> getString(R.string.keyword_filter_contains_forbidden_char)
         }
 
     private fun ImageView.setAddIconDrawable() {

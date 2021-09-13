@@ -2,10 +2,12 @@ package com.tokopedia.filter.bottomsheet.keywordfilter
 
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ExistsAsNegative
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.ForbiddenCharacter
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.IsOriginalKeyword
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView.KeywordFilterError.MaxFiveNegative
 import com.tokopedia.filter.testutils.jsonToObject
 import com.tokopedia.filter.testutils.shouldBe
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -157,6 +159,30 @@ internal class KeywordFilterTest {
 
         dataView.itemList.size shouldBe 1
         assertThat(error, instanceOf(ExistsAsNegative::class.java))
+    }
+
+    @Test
+    fun `addKeyword with non-whitelisted special character`() {
+        val dataView = createKeywordFilterDataViewEmptyOption()
+
+        val forbiddenInputList = listOf(
+            "_te%st",
+            "\$te+st",
+        )
+
+        forbiddenInputList.forEach { input ->
+            dataView.addKeyword(input)
+
+            val reason = "Input keyword is: $input"
+            assertThat(
+                "$reason assert error type fail.",
+                error, instanceOf(ForbiddenCharacter::class.java)
+            )
+            assertThat(
+                "$reason assert size fail.",
+                dataView.itemList.size, `is`(0)
+            )
+        }
     }
 
     @Test
