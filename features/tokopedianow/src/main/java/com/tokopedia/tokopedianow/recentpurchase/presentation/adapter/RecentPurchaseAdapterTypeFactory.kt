@@ -49,29 +49,24 @@ class RecentPurchaseAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Common TokoNow Component
-            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> {
-                TokoNowChooseAddressWidgetViewHolder(
-                    view,
-                    tokoNowListener,
-                    tokoNowChooseAddressWidgetListener
-                ).applyFullSpan()
-            }
             TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, tokoNowRecommendationCarouselListener)
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(view, tokoNowEmptyStateNoResultListener)
             // endregion
 
             // region Repurchase Component
-            RepurchaseSortFilterViewHolder.LAYOUT -> {
-                RepurchaseSortFilterViewHolder(view, sortFilterListener)
-                    .applyFullSpan()
-            }
+            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
             RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener)
             // endregion
             else -> super.createViewHolder(view, type)
+        }.apply {
+            if(this !is RepurchaseProductViewHolder) {
+                applyFullSpan()
+            }
         }
     }
 
