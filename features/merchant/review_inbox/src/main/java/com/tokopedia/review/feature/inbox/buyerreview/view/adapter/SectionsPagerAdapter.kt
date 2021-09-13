@@ -1,0 +1,35 @@
+package com.tokopedia.review.feature.inbox.buyerreview.view.adapter
+
+import android.text.TextUtils
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.tabs.TabLayout
+
+/**
+ * @author by Nisie on 20/01/16.
+ */
+class SectionsPagerAdapter constructor(
+    fm: FragmentManager?,
+    private val fragmentList: List<Fragment>,
+    private val indicator: TabLayout?
+) : FragmentPagerAdapter(
+    (fm)!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+) {
+    public override fun getItem(position: Int): Fragment {
+        return fragmentList.get(position)
+    }
+
+    public override fun getCount(): Int {
+        return fragmentList.size
+    }
+
+    public override fun getPageTitle(position: Int): CharSequence? {
+        if ((indicator != null
+                    ) && (indicator.getTabAt(position) != null
+                    ) && !TextUtils.isEmpty(
+                indicator.getTabAt(position)!!.getText()
+            )
+        ) return indicator.getTabAt(position)!!.getText() else return ""
+    }
+}
