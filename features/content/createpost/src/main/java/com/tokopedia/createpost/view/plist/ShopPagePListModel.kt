@@ -22,24 +22,6 @@ data class Paging(
     val next: String
 )
 
-
-data class ShopPageProduct (
-    @field:SerializedName("name")
-    val name: String? = null,
-
-    @field:SerializedName("primary_image")
-    val pImage: PrimaryImage,
-
-    @field:SerializedName("price")
-    val price: SPrice,
-
-    @field:SerializedName("product_id")
-    val pId: String? = null,
-
-    @field:SerializedName("campaign")
-    val campaign: Campaign
-) : BaseItem(), Serializable
-
 data class PrimaryImage(
     @field:SerializedName("resize300")
     val img: String

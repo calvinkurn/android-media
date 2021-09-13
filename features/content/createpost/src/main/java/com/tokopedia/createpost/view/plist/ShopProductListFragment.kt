@@ -3,12 +3,10 @@ package com.tokopedia.createpost.view.plist
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -16,15 +14,15 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.library.baseadapter.AdapterCallback
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.recycler_view
 
 class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
-    var getImeiBS : ShopPListSortFilterBs? = null
+    var getImeiBS: ShopPListSortFilterBs? = null
     private val mAdapter: ShopProductListBaseAdapter by lazy {
         ShopProductListBaseAdapter(
             presenter,
@@ -57,18 +55,16 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         view.recycler_view.adapter = mAdapter
 
         mAdapter.resetAdapter()
-        mAdapter.notifyDataSetChanged()
         mAdapter.startDataLoading()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
-
-//        view.cu_sort_chip.setOnClickListener {
-//             getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
-//            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
-//        }
 
         view.cu_sort_chip.setChevronClickListener {
             getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
             fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
+        }
+
+        view.sb_shop_product.searchBarTextField.afterTextChanged {
+            mAdapter.filter.filter(it)
         }
 
     }
@@ -111,6 +107,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
             it.value.toString()
         )
     }
+
     )
 
     private fun addProductValObserver() =

@@ -4,30 +4,27 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
+import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 
-class ShopProductListBaseAdapter(
+open class ShopProductListBaseAdapter(
     val viewModel: ShopPageProductListViewModel,
     val callback: AdapterCallback
 ) : BaseAdapter<ShopPageProduct>(callback) {
 
+    protected var cList: MutableList<BaseItem>? = null
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var productView: ProductCardGridView
-//        internal var imgBanner: ImageView
         var isVisited = false
 
         init {
             productView = view.findViewById(R.id.product_card)
-//            imgBanner = view.findViewById(R.id.img_banner)
         }
 
         override fun bindView(item: ShopPageProduct, position: Int) {
@@ -137,11 +134,11 @@ class ShopProductListBaseAdapter(
     }
 
 
-    fun toShopProductModel(item : ShopPageProduct) : ProductCardModel {
+    private fun toShopProductModel(item: ShopPageProduct): ProductCardModel {
         return ProductCardModel(
-            productImageUrl = item.pImage.img,
+            productImageUrl = item.pImage?.img!!,
             productName = item.name ?: "",
-            formattedPrice = item.price.priceIdr
+            formattedPrice = item.price?.priceIdr!!
         )
     }
 }
