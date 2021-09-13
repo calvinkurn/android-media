@@ -21,7 +21,7 @@ class TwitterWebViewActivity : BaseSimpleActivity(), TwitterWebViewActivityListe
     }
 
     override fun getNewFragment(): Fragment {
-        return TwitterWebViewFragment.newInstance(intent.getStringExtra(EXTRA_URL))
+        return TwitterWebViewFragment.newInstance(intent.getStringExtra(EXTRA_URL) ?: "")
     }
 
     override fun onGetCallbackUrl(url: String) {

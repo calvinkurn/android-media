@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
@@ -16,6 +18,8 @@ import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import java.util.*
 
 class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSliderCallback, GalleryView {
@@ -135,7 +139,11 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onSeeAllButtonClicked() {
         activity?.let {
             it.finish()
-            ImageReviewGalleryActivity.moveTo(it, it.productId)
+            if (shouldGoToNewGallery())  {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, it.productId)
+            } else {
+                ImageReviewGalleryActivity.moveTo(it, it.productId)
+            }
         }
     }
 
@@ -150,5 +158,15 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.image_review_gallery_swipe_refresh_layout
+    }
+
+    private fun shouldGoToNewGallery(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+        } catch (e: Exception) {
+            false
+        }
     }
 }

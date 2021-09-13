@@ -315,10 +315,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun isNavRevamp(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:
-            (getAbTestPlatform().getString(
+            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                    (getAbTestPlatform().getString(
+                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -1880,7 +1882,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString()), topAds, it)
         }
@@ -1898,7 +1900,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
         val atcParam = AddToCartRequestParams(
-                productId = recommendationItem.productId.toLong(),
+                productId = recommendationItem.productId,
                 productName = recommendationItem.name,
                 price = recommendationItem.priceInt.toString(),
                 quantity = recommendationItem.quantity,
@@ -1914,7 +1916,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name
-        val productPrice = recommendationItem.price
+        val productPrice = recommendationItem.priceInt.toString()
         val productCategory = recommendationItem.categoryBreadcrumbs
         val qty = recommendationItem.quantity.toString()
         val imageUrl = recommendationItem.imageUrl

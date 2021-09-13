@@ -18,7 +18,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -182,7 +181,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
 
     private fun getReviewTemplate() {
         hideData()
-        viewModelReviewReply?.getTemplateListReply(shopId.toLongOrZero())
+        viewModelReviewReply?.getTemplateListReply(shopId)
     }
 
     private fun observeLiveData() {
@@ -419,7 +418,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     private fun submitTemplateReply(title: String, message: String) {
-        viewModelReviewReply?.insertTemplateReviewReply(shopId.toLongOrZero(), title, message)
+        viewModelReviewReply?.insertTemplateReviewReply(shopId, title, message)
     }
 
     private fun initBottomSheetReplyReview() {

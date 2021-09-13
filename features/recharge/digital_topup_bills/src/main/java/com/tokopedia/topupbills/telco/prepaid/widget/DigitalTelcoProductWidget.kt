@@ -133,7 +133,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
     }
 
-    private fun getProductListener() = object : TelcoProductViewHolder.OnClickListener {
+    private fun getProductListener() = object : TelcoProductViewHolder.ActionListener {
         override fun onClickItemProduct(element: TelcoProduct, position: Int) {
             val label = getLabelProductItem(element.id)
             listener.onClickProduct(element, position, label)
@@ -142,6 +142,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
         override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
             listener.onSeeMoreProduct(element, position)
+        }
+
+        override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
+            listener.onTrackImpressionSpecialProduct(itemProduct, position)
         }
     }
 
@@ -270,6 +274,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
+        fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int)
     }
 
     companion object {
