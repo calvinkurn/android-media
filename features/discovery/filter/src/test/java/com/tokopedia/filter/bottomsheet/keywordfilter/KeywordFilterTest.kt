@@ -33,7 +33,6 @@ internal class KeywordFilterTest {
     private fun createKeywordFilterDataViewEmptyOption() =
         KeywordFilterDataView(
             filter = "keywordfilter/keyword-filter-empty.json".jsonToObject(),
-            originalKeyword = "samsung"
         )
 
     private fun KeywordFilterDataView.addKeyword(keyword: String) {
@@ -140,8 +139,7 @@ internal class KeywordFilterTest {
     @Test
     fun `addKeyword cannot add word contained in original keyword`() {
         val dataView = KeywordFilterDataView(
-            filter = "keywordfilter/keyword-filter-empty.json".jsonToObject(),
-            originalKeyword = "samsung tv"
+            filter = "keywordfilter/keyword-filter-samsung-tv.json".jsonToObject(),
         )
 
         dataView.addKeyword("tv")
@@ -200,7 +198,6 @@ internal class KeywordFilterTest {
     fun `generateKeyword from keyword filter`() {
         val dataView = KeywordFilterDataView(
             filter = "keywordfilter/keyword-filter.json".jsonToObject(),
-            originalKeyword = "samsung"
         )
 
         dataView.generateKeyword() shouldBe "samsung -\"tv\""

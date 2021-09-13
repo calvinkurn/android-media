@@ -227,10 +227,7 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     private fun createKeywordFilterDataView(filter: Filter) =
-        KeywordFilterDataView(
-            filter = filter,
-            originalKeyword = mapParameter[SearchApiConst.Q] ?: "",
-        )
+        KeywordFilterDataView(filter = filter)
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()

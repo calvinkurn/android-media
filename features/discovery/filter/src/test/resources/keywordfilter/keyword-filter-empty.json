@@ -5,5 +5,21 @@
     "placeholder": ""
   },
   "template_name": "template_negative_keyword",
-  "options": []
+  "options": [
+    {
+      "name": "samsung",
+      "key": "main_keyword",
+      "icon": "",
+      "Description": "",
+      "value": "",
+      "inputType": "selectbox",
+      "totalData": "",
+      "valMax": "",
+      "valMin": "",
+      "isPopular": false,
+      "isNew": false,
+      "hexColor": "",
+      "child": []
+    }
+  ]
 }

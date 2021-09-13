@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 
 internal class KeywordFilterDataView(
     val filter: Filter = Filter(),
-    val originalKeyword: String = "",
 ): Visitable<SortFilterBottomSheetTypeFactory> {
 
     companion object {
@@ -37,9 +36,15 @@ internal class KeywordFilterDataView(
         typeFactory?.type(this) ?: 0
 
     private val mutableItemList = filter.options
+        .filter { it.key == Option.KEY_NEGATIVE_KEYWORD }
         .map(Option::name)
         .map(::KeywordFilterItemDataView)
         .toMutableList()
+
+    private val originalKeyword = filter.options
+        .find { it.key == Option.KEY_MAIN_KEYWORD }
+        ?.name
+        ?: ""
 
     val itemList: List<KeywordFilterItemDataView> = mutableItemList
 
