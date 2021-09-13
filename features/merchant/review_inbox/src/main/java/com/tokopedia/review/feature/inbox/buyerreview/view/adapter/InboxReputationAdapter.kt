@@ -18,29 +18,30 @@ import java.util.*
  * @author by nisie on 8/11/17.
  */
 class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory) :
-    RecyclerView.Adapter<AbstractViewHolder<*>?>() {
+    RecyclerView.Adapter<AbstractViewHolder<*>>() {
     private val list: MutableList<Visitable<*>?>
     private val emptySearchModel: EmptySearchModel
     private val loadingModel: LoadingModel
     private val typeFactory: InboxReputationTypeFactory
-    public override fun onCreateViewHolder(
+
+    override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): AbstractViewHolder<*> {
-        val context: Context = parent.getContext()
+        val context: Context = parent.context
         val view: View = LayoutInflater.from(context).inflate(viewType, parent, false)
         return typeFactory.createViewHolder(view, viewType)
     }
 
-    public override fun onBindViewHolder(holder: AbstractViewHolder<*>?, position: Int) {
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>?, position: Int) {
         holder!!.bind(list.get(position))
     }
 
-    public override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return list.get(position)!!.type(typeFactory)
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return list.size
     }
 

@@ -9,16 +9,16 @@ import android.os.Parcelable
 class ImageAttachmentUiModel : Parcelable {
     var attachmentId: Int
         private set
-    var description: String?
+    var description: String
         private set
-    var uriThumbnail: String?
+    var uriThumbnail: String
         private set
-    var uriLarge: String?
+    var uriLarge: String
         private set
 
     constructor(
-        attachmentId: Int, description: String?,
-        uriThumbnail: String?, uriLarge: String?
+        attachmentId: Int, description: String,
+        uriThumbnail: String, uriLarge: String
     ) {
         this.attachmentId = attachmentId
         this.description = description
@@ -33,11 +33,11 @@ class ImageAttachmentUiModel : Parcelable {
         uriLarge = `in`.readString()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(attachmentId)
         dest.writeString(description)
         dest.writeString(uriThumbnail)
@@ -45,13 +45,14 @@ class ImageAttachmentUiModel : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<ImageAttachmentUiModel> =
-            object : Parcelable.Creator<ImageAttachmentUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): ImageAttachmentUiModel? {
+            object : Parcelable.Creator<ImageAttachmentUiModel> {
+                override fun createFromParcel(`in`: Parcel): ImageAttachmentUiModel {
                     return ImageAttachmentUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<ImageAttachmentUiModel?> {
+                override fun newArray(size: Int): Array<ImageAttachmentUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

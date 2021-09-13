@@ -8,8 +8,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDat
 /**
  * @author by nisie on 8/10/17.
  */
-open interface InboxReputation {
-    open interface View : CustomerView {
+interface InboxReputation {
+    interface View : CustomerView {
         fun showLoadingFull()
         fun onErrorGetFirstTimeInboxReputation(throwable: Throwable?)
         fun onSuccessGetFirstTimeInboxReputation(inboxReputationUiModel: InboxReputationUiModel)
@@ -35,7 +35,7 @@ open interface InboxReputation {
         fun onShowEmptyFilteredInboxReputation()
     }
 
-    open interface Presenter : CustomerPresenter<View?> {
+    interface Presenter : CustomerPresenter<View?> {
         fun getFirstTimeInboxReputation(tab: Int)
         fun getNextPage(
             lastItemPosition: Int, visibleItem: Int, query: String?,

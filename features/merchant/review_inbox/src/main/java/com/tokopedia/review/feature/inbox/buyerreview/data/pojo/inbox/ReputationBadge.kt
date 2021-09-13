@@ -3,12 +3,12 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ReputationBadge {
+data class ReputationBadge(
     @SerializedName("level")
     @Expose
-    var level = 0
+    var level: Int = 0,
 
     @SerializedName("set")
     @Expose
-    var set = 0
-}
+    var set: Int = 0
+)

@@ -3,44 +3,44 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ReviewData {
+class ReviewData(
     @SerializedName("review_id")
     @Expose
-    var reviewId = 0
+    var reviewId: Int = 0,
 
     @SerializedName("reputation_id")
     @Expose
-    var reputationId = 0
+    var reputationId: Int = 0,
 
     @SerializedName("review_title")
     @Expose
-    var reviewTitle: String? = null
+    var reviewTitle: String = "",
 
     @SerializedName("review_message")
     @Expose
-    var reviewMessage: String? = null
+    var reviewMessage: String = "",
 
     @SerializedName("review_rating")
     @Expose
-    var reviewRating = 0
+    var reviewRating: Int = 0,
 
     @SerializedName("review_image_url")
     @Expose
-    val reviewImageUrl: List<ReviewImageUrl>? = null
+    val reviewImageUrl: List<ReviewImageUrl> = listOf(),
 
     @SerializedName("review_create_time")
     @Expose
-    var reviewCreateTime: ReviewCreateTime? = null
+    var reviewCreateTime: ReviewCreateTime = ReviewCreateTime(),
 
     @SerializedName("review_update_time")
     @Expose
-    var reviewUpdateTime: ReviewUpdateTime? = null
+    var reviewUpdateTime: ReviewUpdateTime = ReviewUpdateTime(),
 
     @SerializedName("review_anonymity")
     @Expose
-    var isReviewAnonymity = false
+    var isReviewAnonymity: Boolean = false,
 
     @SerializedName("review_response")
     @Expose
-    var reviewResponse: ReviewResponse? = null
-}
+    var reviewResponse: ReviewResponse = ReviewResponse()
+)

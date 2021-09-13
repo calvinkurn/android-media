@@ -3,28 +3,28 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ShopReputation {
+data class ShopReputation(
     @SerializedName("tooltip")
     @Expose
-    var tooltip: String? = null
+    val tooltip: String = "",
 
     @SerializedName("reputation_score")
     @Expose
-    var reputationScore: String? = null
+    val reputationScore: String = "",
 
     @SerializedName("score")
     @Expose
-    var score = 0
+    val score: Int = 0,
 
     @SerializedName("min_badge_score")
     @Expose
-    var minBadgeScore = 0
+    val minBadgeScore: Int = 0,
 
     @SerializedName("reputation_badge_url")
     @Expose
-    var reputationBadgeUrl: String? = null
+    val reputationBadgeUrl: String = "",
 
     @SerializedName("reputation_badge")
     @Expose
-    var reputationBadge: ReputationBadge? = null
-}
+    val reputationBadge: ReputationBadge = ReputationBadge()
+)

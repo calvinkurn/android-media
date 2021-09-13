@@ -14,9 +14,9 @@ import rx.Observable
  */
 class LocalInboxReputationDataSource(private val persistentCacheManager: PersistentCacheManager) {
     fun getInboxReputationFromCache(requestParams: RequestParams): Observable<InboxReputationDomain> {
-        return Observable.just<String>(
-            GetFirstTimeInboxReputationUseCase.Companion.CACHE_REPUTATION +
-                    requestParams.parameters[GetInboxReputationUseCase.Companion.PARAM_TAB]
+        return Observable.just(
+            GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
+                    requestParams.parameters[GetInboxReputationUseCase.PARAM_TAB]
         )
             .map { key: String ->
                 if (getCache(key) != null) return@map CacheUtil.convertStringToModel(

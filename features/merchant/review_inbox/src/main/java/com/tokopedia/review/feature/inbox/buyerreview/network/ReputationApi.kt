@@ -5,26 +5,26 @@ import retrofit2.Response
 import retrofit2.http.*
 import rx.Observable
 
-open interface ReputationApi {
+interface ReputationApi {
     @GET(ReputationBaseURL.PATH_GET_INBOX_REPUTATION)
-    fun getInbox(@QueryMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun getInbox(@QueryMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 
     @GET(ReputationBaseURL.PATH_GET_DETAIL_INBOX_REPUTATION)
-    fun getInboxDetail(@QueryMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun getInboxDetail(@QueryMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 
     @POST(ReputationBaseURL.PATH_SEND_REPUTATION_SMILEY)
     @FormUrlEncoded
-    fun sendSmiley(@FieldMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun sendSmiley(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 
     @POST(ReputationBaseURL.PATH_REPORT_REVIEW)
     @FormUrlEncoded
-    fun reportReview(@FieldMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun reportReview(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 
     @POST(ReputationBaseURL.PATH_INSERT_REVIEW_RESPONSE)
     @FormUrlEncoded
-    fun insertReviewResponse(@FieldMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun insertReviewResponse(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 
     @POST(ReputationBaseURL.PATH_DELETE_REVIEW_RESPONSE)
     @FormUrlEncoded
-    fun deleteReviewResponse(@FieldMap params: Map<String?, String?>?): Observable<Response<TokopediaWsV4Response?>?>
+    fun deleteReviewResponse(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 }

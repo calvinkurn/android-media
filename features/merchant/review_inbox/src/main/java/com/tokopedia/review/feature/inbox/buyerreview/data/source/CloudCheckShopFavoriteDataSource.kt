@@ -12,13 +12,13 @@ import rx.Observable
  */
 class CloudCheckShopFavoriteDataSource(
     private val tomeService: TomeService,
-    private val shopFavoritedMapper: ShopFavoritedMapper?
+    private val shopFavoritedMapper: ShopFavoritedMapper
 ) {
     fun checkShopIsFavorited(requestParams: RequestParams): Observable<CheckShopFavoriteDomain> {
         return tomeService.api
             .checkIsShopFavorited(
-                requestParams.getString(CheckShopFavoritedUseCase.Companion.PARAM_USER_ID, ""),
-                requestParams.getString(CheckShopFavoritedUseCase.Companion.PARAM_SHOP_ID, "")
+                requestParams.getString(CheckShopFavoritedUseCase.PARAM_USER_ID, ""),
+                requestParams.getString(CheckShopFavoritedUseCase.PARAM_SHOP_ID, "")
             )
             .map(shopFavoritedMapper)
     }

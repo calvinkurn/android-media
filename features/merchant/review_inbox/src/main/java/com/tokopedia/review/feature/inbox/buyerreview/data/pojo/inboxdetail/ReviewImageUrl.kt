@@ -3,20 +3,20 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ReviewImageUrl {
+data class ReviewImageUrl(
     @SerializedName("attachment_id")
     @Expose
-    var attachmentId = 0
+    val attachmentId: Int = 0,
 
     @SerializedName("description")
     @Expose
-    var description: String? = null
+    val description: String = "",
 
     @SerializedName("uri_thumbnail")
     @Expose
-    var uriThumbnail: String? = null
+    val uriThumbnail: String = "",
 
     @SerializedName("uri_large")
     @Expose
-    var uriLarge: String? = null
-}
+    val uriLarge: String = ""
+)

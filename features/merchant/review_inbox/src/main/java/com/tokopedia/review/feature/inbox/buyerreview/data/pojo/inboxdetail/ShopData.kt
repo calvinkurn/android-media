@@ -3,41 +3,32 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ShopData {
+data class ShopData(
     @SerializedName("shop_id")
     @Expose
-    var shopId: Long = 0
-        private set
+    val shopId: Long = 0,
 
     @SerializedName("shop_user_id")
     @Expose
-    var shopUserId: Long = 0
-        private set
+    val shopUserId: Long = 0,
 
     @SerializedName("domain")
     @Expose
-    var domain: String? = null
+    val domain: String = "",
 
     @SerializedName("shop_name")
     @Expose
-    var shopName: String? = null
+    val shopName: String = "",
 
     @SerializedName("shop_url")
     @Expose
-    var shopUrl: String? = null
+    val shopUrl: String = "",
 
     @SerializedName("logo")
     @Expose
-    var logo: String? = null
+    val logo: String = "",
 
     @SerializedName("shop_reputation")
     @Expose
-    var shopReputation: ShopReputation? = null
-    fun setShopId(shopId: Int) {
-        this.shopId = shopId.toLong()
-    }
-
-    fun setShopUserId(shopUserId: Int) {
-        this.shopUserId = shopUserId.toLong()
-    }
-}
+    val shopReputation: ShopReputation = ShopReputation()
+)

@@ -36,7 +36,7 @@ class InboxReputationDetailPassModel : Parcelable {
 
     protected constructor(`in`: Parcel) {
         reputationDataUiModel =
-            `in`.readParcelable(ReputationDataUiModel::class.java.getClassLoader())
+            `in`.readParcelable(ReputationDataUiModel::class.java.classLoader)
         reputationId = `in`.readString()
         revieweeName = `in`.readString()
         revieweeImage = `in`.readString()
@@ -46,11 +46,11 @@ class InboxReputationDetailPassModel : Parcelable {
         role = `in`.readInt()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeParcelable(reputationDataUiModel, flags)
         dest.writeString(reputationId)
         dest.writeString(revieweeName)
@@ -64,11 +64,11 @@ class InboxReputationDetailPassModel : Parcelable {
     companion object {
         val CREATOR: Parcelable.Creator<InboxReputationDetailPassModel> =
             object : Parcelable.Creator<InboxReputationDetailPassModel?> {
-                public override fun createFromParcel(`in`: Parcel): InboxReputationDetailPassModel? {
+                override fun createFromParcel(`in`: Parcel): InboxReputationDetailPassModel? {
                     return InboxReputationDetailPassModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<InboxReputationDetailPassModel?> {
+                override fun newArray(size: Int): Array<InboxReputationDetailPassModel?> {
                     return arrayOfNulls(size)
                 }
             }

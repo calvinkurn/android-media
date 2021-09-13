@@ -55,8 +55,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
+class InboxReputationDetailFragment : BaseDaggerFragment(),
     InboxReputationDetail.View, ReputationListener {
+
     private var listProduct: RecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
     private var adapter: InboxReputationDetailAdapter? = null
@@ -65,21 +66,18 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
     private var mainView: View? = null
     private var progressDialog: ProgressDialog? = null
 
-    @kotlin.jvm.JvmField
     @Inject
-    var presenter: InboxReputationDetailPresenter? = null
+    lateinit var presenter: InboxReputationDetailPresenter
 
-    @kotlin.jvm.JvmField
     @Inject
-    var persistentCacheManager: PersistentCacheManager? = null
+    lateinit var persistentCacheManager: PersistentCacheManager
 
-    @kotlin.jvm.JvmField
     @Inject
-    override var userSession: UserSessionInterface? = null
+    lateinit var userSession: UserSessionInterface
 
-    @kotlin.jvm.JvmField
     @Inject
-    var reputationTracking: ReputationTracking? = null
+    lateinit var reputationTracking: ReputationTracking
+
     private var reputationId: String? = "0"
     var orderId: String? = "0"
         private set
@@ -90,7 +88,7 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
 
     override fun initInjector() {
         val baseAppComponent: BaseAppComponent =
-            (requireContext().getApplicationContext() as BaseMainApplication).getBaseAppComponent()
+            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         val reputationComponent: DaggerReputationComponent = DaggerReputationComponent
             .builder()
             .baseAppComponent(baseAppComponent)
@@ -98,29 +96,29 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
         reputationComponent.inject(this)
     }
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initVar()
     }
 
     private fun initVar() {
-        if (getArguments()!!.getBoolean(
-                InboxReputationDetailActivity.Companion.ARGS_IS_FROM_APPLINK,
+        if (arguments?.getBoolean(
+                InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK,
                 false
             )
         ) {
-            reputationId = getArguments()!!.getString(
-                InboxReputationDetailActivity.Companion.REPUTATION_ID,
+            reputationId = arguments?.getString(
+                InboxReputationDetailActivity.REPUTATION_ID,
                 "0"
             )
         } else if (persistentCacheManager != null) {
             try {
                 val passModel: InboxReputationDetailPassModel? =
-                    persistentCacheManager!!.get<InboxReputationDetailPassModel>(
-                        InboxReputationDetailActivity.Companion.CACHE_PASS_DATA,
+                    persistentCacheManager.get<InboxReputationDetailPassModel>(
+                        InboxReputationDetailActivity.CACHE_PASS_DATA,
                         InboxReputationDetailPassModel::class.java
                     )
-                reputationId = passModel.getReputationId()
+                reputationId = passModel.reputationId
                 role = passModel.getRole()
                 setToolbar(passModel.getInvoice(), passModel.getCreateTime())
             } catch (e: Exception) {
@@ -134,24 +132,24 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
     }
 
     private fun setToolbar(title: String?, subtitle: String?) {
-        if (getActivity() != null) {
-            if ((getActivity() as AppCompatActivity?)!!.getSupportActionBar() != null) {
-                (getActivity() as AppCompatActivity?)!!.getSupportActionBar()!!.hide()
+        if (activity != null) {
+            if ((activity as AppCompatActivity?)?.supportActionBar != null) {
+                (activity as AppCompatActivity?)?.supportActionBar?.hide()
             }
             val toolbar: HeaderUnify =
-                getActivity()!!.findViewById(R.id.headerInboxReputationDetail)
-            (getActivity() as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+                activity?.findViewById(R.id.headerInboxReputationDetail)
+            (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
             toolbar.setTitle(title)
-            toolbar.headerSubTitle = (subtitle)!!
+            toolbar.headerSubTitle = (subtitle)?
         }
     }
 
-    public override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setRetainInstance(true)
+        retainInstance = true
         val parentView: View = inflater.inflate(
             R.layout.fragment_inbox_reputation_detail, container,
             false
@@ -160,27 +158,25 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_inbox_reputation_detail)
         listProduct = parentView.findViewById(R.id.product_list)
         prepareView()
-        presenter!!.attachView(this)
+        presenter.attachView(this)
         return parentView
     }
 
     @SuppressLint("WrongConstant")
     private fun prepareView() {
-        listProduct!!.setLayoutManager(
-            LinearLayoutManager(
-                getActivity(),
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+        listProduct?.layoutManager = LinearLayoutManager(
+            activity,
+            LinearLayoutManager.VERTICAL,
+            false
         )
-        listProduct!!.setAdapter(adapter)
-        swipeToRefresh!!.setOnRefreshListener(onRefresh())
+        listProduct?.adapter = adapter
+        swipeToRefresh?.setOnRefreshListener(onRefresh())
         initProgressDialog()
     }
 
     private fun onRefresh(): OnRefreshListener {
         return object : OnRefreshListener {
-            public override fun onRefresh() {
+            override fun onRefresh() {
                 refreshPage()
             }
         }
@@ -189,136 +185,136 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
     private fun initProgressDialog() {
         if (getContext() != null) {
             progressDialog = ProgressDialog(getContext())
-            progressDialog!!.setTitle("")
-            progressDialog!!.setMessage(getContext()!!.getString(R.string.progress_dialog_loading))
-            progressDialog!!.setCancelable(false)
+            progressDialog?.setTitle("")
+            progressDialog?.setMessage(getContext()?.getString(R.string.progress_dialog_loading))
+            progressDialog?.setCancelable(false)
         }
     }
 
-    public override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!TextUtils.isEmpty(reputationId)) {
-            presenter!!.getInboxDetail(
+            presenter?.getInboxDetail(
                 reputationId,
-                getArguments()!!.getInt(InboxReputationDetailActivity.Companion.ARGS_TAB, -1)
+                arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
             )
         } else {
-            getActivity()!!.finish()
+            activity?.finish()
         }
     }
 
-    public override fun showLoading() {
-        adapter!!.showLoading()
-        adapter!!.notifyDataSetChanged()
+    override fun showLoading() {
+        adapter?.showLoading()
+        adapter?.notifyDataSetChanged()
     }
 
-    public override fun onErrorGetInboxDetail(throwable: Throwable?) {
-        if ((getActivity() != null) && (mainView != null) && (getContext() != null)) NetworkErrorHelper.showEmptyState(
-            getActivity(),
+    override fun onErrorGetInboxDetail(throwable: Throwable?) {
+        if ((activity != null) && (mainView != null) && (getContext() != null)) NetworkErrorHelper.showEmptyState(
+            activity,
             mainView,
             getErrorMessage(
-                (getContext())!!, (throwable)!!
-            ),
-            NetworkErrorHelper.RetryClickedListener({
-                presenter!!.getInboxDetail(
-                    reputationId,
-                    getArguments()!!.getInt(InboxReputationDetailActivity.Companion.ARGS_TAB, -1)
-                )
-            })
+                (getContext())?, (throwable)?
+        ),
+        NetworkErrorHelper.RetryClickedListener({
+            presenter.getInboxDetail(
+                reputationId,
+                arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+            )
+        })
         )
     }
 
-    public override fun finishLoading() {
-        if (progressDialog != null && getActivity() != null) {
-            adapter!!.removeLoading()
-            adapter!!.notifyDataSetChanged()
+    override fun finishLoading() {
+        if (progressDialog != null && activity != null) {
+            adapter?.removeLoading()
+            adapter?.notifyDataSetChanged()
         }
     }
 
-    public override fun onSuccessGetInboxDetail(
-        inboxReputationItemUiModel: InboxReputationItemUiModel?,
+    override fun onSuccessGetInboxDetail(
+        inboxReputationItemUiModel: InboxReputationItemUiModel,
         list: List<Visitable<*>>
     ) {
-        role = inboxReputationItemUiModel.getRole()
-        if (!list.isEmpty() && list.get(0) is InboxReputationDetailItemUiModel) {
-            orderId = (list.get(0) as InboxReputationDetailItemUiModel).getOrderId()
+        role = inboxReputationItemUiModel.role
+        if (list.isNotEmpty() && list[0] is InboxReputationDetailItemUiModel) {
+            orderId = (list[0] as InboxReputationDetailItemUiModel).orderId
         }
         setToolbar(
-            inboxReputationItemUiModel.getInvoice(),
-            inboxReputationItemUiModel.getCreateTime()
+            inboxReputationItemUiModel.invoice,
+            inboxReputationItemUiModel.createTime
         )
-        adapter!!.clearList()
-        adapter!!.addHeader(createHeaderModel(inboxReputationItemUiModel))
-        adapter!!.addList(list)
-        adapter!!.notifyDataSetChanged()
-        reputationTracking!!.onSeeSellerFeedbackPage(orderId)
+        adapter?.clearList()
+        adapter?.addHeader(createHeaderModel(inboxReputationItemUiModel))
+        adapter?.addList(list)
+        adapter?.notifyDataSetChanged()
+        reputationTracking?.onSeeSellerFeedbackPage(orderId)
     }
 
-    public override fun onErrorSendSmiley(errorMessage: String?) {
-        if (getActivity() != null) NetworkErrorHelper.showSnackbar(getActivity(), errorMessage)
+    override fun onErrorSendSmiley(errorMessage: String?) {
+        if (activity != null) NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    public override fun showLoadingDialog() {
-        if (!progressDialog!!.isShowing() && getActivity() != null) progressDialog!!.show()
+    override fun showLoadingDialog() {
+        if (!progressDialog?.isShowing && activity != null) progressDialog?.show()
     }
 
-    public override fun finishLoadingDialog() {
-        if (progressDialog!!.isShowing() && (progressDialog != null) && (getContext() != null)) progressDialog!!.dismiss()
+    override fun finishLoadingDialog() {
+        if (progressDialog?.isShowing && (progressDialog != null) && (getContext() != null)) progressDialog?.dismiss()
     }
 
-    public override fun showRefresh() {
-        swipeToRefresh!!.setRefreshing(true)
+    override fun showRefresh() {
+        swipeToRefresh?.isRefreshing = true
     }
 
-    public override fun onErrorRefreshInboxDetail(throwable: Throwable?) {
-        if (getActivity() != null!! and getContext() != null) NetworkErrorHelper.showSnackbar(
-            getActivity(), getErrorMessage(
+    override fun onErrorRefreshInboxDetail(throwable: Throwable?) {
+        if (activity != null and getContext() != null) NetworkErrorHelper.showSnackbar(
+            activity, getErrorMessage(
                 (getContext())!!, (throwable)!!
             )
         )
     }
 
-    public override fun onSuccessRefreshGetInboxDetail(
-        inboxReputationViewModel: InboxReputationItemUiModel?,
+    override fun onSuccessRefreshGetInboxDetail(
+        inboxReputationViewModel: InboxReputationItemUiModel,
         list: List<Visitable<*>>
     ) {
         if (!list.isEmpty() && list.get(0) is InboxReputationDetailItemUiModel) {
             orderId = (list.get(0) as InboxReputationDetailItemUiModel).getOrderId()
         }
-        adapter!!.clearList()
-        adapter!!.addHeader(createHeaderModel(inboxReputationViewModel))
-        adapter!!.addList(list)
-        adapter!!.notifyDataSetChanged()
-        getActivity()!!.setResult(Activity.RESULT_OK)
+        adapter?.clearList()
+        adapter?.addHeader(createHeaderModel(inboxReputationViewModel))
+        adapter?.addList(list)
+        adapter?.notifyDataSetChanged()
+        activity?.setResult(Activity.RESULT_OK)
     }
 
     private fun createHeaderModel(
-        inboxReputationViewModel: InboxReputationItemUiModel?
+        inboxReputationViewModel: InboxReputationItemUiModel
     ): InboxReputationDetailHeaderUiModel {
         return InboxReputationDetailHeaderUiModel(
-            inboxReputationViewModel.getRevieweePicture(),
-            inboxReputationViewModel.getRevieweeName(),
+            inboxReputationViewModel.revieweePicture,
+            inboxReputationViewModel.revieweeName,
             getTextDeadline(inboxReputationViewModel),
-            inboxReputationViewModel.getReputationDataUiModel(),
-            inboxReputationViewModel.getRole(),
-            inboxReputationViewModel.getRevieweeBadgeCustomerUiModel(),
-            inboxReputationViewModel.getRevieweeBadgeSellerUiModel(),
-            inboxReputationViewModel.getShopId(),
-            inboxReputationViewModel.getUserId()
+            inboxReputationViewModel.reputationDataUiModel,
+            inboxReputationViewModel.role,
+            inboxReputationViewModel.revieweeBadgeCustomerUiModel,
+            inboxReputationViewModel.revieweeBadgeSellerUiModel,
+            inboxReputationViewModel.shopId,
+            inboxReputationViewModel.userId
         )
     }
 
     private fun getTextDeadline(element: InboxReputationItemUiModel?): String {
-        return (getContext()!!.getString(R.string.deadline_prefix)
+        return (getContext()?.getString(R.string.deadline_prefix)
                 + " " + element.getReputationDaysLeft() + " " +
                 getContext()!!.getString(R.string.deadline_suffix))
     }
 
-    public override fun finishRefresh() {
-        swipeToRefresh!!.setRefreshing(false)
+    override fun finishRefresh() {
+        swipeToRefresh?.isRefreshing = false
     }
 
-    public override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload?>?) {
+    override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload?>?) {
         val listLocation: ArrayList<String?> = ArrayList()
         val listDesc: ArrayList<String?> = ArrayList()
         for (image: ImageUpload? in list!!) {
@@ -337,13 +333,13 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
 
     override val tab: Int
         get() {
-            return getArguments()!!.getInt(InboxReputationDetailActivity.Companion.ARGS_TAB)
+            return arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB)
         }
 
-    public override fun onGoToReportReview(shopId: Long, reviewId: String?) {
+    override fun onGoToReportReview(shopId: Long, reviewId: String?) {
         startActivityForResult(
-            InboxReputationReportActivity.Companion.getCallingIntent(
-                getActivity(),
+            InboxReputationReportActivity.getCallingIntent(
+                activity,
                 shopId,
                 reviewId
             ),
@@ -351,23 +347,23 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
         )
     }
 
-    public override fun onSuccessSendSmiley(score: Int) {
+    override fun onSuccessSendSmiley(score: Int) {
         refreshPage()
     }
 
-    public override fun onErrorFavoriteShop(errorMessage: String?) {
-        if (getActivity() != null) NetworkErrorHelper.showSnackbar(getActivity(), errorMessage)
+    override fun onErrorFavoriteShop(errorMessage: String?) {
+        if (activity != null) NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    public override fun onSuccessFavoriteShop() {
+    override fun onSuccessFavoriteShop() {
         adapter.getHeader().getRevieweeBadgeSellerUiModel().setIsFavorited(
             if (adapter.getHeader().getRevieweeBadgeSellerUiModel().getIsFavorited() == 1) 0 else 1
         )
-        adapter!!.notifyItemChanged(0)
+        adapter?.notifyItemChanged(0)
     }
 
-    public override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
-        presenter!!.deleteReviewResponse(
+    override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
+        presenter?.deleteReviewResponse(
             element.getReviewId(),
             element.getProductId(),
             element.getShopId().toString(),
@@ -375,46 +371,46 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
         )
     }
 
-    public override fun onErrorDeleteReviewResponse(errorMessage: String?) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage)
+    override fun onErrorDeleteReviewResponse(errorMessage: String?) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    public override fun onSuccessDeleteReviewResponse() {
+    override fun onSuccessDeleteReviewResponse() {
         refreshPage()
     }
 
-    public override fun onSendReplyReview(
+    override fun onSendReplyReview(
         element: InboxReputationDetailItemUiModel,
         replyReview: String?
     ) {
-        presenter!!.sendReplyReview(
+        presenter?.sendReplyReview(
             element.getReputationId(), element.getProductId(),
             element.getShopId(), element.getReviewId(), replyReview
         )
     }
 
-    public override fun onErrorReplyReview(errorMessage: String?) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage)
+    override fun onErrorReplyReview(errorMessage: String?) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    public override fun onSuccessReplyReview() {
+    override fun onSuccessReplyReview() {
         refreshPage()
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.reply_response_send))
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.reply_response_send))
     }
 
-    public override fun onShareReview(
+    override fun onShareReview(
         element: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
-        KeyboardHandler.DropKeyboard(getActivity(), getView())
+        KeyboardHandler.DropKeyboard(activity, view)
         if (shareReviewDialog == null && callbackManager != null) {
             shareReviewDialog = ShareReviewDialog(
-                getActivity(), callbackManager!!,
+                activity, callbackManager!!,
                 this
             )
         }
         if (shareReviewDialog != null) {
-            shareReviewDialog!!.setModel(
+            shareReviewDialog?.setModel(
                 ShareModel(
                     element.getProductName(),
                     element.getReview(),
@@ -422,16 +418,16 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
                     element.getProductAvatar()
                 )
             )
-            shareReviewDialog!!.show()
+            shareReviewDialog?.show()
         }
-        reputationTracking!!.onClickShareMenuReviewTracker(
+        reputationTracking?.onClickShareMenuReviewTracker(
             element.getOrderId(),
             element.getProductId(),
             adapterPosition
         )
     }
 
-    public override fun onGoToProductDetail(
+    override fun onGoToProductDetail(
         productId: String?,
         productAvatar: String?,
         productName: String?
@@ -442,36 +438,36 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )
-            getContext()!!.startActivity(intent)
+            getContext()?.startActivity(intent)
         }
     }
 
-    public override fun onSmoothScrollToReplyView(adapterPosition: Int) {
-        if ((adapterPosition > -1) && (adapterPosition < adapter!!.getList().size
-                    ) && adapter!!.getList()
+    override fun onSmoothScrollToReplyView(adapterPosition: Int) {
+        if ((adapterPosition > -1) && (adapterPosition < adapter?.getList().size
+                    ) && adapter?.getList()
                 .get(adapterPosition) is InboxReputationDetailItemUiModel
         ) {
-            listProduct!!.smoothScrollToPosition(adapterPosition)
+            listProduct?.smoothScrollToPosition(adapterPosition)
         }
     }
 
-    public override fun onGoToProfile(reviewerId: Long) {
+    override fun onGoToProfile(reviewerId: Long) {
         startActivity(
             RouteManager.getIntent(
-                getActivity(),
+                activity,
                 ApplinkConst.PROFILE,
                 reviewerId.toString()
             )
         )
     }
 
-    public override fun onGoToShopInfo(shopId: Long) {
+    override fun onGoToShopInfo(shopId: Long) {
         val intent: Intent =
-            RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId.toString())
+            RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId.toString())
         startActivity(intent)
     }
 
-    public override fun onReputationSmileyClicked(name: String?, score: String?) {
+    override fun onReputationSmileyClicked(name: String?, score: String?) {
         if (!TextUtils.isEmpty(score)) {
             val builder: AlertDialog.Builder = AlertDialog.Builder(
                 (getContext())!!
@@ -479,13 +475,13 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
             builder.setMessage(getReputationSmileyMessage(name))
             builder.setPositiveButton(getString(R.string.submit_review),
                 object : DialogInterface.OnClickListener {
-                    public override fun onClick(dialog: DialogInterface, which: Int) {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
                         presenter!!.sendSmiley(reputationId, score, role)
                     }
                 })
             builder.setNegativeButton(getString(R.string.title_cancel),
                 object : DialogInterface.OnClickListener {
-                    public override fun onClick(dialog: DialogInterface, param: Int) {
+                    override fun onClick(dialog: DialogInterface, param: Int) {
                         dialog.dismiss()
                     }
                 })
@@ -496,34 +492,34 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
         }
     }
 
-    public override fun onClickToggleReply(
+    override fun onClickToggleReply(
         element: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
-        reputationTracking!!.onClickToggleReplyReviewTracker(
-            element.getOrderId(),
-            element.getProductId(),
+        reputationTracking.onClickToggleReplyReviewTracker(
+            element.orderId,
+            element.productId,
             adapterPosition
         )
     }
 
-    public override fun onGoToShopDetail(shopId: Long) {
+    override fun onGoToShopDetail(shopId: Long) {
         val intent: Intent =
-            RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId.toString())
+            RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId.toString())
         startActivity(intent)
     }
 
-    public override fun onGoToPeopleProfile(userId: Long) {
+    override fun onGoToPeopleProfile(userId: Long) {
         startActivity(
             RouteManager.getIntent(
-                getActivity(),
+                activity,
                 ApplinkConst.PROFILE,
                 userId.toString()
             )
         )
     }
 
-    public override fun onClickReviewOverflowMenu(
+    override fun onClickReviewOverflowMenu(
         inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
@@ -544,53 +540,51 @@ class InboxReputationDetailFragment constructor() : BaseDaggerFragment(),
             return getString(R.string.smiley_prompt_suffix_shop)
         }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (callbackManager != null) {
             callbackManager!!.onActivityResult(requestCode, resultCode, data)
         }
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage()
-            getActivity()!!.setResult(Activity.RESULT_OK)
+            activity!!.setResult(Activity.RESULT_OK)
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(
-                getActivity(),
+                activity,
                 getString(R.string.success_report_review)
             )
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun refreshPage() {
-        presenter!!.refreshPage(
+        presenter.refreshPage(
             reputationId,
-            getArguments()!!.getInt(InboxReputationDetailActivity.Companion.ARGS_TAB, -1)
+            arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
         )
     }
 
-    public override fun onDestroyView() {
+    override fun onDestroyView() {
         super.onDestroyView()
-        if (presenter != null) presenter!!.detachView()
+        presenter.detachView()
         callbackManager = null
     }
 
     companion object {
-        private val REQUEST_GIVE_REVIEW: Int = 101
-        private val REQUEST_EDIT_REVIEW: Int = 102
-        private val REQUEST_REPORT_REVIEW: Int = 103
-        private val PUAS_SCORE: Int = 2 // FROM API
+        private const val REQUEST_GIVE_REVIEW: Int = 101
+        private const val REQUEST_REPORT_REVIEW: Int = 103
         fun createInstance(
             tab: Int,
             isFromApplink: Boolean,
             reputationId: String?
         ): InboxReputationDetailFragment {
-            val fragment: InboxReputationDetailFragment = InboxReputationDetailFragment()
-            val bundle: Bundle = Bundle()
-            bundle.putInt(InboxReputationDetailActivity.Companion.ARGS_TAB, tab)
+            val fragment = InboxReputationDetailFragment()
+            val bundle = Bundle()
+            bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab)
             bundle.putBoolean(
-                InboxReputationDetailActivity.Companion.ARGS_IS_FROM_APPLINK,
+                InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK,
                 isFromApplink
             )
-            bundle.putString(InboxReputationDetailActivity.Companion.REPUTATION_ID, reputationId)
-            fragment.setArguments(bundle)
+            bundle.putString(InboxReputationDetailActivity.REPUTATION_ID, reputationId)
+            fragment.arguments = bundle
             return fragment
         }
     }

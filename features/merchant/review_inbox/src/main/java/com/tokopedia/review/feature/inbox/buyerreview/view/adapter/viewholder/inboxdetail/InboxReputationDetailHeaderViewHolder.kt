@@ -26,7 +26,18 @@ import com.tokopedia.unifyprinciples.Typography
 class InboxReputationDetailHeaderViewHolder(
     itemView: View,
     private val reputationListener: ReputationListener
-) : AbstractViewHolder<InboxReputationDetailHeaderUiModel?>(itemView) {
+) : AbstractViewHolder<InboxReputationDetailHeaderUiModel>(itemView) {
+
+    companion object {
+        private val NO_REPUTATION = 0
+        val SMILEY_BAD = -1
+        val SMILEY_NEUTRAL = 1
+        val SMILEY_GOOD = 2
+
+        @LayoutRes
+        val LAYOUT = R.layout.inbox_reputation_detail_header
+    }
+
     var userAvatar: ImageView
     var name: Typography
     var userReputationView: UserReputationView
@@ -45,7 +56,35 @@ class InboxReputationDetailHeaderViewHolder(
     var adapter: ReputationAdapter
     var gridLayout: GridLayoutManager
     var linearLayoutManager: LinearLayoutManager
-    var context: Context
+    var context: Context = itemView.context
+
+    init {
+        userAvatar = itemView.findViewById(R.id.user_avatar)
+        name = itemView.findViewById<View>(R.id.name) as Typography
+        userReputationView = itemView.findViewById(R.id.user_reputation)
+        shopReputationView = itemView.findViewById(R.id.shop_reputation)
+        deadline = itemView.findViewById<View>(R.id.deadline_text) as Typography
+        deadlineLayout = itemView.findViewById(R.id.deadline)
+        lockedLayout = itemView.findViewById(R.id.locked)
+        lockedText = itemView.findViewById<View>(R.id.locked_text) as Typography
+        promptMessage = itemView.findViewById<View>(R.id.prompt_text) as Typography
+        favoriteButton = itemView.findViewById(R.id.favorite_button)
+        favoriteText = itemView.findViewById<View>(R.id.favorite_text) as Typography
+        changeButton = itemView.findViewById<View>(R.id.change_button) as Typography
+        smiley = itemView.findViewById<View>(R.id.smiley) as RecyclerView
+        opponentSmileyText = itemView.findViewById<View>(R.id.opponent_smiley_text) as Typography
+        opponentSmiley = itemView.findViewById<View>(R.id.opponent_smiley) as ImageView
+        adapter = ReputationAdapter.createInstance(itemView.context, reputationListener)
+        gridLayout = GridLayoutManager(
+            itemView.context, 3,
+            LinearLayoutManager.VERTICAL, false
+        )
+        linearLayoutManager =
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        smiley.layoutManager = gridLayout
+        smiley.adapter = adapter
+    }
+
     override fun bind(element: InboxReputationDetailHeaderUiModel) {
         ImageHandler.loadImageCircle2(userAvatar.context, userAvatar, element.avatarImage)
         userAvatar.setOnClickListener(View.OnClickListener { goToInfoPage(element) })
@@ -112,7 +151,7 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     private fun goToInfoPage(element: InboxReputationDetailHeaderUiModel) {
-        if (element.role == InboxReputationItemUiModel.Companion.ROLE_SELLER) {
+        if (element.role == InboxReputationItemUiModel.ROLE_SELLER) {
             reputationListener.onGoToShopDetail(element.shopId)
         } else {
             reputationListener.onGoToPeopleProfile(element.userId)
@@ -151,9 +190,9 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     private fun getOpponentSmileyPromptText(element: InboxReputationDetailHeaderUiModel): String {
-        return if (element.reputationDataUiModel.revieweeScore == NO_REPUTATION) if (element.role == InboxReputationItemUiModel.Companion.ROLE_SELLER) context.getString(
+        return if (element.reputationDataUiModel.revieweeScore == NO_REPUTATION) if (element.role == InboxReputationItemUiModel.ROLE_SELLER) context.getString(
             R.string.seller_has_not_review
-        ) else context.getString(R.string.buyer_has_not_review) else if (element.role == InboxReputationItemUiModel.Companion.ROLE_SELLER) context.getString(
+        ) else context.getString(R.string.buyer_has_not_review) else if (element.role == InboxReputationItemUiModel.ROLE_SELLER) context.getString(
             R.string.score_from_seller
         ) else context.getString(R.string.score_from_buyer)
     }
@@ -172,7 +211,7 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     fun setReputation(element: InboxReputationDetailHeaderUiModel) {
-        if (element.role == InboxReputationItemUiModel.Companion.ROLE_BUYER) {
+        if (element.role == InboxReputationItemUiModel.ROLE_BUYER) {
             userReputationView.visibility = View.VISIBLE
             shopReputationView.visibility = View.GONE
             userReputationView.setValue(
@@ -191,43 +230,5 @@ class InboxReputationDetailHeaderViewHolder(
                 element.revieweeBadgeSellerUiModel.score.toString()
             )
         }
-    }
-
-    companion object {
-        private val NO_REPUTATION = 0
-        val SMILEY_BAD = -1
-        val SMILEY_NEUTRAL = 1
-        val SMILEY_GOOD = 2
-
-        @LayoutRes
-        val LAYOUT = R.layout.inbox_reputation_detail_header
-    }
-
-    init {
-        context = itemView.context
-        userAvatar = itemView.findViewById(R.id.user_avatar)
-        name = itemView.findViewById<View>(R.id.name) as Typography
-        userReputationView = itemView.findViewById(R.id.user_reputation)
-        shopReputationView = itemView.findViewById(R.id.shop_reputation)
-        deadline = itemView.findViewById<View>(R.id.deadline_text) as Typography
-        deadlineLayout = itemView.findViewById(R.id.deadline)
-        lockedLayout = itemView.findViewById(R.id.locked)
-        lockedText = itemView.findViewById<View>(R.id.locked_text) as Typography
-        promptMessage = itemView.findViewById<View>(R.id.prompt_text) as Typography
-        favoriteButton = itemView.findViewById(R.id.favorite_button)
-        favoriteText = itemView.findViewById<View>(R.id.favorite_text) as Typography
-        changeButton = itemView.findViewById<View>(R.id.change_button) as Typography
-        smiley = itemView.findViewById<View>(R.id.smiley) as RecyclerView
-        opponentSmileyText = itemView.findViewById<View>(R.id.opponent_smiley_text) as Typography
-        opponentSmiley = itemView.findViewById<View>(R.id.opponent_smiley) as ImageView
-        adapter = ReputationAdapter.Companion.createInstance(itemView.context, reputationListener)
-        gridLayout = GridLayoutManager(
-            itemView.context, 3,
-            LinearLayoutManager.VERTICAL, false
-        )
-        linearLayoutManager =
-            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        smiley.layoutManager = gridLayout
-        smiley.adapter = adapter
     }
 }

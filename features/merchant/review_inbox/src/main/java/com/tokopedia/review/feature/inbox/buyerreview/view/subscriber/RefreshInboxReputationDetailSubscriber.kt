@@ -6,19 +6,19 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 /**
  * @author by nisie on 9/4/17.
  */
-class RefreshInboxReputationDetailSubscriber constructor(viewListener: InboxReputationDetail.View?) :
+class RefreshInboxReputationDetailSubscriber constructor(viewListener: InboxReputationDetail.View) :
     GetInboxReputationDetailSubscriber(viewListener) {
-    public override fun onError(e: Throwable) {
-        viewListener!!.finishRefresh()
+
+    override fun onError(e: Throwable) {
+        viewListener.finishRefresh()
         viewListener.onErrorRefreshInboxDetail(e)
     }
 
-    public override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
-        viewListener!!.finishRefresh()
+    override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
+        viewListener.finishRefresh()
         viewListener.onSuccessRefreshGetInboxDetail(
-            convertToReputationViewModel(inboxReputationDetailDomain.getInboxReputationDomain()).getList()
-                .get(0),
-            mappingToListItemViewModel(inboxReputationDetailDomain.getReviewDomain())
+            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationDomain).list.getOrNull(0),
+            mappingToListItemViewModel(inboxReputationDetailDomain.reviewDomain)
         )
     }
 }

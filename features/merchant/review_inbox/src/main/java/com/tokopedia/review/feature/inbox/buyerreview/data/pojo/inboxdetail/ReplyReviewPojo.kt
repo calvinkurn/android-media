@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 9/28/17.
  */
-class ReplyReviewPojo {
+data class ReplyReviewPojo(
     @SerializedName("is_success")
     @Expose
-    var isSuccess = 0
-}
+    val isSuccess: Int = 0
+)

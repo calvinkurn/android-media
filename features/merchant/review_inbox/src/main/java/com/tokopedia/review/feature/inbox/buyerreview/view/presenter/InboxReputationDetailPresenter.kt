@@ -19,14 +19,16 @@ class InboxReputationDetailPresenter @Inject internal constructor(
     private val deleteReviewResponseUseCase: DeleteReviewResponseUseCase,
     private val sendReplyReviewUseCase: SendReplyReviewUseCase,
     private val userSession: UserSessionInterface
-) : BaseDaggerPresenter<InboxReputationDetail.View?>(), InboxReputationDetail.Presenter {
+) : BaseDaggerPresenter<InboxReputationDetail.View>(), InboxReputationDetail.Presenter {
+
     private var viewListener: InboxReputationDetail.View? = null
-    public override fun attachView(view: InboxReputationDetail.View) {
+
+    override fun attachView(view: InboxReputationDetail.View) {
         super.attachView(view)
         viewListener = view
     }
 
-    public override fun detachView() {
+    override fun detachView() {
         super.detachView()
         getInboxReputationDetailUseCase.unsubscribe()
         sendSmileyReputationUseCase.unsubscribe()
@@ -34,22 +36,22 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         sendReplyReviewUseCase.unsubscribe()
     }
 
-    public override fun getInboxDetail(reputationId: String?, tab: Int) {
-        viewListener!!.showLoading()
+    override fun getInboxDetail(reputationId: String?, tab: Int) {
+        viewListener?.showLoading()
         getInboxReputationDetailUseCase.execute(
-            GetInboxReputationDetailUseCase.Companion.getParam(
+            GetInboxReputationDetailUseCase.getParam(
                 reputationId,
-                userSession.getUserId(),
+                userSession.userId,
                 tab
             ),
             GetInboxReputationDetailSubscriber(viewListener)
         )
     }
 
-    public override fun sendSmiley(reputationId: String?, score: String?, role: Int) {
-        viewListener!!.showLoadingDialog()
+    override fun sendSmiley(reputationId: String?, score: String?, role: Int) {
+        viewListener.showLoadingDialog()
         sendSmileyReputationUseCase.execute(
-            SendSmileyReputationUseCase.Companion.getParam(
+            SendSmileyReputationUseCase.getParam(
                 reputationId,
                 score,
                 role
@@ -58,15 +60,15 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    public override fun deleteReviewResponse(
+    override fun deleteReviewResponse(
         reviewId: String?,
         productId: String?,
         shopId: String?,
         reputationId: String?
     ) {
-        viewListener!!.showLoadingDialog()
+        viewListener.showLoadingDialog()
         deleteReviewResponseUseCase.execute(
-            DeleteReviewResponseUseCase.Companion.getParam(
+            DeleteReviewResponseUseCase.getParam(
                 reviewId,
                 productId,
                 shopId,
@@ -75,13 +77,13 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    public override fun sendReplyReview(
+    override fun sendReplyReview(
         reputationId: Long, productId: String?, shopId: Long,
         reviewId: String?, replyReview: String?
     ) {
-        viewListener!!.showLoadingDialog()
+        viewListener.showLoadingDialog()
         sendReplyReviewUseCase.execute(
-            SendReplyReviewUseCase.Companion.getParam(
+            SendReplyReviewUseCase.getParam(
                 reputationId.toString(),
                 productId, shopId.toString(),
                 reviewId,
@@ -91,11 +93,11 @@ class InboxReputationDetailPresenter @Inject internal constructor(
     }
 
     fun refreshPage(reputationId: String?, tab: Int) {
-        viewListener!!.showRefresh()
+        viewListener.showRefresh()
         getInboxReputationDetailUseCase.execute(
-            GetInboxReputationDetailUseCase.Companion.getParam(
+            GetInboxReputationDetailUseCase.getParam(
                 reputationId,
-                userSession.getUserId(),
+                userSession.userId,
                 tab
             ),
             RefreshInboxReputationDetailSubscriber(viewListener)

@@ -42,11 +42,11 @@ class RevieweeBadgeSellerUiModel : Parcelable {
         score = `in`.readInt()
         minBadgeScore = `in`.readInt()
         reputationBadgeUrl = `in`.readString()
-        reputationBadge = `in`.readParcelable(ReputationBadgeUiModel::class.java.getClassLoader())
+        reputationBadge = `in`.readParcelable(ReputationBadgeUiModel::class.java.classLoader)
         isFavorited = `in`.readInt()
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(tooltip)
         dest.writeString(reputationScore)
         dest.writeInt(score)
@@ -56,18 +56,18 @@ class RevieweeBadgeSellerUiModel : Parcelable {
         dest.writeInt(isFavorited)
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
     companion object {
         val CREATOR: Parcelable.Creator<RevieweeBadgeSellerUiModel> =
             object : Parcelable.Creator<RevieweeBadgeSellerUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): RevieweeBadgeSellerUiModel? {
+                override fun createFromParcel(`in`: Parcel): RevieweeBadgeSellerUiModel? {
                     return RevieweeBadgeSellerUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<RevieweeBadgeSellerUiModel?> {
+                override fun newArray(size: Int): Array<RevieweeBadgeSellerUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

@@ -7,41 +7,46 @@ import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.report.ReportRev
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/13/17.
  */
-class ReportReviewMapper : Func1<Response<TokopediaWsV4Response?>, ReportReviewDomain> {
-    override fun call(response: Response<TokopediaWsV4Response?>): ReportReviewDomain {
-        return if (response.isSuccessful) {
-            if ((!response.body()!!.isNullData
-                        && response.body()!!.errorMessageJoined == "")
-                || !response.body()!!.isNullData && response.body()!!.errorMessages ==
-                null
-            ) {
-                val data = response.body()!!.convertDataObj(ReportReviewPojo::class.java)
-                mappingToDomain(data)
-            } else {
-                if (response.body()!!.errorMessages != null
-                    && !response.body()!!.errorMessages.isEmpty()
+class ReportReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, ReportReviewDomain> {
+
+    override fun call(response: Response<TokopediaWsV4Response?>?): ReportReviewDomain {
+        response?.let {
+            return if (response.isSuccessful) {
+                if ((!response.body()!!.isNullData
+                            && response.body()!!.errorMessageJoined == "")
+                    || !response.body()!!.isNullData && response.body()!!.errorMessages ==
+                    null
                 ) {
-                    val messageError = response.body()!!.errorMessageJoined
-                    mappingToDomain(messageError)
+                    val data = response.body()!!.convertDataObj(ReportReviewPojo::class.java)
+                    mappingToDomain(data)
                 } else {
-                    throw ErrorMessageException("")
+                    if (response.body()!!.errorMessages != null
+                        && response.body()!!.errorMessages.isNotEmpty()
+                    ) {
+                        val messageError = response.body()!!.errorMessageJoined
+                        mappingToDomain(messageError)
+                    } else {
+                        throw ErrorMessageException("")
+                    }
+                }
+            } else {
+                var messageError: String? = ""
+                if (response.body() != null) {
+                    messageError = response.body()!!.errorMessageJoined
+                }
+                if (!TextUtils.isEmpty(messageError)) {
+                    throw ErrorMessageException(messageError)
+                } else {
+                    throw RuntimeException(response.code().toString())
                 }
             }
-        } else {
-            var messageError: String? = ""
-            if (response.body() != null) {
-                messageError = response.body()!!.errorMessageJoined
-            }
-            if (!TextUtils.isEmpty(messageError)) {
-                throw ErrorMessageException(messageError)
-            } else {
-                throw RuntimeException(response.code().toString())
-            }
         }
+        return ReportReviewDomain("")
     }
 
     private fun mappingToDomain(data: ReportReviewPojo): ReportReviewDomain {

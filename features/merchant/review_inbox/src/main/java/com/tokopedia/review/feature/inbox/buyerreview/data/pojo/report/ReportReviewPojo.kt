@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 9/13/17.
  */
-class ReportReviewPojo {
+data class ReportReviewPojo(
     @SerializedName("is_success")
     @Expose
-    var isSuccess = 0
-}
+    var isSuccess: Int = 0
+)

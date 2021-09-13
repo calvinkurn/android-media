@@ -5,23 +5,25 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.S
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/31/17.
  */
-class SendSmileyReputationUseCase constructor(private val reputationRepository: ReputationRepository) :
-    UseCase<SendSmileyReputationDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<SendSmileyReputationDomain?> {
-        return (reputationRepository.sendSmiley(requestParams))!!
+class SendSmileyReputationUseCase @Inject constructor(private val reputationRepository: ReputationRepository) :
+    UseCase<SendSmileyReputationDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<SendSmileyReputationDomain> {
+        return (reputationRepository.sendSmiley(requestParams))
     }
 
     companion object {
-        private val PARAM_SCORE: String = "reputation_score"
-        private val PARAM_REPUTATION_ID: String = "reputation_id"
-        private val PARAM_ROLE: String = "buyer_seller"
-        private val I_AM_SELLER: String = "2"
-        private val I_AM_BUYER: String = "1"
-        private val REVIEW_IS_FROM_BUYER: Int = 1
+        private const val PARAM_SCORE: String = "reputation_score"
+        private const val PARAM_REPUTATION_ID: String = "reputation_id"
+        private const val PARAM_ROLE: String = "buyer_seller"
+        private const val I_AM_SELLER: String = "2"
+        private const val I_AM_BUYER: String = "1"
+        private const val REVIEW_IS_FROM_BUYER: Int = 1
         fun getParam(reputationId: String?, score: String?, role: Int): RequestParams {
             val params: RequestParams = RequestParams.create()
             params.putString(PARAM_SCORE, score)

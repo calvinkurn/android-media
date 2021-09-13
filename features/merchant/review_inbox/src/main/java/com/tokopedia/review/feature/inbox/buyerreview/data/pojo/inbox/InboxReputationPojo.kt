@@ -3,12 +3,12 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class InboxReputationPojo {
+data class InboxReputationPojo(
     @SerializedName("inbox_reputation")
     @Expose
-    var inboxReputation: List<InboxReputation>? = null
+    val inboxReputation: List<InboxReputation> = listOf(),
 
     @SerializedName("paging")
     @Expose
-    var paging: Paging? = null
-}
+    val paging: Paging = Paging()
+)

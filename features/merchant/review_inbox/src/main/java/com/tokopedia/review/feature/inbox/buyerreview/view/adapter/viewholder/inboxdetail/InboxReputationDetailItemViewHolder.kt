@@ -34,9 +34,10 @@ import java.util.*
  */
 class InboxReputationDetailItemViewHolder(
     itemView: View,
-    viewListener: InboxReputationDetail.View
-) : AbstractViewHolder<InboxReputationDetailItemUiModel?>(itemView) {
     private val viewListener: InboxReputationDetail.View
+) : AbstractViewHolder<InboxReputationDetailItemUiModel>(itemView) {
+
+
     var isReplyOpened = false
     var productName: Typography
     var productAvatar: ImageView
@@ -283,9 +284,9 @@ class InboxReputationDetailItemViewHolder(
         for (vm in reviewAttachment!!) {
             list.add(
                 ImageUpload(
-                    vm.getUriThumbnail(),
-                    vm.getUriLarge(),
-                    vm.getDescription(), vm.getAttachmentId().toString()
+                    vm.uriThumbnail,
+                    vm.uriLarge,
+                    vm.description, vm.attachmentId.toString()
                 )
             )
         }
@@ -386,7 +387,7 @@ class InboxReputationDetailItemViewHolder(
         review = itemView.findViewById<View>(R.id.review) as Typography
         reviewStar = itemView.findViewById<View>(R.id.product_rating) as RatingBar
         giveReview = itemView.findViewById(R.id.add_review_layout)
-        adapter = ImageUploadAdapter.Companion.createAdapter(itemView.context)
+        adapter = ImageUploadAdapter.createAdapter(itemView.context)
         adapter.setCanUpload(false)
         adapter.setListener(onImageClicked())
         reviewAttachment.layoutManager = LinearLayoutManager(

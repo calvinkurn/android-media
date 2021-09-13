@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 9/27/17.
  */
-class DeleteReviewResponsePojo {
+data class DeleteReviewResponsePojo(
     @SerializedName("is_success")
     @Expose
-    val isSuccess = 0
-}
+    val isSuccess: Int = 0
+)

@@ -7,44 +7,48 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.*
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
 import retrofit2.Response
 import rx.functions.Func1
-import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/14/17.
  */
-class InboxReputationMapper : Func1<Response<TokopediaWsV4Response?>, InboxReputationDomain> {
-    override fun call(response: Response<TokopediaWsV4Response?>): InboxReputationDomain {
-        return if (response.isSuccessful) {
-            if ((!response.body()!!.isNullData
-                        && response.body()!!.errorMessageJoined == "")
-                || !response.body()!!.isNullData && response.body()!!.errorMessages == null
-            ) {
-                val data = response.body()!!.convertDataObj(
-                    InboxReputationPojo::class.java
-                )
-                mappingToDomain(data)
-            } else {
-                if (response.body()!!.errorMessages != null
-                    && !response.body()!!.errorMessages.isEmpty()
+class InboxReputationMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, InboxReputationDomain> {
+
+    override fun call(response: Response<TokopediaWsV4Response?>?): InboxReputationDomain {
+        response?.let {
+            return if (response.isSuccessful) {
+                if ((!response.body()!!.isNullData
+                            && response.body()!!.errorMessageJoined == "")
+                    || !response.body()!!.isNullData && response.body()!!.errorMessages == null
                 ) {
-                    throw ErrorMessageException(
-                        response.body()!!.errorMessageJoined
+                    val data = response.body()!!.convertDataObj(
+                        InboxReputationPojo::class.java
                     )
+                    mappingToDomain(data)
                 } else {
-                    throw ErrorMessageException("")
+                    if (response.body()!!.errorMessages != null
+                        && response.body()!!.errorMessages.isNotEmpty()
+                    ) {
+                        throw ErrorMessageException(
+                            response.body()!!.errorMessageJoined
+                        )
+                    } else {
+                        throw ErrorMessageException("")
+                    }
+                }
+            } else {
+                var messageError: String? = ""
+                if (response.body() != null) {
+                    messageError = response.body()!!.errorMessageJoined
+                }
+                if (!TextUtils.isEmpty(messageError)) {
+                    throw ErrorMessageException(messageError)
+                } else {
+                    throw RuntimeException(response.code().toString())
                 }
             }
-        } else {
-            var messageError: String? = ""
-            if (response.body() != null) {
-                messageError = response.body()!!.errorMessageJoined
-            }
-            if (!TextUtils.isEmpty(messageError)) {
-                throw ErrorMessageException(messageError)
-            } else {
-                throw RuntimeException(response.code().toString())
-            }
         }
+        return InboxReputationDomain()
     }
 
     private fun mappingToDomain(data: InboxReputationPojo): InboxReputationDomain {
@@ -58,34 +62,28 @@ class InboxReputationMapper : Func1<Response<TokopediaWsV4Response?>, InboxReput
         return if (paging != null) PagingDomain(
             paging.isHasNext,
             paging.isHasPrev
-        ) else PagingDomain(false, false)
+        ) else PagingDomain(isHasNext = false, isHasPrev = false)
     }
 
-    private fun mappingToListInboxReputation(inboxReputation: List<InboxReputation?>?): List<InboxReputationItemDomain?> {
-        val list: MutableList<InboxReputationItemDomain?> = ArrayList()
-        if (!inboxReputation!!.isEmpty()) {
-            for (item in inboxReputation) {
-                list.add(
-                    InboxReputationItemDomain(
-                        item.getInboxId(),
-                        item.getShopId(),
-                        item.getUserId(),
-                        item.getReputationId(),
-                        mappingToOrderData(item.getOrderData()),
-                        mappingToRevieweeData(item.getRevieweeData()),
-                        mappingToReputationData(item.getReputationData())
-                    )
-                )
-            }
+    private fun mappingToListInboxReputation(inboxReputation: List<InboxReputation>): List<InboxReputationItemDomain> {
+        return inboxReputation.map {
+            InboxReputationItemDomain(
+                it.inboxId,
+                it.shopId,
+                it.userId,
+                it.reputationId,
+                mappingToOrderData(it.orderData),
+                mappingToRevieweeData(it.revieweeData),
+                mappingToReputationData(it.reputationData)
+            )
         }
-        return list
     }
 
-    private fun mappingToReputationData(reputationData: ReputationData?): ReputationDataDomain {
+    private fun mappingToReputationData(reputationData: ReputationData): ReputationDataDomain {
         return ReputationDataDomain(
-            reputationData.getRevieweeScore(),
-            reputationData.getRevieweeScoreStatus(),
-            reputationData!!.isShowRevieweeScore,
+            reputationData.revieweeScore,
+            reputationData.revieweeScoreStatus,
+            reputationData.isShowRevieweeScore,
             reputationData.reviewerScore,
             reputationData.reviewerScoreStatus,
             reputationData.isIsEditable,
@@ -100,51 +98,51 @@ class InboxReputationMapper : Func1<Response<TokopediaWsV4Response?>, InboxReput
         )
     }
 
-    private fun mappingToOrderData(orderData: OrderData?): OrderDataDomain {
+    private fun mappingToOrderData(orderData: OrderData): OrderDataDomain {
         return OrderDataDomain(
-            orderData.getInvoiceRefNum(),
-            orderData.getCreateTimeFmt(),
-            orderData.getInvoiceUrl()
+            orderData.invoiceRefNum,
+            orderData.createTimeFmt,
+            orderData.invoiceUrl
         )
     }
 
-    private fun mappingToRevieweeData(revieweeData: RevieweeData?): RevieweeDataDomain {
+    private fun mappingToRevieweeData(revieweeData: RevieweeData): RevieweeDataDomain {
         return RevieweeDataDomain(
-            revieweeData.getRevieweeName(),
-            revieweeData.getRevieweeUri(),
-            revieweeData.getRevieweeRole(),
-            revieweeData.getRevieweeRoleId(),
-            revieweeData.getRevieweePicture(),
-            mappingToRevieweeBadgeCustomer(revieweeData.getRevieweeBuyerBadge()),
-            mappingToRevieweeBadgeSeller(revieweeData.getRevieweeShopBadge())
+            revieweeData.revieweeName,
+            revieweeData.revieweeUri,
+            revieweeData.revieweeRole,
+            revieweeData.revieweeRoleId,
+            revieweeData.revieweePicture,
+            mappingToRevieweeBadgeCustomer(revieweeData.revieweeBuyerBadge),
+            mappingToRevieweeBadgeSeller(revieweeData.revieweeShopBadge)
         )
     }
 
-    private fun mappingToRevieweeBadgeCustomer(revieweeBadge: RevieweeBuyerBadge?): RevieweeBadgeCustomerDomain {
+    private fun mappingToRevieweeBadgeCustomer(revieweeBadge: RevieweeBuyerBadge): RevieweeBadgeCustomerDomain {
         return RevieweeBadgeCustomerDomain(
-            revieweeBadge.getPositive(),
-            revieweeBadge.getNeutral(),
-            revieweeBadge.getNegative(),
-            revieweeBadge.getPositivePercentage(),
-            revieweeBadge.getNoReputation()
+            revieweeBadge.positive,
+            revieweeBadge.neutral,
+            revieweeBadge.negative,
+            revieweeBadge.positivePercentage,
+            revieweeBadge.noReputation
         )
     }
 
-    private fun mappingToRevieweeBadgeSeller(revieweeBadge: RevieweeShopBadge?): RevieweeBadgeSellerDomain {
+    private fun mappingToRevieweeBadgeSeller(revieweeBadge: RevieweeShopBadge): RevieweeBadgeSellerDomain {
         return RevieweeBadgeSellerDomain(
-            revieweeBadge.getTooltip(),
-            revieweeBadge.getReputationScore(),
-            revieweeBadge.getScore(),
-            revieweeBadge.getMinBadgeScore(),
-            revieweeBadge.getReputationBadgeUrl(),
-            mappingToReputationBadge(revieweeBadge.getReputationBadge())
+            revieweeBadge.tooltip,
+            revieweeBadge.reputationScore,
+            revieweeBadge.score,
+            revieweeBadge.minBadgeScore,
+            revieweeBadge.reputationBadgeUrl,
+            mappingToReputationBadge(revieweeBadge.reputationBadge)
         )
     }
 
-    private fun mappingToReputationBadge(reputationBadge: ReputationBadge?): ReputationBadgeDomain {
+    private fun mappingToReputationBadge(reputationBadge: ReputationBadge): ReputationBadgeDomain {
         return ReputationBadgeDomain(
-            reputationBadge.getLevel(),
-            reputationBadge.getSet()
+            reputationBadge.level,
+            reputationBadge.set
         )
     }
 }

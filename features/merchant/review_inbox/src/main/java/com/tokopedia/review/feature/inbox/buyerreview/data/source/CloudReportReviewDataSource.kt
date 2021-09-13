@@ -14,7 +14,7 @@ import rx.Observable
  */
 class CloudReportReviewDataSource(
     private val reputationService: ReputationService,
-    private val reportReviewMapper: ReportReviewMapper?,
+    private val reportReviewMapper: ReportReviewMapper,
     private val userSession: UserSessionInterface
 ) {
     fun reportReview(requestParams: RequestParams): Observable<ReportReviewDomain> {
@@ -23,7 +23,7 @@ class CloudReportReviewDataSource(
                 AuthHelper.generateParamsNetwork(
                     userSession.userId,
                     userSession.deviceId,
-                    convertMapObjectToString(requestParams.parameters)!!
+                    convertMapObjectToString(requestParams.parameters)
                 )
             )
             .map(reportReviewMapper)

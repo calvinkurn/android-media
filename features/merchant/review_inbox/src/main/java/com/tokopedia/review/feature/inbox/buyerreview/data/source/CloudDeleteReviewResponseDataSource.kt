@@ -14,7 +14,7 @@ import rx.Observable
  */
 class CloudDeleteReviewResponseDataSource(
     private val reputationService: ReputationService,
-    private val deleteReviewResponseMapper: DeleteReviewResponseMapper?,
+    private val deleteReviewResponseMapper: DeleteReviewResponseMapper,
     private val userSession: UserSessionInterface
 ) {
     fun deleteReviewResponse(requestParams: RequestParams): Observable<DeleteReviewResponseDomain> {
@@ -23,7 +23,7 @@ class CloudDeleteReviewResponseDataSource(
                 AuthHelper.generateParamsNetwork(
                     userSession.userId,
                     userSession.deviceId,
-                    convertMapObjectToString(requestParams.parameters)!!
+                    convertMapObjectToString(requestParams.parameters)
                 )
             )
             .map(deleteReviewResponseMapper)

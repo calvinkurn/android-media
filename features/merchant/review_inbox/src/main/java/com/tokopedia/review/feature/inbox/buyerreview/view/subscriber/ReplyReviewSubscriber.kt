@@ -9,22 +9,24 @@ import rx.Subscriber
 /**
  * @author by nisie on 9/28/17.
  */
-class ReplyReviewSubscriber constructor(private val viewListener: InboxReputationDetail.View?) :
-    Subscriber<SendReplyReviewDomain?>() {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
-        viewListener!!.finishLoadingDialog()
+class ReplyReviewSubscriber constructor(private val viewListener: InboxReputationDetail.View) :
+    Subscriber<SendReplyReviewDomain>() {
+
+    override fun onCompleted() {}
+
+    override fun onError(e: Throwable) {
+        viewListener.finishLoadingDialog()
         viewListener.onErrorReplyReview(
             getErrorMessage(
-                viewListener.getContext().getApplicationContext(), e
+                viewListener.context.applicationContext, e
             )
         )
     }
 
-    public override fun onNext(sendReplyReviewDomain: SendReplyReviewDomain) {
-        viewListener!!.finishLoadingDialog()
-        if (sendReplyReviewDomain.isSuccess()) viewListener.onSuccessReplyReview() else viewListener.onErrorReplyReview(
-            viewListener.getContext().getApplicationContext()
+    override fun onNext(sendReplyReviewDomain: SendReplyReviewDomain) {
+        viewListener.finishLoadingDialog()
+        if (sendReplyReviewDomain.isSuccess) viewListener.onSuccessReplyReview() else viewListener.onErrorReplyReview(
+            viewListener.context.applicationContext
                 .getString(R.string.default_request_error_unknown)
         )
     }

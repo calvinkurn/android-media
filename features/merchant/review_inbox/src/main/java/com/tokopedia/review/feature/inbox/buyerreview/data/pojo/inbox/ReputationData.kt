@@ -3,84 +3,60 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ReputationData {
+data class ReputationData(
     @SerializedName("reviewee_score")
     @Expose
-    var revieweeScore = 0
+    val revieweeScore: Int = 0,
 
     @SerializedName("reviewee_score_status")
     @Expose
-    var revieweeScoreStatus = 0
+    val revieweeScoreStatus: Int = 0,
 
     @SerializedName("show_reviewee_score")
     @Expose
-    var isShowRevieweeScore = false
+    val isShowRevieweeScore: Boolean = false,
 
     @SerializedName("reviewer_score")
     @Expose
-    var reviewerScore = 0
+    val reviewerScore: Int = 0,
 
     @SerializedName("reviewer_score_status")
     @Expose
-    var reviewerScoreStatus = 0
+    val reviewerScoreStatus: Int = 0,
 
     @SerializedName("is_editable")
     @Expose
-    var isIsEditable = false
-        private set
+    val isIsEditable: Boolean = false,
 
     @SerializedName("is_inserted")
     @Expose
-    var isIsInserted = false
-        private set
+    val isIsInserted: Boolean = false,
 
     @SerializedName("is_locked")
     @Expose
-    var isIsLocked = false
-        private set
+    val isIsLocked: Boolean = false,
 
     @SerializedName("is_auto_scored")
     @Expose
-    var isIsAutoScored = false
-        private set
+    val isIsAutoScored: Boolean = false,
 
     @SerializedName("is_completed")
     @Expose
-    var isIsCompleted = false
-        private set
+    val isIsCompleted: Boolean = false,
 
     @SerializedName("show_locking_deadline")
     @Expose
-    var isShowLockingDeadline = false
+    val isShowLockingDeadline: Boolean = false,
 
     @SerializedName("locking_deadline_days")
     @Expose
-    var lockingDeadlineDays = 0
+    val lockingDeadlineDays: Int = 0,
 
     @SerializedName("show_bookmark")
     @Expose
-    var isShowBookmark = false
+    val isShowBookmark: Boolean = false,
 
     @SerializedName("action_message")
     @Expose
-    var actionMessage: String? = null
-    fun setIsEditable(isEditable: Boolean) {
-        isIsEditable = isEditable
-    }
-
-    fun setIsInserted(isInserted: Boolean) {
-        isIsInserted = isInserted
-    }
-
-    fun setIsLocked(isLocked: Boolean) {
-        isIsLocked = isLocked
-    }
-
-    fun setIsAutoScored(isAutoScored: Boolean) {
-        isIsAutoScored = isAutoScored
-    }
-
-    fun setIsCompleted(isCompleted: Boolean) {
-        isIsCompleted = isCompleted
-    }
-}
+    val actionMessage: String? = null
+)

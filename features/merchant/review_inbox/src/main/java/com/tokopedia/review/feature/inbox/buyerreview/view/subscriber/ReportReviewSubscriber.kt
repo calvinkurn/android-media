@@ -8,24 +8,26 @@ import rx.Subscriber
 /**
  * @author by nisie on 9/13/17.
  */
-class ReportReviewSubscriber constructor(private val viewListener: InboxReputationReport.View?) :
-    Subscriber<ReportReviewDomain?>() {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
-        viewListener!!.removeLoadingProgress()
+class ReportReviewSubscriber constructor(private val viewListener: InboxReputationReport.View) :
+    Subscriber<ReportReviewDomain>() {
+
+    override fun onCompleted() {}
+
+    override fun onError(e: Throwable) {
+        viewListener.removeLoadingProgress()
         viewListener.onErrorReportReview(
             getErrorMessage(
-                viewListener.getContext().getApplicationContext(), e
+                viewListener.context.applicationContext, e
             )
         )
     }
 
-    public override fun onNext(reportReviewDomain: ReportReviewDomain) {
-        viewListener!!.removeLoadingProgress()
-        if (reportReviewDomain.isSuccess()) {
+    override fun onNext(reportReviewDomain: ReportReviewDomain) {
+        viewListener.removeLoadingProgress()
+        if (reportReviewDomain.isSuccess) {
             viewListener.onSuccessReportReview()
         } else {
-            viewListener.onErrorReportReview(reportReviewDomain.getErrorMessage())
+            viewListener.onErrorReportReview(reportReviewDomain.errorMessage)
         }
     }
 }

@@ -10,12 +10,10 @@ import com.tokopedia.review.inbox.R
 
 class LoadingInboxReputationViewholder constructor(itemView: View?) :
     AbstractViewHolder<LoadingModel?>(itemView) {
-    public override fun bind(element: LoadingModel) {
-        itemView.setLayoutParams(
-            AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+    override fun bind(element: LoadingModel) {
+        itemView.layoutParams = AbsListView.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
     }
 

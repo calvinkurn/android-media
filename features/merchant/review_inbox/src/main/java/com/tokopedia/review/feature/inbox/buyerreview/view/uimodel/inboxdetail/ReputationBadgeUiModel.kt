@@ -22,23 +22,24 @@ class ReputationBadgeUiModel : Parcelable {
         set = `in`.readInt()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(level)
         dest.writeInt(set)
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<ReputationBadgeUiModel> =
-            object : Parcelable.Creator<ReputationBadgeUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): ReputationBadgeUiModel? {
+            object : Parcelable.Creator<ReputationBadgeUiModel> {
+                override fun createFromParcel(`in`: Parcel): ReputationBadgeUiModel {
                     return ReputationBadgeUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<ReputationBadgeUiModel?> {
+                override fun newArray(size: Int): Array<ReputationBadgeUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

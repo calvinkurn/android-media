@@ -9,7 +9,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.Em
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.InboxReputationViewHolder
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.LoadingInboxReputationViewholder
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder
-import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder.Companion.LAYOUT
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.EmptySearchModel
@@ -24,34 +23,38 @@ class InboxReputationTypeFactoryImpl constructor(
     private val viewListener: InboxReputation.View,
     private val sellerMigrationReviewClickListener: SellerMigrationReviewClickListener
 ) : BaseAdapterTypeFactory(), InboxReputationTypeFactory {
-    public override fun type(viewModel: InboxReputationItemUiModel?): Int {
-        return InboxReputationViewHolder.Companion.LAYOUT
+
+    override fun type(viewModel: InboxReputationItemUiModel): Int {
+        return InboxReputationViewHolder.LAYOUT
     }
 
-    public override fun type(viewModel: EmptySearchModel?): Int {
-        return EmptyReputationSearchViewHolder.Companion.LAYOUT
+    override fun type(viewModel: EmptySearchModel): Int {
+        return EmptyReputationSearchViewHolder.LAYOUT
     }
 
-    public override fun type(model: SellerMigrationReviewModel?): Int {
-        return LAYOUT
+    override fun type(model: SellerMigrationReviewModel): Int {
+        return SellerMigrationReviewViewHolder.LAYOUT
     }
 
-    public override fun type(viewModel: LoadingModel): Int {
-        return LoadingInboxReputationViewholder.Companion.LAYOUT
+    override fun type(viewModel: LoadingModel): Int {
+        return LoadingInboxReputationViewholder.LAYOUT
     }
 
-    public override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-        if (type == InboxReputationViewHolder.Companion.LAYOUT) viewHolder =
-            InboxReputationViewHolder(
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
+        return when (viewType) {
+            InboxReputationViewHolder.LAYOUT -> InboxReputationViewHolder(
                 context, view, viewListener
-            ) else if (type == EmptyReputationSearchViewHolder.Companion.LAYOUT) {
-            viewHolder = EmptyReputationSearchViewHolder(view)
-        } else if (type == LoadingInboxReputationViewholder.Companion.LAYOUT) {
-            viewHolder = LoadingInboxReputationViewholder(view)
-        } else if (type == LAYOUT) {
-            viewHolder = SellerMigrationReviewViewHolder(view, sellerMigrationReviewClickListener)
-        } else viewHolder = super.createViewHolder(view, type)
-        return viewHolder
+            )
+            EmptyReputationSearchViewHolder.LAYOUT -> {
+                EmptyReputationSearchViewHolder(view)
+            }
+            LoadingInboxReputationViewholder.LAYOUT -> {
+                LoadingInboxReputationViewholder(view)
+            }
+            SellerMigrationReviewViewHolder.LAYOUT -> {
+                SellerMigrationReviewViewHolder(view, sellerMigrationReviewClickListener)
+            }
+            else -> super.createViewHolder(view, viewType)
+        }
     }
 }

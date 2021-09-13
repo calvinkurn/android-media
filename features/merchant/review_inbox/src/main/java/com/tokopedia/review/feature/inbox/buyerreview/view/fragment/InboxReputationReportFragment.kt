@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 9/13/17.
  */
-class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
+class InboxReputationReportFragment : BaseDaggerFragment(),
     InboxReputationReport.View {
     private var sendButton: Button? = null
     private var reportRadioGroup: RadioGroup? = null
@@ -52,7 +52,7 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
 
     override fun initInjector() {
         val baseAppComponent: BaseAppComponent =
-            (requireContext().getApplicationContext() as BaseMainApplication).getBaseAppComponent()
+            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         val reputationComponent: DaggerReputationComponent = DaggerReputationComponent
             .builder()
             .baseAppComponent(baseAppComponent)
@@ -60,12 +60,12 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
         reputationComponent.inject(this)
     }
 
-    public override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setRetainInstance(true)
+        retainInstance = true
         val parentView: View = inflater.inflate(
             R.layout.fragment_inbox_reputation_report, container,
             false
@@ -78,9 +78,9 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
         saraRadioButton = parentView.findViewById(R.id.report_sara)
         prepareView()
         presenter!!.attachView(this)
-        if (getArguments() != null) {
+        if (arguments != null) {
             feedbackId =
-                getArguments()!!.getString(InboxReputationReportActivity.Companion.ARGS_REVIEW_ID)
+                arguments!!.getString(InboxReputationReportActivity.ARGS_REVIEW_ID)
         }
         return parentView
     }
@@ -88,7 +88,7 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
     private fun prepareView() {
         reportRadioGroup!!.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener({ group: RadioGroup?, checkedId: Int -> setSendButton() }))
         otherReason!!.addTextChangedListener(object : TextWatcher {
-            public override fun beforeTextChanged(
+            override fun beforeTextChanged(
                 s: CharSequence,
                 start: Int,
                 count: Int,
@@ -96,34 +96,32 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
             ) {
             }
 
-            public override fun onTextChanged(
+            override fun onTextChanged(
                 s: CharSequence,
                 start: Int,
                 before: Int,
                 count: Int
             ) {
-                otherRadioButton!!.setChecked(true)
+                otherRadioButton!!.isChecked = true
                 setSendButton()
             }
 
-            public override fun afterTextChanged(s: Editable) {}
+            override fun afterTextChanged(s: Editable) {}
         })
         otherReason!!.setOnClickListener(View.OnClickListener({ view: View? ->
-            otherRadioButton!!.setChecked(
-                true
-            )
+            otherRadioButton!!.isChecked = true
         }))
         sendButton!!.setOnClickListener(View.OnClickListener({ v: View? ->
             tracking!!.onSubmitReportAbuse(feedbackId)
-            if (getArguments() != null) {
+            if (arguments != null) {
                 presenter!!.reportReview(
-                    getArguments()!!.getString(
-                        InboxReputationReportActivity.Companion.ARGS_REVIEW_ID,
+                    arguments!!.getString(
+                        InboxReputationReportActivity.ARGS_REVIEW_ID,
                         ""
                     ),
-                    getArguments()!!.getString(InboxReputationReportActivity.Companion.ARGS_SHOP_ID),
-                    reportRadioGroup!!.getCheckedRadioButtonId(),
-                    otherReason!!.getText().toString()
+                    arguments!!.getString(InboxReputationReportActivity.ARGS_SHOP_ID),
+                    reportRadioGroup!!.checkedRadioButtonId,
+                    otherReason!!.text.toString()
                 )
             }
         }))
@@ -131,30 +129,30 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
     }
 
     private fun setSendButton() {
-        if (reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_spam) {
-            tracking!!.onClickRadioButtonReportAbuse(spamRadioButton!!.getText().toString())
-        } else if (reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_sara) {
-            tracking!!.onClickRadioButtonReportAbuse(saraRadioButton!!.getText().toString())
-        } else if (reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_other) {
-            tracking!!.onClickRadioButtonReportAbuse(otherRadioButton!!.getText().toString())
+        if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_spam) {
+            tracking!!.onClickRadioButtonReportAbuse(spamRadioButton!!.text.toString())
+        } else if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_sara) {
+            tracking!!.onClickRadioButtonReportAbuse(saraRadioButton!!.text.toString())
+        } else if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_other) {
+            tracking!!.onClickRadioButtonReportAbuse(otherRadioButton!!.text.toString())
         }
-        if ((reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_spam
-                    ) || (reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_sara
-                    ) || ((reportRadioGroup!!.getCheckedRadioButtonId() == R.id.report_other
-                    && !TextUtils.isEmpty(otherReason!!.getText().toString().trim({ it <= ' ' }))))
+        if ((reportRadioGroup!!.checkedRadioButtonId == R.id.report_spam
+                    ) || (reportRadioGroup!!.checkedRadioButtonId == R.id.report_sara
+                    ) || ((reportRadioGroup!!.checkedRadioButtonId == R.id.report_other
+                    && !TextUtils.isEmpty(otherReason!!.text.toString().trim({ it <= ' ' }))))
         ) {
-            sendButton!!.setEnabled(true)
-            sendButton!!.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            sendButton!!.isEnabled = true
+            sendButton!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             MethodChecker.setBackground(
                 sendButton,
-                getResources().getDrawable(com.tokopedia.design.R.drawable.green_button_rounded)
+                resources.getDrawable(com.tokopedia.design.R.drawable.green_button_rounded)
             )
         } else {
-            sendButton!!.setEnabled(false)
-            sendButton!!.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
+            sendButton!!.isEnabled = false
+            sendButton!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
             MethodChecker.setBackground(
                 sendButton,
-                getResources().getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled)
+                resources.getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled)
             )
         }
     }
@@ -168,35 +166,35 @@ class InboxReputationReportFragment constructor() : BaseDaggerFragment(),
         }
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         if (presenter != null) presenter!!.detachView()
     }
 
-    public override fun showLoadingProgress() {
-        if (!progressDialog!!.isShowing() && (getContext() != null) && (progressDialog != null)) progressDialog!!.show()
+    override fun showLoadingProgress() {
+        if (!progressDialog!!.isShowing && (getContext() != null) && (progressDialog != null)) progressDialog!!.show()
     }
 
-    public override fun onErrorReportReview(errorMessage: String?) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage)
+    override fun onErrorReportReview(errorMessage: String?) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    public override fun onSuccessReportReview() {
-        getActivity()!!.setResult(Activity.RESULT_OK)
-        getActivity()!!.finish()
+    override fun onSuccessReportReview() {
+        activity!!.setResult(Activity.RESULT_OK)
+        activity!!.finish()
     }
 
-    public override fun removeLoadingProgress() {
-        if (progressDialog!!.isShowing() && (getContext() != null) && (progressDialog != null)) progressDialog!!.dismiss()
+    override fun removeLoadingProgress() {
+        if (progressDialog!!.isShowing && (getContext() != null) && (progressDialog != null)) progressDialog!!.dismiss()
     }
 
     companion object {
         fun createInstance(reviewId: String?, shopId: String?): Fragment {
             val fragment: Fragment = InboxReputationReportFragment()
             val bundle: Bundle = Bundle()
-            bundle.putString(InboxReputationReportActivity.Companion.ARGS_SHOP_ID, shopId)
-            bundle.putString(InboxReputationReportActivity.Companion.ARGS_REVIEW_ID, reviewId)
-            fragment.setArguments(bundle)
+            bundle.putString(InboxReputationReportActivity.ARGS_SHOP_ID, shopId)
+            bundle.putString(InboxReputationReportActivity.ARGS_REVIEW_ID, reviewId)
+            fragment.arguments = bundle
             return fragment
         }
     }

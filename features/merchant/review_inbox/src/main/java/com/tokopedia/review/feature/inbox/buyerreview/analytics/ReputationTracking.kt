@@ -2,30 +2,16 @@ package com.tokopedia.review.feature.inbox.buyerreview.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.interfaces.ContextAnalytics
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by zulfikarrahman on 3/13/18.
  */
-class ReputationTracking constructor() {
-    private val tracker: ContextAnalytics
-    private fun createEventMap(
-        event: String?,
-        category: String?,
-        action: String?,
-        label: String?
-    ): HashMap<String?, Any?> {
-        val eventMap: HashMap<String?, Any?> = HashMap()
-        eventMap.put(ReputationTrackingConstant.EVENT, event)
-        eventMap.put(ReputationTrackingConstant.EVENT_CATEGORY, category)
-        eventMap.put(ReputationTrackingConstant.EVENT_ACTION, action)
-        eventMap.put(ReputationTrackingConstant.EVENT_LABEL, label)
-        return eventMap
-    }
+class ReputationTracking @Inject constructor() {
 
     fun onSeeSellerFeedbackPage(orderId: String?) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.VIEW_REVIEW,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -36,7 +22,7 @@ class ReputationTracking constructor() {
     }
 
     fun onClickSmileyShopReviewTracker(smileyName: String?, orderId: String?) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -47,7 +33,7 @@ class ReputationTracking constructor() {
     }
 
     fun onClickBackButtonReputationDetailTracker(orderId: String?) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -62,7 +48,7 @@ class ReputationTracking constructor() {
         productId: String?,
         adapterPosition: Int
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -73,7 +59,7 @@ class ReputationTracking constructor() {
     }
 
     fun onClickShareMenuReviewTracker(orderId: String?, productId: String?, adapterPosition: Int) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -88,7 +74,7 @@ class ReputationTracking constructor() {
         productId: String?,
         adapterPosition: Int
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
@@ -99,7 +85,7 @@ class ReputationTracking constructor() {
     }
 
     fun onClickRadioButtonReportAbuse(reasonSelected: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 ReputationTrackingConstant.EVENT,
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
@@ -116,7 +102,7 @@ class ReputationTracking constructor() {
     }
 
     fun onSubmitReportAbuse(feedbackId: String?) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 ReputationTrackingConstant.EVENT,
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
@@ -134,7 +120,7 @@ class ReputationTracking constructor() {
 
     fun onSuccessGetIncentiveOvoTracker(message: String, category: String) {
         if (category.isEmpty()) {
-            tracker.sendGeneralEvent(
+            TrackApp.getInstance().gtm.sendGeneralEvent(
                 createEventMap(
                     ReputationTrackingConstant.VIEW_REVIEW,
                     ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
@@ -143,7 +129,7 @@ class ReputationTracking constructor() {
                 )
             )
         } else {
-            tracker.sendGeneralEvent(
+            TrackApp.getInstance().gtm.sendGeneralEvent(
                 createEventMap(
                     ReputationTrackingConstant.VIEW_REVIEW,
                     ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
@@ -154,7 +140,17 @@ class ReputationTracking constructor() {
         }
     }
 
-    init {
-        tracker = TrackApp.getInstance().getGTM()
+    private fun createEventMap(
+        event: String?,
+        category: String?,
+        action: String?,
+        label: String?
+    ): HashMap<String?, Any?> {
+        val eventMap: HashMap<String?, Any?> = HashMap()
+        eventMap.put(ReputationTrackingConstant.EVENT, event)
+        eventMap.put(ReputationTrackingConstant.EVENT_CATEGORY, category)
+        eventMap.put(ReputationTrackingConstant.EVENT_ACTION, action)
+        eventMap.put(ReputationTrackingConstant.EVENT_LABEL, label)
+        return eventMap
     }
 }

@@ -7,7 +7,7 @@ class ShareItem constructor(
     var name: String,
     var onClickListener: View.OnClickListener
 ) {
-    fun getIcon(): String? {
+    fun getIcon(): String {
         return icon
     }
 }

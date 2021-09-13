@@ -6,11 +6,12 @@ import com.tokopedia.review.feature.inbox.buyerreview.data.source.*
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService
 import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/14/17.
  */
-class ReputationFactory(
+class ReputationFactory @Inject constructor(
     private val tomeService: TomeService,
     private val reputationService: ReputationService,
     private val inboxReputationMapper: InboxReputationMapper?,
@@ -23,6 +24,7 @@ class ReputationFactory(
     private val deleteReviewResponseMapper: DeleteReviewResponseMapper?,
     private val userSession: UserSessionInterface
 ) {
+
     fun createCloudDeleteReviewResponseDataSource(): CloudDeleteReviewResponseDataSource {
         return CloudDeleteReviewResponseDataSource(
             reputationService,

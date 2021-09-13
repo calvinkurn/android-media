@@ -14,19 +14,16 @@ import rx.Observable
  */
 class CloudSendSmileyReputationDataSource(
     private val reputationService: ReputationService,
-    private val sendSmileyReputationMapper: SendSmileyReputationMapper?,
+    private val sendSmileyReputationMapper: SendSmileyReputationMapper,
     private val userSession: UserSessionInterface
 ) {
     fun sendSmiley(requestParams: RequestParams): Observable<SendSmileyReputationDomain> {
-        return reputationService
-            .api
-            .sendSmiley(
+        return reputationService.api.sendSmiley(
                 AuthHelper.generateParamsNetwork(
                     userSession.userId,
                     userSession.deviceId,
-                    convertMapObjectToString(requestParams.parameters)!!
+                    convertMapObjectToString(requestParams.parameters)
                 )
-            )
-            .map(sendSmileyReputationMapper)
+            ).map(sendSmileyReputationMapper)
     }
 }

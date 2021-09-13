@@ -14,17 +14,19 @@ import java.util.*
 /**
  * @author by nisie on 8/14/17.
  */
-open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewListener: InboxReputation.View?) :
-    Subscriber<InboxReputationDomain?>() {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
-        viewListener!!.finishLoadingFull()
+open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewListener: InboxReputation.View) :
+    Subscriber<InboxReputationDomain>() {
+
+    override fun onCompleted() {}
+
+    override fun onError(e: Throwable) {
+        viewListener.finishLoadingFull()
         viewListener.onErrorGetFirstTimeInboxReputation(e)
     }
 
-    public override fun onNext(inboxReputationDomain: InboxReputationDomain) {
-        viewListener!!.finishLoadingFull()
-        if (inboxReputationDomain.getInboxReputation().isEmpty()) {
+    override fun onNext(inboxReputationDomain: InboxReputationDomain) {
+        viewListener.finishLoadingFull()
+        if (inboxReputationDomain.inboxReputation.isNullOrEmpty()) {
             viewListener.onShowEmpty()
         } else {
             viewListener.onSuccessGetFirstTimeInboxReputation(
@@ -37,56 +39,52 @@ open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewL
 
     protected fun mappingToViewModel(inboxReputationDomain: InboxReputationDomain): InboxReputationUiModel {
         return InboxReputationUiModel(
-            convertToInboxReputationList(inboxReputationDomain.getInboxReputation()),
-            inboxReputationDomain.getPaging().isHasNext()
+            convertToInboxReputationList(inboxReputationDomain.inboxReputation),
+            inboxReputationDomain.paging.isHasNext
         )
     }
 
-    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain?>?): List<InboxReputationItemUiModel?> {
-        val list: MutableList<InboxReputationItemUiModel?> = ArrayList()
-        for (domain: InboxReputationItemDomain? in inboxReputationDomain!!) {
-            list.add(
-                InboxReputationItemUiModel(
-                    domain.getReputationId().toString(),
-                    domain.getRevieweeData().getRevieweeName(),
-                    domain.getOrderData().getCreateTimeFmt(),
-                    domain.getRevieweeData().getRevieweePicture(),
-                    domain.getReputationData().getLockingDeadlineDays().toString(),
-                    domain.getOrderData().getInvoiceRefNum(),
-                    convertToReputationViewModel(domain.getReputationData()),
-                    domain.getRevieweeData().getRevieweeRoleId(),
-                    convertToBuyerReputationViewModel(
-                        domain.getRevieweeData()
-                            .getRevieweeBadgeCustomer()
-                    ),
-                    convertToSellerReputationViewModel(
-                        domain.getRevieweeData()
-                            .getRevieweeBadgeSeller()
-                    ),
-                    domain.getShopId(),
-                    domain.getUserId()
-                )
+    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain>): List<InboxReputationItemUiModel> {
+        return inboxReputationDomain.map {
+            InboxReputationItemUiModel(
+                it.reputationId.toString(),
+                it.revieweeData.revieweeName,
+                it.orderData.createTimeFmt,
+                it.revieweeData.revieweePicture,
+                it.reputationData.lockingDeadlineDays.toString(),
+                it.orderData.invoiceRefNum,
+                convertToReputationViewModel(it.reputationData),
+                it.revieweeData.revieweeRoleId,
+                convertToBuyerReputationViewModel(
+                    it.revieweeData
+                        .revieweeBadgeCustomer
+                ),
+                convertToSellerReputationViewModel(
+                    it.revieweeData
+                        .revieweeBadgeSeller
+                ),
+                it.shopId,
+                it.userId
             )
         }
-        return list
     }
 
     private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain?): RevieweeBadgeSellerUiModel {
         return RevieweeBadgeSellerUiModel(
-            revieweeBadgeSeller.getTooltip(),
-            revieweeBadgeSeller.getReputationScore(),
-            revieweeBadgeSeller.getScore(),
-            revieweeBadgeSeller.getMinBadgeScore(),
-            revieweeBadgeSeller.getReputationBadgeUrl(),
-            convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()),
-            revieweeBadgeSeller.getIsFavorited()
+            revieweeBadgeSeller.Tooltip,
+            revieweeBadgeSeller.ReputationScore,
+            revieweeBadgeSeller.Score,
+            revieweeBadgeSeller.MinBadgeScore,
+            revieweeBadgeSeller.ReputationBadgeUrl,
+            convertToReputationBadgeViewModel(revieweeBadgeSeller.ReputationBadge),
+            revieweeBadgeSeller.IsFavorited
         )
     }
 
     private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain?): ReputationBadgeUiModel {
         return ReputationBadgeUiModel(
-            reputationBadge.getLevel(),
-            reputationBadge.getSet()
+            reputationBadge.Level,
+            reputationBadge.Set
         )
     }
 
@@ -94,29 +92,29 @@ open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewL
         revieweeBadgeCustomer: RevieweeBadgeCustomerDomain?
     ): RevieweeBadgeCustomerUiModel {
         return RevieweeBadgeCustomerUiModel(
-            revieweeBadgeCustomer.getPositive(),
-            revieweeBadgeCustomer.getNeutral(), revieweeBadgeCustomer.getNegative(),
-            revieweeBadgeCustomer.getPositivePercentage(),
-            revieweeBadgeCustomer.getNoReputation()
+            revieweeBadgeCustomer.Positive,
+            revieweeBadgeCustomer.Neutral, revieweeBadgeCustomer.Negative,
+            revieweeBadgeCustomer.PositivePercentage,
+            revieweeBadgeCustomer.NoReputation
         )
     }
 
     private fun convertToReputationViewModel(reputationData: ReputationDataDomain?): ReputationDataUiModel {
         return ReputationDataUiModel(
-            reputationData.getRevieweeScore(),
-            reputationData.getRevieweeScoreStatus(),
-            reputationData!!.isShowRevieweeScore(),
-            reputationData.getReviewerScore(),
-            reputationData.getReviewerScoreStatus(),
-            reputationData!!.isEditable(),
-            reputationData!!.isInserted(),
-            reputationData!!.isLocked(),
-            reputationData!!.isAutoScored(),
-            reputationData!!.isCompleted(),
-            reputationData!!.isShowLockingDeadline(),
-            reputationData.getLockingDeadlineDays(),
-            reputationData!!.isShowBookmark(),
-            reputationData.getActionMessage()
+            reputationData.RevieweeScore,
+            reputationData.RevieweeScoreStatus,
+            reputationData!!.isShowRevieweeScore,
+            reputationData.ReviewerScore,
+            reputationData.ReviewerScoreStatus,
+            reputationData!!.isEditable,
+            reputationData!!.isInserted,
+            reputationData!!.isLocked,
+            reputationData!!.isAutoScored,
+            reputationData!!.isCompleted,
+            reputationData!!.isShowLockingDeadline,
+            reputationData.LockingDeadlineDays,
+            reputationData!!.isShowBookmark,
+            reputationData.ActionMessage
         )
     }
 }

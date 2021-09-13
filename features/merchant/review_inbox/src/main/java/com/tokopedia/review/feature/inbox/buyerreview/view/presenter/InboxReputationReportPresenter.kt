@@ -13,15 +13,15 @@ import javax.inject.Inject
 class InboxReputationReportPresenter @Inject constructor(private val reportReviewUseCase: ReportReviewUseCase) :
     BaseDaggerPresenter<InboxReputationReport.View?>(), InboxReputationReport.Presenter {
     private var viewListener: InboxReputationReport.View? = null
-    public override fun attachView(view: InboxReputationReport.View) {
+    override fun attachView(view: InboxReputationReport.View) {
         viewListener = view
     }
 
-    public override fun detachView() {
+    override fun detachView() {
         reportReviewUseCase.unsubscribe()
     }
 
-    public override fun reportReview(
+    override fun reportReview(
         reviewId: String?,
         shopId: String?,
         checkedRadioButtonId: Int,
@@ -29,7 +29,7 @@ class InboxReputationReportPresenter @Inject constructor(private val reportRevie
     ) {
         viewListener!!.showLoadingProgress()
         reportReviewUseCase.execute(
-            ReportReviewUseCase.Companion.getParam(
+            ReportReviewUseCase.getParam(
                 reviewId,
                 shopId,
                 getCheckedRadio(checkedRadioButtonId),
@@ -41,11 +41,11 @@ class InboxReputationReportPresenter @Inject constructor(private val reportRevie
 
     private fun getCheckedRadio(checkedRadioButtonId: Int): Int {
         if (checkedRadioButtonId == R.id.report_spam) {
-            return ReportReviewUseCase.Companion.REPORT_SPAM
+            return ReportReviewUseCase.REPORT_SPAM
         } else if (checkedRadioButtonId == R.id.report_sara) {
-            return ReportReviewUseCase.Companion.REPORT_SARA
+            return ReportReviewUseCase.REPORT_SARA
         } else {
-            return ReportReviewUseCase.Companion.REPORT_OTHER
+            return ReportReviewUseCase.REPORT_OTHER
         }
     }
 }

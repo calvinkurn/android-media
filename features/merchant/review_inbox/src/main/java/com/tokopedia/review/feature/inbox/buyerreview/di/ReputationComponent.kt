@@ -13,8 +13,8 @@ import dagger.Component
 @ReputationScope
 @Component(modules = [ReputationModule::class], dependencies = [BaseAppComponent::class])
 interface ReputationComponent {
-    fun inject(inboxReputationFragment: InboxReputationFragment?)
-    fun inject(inboxReputationDetailFragment: InboxReputationDetailFragment?)
-    fun inject(inboxReputationReportFragment: InboxReputationReportFragment?)
-    fun inject(inboxReputationFilterFragment: InboxReputationFilterFragment?)
+    fun inject(inboxReputationFragment: InboxReputationFragment)
+    fun inject(inboxReputationDetailFragment: InboxReputationDetailFragment)
+    fun inject(inboxReputationReportFragment: InboxReputationReportFragment)
+    fun inject(inboxReputationFilterFragment: InboxReputationFilterFragment)
 }

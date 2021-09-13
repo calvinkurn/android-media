@@ -13,13 +13,13 @@ import java.util.*
 /**
  * @author by nisie on 8/19/17.
  */
-open interface InboxReputationDetail {
-    open interface View : CustomerView {
+interface InboxReputationDetail {
+    interface View : CustomerView {
         fun showLoading()
         fun onErrorGetInboxDetail(throwable: Throwable?)
         fun onSuccessGetInboxDetail(
-            inboxReputationItemUiModel: InboxReputationItemUiModel?,
-            visitables: List<Visitable<*>?>?
+            inboxReputationItemUiModel: InboxReputationItemUiModel,
+            visitables: List<Visitable<*>>
         )
 
         fun finishLoading()
@@ -68,7 +68,7 @@ open interface InboxReputationDetail {
         )
     }
 
-    open interface Presenter : CustomerPresenter<View?> {
+    interface Presenter : CustomerPresenter<View?> {
         fun getInboxDetail(id: String?, anInt: Int)
         fun sendSmiley(reputationId: String?, score: String?, role: Int)
         fun deleteReviewResponse(

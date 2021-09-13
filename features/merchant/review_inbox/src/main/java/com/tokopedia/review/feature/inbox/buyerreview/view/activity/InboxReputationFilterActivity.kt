@@ -16,42 +16,42 @@ import com.tokopedia.review.inbox.R
 /**
  * @author by nisie on 8/21/17.
  */
-class InboxReputationFilterActivity constructor() : BaseSimpleActivity() {
-    open interface ResetListener {
+class InboxReputationFilterActivity : BaseSimpleActivity() {
+    interface ResetListener {
         fun resetFilter()
     }
 
     var listener: ResetListener? = null
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val timeFilter: String? =
-            getIntent().getStringExtra(InboxReputationFilterFragment.Companion.SELECTED_TIME_FILTER)
+            intent.getStringExtra(InboxReputationFilterFragment.SELECTED_TIME_FILTER)
         val statusFilter: String? =
-            getIntent().getStringExtra(InboxReputationFilterFragment.Companion.SELECTED_SCORE_FILTER)
-        val tab: Int = getIntent().getIntExtra(InboxReputationFragment.Companion.PARAM_TAB, -1)
+            intent.getStringExtra(InboxReputationFilterFragment.SELECTED_SCORE_FILTER)
+        val tab: Int = intent.getIntExtra(InboxReputationFragment.PARAM_TAB, -1)
         val fragment: Fragment =
-            InboxReputationFilterFragment.Companion.createInstance(timeFilter, statusFilter, tab)
+            InboxReputationFilterFragment.createInstance(timeFilter, statusFilter, tab)
         listener = fragment as InboxReputationFilterFragment?
         return fragment
     }
 
-    public override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.add(Menu.NONE, R.id.action_reset, 0, "")
         val menuItem: MenuItem = menu.findItem(R.id.action_reset)
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        menuItem.setIcon(resetMenu)
+        menuItem.icon = resetMenu
         return true
     }
 
     private val resetMenu: Drawable
         private get() {
             val drawable: TextDrawable = TextDrawable(this)
-            drawable.setText(getResources().getString(R.string.reset_title))
+            drawable.text = resources.getString(R.string.reset_title)
             drawable.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             return drawable
         }
 
-    public override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if ((item.getItemId() == R.id.action_reset
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if ((item.itemId == R.id.action_reset
                     && listener != null)
         ) {
             listener!!.resetFilter()
@@ -72,16 +72,16 @@ class InboxReputationFilterActivity constructor() : BaseSimpleActivity() {
             scoreFilter: String?,
             tab: Int
         ): Intent {
-            val intent: Intent = Intent(context, InboxReputationFilterActivity::class.java)
+            val intent = Intent(context, InboxReputationFilterActivity::class.java)
             intent.putExtra(
-                InboxReputationFilterFragment.Companion.SELECTED_TIME_FILTER,
+                InboxReputationFilterFragment.SELECTED_TIME_FILTER,
                 timeFilter
             )
             intent.putExtra(
-                InboxReputationFilterFragment.Companion.SELECTED_SCORE_FILTER,
+                InboxReputationFilterFragment.SELECTED_SCORE_FILTER,
                 scoreFilter
             )
-            intent.putExtra(InboxReputationFragment.Companion.PARAM_TAB, tab)
+            intent.putExtra(InboxReputationFragment.PARAM_TAB, tab)
             return intent
         }
     }

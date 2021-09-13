@@ -5,13 +5,15 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/20/17.
  */
-class GetCacheInboxReputationUseCase constructor(private val reputationRepository: ReputationRepository) :
-    UseCase<InboxReputationDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<InboxReputationDomain?> {
-        return (reputationRepository.getInboxReputationFromLocal(requestParams))!!
+class GetCacheInboxReputationUseCase @Inject constructor(private val reputationRepository: ReputationRepository) :
+    UseCase<InboxReputationDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<InboxReputationDomain> {
+        return (reputationRepository.getInboxReputationFromLocal(requestParams))
     }
 }

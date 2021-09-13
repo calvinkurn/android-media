@@ -7,11 +7,12 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.S
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/28/17.
  */
-class ReplyReviewMapper : Func1<Response<TokopediaWsV4Response?>, SendReplyReviewDomain> {
+class ReplyReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>, SendReplyReviewDomain> {
     override fun call(response: Response<TokopediaWsV4Response?>): SendReplyReviewDomain {
         return if (response.isSuccessful) {
             if ((!response.body()!!.isNullData

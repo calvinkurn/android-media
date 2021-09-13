@@ -22,7 +22,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.ReviewInboxInstance
@@ -285,7 +284,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun setupEmptyState() {
-        reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
+        imageView.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
         reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
         reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
         reviewEmptyButton.setOnClickListener {

@@ -7,33 +7,37 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/18/17.
  */
-open class GetInboxReputationUseCase constructor(protected var reputationRepository: ReputationRepository) :
-    UseCase<InboxReputationDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<InboxReputationDomain?> {
-        return (reputationRepository.getInboxReputationFromCloud(requestParams))!!
+open class GetInboxReputationUseCase @Inject constructor(protected var reputationRepository: ReputationRepository) :
+    UseCase<InboxReputationDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<InboxReputationDomain> {
+        return (reputationRepository.getInboxReputationFromCloud(requestParams))
     }
 
     companion object {
-        protected val PARAM_PER_PAGE: String = "per_page"
-        protected val PARAM_PAGE: String = "page"
-        protected val PARAM_ROLE: String = "role"
-        protected val DEFAULT_PER_PAGE: Int = 10
-        val PARAM_TIME_FILTER: String = "time_filter"
-        val PARAM_STATUS: String = "status"
-        val PARAM_SCORE_FILTER: String = "score_filter"
-        protected val STATUS_UNASSESSED_REPUTATION: Int = 1
-        protected val STATUS_UPDATED_REPUTATION: Int = 2
-        protected val ROLE_BUYER: Int = 1
-        protected val ROLE_SELLER: Int = 2
-        protected val STATUS_OTHER: Int = 3
-        protected val DEFAULT_TIME_FILTER: String = "1"
-        private val PARAM_KEYWORD: String = "keyword"
-        val PARAM_TAB: String = "tab"
-        val PARAM_REPUTATION_ID: String = "reputation_id"
+        const val PARAM_PER_PAGE: String = "per_page"
+        const val PARAM_PAGE: String = "page"
+        const val PARAM_ROLE: String = "role"
+        const val DEFAULT_PER_PAGE: Int = 10
+        const val PARAM_TIME_FILTER: String = "time_filter"
+        const val PARAM_STATUS: String = "status"
+        const val PARAM_SCORE_FILTER: String = "score_filter"
+        const val PARAM_TAB: String = "tab"
+        const val PARAM_REPUTATION_ID: String = "reputation_id"
+
+        private const val STATUS_UNASSESSED_REPUTATION: Int = 1
+        private const val STATUS_UPDATED_REPUTATION: Int = 2
+        private const val ROLE_BUYER: Int = 1
+        private const val ROLE_SELLER: Int = 2
+        private const val STATUS_OTHER: Int = 3
+        const val DEFAULT_TIME_FILTER: String = "1"
+        private const val PARAM_KEYWORD: String = "keyword"
+
         fun getParam(
             page: Int, keyword: String?, timeFilter: String?,
             scoreFilter: String?, tab: Int
@@ -65,21 +69,21 @@ open class GetInboxReputationUseCase constructor(protected var reputationReposit
             return params
         }
 
-        protected fun getStatus(tab: Int): Int {
-            when (tab) {
-                ReviewInboxConstants.TAB_WAITING_REVIEW -> return STATUS_UNASSESSED_REPUTATION
-                ReviewInboxConstants.TAB_MY_REVIEW -> return STATUS_UPDATED_REPUTATION
-                ReviewInboxConstants.TAB_BUYER_REVIEW -> return STATUS_OTHER
-                else -> return STATUS_OTHER
+        fun getStatus(tab: Int): Int {
+            return when (tab) {
+                ReviewInboxConstants.TAB_WAITING_REVIEW -> STATUS_UNASSESSED_REPUTATION
+                ReviewInboxConstants.TAB_MY_REVIEW -> STATUS_UPDATED_REPUTATION
+                ReviewInboxConstants.TAB_BUYER_REVIEW -> STATUS_OTHER
+                else -> STATUS_OTHER
             }
         }
 
-        protected fun getRole(tab: Int): Int {
-            when (tab) {
-                ReviewInboxConstants.TAB_WAITING_REVIEW -> return ROLE_BUYER
-                ReviewInboxConstants.TAB_MY_REVIEW -> return ROLE_BUYER
-                ReviewInboxConstants.TAB_BUYER_REVIEW -> return ROLE_SELLER
-                else -> return ROLE_BUYER
+        fun getRole(tab: Int): Int {
+            return when (tab) {
+                ReviewInboxConstants.TAB_WAITING_REVIEW -> ROLE_BUYER
+                ReviewInboxConstants.TAB_MY_REVIEW -> ROLE_BUYER
+                ReviewInboxConstants.TAB_BUYER_REVIEW -> ROLE_SELLER
+                else -> ROLE_BUYER
             }
         }
     }

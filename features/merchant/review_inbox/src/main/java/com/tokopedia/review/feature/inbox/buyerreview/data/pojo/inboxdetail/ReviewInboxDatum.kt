@@ -3,45 +3,37 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ReviewInboxDatum {
+class ReviewInboxDatum(
     @SerializedName("product_data")
     @Expose
-    var productData: ProductData? = null
+    val productData: ProductData = ProductData(),
 
     @SerializedName("review_inbox_id")
     @Expose
-    var reviewInboxId: Long = 0
-        private set
+    val reviewInboxId: Long = 0,
 
     @SerializedName("review_id")
     @Expose
-    var reviewId: Long = 0
-        private set
+    val reviewId: Long = 0,
 
     @SerializedName("review_has_reviewed")
     @Expose
-    var isReviewHasReviewed = false
+    val isReviewHasReviewed: Boolean = false,
 
     @SerializedName("review_is_skippable")
     @Expose
-    var isReviewIsSkippable = false
+    val isReviewIsSkippable: Boolean = false,
 
     @SerializedName("review_is_skipped")
     @Expose
-    var isReviewIsSkipped = false
+    val isReviewIsSkipped: Boolean = false,
 
     @SerializedName("review_is_editable")
     @Expose
-    var isReviewIsEditable = false
+    val isReviewIsEditable: Boolean = false,
 
     @SerializedName("review_data")
     @Expose
-    var reviewData: ReviewData? = null
-    fun setReviewInboxId(reviewInboxId: Int) {
-        this.reviewInboxId = reviewInboxId.toLong()
-    }
+    val reviewData: ReviewData = ReviewData()
 
-    fun setReviewId(reviewId: Int) {
-        this.reviewId = reviewId.toLong()
-    }
-}
+)

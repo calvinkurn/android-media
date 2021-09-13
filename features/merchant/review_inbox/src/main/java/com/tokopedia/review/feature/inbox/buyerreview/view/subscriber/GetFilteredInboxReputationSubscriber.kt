@@ -6,17 +6,19 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 /**
  * @author by nisie on 8/22/17.
  */
-class GetFilteredInboxReputationSubscriber constructor(viewListener: InboxReputation.View?) :
+class GetFilteredInboxReputationSubscriber constructor(viewListener: InboxReputation.View) :
     GetFirstTimeInboxReputationSubscriber(viewListener) {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
-        viewListener!!.finishRefresh()
+
+    override fun onCompleted() {}
+
+    override fun onError(e: Throwable) {
+        viewListener.finishRefresh()
         viewListener.onErrorGetFilteredInboxReputation(e)
     }
 
-    public override fun onNext(inboxReputationDomain: InboxReputationDomain) {
-        viewListener!!.finishRefresh()
-        if (inboxReputationDomain.getInboxReputation().isEmpty()) {
+    override fun onNext(inboxReputationDomain: InboxReputationDomain) {
+        viewListener.finishRefresh()
+        if (inboxReputationDomain.inboxReputation.isNullOrEmpty()) {
             viewListener.onShowEmptyFilteredInboxReputation()
         } else {
             viewListener.onSuccessGetFilteredInboxReputation(

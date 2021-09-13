@@ -9,9 +9,9 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrati
 /**
  * @author by nisie on 8/19/17.
  */
-open interface InboxReputationTypeFactory {
-    fun type(viewModel: InboxReputationItemUiModel?): Int
-    fun type(viewModel: EmptySearchModel?): Int
-    fun type(model: SellerMigrationReviewModel?): Int
+interface InboxReputationTypeFactory {
+    fun type(viewModel: InboxReputationItemUiModel): Int
+    fun type(viewModel: EmptySearchModel): Int
+    fun type(model: SellerMigrationReviewModel): Int
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>?
 }

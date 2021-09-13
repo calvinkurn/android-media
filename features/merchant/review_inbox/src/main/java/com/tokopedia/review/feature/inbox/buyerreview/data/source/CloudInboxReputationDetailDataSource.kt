@@ -14,7 +14,7 @@ import rx.Observable
  */
 class CloudInboxReputationDetailDataSource(
     private val reputationService: ReputationService,
-    private val inboxReputationDetailMapper: InboxReputationDetailMapper?,
+    private val inboxReputationDetailMapper: InboxReputationDetailMapper,
     private val userSession: UserSessionInterface
 ) {
     fun getInboxReputationDetail(requestParams: RequestParams): Observable<ReviewDomain> {
@@ -22,7 +22,7 @@ class CloudInboxReputationDetailDataSource(
             AuthHelper.generateParamsNetwork(
                 userSession.userId,
                 userSession.deviceId,
-                convertMapObjectToString(requestParams.parameters)!!
+                convertMapObjectToString(requestParams.parameters)
             )
         )
             .map(inboxReputationDetailMapper)

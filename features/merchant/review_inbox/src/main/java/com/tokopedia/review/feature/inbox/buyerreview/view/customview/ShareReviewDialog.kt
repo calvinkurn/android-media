@@ -32,14 +32,32 @@ class ShareReviewDialog constructor(
     private val callbackManager: CallbackManager,
     fragment: Fragment
 ) {
+    companion object {
+        val FACEBOOK_ICON_URL: String =
+            "https://images.tokopedia.net/img/android/review/review_ic_facebook_share.png"
+        val LINK_ICON_URL: String =
+            "https://images.tokopedia.net/img/android/review/review_ic_copy_share.png"
+    }
+
     private val fragment: Fragment
     private val dialog: BottomSheetDialog
     private val appGrid: GridView?
     private val cancelButton: View?
     private var adapterRead: ArrayAdapter<CharSequence>? = null
-    private var shareDialog: ShareDialog? = null
     private var adapter: ShareAdapter? = null
     private var model: ShareModel? = null
+
+    init {
+        dialog = BottomSheetDialog((context)!!)
+        this.fragment = fragment
+        dialog.setContentView(R.layout.reputation_share_review_dialog)
+        appGrid = dialog.findViewById<View>(R.id.grid) as GridView?
+        cancelButton = dialog.findViewById(R.id.cancel_but)
+        initAdapter()
+        setAdapter()
+        setListener()
+    }
+
     fun initAdapter() {
         adapterRead = ArrayAdapter.createFromResource(
             (context)!!,
@@ -53,12 +71,12 @@ class ShareReviewDialog constructor(
         adapter = ShareAdapter(context)
         adapter!!.addItem(ShareItem(FACEBOOK_ICON_URL, "Facebook", shareFb()))
         adapter!!.addItem(ShareItem(LINK_ICON_URL, "Copy Link", shareCopyLink()))
-        appGrid!!.setAdapter(adapter)
+        appGrid!!.adapter = adapter
     }
 
     fun setListener() {
         cancelButton!!.setOnClickListener(object : View.OnClickListener {
-            public override fun onClick(view: View) {
+            override fun onClick(view: View) {
                 dismissDialog()
             }
         })
@@ -74,7 +92,7 @@ class ShareReviewDialog constructor(
 
     private fun shareCopyLink(): View.OnClickListener {
         return object : View.OnClickListener {
-            public override fun onClick(view: View) {
+            override fun onClick(view: View) {
                 dismissDialog()
                 ClipboardHandler.CopyToClipboard(context as Activity?, model.getLink())
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
@@ -83,30 +101,30 @@ class ShareReviewDialog constructor(
     }
 
     private fun shareFb(): View.OnClickListener {
-        return object : View.OnClickListener {
-            public override fun onClick(view: View) {
-                dismissDialog()
-                shareDialog = ShareDialog(fragment)
-                shareDialog!!.registerCallback(
+        return View.OnClickListener {
+            dismissDialog()
+            val shareDialog = ShareDialog(fragment)
+            shareDialog.apply {
+                registerCallback(
                     callbackManager,
                     object : FacebookCallback<Sharer.Result?> {
-                        public override fun onSuccess(result: Sharer.Result?) {
+                        override fun onSuccess(result: Sharer.Result?) {
                             SnackbarManager.make(
-                                fragment.getActivity(),
+                                fragment.activity,
                                 context!!.getString(R.string.success_share_review),
                                 Snackbar.LENGTH_LONG
                             ).show()
                             dismissDialog()
                         }
 
-                        public override fun onCancel() {
+                        override fun onCancel() {
                             Log.i("facebook", "onCancel")
                         }
 
-                        public override fun onError(error: FacebookException) {
+                        override fun onError(error: FacebookException) {
                             Log.i("facebook", "onError: " + error)
                             SnackbarManager.make(
-                                fragment.getActivity(),
+                                fragment.activity,
                                 context!!.getString(R.string.error_share_review),
                                 Snackbar.LENGTH_LONG
                             ).show()
@@ -128,7 +146,7 @@ class ShareReviewDialog constructor(
                         Uri.parse(model.getLink())
                     )
                     val linkContent: ShareLinkContent = builder.build()
-                    shareDialog!!.show(linkContent)
+                    show(linkContent)
                 }
             }
         }
@@ -136,23 +154,5 @@ class ShareReviewDialog constructor(
 
     fun setModel(model: ShareModel?) {
         this.model = model
-    }
-
-    companion object {
-        val FACEBOOK_ICON_URL: String =
-            "https://images.tokopedia.net/img/android/review/review_ic_facebook_share.png"
-        val LINK_ICON_URL: String =
-            "https://images.tokopedia.net/img/android/review/review_ic_copy_share.png"
-    }
-
-    init {
-        dialog = BottomSheetDialog((context)!!)
-        this.fragment = fragment
-        dialog.setContentView(R.layout.reputation_share_review_dialog)
-        appGrid = dialog.findViewById<View>(R.id.grid) as GridView?
-        cancelButton = dialog.findViewById(R.id.cancel_but)
-        initAdapter()
-        setAdapter()
-        setListener()
     }
 }

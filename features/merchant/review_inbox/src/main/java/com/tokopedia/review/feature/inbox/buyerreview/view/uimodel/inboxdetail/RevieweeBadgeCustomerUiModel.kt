@@ -37,11 +37,11 @@ class RevieweeBadgeCustomerUiModel : Parcelable {
         noReputation = `in`.readInt()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(positive)
         dest.writeInt(neutral)
         dest.writeInt(negative)
@@ -52,11 +52,11 @@ class RevieweeBadgeCustomerUiModel : Parcelable {
     companion object {
         val CREATOR: Parcelable.Creator<RevieweeBadgeCustomerUiModel> =
             object : Parcelable.Creator<RevieweeBadgeCustomerUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): RevieweeBadgeCustomerUiModel? {
+                override fun createFromParcel(`in`: Parcel): RevieweeBadgeCustomerUiModel? {
                     return RevieweeBadgeCustomerUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<RevieweeBadgeCustomerUiModel?> {
+                override fun newArray(size: Int): Array<RevieweeBadgeCustomerUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

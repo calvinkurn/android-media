@@ -20,20 +20,20 @@ class InboxReputationPresenter @Inject internal constructor(
 ) : BaseDaggerPresenter<InboxReputation.View?>(), InboxReputation.Presenter {
     private var viewListener: InboxReputation.View? = null
     private val pagingHandler: PagingHandler
-    public override fun attachView(view: InboxReputation.View) {
+    override fun attachView(view: InboxReputation.View) {
         super.attachView(view)
         viewListener = view
     }
 
-    public override fun getFirstTimeInboxReputation(tab: Int) {
+    override fun getFirstTimeInboxReputation(tab: Int) {
         viewListener!!.showLoadingFull()
         getFirstTimeInboxReputationUseCase.execute(
-            GetFirstTimeInboxReputationUseCase.Companion.getFirstTimeParam(tab),
+            GetFirstTimeInboxReputationUseCase.getFirstTimeParam(tab),
             GetFirstTimeInboxReputationSubscriber(viewListener)
         )
     }
 
-    public override fun getNextPage(
+    override fun getNextPage(
         lastItemPosition: Int, visibleItem: Int,
         query: String?, timeFilter: String?,
         scoreFilter: String?, tab: Int
@@ -46,8 +46,8 @@ class InboxReputationPresenter @Inject internal constructor(
             viewListener!!.showLoadingNext()
             pagingHandler.nextPage()
             getInboxReputationUseCase.execute(
-                GetInboxReputationUseCase.Companion.getParam(
-                    pagingHandler.getPage(),
+                GetInboxReputationUseCase.getParam(
+                    pagingHandler.page,
                     query,
                     timeFilter,
                     scoreFilter,
@@ -58,7 +58,7 @@ class InboxReputationPresenter @Inject internal constructor(
         }
     }
 
-    public override fun getFilteredInboxReputation(
+    override fun getFilteredInboxReputation(
         query: String?,
         timeFilter: String?,
         statusFilter: String?,
@@ -67,8 +67,8 @@ class InboxReputationPresenter @Inject internal constructor(
         viewListener!!.showRefreshing()
         pagingHandler.resetPage()
         getInboxReputationUseCase.execute(
-            GetInboxReputationUseCase.Companion.getParam(
-                pagingHandler.getPage(),
+            GetInboxReputationUseCase.getParam(
+                pagingHandler.page,
                 query,
                 timeFilter,
                 statusFilter,
@@ -89,8 +89,8 @@ class InboxReputationPresenter @Inject internal constructor(
     fun refreshPage(query: String, timeFilter: String?, scoreFilter: String?, tab: Int) {
         pagingHandler.resetPage()
         getInboxReputationUseCase.execute(
-            GetInboxReputationUseCase.Companion.getParam(
-                pagingHandler.getPage(), query, timeFilter,
+            GetInboxReputationUseCase.getParam(
+                pagingHandler.page, query, timeFilter,
                 scoreFilter, tab
             ),
             RefreshInboxReputationSubscriber(
@@ -110,7 +110,7 @@ class InboxReputationPresenter @Inject internal constructor(
         pagingHandler.setHasNext(hasNextPage)
     }
 
-    public override fun detachView() {
+    override fun detachView() {
         super.detachView()
         getFirstTimeInboxReputationUseCase.unsubscribe()
         getInboxReputationUseCase.unsubscribe()

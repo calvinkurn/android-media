@@ -6,24 +6,28 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.Report
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/13/17.
  */
-class ReportReviewUseCase constructor(private val reputationRepository: ReputationRepository) :
-    UseCase<ReportReviewDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<ReportReviewDomain?> {
-        return (reputationRepository.reportReview(requestParams))!!
+class ReportReviewUseCase @Inject constructor(private val reputationRepository: ReputationRepository) :
+    UseCase<ReportReviewDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<ReportReviewDomain> {
+        return (reputationRepository.reportReview(requestParams))
     }
 
     companion object {
-        val REPORT_SPAM: Int = 1
-        val REPORT_SARA: Int = 2
-        val REPORT_OTHER: Int = 3
-        private val PARAM_REVIEW_ID: String = "element_id"
-        private val PARAM_SHOP_ID: String = "shop_id"
-        private val PARAM_REASON: String = "reason"
-        private val PARAM_OTHER_REASON: String = "otherreason"
+        const val REPORT_SPAM: Int = 1
+        const val REPORT_SARA: Int = 2
+        const val REPORT_OTHER: Int = 3
+
+        private const val PARAM_REVIEW_ID: String = "element_id"
+        private const val PARAM_SHOP_ID: String = "shop_id"
+        private const val PARAM_REASON: String = "reason"
+        private const val PARAM_OTHER_REASON: String = "otherreason"
+
         fun getParam(
             reviewId: String?,
             shopId: String?,

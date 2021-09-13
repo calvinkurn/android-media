@@ -43,18 +43,18 @@ class InboxReputationFilterAdapter private constructor(
             check = itemView.findViewById<View>(R.id.check) as ImageView
             mainView = itemView.findViewById(R.id.main_view)
             mainView.setOnClickListener(object : View.OnClickListener {
-                public override fun onClick(v: View) {
+                override fun onClick(v: View) {
                     for (viewModel: OptionUiModel in listOption!!) {
-                        if (viewModel === listOption.get(getAdapterPosition())) viewModel.setSelected(
+                        if (viewModel === listOption.get(adapterPosition)) viewModel.setSelected(
                             !viewModel.isSelected()
                         ) else if (viewModel.getKey() === listOption.get(getAdapterPosition())
                                 .getKey()
                         ) viewModel.setSelected(false)
                     }
-                    if (listOption.get(getAdapterPosition()).isSelected()) {
-                        listener.onFilterSelected(listOption.get(getAdapterPosition()))
+                    if (listOption.get(adapterPosition).isSelected()) {
+                        listener.onFilterSelected(listOption.get(adapterPosition))
                     } else {
-                        listener.onFilterUnselected(listOption.get(getAdapterPosition()))
+                        listener.onFilterUnselected(listOption.get(adapterPosition))
                     }
                     notifyDataSetChanged()
                 }
@@ -62,23 +62,23 @@ class InboxReputationFilterAdapter private constructor(
         }
     }
 
-    public override fun onCreateViewHolder(
+    override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder {
         when (viewType) {
             VIEW_HEADER -> return HeaderViewHolder(
-                LayoutInflater.from(parent.getContext())
+                LayoutInflater.from(parent.context)
                     .inflate(R.layout.listview_filter_header, parent, false)
             )
             else -> return ViewHolder(
-                LayoutInflater.from(parent.getContext())
+                LayoutInflater.from(parent.context)
                     .inflate(R.layout.listview_filter, parent, false)
             )
         }
     }
 
-    public override fun onBindViewHolder(
+    override fun onBindViewHolder(
         parent: RecyclerView.ViewHolder,
         position: Int
     ) {
@@ -94,25 +94,25 @@ class InboxReputationFilterAdapter private constructor(
                         context, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
-                holder.check.setVisibility(View.VISIBLE)
+                holder.check.visibility = View.VISIBLE
             } else {
                 holder.filter.setTextColor(
                     MethodChecker.getColor(
                         context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
-                holder.check.setVisibility(View.GONE)
+                holder.check.visibility = View.GONE
             }
         }
     }
 
-    public override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         if (listOption!!.get(position) is HeaderOptionUiModel) return VIEW_HEADER else return super.getItemViewType(
             position
         )
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return listOption!!.size
     }
 

@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder
@@ -16,62 +16,67 @@ import java.util.*
 /**
  * @author by nisie on 8/28/17.
  */
-class ReputationAdapter private constructor(context: Context, listener: ReputationListener) :
+class ReputationAdapter private constructor(
+    private val context: Context,
+    private val listener: ReputationListener
+) :
     RecyclerView.Adapter<ReputationAdapter.ViewHolder>() {
-    private var canGiveReputation: Boolean
 
-    open interface ReputationListener {
+    companion object {
+        const val SMILEY_BAD: String = "-1"
+        const val SMILEY_NEUTRAL: String = "1"
+        const val SMILEY_GOOD: String = "2"
+        fun createInstance(context: Context, listener: ReputationListener): ReputationAdapter {
+            return ReputationAdapter(context, listener)
+        }
+    }
+
+    private var canGiveReputation: Boolean = true
+    var list: ArrayList<SmileyModel> = ArrayList()
+
+    interface ReputationListener {
         fun onReputationSmileyClicked(name: String?, value: String?)
         fun onGoToShopDetail(shopId: Long)
         fun onGoToPeopleProfile(userId: Long)
     }
 
-    var list: ArrayList<SmileyModel>
-    var listener: ReputationListener?
-    var context: Context
-
     inner class ViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var smiley: ImageView
-        var smileyText: Typography
-        var main: View
+        val smiley: ImageView = itemView.findViewById<View>(R.id.smiley) as ImageView
+        val smileyText: Typography = itemView.findViewById<View>(R.id.smiley_name) as Typography
+        val main: View = itemView.findViewById(R.id.main)
 
         init {
-            smiley = itemView.findViewById<View>(R.id.smiley) as ImageView
-            smileyText = itemView.findViewById<View>(R.id.smiley_name) as Typography
-            main = itemView.findViewById(R.id.main)
-            main.setOnClickListener(object : View.OnClickListener {
-                public override fun onClick(v: View) {
-                    if (listener != null && canGiveReputation) listener!!.onReputationSmileyClicked(
-                        list.get(getAdapterPosition())
-                            .getName(), list.get(getAdapterPosition()).getScore()
-                    )
-                }
-            })
+            main.setOnClickListener {
+                if (canGiveReputation) listener.onReputationSmileyClicked(
+                    list[adapterPosition]
+                        .name, list[adapterPosition].score
+                )
+            }
         }
     }
 
-    public override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(viewGroup.getContext())
+            LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.listview_smiley, viewGroup, false)
         )
     }
 
-    public override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         ImageHandler.loadImageWithIdWithoutPlaceholder(
             holder.smiley,
-            list.get(position).getResId()
+            list.get(position).resId
         )
-        if (list.get(position).getName()
+        if (list.get(position).name
                 .isEmpty()
-        ) holder.smileyText.setVisibility(View.GONE) else holder.smileyText.setText(
+        ) holder.smileyText.visibility = View.GONE else holder.smileyText.setText(
             list.get(
                 position
-            ).getName()
+            ).name
         )
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return list.size
     }
 
@@ -154,7 +159,7 @@ class ReputationAdapter private constructor(context: Context, listener: Reputati
 
     fun showChangeSmiley(reviewerScore: Int) {
         canGiveReputation = true
-        if (reviewerScore == InboxReputationDetailHeaderViewHolder.Companion.SMILEY_BAD) {
+        if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_BAD) {
             list.clear()
             list.add(
                 SmileyModel(
@@ -180,7 +185,7 @@ class ReputationAdapter private constructor(context: Context, listener: Reputati
                     true
                 )
             )
-        } else if (reviewerScore == InboxReputationDetailHeaderViewHolder.Companion.SMILEY_NEUTRAL) {
+        } else if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_NEUTRAL) {
             list.clear()
             list.add(
                 SmileyModel(
@@ -208,21 +213,5 @@ class ReputationAdapter private constructor(context: Context, listener: Reputati
             )
         }
         notifyDataSetChanged()
-    }
-
-    companion object {
-        val SMILEY_BAD: String = "-1"
-        val SMILEY_NEUTRAL: String = "1"
-        val SMILEY_GOOD: String = "2"
-        fun createInstance(context: Context, listener: ReputationListener): ReputationAdapter {
-            return ReputationAdapter(context, listener)
-        }
-    }
-
-    init {
-        list = ArrayList()
-        this.listener = listener
-        canGiveReputation = true
-        this.context = context
     }
 }

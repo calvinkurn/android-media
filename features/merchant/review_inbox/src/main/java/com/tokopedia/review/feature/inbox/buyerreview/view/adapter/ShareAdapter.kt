@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifyprinciples.Typography
@@ -22,34 +21,31 @@ class ShareAdapter constructor(context: Context?) : BaseAdapter() {
         shareItems.add(item)
     }
 
-    public override fun getCount(): Int {
+    override fun getCount(): Int {
         return shareItems.size
     }
 
-    public override fun getItem(position: Int): ShareItem {
+    override fun getItem(position: Int): ShareItem {
         return shareItems.get(position)
     }
 
-    public override fun getItemId(position: Int): Long {
+    override fun getItemId(position: Int): Long {
         return shareItems.get(position).hashCode().toLong()
     }
 
-    public override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
         var convertView: View = convertView
         val holder: ViewHolder
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.reputation_sheet_grid_item, parent, false)
             holder = ViewHolder(convertView)
-            convertView.setTag(holder)
+            convertView.tag = holder
         } else {
-            holder = convertView.getTag() as ViewHolder
+            holder = convertView.tag as ViewHolder
         }
         val info: ShareItem = shareItems.get(position)
         if (info.getIcon() != null) {
-            holder.icon.loadImage(
-                info.getIcon()!!,
-                com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
-            )
+            imageView.loadImage(info.getIcon())
         } else {
 //                loadIcon();
         }

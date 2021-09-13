@@ -41,11 +41,11 @@ open class OptionUiModel : Parcelable {
         position = `in`.readInt()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(name)
         dest.writeString(key)
         dest.writeString(value)
@@ -55,13 +55,14 @@ open class OptionUiModel : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<OptionUiModel> =
-            object : Parcelable.Creator<OptionUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): OptionUiModel? {
+            object : Parcelable.Creator<OptionUiModel> {
+                override fun createFromParcel(`in`: Parcel): OptionUiModel {
                     return OptionUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<OptionUiModel?> {
+                override fun newArray(size: Int): Array<OptionUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

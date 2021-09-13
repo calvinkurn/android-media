@@ -8,7 +8,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAda
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.LoadingInboxReputationDetailViewholder
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailItemViewHolder
-import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationDetailFragment
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
@@ -16,40 +15,37 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailTypeFactoryImpl constructor(inboxReputationDetail: InboxReputationDetailFragment) :
-    BaseAdapterTypeFactory(), InboxReputationDetailTypeFactory {
-    private val viewListener: InboxReputationDetail.View
-    var reputationListener: ReputationListener
-    public override fun type(model: InboxReputationDetailHeaderUiModel?): Int {
-        return InboxReputationDetailHeaderViewHolder.Companion.LAYOUT
+class InboxReputationDetailTypeFactoryImpl constructor(
+    private val viewListener: InboxReputationDetail.View,
+    private val reputationListener: ReputationListener
+) : BaseAdapterTypeFactory(), InboxReputationDetailTypeFactory {
+
+    override fun type(model: InboxReputationDetailHeaderUiModel): Int {
+        return InboxReputationDetailHeaderViewHolder.LAYOUT
     }
 
-    public override fun type(model: InboxReputationDetailItemUiModel?): Int {
-        return InboxReputationDetailItemViewHolder.Companion.LAYOUT
+    override fun type(model: InboxReputationDetailItemUiModel): Int {
+        return InboxReputationDetailItemViewHolder.LAYOUT
     }
 
-    public override fun type(viewModel: LoadingModel): Int {
-        return LoadingInboxReputationDetailViewholder.Companion.LAYOUT
+    override fun type(viewModel: LoadingModel): Int {
+        return LoadingInboxReputationDetailViewholder.LAYOUT
     }
 
-    public override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-        if (type == InboxReputationDetailHeaderViewHolder.Companion.LAYOUT) viewHolder =
-            InboxReputationDetailHeaderViewHolder(
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
+        return when (viewType) {
+            InboxReputationDetailHeaderViewHolder.LAYOUT -> InboxReputationDetailHeaderViewHolder(
                 view,
                 reputationListener
-            ) else if (type == InboxReputationDetailItemViewHolder.Companion.LAYOUT) viewHolder =
-            InboxReputationDetailItemViewHolder(
+            )
+            InboxReputationDetailItemViewHolder.LAYOUT -> InboxReputationDetailItemViewHolder(
                 view,
                 viewListener
-            ) else if (type == LoadingInboxReputationDetailViewholder.Companion.LAYOUT) viewHolder =
-            LoadingInboxReputationDetailViewholder(view) else viewHolder =
-            super.createViewHolder(view, type)
-        return viewHolder
-    }
-
-    init {
-        viewListener = inboxReputationDetail
-        reputationListener = inboxReputationDetail
+            )
+            LoadingInboxReputationDetailViewholder.LAYOUT -> LoadingInboxReputationDetailViewholder(
+                view
+            )
+            else -> super.createViewHolder(view, viewType)
+        }
     }
 }

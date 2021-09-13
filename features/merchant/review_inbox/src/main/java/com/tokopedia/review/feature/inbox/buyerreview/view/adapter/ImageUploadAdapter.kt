@@ -45,22 +45,22 @@ class ImageUploadAdapter constructor(var context: Context) :
         this.isReviewImage = isReviewImage
     }
 
-    public override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val viewHolder: ViewHolder
         when (viewType) {
             VIEW_REVIEW_IMAGE -> viewHolder = ViewHolder(
-                LayoutInflater.from(viewGroup.getContext())
+                LayoutInflater.from(viewGroup.context)
                     .inflate(R.layout.review_listview_image_review_item, viewGroup, false)
             )
             else -> viewHolder = ViewHolder(
-                LayoutInflater.from(viewGroup.getContext())
+                LayoutInflater.from(viewGroup.context)
                     .inflate(R.layout.review_listview_image_upload_review, viewGroup, false)
             )
         }
         return viewHolder
     }
 
-    public override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             VIEW_UPLOAD_BUTTON -> bindUploadButton(holder, position)
             else -> bindImage(holder, position)
@@ -71,20 +71,20 @@ class ImageUploadAdapter constructor(var context: Context) :
         try {
             if (list.get(position).getFileLoc() == null) {
                 ImageHandler.loadImageRounded2(
-                    holder.image.getContext(),
+                    holder.image.context,
                     holder.image,
                     list.get(position).getPicSrc(),
-                    convertDpToPx(holder.image.getContext(), RADIUS_CORNER.toFloat())
+                    convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
                 )
             } else {
-                Glide.with(holder.image.getContext())
+                Glide.with(holder.image.context)
                     .asBitmap()
                     .load(File(list.get(position).getFileLoc()))
                     .centerCrop()
                     .into(
                         getRoundedImageViewTarget(
                             holder.image,
-                            convertDpToPx(holder.image.getContext(), RADIUS_CORNER.toFloat())
+                            convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
                         )
                     )
             }
@@ -96,17 +96,17 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     fun convertDpToPx(context: Context, dp: Float): Float {
-        return dp * context.getResources().getDisplayMetrics().density
+        return dp * context.resources.displayMetrics.density
     }
 
     private fun setBorder(holder: ViewHolder, position: Int) {
         if (list.get(position).isSelected()) {
             holder.image.setBackgroundColor(
-                context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         } else {
             holder.image.setBackgroundColor(
-                context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
             )
         }
     }
@@ -115,7 +115,7 @@ class ImageUploadAdapter constructor(var context: Context) :
         holder.image.setOnClickListener(listener!!.onUploadClicked(position))
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         if (list.size < 5) {
             return list.size + canUpload
         } else {
@@ -123,7 +123,7 @@ class ImageUploadAdapter constructor(var context: Context) :
         }
     }
 
-    public override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         if (position == list.size && list.size < MAX_IMAGE) {
             return VIEW_UPLOAD_BUTTON
         } else if (isReviewImage) {
@@ -186,10 +186,10 @@ class ImageUploadAdapter constructor(var context: Context) :
                 override fun setResource(resource: Bitmap?) {
                     val circularBitmapDrawable: RoundedBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(
-                            imageView.getContext().getResources(),
+                            imageView.context.resources,
                             resource
                         )
-                    circularBitmapDrawable.setCornerRadius(radius)
+                    circularBitmapDrawable.cornerRadius = radius
                     imageView.setImageDrawable(circularBitmapDrawable)
                 }
             }

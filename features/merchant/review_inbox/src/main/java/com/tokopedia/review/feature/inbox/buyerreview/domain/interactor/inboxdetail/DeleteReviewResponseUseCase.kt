@@ -5,21 +5,24 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.D
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/27/17.
  */
-class DeleteReviewResponseUseCase constructor(private val reputationRepository: ReputationRepository) :
-    UseCase<DeleteReviewResponseDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<DeleteReviewResponseDomain?> {
-        return (reputationRepository.deleteReviewResponse(requestParams))!!
+class DeleteReviewResponseUseCase @Inject constructor(private val reputationRepository: ReputationRepository) :
+    UseCase<DeleteReviewResponseDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<DeleteReviewResponseDomain> {
+        return (reputationRepository.deleteReviewResponse(requestParams))
     }
 
     companion object {
-        private val PARAM_REVIEW_ID: String = "review_id"
-        private val PARAM_PRODUCT_ID: String = "product_id"
-        private val PARAM_SHOP_ID: String = "shop_id"
-        private val PARAM_REPUTATION_ID: String = "reputation_id"
+        private const val PARAM_REVIEW_ID: String = "review_id"
+        private const val PARAM_PRODUCT_ID: String = "product_id"
+        private const val PARAM_SHOP_ID: String = "shop_id"
+        private const val PARAM_REPUTATION_ID: String = "reputation_id"
+
         fun getParam(
             reviewId: String?,
             productId: String?,

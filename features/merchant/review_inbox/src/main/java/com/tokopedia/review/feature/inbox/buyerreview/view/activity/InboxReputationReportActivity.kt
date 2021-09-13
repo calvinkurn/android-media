@@ -14,19 +14,19 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputat
 /**
  * @author by nisie on 9/13/17.
  */
-class InboxReputationReportActivity constructor() : BaseSimpleActivity(), HasComponent<Any?> {
+class InboxReputationReportActivity : BaseSimpleActivity(), HasComponent<Any?> {
     override fun getNewFragment(): Fragment? {
-        val reviewId: String = getIntent().getExtras()!!
+        val reviewId: String = intent.extras!!
             .getString(ARGS_REVIEW_ID, "")
-        val shopId: String? = getIntent().getExtras()!!.getString(ARGS_SHOP_ID)
-        return InboxReputationReportFragment.Companion.createInstance(reviewId, shopId)
+        val shopId: String? = intent.extras!!.getString(ARGS_SHOP_ID)
+        return InboxReputationReportFragment.createInstance(reviewId, shopId)
     }
 
-    public override fun getComponent(): BaseAppComponent {
-        return (getApplication() as BaseMainApplication).getBaseAppComponent()
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
-    public override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
 

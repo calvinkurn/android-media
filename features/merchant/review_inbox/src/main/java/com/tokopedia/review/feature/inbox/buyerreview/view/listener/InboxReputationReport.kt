@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 /**
  * @author by nisie on 9/13/17.
  */
-open interface InboxReputationReport {
-    open interface View : CustomerView {
+interface InboxReputationReport {
+    interface View : CustomerView {
         fun showLoadingProgress()
         fun onErrorReportReview(errorMessage: String?)
         fun onSuccessReportReview()
@@ -16,7 +16,7 @@ open interface InboxReputationReport {
         val context: Context
     }
 
-    open interface Presenter : CustomerPresenter<View?> {
+    interface Presenter : CustomerPresenter<View?> {
         fun reportReview(
             reviewId: String?,
             shopId: String?,

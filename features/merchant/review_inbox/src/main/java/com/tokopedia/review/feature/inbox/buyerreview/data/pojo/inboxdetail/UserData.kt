@@ -3,36 +3,36 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class UserData {
+data class UserData(
     @SerializedName("user_id")
     @Expose
-    var userId = 0
+    val userId: Long = 0L,
 
     @SerializedName("full_name")
     @Expose
-    var fullName: String? = null
+    val fullName: String = "",
 
     @SerializedName("user_email")
     @Expose
-    var userEmail: String? = null
+    val userEmail: String = "",
 
     @SerializedName("user_status")
     @Expose
-    var userStatus = 0
+    val userStatus: Int = 0,
 
     @SerializedName("user_url")
     @Expose
-    var userUrl: String? = null
+    val userUrl: String = "",
 
     @SerializedName("UserLabel")
     @Expose
-    var userLabel: String? = null
+    val userLabel: String = "",
 
     @SerializedName("user_profile_pict")
     @Expose
-    var userProfilePict: String? = null
+    val userProfilePict: String = "",
 
     @SerializedName("user_reputation")
     @Expose
-    var userReputation: UserReputation? = null
-}
+    val userReputation: UserReputation = UserReputation()
+)

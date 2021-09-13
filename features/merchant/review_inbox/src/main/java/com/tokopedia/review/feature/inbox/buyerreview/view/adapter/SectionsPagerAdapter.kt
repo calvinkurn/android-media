@@ -16,20 +16,20 @@ class SectionsPagerAdapter constructor(
 ) : FragmentPagerAdapter(
     (fm)!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 ) {
-    public override fun getItem(position: Int): Fragment {
+    override fun getItem(position: Int): Fragment {
         return fragmentList.get(position)
     }
 
-    public override fun getCount(): Int {
+    override fun getCount(): Int {
         return fragmentList.size
     }
 
-    public override fun getPageTitle(position: Int): CharSequence? {
-        if ((indicator != null
+    override fun getPageTitle(position: Int): CharSequence? {
+        return if ((indicator != null
                     ) && (indicator.getTabAt(position) != null
                     ) && !TextUtils.isEmpty(
-                indicator.getTabAt(position)!!.getText()
+                indicator.getTabAt(position)!!.text
             )
-        ) return indicator.getTabAt(position)!!.getText() else return ""
+        ) indicator.getTabAt(position)!!.text else ""
     }
 }

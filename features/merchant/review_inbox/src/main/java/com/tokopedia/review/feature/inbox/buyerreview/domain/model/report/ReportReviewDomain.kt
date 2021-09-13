@@ -9,11 +9,11 @@ class ReportReviewDomain {
     var errorMessage: String? = null
         private set
 
-    constructor(errorMessage: String?) {
+    constructor(errorMessage: String? = null) {
         this.errorMessage = errorMessage
     }
 
-    constructor(isSuccess: Int) {
+    constructor(isSuccess: Int = 0) {
         this.isSuccess = isSuccess == 1
     }
 }

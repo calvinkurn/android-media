@@ -15,195 +15,176 @@ import java.util.*
 /**
  * @author by nisie on 8/19/17.
  */
-open class GetInboxReputationDetailSubscriber constructor(protected val viewListener: InboxReputationDetail.View?) :
-    Subscriber<InboxReputationDetailDomain?>() {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
-        viewListener!!.finishLoading()
+open class GetInboxReputationDetailSubscriber constructor(
+    protected val viewListener: InboxReputationDetail.View?
+) :
+    Subscriber<InboxReputationDetailDomain>() {
+
+    companion object {
+        const val PRODUCT_IS_DELETED: Int = 0
+        const val PRODUCT_IS_BANNED: Int = -2
+    }
+
+    override fun onCompleted() {}
+
+    override fun onError(e: Throwable) {
+        viewListener.finishLoading()
         viewListener.onErrorGetInboxDetail(e)
     }
 
-    public override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
-        viewListener!!.finishLoading()
+    override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
+        viewListener.finishLoading()
         viewListener.onSuccessGetInboxDetail(
-            convertToReputationViewModel(inboxReputationDetailDomain.getInboxReputationDomain()).getList()
-                .get(0),
-            mappingToListItemViewModel(inboxReputationDetailDomain.getReviewDomain())
+            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationDomain).list.getOrNull(
+                0
+            ) ?: InboxReputationItemUiModel(),
+            mappingToListItemViewModel(inboxReputationDetailDomain.reviewDomain)
         )
     }
 
-    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain?): ReputationBadgeUiModel {
+    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain): ReputationBadgeUiModel {
         return ReputationBadgeUiModel(
-            reputationBadge.getLevel(),
-            reputationBadge.getSet()
+            reputationBadge.level,
+            reputationBadge.set
         )
     }
 
-    protected fun mappingToListItemViewModel(reviewDomain: ReviewDomain?): List<Visitable<*>?> {
-        val list: MutableList<Visitable<*>?> = ArrayList()
-        if (reviewDomain.getData() != null) {
-            for (detailDomain: ReviewItemDomain? in reviewDomain.getData()) {
-                list.add(
-                    convertToInboxReputationDetailItemViewModel(
-                        reviewDomain,
-                        detailDomain
-                    )
-                )
-            }
+    protected fun mappingToListItemViewModel(reviewDomain: ReviewDomain): List<Visitable<*>> {
+        reviewDomain.data.map {
+            convertToInboxReputationDetailItemViewModel(
+                reviewDomain,
+                it
+            )
         }
-        return list
     }
 
     private fun convertToInboxReputationDetailItemViewModel(
-        reviewDomain: ReviewDomain?, itemDomain: ReviewItemDomain?
+        reviewDomain: ReviewDomain, itemDomain: ReviewItemDomain
     ): Visitable<*> {
         return InboxReputationDetailItemUiModel(
-            reviewDomain.getReputationId(),
-            itemDomain.getProductData().getProductId().toString(),
-            itemDomain.getProductData().getProductName(),
-            itemDomain.getProductData().getProductImageUrl(),
-            itemDomain.getProductData().getProductPageUrl(),
-            itemDomain.getReviewData().getReviewId().toString(),
-            reviewDomain.getUserData().getFullName(),
-            if (TextUtils.isEmpty(
-                    itemDomain.getReviewData().getReviewUpdateTime().getDateTimeFmt1()
-                )
-            ) itemDomain.getReviewData().getReviewCreateTime().getDateTimeFmt1() else itemDomain
-                .getReviewData().getReviewUpdateTime().getDateTimeFmt1(),
-            convertToImageAttachmentViewModel(itemDomain.getReviewData().getReviewImageUrl()),
-            itemDomain.getReviewData().getReviewMessage(),
-            itemDomain.getReviewData().getReviewRating(),
-            itemDomain!!.isReviewHasReviewed(),
-            itemDomain!!.isReviewIsEditable(),
-            itemDomain!!.isReviewIsSkippable(),
-            itemDomain!!.isReviewIsSkipped(),
-            reviewDomain.getShopData().getShopId(),
-            viewListener.getTab(),
+            reviewDomain.reputationId,
+            itemDomain.productData.productId.toString(),
+            itemDomain.productData.productName,
+            itemDomain.productData.productImageUrl,
+            itemDomain.productData.productImageUrl,
+            itemDomain.reviewData.reviewId.toString(),
+            reviewDomain.userData.fullName,
+            if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
+                .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
+            convertToImageAttachmentViewModel(itemDomain.reviewData.reviewImageUrl),
+            itemDomain.reviewData.reviewMessage,
+            itemDomain.reviewData.reviewRating,
+            itemDomain.isReviewHasReviewed,
+            itemDomain.isReviewIsEditable,
+            itemDomain.isReviewIsSkippable,
+            itemDomain.isReviewIsSkipped,
+            reviewDomain.shopData.shopId,
+            viewListener.tab,
             convertToReviewResponseViewModel(
-                reviewDomain.getShopData(),
-                itemDomain.getReviewData()
-                    .getReviewResponse()
+                reviewDomain.shopData,
+                itemDomain.reviewData.reviewResponse
             ),
-            itemDomain.getReviewData().isReviewAnonymity(),
-            itemDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
+            itemDomain.reviewData.isReviewAnonymity,
+            itemDomain.productData.productStatus == PRODUCT_IS_DELETED,
             !TextUtils.isEmpty(
-                itemDomain.getReviewData().getReviewUpdateTime()
-                    .getDateTimeFmt1()
+                itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1
             ),
-            reviewDomain.getShopData().getShopName(),
-            reviewDomain.getUserData().getUserId(),
-            itemDomain.getProductData().getProductStatus() == PRODUCT_IS_BANNED,
-            itemDomain.getProductData().getProductStatus(),
-            reviewDomain.getOrderId()
+            reviewDomain.shopData.shopName,
+            reviewDomain.userData.userId,
+            itemDomain.productData.productStatus == PRODUCT_IS_BANNED,
+            itemDomain.productData.productStatus,
+            reviewDomain.orderId
         )
     }
 
     private fun convertToReviewResponseViewModel(
-        shopData: ShopDataDomain?,
-        reviewResponse: ReviewResponseDomain?
-    ): ReviewResponseUiModel? {
-        if (reviewResponse != null && shopData != null) return ReviewResponseUiModel(
-            reviewResponse.getResponseMessage(),
-            reviewResponse.getResponseCreateTime().getDateTimeFmt1(),
-            shopData.getShopName()
-        ) else return null
+        shopData: ShopDataDomain,
+        reviewResponse: ReviewResponseDomain
+    ): ReviewResponseUiModel {
+        return ReviewResponseUiModel(
+            reviewResponse.responseMessage,
+            reviewResponse.responseCreateTime.dateTimeFmt1,
+            shopData.shopName
+        )
     }
 
-    private fun convertToImageAttachmentViewModel(reviewImageUrl: List<ImageAttachmentDomain?>?): ArrayList<ImageAttachmentUiModel> {
-        val list: ArrayList<ImageAttachmentUiModel> = ArrayList()
-        for (domain: ImageAttachmentDomain? in reviewImageUrl!!) {
-            list.add(
-                ImageAttachmentUiModel(
-                    domain.getAttachmentId(),
-                    domain.getDescription(),
-                    domain.getUriThumbnail(),
-                    domain.getUriLarge()
-                )
+    private fun convertToImageAttachmentViewModel(reviewImageUrl: List<ImageAttachmentDomain>): List<ImageAttachmentUiModel> {
+        return reviewImageUrl.map {
+            ImageAttachmentUiModel(
+                it.attachmentId,
+                it.description,
+                it.uriThumbnail,
+                it.uriLarge
             )
         }
-        return list
     }
 
     protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain?): InboxReputationUiModel {
         return InboxReputationUiModel(
-            convertToInboxReputationList(inboxReputationDomain.getInboxReputation()),
-            inboxReputationDomain.getPaging().isHasNext()
+            convertToInboxReputationList(inboxReputationDomain?.inboxReputation ?: listOf()),
+            inboxReputationDomain?.paging?.isHasNext ?: false
         )
     }
 
-    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain?>?): List<InboxReputationItemUiModel?> {
-        val list: MutableList<InboxReputationItemUiModel?> = ArrayList()
-        for (domain: InboxReputationItemDomain? in inboxReputationDomain!!) {
-            list.add(
-                InboxReputationItemUiModel(
-                    domain.getReputationId().toString(),
-                    domain.getRevieweeData().getRevieweeName(),
-                    domain.getOrderData().getCreateTimeFmt(),
-                    domain.getRevieweeData().getRevieweePicture(),
-                    domain.getReputationData().getLockingDeadlineDays().toString(),
-                    domain.getOrderData().getInvoiceRefNum(),
-                    convertToReputationViewModel(domain.getReputationData()),
-                    domain.getRevieweeData().getRevieweeRoleId(),
-                    convertToBuyerReputationViewModel(
-                        domain.getRevieweeData()
-                            .getRevieweeBadgeCustomer()
-                    ),
-                    convertToSellerReputationViewModel(
-                        domain.getRevieweeData()
-                            .getRevieweeBadgeSeller()
-                    ),
-                    domain.getShopId(),
-                    domain.getUserId()
-                )
+    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain>): List<InboxReputationItemUiModel> {
+        return inboxReputationDomain.map {
+            InboxReputationItemUiModel(
+                it.reputationId.toString(),
+                it.revieweeData.revieweeName,
+                it.orderData.createTimeFmt,
+                it.revieweeData.revieweePicture,
+                it.reputationData.lockingDeadlineDays.toString(),
+                it.orderData.invoiceRefNum,
+                convertToReputationViewModel(it.reputationData),
+                it.revieweeData.revieweeRoleId,
+                convertToBuyerReputationViewModel(it.revieweeData.revieweeBadgeCustomer),
+                convertToSellerReputationViewModel(it.revieweeData.revieweeBadgeSeller),
+                it.shopId,
+                it.userId
             )
         }
-        return list
     }
 
-    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain?): RevieweeBadgeSellerUiModel {
+    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain): RevieweeBadgeSellerUiModel {
         return RevieweeBadgeSellerUiModel(
-            revieweeBadgeSeller.getTooltip(),
-            revieweeBadgeSeller.getReputationScore(),
-            revieweeBadgeSeller.getScore(),
-            revieweeBadgeSeller.getMinBadgeScore(),
-            revieweeBadgeSeller.getReputationBadgeUrl(),
-            convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()),
-            revieweeBadgeSeller.getIsFavorited()
+            revieweeBadgeSeller.tooltip,
+            revieweeBadgeSeller.reputationScore,
+            revieweeBadgeSeller.score,
+            revieweeBadgeSeller.minBadgeScore,
+            revieweeBadgeSeller.reputationBadgeUrl,
+            convertToReputationBadgeViewModel(revieweeBadgeSeller.reputationBadge),
+            revieweeBadgeSeller.isFavorited
         )
     }
 
     private fun convertToBuyerReputationViewModel(
-        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain?
+        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain
     ): RevieweeBadgeCustomerUiModel {
         return RevieweeBadgeCustomerUiModel(
-            revieweeBadgeCustomer.getPositive(),
-            revieweeBadgeCustomer.getNeutral(), revieweeBadgeCustomer.getNegative(),
-            revieweeBadgeCustomer.getPositivePercentage(),
-            revieweeBadgeCustomer.getNoReputation()
+            revieweeBadgeCustomer.positive,
+            revieweeBadgeCustomer.neutral,
+            revieweeBadgeCustomer.negative,
+            revieweeBadgeCustomer.positivePercentage,
+            revieweeBadgeCustomer.noReputation
         )
     }
 
-    private fun convertToReputationViewModel(reputationData: ReputationDataDomain?): ReputationDataUiModel {
+    private fun convertToReputationViewModel(reputationData: ReputationDataDomain): ReputationDataUiModel {
         return ReputationDataUiModel(
-            reputationData.getRevieweeScore(),
-            reputationData.getRevieweeScoreStatus(),
-            reputationData!!.isShowRevieweeScore(),
-            reputationData.getReviewerScore(),
-            reputationData.getReviewerScoreStatus(),
-            reputationData!!.isEditable(),
-            reputationData!!.isInserted(),
-            reputationData!!.isLocked(),
-            reputationData!!.isAutoScored(),
-            reputationData!!.isCompleted(),
-            reputationData!!.isShowLockingDeadline(),
-            reputationData.getLockingDeadlineDays(),
-            reputationData!!.isShowBookmark(),
-            reputationData.getActionMessage()
+            reputationData.revieweeScore,
+            reputationData.revieweeScoreStatus,
+            reputationData.isShowRevieweeScore,
+            reputationData.reviewerScore,
+            reputationData.reviewerScoreStatus,
+            reputationData.isEditable,
+            reputationData.isInserted,
+            reputationData.isLocked,
+            reputationData.isAutoScored,
+            reputationData.isCompleted,
+            reputationData.isShowLockingDeadline,
+            reputationData.lockingDeadlineDays,
+            reputationData.isShowBookmark,
+            reputationData.actionMessage
         )
-    }
-
-    companion object {
-        val PRODUCT_IS_DELETED: Int = 0
-        val PRODUCT_IS_BANNED: Int = -2
     }
 }

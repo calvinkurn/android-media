@@ -20,7 +20,7 @@ import rx.functions.Action1
  */
 class CloudInboxReputationDataSource(
     private val reputationService: ReputationService,
-    private val inboxReputationMapper: InboxReputationMapper?,
+    private val inboxReputationMapper: InboxReputationMapper,
     private val persistentCacheManager: PersistentCacheManager,
     private val userSessionInterface: UserSessionInterface
 ) {
@@ -29,7 +29,7 @@ class CloudInboxReputationDataSource(
             AuthHelper.generateParamsNetwork(
                 userSessionInterface.userId,
                 userSessionInterface.deviceId,
-                convertMapObjectToString(requestParams.parameters)!!
+                convertMapObjectToString(requestParams.parameters)
             )
         )
             .map(inboxReputationMapper)
@@ -38,16 +38,16 @@ class CloudInboxReputationDataSource(
 
     private fun saveToCache(requestParams: RequestParams): Action1<InboxReputationDomain> {
         return Action1 { inboxReputationDomain: InboxReputationDomain ->
-            if (!inboxReputationDomain.inboxReputation.isEmpty()
+            if (inboxReputationDomain.inboxReputation.isNotEmpty()
                 && isRequestNotFiltered(requestParams)
             ) {
                 val key: String =
-                    GetFirstTimeInboxReputationUseCase.Companion.CACHE_REPUTATION + requestParams.parameters[GetInboxReputationUseCase.Companion.PARAM_TAB]
+                    GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION + requestParams.parameters[GetInboxReputationUseCase.PARAM_TAB]
                 val value = CacheUtil.convertModelToString(
                     inboxReputationDomain,
                     object : TypeToken<InboxReputationDomain?>() {}.type
                 )
-                val cacheDuration: Int = GetFirstTimeInboxReputationUseCase.Companion.DURATION_CACHE
+                val cacheDuration: Int = GetFirstTimeInboxReputationUseCase.DURATION_CACHE
                 persistentCacheManager.put(
                     key,
                     value,

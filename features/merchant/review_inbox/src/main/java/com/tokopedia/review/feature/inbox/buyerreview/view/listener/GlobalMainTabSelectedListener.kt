@@ -12,28 +12,28 @@ open class GlobalMainTabSelectedListener constructor(
     private val viewPager: ViewPager,
     private val activity: Activity?
 ) : OnTabSelectedListener {
-    public override fun onTabSelected(tab: TabLayout.Tab) {
-        viewPager.setCurrentItem(tab.getPosition())
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        viewPager.currentItem = tab.position
         if (activity != null) {
-            val focus: View? = activity.getCurrentFocus()
+            val focus: View? = activity.currentFocus
             if (focus != null) {
                 hiddenKeyboard(focus, activity)
             }
         }
     }
 
-    public override fun onTabUnselected(tab: TabLayout.Tab) {
+    override fun onTabUnselected(tab: TabLayout.Tab) {
         if (activity != null) {
-            val focus: View? = activity.getCurrentFocus()
+            val focus: View? = activity.currentFocus
             if (focus != null) {
                 hiddenKeyboard(focus, activity)
             }
         }
     }
 
-    public override fun onTabReselected(tab: TabLayout.Tab) {
+    override fun onTabReselected(tab: TabLayout.Tab) {
         if (activity != null) {
-            val focus: View? = activity.getCurrentFocus()
+            val focus: View? = activity.currentFocus
             if (focus != null) {
                 hiddenKeyboard(focus, activity)
             }
@@ -43,10 +43,10 @@ open class GlobalMainTabSelectedListener constructor(
     private fun hiddenKeyboard(v: View, activity: Activity?) {
         val keyboard: InputMethodManager =
             activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0)
+        keyboard.hideSoftInputFromWindow(v.windowToken, 0)
     }
 
     companion object {
-        private val TAG: String = GlobalMainTabSelectedListener::class.java.getSimpleName()
+        private val TAG: String = GlobalMainTabSelectedListener::class.java.simpleName
     }
 }

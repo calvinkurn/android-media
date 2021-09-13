@@ -13,28 +13,32 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationDetailFragment
 import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailActivity constructor() : BaseSimpleActivity(), HasComponent<Any?> {
-    private var reputationTracking: ReputationTracking? = null
+class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<Any?> {
+
+    @Inject
+    lateinit var reputationTracking: ReputationTracking
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reputationTracking = ReputationTracking()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         var tab: Int = -1
         var isFromApplink: Boolean = false
         var reputationId: String? = DEFAULT_REPUTATION_ID
-        val intentData: Uri? = getIntent().getData()
-        val intentExtras: Bundle? = getIntent().getExtras()
+        val intentData: Uri? = intent.data
+        val intentExtras: Bundle? = intent.extras
 
         // if from applink
-        if (intentData != null && intentData.getPathSegments().size >= 2) {
+        if (intentData != null && intentData.pathSegments.size >= 2) {
             isFromApplink = true
-            reputationId = intentData.getPathSegments().get(1)
+            reputationId = intentData.pathSegments.get(1)
         }
         if (intentExtras != null && !isFromApplink) {
             if (intentExtras.getInt(ARGS_TAB, -1) != -1) {
@@ -43,38 +47,38 @@ class InboxReputationDetailActivity constructor() : BaseSimpleActivity(), HasCom
             reputationId = intentExtras.getString(REPUTATION_ID, "")
             isFromApplink = intentExtras.getBoolean(ARGS_IS_FROM_APPLINK, false)
         }
-        return InboxReputationDetailFragment.Companion.createInstance(
+        return InboxReputationDetailFragment.createInstance(
             tab,
             isFromApplink,
             reputationId
         )
     }
 
-    public override fun getComponent(): BaseAppComponent {
-        return (getApplication() as BaseMainApplication).getBaseAppComponent()
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
-    public override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (getFragment() != null && getFragment() is InboxReputationDetailFragment) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (fragment != null && fragment is InboxReputationDetailFragment) {
             val fragment: InboxReputationDetailFragment? =
-                getFragment() as InboxReputationDetailFragment?
-            reputationTracking!!.onClickBackButtonReputationDetailTracker(
+                fragment as InboxReputationDetailFragment?
+            reputationTracking.onClickBackButtonReputationDetailTracker(
                 Objects.requireNonNull(
                     fragment
-                ).getOrderId()
+                )?.orderId
             )
         }
         return super.onOptionsItemSelected(item)
     }
 
     companion object {
-        val ARGS_POSITION: String = "ARGS_POSITION"
-        val ARGS_TAB: String = "ARGS_TAB"
-        val ARGS_IS_FROM_APPLINK: String = "ARGS_IS_FROM_APPLINK"
-        val REPUTATION_ID: String = "reputation_id"
+        const val ARGS_POSITION: String = "ARGS_POSITION"
+        const val ARGS_TAB: String = "ARGS_TAB"
+        const val ARGS_IS_FROM_APPLINK: String = "ARGS_IS_FROM_APPLINK"
+        const val REPUTATION_ID: String = "reputation_id"
         val CACHE_PASS_DATA: String =
-            InboxReputationDetailActivity::class.java.getName() + "-passData"
-        val DEFAULT_REPUTATION_ID: String = "0"
+            InboxReputationDetailActivity::class.java.name + "-passData"
+        const val DEFAULT_REPUTATION_ID: String = "0"
         fun getCallingIntent(
             context: Context?,
             adapterPosition: Int, tab: Int

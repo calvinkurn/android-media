@@ -6,22 +6,26 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.R
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 9/26/17.
  */
-class GetReviewUseCase constructor(protected var reputationRepository: ReputationRepository) :
-    UseCase<ReviewDomain?>() {
-    public override fun createObservable(requestParams: RequestParams): Observable<ReviewDomain?> {
-        return (reputationRepository.getReviewFromCloud(requestParams))!!
+class GetReviewUseCase @Inject constructor(private var reputationRepository: ReputationRepository) :
+    UseCase<ReviewDomain>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<ReviewDomain> {
+        return (reputationRepository.getReviewFromCloud(requestParams))
     }
 
     companion object {
-        val PARAM_REPUTATION_ID: String = "reputation_id"
-        val PARAM_USER_ID: String = "user_id"
-        val PARAM_ROLE: String = "role"
-        protected val ROLE_BUYER: Int = 1
-        protected val ROLE_SELLER: Int = 2
+        const val PARAM_REPUTATION_ID: String = "reputation_id"
+        const val PARAM_USER_ID: String = "user_id"
+
+        private const val PARAM_ROLE: String = "role"
+        private const val ROLE_BUYER: Int = 1
+        private const val ROLE_SELLER: Int = 2
+
         fun getParam(id: String?, userId: String?, tab: Int): RequestParams {
             val params: RequestParams = RequestParams.create()
             params.putString(PARAM_REPUTATION_ID, id)
@@ -30,12 +34,12 @@ class GetReviewUseCase constructor(protected var reputationRepository: Reputatio
             return params
         }
 
-        protected fun getRole(tab: Int): Int {
-            when (tab) {
-                ReviewInboxConstants.TAB_WAITING_REVIEW -> return ROLE_BUYER
-                ReviewInboxConstants.TAB_MY_REVIEW -> return ROLE_BUYER
-                ReviewInboxConstants.TAB_BUYER_REVIEW -> return ROLE_SELLER
-                else -> return ROLE_BUYER
+        fun getRole(tab: Int): Int {
+            return when (tab) {
+                ReviewInboxConstants.TAB_WAITING_REVIEW -> ROLE_BUYER
+                ReviewInboxConstants.TAB_MY_REVIEW -> ROLE_BUYER
+                ReviewInboxConstants.TAB_BUYER_REVIEW -> ROLE_SELLER
+                else -> ROLE_BUYER
             }
         }
     }

@@ -9,21 +9,25 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
  * @author by nisie on 8/15/17.
  */
 class InboxReputationItemUiModel constructor(
-    val reputationId: String, val revieweeName: String?, val createTime: String?,
-    val revieweePicture: String?, val reputationDaysLeft: String,
+    val reputationId: String,
+    val revieweeName: String?,
+    val createTime: String?,
+    val revieweePicture: String?,
+    val reputationDaysLeft: String,
     val invoice: String?,
     val reputationDataUiModel: ReputationDataUiModel,
     val role: Int,
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,
     val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel,
     val shopId: Long, val userId: Long
-) : Visitable<InboxReputationTypeFactory?> {
-    public override fun type(typeFactory: InboxReputationTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+) : Visitable<InboxReputationTypeFactory> {
 
     companion object {
-        val ROLE_SELLER: Int = 2
-        val ROLE_BUYER: Int = 1
+        const val ROLE_SELLER = 2
+        const val ROLE_BUYER: Int = 1
+    }
+
+    override fun type(typeFactory: InboxReputationTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

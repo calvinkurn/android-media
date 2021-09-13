@@ -8,45 +8,49 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.*
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
 import retrofit2.Response
 import rx.functions.Func1
-import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailMapper : Func1<Response<TokopediaWsV4Response?>, ReviewDomain> {
-    override fun call(response: Response<TokopediaWsV4Response?>): ReviewDomain {
-        return if (response.isSuccessful) {
-            if ((!response.body()!!.isNullData
-                        && response.body()!!.errorMessageJoined == "")
-                || !response.body()!!.isNullData && response.body()!!.errorMessages == null
-            ) {
-                val data = response.body()
-                    .convertDataObj(InboxReputationDetailPojo::class.java)
-                mappingToDomain(data)
-            } else {
-                if (response.body()!!.errorMessages != null
-                    && !response.body()!!.errorMessages.isEmpty()
+class InboxReputationDetailMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, ReviewDomain> {
+
+    override fun call(response: Response<TokopediaWsV4Response?>?): ReviewDomain {
+        response?.let {
+            if (response.isSuccessful) {
+                if ((!response.body()!!.isNullData
+                            && response.body()!!.errorMessageJoined == "")
+                    || !response.body()!!.isNullData && response.body()!!.errorMessages == null
                 ) {
+                    val data = response.body()?.convertDataObj(InboxReputationDetailPojo::class.java)
+                        ?: InboxReputationDetailPojo()
+                    return mappingToDomain(data)
+                } else {
+                    if (response.body()!!.errorMessages != null
+                        && response.body()!!.errorMessages.isNotEmpty()
+                    ) {
+                        throw ErrorMessageException(
+                            response.body()!!.errorMessageJoined
+                        )
+                    } else {
+                        throw ErrorMessageException("")
+                    }
+                }
+            } else {
+                var messageError: String? = ""
+                if (response.body() != null) {
+                    messageError = response.body()!!.errorMessageJoined
+                }
+                if (!TextUtils.isEmpty(messageError)) {
                     throw ErrorMessageException(
-                        response.body()!!.errorMessageJoined
+                        messageError
                     )
                 } else {
-                    throw ErrorMessageException("")
+                    throw RuntimeException(response.code().toString())
                 }
             }
-        } else {
-            var messageError: String? = ""
-            if (response.body() != null) {
-                messageError = response.body()!!.errorMessageJoined
-            }
-            if (!TextUtils.isEmpty(messageError)) {
-                throw ErrorMessageException(
-                    messageError
-                )
-            } else {
-                throw RuntimeException(response.code().toString())
-            }
         }
+        return ReviewDomain()
     }
 
     private fun mappingToDomain(data: InboxReputationDetailPojo): ReviewDomain {
@@ -61,73 +65,71 @@ class InboxReputationDetailMapper : Func1<Response<TokopediaWsV4Response?>, Revi
         )
     }
 
-    private fun convertToShopDataDomain(shopData: ShopData?): ShopDataDomain {
+    private fun convertToShopDataDomain(shopData: ShopData): ShopDataDomain {
         return ShopDataDomain(
-            shopData.getShopId(),
-            shopData.getShopUserId(),
-            shopData.getDomain(),
-            shopData.getShopName(),
-            shopData.getShopUrl(),
-            shopData.getLogo(),
-            convertToShopReputationDomain(shopData.getShopReputation())
+            shopData.shopId,
+            shopData.shopUserId,
+            shopData.domain,
+            shopData.shopName,
+            shopData.shopUrl,
+            shopData.logo,
+            convertToShopReputationDomain(shopData.shopReputation)
         )
     }
 
-    private fun convertToShopReputationDomain(shopReputation: ShopReputation?): ShopReputationDomain {
+    private fun convertToShopReputationDomain(shopReputation: ShopReputation): ShopReputationDomain {
         return ShopReputationDomain(
-            shopReputation.getTooltip(),
-            shopReputation.getReputationScore(),
-            shopReputation.getScore(),
-            shopReputation.getMinBadgeScore(),
-            shopReputation.getReputationBadgeUrl(),
-            convertToReputationBadgeDomain(shopReputation.getReputationBadge())
+            shopReputation.tooltip,
+            shopReputation.reputationScore,
+            shopReputation.score,
+            shopReputation.minBadgeScore,
+            shopReputation.reputationBadgeUrl,
+            convertToReputationBadgeDomain(shopReputation.reputationBadge)
         )
     }
 
-    private fun convertToReputationBadgeDomain(reputationBadge: ReputationBadge?): ReputationBadgeDomain {
+    private fun convertToReputationBadgeDomain(reputationBadge: ReputationBadge): ReputationBadgeDomain {
         return ReputationBadgeDomain(
-            reputationBadge.getLevel(),
-            reputationBadge.getSet()
+            reputationBadge.level,
+            reputationBadge.set
         )
     }
 
-    private fun convertToUserDataDomain(userData: UserData?): UserDataDomain {
+    private fun convertToUserDataDomain(userData: UserData): UserDataDomain {
         return UserDataDomain(
-            userData.getUserId(),
-            userData.getFullName(),
-            userData.getUserEmail(),
-            userData.getUserStatus(),
-            userData.getUserUrl(),
-            userData.getUserLabel(),
-            userData.getUserProfilePict(),
-            convertToUserReputationDomain(userData.getUserReputation())
+            userData.userId,
+            userData.fullName,
+            userData.userEmail,
+            userData.userStatus,
+            userData.userUrl,
+            userData.userLabel,
+            userData.userProfilePict,
+            convertToUserReputationDomain(userData.userReputation)
         )
     }
 
-    private fun convertToUserReputationDomain(userReputation: UserReputation?): UserReputationDomain {
+    private fun convertToUserReputationDomain(userReputation: UserReputation): UserReputationDomain {
         return UserReputationDomain(
-            userReputation.getPositive(),
-            userReputation.getNeutral(),
-            userReputation.getNegative(),
-            userReputation.getPositivePercentage(),
-            userReputation.getNoReputation()
+            userReputation.positive,
+            userReputation.neutral,
+            userReputation.negative,
+            userReputation.positivePercentage,
+            userReputation.noReputation
         )
     }
 
-    private fun convertToListReview(data: InboxReputationDetailPojo): List<ReviewItemDomain?> {
-        val list: MutableList<ReviewItemDomain?> = ArrayList()
-        for (pojo in data.reviewInboxData) {
-            list.add(convertToReputationItem(pojo))
+    private fun convertToListReview(data: InboxReputationDetailPojo): List<ReviewItemDomain> {
+        return data.reviewInboxData.map {
+            convertToReputationItem(it)
         }
-        return list
     }
 
-    private fun convertToReputationItem(pojo: ReviewInboxDatum?): ReviewItemDomain {
+    private fun convertToReputationItem(pojo: ReviewInboxDatum): ReviewItemDomain {
         return ReviewItemDomain(
-            convertToProductDataDomain(pojo.getProductData()),
-            pojo.getReviewInboxId(),
-            pojo.getReviewId(),
-            pojo!!.isReviewHasReviewed,
+            convertToProductDataDomain(pojo.productData),
+            pojo.reviewInboxId,
+            pojo.reviewId,
+            pojo.isReviewHasReviewed,
             pojo.isReviewIsSkippable,
             pojo.isReviewIsSkipped,
             pojo.isReviewIsEditable,
@@ -135,79 +137,66 @@ class InboxReputationDetailMapper : Func1<Response<TokopediaWsV4Response?>, Revi
         )
     }
 
-    private fun convertToReviewDataDomain(reviewData: ReviewData?): ReviewDataDomain {
+    private fun convertToReviewDataDomain(reviewData: ReviewData): ReviewDataDomain {
         return ReviewDataDomain(
-            reviewData.getReviewId(),
-            reviewData.getReputationId(),
-            reviewData.getReviewTitle(),
-            reviewData.getReviewMessage(),
-            reviewData.getReviewRating(),
-            convertToImageAttachmentDomain(reviewData.getReviewImageUrl()),
-            convertToReviewCreateTime(reviewData.getReviewCreateTime()),
-            convertToReviewUpdateTime(reviewData.getReviewUpdateTime()),
-            reviewData!!.isReviewAnonymity,
+            reviewData.reviewId,
+            reviewData.reputationId,
+            reviewData.reviewTitle,
+            reviewData.reviewMessage,
+            reviewData.reviewRating,
+            convertToImageAttachmentDomain(reviewData.reviewImageUrl),
+            convertToReviewCreateTime(reviewData.reviewCreateTime),
+            convertToReviewUpdateTime(reviewData.reviewUpdateTime),
+            reviewData.isReviewAnonymity,
             convertToReviewResponseDomain(reviewData.reviewResponse)
         )
     }
 
-    private fun convertToReviewUpdateTime(reviewUpdateTime: ReviewUpdateTime?): ReviewUpdateTimeDomain {
+    private fun convertToReviewUpdateTime(reviewUpdateTime: ReviewUpdateTime): ReviewUpdateTimeDomain {
         return ReviewUpdateTimeDomain(
-            reviewUpdateTime.getDateTimeFmt1(),
-            reviewUpdateTime.getUnixTimestamp(),
-            reviewUpdateTime.getDateTimeIos(),
-            reviewUpdateTime.getDateTimeAndroid()
+            reviewUpdateTime.dateTimeFmt1
         )
     }
 
-    private fun convertToReviewCreateTime(reviewCreateTime: ReviewCreateTime?): ReviewCreateTimeDomain {
+    private fun convertToReviewCreateTime(reviewCreateTime: ReviewCreateTime): ReviewCreateTimeDomain {
         return ReviewCreateTimeDomain(
-            reviewCreateTime.getDateTimeFmt1(),
-            reviewCreateTime.getUnixTimestamp(),
-            reviewCreateTime.getDateTimeIos(),
-            reviewCreateTime.getDateTimeAndroid()
+            reviewCreateTime.dateTimeFmt1
         )
     }
 
-    private fun convertToImageAttachmentDomain(reviewImageUrl: List<ReviewImageUrl?>?): List<ImageAttachmentDomain?> {
-        val list: MutableList<ImageAttachmentDomain?> = ArrayList()
-        for (pojo in reviewImageUrl!!) {
-            list.add(
-                ImageAttachmentDomain(
-                    pojo.getAttachmentId(),
-                    pojo.getDescription(),
-                    pojo.getUriThumbnail(),
-                    pojo.getUriLarge()
-                )
+    private fun convertToImageAttachmentDomain(reviewImageUrl: List<ReviewImageUrl>): List<ImageAttachmentDomain> {
+        return reviewImageUrl.map {
+            ImageAttachmentDomain(
+                it.attachmentId,
+                it.description,
+                it.uriThumbnail,
+                it.uriLarge
             )
         }
-        return list
     }
 
-    private fun convertToReviewResponseDomain(reviewResponse: ReviewResponse?): ReviewResponseDomain {
+    private fun convertToReviewResponseDomain(reviewResponse: ReviewResponse): ReviewResponseDomain {
         return ReviewResponseDomain(
-            reviewResponse.getResponseMessage(),
-            convertToResponseCreateTime(reviewResponse.getResponseCreateTime()),
-            reviewResponse.getResponseBy()
+            reviewResponse.responseMessage,
+            convertToResponseCreateTime(reviewResponse.responseCreateTime),
+            reviewResponse.responseBy
         )
     }
 
-    private fun convertToResponseCreateTime(responseCreateTime: ResponseCreateTime?): ResponseCreateTimeDomain {
+    private fun convertToResponseCreateTime(responseCreateTime: ResponseCreateTime): ResponseCreateTimeDomain {
         return ResponseCreateTimeDomain(
-            responseCreateTime.getDateTimeFmt1(),
-            responseCreateTime.getUnixTimestamp(),
-            responseCreateTime.getDateTimeIos(),
-            responseCreateTime.getDateTimeAndroid()
+            responseCreateTime.dateTimeFmt1
         )
     }
 
-    private fun convertToProductDataDomain(productData: ProductData?): ProductDataDomain {
+    private fun convertToProductDataDomain(productData: ProductData): ProductDataDomain {
         return ProductDataDomain(
-            productData.getProductId(),
-            productData.getProductName(),
-            productData.getProductImageUrl(),
-            productData.getProductPageUrl(),
-            productData.getShopId(),
-            productData.getProductStatus()
+            productData.productId,
+            productData.productName,
+            productData.productImageUrl,
+            productData.productPageUrl,
+            productData.shopId,
+            productData.productStatus
         )
     }
 }

@@ -41,13 +41,13 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             return
         }
         itemView.reviewPendingProductImage.apply {
-            loadImage(productImageUrl)
+            imageView.loadImage(productImageUrl)
             show()
         }
     }
 
     private fun showBrokenProductImage() {
-        itemView.reviewPendingProductImage.loadImageDrawable(R.drawable.image_not_loaded)
+        imageView.loadImageDrawable(resourceId)
     }
 
     private fun showProductName(productName: String) {

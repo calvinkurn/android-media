@@ -6,39 +6,28 @@ import com.tokopedia.review.feature.inbox.buyerreview.network.BaseReputationServ
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-class TomeService constructor(
+class TomeService @Inject constructor(
     private val context: Context?,
     private val networkRouter: NetworkRouter?,
     private val userSession: UserSession?
 ) : BaseReputationService() {
-    var api: TomeApi? = null
-        private set
 
-    public override fun createRetrofit(
-        context: Context?,
-        baseUrl: String?,
-        networkRouter: NetworkRouter?,
-        userSession: UserSession?
-    ): Retrofit? {
-        return super.createRetrofit(context, baseUrl, networkRouter, userSession)
+    companion object {
+        val TAG: String = TomeService::class.java.simpleName
     }
 
-    private fun initApiService() {
-        val retrofit: Retrofit? = createRetrofit(
+    var api: TomeApi = initApiService()
+        private set
+
+    private fun initApiService(): TomeApi {
+        val retrofit: Retrofit = createRetrofit(
             context,
             TokopediaUrl.getInstance().TOME,
             networkRouter,
             userSession
         )
-        api = retrofit!!.create(TomeApi::class.java)
-    }
-
-    companion object {
-        val TAG: String = TomeService::class.java.getSimpleName()
-    }
-
-    init {
-        initApiService()
+        return retrofit.create(TomeApi::class.java)
     }
 }

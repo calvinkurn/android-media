@@ -3,24 +3,24 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class UserReputation {
+data class UserReputation(
     @SerializedName("positive")
     @Expose
-    var positive = 0
+    val positive: Int = 0,
 
     @SerializedName("neutral")
     @Expose
-    var neutral = 0
+    val neutral: Int = 0,
 
     @SerializedName("negative")
     @Expose
-    var negative = 0
+    val negative: Int = 0,
 
     @SerializedName("positive_percentage")
     @Expose
-    var positivePercentage: String? = null
+    val positivePercentage: String = "",
 
     @SerializedName("no_reputation")
     @Expose
-    var noReputation = 0
-}
+    val noReputation: Int = 0
+)

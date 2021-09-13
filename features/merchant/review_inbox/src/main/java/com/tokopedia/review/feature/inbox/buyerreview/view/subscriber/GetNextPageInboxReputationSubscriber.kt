@@ -8,13 +8,13 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
  */
 class GetNextPageInboxReputationSubscriber constructor(viewListener: InboxReputation.View?) :
     GetFirstTimeInboxReputationSubscriber(viewListener) {
-    public override fun onCompleted() {}
-    public override fun onError(e: Throwable) {
+    override fun onCompleted() {}
+    override fun onError(e: Throwable) {
         viewListener!!.finishLoading()
         viewListener.onErrorGetNextPage(e)
     }
 
-    public override fun onNext(inboxReputationDomain: InboxReputationDomain) {
+    override fun onNext(inboxReputationDomain: InboxReputationDomain) {
         viewListener!!.finishLoading()
         viewListener.onSuccessGetNextPage(mappingToViewModel(inboxReputationDomain))
     }

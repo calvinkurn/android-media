@@ -75,11 +75,11 @@ class ReputationDataUiModel : Parcelable {
         actionMessage = `in`.readString()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(revieweeScore)
         dest.writeInt(revieweeScoreStatus)
         dest.writeByte((if (isShowRevieweeScore) 1 else 0).toByte())
@@ -99,11 +99,11 @@ class ReputationDataUiModel : Parcelable {
     companion object {
         val CREATOR: Parcelable.Creator<ReputationDataUiModel> =
             object : Parcelable.Creator<ReputationDataUiModel?> {
-                public override fun createFromParcel(`in`: Parcel): ReputationDataUiModel? {
+                override fun createFromParcel(`in`: Parcel): ReputationDataUiModel? {
                     return ReputationDataUiModel(`in`)
                 }
 
-                public override fun newArray(size: Int): Array<ReputationDataUiModel?> {
+                override fun newArray(size: Int): Array<ReputationDataUiModel?> {
                     return arrayOfNulls(size)
                 }
             }

@@ -15,19 +15,19 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-open class BaseReputationService constructor() {
+open class BaseReputationService {
     open fun createRetrofit(
         context: Context?,
-        baseUrl: String?,
+        baseUrl: String,
         networkRouter: NetworkRouter?,
         userSession: UserSession?
-    ): Retrofit? {
+    ): Retrofit {
         val gson: Gson = GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
             .setPrettyPrinting()
             .serializeNulls()
             .create()
-        val tkpdOkHttpBuilder: TkpdOkHttpBuilder =
+        val tkpdOkHttpBuilder =
             TkpdOkHttpBuilder(context, OkHttpClient.Builder())
         tkpdOkHttpBuilder.addInterceptor(TkpdAuthInterceptor(context, networkRouter, userSession))
         tkpdOkHttpBuilder.addInterceptor(FingerprintInterceptor(networkRouter, userSession))
