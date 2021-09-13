@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.tokopedia.pdpsimulation.PayLaterHelper
+import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationStatusResponse
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
@@ -18,6 +19,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +34,7 @@ class PayLaterViewModelTest {
         mockk<PayLaterApplicationStatusUseCase>(relaxed = true)
     private val payLaterApplicationStatusMapperUseCase =
         mockk<PayLaterApplicationStatusMapperUseCase>(relaxed = true)
-    private val productDetail = mockk<ProductDetailUseCase>(relaxed = true)
+    private val productDetailUseCase = mockk<ProductDetailUseCase>(relaxed = true)
     private val payLaterSimulationData = mockk<PayLaterSimulationV2UseCase>(relaxed = true)
     private val dispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: PayLaterViewModel
@@ -49,7 +51,7 @@ class PayLaterViewModelTest {
             payLaterApplicationStatusUseCase,
             payLaterApplicationStatusMapperUseCase,
             payLaterSimulationData,
-            productDetail,
+            productDetailUseCase,
             dispatcher
         )
     }
@@ -111,6 +113,38 @@ class PayLaterViewModelTest {
         val expected =
             mockApplicationStatusData.userCreditApplicationStatus.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
         Assertions.assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun productDetailSuccessTest()
+    {
+        val baseProductDetail = mockk<BaseProductDetailClass>(relaxed = true)
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Success).data,
+            baseProductDetail.getProductV3
+        )
+
+    }
+
+    @Test
+    fun productDetailFail()
+    {
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Fail).throwable,
+            mockThrowable
+        )
     }
 
 
