@@ -9,7 +9,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -29,10 +35,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
-    private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -90,7 +92,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertInstallmentRevamp("Bayar Penuh")
 
-            clickAddProductQuantity(4)
+            clickAddProductQuantity(times = 4)
 
             clickChangeInstallmentRevamp {
                 chooseInstallment(3)
@@ -180,7 +182,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertInstallmentRevamp("Bayar Penuh")
 
-            clickAddProductQuantity(4)
+            clickAddProductQuantity(times = 4)
 
             clickChangeInstallmentRevamp {
                 chooseInstallment(3)

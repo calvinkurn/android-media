@@ -98,11 +98,17 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
 
     private String getDiffDuration(long startDuration, long stopDuration) {
         float diffTimeInMillis = 0;
+        String diffDurationFormatted;
         if (startDuration > 0 && startDuration < stopDuration) {
             diffTimeInMillis = (stopDuration - startDuration);
             diffTimeInMillis /= INTERVAL_SESSION;
         }
-        return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis);
+        try {
+            diffDurationFormatted = String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis);
+        } catch (NullPointerException e) {
+            diffDurationFormatted = Float.toString(diffTimeInMillis);
+        }
+        return diffDurationFormatted;
     }
 
     private void logDataUsage(String activityName, long currentMillis) {

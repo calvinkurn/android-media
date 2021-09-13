@@ -48,7 +48,7 @@ class FlightDetailFacilityViewHolder(itemView: View) : AbstractViewHolder<Flight
         if (route.infos.isEmpty()) {
             separatorInfoView.visibility = View.GONE
         }
-        adapterInfo.addData(route.infos)
+        setInfos(route.infos)
         setDefaultAmenities(route)
         airlineName.text = route.airlineName
         airlineCode.text = String.format("%s-%s", route.airlineCode, route.flightNumber)
@@ -69,6 +69,17 @@ class FlightDetailFacilityViewHolder(itemView: View) : AbstractViewHolder<Flight
             containerAmenity.visibility = View.GONE
             gridAmenity.visibility = View.GONE
             facilityInfoTextView.visibility = View.GONE
+        }
+    }
+
+    private fun setInfos(infos: List<FlightDetailRouteInfoModel>) {
+        if (infos.isNotEmpty()) {
+            adapterInfo.addData(infos)
+            separatorInfoView.visibility = View.VISIBLE
+            listInfo.visibility = View.VISIBLE
+        } else {
+            separatorInfoView.visibility = View.GONE
+            listInfo.visibility = View.GONE
         }
     }
 

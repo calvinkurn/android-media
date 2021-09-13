@@ -337,7 +337,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
 
 
-        tg_event_checkout_summary_price_price.text = getRupiahFormat(metadata.totalPrice)
+        tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
         context?.let {
             tg_event_checkout_tnc.makeLinks(
@@ -406,6 +406,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
             btn_event_checkout.isEnabled = isChecked
         }
+        btn_event_checkout.text = if(metadata.totalPrice == ZERO_PRICE) getString(R.string.ent_event_checkout_footer_button_free)
+                    else getString(R.string.ent_event_checkout_footer_button)
 
         btn_event_checkout.setOnClickListener {
 
@@ -504,12 +506,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         setPassengerData(forms)
                     }
                     REQUEST_CODE_ADDITIONAL_ITEM -> {
-                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        val additionalData = data.getParcelableExtra(EXTRA_DATA_PESSANGER) ?: EventCheckoutAdditionalData()
                         listAdditionalItem[additionalData.position] = additionalData
                         adapterAdditional.notifyDataSetChanged()
                     }
                     REQUEST_CODE_ADDITIONAL_PACKAGE -> {
-                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        val additionalData = data.getParcelableExtra(EXTRA_DATA_PESSANGER) ?: EventCheckoutAdditionalData()
                         eventCheckoutAdditionalDataPackage = additionalData
                         updateAdditionalPackage()
                     }
@@ -604,6 +606,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
+        const val ZERO_PRICE = 0
 
         const val ROUND_VALUE = 25f
 

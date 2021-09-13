@@ -16,10 +16,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -44,6 +41,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     companion object {
         private const val SAVED_SELECTED_START_DATE = "svd_selected_start_date"
         private const val SAVED_SELECTED_END_DATE = "svd_selected_end_date"
+        private const val TIME_MULTIPLIER = 1000L
+        private const val DEFAULT_TIME = 0L
 
         @JvmStatic
         fun createIntent(context: Context, draftId: String): Intent {
@@ -62,8 +61,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
     private var isClosedNow: Boolean = false
-    private var selectedStartCloseUnixTimeMs: Long = 0
-    private var selectedEndCloseUnixTimeMs: Long = 0
+    private var selectedStartCloseUnixTimeMs: Long = DEFAULT_TIME
+    private var selectedEndCloseUnixTimeMs: Long = DEFAULT_TIME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +119,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setupView(shopBasicDataModel: ShopBasicDataModel?) {
-        if (selectedStartCloseUnixTimeMs == 0L || selectedEndCloseUnixTimeMs == 0L) {
+        if (selectedStartCloseUnixTimeMs == DEFAULT_TIME || selectedEndCloseUnixTimeMs == DEFAULT_TIME) {
             val closeSchedule = shopBasicDataModel?.closeSchedule
 
             if (isClosedNow) { // if close now, default: H
@@ -129,19 +128,19 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
                 selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     currentDate.time
                 } else {
-                    closedUntil!!.toLong() * 1000L
+                    closedUntil.toLongOrZero() * TIME_MULTIPLIER
                 }
             } else { // if NOT close now, default: H+1
                 selectedStartCloseUnixTimeMs = if (isEmptyNumber(closeSchedule)) {
                     tomorrowDate.time
                 } else {
-                    closeSchedule!!.toLong() * 1000L
+                    closeSchedule.toLongOrZero() * TIME_MULTIPLIER
                 }
                 val closedUntil = shopBasicDataModel?.closeUntil
                 selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     tomorrowDate.time
                 } else {
-                    closedUntil!!.toLong() * 1000L
+                    closedUntil.toLongOrZero() * TIME_MULTIPLIER
                 }
             }
         }
@@ -255,7 +254,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         selectedStartCloseUnixTimeMs = date.time
         labelStartClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
         // move end date to start date, if the end < start
-        if (selectedEndCloseUnixTimeMs > 0 && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
+        if (selectedEndCloseUnixTimeMs > DEFAULT_TIME && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
             setEndCloseDate(Date(selectedStartCloseUnixTimeMs))
         }
     }
@@ -284,8 +283,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         viewModel.updateShopSchedule(
                 shopAction,
                 isClosedNow || shopBasicDataModel?.isClosed == true,
-                if (closeStart == 0L) null else closeStart.toString(),
-                if (closeEnd == 0L) null else closeEnd.toString(),
+                if (closeStart == DEFAULT_TIME) null else closeStart.toString(),
+                if (closeEnd == DEFAULT_TIME) null else closeEnd.toString(),
                 closeNote)
     }
 

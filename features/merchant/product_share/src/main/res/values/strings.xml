@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">product_share</string>
+    <string name="product_share_text_description">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
 </resources>

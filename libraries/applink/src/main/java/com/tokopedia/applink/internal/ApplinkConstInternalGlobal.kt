@@ -276,7 +276,13 @@ object ApplinkConstInternalGlobal {
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
+    const val WEBVIEW_BASE = "$INTERNAL_GLOBAL/webview"
+    const val BROWSER = "$INTERNAL_GLOBAL/browser"
+
     const val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
+    const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
 
@@ -487,4 +493,9 @@ object ApplinkConstInternalGlobal {
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking
     const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+
+    // GlobalSharingActivity
+    // tokopedia-android-internal://global/global-sharing
+    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
+
 }

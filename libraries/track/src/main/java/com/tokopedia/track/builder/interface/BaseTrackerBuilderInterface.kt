@@ -39,6 +39,15 @@ interface BaseTrackerBuilderInterface {
                                    buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
     ): BaseTrackerBuilderInterface
 
+    fun constructBasicProductAtcClick(event: String,
+                                   eventCategory: String,
+                                   eventAction: String,
+                                   eventLabel: String,
+                                   list: String,
+                                   products: List<BaseTrackerConst.Product>,
+                                   buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
+    ): BaseTrackerBuilderInterface
+
     fun constructBasicProductClickBundle(event: String,
                                    eventCategory: String,
                                    eventAction: String,

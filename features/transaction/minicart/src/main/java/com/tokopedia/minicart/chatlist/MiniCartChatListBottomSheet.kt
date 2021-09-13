@@ -24,6 +24,7 @@ import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactor
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -32,7 +33,8 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartChatListBottomSheet @Inject constructor(
-    private var miniCartChatProductDecoration: MiniCartChatListDecoration
+    private var miniCartChatProductDecoration: MiniCartChatListDecoration,
+    private var analytics: MiniCartAnalytics
 ) : MiniCartChatProductViewHolder.ChatProductListener {
 
     companion object {
@@ -57,6 +59,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         } else {
             updateDataWhenRemoving(element)
         }
+        analytics.eventClickTickBoxChatBottomSheet(isChecked)
     }
 
     fun show(context: Context?,
@@ -212,8 +215,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
                 if (elements.isNullOrEmpty()) {
                     openChatPageWithoutProduct(shopId)
+                    analytics.eventClickBtnDirectChatBottomSheet()
                 } else {
                     openChatPage(shopId)
+                    analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
             viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height)

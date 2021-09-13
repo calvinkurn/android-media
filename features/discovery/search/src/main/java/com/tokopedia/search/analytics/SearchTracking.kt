@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
  * Created by henrypriyono on 1/5/18.
  */
 object SearchTracking {
-    private const val ACTION_FIELD = "/searchproduct - %s"
+    const val ACTION_FIELD = "/searchproduct - %s - %s"
     private const val ORGANIC = "organic"
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
@@ -61,7 +61,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>) {
+    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>, allProdIds: ArrayList<String?>?) {
         val listViewEvent: MutableMap<String, Any> = HashMap()
         listViewEvent["af_content_id"] = prodIds
         listViewEvent["af_currency"] = "IDR"
@@ -75,12 +75,14 @@ object SearchTracking {
         TrackApp.getInstance().appsFlyer.sendTrackEvent("af_search", listViewEvent)
 
         //add branch search event
-        LinkerManager.getInstance().sendEvent(
-            LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_SEARCH,
-                prodIds
+        allProdIds?.let {
+            LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(
+                    LinkerConstants.EVENT_SEARCH,
+                    it
+                )
             )
-        )
+        }
     }
 
     @JvmStatic
@@ -176,6 +178,7 @@ object SearchTracking {
     fun trackEventClickSearchResultProduct(
         item: Any?,
         isOrganicAds: Boolean,
+        topadsTag: Int,
         eventLabel: String?,
         filterSortParams: String?,
         userId: String?
@@ -190,7 +193,7 @@ object SearchTracking {
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                         ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", getActionFieldString(isOrganicAds)),
+                                DataLayer.mapOf("list", getActionFieldString(isOrganicAds, topadsTag)),
                                 "products", DataLayer.listOf(item)
                         )
                 ),
@@ -199,9 +202,12 @@ object SearchTracking {
         )
     }
 
-    private fun getActionFieldString(isOrganicAds: Boolean): String {
+    fun getActionFieldString(
+        isOrganicAds: Boolean,
+        topadsTag: Int,
+    ): String {
         val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
-        return String.format(ACTION_FIELD, organicStatus)
+        return String.format(ACTION_FIELD, organicStatus, topadsTag.toString())
     }
 
     @JvmStatic
@@ -860,7 +866,7 @@ object SearchTracking {
                             CURRENCY_CODE, IDR,
                             SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
                                 SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
-                                    "list", getActionFieldString(isOrganicAds)
+                                    "list", getActionFieldString(isOrganicAds, 0)
                                 ),
                                 SearchEventTracking.ECommerce.PRODUCTS, DataLayer.listOf(productItem)
                             )

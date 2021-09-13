@@ -22,5 +22,6 @@ data class Shop(
         var cityId: String = "",
         var cityName: String = "",
         var shopAlertMessage: String = "",
-        var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData()
+        var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+        var isTokoNow: Boolean = false
 ) : Parcelable

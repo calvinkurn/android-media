@@ -25,6 +25,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
@@ -207,7 +208,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         )
 
         // open showcase product result list page
-        goToShowcaseProductListResult(element.id, true)
+        val showcaseId = if (element.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) element.alias else element.id
+        goToShowcaseProductListResult(showcaseId, true)
     }
 
     override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {

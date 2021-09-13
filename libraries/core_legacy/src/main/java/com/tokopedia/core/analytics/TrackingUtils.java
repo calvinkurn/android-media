@@ -26,6 +26,8 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    // consider replacing this with getGtm().sendCampaignV4V5 instead.
+    @Deprecated
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
 

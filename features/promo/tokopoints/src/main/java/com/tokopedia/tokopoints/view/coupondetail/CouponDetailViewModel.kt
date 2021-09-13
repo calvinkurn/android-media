@@ -85,11 +85,13 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
         launchCatchError(block = {
             val data = repository.swipeMyCoupon(data.realCode, "").getSuccessData<CouponSwipeUpdateOuter>().swipeCoupon
             if (data != null) {
-                if (data.getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                if (data.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     onCouponSwipe.value = Success(data)
                 } else {
-                    if (data.getResultStatus().getMessages().size > 0) {
-                        onCouponSwipe.value = ErrorMessage(data.getResultStatus().getMessages().get(0))
+                    if (data.resultStatus.messages?.isNotEmpty() == true) {
+                        onCouponSwipe.value = data.resultStatus.messages?.get(0)?.let {
+                            ErrorMessage(it)
+                        }
                     }
                 }
             } else throw NullPointerException("data is null")

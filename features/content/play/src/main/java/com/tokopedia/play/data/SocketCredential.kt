@@ -1,9 +1,9 @@
 package com.tokopedia.play.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.websocket.DEFAULT_DELAY
-import com.tokopedia.websocket.DEFAULT_MAX_RETRIES
-import com.tokopedia.websocket.DEFAULT_PING
+import com.tokopedia.play_common.websocket.DEFAULT_DELAY
+import com.tokopedia.play_common.websocket.DEFAULT_MAX_RETRIES
+import com.tokopedia.play_common.websocket.DEFAULT_PING
 
 data class SocketCredential(
         @SerializedName("gc_token")
