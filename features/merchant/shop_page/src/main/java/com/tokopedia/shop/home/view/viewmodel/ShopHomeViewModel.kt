@@ -12,6 +12,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -30,24 +31,23 @@ import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopPageMapper
-import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
-import com.tokopedia.shop.home.domain.*
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -60,30 +60,31 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopHomeViewModel @Inject constructor(
-    private val userSession: UserSessionInterface,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
-    private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-    private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-    private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
-    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-    private val shopProductSortMapper: ShopProductSortMapper,
-    private val mvcSummaryUseCase: MVCSummaryUseCase,
-    private val playWidgetTools: PlayWidgetTools,
-    private val gqlShopPageGetHomeLayoutData: GqlShopPageGetHomeLayoutData,
-    private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
+        private val userSession: UserSessionInterface,
+        private val getShopProductUseCase: GqlGetShopProductUseCase,
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+        private val shopProductSortMapper: ShopProductSortMapper,
+        private val mvcSummaryUseCase: MVCSummaryUseCase,
+        private val playWidgetTools: PlayWidgetTools,
+        private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
+        private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
@@ -156,19 +157,15 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    val listWidgetIdData: LiveData<Result<List<ShopPageGetHomeType.HomeLayoutData.WidgetIdList>>>
-        get() = _listWidgetIdData
-    private val _listWidgetIdData = MutableLiveData<Result<List<ShopPageGetHomeType.HomeLayoutData.WidgetIdList>>>()
-
     fun getShopPageHomeWidgetLayoutData(
             shopId: String
     ) {
         launchCatchError(block = {
             val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
-                gqlShopPageGetHomeLayoutData.params = GqlShopPageGetHomeLayoutData.createParams(
+                gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
                         shopId.toIntOrZero()
                 )
-                gqlShopPageGetHomeLayoutData.executeOnBackground()
+                gqlShopPageGetHomeType.executeOnBackground()
             }
             val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
                     shopHomeLayoutResponse.homeLayoutData
@@ -374,7 +371,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clearCache() {
         clearGetShopProductUseCase()
-//        getShopPageHomeLayoutUseCase.clearCache()
+        gqlShopPageGetHomeType.clearCache()
     }
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
@@ -584,19 +581,6 @@ class ShopHomeViewModel @Inject constructor(
     private fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
         val currentValue = _playWidgetObservable.value
         if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
-    }
-
-    fun isCampaignFollower(campaignId: String): Boolean {
-//        val homeLayoutData = shopHomeLayoutData.value
-//        if (homeLayoutData !is Success) return false
-//        return homeLayoutData.data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().any {
-//            val campaignItem = it.data?.firstOrNull()
-//            val nplItemCampaignId = campaignItem?.campaignId.orEmpty()
-//            val dynamicRule = campaignItem?.dynamicRule
-//            val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
-//            nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
-//        }
-        return false
     }
 
     fun getWidgetContentData(

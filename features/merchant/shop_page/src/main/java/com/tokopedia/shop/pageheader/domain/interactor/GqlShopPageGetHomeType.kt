@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.common.constant.ShopPageGetHomeTypeQuery
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -21,15 +20,32 @@ class GqlShopPageGetHomeType @Inject constructor(
         fun createParams(shopId: Int): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
         }
+
+        const val QUERY = """
+            query shopPageGetHomeType(${'$'}shopID: Int!){
+              shopPageGetHomeType(
+                shopID: ${'$'}shopID
+              ){
+                shopHomeType 
+                homeLayoutData {
+                  layoutID
+                  masterLayoutID
+                  widgetIDList{
+                    widgetID
+                    widgetMasterID
+                    widgetType
+                    widgetName
+                  }
+                }
+              }
+            }
+        """
     }
 
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
     val request by lazy {
-        GraphqlRequest(
-                ShopPageGetHomeTypeQuery.getShopHomeTypeQuery(),
-                ShopPageGetHomeType.Response::class.java, params.parameters
-        )
+        GraphqlRequest(QUERY, ShopPageGetHomeType.Response::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): ShopPageGetHomeType {
@@ -44,5 +60,9 @@ class GqlShopPageGetHomeType @Inject constructor(
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
+    }
+
+    fun clearCache(){
+        gqlUseCase.clearCache()
     }
 }

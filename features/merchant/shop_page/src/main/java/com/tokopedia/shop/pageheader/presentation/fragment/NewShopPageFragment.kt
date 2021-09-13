@@ -1697,6 +1697,9 @@ class NewShopPageFragment :
                     shopViewModel?.productListData?.let {
                         setInitialProductListData(it)
                     }
+                    shopViewModel?.homeWidgetLayoutData?.let{
+                        setListWidgetLayoutData(it)
+                    }
                 }
             }
         } else {
