@@ -255,7 +255,7 @@ class TopChatRoomAdapter constructor(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private fun addTopData(listChat: MutableList<out Visitable<Any>>?) {
+    private fun addTopData(listChat: List<Visitable<Any>>?) {
         if (listChat == null || listChat.isEmpty()) return
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
