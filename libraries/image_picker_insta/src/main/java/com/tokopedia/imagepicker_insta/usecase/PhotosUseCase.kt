@@ -37,11 +37,7 @@ class PhotosUseCase @Inject constructor() {
     }
 
     private fun getSubtitle(mediaCount: Int): String {
-        if (mediaCount == 1) {
-            return "$mediaCount media"
-        } else {
-            return "$mediaCount medias"
-        }
+        return "$mediaCount media"
     }
 
     private fun sortAdapterDataList(arrayList: ArrayList<ImageAdapterData>) {
@@ -52,7 +48,7 @@ class PhotosUseCase @Inject constructor() {
             val date2 = Date(i2.asset.createdDate)
             if (date1.before(date2)) {
                 return@Comparator 1
-            }else if (date1 == date2){
+            } else if (date1 == date2) {
                 return@Comparator 0
             }
             return@Comparator -1
@@ -79,7 +75,7 @@ class PhotosUseCase @Inject constructor() {
             ImageAdapterData(it)
         }
 
-        if(internalMediaAdapterDataList.isNotEmpty()){
+        if (internalMediaAdapterDataList.isNotEmpty()) {
 //            combinedAdapterDataList.clear() //Todo Rahul remove
             combinedAdapterDataList.addAll(internalMediaAdapterDataList)
 
