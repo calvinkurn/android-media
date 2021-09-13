@@ -912,7 +912,6 @@ class PlayViewModel @Inject constructor(
             _observableProductSheetContent.value = when (pinnedInfo.pinnedProduct.productTags) {
                 is PlayProductTagsUiModel.Incomplete -> PlayResult.Loading(showPlaceholder = true)
                 is PlayProductTagsUiModel.Complete -> PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
-                else -> PlayResult.Loading(showPlaceholder = true)
             }
         }
     }

@@ -162,7 +162,6 @@ class PlayUpcomingFragment @Inject constructor(
         return when (uiString) {
             is UiString.Text -> uiString.text
             is UiString.Resource -> getString(uiString.resource)
-            else -> ""
         }
     }
 
