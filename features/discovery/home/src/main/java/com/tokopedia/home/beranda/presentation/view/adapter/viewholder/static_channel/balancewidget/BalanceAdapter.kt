@@ -220,10 +220,17 @@ class BalanceAdapter(
 
                             },
                             walletAppAction = {
-                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                    isLinked = it,
-                                    userId = listener?.userId?:""
-                                )
+                                if (listener?.isEligibleForNewGopay() == true) {
+                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                        subtitle = element.balanceSubTitleTextAttribute?.text?:"",
+                                        userId = listener?.userId?:""
+                                    )
+                                } else {
+                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                        isLinked = it,
+                                        userId = listener?.userId?:""
+                                    )
+                                }
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -309,10 +316,17 @@ class BalanceAdapter(
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
-                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                    isLinked = it,
-                                    userId = listener?.userId?:""
-                                )
+                                if (listener?.isEligibleForNewGopay() == true) {
+                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                        subtitle = element.balanceSubTitleTextAttribute?.text?:"",
+                                        userId = listener?.userId?:""
+                                    )
+                                } else {
+                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                        isLinked = it,
+                                        userId = listener?.userId?:""
+                                    )
+                                }
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )

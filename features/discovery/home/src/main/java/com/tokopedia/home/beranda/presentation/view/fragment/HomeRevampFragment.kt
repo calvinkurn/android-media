@@ -442,7 +442,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isEligibleForNewGopay(): Boolean {
+    override fun isEligibleForNewGopay(): Boolean {
         return this.isEligibleGopay
     }
 

@@ -140,4 +140,6 @@ interface HomeCategoryListener {
     fun needToRotateTokopoints(): Boolean
 
     fun setRotateTokopointsDone(boolean: Boolean)
+
+    fun isEligibleForNewGopay(): Boolean
 }
