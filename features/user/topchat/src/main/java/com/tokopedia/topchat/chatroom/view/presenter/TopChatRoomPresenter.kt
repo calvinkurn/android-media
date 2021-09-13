@@ -574,7 +574,9 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
-        sendMessage(messageId, question.content, startTime, opponentId, question.intent)
+        topchatSendMessageWithWebsocket(
+            messageId, question.content, startTime, opponentId, question.intent, null
+        )
         view?.clearAttachmentPreviews()
     }
 
@@ -595,24 +597,6 @@ open class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    /**
-     * sendMessage but with param [intention]
-     * make sure the [sendMessage] is valid before sending msg
-     */
-    private fun sendMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        intention: String?
-    ) {
-        if (networkMode == MODE_WEBSOCKET) {
-            topchatSendMessageWithWebsocket(
-                messageId, sendMessage, startTime, opponentId, intention
-            )
-        }
-    }
-
     override fun sendSrwBubble(
         messageId: String, question: QuestionUiModel,
         products: List<SendablePreview>, opponentId: String,
@@ -627,6 +611,14 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun sendMessageWithWebsocket(
+        messageId: String, sendMessage: String,
+        startTime: String, opponentId: String
+    ) {
+        topchatSendMessageWithWebsocket(
+            messageId, sendMessage, startTime, opponentId, null, null
+        )
+    }
 
     /**
      * send with websocket but with param [intention]
@@ -634,7 +626,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun topchatSendMessageWithWebsocket(
         messageId: String, sendMessage: String,
         startTime: String, opponentId: String,
-        intention: String?
+        intention: String?, products: List<SendablePreview>?
     ) {
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
@@ -642,44 +634,9 @@ open class TopChatRoomPresenter @Inject constructor(
                 thisMessageId = messageId,
                 messageText = sendMessage,
                 startTime = startTime,
-                attachments = attachmentsPreview,
+                attachments = products ?: attachmentsPreview,
                 intention = intention,
                 userLocationInfo = userLocationInfo
-            )
-        )
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
-    }
-
-    private fun topchatSendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String,
-        intention: String?, products: List<SendablePreview>
-    ) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamSendMessage(
-                thisMessageId = messageId,
-                messageText = sendMessage,
-                startTime = startTime,
-                attachments = products,
-                intention = intention,
-                userLocationInfo = userLocationInfo
-            )
-        )
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
-    }
-
-    /**
-     * recommended to use [topchatSendMessageWithWebsocket] instead
-     */
-    override fun sendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String
-    ) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime, attachmentsPreview
             )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
