@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
@@ -43,9 +44,11 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeEmptyStateNoHistory
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSelectedCategoryFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setCategoryFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam.Companion.SORT_FREQUENTLY_BOUGHT
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
@@ -182,16 +185,17 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, source)
     }
 
-    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "") {
+    fun getEmptyState(id: String, isSearching: Boolean = false) {
         launchCatchError(block = {
             layoutList.removeLoading()
             when(id) {
                 EMPTY_STATE_NO_HISTORY -> {
                     val description = if (isSearching) {
-                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
-                    } else {
                         R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+                    } else {
+                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
                     }
+                    layoutList.removeAllProduct()
                     layoutList.addEmptyStateNoHistory(description)
                 }
                 EMPTY_STATE_OOC -> {
@@ -204,14 +208,14 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                     layoutList.clear()
                     layoutList.addChooseAddress()
                     layoutList.addEmptyStateNoResult()
-                    getCategoryGridAsync(warehouseId).await()
+                    getCategoryGridAsync().await()
                     getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
                 }
             }
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
                 nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.SHOW
+                state = TokoNowLayoutState.LOADED
             )
 
             _getLayout.postValue(Success(layout))
@@ -247,9 +251,17 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedCategoryFilter(selectedFilter: SelectedSortFilter?) {
+    fun applyCategoryFilter(selectedFilter: SelectedSortFilter?) {
         launchCatchError(block = {
-            layoutList.setSelectedCategoryFilter(selectedFilter)
+            setCategoryFilter(selectedFilter)
+            val productList = getProductList()
+            layoutList.removeLoading()
+
+            if(productList.isEmpty()) {
+                getEmptyState(EMPTY_STATE_NO_HISTORY)
+            } else {
+                layoutList.addProduct(productList)
+            }
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
@@ -257,7 +269,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADED
             )
 
-            selectedCategoryFilter = selectedFilter
             _getLayout.postValue(Success(layout))
         }) {
 
@@ -279,25 +290,43 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         return items.firstOrNull { it.productId == productId }
     }
 
+    private fun setCategoryFilter(selectedFilter: SelectedSortFilter?) {
+        layoutList.setCategoryFilter(selectedFilter)
+        layoutList.removeEmptyStateNoHistory()
+        layoutList.removeAllProduct()
+        layoutList.addLoading()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.LOADED
+        )
+
+        selectedCategoryFilter = selectedFilter
+        _getLayout.postValue(Success(layout))
+    }
+
+    private suspend fun getProductList(): List<RepurchaseProduct> {
+        val requestParam = createProductListRequestParam()
+        val response = getRepurchaseProductListUseCase.execute(requestParam)
+
+        val productList = response.products
+        val productMeta = response.meta
+
+        productListMeta = RepurchaseProductListMeta(
+            productMeta.page,
+            productMeta.hasNext,
+            productMeta.totalScan
+        )
+        return productList
+    }
+
     private fun getProductListAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val requestParam = createProductListRequestParam()
-            val response = getRepurchaseProductListUseCase.execute(requestParam)
-
-            val productList = response.products
-            val productMeta = response.meta
-
-            productListMeta = RepurchaseProductListMeta(
-                productMeta.page,
-                productMeta.hasNext,
-                productMeta.totalScan
-            )
+            val productList = getProductList()
 
             if (productList.isNullOrEmpty()) {
-                getEmptyState(
-                    id = EMPTY_STATE_NO_RESULT,
-                    warehouseId = requestParam.warehouseID
-                )
+                getEmptyState(id = EMPTY_STATE_NO_RESULT)
             } else {
                 layoutList.addSortFilter()
                 layoutList.addProduct(productList)
@@ -323,7 +352,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 val layout = RepurchaseLayoutUiModel(
                     layoutList = layoutList,
                     nextPage = INITIAL_PAGE,
-                    state = TokoNowLayoutState.SHOW
+                    state = TokoNowLayoutState.LOADED
                 )
 
                 _getLayout.postValue(Success(layout))
@@ -331,15 +360,16 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
+    private fun getCategoryGridAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
+            val warehouseId = localCacheModel?.warehouse_id.orEmpty()
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
             layoutList.addCategoryGrid(response)
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
                 nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.SHOW
+                state = TokoNowLayoutState.LOADED
             )
 
             _getLayout.postValue(Success(layout))
