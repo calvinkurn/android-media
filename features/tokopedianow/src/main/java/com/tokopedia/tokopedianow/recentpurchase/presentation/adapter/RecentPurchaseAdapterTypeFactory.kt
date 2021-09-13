@@ -57,10 +57,10 @@ class RecentPurchaseAdapterTypeFactory(
             // endregion
 
             // region Repurchase Component
-            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
+            RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
-            RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener)
+            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
             // endregion
             else -> super.createViewHolder(view, type)
         }.apply {
