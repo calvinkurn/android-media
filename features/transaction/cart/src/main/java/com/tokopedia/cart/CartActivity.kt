@@ -44,6 +44,10 @@ class CartActivity : BaseCheckoutActivity() {
         }
     }
 
+    override fun setupFragment(savedInstance: Bundle?) {
+        inflateFragment()
+    }
+
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putString(EXTRA_CART_ID, cartId)

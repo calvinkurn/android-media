@@ -24,6 +24,10 @@ class ShipmentActivity : BaseCheckoutActivity() {
         // No-op
     }
 
+    override fun setupFragment(savedInstance: Bundle?) {
+        inflateFragment()
+    }
+
     override fun getNewFragment(): Fragment? {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
