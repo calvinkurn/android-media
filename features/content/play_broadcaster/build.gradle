@@ -29,6 +29,18 @@ android {
         consumerProguardFiles 'proguard-rules.pro'
     }
 
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
     androidExtensions {
         experimental = true
     }
@@ -101,15 +113,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-//    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
-//    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'
-//    implementation ('com.alivc.videochat:live-pusher:1.0@aar') {
-//        exclude group: 'com.alivc'
-//    }
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.alivcCorePusher
-    implementation rootProject.ext.tkpdInternalLibDependencies.alivcReporter
-    implementation rootProject.ext.tkpdInternalLibDependencies.livePusher
+    implementation files('libs/libstream-release.aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

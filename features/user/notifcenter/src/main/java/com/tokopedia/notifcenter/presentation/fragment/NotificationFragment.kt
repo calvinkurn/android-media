@@ -60,7 +60,6 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
-import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
@@ -341,19 +340,15 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         isBumpReminder: Boolean
     ) {
         val viewHolderState: ViewHolderState? = viewHolderLoading[resource.referer]
-        val bottomSheet = getProductBottomSheet()
-        val isFromBottomSheet = bottomSheet != null
         when (resource.status) {
             Status.LOADING -> {
                 rvAdapter?.loadingStateReminder(viewHolderState)
             }
             Status.SUCCESS -> {
-                if (!isFromBottomSheet) {
-                    if (isBumpReminder) {
-                        showMessage(R.string.title_success_bump_reminder)
-                    } else {
-                        showMessage(R.string.title_success_delete_reminder)
-                    }
+                if (isBumpReminder) {
+                    showMessage(R.string.title_success_bump_reminder)
+                } else {
+                    showMessage(R.string.title_success_delete_reminder)
                 }
                 rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
                 viewHolderLoading.remove(resource.referer)
@@ -368,16 +363,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             else -> {
             }
         }
-        if (isFromBottomSheet) {
-            bottomSheet?.handleEventReminderState(resource, viewHolderState, isBumpReminder)
-        }
-    }
-
-    private fun getProductBottomSheet(): NotificationProductLongerContentBottomSheet? {
-        return childFragmentManager
-            .findFragmentByTag(
-                NotificationProductLongerContentBottomSheet::class.java.simpleName
-            ) as? NotificationProductLongerContentBottomSheet
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
@@ -546,10 +531,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)
-    }
-
-    override fun showProductBottomSheet(element: NotificationUiModel) {
-        BottomSheetFactory.showProductBottomSheet(childFragmentManager, element)
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
