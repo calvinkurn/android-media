@@ -1,11 +1,5 @@
 package com.tokopedia.chat_common.data
 
-
-/**
- * @author by yfsx on 08/05/18.
- */
-
-open class BaseChatViewModel
 /**
  * Constructor for WebSocketResponse / API Response
  * [ChatWebSocketListenerImpl]
@@ -21,7 +15,8 @@ open class BaseChatViewModel
  *
  * @see AttachmentType for attachment types.
  */
-constructor(
+
+open class BaseChatViewModel constructor(
         val messageId: String,
         var fromUid: String?,
         val from: String,
