@@ -8,8 +8,10 @@ import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.entity.Data
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.model.entity.ProductDetailData
+import com.tokopedia.home_recom.model.entity.ProductRecommendationProductDetail
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
@@ -80,9 +82,13 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success data from network with product info`(){
+    fun `get success data from network with product info`() {
         val slot = slot<Subscriber<List<RecommendationWidget>>>()
-        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity()
+        coEvery {
+            getPrimaryProductUseCase.executeOnBackground()
+        } returns PrimaryProductEntity(
+                ProductRecommendationProductDetail(
+                        listOf(Data())))
         every { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
         every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
                 RecommendationWidget(

@@ -15,6 +15,8 @@ import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
 import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
 import com.tokopedia.remoteconfig.RollenceKey.NEW_SHOP_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.OLD_SHOP_HOME_TAB
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
@@ -89,6 +91,13 @@ object ShopUtil {
         return context?.let{
             ChooseAddressUtils.getLocalizingAddressData(it)
         }
+    }
+
+    fun getShopFollowButtonAbTestVariant(): String? {
+        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
+                AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+        )
     }
 
     fun isShouldCheckShopType(): Boolean {

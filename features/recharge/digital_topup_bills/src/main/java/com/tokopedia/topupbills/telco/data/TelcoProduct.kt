@@ -22,5 +22,14 @@ data class TelcoProduct(
         var titleSection: String = "",
         var productPosition: Int = 0)
     : Parcelable, Visitable<TelcoProductAdapterFactory> {
+
     override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
+
+    fun isSpecialProductPromo(): Boolean = if (attributes.productLabels.isNotEmpty())
+        attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
+    else false
+
+    companion object {
+        const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
+    }
 }
