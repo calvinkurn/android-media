@@ -17,8 +17,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dynamicfeatures.config.DFConfig
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
@@ -26,12 +24,9 @@ import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import com.tokopedia.dynamicfeatures.utils.PlayServiceUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.android.synthetic.main.fragment_df_installer.*
 import kotlinx.android.synthetic.main.fragment_df_installer.button_download
-import kotlinx.android.synthetic.main.fragment_df_installer.image
 import kotlinx.android.synthetic.main.fragment_df_installer.subtitle_txt
 import kotlinx.android.synthetic.main.fragment_df_installer.title_txt
 import kotlinx.coroutines.*
@@ -39,26 +34,22 @@ import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
-class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstallerView {
+class DFInstallerFragment : Fragment(), CoroutineScope {
 
     companion object {
-        private const val EXTRA_NAME = "dfname"
-        private const val EXTRA_DEEPLINK = "dfapplink"
-        private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val DOWNLOAD_MODE_PAGE = "Page"
         const val TIMEOUT_ERROR_MESSAGE = "timeout"
+        private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
+        private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
+        private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
     }
 
     private var job = Job()
     private var timerJob: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -77,6 +68,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var progressGroup: View? = null
     private var fragmentClassPathName = ""
     private var moduleId = ""
+    private var moduleName = ""
     private var downloadTimes = 0
     private var startDownloadPercentage = -1f
     private var moduleSize = 0L
@@ -92,9 +84,11 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         dfConfig = DFRemoteConfig.getConfig(requireContext())
         manager = DFInstaller.getManager(requireContext()) ?: return
         manager?.registerListener(listener)
-        moduleId = arguments?.getString("MODULE_ID").orEmpty()
-        fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
-        allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId) ?: false
+        moduleId = arguments?.getString(BUNDLE_KEY_MODULE_ID).orEmpty()
+        moduleName = arguments?.getString(BUNDLE_KEY_MODULE_NAME).orEmpty()
+        fragmentClassPathName = arguments?.getString(BUNDLE_KEY_CLASS_PATH_NAME).orEmpty()
+        allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId)
+                ?: false
         cancelDownloadBeforeInstallInPage = dfConfig?.cancelDownloadBeforeInstallInPage ?: false
     }
 
@@ -120,9 +114,6 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                 onInstalled()
             }
 
-            SplitInstallSessionStatus.INSTALLING -> {
-                onInstalling(state)
-            }
             SplitInstallSessionStatus.FAILED -> {
                 onFailed(state.errorCode().toString())
             }
@@ -140,10 +131,9 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                 }
                 isAutoDownload -> {
                     downloadFeature()
-//            logDownloadPage();
                 }
                 else -> {
-//            showOnBoardingView()
+                    showOnBoardingView()
                 }
             }
         }
@@ -154,7 +144,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         super.onPause()
     }
 
-    private fun redirectToDestinationFragment(){
+    private fun redirectToDestinationFragment() {
         val fragTrans = activity?.supportFragmentManager?.beginTransaction()
         val destinationFragment = activity?.supportFragmentManager?.fragmentFactory?.instantiate(
                 ClassLoader.getSystemClassLoader(),
@@ -219,45 +209,52 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         loadAndLaunchModule(moduleId)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == CONFIRMATION_REQUEST_CODE) {
+            // Handle the user's decision. For example, if the user selects "Cancel",
+            // you may want to disable certain functionality that depends on the module.
+            if (resultCode == Activity.RESULT_CANCELED) {
+                showOnBoardingView()
+            }
+        } else if (requestCode == SETTING_REQUEST_CODE) {
+            downloadFeature()
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun loadAndLaunchModule(moduleName: String) {
         // Skip loading if the module already is installed. Perform success action directly.
         if (DFInstaller.isInstalled(requireContext(), moduleName)) {
             onSuccessfulLoad()
             return
         }
-        if (false) {
-//            DFInstaller.installOnBackground(this, listOf(moduleName), this::class.java.simpleName.toString())
-//            DFInstaller.attachView(this)
-//            DFInstaller.deeplink = deeplink
-//            DFInstaller.fallbackUrl = fallbackUrl
-        } else {
-            launch {
-                resetDFInfo()
+        launch {
+            resetDFInfo()
 
-                // Create request to install a feature module by name.
-                val request = SplitInstallRequest.newBuilder()
-                        .addModule(moduleName)
-                        .build()
+            // Create request to install a feature module by name.
+            val request = SplitInstallRequest.newBuilder()
+                    .addModule(moduleName)
+                    .build()
 
-                if (freeInternalStorageBeforeDownload == 0L) {
-                    freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
-                        StorageUtils.getFreeSpaceBytes(activity?.applicationContext!!)
-                    }
+            if (freeInternalStorageBeforeDownload == 0L) {
+                freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
+                    StorageUtils.getFreeSpaceBytes(activity?.applicationContext!!)
                 }
+            }
 
-                // Load and install the requested feature module.
-                startDownloadTimeStamp = System.currentTimeMillis()
-                manager?.startInstall(request)?.addOnSuccessListener {
-                    if (it == 0) {
-                        onInstalled()
-                    } else {
-                        sessionId = it
-                    }
-                }?.addOnFailureListener { exception ->
-                    val errorCode = (exception as? SplitInstallException)?.errorCode
-                    sessionId = null
-                    onFailed(errorCode?.toString() ?: exception.toString())
+            // Load and install the requested feature module.
+            startDownloadTimeStamp = System.currentTimeMillis()
+            manager?.startInstall(request)?.addOnSuccessListener {
+                if (it == 0) {
+                    onInstalled()
+                } else {
+                    sessionId = it
                 }
+            }?.addOnFailureListener { exception ->
+                val errorCode = (exception as? SplitInstallException)?.errorCode
+                sessionId = null
+                onFailed(errorCode?.toString() ?: exception.toString())
             }
         }
         addTimeout()
@@ -270,8 +267,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     private fun updateInformationView(imageRes: Int, title: String, subTitle: String,
                                       buttonText: String = "",
-                                      onDownloadButtonClicked: () -> (Unit) = {},
-                                      ctaText: String = "") {
+                                      onDownloadButtonClicked: () -> Unit = {}) {
         imageView?.setImageResource(imageRes)
         progressGroup?.visibility = View.INVISIBLE
         title_txt.text = title
@@ -285,24 +281,6 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         } else {
             button_download.visibility = View.GONE
         }
-//        if (fallbackUrl.isNotEmpty() && ctaText.isNotEmpty()) {
-//            button_cta.visibility = View.VISIBLE
-//            button_cta.text = ctaText
-//            button_cta.setOnClickListener { _ ->
-//                RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)?.let { it ->
-//                    ServerLogger.log(Priority.P1, "DFM_FALLBACK",
-//                            mapOf("type" to "click",
-//                                    "mod_name" to moduleName,
-//                                    "deeplink" to deeplink,
-//                                    "url" to fallbackUrl
-//                            ))
-//                    startActivity(it)
-//                    finish()
-//                }
-//            }
-//        } else {
-//            button_cta.visibility = View.GONE
-//        }
     }
 
     private fun initView() {
@@ -317,7 +295,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     /** Display a loading state to the user. */
     @SuppressLint("LogNotTimber")
-    private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
+    private fun displayLoadingState(state: SplitInstallSessionState) {
         val totalBytesToDowload = state.totalBytesToDownload().toInt()
         val bytesDownloaded = state.bytesDownloaded().toInt()
         progressBar?.max = totalBytesToDowload
@@ -333,6 +311,16 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         button_download.visibility = View.GONE
     }
 
+    private fun showOnBoardingView() {
+        updateInformationView(R.drawable.ic_ill_onboarding,
+                String.format(getString(R.string.feature_download_title), moduleName),
+                String.format(getString(R.string.feature_download_subtitle), moduleName),
+                getString(R.string.start_download)
+        ) {
+            downloadFeature()
+        }
+    }
+
     private fun showFailedMessage(errorCode: String = "") {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(requireContext(), errorCode, freeInternalStorageBeforeDownload)
         errorList.add(errorCodeTemp)
@@ -341,81 +329,62 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                 updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                         getString(R.string.download_error_play_store_title),
                         getString(R.string.download_error_play_store_subtitle),
-                        getString(R.string.goto_playstore),
-                        { PlayServiceUtils.gotoPlayStore(requireActivity()) },
-                        getString(R.string.continue_without_install))
+                        getString(R.string.goto_playstore)
+                ) { PlayServiceUtils.gotoPlayStore(requireActivity()) }
             }
             ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_os_and_play_store_title),
                     getString(R.string.download_error_os_and_play_store_subtitle),
-                    getString(R.string.goto_seting),
-                    { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) },
-                    getString(R.string.continue_without_delete_storage))
+                    getString(R.string.goto_seting)
+            ) { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) }
             SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() -> updateInformationView(R.drawable.ic_ill_insuficient_memory,
                     getString(R.string.download_error_insuficient_storage_title),
                     getString(R.string.download_error_insuficient_storage_subtitle),
-                    getString(R.string.goto_seting),
-                    { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) },
-                    getString(R.string.continue_without_install))
+                    getString(R.string.goto_seting)
+            ) { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) }
             SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again),
-                    ::downloadFeature,
-                    getString(R.string.continue_without_install))
+                    ::downloadFeature)
             /* SplitInstallErrorCode.APP_NOT_OWNED */
             "-15",
             SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() -> updateInformationView(R.drawable.ic_ill_module_unavailable,
                     getString(R.string.download_error_module_unavailable_title),
                     getString(R.string.download_error_module_unavailable_subtitle),
-                    getString(R.string.goto_playstore),
-                    { PlayServiceUtils.gotoPlayStore(requireActivity()) },
-                    getString(R.string.continue_without_install))
+                    getString(R.string.goto_playstore)
+            ) { PlayServiceUtils.gotoPlayStore(requireActivity()) }
             else -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again),
-                    ::downloadFeature,
-                    getString(R.string.continue_without_install))
+                    ::downloadFeature)
         }
     }
 
-    override fun onDownload(state: SplitInstallSessionState) {
-//  In order to see this, the application has to be uploaded to the Play Store.
-        displayLoadingState(state, getString(R.string.downloading_x))
+    private fun onDownload(state: SplitInstallSessionState) {
+        //  In order to see this, the application has to be uploaded to the Play Store.
+        displayLoadingState(state)
         if (moduleSize == 0L) {
             moduleSize = state.totalBytesToDownload()
         }
         addTimeout()
     }
 
-    override fun onRequireUserConfirmation(state: SplitInstallSessionState) {
+    private fun onRequireUserConfirmation(state: SplitInstallSessionState) {
+        manager?.startConfirmationDialogForResult(state, requireActivity(), CONFIRMATION_REQUEST_CODE)
     }
 
-    override fun onInstalled() {
+    private fun onInstalled() {
         timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         onSuccessfulLoad()
     }
 
-    override fun onInstalling(state: SplitInstallSessionState) {
-    }
-
-    override fun onFailed(errorString: String) {
+    private fun onFailed(errorString: String) {
         timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         showFailedMessage(errorString)
     }
 
-    override fun getModuleNameView(): String {
-        return ""
-    }
-
-    override fun getDeeplink(): String {
-        return  ""
-    }
-
-    override fun getFallbackUrl(): String {
-       return ""
-    }
 }

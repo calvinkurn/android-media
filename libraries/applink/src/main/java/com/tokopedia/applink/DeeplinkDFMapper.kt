@@ -208,6 +208,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
+
     private var manager: SplitInstallManager? = null
     val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {

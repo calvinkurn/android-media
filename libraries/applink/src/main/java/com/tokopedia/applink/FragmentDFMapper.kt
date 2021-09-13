@@ -8,6 +8,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.FragmentConst.DF_INSTALLER_FRAGMENT_CLASS_PATH
 import com.tokopedia.applink.FragmentConst.SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH
+import tokopedia.applink.R
 
 /**
  * Fragment Dynamic Feature Mapper
@@ -17,11 +18,16 @@ import com.tokopedia.applink.FragmentConst.SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH
 object FragmentDFMapper {
 
     private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
+    private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
     private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
     private var manager: SplitInstallManager? = null
     val fragmentDfModuleMapper: List<FragmentDFPattern> by lazy {
         mutableListOf<FragmentDFPattern>().apply {
-            add(FragmentDFPattern({ it == SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH }, DeeplinkDFMapper.DF_MERCHANT_SELLER))
+            add(FragmentDFPattern(
+                    { it == SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH },
+                    DeeplinkDFMapper.DF_MERCHANT_SELLER,
+                    R.string.title_shop_score_sellerapp
+            ))
         }
     }
 
@@ -43,14 +49,18 @@ object FragmentDFMapper {
     @JvmStatic
     fun getFragmentDFDownloader(activity: AppCompatActivity, classPathName: String): Fragment? {
         getSplitManager(activity)?.let {
-            val dfModuleName = fragmentDfModuleMapper.firstOrNull {
+            fragmentDfModuleMapper.firstOrNull {
                 it.logic(classPathName)
+            }?.let{ fragmentDfMapper ->
+                val moduleId = fragmentDfMapper.moduleId
+                val moduleName = activity.getString(fragmentDfMapper.moduleNameResourceId)
+                val bundle = Bundle().apply {
+                    putString(BUNDLE_KEY_MODULE_ID, moduleId)
+                    putString(BUNDLE_KEY_MODULE_NAME, moduleName)
+                    putString(BUNDLE_KEY_CLASS_PATH_NAME, classPathName)
+                }
+                return RouteManager.instantiateFragment(activity, DF_INSTALLER_FRAGMENT_CLASS_PATH, bundle)
             }
-            val bundle = Bundle().apply {
-                putString(BUNDLE_KEY_MODULE_ID, dfModuleName?.moduleId.orEmpty())
-                putString(BUNDLE_KEY_CLASS_PATH_NAME, classPathName)
-            }
-            return RouteManager.instantiateFragment(activity, DF_INSTALLER_FRAGMENT_CLASS_PATH, bundle)
         } ?: return null
     }
 
@@ -61,5 +71,6 @@ object FragmentDFMapper {
  */
 class FragmentDFPattern(
         val logic: ((deeplink: String) -> Boolean),
-        val moduleId: String
+        val moduleId: String,
+        val moduleNameResourceId: Int
 )
