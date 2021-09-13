@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,6 +22,8 @@ class RepurchaseSortFilterViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter
+
+        private const val FIRST_ITEM_INDEX = 0
     }
 
     private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
@@ -29,8 +33,8 @@ class RepurchaseSortFilterViewHolder(
     override fun bind(data: RepurchaseSortFilterUiModel) {
         clearSortFilterItems()
         addSortFilterItems(data)
-        setupChipRightIcon()
         setupClearButton(data)
+        setupLayout(data)
     }
 
     private fun addSortFilterItems(data: RepurchaseSortFilterUiModel) {
@@ -68,12 +72,60 @@ class RepurchaseSortFilterViewHolder(
     private fun setupClearButton(data: RepurchaseSortFilterUiModel) {
         sortFilter?.sortFilterPrefix?.setOnClickListener {
             clearAllFilters(data)
+            setupLayout(data)
         }
     }
 
-    private fun setupChipRightIcon() {
-        filterItems.forEach { item ->
-            item.refChipUnify.chip_right_icon.show()
+    private fun setupLayout(data: RepurchaseSortFilterUiModel) {
+        val filterApplied = data.sortFilterList.any {
+            !it.selectedItem?.id.isNullOrEmpty()
+        }
+        setupSortFilterMargin(filterApplied)
+        setupFilterChipMargin(filterApplied)
+    }
+
+    private fun setupSortFilterMargin(filterApplied: Boolean) {
+        val resources = itemView.context.resources
+        val marginStart = if (filterApplied) {
+            resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+            )
+        } else {
+            resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+            )
+        }
+        val gridLayoutParams = sortFilter?.layoutParams
+            as? StaggeredGridLayoutManager.LayoutParams
+        gridLayoutParams?.marginStart = marginStart
+        sortFilter?.layoutParams = gridLayoutParams
+    }
+
+    private fun setupFilterChipMargin(filterApplied: Boolean) {
+        val resources = itemView.context.resources
+        val marginEnd = resources.getDimensionPixelSize(
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2
+        )
+        val marginStart = resources.getDimensionPixelSize(
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+        )
+        filterItems.forEachIndexed { index, item ->
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            item.refChipUnify.apply {
+                if (index == FIRST_ITEM_INDEX && !filterApplied) {
+                    lp.marginStart = marginStart
+                    lp.marginEnd = marginEnd
+                    layoutParams = lp
+                }
+                if (index == FIRST_ITEM_INDEX && filterApplied) {
+                    lp.marginEnd = marginEnd
+                    layoutParams = lp
+                }
+                chip_right_icon.show()
+            }
         }
     }
 

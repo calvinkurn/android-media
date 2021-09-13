@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseProduct
 import com.tokopedia.tokopedianow.recentpurchase.presentation.factory.RepurchaseSortFilterFactory
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
@@ -24,24 +24,21 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addLayoutList() {
         val sortFilter = RepurchaseSortFilterUiModel(SORT_FILTER, emptyList())
-        val productGrid = RepurchaseProductGridUiModel(emptyList())
 
         add(sortFilter)
         addChooseAddress()
-        add(productGrid)
     }
 
     fun MutableList<Visitable<*>>.addSortFilter() {
-        val sortFilter = RepurchaseSortFilterFactory.createSortFilter()
         firstOrNull { it is RepurchaseSortFilterUiModel }?.let {
+            val uiModel = RepurchaseSortFilterFactory.createSortFilter()
             val index = indexOf(it)
-            set(index, sortFilter)
+            set(index, uiModel)
         }
     }
 
-    fun MutableList<Visitable<*>>.addProductGrid(response: List<RepurchaseProduct>) {
-        val productList = response.mapToProductListUiModel()
-        add(RepurchaseProductGridUiModel(productList))
+    fun MutableList<Visitable<*>>.addProduct(response: List<RepurchaseProduct>) {
+        addAll(response.mapToProductListUiModel())
     }
 
     fun MutableList<Visitable<*>>.addLoading() {
@@ -49,7 +46,7 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateNoHistory(@StringRes description: Int) {
-        removeFirstLayout(RepurchaseProductGridUiModel::class.java)
+        removeAll { it is RepurchaseProductUiModel }
         add(RepurchaseEmptyStateNoHistoryUiModel(description))
     }
 

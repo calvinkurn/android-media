@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.recentpurchase.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.model.TokoNowRepurchasePageResponse
 import com.tokopedia.tokopedianow.recentpurchase.domain.model.TokoNowRepurchasePageResponse.*
 import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
@@ -103,31 +102,5 @@ class GetRepurchaseProductListUseCase @Inject constructor(
                 else -> throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         }
-
-//        // Temporary Hardcoded
-//        val productMeta = GetRepurchaseProductMetaResponse(1, true, 0)
-//        val productList = mutableListOf<RepurchaseProduct>()
-//
-//        for (i in 1..20) {
-//            productList.add(
-//                RepurchaseProduct(
-//                    id = i.toString(),
-//                    imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/16/438cc635-4d39-47f3-bd00-8a2036f02315.jpg",
-//                    name = "PDP D4G1NG 1G4 V4R THUMBN41L P4RT14L SL4SH PR1C3 - Putih",
-//                    discountPercentage = "50%",
-//                    slashedPrice = "Rp 1.000",
-//                    price = "Rp 500",
-//                    labelGroup = listOf(
-//                        RepurchaseProduct.LabelGroup("integrity", "Terjual 2", "textDarkGrey")
-//                    ),
-//                    labelGroupVariant = listOf(
-//                        RepurchaseProduct.LabelGroupVariant(type = "textDarkGrey")
-//                    ),
-//                    parentProductId = "100"
-//                )
-//            )
-//        }
-//
-//        return GetRepurchaseProductListResponse(productMeta, productList)
     }
 }
