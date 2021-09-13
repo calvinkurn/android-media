@@ -22,6 +22,8 @@ class RepurchaseSortFilterViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter
+
+        private const val FIRST_ITEM_INDEX = 0
     }
 
     private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
@@ -113,12 +115,12 @@ class RepurchaseSortFilterViewHolder(
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             item.refChipUnify.apply {
-                if (index == 0 && !filterApplied) {
+                if (index == FIRST_ITEM_INDEX && !filterApplied) {
                     lp.marginStart = marginStart
                     lp.marginEnd = marginEnd
                     layoutParams = lp
                 }
-                if (index == 0 && filterApplied) {
+                if (index == FIRST_ITEM_INDEX && filterApplied) {
                     lp.marginEnd = marginEnd
                     layoutParams = lp
                 }
