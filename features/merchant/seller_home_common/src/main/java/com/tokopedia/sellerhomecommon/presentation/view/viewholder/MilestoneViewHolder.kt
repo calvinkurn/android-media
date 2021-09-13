@@ -153,14 +153,19 @@ class MilestoneViewHolder(
             rvShcMissionMilestone.adapter = MilestoneMissionAdapter(
                 mission,
                 object : MilestoneMissionAdapter.Listener {
-                    override fun onMissionActionClick(mission: BaseMilestoneMissionUiModel) {
-                        listener.onMilestoneMissionActionClickedListener(element, mission)
+
+                    override fun onMissionActionClick(
+                        mission: BaseMilestoneMissionUiModel,
+                        position: Int
+                    ) {
+                        listener.onMilestoneMissionActionClickedListener(element, mission, position)
                     }
 
-                    override fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel) {
-                        listener.sendMilestoneMissionImpressionEvent(
-                            mission, adapterPosition.plus(LAST_ONE)
-                        )
+                    override fun onMissionImpressionListener(
+                        mission: BaseMilestoneMissionUiModel,
+                        position: Int
+                    ) {
+                        listener.sendMilestoneMissionImpressionEvent(mission, position)
                     }
                 }
             )
@@ -224,7 +229,8 @@ class MilestoneViewHolder(
 
         fun onMilestoneMissionActionClickedListener(
             element: MilestoneWidgetUiModel,
-            mission: BaseMilestoneMissionUiModel
+            mission: BaseMilestoneMissionUiModel,
+            missionPosition: Int
         ) {
         }
 

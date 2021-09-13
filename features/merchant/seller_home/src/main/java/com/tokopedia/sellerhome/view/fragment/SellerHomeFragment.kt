@@ -486,7 +486,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onMilestoneMissionActionClickedListener(
         element: MilestoneWidgetUiModel,
-        mission: BaseMilestoneMissionUiModel
+        mission: BaseMilestoneMissionUiModel,
+        missionPosition: Int
     ) {
         when (mission) {
             is MilestoneMissionUiModel -> {
@@ -509,10 +510,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        val position = element.data?.milestoneMissions?.indexOf(mission) ?: RecyclerView.NO_POSITION
-        SellerHomeTracking.sendMilestoneMissionCtaClickEvent(
-            mission, position.plus(ADDITIONAL_POSITION)
-        )
+
+        SellerHomeTracking.sendMilestoneMissionCtaClickEvent(mission, missionPosition)
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {

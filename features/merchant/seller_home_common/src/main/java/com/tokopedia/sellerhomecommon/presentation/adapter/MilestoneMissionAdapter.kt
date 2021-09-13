@@ -4,7 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
@@ -60,10 +63,10 @@ class MilestoneMissionAdapter(
                 imgShcMission.loadImage(mission.imageUrl)
 
                 setupCtaButton(mission) {
-                    listener.onMissionActionClick(it)
+                    listener.onMissionActionClick(it, adapterPosition.plus(PLUS_ONE))
                 }
                 addOnImpressionListener(mission.impressHolder) {
-                    listener.onMissionImpressionListener(mission)
+                    listener.onMissionImpressionListener(mission, adapterPosition.plus(PLUS_ONE))
                 }
             }
         }
@@ -89,9 +92,6 @@ class MilestoneMissionAdapter(
         private fun setupFinishedMissionButton() {
             with(itemView) {
                 btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
-                /*btnShcMissionCta.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                )*/
                 btnShcMissionCta.isEnabled = true
             }
         }
@@ -123,7 +123,7 @@ class MilestoneMissionAdapter(
     }
 
     interface Listener {
-        fun onMissionActionClick(mission: BaseMilestoneMissionUiModel)
-        fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel)
+        fun onMissionActionClick(mission: BaseMilestoneMissionUiModel, position: Int)
+        fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel, position: Int)
     }
 }
