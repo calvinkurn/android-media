@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.utils.LIGHT_GREY
+import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
@@ -212,5 +213,32 @@ internal class ProductCardModelTest {
         )
 
         `Test rendered label group variant`(labelGroupVariant, expectedRenderedLabelGroupVariant)
+    }
+
+    @Test
+    fun `guard nonVariant min higher than max quantity`() {
+        val nonVariant = ProductCardModel.NonVariant(
+            minQuantity = 1,
+            maxQuantity = 0,
+            quantity = 0,
+        )
+
+        val userQuantity = 1
+
+        val coercedQty = userQuantity.coerceIn(nonVariant.quantityRange)
+        assertThat(coercedQty, `is`(nonVariant.minQuantityFinal))
+        assertThat(nonVariant.maxQuantityFinal, `is`(nonVariant.minQuantityFinal))
+    }
+
+    @Test
+    fun `guard nonVariant min quantity is 0`() {
+        val nonVariant = ProductCardModel.NonVariant(
+            minQuantity = 0,
+            maxQuantity = 0,
+            quantity = 0,
+        )
+
+        assertThat(nonVariant.minQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
+        assertThat(nonVariant.maxQuantityFinal, `is`(MIN_QUANTITY_NON_VARIANT))
     }
 }

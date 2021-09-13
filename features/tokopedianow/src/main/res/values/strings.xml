@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
-    <string name="tokopedianow_common_empty_state_desc_1">Tokopedia NOW! melayani kebutuhan belanja harianmu hanya dalam 2 jam pengiriman untuk menjamin tetap fresh.</string>
-    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru melayani kota %s. Tunggu Tokopedia NOW! tersedia di kotamu, ya!</string>
+    <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
+    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
+    <string name="tokopedianow_common_empty_state_bullet_symbol">•</string>
 
     <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
     <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>

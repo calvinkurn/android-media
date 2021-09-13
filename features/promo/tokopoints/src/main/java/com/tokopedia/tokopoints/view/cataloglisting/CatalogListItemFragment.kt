@@ -203,30 +203,30 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun getCurrentCategoryId(): Int {
         return if (arguments != null) {
-            arguments!!.getInt(CommonConstant.ARGS_CATEGORY_ID)
+            requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
         } else CommonConstant.DEFAULT_CATEGORY_TYPE
         // default category id
     }
 
     override fun getCurrentSubCategoryId(): Int {
         return if (arguments != null) {
-            arguments!!.getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
+            requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
         } else CommonConstant.DEFAULT_CATEGORY_TYPE
         // default category id
     }
 
     val pointsAvailability: Boolean
         get() = if (arguments != null) {
-            arguments!!.getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
+            requireArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
         } else false
 
     override fun showRedeemCouponDialog(cta: String?, code: String?, title: String?) {
@@ -427,7 +427,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         mTimer?.schedule(object : TimerTask() {
             override fun run() {
                 if (mHandler != null) {
-                    mHandler!!.post(mRunnableUpdateCatalogStatus)
+                    mRunnableUpdateCatalogStatus?.let { it ->
+                        mHandler!!.post(it)
+                    }
                 }
             }
         }, 0, if (mRefreshTime > 0) mRefreshTime else CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
@@ -435,7 +437,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
 
     private fun fetchRemoteConfig() {
-        mRefreshTime = instance(context!!).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
+        mRefreshTime = instance(requireContext()).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
     }
 
     override fun onDestroyView() {
@@ -445,7 +447,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             mTimer = null
         }
         if (mHandler != null) {
-            mHandler!!.removeCallbacks(mRunnableUpdateCatalogStatus)
+            mRunnableUpdateCatalogStatus?.let { it ->
+                mHandler!!.removeCallbacks(it)
+            }
             mHandler = null
         }
         mRunnableUpdateCatalogStatus = null

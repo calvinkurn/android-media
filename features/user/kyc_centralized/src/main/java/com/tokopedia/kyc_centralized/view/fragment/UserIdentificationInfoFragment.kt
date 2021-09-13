@@ -7,11 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,15 +18,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
@@ -37,9 +31,9 @@ import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
+import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -73,12 +67,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var projectId = -1
     private var callback: String? = null
     private var kycBenefitLayout: View? = null
-    private var kycBenefitImage: ImageUnify? = null
-    private var kycBenefitPowerMerchant: ImageUnify? = null
-    private var kycBenefitFintech: ImageUnify? = null
-    private var kycBenefitShield: ImageUnify? = null
-    private var kycBenefitButton: UnifyButton? = null
-    private var kycBenefitCloseButton: ImageButton? = null
     private var defaultStatusBarColor = 0
     private var allowedSelfie = false
 
@@ -131,13 +119,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         iconOne = parentView.findViewById(R.id.ic_x_1)
         iconTwo = parentView.findViewById(R.id.ic_x_2)
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
-        kycBenefitButton = parentView.findViewById(R.id.kyc_benefit_btn)
-        kycBenefitCloseButton = parentView.findViewById(R.id.close_button)
-        kycBenefitImage = parentView.findViewById(R.id.image_banner)
-        kycBenefitPowerMerchant = parentView.findViewById(R.id.image_power_merchant)
-        kycBenefitFintech = parentView.findViewById(R.id.image_fintech)
-        kycBenefitShield = parentView.findViewById(R.id.image_shiled_star)
-        setupKycBenefitImage()
         containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
@@ -149,10 +130,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             toggleNotFoundView(true)
         }
 
-        initObserver()
+        initObserver(view)
     }
 
-    private fun initObserver() {
+    private fun initObserver(view: View) {
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
@@ -161,7 +142,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
                             it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
                         onUserBlacklist()
                     } else {
-                        onSuccessGetUserProjectInfo(it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
+                        onSuccessGetUserProjectInfo(view, it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
                     }
                 }
                 is Fail -> { onErrorGetUserProjectInfo(it.throwable) }
@@ -180,7 +161,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         showStatusBlacklist()
     }
 
-    private fun onSuccessGetUserProjectInfo(status: Int, reasons: List<String>) {
+    private fun onSuccessGetUserProjectInfo(view: View, status: Int, reasons: List<String>) {
         hideLoading()
         hideKycBenefit()
         hideRejectedReason()
@@ -190,8 +171,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             KYCConstant.STATUS_APPROVED -> showStatusPending()
             KYCConstant.STATUS_PENDING -> showStatusPending()
             KYCConstant.STATUS_VERIFIED -> showStatusVerified()
-            KYCConstant.STATUS_EXPIRED -> showStatusNotVerified()
-            KYCConstant.STATUS_NOT_VERIFIED -> showStatusNotVerified()
+            KYCConstant.STATUS_EXPIRED -> showStatusNotVerified(view)
+            KYCConstant.STATUS_NOT_VERIFIED -> showStatusNotVerified(view)
             KYCConstant.STATUS_DEFAULT -> toggleNotFoundView(true)
             else -> onErrorGetUserProjectInfo(
                     MessageErrorException(String.format("%s (%s)",
@@ -224,53 +205,17 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
-    private fun showStatusNotVerified() {
-        setStatusBar(com.tokopedia.unifyprinciples.R.color.Unify_T200)
+    private fun showStatusNotVerified(view: View) {
+        KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         mainView?.hide()
         kycBenefitLayout?.show()
-        kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
-        kycBenefitCloseButton?.setOnClickListener {
+        KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
+            analytics?.eventClickOnNextOnBoarding()
+            goToFormActivity()
+        }, closeButtonAction = {
             activity?.onBackPressed()
-        }
+        })
         analytics?.eventViewOnKYCOnBoarding()
-    }
-
-    private fun setupKycBenefitImage() {
-        (kycBenefitImage as ImageView).loadImage(KycUrl.KYC_BENEFIT_BANNER)
-        kycBenefitImage?.cornerRadius = 0
-        (kycBenefitPowerMerchant as ImageView).loadImage(KycUrl.KYC_BENEFIT_POWER_MERCHANT)
-        (kycBenefitFintech as ImageView).loadImage(KycUrl.KYC_BENEFIT_FINTECH)
-        (kycBenefitShield as ImageView).loadImage(KycUrl.KYC_BENEFIT_SHIELD)
-    }
-
-    private fun setStatusBar(color: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val window = activity?.window ?: return
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(context, color)
-        }
-
-        if(activity != null && activity is AppCompatActivity) {
-              (activity as AppCompatActivity).supportActionBar?.hide()
-        }
-    }
-
-    private fun restoreStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val window = activity?.window ?: return
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = if(defaultStatusBarColor.isZero()) {
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            } else {
-                defaultStatusBarColor
-            }
-        }
-
-        if(activity != null && activity is AppCompatActivity) {
-            (activity as AppCompatActivity).supportActionBar?.show()
-        }
     }
 
     private fun showStatusVerified() {
@@ -318,7 +263,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
         button?.setText(R.string.kyc_failed_button)
         button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_REJECTED))
+        button?.setOnClickListener(onGoToFormActivityButton())
         analytics?.eventViewRejectedPage()
     }
 
@@ -347,7 +292,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun hideKycBenefit() {
         activity?.actionBar?.show()
-        restoreStatusBar()
+        KycOnBoardingViewInflater.restoreStatusBar(activity, defaultStatusBarColor)
         mainView?.show()
         kycBenefitLayout?.hide()
     }
@@ -384,13 +329,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
-    private fun onGoToFormActivityButton(status: Int): View.OnClickListener {
+    private fun onGoToFormActivityButton(): View.OnClickListener {
         return View.OnClickListener { v: View? ->
-            when (status) {
-                KYCConstant.STATUS_NOT_VERIFIED -> analytics?.eventClickOnNextOnBoarding()
-                KYCConstant.STATUS_REJECTED -> analytics?.eventClickNextRejectedPage()
-                else -> {}
-            }
+            analytics?.eventClickNextRejectedPage()
             goToFormActivity()
         }
     }
