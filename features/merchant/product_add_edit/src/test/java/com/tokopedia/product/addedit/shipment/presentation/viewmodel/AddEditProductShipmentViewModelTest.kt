@@ -33,7 +33,7 @@ class AddEditProductShipmentViewModelTest {
     @RelaxedMockK
     lateinit var customProductLogisticRepository: CustomProductLogisticRepository
 
-    private val customProductLogisticMapper = CustomProductLogisticMapper()
+    private val customProductLogisticMapper: CustomProductLogisticMapper = mockk()
 
     private val cplListObserver: Observer<Result<CustomProductLogisticModel>> =
         mockk(relaxed = true)
@@ -109,5 +109,27 @@ class AddEditProductShipmentViewModelTest {
         Assert.assertTrue(viewModel.isDraftMode)
         Assert.assertTrue(viewModel.isFirstMoved)
         Assert.assertTrue(viewModel.shipmentInputModel == shipmentInputModel)
+    }
+
+    @Test
+    fun `Get CPL List success`() {
+        val testData = CustomProductLogisticModel()
+
+        coEvery {
+            customProductLogisticRepository.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
+        every { customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data) } returns testData
+        viewModel.getCPLList(1234, "9876")
+        verify { cplListObserver.onChanged(Success(testData)) }
+    }
+
+    @Test
+    fun `Get CPL List failed`() {
+        val testError = Throwable("test error")
+        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } throws testError
+        viewModel.getCPLList(1234, "9876")
+        verify {
+            cplListObserver.onChanged(Fail(testError))
+            customProductLogisticMapper wasNot Called
+        }
     }
 }
