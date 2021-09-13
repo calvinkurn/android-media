@@ -612,7 +612,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun showEmptyState(id: String) {
-        viewModel.getEmptyState(id = id)
+        viewModel.getEmptyState(id)
         miniCartWidget?.hide()
         setupPadding(false)
     }
