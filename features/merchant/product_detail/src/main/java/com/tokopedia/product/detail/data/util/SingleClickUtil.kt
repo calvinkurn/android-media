@@ -10,7 +10,7 @@ object SingleClick{
     private var lastClickTime = 0L
 
     fun doSomethingBeforeTime(block: () -> Unit) {
-        if (SystemClock.elapsedRealtime() - lastClickTime < 400) {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 700) {
             return
         }
 
