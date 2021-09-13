@@ -244,8 +244,8 @@ class FlexBoxChatLayout : ViewGroup {
             HeaderCtaMessageAttachment.STATUS_ENABLED ->
                 com.tokopedia.unifyprinciples.R.color.Unify_G500
             HeaderCtaMessageAttachment.STATUS_DISABLED ->
-                com.tokopedia.unifyprinciples.R.color.Neutral_N700_32
-            else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_32
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_32
         }
         val color = ContextCompat.getColor(context, ctaColor)
         headerCta?.setTextColor(color)
