@@ -142,7 +142,6 @@ class PlayUpcomingFragment @Inject constructor(
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is RemindMeEvent -> {
                         if(event.isSuccess) {
-                            analytic.clickRemindMe()
                             actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
                             doShowToaster(message = getTextFromUiString(event.message))
                         }
@@ -224,6 +223,7 @@ class PlayUpcomingFragment @Inject constructor(
                 playParentViewModel.refreshChannel()
             }
             else {
+                analytic.clickRemindMe()
                 playViewModel.submitAction(ClickRemindMeUpcomingChannel)
             }
         }
