@@ -12,8 +12,10 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
@@ -305,6 +307,11 @@ class Utils {
             return displayMetrics
         }
 
+        fun nextPageAvailable(component: ComponentsItem, productPerPage: Int): Boolean {
+            return component.nextPageKey?.isNotEmpty()
+                ?: (component.getComponentsItem()?.size.isMoreThanZero()
+                        && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
+        }
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
         }

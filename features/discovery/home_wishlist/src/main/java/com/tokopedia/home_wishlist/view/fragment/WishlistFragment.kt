@@ -150,6 +150,8 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         private const val CACHE_CART = "CART"
         private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
         private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
+        private const val DELAY_TEXT_CHANGED = 250L
+        private const val DELAY_MILIS_100 = 100L
         private const val COACHMARK_SAFE_DELAY = 100L
         const val PARAM_LAUNCH_WISHLIST = "launch_source_wishlist"
         const val PARAM_HOME = "home"
@@ -238,7 +240,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
-                        id.toInt(),
+                        id.toLong(),
                         wishlistStatusFromPdp
                 )
             }
