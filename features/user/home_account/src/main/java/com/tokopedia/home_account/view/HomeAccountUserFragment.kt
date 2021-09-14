@@ -57,6 +57,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
@@ -136,6 +137,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
@@ -168,14 +170,25 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun enableLinkingAccountRollout(): Boolean = true
-//        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+    private fun enableLinkingAccountRollout(): Boolean =
+        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+
+    private fun isEnableLinkAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true) && enableLinkingAccountRollout()
+    }
 
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun getRemoteConfig(): FirebaseRemoteConfigImpl {
+        if(!::firebaseRemoteConfig.isInitialized) {
+            firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireContext())
+        }
+        return firebaseRemoteConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,10 +215,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun fetchRemoteConfig() {
         context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
-            isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowHomeAccountTokopoints = getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
+            isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -456,7 +468,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = enableLinkingAccountRollout()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -627,7 +639,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
         userSettingsMenu.items.forEach {
-            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !enableLinkingAccountRollout()) {
+            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
                 userSettingsMenu.items.remove(it)
             }
         }
@@ -1170,12 +1182,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onLinkingAccountClicked() {
+    override fun onLinkingAccountClicked(isLinked: Boolean) {
         homeAccountAnalytic.trackClickLinkAccount()
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
-            putExtra(ApplinkConstInternalGlobal.PARAM_LD, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        if(isLinked) {
+            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        } else {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_LD,
+                    ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+                )
+            }
+            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
-        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
@@ -1395,6 +1414,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS = "android_user_home_account_tokopoints"
+        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
 
         private const val LINK_STATUS_ROLLOUT = "goto_linking"
 

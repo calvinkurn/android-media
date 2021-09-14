@@ -8,9 +8,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD
 import com.tokopedia.home_account.R
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.WebViewHelper
 
@@ -22,6 +24,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
 
     companion object {
         const val KEY_URL = "webview_url"
+        const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
 
         fun newInstance(context: Context?, url: String?): Intent {
             val intent = Intent(context, LinkAccountWebViewActivity::class.java)
@@ -29,12 +32,27 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
             return intent
         }
 
+        private fun appendSuccessQuery(url: String): String  {
+            return "${url}&page=success"
+        }
+
+        fun getSuccessUrl(context: Context, redirectionApplink: String = ""): String {
+            return appendSuccessQuery(getLinkAccountUrl(context, redirectionApplink))
+        }
+
+        fun gotoSuccessPage(activity: FragmentActivity?, redirectionApplink: String) {
+            activity?.run {
+                val i = newInstance(this, getSuccessUrl(this, redirectionApplink))
+                startActivityForResult(i, LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST)
+            }
+        }
+
         fun getLinkAccountUrl(context: Context, redirectionApplink: String): String {
-            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(LinkAccountFragment.BASE_URL, context)
+            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(BASE_URL, context)
             if (finalUrl != null) {
-                finalUrl += "&ld=$redirectionApplink"
+                finalUrl += "&ld=${redirectionApplink.encodeToUtf8()}"
             } else {
-                finalUrl = "${LinkAccountFragment.BASE_URL}?&ld=$redirectionApplink"
+                finalUrl = "${BASE_URL}?ld=${redirectionApplink.encodeToUtf8()}"
             }
             return finalUrl
         }

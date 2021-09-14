@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -165,7 +164,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onViewAccountClicked() {
         homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        gotoSuccessPage(activity)
+        LinkAccountWebViewActivity.gotoSuccessPage(activity, "")
     }
 
     private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
@@ -208,19 +207,9 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     companion object {
-        const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
-
-        fun getSuccessPage(): String = "${BASE_URL}?page=success"
-
-        fun gotoSuccessPage(activity: FragmentActivity?) {
-            activity?.run {
-                val i = LinkAccountWebViewActivity.newInstance(this, getSuccessPage())
-                startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
-            }
-        }
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LinkAccountFragment()

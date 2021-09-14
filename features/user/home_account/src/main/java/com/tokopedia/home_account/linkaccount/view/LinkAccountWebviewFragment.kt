@@ -54,7 +54,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    webView?.loadUrl(LinkAccountFragment.getSuccessPage())
+                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
