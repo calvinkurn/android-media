@@ -2,6 +2,8 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -146,6 +148,73 @@ class DiscomPresenterTest {
 
         verifyOrder {
             view.showEmpty()
+        }
+    }
+
+    // TODO autofill
+
+    @Test
+    fun `autofill succcess`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
+
+        every { revGeocodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
+
+        val lat = 0.1
+        val lng = 0.1
+
+        presenter.autoFill(lat, lng)
+
+        verifyOrder {
+            view.setResultDistrict(keroMaps.data, lat, lng)
+        }
+    }
+
+    @Test
+    fun `autofill success with circuit breaker on code`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("message error"), errorCode = 101)
+
+        every { revGeocodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
+
+        presenter.autoFill(0.1, 0.1)
+
+        verifyOrder {
+            view.showToasterError()
+        }
+    }
+
+    @Test
+    fun `autofill success with foreign country`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
+        every { revGeocodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
+
+        presenter.autoFill(0.1, 0.1)
+
+        verifyOrder {
+            view.showToasterError()
+        }
+    }
+
+    @Test
+    fun `autofill success with not found location`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
+        every { revGeocodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
+
+        presenter.autoFill(0.1, 0.1)
+
+        verifyOrder {
+            view.showToasterError()
         }
     }
 
