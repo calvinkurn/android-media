@@ -2,8 +2,6 @@ package com.tokopedia.notifcenter.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
@@ -19,12 +17,6 @@ import javax.inject.Named
  */
 
 @Module class NotificationQueryModule {
-
-    @Provides
-    @NotificationScope
-    @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
-    fun provideSingleNotificationUpdate(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
 
     @Provides
     @NotificationScope

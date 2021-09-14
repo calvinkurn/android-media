@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
-import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
