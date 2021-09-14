@@ -42,6 +42,7 @@ import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListen
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.product_bundle.tracking.SingleProductBundleTracking
@@ -144,7 +145,6 @@ class SingleProductBundleFragment(
         )
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
-        updateTotalAmountAtcButtonText(preorderDurationWording)
     }
 
     override fun onDataChanged(
@@ -162,6 +162,14 @@ class SingleProductBundleFragment(
 
     private fun observeSingleProductBundleUiModel() {
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
+            // update PO and Total amount price if there is selected bundle
+            val selectedItem = it.getSelectedSingleProductBundleItem()
+            if (selectedItem != null) {
+                updateTotalAmount(selectedItem)
+                updateTotalPO(selectedItem)
+            }
+
+            // set adapter data
             adapter.setData(it.items, it.selectedItems)
         })
     }
@@ -316,6 +324,11 @@ class SingleProductBundleFragment(
     private fun updateTotalPO(totalPOWording: String?) {
         tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
         tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
+        updateTotalAmountAtcButtonText(totalPOWording)
+    }
+
+    private fun updateTotalPO(singleProductBundleItem: SingleProductBundleItem) {
+        updateTotalPO(singleProductBundleItem.preorderDurationWording)
     }
 
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
@@ -323,6 +336,12 @@ class SingleProductBundleFragment(
             amountView.text = price
             setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
             setSubtitleText(context.getString(R.string.text_saving), priceGap)
+        }
+    }
+
+    private fun updateTotalAmount(singleProductBundleItem: SingleProductBundleItem) {
+        singleProductBundleItem.apply {
+            viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         }
     }
 

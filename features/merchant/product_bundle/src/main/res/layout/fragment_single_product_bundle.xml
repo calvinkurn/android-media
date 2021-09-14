@@ -48,9 +48,12 @@
         android:id="@+id/ge_bundle_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         app:globalerrors_type="PAGE_FULL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone"/>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
