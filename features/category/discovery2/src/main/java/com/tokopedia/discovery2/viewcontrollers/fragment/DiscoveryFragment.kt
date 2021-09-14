@@ -173,7 +173,6 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
-    private var localCacheModel: LocalCacheModel? = null
 
     private var isManualScroll = true
 
@@ -226,7 +225,6 @@ class DiscoveryFragment :
         mDiscoveryFab = view.findViewById(R.id.fab)
         initToolbar(view)
         initChooseAddressWidget(view)
-        updateCurrentPageLocalCacheModelData()
         initView(view)
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -998,13 +996,6 @@ class DiscoveryFragment :
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
                     (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
-            AtcVariantHelper.ATC_VARIANT_RESULT_CODE ->{
-                context?.let {it->
-                    AtcVariantHelper.onActivityResultAtcVariant(it,requestCode,data){
-//                        Todo:Handle updating variant data here
-                    }
-                }
-            }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
             override fun onFail() {
@@ -1258,35 +1249,28 @@ class DiscoveryFragment :
     }
 
     private fun getMiniCart() {
-        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
-        val warehouseId = localCacheModel?.warehouse_id
+        val shopId = listOf(userAddressData?.shop_id.orEmpty())
+        val warehouseId = userAddressData?.warehouse_id
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(productId: String, shopId: String, quantity: Int) {
+    fun addOrUpdateItemCart(productId: String, quantity: Int) {
         if (UserSession(context).isLoggedIn) {
-            discoveryViewModel.addProductToCart(productId, quantity, localCacheModel?.shop_id?:"")
+            discoveryViewModel.addProductToCart(productId, quantity, userAddressData?.shop_id?:"")
         } else {
             openLoginScreen()
         }
     }
 
-    private fun updateCurrentPageLocalCacheModelData() {
-        context?.let {
-            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
-        }
-    }
-
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
-            val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+            val shopIds = listOf(userAddressData?.shop_id.orEmpty())
             if (!miniCartInitialized) {
-//            Todo: do we need to add pageName in Analytics?.
                 miniCartWidget?.initialize(
                     shopIds,
                     this,
                     this,
-                    pageName = MiniCartAnalytics.Page.HOME_PAGE
+                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE
                 )
                 miniCartWidget?.show()
             } else {
@@ -1356,7 +1340,7 @@ class DiscoveryFragment :
                 productId,
                 AtcVariantHelper.DISCOVERY_PAGESOURCE,
                 true,
-                localCacheModel?.shop_id?: "",
+                userAddressData?.shop_id?: "",
                 startActivitResult = { intent, reqCode ->
                     startActivityForResult(intent, reqCode)
                 }
