@@ -11,10 +11,8 @@ import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
-import com.tokopedia.play.websocket.response.PlayChatSocketResponse
-import com.tokopedia.play.websocket.response.PlayPinnedMessageSocketResponse
-import com.tokopedia.play.websocket.response.PlayTotalViewSocketResponse
-import com.tokopedia.play.websocket.response.PlayTotalLikeSocketResponse
+import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.*
@@ -152,8 +150,39 @@ class PlayViewModelWebSocketTest {
         } andThen {
             fakePlayWebSocket.fakeReceivedMessage(PlayPinnedMessageSocketResponse.response)
         } thenVerify {
-            verify {
+            verifySequence {
+                pinnedMessageObserver.onChanged(pinnedMessageModelBuilder.buildPinnedMessage())
                 pinnedMessageObserver.onChanged(mockResponse)
+            }
+        }
+    }
+
+    @Test
+    fun `when get quick reply data from web socket, then it should update the data`() {
+        val quickReplyModelBuilder = PlayQuickReplyModelBuilder()
+
+        val quickReplyObserver: Observer<PlayQuickReplyInfoUiModel> = mockk(relaxed = true)
+        every { quickReplyObserver.onChanged(any()) }.just(Runs)
+
+        val mockResponse = quickReplyModelBuilder.build(
+            quickReplyList = PlayQuickReplySocketResponse.quickReplyList
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observableQuickReply.observeForever(quickReplyObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayQuickReplySocketResponse.response)
+        } thenVerify {
+            verifySequence {
+                quickReplyObserver.onChanged(quickReplyModelBuilder.build())
+                quickReplyObserver.onChanged(mockResponse)
             }
         }
     }
