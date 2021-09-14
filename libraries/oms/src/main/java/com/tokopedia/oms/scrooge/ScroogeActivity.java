@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -49,11 +50,13 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private static final String EXTRA_KEY_URL = "URL";
     private static final String EXTRA_IS_POST_REQUEST = "EXTRA_IS_POST_REQUEST";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String LIVENESS_REDIRECTION_PATH = "redirectUrl";
 
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    private static final int REQUEST_CODE_LIVENESS = 1235;
 
     private WebView mWebView;
     private ProgressBar mProgress;
@@ -66,6 +69,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private String title;
     private CommonWebViewClient webChromeWebviewClient;
     private String mJsHciCallbackFuncName;
+    private String kycRedirectionUrl;
 
     public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, String postParams, String title) {
         Intent intent = new Intent(context, ScroogeActivity.class);
@@ -201,6 +205,13 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 Intent responseIntent = new Intent();
 
                 boolean returnVal = true;
+                if ("".equals(url)) {
+                    return false;
+                }
+                Uri uri = Uri.parse(url);
+                if (uri.isOpaque()) {
+                    return false;
+                }
                 if (url.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
                     setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS, responseIntent);
@@ -232,6 +243,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                     startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
+                } else if (url.startsWith(ApplinkConst.KYC_FORM_NO_PARAM)) {
+                    String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+                    Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId);
+                    kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+                    startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+                    return true;
                 } else {
                     returnVal = false;
                 }
@@ -253,6 +270,8 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        } else if (requestCode == REQUEST_CODE_LIVENESS) {
+            RouteManager.route(ScroogeActivity.this, kycRedirectionUrl);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath);

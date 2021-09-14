@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.authentication.*
 import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
@@ -101,6 +102,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private var isInterceptOtp = true
     private var mJsHciCallbackFuncName: String? = null
+    private var kycRedirectionUrl: String = ""
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
 
@@ -409,6 +411,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
+        } else if (requestCode == REQUEST_CODE_LIVENESS) {
+            RouteManager.route(this, kycRedirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
             if (imagePath != null) {
@@ -525,6 +529,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
+                    return true
+                }
+                if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
+                    val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
+                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId)
+                    kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
+                    startActivityForResult(intent, REQUEST_CODE_LIVENESS)
                     return true
                 }
             }
@@ -740,7 +751,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val CHARSET_UTF_8 = "UTF-8"
 
         const val HCI_CAMERA_REQUEST_CODE = 978
+        const val REQUEST_CODE_LIVENESS = 1235;
         const val FORCE_TIMEOUT = 90000L
+        const val LIVENESS_REDIRECTION_PATH = "redirectUrl"
+
 
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
