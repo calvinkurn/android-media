@@ -372,7 +372,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
         isSeller = userSession.hasShop() || userSession.isAffiliate
-        if (!userSession.isLoggedIn && !isSeller) {
+        if (!userSession.isLoggedIn || !isSeller) {
             fab_feed.hide()
         }
         setAdapter()
