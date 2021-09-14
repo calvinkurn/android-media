@@ -57,17 +57,11 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            var dimens = R.dimen.dp_0
-            HomeComponentRollenceController.checkCategoryWidgetRollenceType(
-                    isTypeTextBox = {
-                        dimens = R.dimen.dp_8
-                    }
-            )
             recyclerView.addItemDecoration(
                 CategoryWidgetSpacingItemDecoration(
                     2,
-                    itemView.context.resources.getDimensionPixelOffset(dimens)
-            )
+                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
+                )
             )
         }
         setChannelDivider(channel)
