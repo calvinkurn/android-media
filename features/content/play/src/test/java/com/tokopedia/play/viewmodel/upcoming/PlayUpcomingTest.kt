@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.PlayReminder
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
+import com.tokopedia.play.fake.FakePlayChannelSSE
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
@@ -45,9 +46,11 @@ class PlayUpcomingTest {
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
+    private val mockChannelDataWithNoUpcoming = channelDataBuilder.buildChannelData()
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
+    private val fakePlayChannelSSE = FakePlayChannelSSE(mockUserSession, testDispatcher)
 
     @Before
     fun setUp() {
@@ -196,6 +199,113 @@ class PlayUpcomingTest {
             submitAction(ClickWatchNowUpcomingChannel)
         } thenVerify {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
+        }
+    }
+
+    /**
+     * SSE
+     */
+    @Test
+    fun `given a upcoming channel, when app displaying upcoming channel, then app should automatically connect to SSE`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } thenVerify {
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun `given a non-upcoming channel, when app displaying upcoming channel, then app should not connect to SSE`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelDataWithNoUpcoming)
+            focusPage(mockChannelDataWithNoUpcoming)
+        } thenVerify {
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get message that the channel is already alive, then it should update the channel upcoming info`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{channel_id: 1}")
+        } thenVerify {
+            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(true)
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get message that the channel is already active, then it should update the channel upcoming info`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdateactive", "{channel_id: 1}")
+        } thenVerify {
+            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(true)
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get unrecognized event, then it should do nothing`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{channel_id: 1}")
+        } thenVerify {
+            viewModel.observableUpcomingInfo.value?.isEqualTo(mockUpcomingInfo)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get different channel_id alive, then it should do nothing with current channel`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{channel_id: 12312}")
+        } thenVerify {
+            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(false)
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(true)
         }
     }
 }
