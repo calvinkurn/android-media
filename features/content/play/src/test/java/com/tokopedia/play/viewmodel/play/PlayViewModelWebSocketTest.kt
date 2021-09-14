@@ -4,14 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.fake.FakePlayWebSocket
-import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.model.PlayMapperBuilder
+import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.websocket.response.PlayChatSocketResponse
+import com.tokopedia.play.websocket.response.PlayPinnedMessageSocketResponse
 import com.tokopedia.play.websocket.response.PlayTotalViewSocketResponse
 import com.tokopedia.play.websocket.response.PlayTotalLikeSocketResponse
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -93,12 +94,13 @@ class PlayViewModelWebSocketTest {
 
     @Test
     fun `when get message from web socket, then it should update the data`() {
+        val chatModelBuilder = PlayChatModelBuilder()
         val chatListObserver: Observer<List<PlayChatUiModel>> = mockk(relaxed = true)
         every { chatListObserver.onChanged(any()) }.just(Runs)
 
         val mockResponse = mutableListOf<PlayChatUiModel>()
         mockResponse.add(
-            PlayChatUiModel(
+            chatModelBuilder.build(
                 messageId = "",
                 userId = PlayChatSocketResponse.userId.toString(),
                 name = PlayChatSocketResponse.userName,
@@ -121,6 +123,37 @@ class PlayViewModelWebSocketTest {
         } thenVerify {
             verify {
                 chatListObserver.onChanged(mockResponse)
+            }
+        }
+    }
+
+    @Test
+    fun `when get pinned message data from web socket, then it should update the data`() {
+        val pinnedMessageModelBuilder = PlayPinnedModelBuilder()
+
+        val pinnedMessageObserver: Observer<PinnedMessageUiModel> = mockk(relaxed = true)
+        every { pinnedMessageObserver.onChanged(any()) }.just(Runs)
+
+        val mockResponse = pinnedMessageModelBuilder.buildPinnedMessage(
+            id = PlayPinnedMessageSocketResponse.pinnedMessageId.toString(),
+            applink = PlayPinnedMessageSocketResponse.redirectUrl,
+            title = PlayPinnedMessageSocketResponse.title
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observablePinnedMessage.observeForever(pinnedMessageObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayPinnedMessageSocketResponse.response)
+        } thenVerify {
+            verify {
+                pinnedMessageObserver.onChanged(mockResponse)
             }
         }
     }
