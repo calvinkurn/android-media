@@ -178,6 +178,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             else
             {
                 serviceFeeInfoText.gone()
+
             }
             urlToRedirect = data.cta?.android_url ?: ""
             data.cta?.cta_type?.let {
