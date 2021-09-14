@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,18 +27,18 @@ import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
 class GetProfileDataUseCase @Inject constructor(
-        private val accountHeaderMapper: AccountHeaderMapper,
-        private val getUserInfoUseCase: GetUserInfoUseCase,
-        private val getOvoUseCase: GetCoroutineWalletBalanceUseCase,
-        private val getSaldoUseCase: GetSaldoUseCase,
-        private val getUserMembershipUseCase: GetUserMembershipUseCase,
-        private val getTokopointStatusFiltered: GetTokopointStatusFiltered,
-        private val getShopInfoUseCase: GetShopInfoUseCase,
-        private val userSession: UserSessionInterface,
-        @ApplicationContext private val context: Context,
-        private val getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
-        private val getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
-): UseCase<AccountHeaderDataModel>() {
+    private val accountHeaderMapper: AccountHeaderMapper,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val getOvoUseCase: GetCoroutineWalletBalanceUseCase,
+    private val getSaldoUseCase: GetSaldoUseCase,
+    private val getUserMembershipUseCase: GetUserMembershipUseCase,
+    private val getTokopointStatusFiltered: GetTokopointStatusFiltered,
+    private val getShopInfoUseCase: GetShopInfoUseCase,
+    private val userSession: UserSessionInterface,
+    @ApplicationContext private val context: Context,
+    private val getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
+    private val getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
+) : UseCase<AccountHeaderDataModel>() {
 
 
     override suspend fun executeOnBackground(): AccountHeaderDataModel {
@@ -45,7 +46,7 @@ class GetProfileDataUseCase @Inject constructor(
         getShopInfoUseCase.setStrategyCloudThenCache()
         getUserMembershipUseCase.setStrategyCloudThenCache()
 
-        return withContext(coroutineContext){
+        return withContext(coroutineContext) {
             var userInfoData: UserPojo? = null
 
             var ovoData: WalletBalanceModel? = null
@@ -56,6 +57,7 @@ class GetProfileDataUseCase @Inject constructor(
             var isEligibleForWalletApp: Boolean = false
             var walletAppData: WalletAppData? = null
             var isWalletAppError: Boolean = false
+            var isSaldoError: Boolean = false
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -75,12 +77,22 @@ class GetProfileDataUseCase @Inject constructor(
             val getShopInfoCall = async {
                 getShopInfoUseCase.executeOnBackground()
             }
-            userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-            userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            userInfoData =
+                (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
 
-            if(isABNewTokopoint()) tokopoint =
-                    (getTokopointCall.await().takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
+            val saldoJob = getSaldoCall.await()
+            if (saldoJob is Success) {
+                saldoData = (saldoJob as? Success<SaldoPojo>)?.data
+            } else if (saldoJob is Fail) {
+                isSaldoError = true
+            }
+
+            userMembershipData = (getUserMembershipCall.await()
+                .takeIf { it is Success } as? Success<MembershipPojo>)?.data
+
+            if (isABNewTokopoint()) tokopoint =
+                (getTokopointCall.await()
+                    .takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
 
             isEligibleForWalletApp = try {
                 getWalletEligibilityUseCase.executeOnBackground().isGoPointsEligible
@@ -90,8 +102,12 @@ class GetProfileDataUseCase @Inject constructor(
 
             if (!isEligibleForWalletApp) {
                 // check if tokopoint = 0 or null then follow old flow (fetch saldo)
-                if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
-                    ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+                if (tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull()
+                        .isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull()
+                        .isZero()
+                ) {
+                    ovoData = (getOvoCall.await()
+                        .takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
                     tokopoint = null
                 }
             } else {
@@ -106,20 +122,22 @@ class GetProfileDataUseCase @Inject constructor(
                 }
             }
 
-            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
+            shopData =
+                (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
-                    userInfoData,
-                    ovoData,
-                    tokopoint,
-                    saldoData,
-                    userMembershipData,
-                    shopData?.userShopInfo,
-                    shopData?.notifications,
-                    false,
-                    walletAppData = walletAppData,
-                    isWalletAppError = isWalletAppError,
-                    isEligibleForWalletApp = isEligibleForWalletApp
+                userInfoData,
+                ovoData,
+                tokopoint,
+                saldoData,
+                userMembershipData,
+                shopData?.userShopInfo,
+                shopData?.notifications,
+                false,
+                walletAppData = walletAppData,
+                isWalletAppError = isWalletAppError,
+                isEligibleForWalletApp = isEligibleForWalletApp,
+                isSaldoError = isSaldoError
             )
         }
     }
@@ -137,7 +155,10 @@ class GetProfileDataUseCase @Inject constructor(
     }
 
     private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(
+            AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF,
+            Context.MODE_PRIVATE
+        )
     }
 
 }

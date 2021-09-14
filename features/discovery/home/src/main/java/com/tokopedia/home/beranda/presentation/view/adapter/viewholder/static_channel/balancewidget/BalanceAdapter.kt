@@ -23,6 +23,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
@@ -115,6 +116,7 @@ class BalanceAdapter(
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         private var isOvoAvailable: Boolean = false
+
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
                  isOvoAvailable: Boolean
@@ -128,17 +130,33 @@ class BalanceAdapter(
         }
 
         private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
-            itemView.home_progress_bar_balance_layout.gone()
-            itemView.home_container_action_balance.gone()
+            /**
+             * Initial state
+             */
+            itemView.home_iv_logo_shimmering.show()
+            itemView.home_progress_bar_balance_layout.show()
+
+            animationJob?.cancel()
+
             when (element?.state) {
                 BalanceDrawerItemModel.STATE_LOADING -> {
                     itemView.home_iv_logo_balance.invisible()
+
+                    itemView.home_tv_balance.invisible()
+                    itemView.home_tv_btn_action_balance.invisible()
+
                     itemView.home_iv_logo_shimmering.show()
                     itemView.home_progress_bar_balance_layout.show()
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
+                    itemView.home_progress_bar_balance_layout.gone()
+
                     itemView.home_iv_logo_balance.show()
                     itemView.home_container_action_balance.show()
+
+                    itemView.home_tv_balance.show()
+                    itemView.home_tv_btn_action_balance.show()
+
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
                     itemView.home_container_balance.handleItemCLickType(
@@ -330,8 +348,16 @@ class BalanceAdapter(
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
+
+                    //interpolator
+                    element?.alternateBalanceDrawerItem?.let {
+                        this.element = element
+                        this.alternateDrawerItem = it
+                        setDrawerItemWithAnimation()
+                    }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
+                    itemView.home_progress_bar_balance_layout.gone()
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
@@ -353,34 +379,30 @@ class BalanceAdapter(
                     )
                 }
             }
-            //error state using shimmering
-            element?.defaultIconRes?.let {
-                if (element.drawerItemType == TYPE_WALLET_OVO ||
-                    element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
-                    element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
-                    element.drawerItemType == TYPE_WALLET_OTHER
-                ) {
+
+            if (element?.state != STATE_LOADING) {
+                //error state using shimmering
+                element?.defaultIconRes?.let {
+                    if (element.drawerItemType == TYPE_WALLET_OVO ||
+                        element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                        element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
+                        element.drawerItemType == TYPE_WALLET_OTHER
+                    ) {
+                        itemView.home_iv_logo_balance.visible()
+                        itemView.home_iv_logo_shimmering.invisible()
+
+                        itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                    } else {
+                        itemView.home_iv_logo_balance.invisible()
+                        itemView.home_iv_logo_shimmering.visible()
+                    }
+                }
+                element?.iconImageUrl?.let {
                     itemView.home_iv_logo_balance.visible()
                     itemView.home_iv_logo_shimmering.invisible()
 
-                    itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
-                } else {
-                    itemView.home_iv_logo_balance.invisible()
-                    itemView.home_iv_logo_shimmering.visible()
+                    if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
                 }
-            }
-            element?.iconImageUrl?.let {
-                itemView.home_iv_logo_balance.visible()
-                itemView.home_iv_logo_shimmering.invisible()
-
-                if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
-            }
-
-            //interpolator
-            element?.alternateBalanceDrawerItem?.let {
-                this.element = element
-                this.alternateDrawerItem = it
-                setDrawerItemWithAnimation()
             }
         }
 

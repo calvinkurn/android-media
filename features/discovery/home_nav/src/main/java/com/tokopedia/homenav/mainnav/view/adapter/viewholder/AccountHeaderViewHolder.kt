@@ -141,22 +141,27 @@ class AccountHeaderViewHolder(itemView: View,
          */
         tvOvo.isClickable = false
         usrOvoBadge.visible()
+        usrSaldoBadge.visible()
         sectionWallet.visible()
+        btnSettings.visible()
 
         layoutLogin.setOnClickListener {
             TrackingProfileSection.onClickProfileSection(userSession.userId)
             mainNavListener.onProfileSectionClicked()
         }
 
-        btnSettings.visible()
+        /**
+         * Reset button state for error handling
+         */
+        btnTryAgainShopInfo.gone()
         btnTryAgain.gone()
+        shimmerShopInfo.gone()
+
         if (
-            (element.profileDataModel.isGetUserNameError
-                    ||
-                    (element.profileOvoDataModel.isGetOvoError
-                            && element.profileSaldoDataModel.isGetSaldoError
-                            && !element.isCacheData))
-            && !element.profileWalletAppDataModel.isEligibleForWalletApp) {
+            !element.isCacheData && (element.profileDataModel.isGetUserNameError ||
+                    element.profileOvoDataModel.isGetOvoError ||
+                    element.profileSaldoDataModel.isGetSaldoError ||
+                    element.profileWalletAppDataModel.isWalletAppFailed)) {
             usrOvoBadge.gone()
             btnTryAgain.visible()
         }
@@ -183,13 +188,6 @@ class AccountHeaderViewHolder(itemView: View,
         )
 
         /**
-         * Reset button state for error handling
-         */
-        btnTryAgainShopInfo.gone()
-        btnTryAgain.gone()
-        shimmerShopInfo.gone()
-
-        /**
          * Set user profile data
          */
         element.profileDataModel.let { profileData ->
@@ -214,17 +212,32 @@ class AccountHeaderViewHolder(itemView: View,
          * Set saldo data
          */
         element.profileSaldoDataModel.let { profileSaldo ->
-            if (profileSaldo.isGetSaldoError) {
-                sectionSaldo.gone()
-            } else {
-                usrSaldoBadgeShimmer.invisible()
-                tvSaldoShimmer.invisible()
-                usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
-                tvSaldo.text = profileSaldo.saldo
-                sectionSaldo.visible()
+            when {
+                /**
+                 * Handling saldo error state
+                 */
+                profileSaldo.isGetSaldoError -> {
+                    if (element.profileWalletAppDataModel.isWalletAppFailed ||
+                        element.profileOvoDataModel.isGetOvoError ||
+                            element.profileMembershipDataModel.isTokopointExternalAmountError) {
+                        sectionSaldo.gone()
+                    } else {
+                        tvSaldo.text = itemView.context.getString(R.string.mainnav_general_error)
+                        usrSaldoBadge.gone()
+                        usrSaldoBadgeShimmer.visible()
+                        tvSaldoShimmer.invisible()
+                    }
+                }
+
+                !profileSaldo.isGetSaldoError -> {
+                    usrSaldoBadgeShimmer.invisible()
+                    tvSaldoShimmer.invisible()
+                    usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
+                    tvSaldo.text = profileSaldo.saldo
+                    sectionSaldo.visible()
+                }
             }
         }
-
 
         if (element.profileMembershipDataModel.isGetUserMembershipError) {
             usrBadge.gone()
@@ -246,7 +259,6 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.invisible()
             tvOvo.visible()
             usrOvoBadge.visible()
-            usrSaldoBadge.visible()
 
             when {
                 /**
@@ -265,17 +277,25 @@ class AccountHeaderViewHolder(itemView: View,
                                     )
                                     usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
                                 } else {
-                                    sectionWallet.gone()
+                                    /**
+                                     * Handle wallet app error state
+                                     */
+                                    tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
+                                    usrOvoBadge.gone()
+                                    usrOvoBadgeShimmer.visible()
                                 }
                             }
-                            walletAppModel.isWalletAppLinked -> {
+                            !walletAppModel.isWalletAppLinked -> {
                                 if (walletAppModel.walletAppActivationCta.isNotEmpty()) {
                                     tvOvo.text = walletAppModel.walletAppActivationCta
                                     usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
                                 } else {
-                                    tvOvo.gone()
+                                    /**
+                                     * Handle wallet app error state
+                                     */
+                                    tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
                                     usrOvoBadge.gone()
-                                    sectionWallet.gone()
+                                    usrOvoBadgeShimmer.visible()
                                 }
                             }
                             walletAppModel.isWalletAppFailed -> {
@@ -286,51 +306,45 @@ class AccountHeaderViewHolder(itemView: View,
                     }
                 }
 
-                /**
-                 * Handling when tokopoint, ovo, saldo error
-                 */
-                element.profileMembershipDataModel.isTokopointExternalAmountError -> {
-                    tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
-                    usrOvoBadge.clearImage()
-                }
-
-                element.profileOvoDataModel.isGetOvoError -> {
-                    tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
-                    usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-                }
-
-                element.profileSaldoDataModel.isGetSaldoError -> {
-                    tvSaldo.text = AccountHeaderDataModel.ERROR_TEXT_SALDO
-                    usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
-                }
-
-                /**
-                 * Handling tokopoint value
-                 */
-                element.profileMembershipDataModel.tokopointExternalAmount.isNotEmpty()
-                        && element.profileMembershipDataModel.tokopointPointAmount.isNotEmpty() -> {
-                    element.profileMembershipDataModel.let { profileMembership ->
-                        val spanText = String.format(
-                            itemView.context.getString(R.string.mainnav_tokopoint_format),
-                            profileMembership.tokopointExternalAmount,
-                            profileMembership.tokopointPointAmount
-                        )
-                        val span = SpannableString(spanText)
-                        span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        tvOvo.setText(span, TextView.BufferType.SPANNABLE)
-                        usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
-                    }
-                }
-
-                /**
-                 * Handling ovo value
-                 */
-                else -> {
-                    element.profileOvoDataModel.let { profileOvo ->
-                        tvOvo.text = renderOvoText(profileOvo.ovoSaldo, profileOvo.ovoPoint)
-                        if (profileOvo.ovoSaldo.isNotEmpty()) {
-                            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                !element.profileWalletAppDataModel.isEligibleForWalletApp -> {
+                    /**
+                     * Handling tokopoint value
+                     */
+                    if (element.profileMembershipDataModel.tokopointExternalAmount.isNotEmpty()
+                        && element.profileMembershipDataModel.tokopointPointAmount.isNotEmpty()) {
+                        element.profileMembershipDataModel.let { profileMembership ->
+                            val spanText = String.format(
+                                itemView.context.getString(R.string.mainnav_tokopoint_format),
+                                profileMembership.tokopointExternalAmount,
+                                profileMembership.tokopointPointAmount
+                            )
+                            val span = SpannableString(spanText)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            tvOvo.setText(span, TextView.BufferType.SPANNABLE)
+                            usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
+                        }
+                        /**
+                         * Handling tokopoint error state
+                         */
+                    } else if (element.profileMembershipDataModel.isTokopointExternalAmountError) {
+                            tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
+                            usrOvoBadge.clearImage()
+                    } else {
+                        /**
+                         * Handling ovo value
+                         */
+                        element.profileOvoDataModel.let { profileOvo ->
+                            tvOvo.text = renderOvoText(profileOvo.ovoSaldo, profileOvo.ovoPoint)
+                            if (profileOvo.ovoSaldo.isNotEmpty()) {
+                                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                                /**
+                                 * Handling ovo error state
+                                 */
+                            } else if (element.profileOvoDataModel.isGetOvoError) {
+                                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
+                                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                            }
                         }
                     }
                 }

@@ -1261,8 +1261,6 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
 
         if (getHeaderDataJob == null || getHeaderDataJob?.isActive == false) {
-            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
-
             getHeaderDataJob = launchCatchError(coroutineContext, block = {
                 var walletContent: HomeHeaderWalletAction? = null
                 var tokopointContent: TokopointsDrawerListHomeData? = null
@@ -1279,71 +1277,66 @@ open class HomeRevampViewModel @Inject constructor(
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                } else {
+                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
                 }
 
-                launchCatchError(coroutineContext, block = {
-                    walletAppAbTestCondition(
-                        isUsingWalletApp = {
-                            walletAppBalance = getHomeBalanceWalletAppData(updateView = true)
-                            _homeCoachmarkData.postValue(Event(
-                                HomeCoachmarkModel(
-                                    isGopayActive = walletAppBalance?.isLinked?:false,
-                                    isGopayEligible = isGopayEligible
-                                )))
-                        },
-                        isUsingOldWallet = {
-                            try {
-                                walletContent = getWalletBalanceContent()
+                walletAppAbTestCondition(
+                    isUsingWalletApp = {
+                        walletAppBalance = getHomeBalanceWalletAppData(updateView = false)
+                        _homeCoachmarkData.postValue(Event(
+                            HomeCoachmarkModel(
+                                isGopayActive = walletAppBalance?.isLinked?:false,
+                                isGopayEligible = isGopayEligible
+                            )))
+                    },
+                    isUsingOldWallet = {
+                        try {
+                            walletContent = getWalletBalanceContent()
 
-                                walletContent?.let { walletContent ->
-                                    if (!walletContent.isLinked) {
-                                        try {
-                                            pendingCashback = getPendingTokoCashContent()
-                                            pendingCashback?.let { pendingData ->
-                                                homeDataModel.homeBalanceModel.mapBalanceData(
-                                                    tokopointDrawerListHomeData = tokopointContent,
-                                                    homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
-                                                    pendingCashBackData = PendingCashbackModel(
-                                                        pendingCashback = pendingData,
-                                                        labelActionButton = walletContent.labelActionButton,
-                                                        labelTitle = walletContent.labelTitle,
-                                                        walletType = walletContent.walletType
-                                                    )
+                            walletContent?.let { walletContent ->
+                                if (!walletContent.isLinked) {
+                                    try {
+                                        pendingCashback = getPendingTokoCashContent()
+                                        pendingCashback?.let { pendingData ->
+                                            homeDataModel.homeBalanceModel.mapBalanceData(
+                                                tokopointDrawerListHomeData = tokopointContent,
+                                                homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
+                                                pendingCashBackData = PendingCashbackModel(
+                                                    pendingCashback = pendingData,
+                                                    labelActionButton = walletContent.labelActionButton,
+                                                    labelTitle = walletContent.labelTitle,
+                                                    walletType = walletContent.walletType
                                                 )
-                                            }
-                                        } catch (e: Exception) {
-                                            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                                            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                                            )
                                         }
-                                    } else {
-                                        homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                                    } catch (e: Exception) {
+                                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
                                     }
+                                } else {
+                                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
                                 }
-                            } catch (e: Exception) {
-                                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                                homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
-                                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                             }
+                        } catch (e: Exception) {
+                            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
                         }
-                    )
-                }) {}
-
-                launchCatchError(coroutineContext, block = {
-                    try {
-                        tokopointContent = getTokopointBalanceContent()
-                        Log.d("DevaraCoroutine", "tokopoint: "+tokopointContent.toString())
-
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        homeDataModel.homeBalanceModel.mapErrorTokopoints()
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
                     }
+                )
 
-                    tokopointContent?.let {
-                        homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy())
-                    }
-                }) {}
+                try {
+                    tokopointContent = getTokopointBalanceContent()
+                } catch (e: Exception) {
+                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                    homeDataModel.homeBalanceModel.mapErrorTokopoints()
+                }
+
+                tokopointContent?.let {
+                    homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
+                }
+
+                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy())
             }) {
 
             }

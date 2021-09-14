@@ -27,7 +27,8 @@ class AccountHeaderMapper(
                          isCache: Boolean,
                          walletAppData: WalletAppData? = null,
                          isWalletAppError: Boolean = false,
-                         isEligibleForWalletApp: Boolean = false
+                         isEligibleForWalletApp: Boolean = false,
+                         isSaldoError: Boolean = false
     ): AccountHeaderDataModel {
         var accountModel = AccountHeaderDataModel()
 
@@ -73,6 +74,7 @@ class AccountHeaderMapper(
                 }
                 data.profileWalletAppDataModel.isWalletAppFailed = isWalletAppError
                 data.profileWalletAppDataModel.isEligibleForWalletApp = isEligibleForWalletApp
+                data.profileSaldoDataModel.isGetSaldoError = isSaldoError
                 // extra case when tokopoint null and ab is false
                 if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.profileMembershipDataModel.isTokopointExternalAmountError){
                     data.profileMembershipDataModel.isTokopointExternalAmountError = false

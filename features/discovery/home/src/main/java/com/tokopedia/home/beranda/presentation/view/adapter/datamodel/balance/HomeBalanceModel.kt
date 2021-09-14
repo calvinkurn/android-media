@@ -4,6 +4,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
@@ -76,30 +77,45 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        balanceDrawerItemModels.clear()
         when (balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
+                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
             }
             TYPE_STATE_2 -> {
                 if (isGopayEligible == null || isGopayEligible == true) {
-                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
+                    balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+                    balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+
+                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
                 } else {
-                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
-                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
-                    balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = BalanceDrawerItemModel()
+                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
+                    balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = resetDrawerItem(
+                        BALANCE_POSITION_FOURTH)
                 }
             }
             TYPE_STATE_3 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
+                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
             }
         }
+    }
+
+    private fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
+        val balance =  balanceDrawerItemModels.getOrElse(
+            position
+        ) { BalanceDrawerItemModel() }.copy()
+        balance.state = STATE_LOADING
+        return balance
     }
 
     fun mapBalanceData(

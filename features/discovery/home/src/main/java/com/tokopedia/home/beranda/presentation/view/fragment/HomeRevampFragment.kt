@@ -388,7 +388,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmark: CoachMark2? = null
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
-    private var isEligibleGopay: Boolean = false
+    private var isEligibleGopay: Boolean? = null
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
 
@@ -443,7 +443,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun isEligibleForNewGopay(): Boolean {
-        return this.isEligibleGopay
+        return this.isEligibleGopay?: false
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
@@ -788,7 +788,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
             //add balance widget
             //uncomment this to activate balance widget coachmark
-            if (isUsingWalletApp() && !isEligibleGopay) {
+            if (isUsingWalletApp() && (isEligibleGopay != null && isEligibleGopay == false)) {
                 if (!skipBalanceWidget && !isWalletAppCoachmarkShown(currentContext)) {
                     val gopayWidget = getGopayBalanceWidgetView()
                     gopayWidget?.let {
@@ -940,7 +940,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         //if eligible
-        if (!isEligibleForNewGopay() || !containsNewGopayAndTokopoints) return
+        if (isEligibleGopay == null) return
+        if (isEligibleGopay == false || !containsNewGopayAndTokopoints) return
 
         context?.let {
             val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -1277,7 +1278,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         startTokopointRotation()
-        isNeedToRotateTokopoints = true
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         if(eligibleBeautyFest != isEligibleForBeautyFest()) {
@@ -1303,15 +1303,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun startTokopointRotation() {
         isNeedToRotateTokopoints = true
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetView = getBalanceWidgetView()
-            balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
-        }
     }
 
     private fun conditionalViewModelRefresh() {
         if (!fragmentCreatedForFirstTime) {
+            getHomeViewModel().getHeaderData()
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
@@ -1787,13 +1783,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun adjustHomeBackgroundHeight(currentContext: Context) {
         val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
-        if (isChooseAddressShow && isEligibleForNewGopay()) {
+        if (isChooseAddressShow && (isEligibleGopay != null && isEligibleGopay == true)) {
             val layoutParams = backgroundViewImage.layoutParams
             layoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
             backgroundViewImage.layoutParams = layoutParams
             loaderHeaderImage.layoutParams = layoutParams
-        } else if (isChooseAddressShow && !isEligibleForNewGopay()) {
+        } else if (isChooseAddressShow && isEligibleGopay != null && isEligibleGopay == false) {
             val layoutParams = backgroundViewImage.layoutParams
             layoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
