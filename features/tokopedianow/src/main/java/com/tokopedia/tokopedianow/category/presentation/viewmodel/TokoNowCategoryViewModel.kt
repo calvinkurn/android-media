@@ -1,9 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
@@ -29,6 +26,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -45,7 +43,6 @@ import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -64,29 +61,23 @@ class TokoNowCategoryViewModel @Inject constructor (
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        addToCartUseCase: AddToCartUseCase,
-        updateCartUseCase: UpdateCartUseCase,
-        deleteCartUseCase: DeleteCartUseCase,
+        cartService: CartService,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         getRecommendationUseCase: GetRecommendationUseCase,
         private val getCategoryListUseCase: GetCategoryListUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
-        addToCartUseCase,
-        updateCartUseCase,
-        deleteCartUseCase,
+        cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
-        userSession,
 ) {
 
     val categoryIdTracking: String

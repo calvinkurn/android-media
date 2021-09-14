@@ -8,13 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
@@ -42,7 +35,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -65,9 +57,11 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.RELATEDKEYWORD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -101,7 +95,6 @@ import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -112,9 +105,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        protected val addToCartUseCase: AddToCartUseCase,
-        protected val updateCartUseCase: UpdateCartUseCase,
-        protected val deleteCartUseCase: DeleteCartUseCase,
+        protected val cartService: CartService,
         protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
@@ -134,11 +125,6 @@ abstract class BaseSearchCategoryViewModel(
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
-    protected var allMiniCartItemList: List<MiniCartItem>? = null
-    protected var cartItemsNonVariant: List<MiniCartItem>? = null
-        private set
-    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
-        private set
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -594,7 +580,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createVariantATCDataView(product: Product) =
             if (product.childs.isNotEmpty())
                 VariantATCDataView(
-                        quantity = getProductVariantTotalQuantity(product.parentId)
+                        quantity = cartService.getProductQuantity(product.id, product.parentId)
                 )
             else null
 
@@ -603,7 +589,7 @@ abstract class BaseSearchCategoryViewModel(
                 NonVariantATCDataView(
                         minQuantity = product.minOrder,
                         maxQuantity = product.maxOrder,
-                        quantity = getProductNonVariantQuantity(product.id)
+                        quantity = cartService.getProductQuantity(product.id, product.parentId)
                 )
             else null
 
@@ -885,7 +871,7 @@ abstract class BaseSearchCategoryViewModel(
             miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         withContext(baseDispatcher.io) {
-            updateMiniCartProperties(miniCartSimplifiedData)
+            cartService.updateMiniCartItems(miniCartSimplifiedData)
 
             if (visitableList.isEmpty()) return@withContext
 
@@ -902,20 +888,6 @@ abstract class BaseSearchCategoryViewModel(
             updateVisitableWithIndex(updatedProductIndices)
         }
     }
-
-    private fun updateMiniCartProperties(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val viewModel = this@BaseSearchCategoryViewModel
-        val cartItemsPartition =
-                splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
-
-        viewModel.allMiniCartItemList = miniCartSimplifiedData.miniCartItems
-        viewModel.cartItemsNonVariant = cartItemsPartition.first
-        viewModel.cartItemsVariantGrouped =
-                cartItemsPartition.second.groupBy { it.productParentId }
-    }
-
-    private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
-            miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
 
     protected open fun updateQuantityInVisitable(
         visitable: Visitable<*>,
@@ -936,34 +908,15 @@ abstract class BaseSearchCategoryViewModel(
         val nonVariantATC = productItem.nonVariantATC
         val variantATC = productItem.variantATC
 
-        if (nonVariantATC != null) {
-            val quantity = getProductNonVariantQuantity(productId)
+        val quantity = cartService.getProductQuantity(productId, parentProductId)
 
-            if (nonVariantATC.quantity != quantity) {
-                nonVariantATC.quantity = quantity
-                updatedProductIndices.add(index)
-            }
-        } else if (variantATC != null) {
-            val totalQuantity = getProductVariantTotalQuantity(parentProductId)
-
-            if (variantATC.quantity != totalQuantity) {
-                variantATC.quantity = totalQuantity
-                updatedProductIndices.add(index)
-            }
+        if (nonVariantATC != null && nonVariantATC.quantity != quantity) {
+            nonVariantATC.quantity = quantity
+            updatedProductIndices.add(index)
+        } else if (variantATC != null && variantATC.quantity != quantity) {
+            variantATC.quantity = quantity
+            updatedProductIndices.add(index)
         }
-    }
-
-    protected fun getProductNonVariantQuantity(productId: String): Int {
-        val cartItem = cartItemsNonVariant?.find { it.productId == productId }
-        return cartItem?.quantity ?: 0
-    }
-
-    protected fun getProductVariantTotalQuantity(parentProductId: String): Int {
-        val cartItemsVariantGrouped = cartItemsVariantGrouped
-        val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
-        val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
-
-        return totalQuantity ?: 0
     }
 
     private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
@@ -987,53 +940,34 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
-        if (userSession.isLoggedIn)
-            handleAddToCartEventLogin(productItem, quantity)
-        else
-            handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
-    }
-
-    private fun handleAddToCartEventLogin(productItem: ProductItemDataView, quantity: Int) {
         val nonVariantATC = productItem.nonVariantATC ?: return
-        if (nonVariantATC.quantity == quantity) return
 
-        when {
-            nonVariantATC.quantity == 0 -> addToCartProductItem(productItem, quantity)
-            quantity == 0 -> deleteCartProductItem(productItem)
-            else -> updateCartProductItem(productItem, quantity)
-        }
-    }
+        val productId = productItem.id
+        val shopId = productItem.shop.id
+        val currentQuantity = nonVariantATC.quantity
 
-    private fun addToCartProductItem(productItem: ProductItemDataView, quantity: Int) {
-        addToCart(
-                productId = productItem.id,
-                shopId = productItem.shop.id,
-                quantity = quantity,
-                onSuccess = {
-                    sendAddToCartTracking(quantity, it.data.cartId, productItem)
-                    onAddToCartSuccess(productItem, it.data.quantity)
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                },
-                onError = {
-                    onAddToCartFailed(it)
-                }
+        cartService.handleCart(
+            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+            quantity = quantity,
+            onSuccessAddToCart = {
+                sendAddToCartTracking(quantity, it.data.cartId, productItem)
+                onAddToCartSuccess(productItem, it.data.quantity)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onSuccessUpdateCart = {
+                sendTrackingUpdateQuantity(quantity, productItem)
+                onAddToCartSuccess(productItem, quantity)
+            },
+            onSuccessDeleteCart = {
+                sendDeleteCartTracking(productItem)
+                onAddToCartSuccess(productItem, 0)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onError = ::onAddToCartFailed,
+            handleCartEventNonLogin = {
+                handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
+            },
         )
-    }
-
-    protected fun addToCart(
-            productId: String,
-            shopId: String,
-            quantity: Int,
-            onSuccess: (AddToCartDataModel) -> Unit,
-            onError: (Throwable) -> Unit,
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-                productId = productId,
-                shopId = shopId,
-                quantity = quantity,
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute(onSuccess, onError)
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
@@ -1060,40 +994,6 @@ abstract class BaseSearchCategoryViewModel(
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
-    private fun updateCartProductItem(productItem: ProductItemDataView, quantity: Int) {
-        updateCart(
-                productId = productItem.id,
-                quantity = quantity,
-                onSuccess = {
-                    sendTrackingUpdateQuantity(quantity, productItem)
-                    onAddToCartSuccess(productItem, quantity)
-                },
-                onError = {
-                    onAddToCartFailed(it)
-                }
-        )
-    }
-
-    protected fun updateCart(
-            productId: String,
-            quantity: Int,
-            onSuccess: (UpdateCartV2Data) -> Unit,
-            onError: (Throwable) -> Unit,
-    ) {
-        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
-
-        val updateCartRequest = UpdateCartRequest(
-                cartId = miniCartItem.cartId,
-                quantity = quantity,
-                notes = miniCartItem.notes
-        )
-        updateCartUseCase.setParams(
-                updateCartRequestList = listOf(updateCartRequest),
-                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
-        )
-        updateCartUseCase.execute(onSuccess, onError)
-    }
-
     private fun sendTrackingUpdateQuantity(newQuantity: Int, productItem: ProductItemDataView) {
         val nonVariantATC = productItem.nonVariantATC ?: return
 
@@ -1101,29 +1001,6 @@ abstract class BaseSearchCategoryViewModel(
             decreaseQtyTrackingMutableLiveData.value = productItem.id
         else if (nonVariantATC.quantity < newQuantity)
             increaseQtyTrackingMutableLiveData.value = productItem.id
-    }
-
-    private fun deleteCartProductItem(productItem: ProductItemDataView) {
-        deleteCart(
-                productId = productItem.id,
-                onSuccess = {
-                    sendDeleteCartTracking(productItem)
-                    onAddToCartSuccess(productItem, 0)
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                },
-                onError = ::onAddToCartFailed,
-        )
-    }
-
-    protected fun deleteCart(
-            productId: String,
-            onSuccess: (RemoveFromCartData) -> Unit,
-            onError: (Throwable) -> Unit,
-    ) {
-        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
-
-        deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
-        deleteCartUseCase.execute(onSuccess, onError)
     }
 
     private fun sendDeleteCartTracking(productItem: ProductItemDataView) {
@@ -1212,11 +1089,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun setRecommendationItemQuantity(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val parentProductId = recommendationItem.parentID.toString()
-
-        val quantity = if (parentProductId == NO_VARIANT_PARENT_PRODUCT_ID)
-            getProductNonVariantQuantity(productId)
-        else
-            getProductVariantTotalQuantity(parentProductId)
+        val quantity = cartService.getProductQuantity(productId, parentProductId)
 
         recommendationItem.quantity = quantity
     }
@@ -1237,77 +1110,42 @@ abstract class BaseSearchCategoryViewModel(
             adapterPosition: Int,
             quantity: Int,
     ) {
-        if (userSession.isLoggedIn)
-            handleCartEventRecommendationItem(recommendationItem, quantity)
-        else
-            handleAddToCartEventNonLogin(adapterPosition)
+        val productId = recommendationItem.productId.toString()
+        val shopId = recommendationItem.shopId.toString()
+        val currentQuantity = recommendationItem.quantity
+
+        cartService.handleCart(
+            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+            quantity = quantity,
+            onSuccessAddToCart = {
+                addToCartRecommendationTrackingMutableLiveData.value = Triple(
+                    quantity,
+                    it.data.cartId,
+                    recommendationItem,
+                )
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                onAddToCartSuccessRecommendationItem(recommendationItem, it.data.quantity)
+            },
+            onSuccessUpdateCart = {
+                onAddToCartSuccessRecommendationItem(recommendationItem, quantity)
+            },
+            onSuccessDeleteCart = {
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                onAddToCartSuccessRecommendationItem(recommendationItem, 0)
+            },
+            onError = ::onAddToCartFailed,
+            handleCartEventNonLogin = {
+                handleAddToCartEventNonLogin(adapterPosition)
+            },
+        )
     }
 
-    private fun handleCartEventRecommendationItem(
-            recommendationItem: RecommendationItem,
-            quantity: Int,
+    private fun onAddToCartSuccessRecommendationItem(
+        recommendationItem: RecommendationItem,
+        quantity: Int,
     ) {
-        if (recommendationItem.quantity == quantity) return
-
-        when {
-            recommendationItem.quantity == 0 ->
-                addToCartRecommendationItem(recommendationItem, quantity)
-            quantity == 0 ->
-                deleteCartRecommendationItem(recommendationItem)
-            else ->
-                updateCartRecommendationItem(recommendationItem, quantity)
-        }
-    }
-
-    private fun addToCartRecommendationItem(
-            recommendationItem: RecommendationItem,
-            quantity: Int,
-    ) {
-        addToCart(
-                productId = recommendationItem.productId.toString(),
-                shopId = recommendationItem.shopId.toString(),
-                quantity = quantity,
-                onSuccess = {
-                    recommendationItem.quantity = quantity
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    addToCartRecommendationTrackingMutableLiveData.value = Triple(
-                            quantity,
-                            it.data.cartId,
-                            recommendationItem,
-                    )
-                    refreshMiniCart()
-                },
-                onError = {
-                    onAddToCartFailed(it)
-                },
-        )
-    }
-
-    private fun deleteCartRecommendationItem(recommendationItem: RecommendationItem) {
-        deleteCart(
-                productId = recommendationItem.productId.toString(),
-                onSuccess = {
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    refreshMiniCart()
-                },
-                onError = {
-                    onAddToCartFailed(it)
-                }
-        )
-    }
-
-    private fun updateCartRecommendationItem(recommendationItem: RecommendationItem, quantity: Int) {
-        updateCart(
-                productId = recommendationItem.productId.toString(),
-                quantity = quantity,
-                onSuccess = {
-                    recommendationItem.quantity = quantity
-                    refreshMiniCart()
-                },
-                onError = {
-                    onAddToCartFailed(it)
-                },
-        )
+        recommendationItem.quantity = quantity
+        refreshMiniCart()
     }
 
     protected class HeaderDataView(
@@ -1354,8 +1192,4 @@ abstract class BaseSearchCategoryViewModel(
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
     )
-
-    companion object {
-        const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
-    }
 }
