@@ -17,7 +17,6 @@ class PdpSimulationAnalytics @Inject constructor(
     fun sendPdpSimulationEvent(event: PdpSimulationEvent) {
         when (event) {
             is PdpSimulationEvent.PayLater.TabChangeEvent -> sendTabChangeEvent(event.tabTitle)
-            is PdpSimulationEvent.PayLater.RegisterWidgetClickEvent -> sendRegisterWidgetClickEvent()
             is PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent -> sendChoosePayLaterOptionClickEvent(
                 event.payLaterProduct
             )
@@ -26,7 +25,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.actionType,
                 event.tenure
             )
-            is PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent -> sendRegisterPayLaterClickEvent(
+            is PdpSimulationEvent.PayLater.RegisterPayLaterButtonClickImpression -> sendRegisterPayLaterClickEvent(
                 event.payLaterProduct,
                 event.tenure
             )
@@ -72,15 +71,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendRegisterWidgetClickEvent() {
-        val map = TrackAppUtils.gtmData(
-            EVENT_NAME_FIN_TECH,
-            EVENT_CATEGORY_FIN_TECH,
-            EVENT_ACTION_PAY_LATER_REGISTER_CLICK,
-            EVENT_LABEL_PAY_LATER_TAB_CLICK
-        )
-        sendGeneralEvent(map)
-    }
+
 
     private fun sendChoosePayLaterOptionClickEvent(payLaterProduct: String?) {
         val map = TrackAppUtils.gtmData(
@@ -190,16 +181,11 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"
 
         const val EVENT_ACTION_PAY_LATER_TAB_CLICK = "sim vcc - click tab"
-        const val EVENT_ACTION_PAY_LATER_REGISTER_CLICK = "sim vcc - click daftar paylater"
         const val EVENT_ACTION_CHOOSE_PAY_LATER_CLICK = "sim vcc - click pilih paylater"
-        const val EVENT_ACTION_PAY_LATER_SIGN_UP_NOW_CLICK = "sim vcc - click daftar sekarang"
-        const val EVENT_ACTION_PAY_LATER_IMPRESSION = "sim vcc - impression paylater info page"
-        const val PAY_LATER_REGISTER_ACTION = "info cara daftar"
-        const val PAY_LATER_USAGE_ACTION = "info cara gunakan"
+
 
         const val EVENT_LABEL_PAY_LATER_TAB_CLICK = "paylater simulation page"
         const val EVENT_LABEL_PAY_LATER_PRODUCT_CLICK = "daftar paylater popup"
-        const val EVENT_LABEL_PAY_LATER_PRODUCT_INFO_CLICK = "paylater info page"
 
 
         const val EVENT_LABEL_CLICKED_TENURE_FILTER = "pdp paylater simulation page"

@@ -101,6 +101,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         setDefaultParams()
         initAdapter()
         setTitle(titleText)
+        sendImpressionAnalytics()
     }
 
     private fun initBottomSheet() {
@@ -131,15 +132,19 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
-            sendAnalytics()
             if (actionUrl.isNotEmpty())
+                sendClickEventAnalytics()
                 openUrlWebView(actionUrl)
         }
     }
 
-    private fun sendAnalytics() {
+    private fun sendClickEventAnalytics() {
+        
+    }
+
+    private fun sendImpressionAnalytics() {
         pdpSimulationCallback?.sendAnalytics(
-            PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
+            PdpSimulationEvent.PayLater.RegisterPayLaterButtonClickImpression(
                 partnerName
                     ?: "",
                 tenure
