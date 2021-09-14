@@ -39,7 +39,7 @@ class MvcDetailView @JvmOverloads constructor(
     var userSession: UserSession? = null
 
     private val widgetImpression = WidgetImpression()
-    var widgetType : String = FollowWidgetType.DEFAULT
+    @FollowWidgetType var widgetType : String = FollowWidgetType.DEFAULT
 
     override fun getWidgetImpression(): WidgetImpression {
         return widgetImpression
