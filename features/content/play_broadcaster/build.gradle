@@ -110,7 +110,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-    implementation files('libs/libstream-release.aar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
