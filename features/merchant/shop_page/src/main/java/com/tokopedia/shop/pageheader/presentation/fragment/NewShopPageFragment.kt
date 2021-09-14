@@ -2429,47 +2429,49 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    var shareString = getString(
-                        R.string.shop_page_share_text_with_link,
-                        shopPageHeaderDataModel?.shopName,
-                        linkerShareData?.shareContents
-                    )
-                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    // send gql tracker
-                    shareModel.socialMediaName?.let { name ->
-                        shopViewModel?.sendShopShareTracker(
-                            shopId,
-                            channel = when (shareModel) {
-                                is ShareModel.CopyLink -> {
-                                    ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                }
-                                is ShareModel.Others -> {
-                                    ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                }
-                                else -> name
-                            }
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                                R.string.shop_page_share_text_with_link,
+                                shopPageHeaderDataModel?.shopName,
+                                linkerShareData?.shareContents
                         )
-                    }
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shareModel) {
+                                        is ShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
 
-                    // send gtm tracker
-                    if(isGeneralShareBottomSheet) {
-                        shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    } else{
-                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    }
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        }
 
-                    //we have to check if we can move it inside the common function
-                    universalShareBottomSheet?.dismiss()
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError?) {}
