@@ -117,7 +117,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ConstraintLayout productBundlingInfo;
     private Typography textBundleTitle;
     private Typography textBundlePrice;
-    private Label labelBundleSlashPricePercentage;
     private Typography textBundleSlashPrice;
     private LinearLayout llFrameItemProductContainer;
     private ConstraintLayout rlProductInfo;
@@ -261,7 +260,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         productBundlingInfo = itemView.findViewById(R.id.product_bundling_info);
         textBundleTitle = itemView.findViewById(R.id.text_bundle_title);
         textBundlePrice = itemView.findViewById(R.id.text_bundle_price);
-        labelBundleSlashPricePercentage = itemView.findViewById(R.id.label_bundle_slash_price_percentage);
         textBundleSlashPrice = itemView.findViewById(R.id.text_bundle_slash_price);
         llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
@@ -658,12 +656,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             textBundleTitle.setText(cartItemModel.getBundleTitle());
             textBundlePrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundlePrice(), false)));
-            if (cartItemModel.getBundleSlashPriceLabel().length() > 0) {
-                labelBundleSlashPricePercentage.setText(cartItemModel.getBundleSlashPriceLabel());
-                labelBundleSlashPricePercentage.setVisibility(View.VISIBLE);
-            } else {
-                labelBundleSlashPricePercentage.setVisibility(View.GONE);
-            }
             textBundleSlashPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundleOriginalPrice(), false)));
             textBundleSlashPrice.setPaintFlags(textBundleSlashPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             productContainerLayoutParams.bottomMargin = 0;
