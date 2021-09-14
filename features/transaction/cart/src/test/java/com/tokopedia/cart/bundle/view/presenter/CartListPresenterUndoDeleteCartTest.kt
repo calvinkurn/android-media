@@ -26,101 +26,101 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-//object CartListPresenterUndoDeleteCartTest : Spek({
-//
-//    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
-//    val deleteCartUseCase: DeleteCartUseCase = mockk()
-//    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
-//    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
-//    val updateCartUseCase: UpdateCartUseCase = mockk()
-//    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-//    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
-//    val compositeSubscription = CompositeSubscription()
-//    val addWishListUseCase: AddWishListUseCase = mockk()
-//    val removeWishListUseCase: RemoveWishListUseCase = mockk()
-//    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
-//    val userSessionInterface: UserSessionInterface = mockk()
-//    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-//    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
-//    val getWishlistUseCase: GetWishlistUseCase = mockk()
-//    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
-//    val addToCartUseCase: AddToCartUseCase = mockk()
-//    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-//    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-//    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
-//    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
-//    val followShopUseCase: FollowShopUseCase = mockk()
-//    val view: ICartListView = mockk(relaxed = true)
-//
-//    Feature("undo delete cart test") {
-//
-//        val cartListPresenter by memoized {
-//            CartListPresenter(
-//                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
-//                    updateCartUseCase, compositeSubscription, addWishListUseCase,
-//                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-//                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-//                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-//                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
-//                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-//                    followShopUseCase, TestSchedulers
-//            )
-//        }
-//
-//        beforeEachTest {
-//            cartListPresenter.attachView(view)
-//        }
-//
-//        Scenario("undo delete cart success") {
-//
-//            val response = UndoDeleteCartDataResponse(
-//                    status = "OK",
-//                    data = Data(success = 1, message = listOf("success message"))
-//            )
-//
-//            Given("success response") {
-//                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
-//                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
-//                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
-//                }
-//            }
-//
-//            When("process undo delete") {
-//                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
-//            }
-//
-//            Then("should render success") {
-//                verify {
-//                    view.onUndoDeleteCartDataSuccess()
-//                }
-//            }
-//
-//        }
-//
-//        Scenario("undo delete cart failed with exception") {
-//
-//            val errorMessage = "Error Message"
-//            val throwable = ResponseErrorException(errorMessage)
-//
-//            Given("error response") {
-//                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
-//                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
-//                    secondArg<(Throwable) -> Unit>().invoke(throwable)
-//                }
-//            }
-//
-//            When("process undo delete") {
-//                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
-//            }
-//
-//            Then("should render error") {
-//                verify {
-//                    view.showToastMessageRed(throwable)
-//                }
-//            }
-//
-//        }
-//
-//    }
-//
-//})
+object CartListPresenterUndoDeleteCartTest : Spek({
+
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
+    val updateCartUseCase: UpdateCartUseCase = mockk()
+    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+    val compositeSubscription = CompositeSubscription()
+    val addWishListUseCase: AddWishListUseCase = mockk()
+    val removeWishListUseCase: RemoveWishListUseCase = mockk()
+    val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
+    val userSessionInterface: UserSessionInterface = mockk()
+    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
+    val getWishlistUseCase: GetWishlistUseCase = mockk()
+    val getRecommendationUseCase: GetRecommendationUseCase = mockk()
+    val addToCartUseCase: AddToCartUseCase = mockk()
+    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
+    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
+
+    Feature("undo delete cart test") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+                    followShopUseCase, TestSchedulers
+            )
+        }
+
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
+        Scenario("undo delete cart success") {
+
+            val response = UndoDeleteCartDataResponse(
+                    status = "OK",
+                    data = Data(success = 1, message = listOf("success message"))
+            )
+
+            Given("success response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
+                }
+            }
+
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            }
+
+            Then("should render success") {
+                verify {
+                    view.onUndoDeleteCartDataSuccess()
+                }
+            }
+
+        }
+
+        Scenario("undo delete cart failed with exception") {
+
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
+
+            Given("error response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
+            }
+
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            }
+
+            Then("should render error") {
+                verify {
+                    view.showToastMessageRed(throwable)
+                }
+            }
+
+        }
+
+    }
+
+})
