@@ -13,9 +13,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
@@ -100,9 +100,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         val bundle = Bundle()
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-//            it.sendAnalytics(PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-//                    responseData?.partnerName ?: "",
-//                    if (isUsageType) PAY_LATER_USAGE_ACTION else PAY_LATER_REGISTER_ACTION))
+            it.sendAnalytics(
+                PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                    responseData?.gateway_detail?.name ?: "",
+                    responseData?.cta?.name?:"",
+                    responseData?.tenure?:0
+                ))
 
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
@@ -121,10 +124,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             responseData?.gateway_detail?.faq as ArrayList
         )
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-//            it.sendAnalytics(PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-//                    responseData?.partnerName ?: "",
-//                    btnSeeMore.text.toString()
-//            ))
+
+            it.sendAnalytics( PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                responseData?.gateway_detail?.name ?: "",
+                responseData?.cta?.name?:"",
+                responseData?.tenure?:0
+            ))
+
             it.openBottomSheet(
                 bundle, PayLaterFaqBottomSheet::class.java
             )

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
@@ -70,27 +71,33 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         paylaterProduct.productList?.let {
             for (i in it.indices) {
                 it[i].text?.let { name ->
-                    if (i == 0)
+                    if (i == 0) {
                         filterData.add(
                             SortFilterItem(
                                 name,
                                 ChipsUnify.TYPE_SELECTED,
                                 ChipsUnify.SIZE_SMALL
                             ) {
-                                selectOtherTenure(i)
+                                selectOtherTenure(i,name)
                             })
+                        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.TenureSortFilterClicker(name))
+                    }
                     else {
                         filterData.add(SortFilterItem(name) {
-                            selectOtherTenure(i)
+                            selectOtherTenure(i, name)
                         })
                     }
                 }
             }
         }
         sortFilter.addItem(filterData)
+
+
+
     }
 
-    private fun selectOtherTenure(position: Int) {
+    private fun selectOtherTenure(position: Int, name: String) {
+        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.TenureSortFilterClicker(name))
         paymentOptionViewPager.post {
             payLaterProductList[position].detail?.let { detailList ->
                 pagerAdapter.setPaymentData(detailList)
@@ -179,33 +186,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-//
-//    // set payLater + application status data in pager adapter
-//    private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-//        payLaterOffersShimmerGroup.gone()
-//        payLaterDataGroup.visible()
-//        val payLaterProductList = ArrayList<PayLaterItemProductData>()
-//        payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
-//        paymentOptionViewPager.post {
-//            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList
-//                    ?: arrayListOf())
-//        }
-//    }
-//
-//    private fun onPayLaterApplicationLoadingFail() {
-//        // set payLater data in view pager
-//        paymentOptionViewPager.post {
-//            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
-//                try {
-//                    payLaterOffersShimmerGroup.gone()
-//                    payLaterDataGroup.visible()
-//                    pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
-//                } catch (e: Exception) {
-//                    Timber.e(e)
-//                }
-//            }
-//        }
-//    }
 
     companion object {
         const val PAGE_MARGIN = 16

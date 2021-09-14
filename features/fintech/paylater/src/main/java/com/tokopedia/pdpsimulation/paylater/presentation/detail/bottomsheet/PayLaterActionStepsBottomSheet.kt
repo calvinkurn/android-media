@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterActionStepsAdapter
@@ -45,6 +46,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var listOfSteps: ArrayList<String>? = ArrayList()
     private var noteData: String = ""
     private var titleText:String = ""
+    private var tenure = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
+            tenure = payLaterItemProductData.tenure?:0
             if (it.cta?.cta_type == 4) {
                 if (it.gateway_detail?.how_toUse?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
@@ -126,21 +129,21 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
-            //  sendAnalytics()
+              sendAnalytics()
             if (actionUrl.isNotEmpty())
                 openUrlWebView(actionUrl)
         }
     }
 
-//    private fun sendAnalytics() {
-//        if (!isUsageType)
-//            pdpSimulationCallback?.sendAnalytics(
-//                PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
-//                    partnerName
-//                        ?: ""
-//                )
-//            )
-//    }
+    private fun sendAnalytics() {
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
+                    partnerName
+                        ?: "",
+                    tenure
+                ))
+
+    }
 
     private fun initAdapter() {
 

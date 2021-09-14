@@ -18,8 +18,8 @@ class PdpSimulationAnalytics @Inject constructor(
             is PdpSimulationEvent.PayLater.TabChangeEvent -> sendTabChangeEvent(event.tabTitle)
             is PdpSimulationEvent.PayLater.RegisterWidgetClickEvent -> sendRegisterWidgetClickEvent()
             is PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent -> sendChoosePayLaterOptionClickEvent(event.payLaterProduct)
-            is PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent -> sendPayLaterProductImpressionTracking(event.payLaterProduct, event.actionType)
-            is PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent -> sendRegisterPayLaterClickEvent(event.payLaterProduct)
+            is PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent -> sendPayLaterProductImpressionTracking(event.payLaterProduct, event.actionType,event.tenure)
+            is PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent -> sendRegisterPayLaterClickEvent(event.payLaterProduct,event.tenure)
 
             is PdpSimulationEvent.CreditCard.TabChangeEvent -> sendCCTabChangeEvent(event.tabTitle)
             is PdpSimulationEvent.CreditCard.CCNotAvailableEvent -> sendCCNotAvailableEvent()
@@ -28,7 +28,17 @@ class PdpSimulationAnalytics @Inject constructor(
             is PdpSimulationEvent.CreditCard.SeeMoreBankClickEvent -> sendSeeMoreEvent(EVENT_ACTION_CC_SEE_MORE_BANK)
             is PdpSimulationEvent.CreditCard.ChooseCardClickEvent -> sendChooseCCEvent(EVENT_ACTION_CC_CHOOSE_CARD, event.cardName)
             is PdpSimulationEvent.CreditCard.SeeMoreCardClickEvent -> sendSeeMoreEvent(EVENT_ACTION_CC_SEE_MORE_CARD)
+            is PdpSimulationEvent.PayLater.TenureSortFilterClicker ->sendTenureEvent(event.tenureSelector)
         }
+    }
+
+    private fun sendTenureEvent(tenureSelector: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_CLICKED_TENURE_FILTER,
+            "$EVENT_LABEL_CLICKED_TENURE_FILTER - $tenureSelector"
+        )
+        sendGeneralEvent(map)
     }
 
     private fun sendTabChangeEvent(tabTitle: String) {
@@ -55,21 +65,22 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendPayLaterProductImpressionTracking(payLaterProduct: String, actionType: String?) {
-        val postfixLabel = if (actionType != null) "$payLaterProduct - ${actionType.toLowerCase()}" else payLaterProduct
-
+    private fun sendPayLaterProductImpressionTracking(
+        payLaterProduct: String, buttonName: String?,
+        tenure: Int
+    ) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_FIN_TECH,
                 EVENT_CATEGORY_FIN_TECH,
-                EVENT_ACTION_PAY_LATER_IMPRESSION,
-                "$EVENT_LABEL_PAY_LATER_PRODUCT_INFO_CLICK - $postfixLabel")
+            EVENT_PAYLATER_PRODUCT_DETAIL,
+                "$EVENT_LABEL_PAYLATER_PRODUCT_DETAIL - $tenure - $payLaterProduct - $buttonName")
         sendGeneralEvent(map)
     }
 
-    private fun sendRegisterPayLaterClickEvent(payLaterProduct: String?) {
+    private fun sendRegisterPayLaterClickEvent(payLaterProduct: String?, tenure: Int) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_FIN_TECH,
                 EVENT_CATEGORY_FIN_TECH,
-                EVENT_ACTION_PAY_LATER_SIGN_UP_NOW_CLICK,
-                "$EVENT_LABEL_PAY_LATER_PRODUCT_INFO_CLICK - ${payLaterProduct ?: ""}")
+            EVENT_BOTTOM_ACTION_SHEET,
+                "$EVENT_LABEL_BOTTOM_ACTION_SHEET - $tenure - ${payLaterProduct ?: ""}")
         sendGeneralEvent(map)
     }
 
@@ -148,6 +159,16 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_LABEL_PAY_LATER_TAB_CLICK = "paylater simulation page"
         const val EVENT_LABEL_PAY_LATER_PRODUCT_CLICK = "daftar paylater popup"
         const val EVENT_LABEL_PAY_LATER_PRODUCT_INFO_CLICK = "paylater info page"
+
+
+        const val EVENT_LABEL_CLICKED_TENURE_FILTER = "pdp paylater simulation page"
+        const val EVENT_CLICKED_TENURE_FILTER = "sim vcc - click paylater tenure option"
+
+        const val EVENT_LABEL_PAYLATER_PRODUCT_DETAIL="pdp paylater simulation page"
+        const val EVENT_PAYLATER_PRODUCT_DETAIL = "sim vcc - impression paylater option"
+
+        const val EVENT_BOTTOM_ACTION_SHEET = "sim vcc - impression popup cara pakai"
+        const val EVENT_LABEL_BOTTOM_ACTION_SHEET = "pdp paylater simulation page - popup cara pakai"
 
         // Credit Card --> CC
         const val EVENT_ACTION_CC_TAB_CLICK = "sim cc - click tab"

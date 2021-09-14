@@ -275,12 +275,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun showNoNetworkView() {
         hideDataGroup()
-//        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
-//        payLaterParentGlobalError.show()
-//        payLaterParentGlobalError.setActionClickListener {
-//            payLaterParentGlobalError.gone()
-//            getSimulationProductInfo()
-//        }
     }
 
 

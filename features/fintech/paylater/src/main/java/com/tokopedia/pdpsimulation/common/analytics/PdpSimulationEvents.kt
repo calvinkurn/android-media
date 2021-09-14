@@ -5,8 +5,13 @@ sealed class PdpSimulationEvent {
         data class TabChangeEvent(val tabTitle: String) : PdpSimulationEvent()
         data class RegisterWidgetClickEvent(val tag: String) : PdpSimulationEvent()
         data class ChoosePayLaterOptionClickEvent(val payLaterProduct: String) : PdpSimulationEvent()
-        data class PayLaterProductImpressionEvent(val payLaterProduct: String, val actionType: String?) : PdpSimulationEvent()
-        data class RegisterPayLaterOptionClickEvent(val payLaterProduct: String) : PdpSimulationEvent()
+        data class PayLaterProductImpressionEvent(
+            val payLaterProduct: String,
+            val actionType: String?,
+            val tenure: Int
+        ) : PdpSimulationEvent()
+        data class RegisterPayLaterOptionClickEvent(val payLaterProduct: String,val tenure:Int) : PdpSimulationEvent()
+        data class TenureSortFilterClicker(val tenureSelector: String):PdpSimulationEvent()
     }
 
     sealed class CreditCard {
