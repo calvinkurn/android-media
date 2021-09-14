@@ -80,5 +80,6 @@
     <string name="always_new_inbox">New Inbox</string>
     <string name="always_old_notif">Old Notifcenter</string>
     <string name="always_new_notif">New Notifcenter</string>
+    <string name="search_remote_config_here">search remote config here</string>
 
 </resources>
