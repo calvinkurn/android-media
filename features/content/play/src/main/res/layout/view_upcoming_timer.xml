@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
+        app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight

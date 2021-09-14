@@ -59,7 +59,7 @@
         layout="@layout/view_upcoming_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl6"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         app:layout_constraintBottom_toTopOf="@id/btn_action"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
