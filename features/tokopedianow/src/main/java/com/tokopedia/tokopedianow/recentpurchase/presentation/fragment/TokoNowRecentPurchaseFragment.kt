@@ -377,10 +377,9 @@ class TokoNowRecentPurchaseFragment:
         context?.let {
             rvRecentPurchase?.apply {
                 adapter = this@TokoNowRecentPurchaseFragment.adapter
-                layoutManager = StaggeredGridLayoutManager(
-                    GRID_SPAN_COUNT,
-                    StaggeredGridLayoutManager.VERTICAL
-                ).apply {
+                layoutManager = object: StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL) {
+                    override fun supportsPredictiveItemAnimations() = false
+                }.apply {
                     gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
                 }
                 addItemDecoration(RepurchaseGridItemDecoration())
