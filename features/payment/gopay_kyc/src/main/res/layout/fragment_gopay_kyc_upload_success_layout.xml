@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_24"
-        android:text="Oke"
+        android:text="@string/gopay_kyc_finish_kyc_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

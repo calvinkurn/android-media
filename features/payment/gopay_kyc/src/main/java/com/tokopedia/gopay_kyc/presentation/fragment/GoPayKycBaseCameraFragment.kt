@@ -23,6 +23,8 @@ import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
@@ -43,11 +45,12 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(GoPayKycViewModel::class.java)
     }
 
     private var mCaptureNativeSize: Size? = null
+    private var loader: LoaderDialog? = null
     protected var cameraView: CameraView? = null
     protected var capturedImageView: ImageView? = null
     protected var shutterImageView: ImageUnify? = null
@@ -57,7 +60,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     protected var reviewPhotoLayout: Group? = null
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
-    private var loader: LoaderDialog? = null
 
     abstract fun setCaptureInstruction()
     abstract fun setVerificationInstruction()
@@ -80,6 +82,19 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (viewModel.canGoBack)
+                activity?.finish()
+            else
+                ReviewCancelDialog.showReviewDialog(
+                    requireContext(),
+                    { proceedToNextStep() },
+                    { exitKycFlow() }
+                )
         }
     }
 
@@ -119,7 +134,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun generateImage(data: ByteArray) {
-        // process Photo
         if (mCaptureNativeSize == null)
             mCaptureNativeSize = cameraView?.pictureSize
         viewModel.processAndSaveImage(
@@ -128,7 +142,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             mCaptureNativeSize?.height ?: -1,
             cameraView?.facing?.ordinal ?: 1
         )
-
     }
 
     private fun reInitCamera() {
@@ -155,7 +168,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         reverseCamera?.setOnClickListener { toggleCamera() }
         retakeButton?.setOnClickListener { reInitCamera() }
         cameraView?.addCameraListener(cameraListener)
-
     }
 
     private fun capturePicture() {
@@ -219,25 +231,12 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun setupOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (viewModel.canGoBack)
-                        activity?.finish()
-                    else
-                        ReviewCancelDialog.showReviewDialog(
-                            requireContext(),
-                            { proceedToNextStep() },
-                            { exitKycFlow() }
-                        )
-                }
-            })
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
     private fun exitKycFlow() {
         context?.let {
-            val intent = GoPayKycActivity.getIntent(it)
+            val intent = RouteManager.getIntent(it, ApplinkConst.GOPAY_KYC)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
             startActivity(intent)

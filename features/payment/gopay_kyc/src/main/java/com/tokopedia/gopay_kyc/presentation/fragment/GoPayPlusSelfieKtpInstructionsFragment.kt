@@ -18,6 +18,16 @@ import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
 
     private val instructionStringResList = arrayListOf<Int>()
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            activity?.let {
+                ReviewCancelDialog.showReviewDialog(it,
+                    { openSelfieKtpCamera() },
+                    { (it as GoPayKycOpenCameraListener).exitKycFlow() }
+                )
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,17 +95,9 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
     private fun setupOnBackPressed() {
         activity?.let {
             (it as GoPayKtpInstructionActivity).onBackPressedDispatcher.addCallback(
-                viewLifecycleOwner,
-                object : OnBackPressedCallback(true) {
-                    override fun handleOnBackPressed() {
-                        ReviewCancelDialog.showReviewDialog(it,
-                            { openSelfieKtpCamera() },
-                            { (it as GoPayKycOpenCameraListener).exitKycFlow() }
-                        )
-                    }
-                })
+                viewLifecycleOwner, backPressedCallback
+            )
         }
-
     }
 
     private fun openSelfieKtpCamera() {

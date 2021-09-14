@@ -20,7 +20,6 @@ class GoPayKycImageUploadViewModel @Inject constructor(
     val uploadSuccessLiveData = MutableLiveData<Boolean>()
 
     fun uploadImage() {
-        Log.d("GoPay KYC", "$ktpPath ====> $selfieKtpPath")
         launchCatchError(
             block = {
                 delay(2000)

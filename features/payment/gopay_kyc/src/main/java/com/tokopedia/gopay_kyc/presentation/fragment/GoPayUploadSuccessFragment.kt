@@ -9,8 +9,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
 import kotlinx.android.synthetic.main.fragment_gopay_kyc_upload_success_layout.*
+import kotlinx.android.synthetic.main.gopay_kyc_success_failed_empty_layout.*
 
 class GoPayUploadSuccessFragment : BaseDaggerFragment() {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            activity?.let { (it as GoPayKycOpenCameraListener).exitKycFlow() }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,31 +29,22 @@ class GoPayUploadSuccessFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        uploadStatusTitle.text = getString(R.string.gopay_kyc_upload_success_title_text)
+        uploadStatusDescription.text = getString(R.string.gopay_kyc_upload_success_description_text)
         setupOnBackPressed()
-
         finishButton.setOnClickListener {
             (activity as GoPayKycOpenCameraListener).exitKycFlow()
         }
-
     }
 
     private fun setupOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    activity?.let {
-                        (it as GoPayKycOpenCameraListener).exitKycFlow()
-                    }
-                }
-            })
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
     override fun getScreenName() = null
     override fun initInjector() {}
 
     companion object {
-        const val TAG = "GopayUploadSuccess"
         fun newInstance() = GoPayUploadSuccessFragment()
     }
 }

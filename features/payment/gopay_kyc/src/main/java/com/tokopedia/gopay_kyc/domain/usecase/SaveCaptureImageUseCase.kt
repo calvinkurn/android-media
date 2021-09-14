@@ -42,10 +42,7 @@ class SaveCaptureImageUseCase @Inject constructor(
         }
     }
 
-    private fun generateImage(
-        imageByte: ByteArray,
-        ordinal: Int
-    ): CameraImageResult {
+    private fun generateImage(imageByte: ByteArray, ordinal: Int): CameraImageResult {
         try {
             val cameraResultFile = saveToCacheDirectory(imageByte)
             val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }

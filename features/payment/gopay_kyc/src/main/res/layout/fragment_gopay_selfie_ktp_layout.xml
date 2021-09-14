@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/gopay_kyc_selfie_cutout"
+            app:srcCompat="@drawable/bg_gopay_kyc_selfie_cutout"
             app:unify_image_corner_radius="0"
             app:unify_image_type="rect" />
 

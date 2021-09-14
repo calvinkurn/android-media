@@ -7,6 +7,8 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
@@ -44,21 +46,17 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), HasComponent<GoPayKycC
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
                 if (requestCode == REQUEST_KTP_ACTIVITY && it.hasExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH)) {
-                    ktpPath =
-                        it.getStringExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH) ?: ""
+                    ktpPath = it.getStringExtra(GoPayCameraKtpActivity.KTP_IMAGE_PATH) ?: ""
                     shouldOpenSelfieKtpScreen = true
                 } else if (requestCode == REQUEST_KTP_SELFIE_ACTIVITY && it.hasExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH)) {
-                    selfieKtpPath =
-                        it.getStringExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH) ?: ""
+                    selfieKtpPath = it.getStringExtra(GoPayCameraKtpActivity.SELFIE_KTP_IMAGE_PATH) ?: ""
                     shouldOpenReviewScreen = true
                 }
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //@TODO can we observe it here ??
     override fun onPostResume() {
         super.onPostResume()
         when {
@@ -88,18 +86,12 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), HasComponent<GoPayKycC
     }
 
     private fun openKycReviewPage() {
-        startActivity(
-            GoPayReviewActivity.getIntent(
-                this,
-                ktpPath,
-                selfieKtpPath
-            )
-        )
+        startActivity(GoPayReviewActivity.getIntent(this, ktpPath, selfieKtpPath))
         shouldOpenReviewScreen = false
     }
 
     override fun exitKycFlow() {
-        val intent = GoPayKycActivity.getIntent(this)
+        val intent = RouteManager.getIntent(this, ApplinkConst.GOPAY_KYC)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
         startActivity(intent)

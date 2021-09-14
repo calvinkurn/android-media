@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
@@ -123,7 +125,7 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
     }
 
     override fun exitKycFlow() {
-        val intent = GoPayKycActivity.getIntent(this)
+        val intent = RouteManager.getIntent(this, ApplinkConst.GOPAY_KYC)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(GoPayKycActivity.IS_EXIT_KYC, true)
         startActivity(intent)

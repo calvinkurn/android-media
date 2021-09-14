@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity.Companion.KTP_PATH
@@ -33,6 +35,16 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
     private val viewModel: GoPayKycImageUploadViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(GoPayKycImageUploadViewModel::class.java)
+    }
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            ReviewCancelDialog.showReviewDialog(requireContext(), { uploadPhotoForKyc() }, {
+                activity?.let {
+                    (it as GoPayKycOpenCameraListener).exitKycFlow()
+                }
+            })
+        }
     }
 
     override fun onCreateView(
@@ -64,11 +76,15 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
         retryKtpText.setOnClickListener { openKtpCameraScreen() }
         retryKtpSelfieIcon.setOnClickListener { openSelfieKtpCameraScreen() }
         retryKtpSelfieText.setOnClickListener { openSelfieKtpCameraScreen() }
-
+        tncText.setOnClickListener { openHelpScreen() }
         sendKycButton.setOnClickListener {
             sendKycButton.isLoading = true
             uploadPhotoForKyc()
         }
+    }
+
+    private fun openHelpScreen() {
+        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, GOPAY_HELP_URL)
     }
 
     private fun uploadPhotoForKyc() =
@@ -88,17 +104,7 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
 
 
     private fun setupOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    ReviewCancelDialog.showReviewDialog(requireContext(), { uploadPhotoForKyc() }, {
-                        activity?.let {
-                            (it as GoPayKycOpenCameraListener).exitKycFlow()
-                        }
-                    })
-                }
-            })
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
     private fun initViews() {
@@ -131,7 +137,7 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
     }
 
     companion object {
-
+        const val GOPAY_HELP_URL = "http://www.go-pay.co.id/appterms"
         fun newInstance(bundle: Bundle?): GoPayReviewAndUploadFragment {
             val fragment = GoPayReviewAndUploadFragment()
             fragment.arguments = bundle
