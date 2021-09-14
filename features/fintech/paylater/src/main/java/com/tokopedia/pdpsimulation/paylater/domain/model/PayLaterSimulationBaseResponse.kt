@@ -65,7 +65,8 @@ data class Detail(
     @SerializedName("account_status") val account_status: Int?,
     @SerializedName("disable") val disableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta?,
-    @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?
+    @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?,
+    @SerializedName("service_fee_info") val serviceFeeInfo: String?
 ) : Parcelable
 
 @Parcelize
@@ -90,6 +91,7 @@ data class GatewayDetail(
     @SerializedName("name") val name: String?,
     @SerializedName("product_code") val product_code: String?,
     @SerializedName("is_active") val is_active: Boolean?,
+    @SerializedName("small_subheader") val smallSubHeader: String?,
     @SerializedName("subheader") val subheader: String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?,
