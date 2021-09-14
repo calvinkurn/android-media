@@ -25,7 +25,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.actionType,
                 event.tenure
             )
-            is PdpSimulationEvent.PayLater.RegisterPayLaterButtonClickImpression -> sendRegisterPayLaterClickEvent(
+            is PdpSimulationEvent.PayLater.MainBottomSheetImpression -> sendRegisterPayLaterClickEvent(
                 event.payLaterProduct,
                 event.tenure
             )

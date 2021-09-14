@@ -12,7 +12,7 @@ sealed class PdpSimulationEvent {
             val tenure: Int
         ) : PdpSimulationEvent()
 
-        data class RegisterPayLaterButtonClickImpression(val payLaterProduct: String, val tenure: Int) :
+        data class MainBottomSheetImpression(val payLaterProduct: String, val tenure: Int) :
             PdpSimulationEvent()
 
         data class TenureSortFilterClicker(val tenureSelector: String) : PdpSimulationEvent()
