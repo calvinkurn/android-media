@@ -30,9 +30,7 @@ import com.tokopedia.flight.cancellation_navigation.presentation.fragment.Flight
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_INVOICE_ID
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.databinding.FragmentFlightCancellationRefundableStepTwoBinding
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -159,6 +157,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         val imagePickerBuilder = ImagePickerBuilder.getOriginalImageBuilder(requireContext())
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(imagePickerBuilder)
+        intent.putParamPageSource(ImagePickerPageSource.FLIGHT_CANCELATION_REASON_PAGE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 

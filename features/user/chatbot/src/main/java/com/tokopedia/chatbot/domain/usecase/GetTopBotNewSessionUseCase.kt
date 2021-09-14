@@ -10,6 +10,7 @@ import javax.inject.Inject
 const val GET_NEW_SESSION_QUERY = """query topbotGetNewSession(${'$'}msgId :String!, ${'$'}userId :String!){
     topbotGetNewSession(msgID: ${'$'}msgId, userID: ${'$'}userId) {
     isNewSession
+    isTypingBlocked
   }
   }"""
 
