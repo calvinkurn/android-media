@@ -23,7 +23,7 @@ class OrderListMapper @Inject constructor() {
                     orderProduct = if (it.haveProductBundle) {
                         val bundleDetail = it.bundleDetail
                         val bundleProducts: List<SomListOrderUiModel.OrderProduct> = bundleDetail?.bundle?.map { bundle ->
-                            mapProductList(bundle.orderDetail, bundle.bundleQuantity)
+                            mapProductList(bundle.orderDetail)
                         }?.flatten().orEmpty()
                         val nonBundleProducts: List<SomListOrderUiModel.OrderProduct> = mapProductList(bundleDetail?.nonBundle.orEmpty())
                         listOf(bundleProducts, nonBundleProducts).flatten()
@@ -53,15 +53,14 @@ class OrderListMapper @Inject constructor() {
     }
 
     private fun mapProductList(
-            orderProduct: List<SomListOrderListResponse.Data.OrderList.Order.Product>,
-            bundleQuantity: Int = 1
+            orderProduct: List<SomListOrderListResponse.Data.OrderList.Order.Product>
     ): List<SomListOrderUiModel.OrderProduct> {
         return orderProduct.map {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
                     productName = it.productName.asCamelCase(),
                     picture = it.picture,
-                    quantity = it.productQty.times(bundleQuantity)
+                    quantity = it.productQty
             )
         }
     }

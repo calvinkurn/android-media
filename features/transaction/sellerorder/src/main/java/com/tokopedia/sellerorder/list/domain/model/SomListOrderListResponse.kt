@@ -112,9 +112,6 @@ data class SomListOrderListResponse(
                         @SerializedName("bundle_id")
                         val bundleId: String = "0",
                         @Expose
-                        @SerializedName("bundle_quantity")
-                        val bundleQuantity: Int = 1,
-                        @Expose
                         @SerializedName("order_detail")
                         val orderDetail: List<Product> = emptyList()
                     )

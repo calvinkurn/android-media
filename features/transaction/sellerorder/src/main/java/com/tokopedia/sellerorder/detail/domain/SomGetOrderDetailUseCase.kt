@@ -250,7 +250,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     bundle_id
                     bundle_name
                     bundle_price
-                    bundle_quantity
                     bundle_subtotal_price
                     order_detail {
                       order_detail_id

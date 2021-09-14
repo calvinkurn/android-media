@@ -101,7 +101,6 @@ class SomListGetOrderListUseCase @Inject constructor(
                   bundle_detail {
                     total_product
                     bundle {
-                      bundle_quantity
                       bundle_id
                       order_detail {
                         product_id

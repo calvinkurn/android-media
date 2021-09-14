@@ -158,9 +158,6 @@ data class SomDetailOrder(
                         @SerializedName("bundle_price")
                         val bundlePrice: String = "",
                         @Expose
-                        @SerializedName("bundle_quantity")
-                        val bundleQuantity: Int = 0,
-                        @Expose
                         @SerializedName("bundle_subtotal_price")
                         val bundleSubTotal: String = "",
                         @Expose

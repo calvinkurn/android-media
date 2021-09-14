@@ -594,7 +594,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     bundleId = bundle.bundleId,
                     bundleName = bundle.bundleName,
                     bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
-                    quantity = bundle.bundleQuantity,
                     bundleSubTotal = Utils.parseRupiah(bundle.bundleSubTotal),
                     orderDetail = bundle.orderDetail.map {
                         SomDetailOrder.Data.GetSomDetail.Products(
@@ -603,7 +602,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                                 name = it.name,
                                 thumbnail = it.thumbnail,
                                 priceText = it.priceText,
-                                quantity = bundle.bundleQuantity * it.quantity,
+                                quantity = it.quantity,
                                 note = it.note
                         )
                     }
