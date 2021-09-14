@@ -1481,26 +1481,29 @@ class PlayViewModel @Inject constructor(
         playAnalytic.impressUpcomingPage(channelId)
     }
 
-    private fun handleRemindMeUpcomingChannel() = needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
-        viewModelScope.launchCatchError(block = {
-            playAnalytic.clickRemindMe(channelId)
+    private fun handleRemindMeUpcomingChannel()  {
+        playAnalytic.clickRemindMe(channelId)
 
-            mChannelData?.let {
-                val status: Boolean
+        needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
+            viewModelScope.launchCatchError(block = {
 
-                withContext(dispatchers.io) {
-                    playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
-                    val response = playChannelReminderUseCase.executeOnBackground()
-                    status = response.playToggleChannelReminder.header.status == PlayChannelReminderUseCase.RESPONSE_STATUS_SUCCESS
-                }
+                mChannelData?.let {
+                    val status: Boolean
 
-                _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
+                    withContext(dispatchers.io) {
+                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
+                        val response = playChannelReminderUseCase.executeOnBackground()
+                        status = response.playToggleChannelReminder.header.status == PlayChannelReminderUseCase.RESPONSE_STATUS_SUCCESS
+                    }
 
-                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
 
-            } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-        }) {
-            _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+
+                } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+            }) {
+                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+            }
         }
     }
 
