@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.databinding.ItemDealsBrandDetailBinding
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -42,6 +43,10 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
                 setOnClickListener {
                     callback.clickProduct(product.appUrl)
                 }
+
+                addOnImpressionListener(product){
+                    callback.impressionProduct(position, product)
+                }
             }
         }
     }
@@ -65,5 +70,6 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
 
     interface DealsBrandDetailCallback {
         fun clickProduct(applink: String)
+        fun impressionProduct(position: Int, product: Product)
     }
 }

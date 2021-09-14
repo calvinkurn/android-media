@@ -2,6 +2,7 @@ package com.tokopedia.deals.brand_detail.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DealsBrandDetail(
         @SerializedName("event_brand_detail_v2")
@@ -175,7 +176,7 @@ data class Product(
         @SerializedName("app_url")
         @Expose
         val appUrl : String = ""
-)
+): ImpressHolder()
 
 data class Category (
         @SerializedName("id")

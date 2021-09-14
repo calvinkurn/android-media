@@ -20,6 +20,7 @@ import com.tokopedia.deals.brand_detail.ui.adapter.DealsBrandDetailAdapter
 import com.tokopedia.deals.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
 import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.brand_detail.util.DealsBrandDetailShare
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnection
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
@@ -50,6 +51,9 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: DealsAnalytics
 
     private var currentLocation: Location? = null
 
@@ -105,16 +109,23 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         RouteManager.route(context, applink)
     }
 
+    override fun impressionProduct(position: Int, product: Product) {
+        analytics.eventBrandDetailImpressionProduct(brandDetail.title, position, product)
+    }
+
     private fun loadData() {
         getBrandDetail()
     }
 
     private fun showLayout() {
+        hideEmptyState()
+        showShimmering()
         observeBrandDetail()
     }
 
     private fun showSuccessLayout(products: List<Product>) {
         hideShimmering()
+        hideEmptyState()
         setCollapsingLayout(brandDetail.title)
         setHeaderSection(brandDetail)
         setRVBrandList(products)
@@ -193,8 +204,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             when (it) {
                 is Success -> {
                     brandDetail = it.data.data.brand
-                    //val products = it.data.data.products
-                    val products = emptyList<Product>()
+                    val products = it.data.data.products
                     if (products.isNotEmpty()) {
                         showSuccessLayout(products)
                     } else {
@@ -275,6 +285,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     }
 
     private fun showEmptyState(){
+        binding?.emptyStateBrandDetailDeals?.containerEmptyStateDeals?.show()
         binding?.emptyStateBrandDetailDeals?.geDealsEmpty?.apply {
             show()
             gravity = Gravity.CENTER
@@ -286,7 +297,10 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     }
 
     private fun hideEmptyState(){
-        binding?.emptyStateBrandDetailDeals?.geDealsEmpty?.hide()
+        binding?.emptyStateBrandDetailDeals?.let {
+            it.geDealsEmpty?.hide()
+            it.containerEmptyStateDeals?.hide()
+        }
     }
 
     private fun showToaster(throwable: Throwable) {

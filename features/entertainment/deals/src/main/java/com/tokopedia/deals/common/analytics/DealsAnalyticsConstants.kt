@@ -57,6 +57,7 @@ object DealsAnalyticsConstants {
         const val IMPRESSION_ON_SEARCH_RESULT = "impression on search result"
         const val PRODUCT_CARD_HOME_PAGE_IMPRESSION = "impression on product card - %s"
         const val CATEGORY_TAB_CATEGORY_PAGE = "click category tab - category page"
+        const val IMPRESSION_PRODUCT_BRAND = "impression product brand"
     }
 
     object Label {
@@ -82,6 +83,7 @@ object DealsAnalyticsConstants {
         const val POPULAR_LANDMARK_CLICK = "deals - %s - %s"
         const val CURATED_CARD_VIEW = "deals - %s - %s"
         const val SEARCH_RESULT_CASE_SHOWN = "deals - %s - %s"
+        const val BRAND_DETAIL_IMPRESSION = "%s - %s"
     }
 
     object Item {
