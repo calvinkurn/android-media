@@ -78,14 +78,6 @@ class ProductBundleViewModel @Inject constructor(
     private val atcDialogMessagesLiveData: SingleLiveEvent<Pair<String,String>> = SingleLiveEvent()
     val atcDialogMessages: LiveData<Pair<String,String>> get() = atcDialogMessagesLiveData
 
-    fun getProductIdFromUri(uri: Uri?, pathSegments: List<String>): String {
-        return if (pathSegments.size >= 2) {
-            uri?.pathSegments?.getOrNull(1).orEmpty()
-        } else {
-            "0" // TODO: Please handle this default case if productId is 0
-        }
-    }
-
     fun getUserId(): String {
         return userSession.userId
     }
