@@ -144,20 +144,19 @@ object AtcVariantHelper {
         if (!productVariant.hasChildren) return null
         val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
         productVariant.children.forEach {
-            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText, customCartType, it.isBuyable)
+            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText, customCartType)
         }
         return mapOfCartRedirection
     }
 
     private fun generateCartTypeDataSimpan(productId: String, buttonText: String,
-                                           customCartType: String, isBuyable: Boolean): CartTypeData {
-        val btnColor = if (isBuyable) ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN else ProductDetailCommonConstant.KEY_BUTTON_DISABLE
+                                           customCartType: String): CartTypeData {
         return CartTypeData(
                 productId = productId,
                 availableButtons = listOf(
                         AvailableButton(
                                 cartType = customCartType,
-                                color = btnColor,
+                                color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
                                 text = buttonText,
                                 showRecommendation = false
                         )),

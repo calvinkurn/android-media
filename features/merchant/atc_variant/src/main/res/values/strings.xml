@@ -17,5 +17,6 @@
 
 
     <string name="atc_variant_tokocabang">Dikirim dari  &lt;a href="#"&gt;TokoCabang&lt;/a&gt;</string>
+    <string name="atc_variant_select_empty_variant_message">Pilih varian lain yang tersedia, ya.</string>
 
 </resources>

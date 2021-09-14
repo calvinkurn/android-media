@@ -663,8 +663,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     override fun hideVariantName(): Boolean = true
 
     private fun onSaveButtonClicked() {
-        shouldSetActivityResult = true
-        dismiss()
+        val productId = adapter.getHeaderDataModel()?.productId ?: ""
+        val selectedChild = viewModel.getVariantData()?.getChildByProductId(productId)
+
+        if (selectedChild?.isBuyable == true) {
+            shouldSetActivityResult = true
+            dismiss()
+        } else {
+            showToasterError(getString(R.string.atc_variant_select_empty_variant_message))
+        }
     }
 
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
