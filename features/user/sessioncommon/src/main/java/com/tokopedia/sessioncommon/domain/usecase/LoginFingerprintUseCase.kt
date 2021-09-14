@@ -74,13 +74,14 @@ class LoginFingerprintUseCase @Inject constructor(
         const val TYPE_EXTENSION = "extension"
 
         val query: String = """
-            mutation login_biometric(${'$'}grant_type: String!, ${'$'}social_type: String!, ${'$'}username: String!, ${'$'}validate_token: String!) {
+            mutation login_biometric(${'$'}grant_type: String!, ${'$'}social_type: String!, ${'$'}username: String!, ${'$'}validate_token: String!, ${'$'}device_biometrics: String!) {
               login_token(
                 input: {
                     grant_type: ${'$'}grant_type, 
                     social_type: ${'$'}social_type, 
                     username: ${'$'}username, 
-                    validate_token: ${'$'}validate_token
+                    validate_token: ${'$'}validate_token,
+                    device_biometrics: ${'$'}device_biometrics
                 }
               ) {
                     acc_sid
