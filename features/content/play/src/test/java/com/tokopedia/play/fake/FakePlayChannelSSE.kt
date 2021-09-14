@@ -3,6 +3,7 @@ package com.tokopedia.play.fake
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.model.SSEAction
+import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -25,6 +26,7 @@ class FakePlayChannelSSE(
 
     override fun close() {
         isOpen = false
+        sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
     }
 
     override fun listen(): Flow<SSEAction> = sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)

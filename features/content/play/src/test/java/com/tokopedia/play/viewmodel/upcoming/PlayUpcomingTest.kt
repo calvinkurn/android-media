@@ -328,4 +328,22 @@ class PlayUpcomingTest {
             fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
         }
     }
+
+    @Test
+    fun `given a upcoming channel, when SSE is intended to be closed, then it should reconnect to SSE`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            fakePlayChannelSSE.close()
+        } thenVerify {
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
+        }
+    }
 }
