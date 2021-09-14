@@ -112,7 +112,7 @@ class SingleProductBundleFragment(
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(parentProductID, selectedBundleId, adapter.getSelectedData())
         }
         hideLoadingDialog()
     }
@@ -375,7 +375,11 @@ class SingleProductBundleFragment(
             val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
             startActivityForResult(intent, LOGIN_REQUEST_CODE)
         } else {
-            viewModel.validateAndAddToCart(parentProductID, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(
+                parentProductID,
+                selectedBundleId,
+                adapter.getSelectedData()
+            )
         }
     }
 

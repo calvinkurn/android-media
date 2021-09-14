@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -109,7 +110,11 @@ class SingleProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun validateAndAddToCart(parentProductID: String, selectedDataList: List<SingleProductBundleSelectedItem>) {
+    fun validateAndAddToCart(
+        parentProductID: String,
+        selectedBundleId: String,
+        selectedDataList: List<SingleProductBundleSelectedItem>
+    ) {
         val selectedData = selectedDataList.firstOrNull {
             it.isSelected
         }
@@ -124,6 +129,13 @@ class SingleProductBundleViewModel @Inject constructor(
                 // variant not selected
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
+            }
+            selectedData.bundleId == selectedBundleId -> {
+                // selected bundleId is not changed
+                mAddToCartResult.value = AddToCartDataResult(
+                    requestParams = AddToCartBundleRequestParams( bundleId = selectedBundleId ),
+                    responseResult = AddToCartBundleDataModel()
+                )
             }
             else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
                 selectedData.shopId, selectedData.quantity)
