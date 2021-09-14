@@ -84,6 +84,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             source = ProductBundleApplinkMapper.getPageSourceFromUri(it)
             viewModel.parentProductID = ProductBundleApplinkMapper.getProductIdFromUri(it, pathSegments)
             viewModel.selectedBundleId = bundleId
+            viewModel.selectedProductIds = selectedProductIds
         }
     }
 

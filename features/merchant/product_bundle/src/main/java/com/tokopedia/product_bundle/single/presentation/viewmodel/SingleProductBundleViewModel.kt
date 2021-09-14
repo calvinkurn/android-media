@@ -113,6 +113,7 @@ class SingleProductBundleViewModel @Inject constructor(
     fun validateAndAddToCart(
         parentProductID: String,
         selectedBundleId: String,
+        selectedProductId: String,
         selectedDataList: List<SingleProductBundleSelectedItem>
     ) {
         val selectedData = selectedDataList.firstOrNull {
@@ -130,7 +131,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
             }
-            selectedData.bundleId == selectedBundleId -> {
+            selectedData.bundleId == selectedBundleId && selectedData.productId == selectedProductId -> {
                 // selected bundleId is not changed
                 mAddToCartResult.value = AddToCartDataResult(
                     requestParams = AddToCartBundleRequestParams( bundleId = selectedBundleId ),

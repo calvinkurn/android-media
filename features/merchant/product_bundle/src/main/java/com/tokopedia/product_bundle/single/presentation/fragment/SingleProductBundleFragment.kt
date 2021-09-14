@@ -57,7 +57,7 @@ class SingleProductBundleFragment(
     private val parentProductID: String = "",
     private val bundleInfo: List<BundleInfo> = emptyList(),
     private val selectedBundleId: String = "",
-    private val selectedProductId: Long = 0L,
+    private val selectedProductId: Long = 0L, // usually variant child productID
     private val emptyVariantProductIds: List<String> = emptyList(),
     private val pageSource: String = ""
 ) : BaseDaggerFragment(), BundleItemListener {
@@ -112,7 +112,12 @@ class SingleProductBundleFragment(
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            viewModel.validateAndAddToCart(parentProductID, selectedBundleId, adapter.getSelectedData())
+            viewModel.validateAndAddToCart(
+                parentProductID,
+                selectedBundleId,
+                selectedProductId.toString(),
+                adapter.getSelectedData()
+            )
         }
         hideLoadingDialog()
     }
@@ -378,6 +383,7 @@ class SingleProductBundleFragment(
             viewModel.validateAndAddToCart(
                 parentProductID,
                 selectedBundleId,
+                selectedProductId.toString(),
                 adapter.getSelectedData()
             )
         }

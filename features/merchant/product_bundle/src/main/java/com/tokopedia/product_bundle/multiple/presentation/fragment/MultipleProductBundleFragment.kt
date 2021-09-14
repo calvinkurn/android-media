@@ -47,7 +47,6 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),

@@ -1,6 +1,5 @@
 package com.tokopedia.product_bundle.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -56,6 +55,7 @@ class ProductBundleViewModel @Inject constructor(
 
     var parentProductID: Long = 0L
     var selectedBundleId: Long = 0L
+    var selectedProductIds: List<String> = emptyList()
     var pageSource: String = ""
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
@@ -332,18 +332,27 @@ class ProductBundleViewModel @Inject constructor(
         if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
-        }
-        if (selectedProductBundleMaster.bundleId == selectedBundleId) {
-            isAddToCartInputValid = false
-            addToCartResultLiveData.value = AddToCartDataResult(
-                requestParams = AddToCartBundleRequestParams(
-                    bundleId = selectedBundleId.toString()
-                ),
-                responseResult = AddToCartBundleDataModel()
-            )
+        } else if (selectedProductBundleMaster.bundleId == selectedBundleId &&
+            variantProductNotChanged(productBundleDetails)) {
+                isAddToCartInputValid = false
+                addToCartResultLiveData.value = AddToCartDataResult(
+                    requestParams = AddToCartBundleRequestParams(
+                        bundleId = selectedBundleId.toString()
+                    ),
+                    responseResult = AddToCartBundleDataModel()
+                )
         }
         return isAddToCartInputValid
     }
+
+    private fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
+        productBundleDetails
+            .filter { it.hasVariant }
+            .all { bundleDetail ->
+                selectedProductIds.any {
+                    bundleDetail.selectedVariantId == it
+                }
+            }
 
     private fun isProductVariantSelectionComplete(productBundleDetails: List<ProductBundleDetail>): Boolean {
         val invalidInput = productBundleDetails.find { productBundleDetail ->
