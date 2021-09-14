@@ -82,7 +82,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     private var roomIndex = 0
 
-    private lateinit var imagePreviewSlider: ImagePreviewSlider
+    private var imagePreviewSlider: ImagePreviewSlider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -223,7 +223,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
                     imagePreviewSlider = ImagePreviewSlider()
-                    imagePreviewSlider.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
+                    imagePreviewSlider?.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
         }
@@ -444,9 +444,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(::imagePreviewSlider.isInitialized){
-            imagePreviewSlider.destroy()
-        }
+        imagePreviewSlider?.destroy()
     }
 
     companion object {
