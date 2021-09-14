@@ -100,6 +100,7 @@ class TokoNowCategoryFragment:
             outOfCoverageListener = this,
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
+            tokoNowProductCardListener = this,
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

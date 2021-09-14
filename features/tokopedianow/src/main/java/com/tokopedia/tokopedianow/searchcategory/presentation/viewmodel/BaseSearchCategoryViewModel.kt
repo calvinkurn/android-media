@@ -51,6 +51,9 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper
+import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
@@ -85,6 +88,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -110,7 +114,6 @@ abstract class BaseSearchCategoryViewModel(
         protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
-        protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()
@@ -542,8 +545,31 @@ abstract class BaseSearchCategoryViewModel(
 
     }
 
-    protected open fun createContentVisitableList(contentDataView: ContentDataView) =
-            contentDataView.aceSearchProductData.productList.mapIndexed(::mapToProductItemDataView)
+    protected open fun createContentVisitableList(
+        contentDataView: ContentDataView,
+    ): List<Visitable<*>> {
+        val contentVisitableList = mutableListOf<Visitable<*>>()
+
+        val productList = contentDataView
+            .aceSearchProductData
+            .productList
+
+        addProductList(contentVisitableList, productList)
+
+        val repurchaseWidget = contentDataView.recentPurchaseWidget
+        addRepurchaseWidget(contentVisitableList, repurchaseWidget, productList)
+
+        return contentVisitableList
+    }
+
+    protected open fun addProductList(
+        contentVisitableList: MutableList<Visitable<*>>,
+        productList: List<Product>,
+    ) {
+        val productListDataView = productList.mapIndexed(::mapToProductItemDataView)
+
+        contentVisitableList.addAll(productListDataView)
+    }
 
     protected open fun mapToProductItemDataView(index: Int, product: Product): ProductItemDataView {
         return ProductItemDataView(
@@ -599,6 +625,33 @@ abstract class BaseSearchCategoryViewModel(
             title = labelGroup.title,
             position = labelGroup.position,
             type = labelGroup.type,
+        )
+
+    protected open fun addRepurchaseWidget(
+        contentVisitableList: MutableList<Visitable<*>>,
+        repurchaseWidget: RecentPurchaseData,
+        productList: List<Product>,
+    ) {
+        val canShowRepurchaseWidget =
+            repurchaseWidget.products.isNotEmpty()
+                && productList.size > REPURCHASE_WIDGET_POSITION
+
+        if (canShowRepurchaseWidget)
+            contentVisitableList.add(
+                REPURCHASE_WIDGET_POSITION,
+                createRepurchaseWidgetUIModel(repurchaseWidget)
+            )
+    }
+
+    private fun createRepurchaseWidgetUIModel(repurchaseWidget: RecentPurchaseData) =
+        RecentPurchaseMapper.mapToRecentPurchaseUiModel(
+            TokoNowRecentPurchaseUiModel(
+                id = "",
+                title = "",
+                productList = listOf(),
+                state = -1
+            ),
+            repurchaseWidget,
         )
 
     private fun MutableList<Visitable<*>>.addFooter() {
@@ -1191,5 +1244,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
+            val recentPurchaseWidget: RecentPurchaseData = RecentPurchaseData()
     )
 }

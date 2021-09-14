@@ -58,6 +58,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -97,7 +99,8 @@ abstract class BaseSearchCategoryFragment:
         EmptyProductListener,
         ChooseAddressBottomSheetListener,
         OutOfCoverageListener,
-        SearchCategoryRecommendationCarouselListener {
+        SearchCategoryRecommendationCarouselListener,
+        TokoNowProductCardListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -908,5 +911,24 @@ abstract class BaseSearchCategoryFragment:
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onProductCardImpressed(data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
+        openATCVariantBottomSheet(
+            data.productId,
+            data.shopId,
+        )
     }
 }
