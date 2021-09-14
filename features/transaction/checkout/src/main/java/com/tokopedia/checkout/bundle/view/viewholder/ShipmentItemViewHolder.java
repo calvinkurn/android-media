@@ -165,7 +165,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgShopBadge;
     private LinearLayout llShippingOptionsContainer;
     private Ticker tickerProductError;
-    private FrameLayout flDisableContainer;
     private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
     private Typography tvTradeInShippingPriceTitle;
@@ -310,7 +309,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         llShippingOptionsContainer = itemView.findViewById(R.id.ll_shipping_options_container);
         tickerProductError = itemView.findViewById(R.id.checkout_ticker_product_error);
-        flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
@@ -761,7 +759,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            tvExpandOtherProduct.setText(R.string.label_show_other_item_new);
+            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_show_other_item_count), cartItemModels.size()));
             ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
@@ -1765,7 +1763,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutWarningAndError.setVisibility(View.GONE);
             }
 
-            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);
             cbInsurance.setEnabled(false);
             llInsurance.setClickable(false);
@@ -1783,7 +1780,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);
 
-            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item));
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
