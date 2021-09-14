@@ -79,7 +79,6 @@ class HomeEducationalInformationWidgetViewHolder(
         cvChevron?.show()
         laChevron?.gone()
         val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        ivChevronDown?.setImageResource(R.drawable.iconunify_chevron_down)
         ivChevronDown?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
         cvChevron?.setOnClickListener {
             showBottomSheet()
