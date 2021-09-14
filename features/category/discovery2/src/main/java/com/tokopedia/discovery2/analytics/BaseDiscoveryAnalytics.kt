@@ -99,4 +99,5 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {}
     open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
+    open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
 }

@@ -237,7 +237,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER) {
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)

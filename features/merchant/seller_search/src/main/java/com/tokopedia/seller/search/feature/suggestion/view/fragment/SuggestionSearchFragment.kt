@@ -34,7 +34,8 @@ import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
 class SuggestionSearchFragment : BaseDaggerFragment(),
-        ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener, HighlightSuggestionSearchListener {
+    ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener,
+    HighlightSuggestionSearchListener, ArticleSearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -43,10 +44,14 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val searchSellerAdapterTypeFactory by lazy {
-        SuggestionSearchAdapterTypeFactory(this, this, this, this, this)
+        SuggestionSearchAdapterTypeFactory(this, this, this, this, this, this)
     }
 
-    private val suggestionSearchAdapter by lazy { SuggestionSearchAdapter(searchSellerAdapterTypeFactory) }
+    private val suggestionSearchAdapter by lazy {
+        SuggestionSearchAdapter(
+            searchSellerAdapterTypeFactory
+        )
+    }
 
     private val viewModel: SuggestionSearchViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SuggestionSearchViewModel::class.java)
@@ -64,8 +69,10 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
         userId = userSession.userId.orEmpty()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.suggestion_search_fragment, container, false)
     }
 
@@ -116,9 +123,13 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
         val highlightsData = data.filterIsInstance<HighlightSuggestionSearchUiModel>()
         if (highlightsData.isNotEmpty()) {
             suggestionSearchAdapter.addNoResultState()
-            val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightSuggestionSearchUiModel>().firstOrNull() ?: ItemTitleHighlightSuggestionSearchUiModel()
-            val itemHighlightSearchUiModel = highlightsData.firstOrNull() ?: HighlightSuggestionSearchUiModel()
-            val highlightSearchVisitable = mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
+            val itemTitleHighlightSearchUiModel =
+                data.filterIsInstance<ItemTitleHighlightSuggestionSearchUiModel>().firstOrNull()
+                    ?: ItemTitleHighlightSuggestionSearchUiModel()
+            val itemHighlightSearchUiModel =
+                highlightsData.firstOrNull() ?: HighlightSuggestionSearchUiModel()
+            val highlightSearchVisitable =
+                mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
             suggestionSearchAdapter.addAll(highlightSearchVisitable)
             SellerSearchTracking.impressionEmptyResultEvent(userId)
         } else {
@@ -150,7 +161,8 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     private fun stopSearchResultPagePerformanceMonitoring() {
-        rvSearchSuggestionSeller?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        rvSearchSuggestionSeller?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
                 rvSearchSuggestionSeller?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
@@ -169,56 +181,120 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     override fun onNavigationItemClicked(data: NavigationSellerSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
         SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty(), searchKeyword)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
     override fun onOrderItemClicked(data: OrderSellerSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
         SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty(), searchKeyword)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
-    override fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int) {
+    override fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
         SellerSearchTracking.clickOtherResult(userId, element.title, searchKeyword)
         startActivityFromAutoComplete(element.appActionLink)
         dropKeyBoard()
     }
 
     override fun onProductItemClicked(data: ProductSellerSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
         SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty(), searchKeyword)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
-    override fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int) {
+    override fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
         SellerSearchTracking.clickOtherResult(userId, element.title, searchKeyword)
         startActivityFromAutoComplete(element.appActionLink)
         dropKeyBoard()
     }
 
     override fun onFaqItemClicked(data: FaqSellerSearchUiModel, position: Int) {
-        SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty(), searchKeyword)
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        val appUrl = data.appUrl?.addWWWPrefix.orEmpty()
-        RouteManager.route(activity, appUrl)
-        dropKeyBoard()
+        itemRedirectToWebView(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.section.orEmpty(),
+            data.appUrl.orEmpty(),
+            position
+        )
     }
 
-    override fun onFaqMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int) {
-        SellerSearchTracking.clickOtherResult(userId, element.title, searchKeyword)
-        val appUrl = element.appActionLink.addWWWPrefix
-        RouteManager.route(activity, appUrl)
-        dropKeyBoard()
+    override fun onFaqMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        moreRedirectToWebView(element.title, element.appActionLink)
+    }
+
+
+    override fun onArticleMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        moreRedirectToWebView(element.title, element.appActionLink)
     }
 
     override fun onHighlightItemClicked(data: ItemHighlightSuggestionSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         SellerSearchTracking.clickOnItemSearchHighlights(userId)
     }
+
+    override fun onArticleItemClicked(data: ArticleSellerSearchUiModel, position: Int) {
+        itemRedirectToWebView(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.section.orEmpty(),
+            data.appUrl.orEmpty(),
+            position
+        )
+    }
+
+    private fun moreRedirectToWebView(
+        title: String,
+        appUrl: String,
+    ) {
+        SellerSearchTracking.clickOtherResult(userId, title, searchKeyword)
+        val appUrlFormatted = appUrl.addWWWPrefix
+        RouteManager.route(activity, appUrlFormatted)
+        dropKeyBoard()
+    }
+
+    private fun itemRedirectToWebView(
+        title: String,
+        id: String,
+        section: String,
+        appUrl: String,
+        position: Int
+    ) {
+        SellerSearchTracking.clickOnSearchResult(userId, section, searchKeyword)
+        viewModel.insertSearchSeller(
+            title,
+            id,
+            title,
+            position
+        )
+        val appUrlFormatted = appUrl.addWWWPrefix
+        RouteManager.route(activity, appUrlFormatted)
+        dropKeyBoard()
+    }
+
 }

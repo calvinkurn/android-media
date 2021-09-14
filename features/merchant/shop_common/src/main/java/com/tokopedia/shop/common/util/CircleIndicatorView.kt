@@ -21,6 +21,11 @@ import com.tokopedia.shop.common.R
 
 class CircleIndicatorView : LinearLayout {
 
+    companion object {
+        private const val CIRCLE_VIEW_LEFT_PADDING = 5
+        private const val CIRCLE_VIEW_RIGHT_PADDING = 5
+    }
+
     lateinit var circleIndicator: LinearLayout
     private var globalIndicatorSize: Int = 0
     protected var indicatorItems: ArrayList<ImageView> = arrayListOf()
@@ -51,7 +56,7 @@ class CircleIndicatorView : LinearLayout {
             circleIndicator.visibility = View.VISIBLE
             (0 until indicatorSize).forEach {
                 val circleView = ImageView(context)
-                circleView.setPadding(5, 0, 5, 0)
+                circleView.setPadding(CIRCLE_VIEW_LEFT_PADDING, 0, CIRCLE_VIEW_RIGHT_PADDING, 0)
 
                 if (it == 0) circleView.setImageResource(getDefaultIndicatorSelected())
                 else circleView.setImageResource(getDefaultIndicatorUnselected())

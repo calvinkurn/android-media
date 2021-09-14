@@ -1352,4 +1352,19 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         )
         getTracker().sendGeneralEvent(map)
     }
+
+    override fun trackScreenshotAccess(eventAction: String, eventLabel: String, userID: String?) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            KEY_EVENT to EVENT_CLICK_DISCOVERY,
+            KEY_EVENT_CATEGORY to eventDiscoveryCategory,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            USER_ID to "${if (userID.isNullOrBlank()) 0 else userID}",
+            BUSINESS_UNIT to SHARING_EXPERIENCE,
+            PAGE_TYPE to pageType,
+            PAGE_PATH to removedDashPageIdentifier
+        )
+        getTracker().sendGeneralEvent(map)
+    }
 }
