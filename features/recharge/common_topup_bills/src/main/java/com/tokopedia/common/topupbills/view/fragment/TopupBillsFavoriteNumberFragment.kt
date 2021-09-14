@@ -157,7 +157,7 @@ class TopupBillsFavoriteNumberFragment:
     private fun initRecyclerView() {
         val typeFactory = FavoriteNumberTypeFactoryImpl(this, this, this)
         numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                listOf(), typeFactory
+                getListOfShimmeringDataView(), typeFactory
         )
 
         binding?.commonTopupbillsFavoriteNumberRv?.run {
