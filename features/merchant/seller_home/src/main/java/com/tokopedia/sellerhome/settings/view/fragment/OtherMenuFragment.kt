@@ -151,6 +151,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
+        viewModel.run {
+            setErrorStateMapDefaultValue()
+            setSuccessStateMapDefaultValue()
+        }
     }
 
     override fun onCreateView(

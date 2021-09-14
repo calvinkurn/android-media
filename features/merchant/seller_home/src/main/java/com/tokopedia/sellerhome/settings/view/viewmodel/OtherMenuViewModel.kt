@@ -453,7 +453,7 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    private fun setErrorStateMapDefaultValue() {
+    fun setErrorStateMapDefaultValue() {
         if (_errorStateMap.value == null) {
             _errorStateMap.value = mutableMapOf(
                 OtherMenuDataType.Badge to false,
@@ -462,11 +462,12 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.Operational to false,
                 OtherMenuDataType.Saldo to false,
                 OtherMenuDataType.Topads to false,
+                OtherMenuDataType.FreeShipping to false
             )
         }
     }
 
-    private fun setSuccessStateMapDefaultValue() {
+    fun setSuccessStateMapDefaultValue() {
         if (_secondarySuccessStateMap.value == null) {
             _secondarySuccessStateMap.value = mutableMapOf(
                 OtherMenuDataType.Badge to false,
