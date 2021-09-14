@@ -12,9 +12,13 @@ import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
@@ -39,6 +43,7 @@ class PlayViewModelWebSocketTest {
     private lateinit var playChannelWebSocket: PlayChannelWebSocket
     private lateinit var fakePlayWebSocket: FakePlayWebSocket
 
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val testDispatcher = CoroutineTestDispatchers
 
     @Before
@@ -91,37 +96,22 @@ class PlayViewModelWebSocketTest {
     }
 
     @Test
-    fun `when get message from web socket, then it should update the data`() {
-        val chatModelBuilder = PlayChatModelBuilder()
-        val chatListObserver: Observer<List<PlayChatUiModel>> = mockk(relaxed = true)
-        every { chatListObserver.onChanged(any()) }.just(Runs)
-
-        val mockResponse = mutableListOf<PlayChatUiModel>()
-        mockResponse.add(
-            chatModelBuilder.build(
-                messageId = "",
-                userId = PlayChatSocketResponse.userId.toString(),
-                name = PlayChatSocketResponse.userName,
-                message = PlayChatSocketResponse.message,
-                isSelfMessage = false
-            )
-        )
+    fun `when get multiple new chat from web socket, then the latest chat should be emitted`() {
+        val message1 = "Message 1"
+        val message2 = "Message 2"
 
         givenPlayViewModelRobot(
             playChannelWebSocket = playChannelWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
-            viewModel.observableChatList.observeForever(chatListObserver)
-
             createPage(channelData)
             focusPage(channelData)
         } andThen {
-            fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.response)
+            fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message1))
+            fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message2))
         } thenVerify {
-            verify {
-                chatListObserver.onChanged(mockResponse)
-            }
+            viewModel.observableNewChat.value?.peekContent()?.message?.isEqualTo(message2)
         }
     }
 
@@ -151,7 +141,7 @@ class PlayViewModelWebSocketTest {
             fakePlayWebSocket.fakeReceivedMessage(PlayPinnedMessageSocketResponse.response)
         } thenVerify {
             verifySequence {
-                pinnedMessageObserver.onChanged(pinnedMessageModelBuilder.buildPinnedMessage())
+                pinnedMessageObserver.onChanged(channelData.pinnedInfo.pinnedMessage)
                 pinnedMessageObserver.onChanged(mockResponse)
             }
         }
@@ -160,7 +150,7 @@ class PlayViewModelWebSocketTest {
     @Test
     fun `when get quick reply data from web socket, then it should update the data`() {
         val quickReplyModelBuilder = PlayQuickReplyModelBuilder()
-
+        every { mockUserSession.userId } returns "1"
         val quickReplyObserver: Observer<PlayQuickReplyInfoUiModel> = mockk(relaxed = true)
         every { quickReplyObserver.onChanged(any()) }.just(Runs)
 
@@ -181,8 +171,94 @@ class PlayViewModelWebSocketTest {
             fakePlayWebSocket.fakeReceivedMessage(PlayQuickReplySocketResponse.response)
         } thenVerify {
             verifySequence {
-                quickReplyObserver.onChanged(quickReplyModelBuilder.build())
+                quickReplyObserver.onChanged(channelData.quickReplyInfo)
                 quickReplyObserver.onChanged(mockResponse)
+            }
+        }
+    }
+
+    @Test
+    fun `when get banned status from web socket, then it should update the data`() {
+        val statusInfoModelBuilder = PlayStatusInfoModelBuilder()
+
+        val statusInfoObserver: Observer<PlayStatusInfoUiModel> = mockk(relaxed = true)
+        every { statusInfoObserver.onChanged(any()) }.just(Runs)
+
+        every { mockUserSession.userId } returns "1"
+
+        val mockResponse = statusInfoModelBuilder.build(
+            statusType = PlayStatusType.Banned
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observableStatusInfo.observeForever(statusInfoObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayBannedSocketResponse.generateResponse())
+        } thenVerify {
+            verifySequence {
+                statusInfoObserver.onChanged(channelData.statusInfo)
+                statusInfoObserver.onChanged(mockResponse)
+            }
+        }
+    }
+
+    @Test
+    fun `when get banned status from web socket with different channelId than current channelId, then no new data should be emitted`() {
+        val statusInfoObserver: Observer<PlayStatusInfoUiModel> = mockk(relaxed = true)
+        every { statusInfoObserver.onChanged(any()) }.just(Runs)
+
+        every { mockUserSession.userId } returns "1"
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observableStatusInfo.observeForever(statusInfoObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayBannedSocketResponse.generateResponse(channelId = "2"))
+        } thenVerify {
+            verifySequence {
+                statusInfoObserver.onChanged(channelData.statusInfo)
+            }
+        }
+    }
+
+    @Test
+    fun `when get banned status from web socket with different userId than current userId, then it should not update the data to banned`() {
+        val statusInfoObserver: Observer<PlayStatusInfoUiModel> = mockk(relaxed = true)
+        every { statusInfoObserver.onChanged(any()) }.just(Runs)
+
+        every { mockUserSession.userId } returns "1"
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observableStatusInfo.observeForever(statusInfoObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayBannedSocketResponse.generateResponse(userId = "2"))
+        } thenVerify {
+            verifySequence {
+                statusInfoObserver.onChanged(channelData.statusInfo)
+                statusInfoObserver.onChanged(channelData.statusInfo)
             }
         }
     }

@@ -10,23 +10,24 @@ object PlayChatSocketResponse {
     const val userUserId = 1
     const val userName = "Jonathan"
     const val userImage = "https://tokopedia.com/test.png"
-    const val message = "Hello World!"
     const val timestamp = 1579064126000
 
-    val response = """
-        {
-            "type": "$type",
-            "data": {
-                "channel_id": $channelId,
-                "user": {
-                    "id": $userId,
-                    "user_id": $userUserId,
-                    "name": "$userName",
-                    "image": "$userImage"
-                },
-                "message": "$message",
-                "timestamp": $timestamp
+
+    fun generateResponse(message: String = "Hello World!"): String =
+        """
+            {
+                "type": "$type",
+                "data": {
+                    "channel_id": $channelId,
+                    "user": {
+                        "id": $userId,
+                        "user_id": $userUserId,
+                        "name": "$userName",
+                        "image": "$userImage"
+                    },
+                    "message": "$message",
+                    "timestamp": $timestamp
+                }
             }
-        }
-    """.trimIndent()
+        """.trimIndent()
 }
