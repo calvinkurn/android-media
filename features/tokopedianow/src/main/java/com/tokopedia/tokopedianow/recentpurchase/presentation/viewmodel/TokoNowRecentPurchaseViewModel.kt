@@ -31,6 +31,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
@@ -186,36 +187,11 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, source)
     }
 
-    fun getEmptyState(id: String) {
+    fun showEmptyState(@RepurchaseStaticLayoutId id: String) {
         launchCatchError(block = {
             layoutList.removeLoading()
-            when(id) {
-                EMPTY_STATE_NO_HISTORY_SEARCH -> {
-                    val description = R.string
-                        .tokopedianow_repurchase_empty_state_no_history_desc_search
-                    layoutList.addEmptyStateNoHistory(description)
-                    layoutList.removeAllProduct()
-                }
-                EMPTY_STATE_NO_HISTORY_FILTER -> {
-                    val description = R.string
-                        .tokopedianow_repurchase_empty_state_no_history_desc_filter
-                    layoutList.addEmptyStateNoHistory(description)
-                    layoutList.removeAllProduct()
-                }
-                EMPTY_STATE_OOC -> {
-                    layoutList.clear()
-                    layoutList.addChooseAddress()
-                    layoutList.addEmptyStateOoc()
-                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
-                }
-                else -> {
-                    layoutList.clear()
-                    layoutList.addChooseAddress()
-                    layoutList.addEmptyStateNoResult()
-                    getCategoryGridAsync().await()
-                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
-                }
-            }
+            addEmptyState(id)
+
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
                 nextPage = INITIAL_PAGE,
@@ -232,7 +208,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
             nextPage = INITIAL_PAGE,
-            state = TokoNowLayoutState.SHOW
+            state = TokoNowLayoutState.LOADED
         )
 
         _getLayout.postValue(Success(layout))
@@ -262,18 +238,10 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             layoutList.removeLoading()
 
             if(productList.isEmpty()) {
-                getEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
+                showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
             } else {
-                layoutList.addProduct(productList)
+                showProductList(productList)
             }
-
-            val layout = RepurchaseLayoutUiModel(
-                layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.LOADED
-            )
-
-            _getLayout.postValue(Success(layout))
         }) {
 
         }
@@ -310,8 +278,20 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    private suspend fun getProductList(): List<RepurchaseProduct> {
-        val requestParam = createProductListRequestParam()
+    private fun showProductList(productList: List<RepurchaseProduct>) {
+        layoutList.addProduct(productList)
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.LOADED
+        )
+
+        _getLayout.postValue(Success(layout))
+    }
+
+    private suspend fun getProductList(page: Int = INITIAL_PAGE): List<RepurchaseProduct> {
+        val requestParam = createProductListRequestParam(page)
         val response = getRepurchaseProductListUseCase.execute(requestParam)
 
         val productList = response.products
@@ -330,7 +310,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             val productList = getProductList()
 
             if (productList.isNullOrEmpty()) {
-                getEmptyState(id = EMPTY_STATE_NO_RESULT)
+                addEmptyState(id = EMPTY_STATE_NO_RESULT)
             } else {
                 layoutList.addSortFilter()
                 layoutList.addProduct(productList)
@@ -396,17 +376,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private fun loadMoreProduct() {
         launchCatchError(block = {
             val page = productListMeta?.page.orZero() + 1
-            val requestParam = createProductListRequestParam(page)
-            val response = getRepurchaseProductListUseCase.execute(requestParam)
-
-            val productList = response.products
-            val productMeta = response.meta
-
-            productListMeta = RepurchaseProductListMeta(
-                productMeta.page,
-                productMeta.hasNext,
-                productMeta.totalScan
-            )
+            val productList = getProductList(page)
 
             layoutList.addProduct(productList)
 
@@ -416,7 +386,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADED
             )
 
-            _getLayout.postValue(Success(layout))
+            _loadMore.postValue(Success(layout))
         }) {
 
         }
@@ -492,5 +462,35 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         //TO-DO: Update product quantity here
+    }
+
+    private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {
+        when(id) {
+            EMPTY_STATE_NO_HISTORY_SEARCH -> {
+                val description = R.string
+                    .tokopedianow_repurchase_empty_state_no_history_desc_search
+                layoutList.addEmptyStateNoHistory(description)
+                layoutList.removeAllProduct()
+            }
+            EMPTY_STATE_NO_HISTORY_FILTER -> {
+                val description = R.string
+                    .tokopedianow_repurchase_empty_state_no_history_desc_filter
+                layoutList.addEmptyStateNoHistory(description)
+                layoutList.removeAllProduct()
+            }
+            EMPTY_STATE_OOC -> {
+                layoutList.clear()
+                layoutList.addChooseAddress()
+                layoutList.addEmptyStateOoc()
+                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+            }
+            else -> {
+                layoutList.clear()
+                layoutList.addChooseAddress()
+                layoutList.addEmptyStateNoResult()
+                getCategoryGridAsync().await()
+                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
+            }
+        }
     }
 }
