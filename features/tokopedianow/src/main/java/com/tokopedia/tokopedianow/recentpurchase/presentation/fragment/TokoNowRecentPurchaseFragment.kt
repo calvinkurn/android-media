@@ -275,7 +275,8 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onClearAllFilter() {
-        viewModel.clearSelectedFilters()
+        clearFilters()
+        refreshLayout()
     }
 
     private fun initInjector() {
@@ -514,7 +515,7 @@ class TokoNowRecentPurchaseFragment:
     private fun onCategoryFilterActivityResult(data: Intent?) {
         val selectedFilter = data
             ?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
-        viewModel.setSelectedCategoryFilter(selectedFilter)
+        viewModel.applyCategoryFilter(selectedFilter)
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {
@@ -611,10 +612,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun showEmptyState(id: String) {
-        viewModel.getEmptyState(
-            id = id,
-            warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        )
+        viewModel.getEmptyState(id)
         miniCartWidget?.hide()
         setupPadding(false)
     }
@@ -663,5 +661,9 @@ class TokoNowRecentPurchaseFragment:
             isEnabled = true
             isRefreshing = false
         }
+    }
+
+    private fun clearFilters() {
+        viewModel.clearSelectedFilters()
     }
 }
