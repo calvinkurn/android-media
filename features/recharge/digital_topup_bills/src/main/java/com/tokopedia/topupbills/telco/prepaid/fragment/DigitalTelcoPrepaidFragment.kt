@@ -727,7 +727,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             Handler().run {
                 postDelayed({
                     val coachMarks = ArrayList<CoachMark2Item>()
-                    val sortFilterItems: LinearLayout? = telcoClientNumberWidget.findViewById(R.id.sort_filter_items)
+                    val sortFilterItems: LinearLayout? =
+                        telcoClientNumberWidget.findViewById(com.tokopedia.sortfilter.R.id.sort_filter_items)
                     val firstChip = sortFilterItems?.getChildAt(0)
 
                     if (firstChip != null) {
