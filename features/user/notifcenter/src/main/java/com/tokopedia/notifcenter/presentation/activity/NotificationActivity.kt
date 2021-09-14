@@ -27,10 +27,8 @@ import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
-import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
-import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.widget.NotificationTabLayout
@@ -43,8 +41,7 @@ import javax.inject.Inject
  */
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
-        NotificationActivityContract.View,
-        NotificationUpdateListener {
+        NotificationActivityContract.View{
 
     val notificationComponent by lazy { initInjector() }
 
@@ -125,17 +122,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun initTabLayoutItem() {
-//        // transaction
-//        tabList.add(NotificationTabItem(
-//                getString(R.string.title_notification_transaction),
-//                NotificationTransactionFragment()
-//        ))
-
         // update
-        tabList.add(NotificationTabItem(
-                getString(R.string.title_notification_update),
-                NotificationUpdateFragment()
-        ))
+//        tabList.add(NotificationTabItem(
+//                getString(R.string.title_notification_update),
+//                NotificationUpdateFragment()
+//        ))
     }
 
     private fun onSuccessSendNotification() {
@@ -173,9 +164,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    override fun onSuccessLoadNotificationUpdate() {
-        clearTabCounter(INDEX_NOTIFICATION_UPDATE)
-    }
+//    override fun onSuccessLoadNotificationUpdate() {
+//        clearTabCounter(INDEX_NOTIFICATION_UPDATE)
+//    }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {

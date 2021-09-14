@@ -8,7 +8,6 @@ import com.tokopedia.notifcenter.data.entity.ProductStockHandler
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
-import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
 import dagger.Module
@@ -24,16 +23,6 @@ class NotificationUpdateModule {
     fun provideGraphqlProductStockHandlerUseCase(
             repository: GraphqlRepository): UseCase<ProductStockHandler> {
         return UseCase(repository)
-    }
-
-    @Provides
-    @NotificationScope
-    fun provideProductStockHandlerUseCase(
-            @Named(NotificationQueriesConstant.PRODUCT_STOCK_HANDLER)
-            query: String,
-            useCase: UseCase<ProductStockHandler>
-    ): ProductStockHandlerUseCase {
-        return ProductStockHandlerUseCase(query, useCase)
     }
 
     @Provides
