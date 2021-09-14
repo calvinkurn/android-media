@@ -8,7 +8,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
@@ -32,7 +31,7 @@ class TickerViewHolder(
         val tickerData = element.data
         with(itemView.tickerViewShc) {
             val tickers = tickerData?.tickers.orEmpty().map {
-                TickerData(it.title, it.message, Ticker.TYPE_ANNOUNCEMENT, true, it)
+                TickerData(it.title, it.message, it.type, true, it)
             }
             val tickerAdapter = TickerPagerAdapter(context, tickers)
             addPagerView(tickerAdapter, tickers)
