@@ -129,6 +129,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         total_interest
         total_interest_ceil
         interest_pct
+        service_fee_info
         total_with_provision
         total_with_provision_ceil
         is_recommended
@@ -156,6 +157,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
           name
           product_code
           is_active
+          small_subheader
           subheader
           img_light_url
           img_dark_url

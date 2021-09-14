@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,7 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.CardUnify xmlns:tools="http://schemas.android.com/tools"
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_4"
@@ -59,7 +60,7 @@
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_14"
-                        app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
+                        app:layout_constraintBottom_toTopOf="@+id/tvSmallSubTitlePaylaterPartner"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
                         app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
@@ -75,8 +76,20 @@
                         android:layout_marginTop="@dimen/unify_space_2"
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
-                        app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
+                        app:layout_constraintTop_toBottomOf="@+id/tvSmallSubTitlePaylaterPartner"
                         app:typographyType="body_3"
+                        tools:text="Yuk, daftar sekarang!" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvSmallSubTitlePaylaterPartner"
+                        android:layout_width="@dimen/unify_space_0"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/unify_space_2"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+                        app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
+                        app:typographyType="small"
+                        android:visibility="gone"
                         tools:text="Yuk, daftar sekarang!" />
 
 
@@ -85,11 +98,11 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_16"
-                        android:text="Simulasi pembayaran"
+                        android:text="@string/simulasi_pembayaran"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_12"
                         app:layout_constraintLeft_toLeftOf="@id/ivPaylaterPartner"
-                        app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartner"
+                        app:layout_constraintTop_toBottomOf="@id/tvSubTitlePaylaterPartner"
                         app:typographyType="body_2"
                         app:typographyWeight="bold" />
 
@@ -105,16 +118,34 @@
 
 
                     <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/serviceFeeInfoText"
+                        android:layout_width="@dimen/unify_space_0"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/unify_space_2"
+                        tools:text="@string/serviceFee"
+                        android:visibility="gone"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
+                        app:layout_constraintRight_toRightOf="@id/simulasiHeading"
+                        app:layout_constraintTop_toBottomOf="@id/serviceFeeText"
+                        app:typographyType="small" />
+
+
+
+
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/serviceFeeText"
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
-                        android:text="Biaya Layanan (Gratis di Bulan Pertama)"
+                        android:text="@string/serviceFee"
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/interestText"
                         app:typographyType="body_3" />
+
+
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/interestAmount"
@@ -148,11 +179,11 @@
                         android:paddingLeft="@dimen/unify_space_12"
                         android:paddingTop="@dimen/unify_space_12"
                         android:paddingBottom="@dimen/unify_space_12"
-                        android:text="30 Hari"
+                        android:text="@string/one_month"
                         android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_13"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/serviceFeeText"
+                        app:layout_constraintTop_toBottomOf="@id/serviceFeeInfoText"
                         app:typographyType="body_1" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -178,9 +209,11 @@
                         android:elevation="-1dp"
                         android:padding="@dimen/unify_space_12"
                         app:layout_constraintBottom_toBottomOf="@id/duration"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/duration">
+                        app:layout_constraintTop_toTopOf="@id/duration"
+                        app:layout_constraintVertical_bias="0.0">
 
                     </View>
 

@@ -140,10 +140,19 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         }
     }
 
+    /**
+     * This method set values to all view from the api success response
+     */
     @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
+            if(!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+                tvSmallSubTitlePaylaterPartner.visible()
+                tvSmallSubTitlePaylaterPartner.text = data.gateway_detail?.smallSubHeader
+            }
+            else
+            {tvSmallSubTitlePaylaterPartner.gone()}
             whyText.text =
                 resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}"
             if (data.tenure != 1 && data.tenure != 0)
@@ -160,7 +169,16 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
 
-            tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader
+            tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader?:""
+            if(!data.gateway_detail?.smallSubHeader.isNullOrEmpty())
+            {
+                serviceFeeInfoText.visible()
+                serviceFeeInfoText.text = data.gateway_detail?.smallSubHeader
+            }
+            else
+            {
+                serviceFeeInfoText.gone()
+            }
             urlToRedirect = data.cta?.android_url ?: ""
             data.cta?.cta_type?.let {
                 buttonStatus = when (it) {
