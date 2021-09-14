@@ -1574,38 +1574,25 @@ class NewShopPageFragment :
                 ))
             }
         }
-//        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-//                shopId = shopId,
-//                shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
-//                isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
-//                isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
-//                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-//                shopAttribution = shopAttribution,
-//                shopRef = shopRef
-//        )
-//        shopViewModel?.productListData?.let {
-//            shopPageProductFragment.setInitialProductListData(it)
-//        }
-//        listShopPageTabModel.add(ShopPageTabModel(
-//                getString(R.string.new_shop_info_title_tab_product),
-//                iconTabProductInactive,
-//                iconTabProductActive,
-//                shopPageProductFragment
-//        ))
-
-        val testFragmentHomeTab = RouteManager.instantiateFragmentDF(
-                activity as AppCompatActivity,
-//                    "com.example.test_fragment_df.TestDfFragment",
-                "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment",
-                Bundle().apply {
-                    putString("GGZ", "GGZ")
-                })
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
+                shopId = shopId,
+                shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
+                isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
+                isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution = shopAttribution,
+                shopRef = shopRef
+        )
+        shopViewModel?.productListData?.let {
+            shopPageProductFragment.setInitialProductListData(it)
+        }
         listShopPageTabModel.add(ShopPageTabModel(
                 getString(R.string.new_shop_info_title_tab_product),
                 iconTabProductInactive,
                 iconTabProductActive,
-                testFragmentHomeTab
+                shopPageProductFragment
         ))
+
         if (isShouldCheckShopType()) {
             if (isNotRegularMerchant(shopPageHeaderDataModel)) {
                 listShopPageTabModel.add(ShopPageTabModel(

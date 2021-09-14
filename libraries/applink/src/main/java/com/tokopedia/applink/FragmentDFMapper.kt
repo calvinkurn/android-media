@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.FragmentConst.DF_INSTALLER_FRAGMENT_CLASS_PATH
-import com.tokopedia.applink.FragmentConst.SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH
-import tokopedia.applink.R
 
 /**
  * Fragment Dynamic Feature Mapper
@@ -20,15 +18,19 @@ object FragmentDFMapper {
     private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
     private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
     private const val BUNDLE_ARGUMENTS_KEY_EXTRAS = "BUNDLE_ARGUMENTS_EXTRAS"
-    private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
+    private const val BUNDLE_KEY_CLASS_NAME = "CLASS_NAME"
     private var manager: SplitInstallManager? = null
     val fragmentDfModuleMapper: List<FragmentDFPattern> by lazy {
         mutableListOf<FragmentDFPattern>().apply {
-            add(FragmentDFPattern(
-                    { it == SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH },
-                    DeeplinkDFMapper.DF_MERCHANT_SELLER,
-                    R.string.title_shop_score_sellerapp
-            ))
+            /**
+             * You can add the map of the fragment of a specific module here
+             * For example
+             * add(FragmentDFPattern(
+                    logic to match the given className E.g.: { it == FRAGMENT_CLASS_PATH },
+                    MODULE_ID,
+                    MODULE_NAME_RESOURCE_ID
+               ))
+             */
         }
     }
 
@@ -58,7 +60,7 @@ object FragmentDFMapper {
                 val bundle = Bundle().apply {
                     putString(BUNDLE_KEY_MODULE_ID, moduleId)
                     putString(BUNDLE_KEY_MODULE_NAME, moduleName)
-                    putString(BUNDLE_KEY_CLASS_PATH_NAME, classPathName)
+                    putString(BUNDLE_KEY_CLASS_NAME, classPathName)
                     putBundle(BUNDLE_ARGUMENTS_KEY_EXTRAS, extras)
                 }
                 return RouteManager.instantiateFragment(activity, DF_INSTALLER_FRAGMENT_CLASS_PATH, bundle)
@@ -72,7 +74,7 @@ object FragmentDFMapper {
  * Class to hold dynamic feature fragment pattern, used for mapping
  */
 class FragmentDFPattern(
-        val logic: ((deeplink: String) -> Boolean),
+        val logic: ((className: String) -> Boolean),
         val moduleId: String,
         val moduleNameResourceId: Int
 )

@@ -34,6 +34,7 @@ import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
+@Suppress("unused")
 class DFInstallerFragment : Fragment(), CoroutineScope {
 
     companion object {
@@ -44,7 +45,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
         private const val BUNDLE_KEY_MODULE_NAME = "MODULE_NAME"
         private const val BUNDLE_ARGUMENTS_KEY_EXTRAS = "BUNDLE_ARGUMENTS_EXTRAS"
-        private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
+        private const val BUNDLE_KEY_CLASS_NAME = "CLASS_NAME"
     }
 
     private var job = Job()
@@ -89,7 +90,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         moduleId = arguments?.getString(BUNDLE_KEY_MODULE_ID).orEmpty()
         moduleName = arguments?.getString(BUNDLE_KEY_MODULE_NAME).orEmpty()
         destinationFragmentExtras = arguments?.getBundle(BUNDLE_ARGUMENTS_KEY_EXTRAS) ?: Bundle()
-        fragmentClassPathName = arguments?.getString(BUNDLE_KEY_CLASS_PATH_NAME).orEmpty()
+        fragmentClassPathName = arguments?.getString(BUNDLE_KEY_CLASS_NAME).orEmpty()
         allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId)
                 ?: false
         cancelDownloadBeforeInstallInPage = dfConfig?.cancelDownloadBeforeInstallInPage ?: false

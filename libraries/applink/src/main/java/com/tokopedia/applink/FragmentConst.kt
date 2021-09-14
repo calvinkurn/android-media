@@ -7,6 +7,5 @@ package com.tokopedia.applink
 object FragmentConst {
     const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment"
     const val CART_FRAGMENT = "com.tokopedia.cart.view.CartFragment"
-    const val SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH = "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment"
     const val DF_INSTALLER_FRAGMENT_CLASS_PATH = "com.tokopedia.dynamicfeatures.DFInstallerFragment"
 }
