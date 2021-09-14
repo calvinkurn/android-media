@@ -42,6 +42,9 @@ class PlayChannelReminderUseCase @Inject constructor(
 
         const val RESPONSE_STATUS_SUCCESS = 200
 
+        fun checkRequestSuccess(playReminder: PlayReminder) =
+            playReminder.playToggleChannelReminder.header.status == RESPONSE_STATUS_SUCCESS
+
         @JvmStatic
         fun createParams(
             channelId: String,

@@ -1492,7 +1492,7 @@ class PlayViewModel @Inject constructor(
                     withContext(dispatchers.io) {
                         playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
                         val response = playChannelReminderUseCase.executeOnBackground()
-                        status = response.playToggleChannelReminder.header.status == PlayChannelReminderUseCase.RESPONSE_STATUS_SUCCESS
+                        status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
 
                     _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
