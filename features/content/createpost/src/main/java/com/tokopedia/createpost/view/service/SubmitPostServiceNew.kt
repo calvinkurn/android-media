@@ -77,15 +77,6 @@ class SubmitPostServiceNew : JobIntentService() {
         postUpdateProgressManager = getProgressManager(viewModel)
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
-        val tagList:ArrayList<FeedXMediaTagging> = ArrayList()
-        val products: ArrayList<RelatedProductItem> = ArrayList()
-
-        viewModel.fileImageList.forEach {
-            it.type = getFileType(contentResolver.getType(Uri.parse(it.path))?:"")
-            tagList.addAll(it.tags)
-            products.addAll(it.products)
-        }
-
         submitPostUseCase.execute(
             SubmitPostUseCaseNew.createRequestParams(
             viewModel.postId,
@@ -94,11 +85,20 @@ class SubmitPostServiceNew : JobIntentService() {
             if (isTypeAffiliate(viewModel.authorType)) userSession.userId
             else userSession.shopId,
             viewModel.caption,
-            (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
-            else viewModel.fileImageList).map { it.path to it.type },
+//            (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
+
+             viewModel.completeImageList.map {
+                 getFileAbsolutePath(it.path)!! to it.type },
             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-            else viewModel.productIdList, tagList,products
+            else viewModel.productIdList, viewModel.completeImageList
         ), getSubscriber())
+    }
+
+    private fun getFileAbsolutePath(path: String): String? {
+        return if (path.contains("content://") || path.startsWith("file://"))
+            Uri.parse(path).path
+        else
+            path
     }
 
     private fun initInjector() {
@@ -106,11 +106,6 @@ class SubmitPostServiceNew : JobIntentService() {
             .createPostModule(CreatePostModule(this.applicationContext))
             .build()
             .inject(this)
-    }
-
-    private fun getFileType(mimeType:String):String{
-        val slashIndex = mimeType.indexOf("/")
-        return mimeType.substring(0,slashIndex)
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE

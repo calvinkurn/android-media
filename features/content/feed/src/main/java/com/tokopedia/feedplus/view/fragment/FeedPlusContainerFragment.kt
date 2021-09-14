@@ -81,7 +81,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
-    private var postProgressUpdateView:PostProgressUpdateView? = null
+    private var postProgressUpdateView: PostProgressUpdateView? = null
     private var mInProgress = false
 
     companion object {
@@ -672,6 +672,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun swipeOnPostUpdate() {
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is FeedPlusFragment) {
+                fragment.onRefresh()
+            }
+        } catch (e: IllegalStateException) {
+            //no op
+        }
         updateVisibility(false)
     }
 

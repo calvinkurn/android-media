@@ -6,9 +6,11 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitI
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.TYPE_CONTENT
 import com.tokopedia.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.PostUpdateProgressManager
+import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -31,45 +33,43 @@ open class SubmitPostUseCaseNew @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
-        val relatedIdList = requestParams.getObject(PARAM_TAGS) as List<String>
-        val type = requestParams.getString(PARAM_TYPE, "")
-        val tags = getListOfTag(relatedIdList, type)
 
         uploadMultipleImageUseCase.postUpdateProgressManager = postUpdateProgressManager
         val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>?
             ?: emptyList())
+        val mediaList = (requestParams.getObject(PARAM_MEDIA_MODEL_LIST) as List<MediaModel>?
+            ?: emptyList())
 
         return uploadMultipleImageUseCase
             .createObservable(
-                UploadMultipleImageUsecaseNew.createRequestParams(getMediumList(media, tags))
+                UploadMultipleImageUsecaseNew.createRequestParams(getMediumList(media, mediaList))
             )
             .map(rearrangeMedia())
             .flatMap(submitPostToGraphql(requestParams))
     }
 
-    private fun getMediumList(media: List<Pair<String, String>>, tags: List<MediaTag>): List<SubmitPostMedium> {
+    private fun getMediumList(media: List<Pair<String, String>>, mediaList: List<MediaModel>): List<SubmitPostMedium> {
         val mediumList = mutableListOf<SubmitPostMedium>()
         media.forEachIndexed { index, pair ->
-            mediumList.add(SubmitPostMedium(pair.first, index, addProductTagsToFirstIndex(index, tags), pair.second))
+            val tags = mapTagLIst(index, mediaList[index].tags, mediaList[index].products)
+            mediumList.add(SubmitPostMedium(pair.first, index, tags, pair.second))
         }
         return mediumList
     }
-
-    private fun addProductTagsToFirstIndex(index: Int, tags: List<MediaTag>): List<MediaTag> {
-        return if (index == 0) tags else arrayListOf()
-    }
-
-    private fun getListOfTag(relatedIdList: List<String>, type: String): List<MediaTag> {
-        val tags = arrayListOf<MediaTag>()
-        relatedIdList.forEach {
-            tags.add(MediaTag(getTagType(type), it))
+    private fun mapTagLIst(index: Int, tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
+        var tagList : MutableList<MediaTag> = arrayListOf()
+        tags.forEach {
+            val position: MutableList<Double> = arrayListOf()
+            position.add(it.posX.toDouble())
+            position.add(it.posY.toDouble())
+            var tag = MediaTag(type = TAGS_TYPE_PRODUCT,
+                content = productItem[it.tagIndex].id,
+                position = position)
+            tagList.add(tag)
         }
-        return tags
+        return tagList
     }
 
-    private fun getTagType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) TAGS_TYPE_PRODUCT else type
-    }
 
     private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
         return Func1 {
@@ -119,7 +119,6 @@ open class SubmitPostUseCaseNew @Inject constructor(
         val input = ContentSubmitInput(
             action = requestParams.getString(PARAM_ACTION, null)
         )
-        //TODO shruti tags,product
         input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
         input.token = requestParams.getString(PARAM_TOKEN, "")
         input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
@@ -140,6 +139,13 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val PARAM_TAGS = "tags"
         private const val PARAM_ACTION = "action"
         private const val PARAM_ID = "ID"
+        private const val PARAM_MEDIA_MODEL_LIST = "media_model_list"
+        private const val ACTION_CREATE = "create"
+        private const val CONTENT_SHOP = "content-shop"
+        private const val AUTHOR_TYPE_VALUE = "content"
+        private const val PARAM_MEDIA = "media"
+
+
 
         private const val PARAM_INPUT = "input"
 
@@ -163,23 +169,22 @@ open class SubmitPostUseCaseNew @Inject constructor(
             caption: String,
             media: List<Pair<String, String>>,
             relatedIdList: List<String>,
-            tags: ArrayList<FeedXMediaTagging>,
-            products: ArrayList<RelatedProductItem>
+            mediaList: List<MediaModel>
         ): RequestParams {
 
             val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_TYPE, "content-shop")
+            requestParams.putString(PARAM_TYPE, TYPE_CONTENT)
             requestParams.putString(PARAM_TOKEN, token)
             requestParams.putString(PARAM_AUTHOR_ID, authorId)
-            requestParams.putString(PARAM_AUTHOR_TYPE, "content-shop")
+            requestParams.putString(PARAM_AUTHOR_TYPE, CONTENT_SHOP)
             requestParams.putString(PARAM_CAPTION, caption)
-            requestParams.putObject(PARAM_TAGS, relatedIdList)
-            requestParams.putObject(PARAM_MEDIA_MODEL_TAGS,tags)
-            requestParams.putObject(PARAM_MEDIA_MODEL_PRODUCTS,products)
+            requestParams.putObject(PARAM_MEDIA_MODEL_LIST, mediaList)
+            requestParams.putString(PARAM_ACTION, ACTION_CREATE)
+
 
             if (!id.isNullOrEmpty()) {
                 requestParams.putString(PARAM_ID, id)
-                requestParams.putString(PARAM_ACTION, ACTION_UPDATE)
+                requestParams.putString(PARAM_ACTION, ACTION_CREATE)
             } else {
                 requestParams.putObject(PARAM_MEDIA_LIST, media)
             }

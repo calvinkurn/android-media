@@ -31,7 +31,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private var retryText: Typography? = null
     private var progressBar: ProgressBarUnify? = null
     private var mCreatePostViewModel: CreatePostViewModel? = null
-    private var mPostUpdateSwipe:PostUpdateSwipe?=null
+    private var mPostUpdateSwipe: PostUpdateSwipe? = null
 
     init {
         View.inflate(this.context, R.layout.feed_upload_post_progress_view, this)
@@ -50,7 +50,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
-
         progressBar?.setValue((progress / maxCount) * 100, true)
     }
 
@@ -100,12 +99,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == true
                 ) {
-                    val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS,0)
-                    val maxCount=  intent.getIntExtra(MAX_FILE_UPLOAD,0)
+                    val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
+                    val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
 
                     setFirstIcon(firstIcon)
-                    setProgressUpdate(progress,maxCount)
+                    setProgressUpdate(progress, maxCount)
                 } else if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
                 ) {
