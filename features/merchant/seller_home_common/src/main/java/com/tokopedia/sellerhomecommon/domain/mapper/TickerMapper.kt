@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -16,8 +17,8 @@ class TickerMapper @Inject constructor() : BaseResponseMapper<GetTickerResponse,
             TickerItemUiModel(
                     color = it.color,
                     id = it.id.orEmpty(),
-                    message = it.message.orEmpty(),
-                    title = it.title.orEmpty(),
+                    message = MethodChecker.fromHtmlWithoutExtraSpace(it.message.orEmpty()).toString(),
+                    title = MethodChecker.fromHtmlWithoutExtraSpace(it.title.orEmpty()).toString(),
                     type = it.tickerType ?: 0,
                     redirectUrl = SellerHomeCommonUtils.extractUrls(it.message.orEmpty())
                             .getOrNull(0)
