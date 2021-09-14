@@ -1,17 +1,21 @@
 package com.tokopedia.pdp_checkout.testing
 
+import android.content.Context
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.testing.robot.CartPageMocks
 import com.tokopedia.cart.testing.robot.cartPage
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.checkout.testing.R
 import com.tokopedia.checkout.testing.robot.checkoutPage
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.product.detail.testing.ProductDetailInterceptor
 import com.tokopedia.product.detail.testing.ProductDetailRobot
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,15 +38,22 @@ class PdpCheckoutJourneyTest {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse {
-            addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(CartPageMocks.UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.checkout.testing.R.raw.saf_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.checkout.testing.R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.checkout.testing.R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.checkout.testing.R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.checkout.testing.R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-        }
+        GraphqlClient.reInitRetrofitWithInterceptors(
+                listOf(ProductDetailInterceptor(), MockInterceptor(
+                        object : MockModelConfig() {
+                            override fun createMockModel(context: Context): MockModelConfig {
+                                addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(CartPageMocks.UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+                                addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+                                return this
+                            }
+                        }
+                )),
+                context)
     }
 
     @Test
@@ -50,9 +61,7 @@ class PdpCheckoutJourneyTest {
         activityRule.launchActivity(null)
 
         ProductDetailRobot().apply {
-            clickPlusKeranjang()
-            dismissAtcDoneBottomSheet()
-            goToCartPage()
+            clickLihatKeranjangBottomSheetAtc()
         }
 
         cartPage {
