@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
@@ -124,5 +125,17 @@ class ImagePickerInstaActivity : AppCompatActivity() {
         if (!applinkForBackNavigation.isNullOrEmpty()) {
             RouteManager.route(this, applinkForBackNavigation)
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+//        when(keyCode){
+//            KeyEvent.KEYCODE_VOLUME_DOWN->{
+//                getAttachedFragment()?.onVolumeDown()
+//            }
+//            KeyEvent.KEYCODE_VOLUME_UP->{
+//                getAttachedFragment()?.onVolumeUp()
+//            }
+//        }
+        return super.onKeyDown(keyCode, event)
     }
 }

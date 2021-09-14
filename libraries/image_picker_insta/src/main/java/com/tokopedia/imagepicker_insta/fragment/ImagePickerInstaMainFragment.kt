@@ -81,6 +81,14 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    fun onVolumeDown(){
+        //DO nothing
+    }
+
+    fun onVolumeUp(){
+        selectedMediaView.onVolumeUp()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
