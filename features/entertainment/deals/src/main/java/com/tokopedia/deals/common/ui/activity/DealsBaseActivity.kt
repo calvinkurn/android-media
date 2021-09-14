@@ -8,10 +8,13 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.ScrollingViewBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -39,6 +42,7 @@ import kotlin.math.abs
  */
 
 abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback {
+
 
     lateinit var viewGroup : ViewGroup
     private lateinit var binding: ActivityBaseDealsBinding
@@ -88,7 +92,17 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     private fun setupView() {
         viewGroup =
             (findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+
         binding = ActivityBaseDealsBinding.bind(viewGroup)
+
+        val nestedScrollView =  NestedScrollView(this)
+        nestedScrollView.layoutParams  = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        nestedScrollView.isFillViewport = true
+        nestedScrollView.id = R.id.containerBaseDealsParentView
+        binding.baseDealsCoor.addView(nestedScrollView)
+        val layoutParams = nestedScrollView.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setBehavior(ScrollingViewBehavior(this, null))
+
         setUpScrollView()
         handleToolbarVisibilityWihLocName(currentLoc.name)
         setupLocation()
@@ -99,9 +113,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun setUpScrollView() {
 
-        
 
-        binding.appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        binding.appBarLayoutSearchContent.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height) {
                 //collapse
                 binding.contentBaseToolbar.imgDealsSearchIcon.show()
