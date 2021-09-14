@@ -103,9 +103,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             it.sendAnalytics(
                 PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
                     responseData?.gateway_detail?.name ?: "",
-                    responseData?.cta?.name?:"",
-                    responseData?.tenure?:0
-                ))
+                    responseData?.cta?.name ?: "",
+                    responseData?.tenure ?: 0
+                )
+            )
 
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
@@ -125,11 +126,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         )
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
 
-            it.sendAnalytics( PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-                responseData?.gateway_detail?.name ?: "",
-                responseData?.cta?.name?:"",
-                responseData?.tenure?:0
-            ))
+            it.sendAnalytics(
+                PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                    responseData?.gateway_detail?.name ?: "",
+                    responseData?.cta?.name ?: "",
+                    responseData?.tenure ?: 0
+                )
+            )
 
             it.openBottomSheet(
                 bundle, PayLaterFaqBottomSheet::class.java

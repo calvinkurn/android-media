@@ -41,11 +41,11 @@ class PayLaterViewModel @Inject constructor(
     fun getPayLaterAvailableDetail(price: Long) {
         paylaterGetSimulationV2usecase.cancelJobs()
 
-            paylaterGetSimulationV2usecase.getPayLaterProductDetails(
-                ::onAvailableDetailSuccess,
-                ::onAvailableDetailFail,
-                price
-            )
+        paylaterGetSimulationV2usecase.getPayLaterProductDetails(
+            ::onAvailableDetailSuccess,
+            ::onAvailableDetailFail,
+            price
+        )
 
 
     }
@@ -53,11 +53,11 @@ class PayLaterViewModel @Inject constructor(
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
 
-            productDetailUseCase.getProductDetail(
-                ::onAvailableProductDetail,
-                ::onFailProductDetail,
-                productId
-            )
+        productDetailUseCase.getProductDetail(
+            ::onAvailableProductDetail,
+            ::onFailProductDetail,
+            productId
+        )
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {

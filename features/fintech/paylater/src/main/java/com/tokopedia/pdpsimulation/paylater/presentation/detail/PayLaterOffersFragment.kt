@@ -78,11 +78,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                                 ChipsUnify.TYPE_SELECTED,
                                 ChipsUnify.SIZE_SMALL
                             ) {
-                                selectOtherTenure(i,name)
+                                selectOtherTenure(i, name)
                             })
-                        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.TenureSortFilterClicker(name))
-                    }
-                    else {
+                        pdpSimulationCallback?.sendAnalytics(
+                            PdpSimulationEvent.PayLater.TenureSortFilterClicker(
+                                name
+                            )
+                        )
+                    } else {
                         filterData.add(SortFilterItem(name) {
                             selectOtherTenure(i, name)
                         })
@@ -93,11 +96,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         sortFilter.addItem(filterData)
 
 
-
     }
 
     private fun selectOtherTenure(position: Int, name: String) {
-        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.TenureSortFilterClicker(name))
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.TenureSortFilterClicker(
+                name
+            )
+        )
         paymentOptionViewPager.post {
             payLaterProductList[position].detail?.let { detailList ->
                 pagerAdapter.setPaymentData(detailList)
@@ -148,8 +154,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
         payLaterOffersGlobalError.gone()
-        if(paylaterProduct.productList ==null || paylaterProduct.productList.isEmpty())
-        {
+        if (paylaterProduct.productList == null || paylaterProduct.productList.isEmpty()) {
             emptyStateError.visible()
             payLaterOffersShimmerGroup.gone()
             payLaterDataGroup.gone()
@@ -158,9 +163,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                 payLaterOffersShimmerGroup.visible()
                 payLaterViewModel.getPayLaterAvailableDetail(productAmount)
             }
-        }
-
-        else  {
+        } else {
             payLaterProductList = paylaterProduct.productList
             emptyStateError.gone()
             payLaterOffersShimmerGroup.gone()

@@ -45,7 +45,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var partnerName: String? = ""
     private var listOfSteps: ArrayList<String>? = ArrayList()
     private var noteData: String = ""
-    private var titleText:String = ""
+    private var titleText: String = ""
     private var tenure = 0
 
 
@@ -68,21 +68,23 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
-            tenure = payLaterItemProductData.tenure?:0
+            tenure = payLaterItemProductData.tenure ?: 0
             if (it.cta?.cta_type == 4) {
                 if (it.gateway_detail?.how_toUse?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
-                titleText = "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                titleText =
+                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
             } else {
                 if (it.gateway_detail?.how_toApply?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
                     listOfSteps = howToApplyDetail.steps as ArrayList<String>
                 }
-                titleText = "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
+                titleText =
+                    "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
             }
 
 
@@ -129,19 +131,20 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
-              sendAnalytics()
+            sendAnalytics()
             if (actionUrl.isNotEmpty())
                 openUrlWebView(actionUrl)
         }
     }
 
     private fun sendAnalytics() {
-            pdpSimulationCallback?.sendAnalytics(
-                PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
-                    partnerName
-                        ?: "",
-                    tenure
-                ))
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
+                partnerName
+                    ?: "",
+                tenure
+            )
+        )
 
     }
 
