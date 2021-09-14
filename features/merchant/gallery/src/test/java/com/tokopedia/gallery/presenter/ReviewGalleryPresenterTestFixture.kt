@@ -1,10 +1,8 @@
 package com.tokopedia.gallery.presenter
 
 import com.tokopedia.gallery.GalleryView
-import com.tokopedia.gallery.domain.GetImageReviewUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.After
 import org.junit.Before
 
 abstract class ReviewGalleryPresenterTestFixture {

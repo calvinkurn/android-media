@@ -6,23 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
-import com.tokopedia.gallery.domain.GetImageReviewUseCase
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
+import com.tokopedia.gallery.di.DaggerGalleryComponent
+import com.tokopedia.gallery.di.GalleryComponent
+import com.tokopedia.gallery.networkmodel.ProductrevGetReviewImage
+import com.tokopedia.gallery.networkmodel.ReviewDetail
+import com.tokopedia.gallery.networkmodel.ReviewGalleryImage
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
+import com.tokopedia.gallery.viewmodel.GalleryViewModel
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
+import javax.inject.Inject
 
-class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSliderCallback, GalleryView {
+class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(),
+    BottomSheetImageReviewSliderCallback, GalleryView, HasComponent<GalleryComponent> {
 
     companion object {
         fun createInstance(): Fragment {
@@ -30,7 +38,9 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         }
     }
 
-    private var presenter: ReviewGalleryPresenterContract? = null
+    @Inject
+    lateinit var viewModel: GalleryViewModel
+
     private var activity: ImageReviewGalleryActivity? = null
 
     override val isAllowLoadMore: Boolean
@@ -55,6 +65,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupBottomSheet()
+        observeReviewImages()
     }
 
     private fun setupBottomSheet() {
@@ -77,7 +88,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
                 return
             }
             it.bottomSheetImageReviewSlider?.onLoadingData()
-            presenter?.loadData(it.productId.toLongOrNull() ?: 0L, page)
+            viewModel.setPage(it.productId, page)
         }
     }
 
@@ -101,10 +112,16 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     }
 
+    override fun getComponent(): GalleryComponent? {
+        return activity?.run {
+            DaggerGalleryComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+        }
+    }
+
     override fun initInjector() {
-        presenter = ReviewGalleryPresenter(
-                GetImageReviewUseCase(context, GraphqlUseCase()),
-                this)
+        component?.inject(this)
     }
 
     override fun getScreenName(): String? {
@@ -167,6 +184,41 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
             ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         } catch (e: Exception) {
             false
+        }
+    }
+
+    private fun observeReviewImages() {
+        viewModel.reviewImages.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> handleItemResult(convertNetworkResponseToImageReviewItemList(it.data), it.data.hasNext)
+                is Fail -> handleErrorResult(it.throwable)
+            }
+        })
+    }
+
+    private fun convertNetworkResponseToImageReviewItemList(gqlResponse: ProductrevGetReviewImage): List<ImageReviewItem> {
+        val reviewMap = HashMap<String, ReviewDetail>()
+        val imageMap = HashMap<String, ReviewGalleryImage>()
+
+        gqlResponse.detail.reviewGalleryImages.map {
+            imageMap[it.attachmentId] = it
+        }
+
+        gqlResponse.detail.reviewDetail.map {
+            reviewMap[it.feedbackId] = it
+        }
+
+        return gqlResponse.reviewImages.map {
+            val image = imageMap[it.imageId]
+            val review = reviewMap[it.feedbackId]
+            ImageReviewItem(
+                it.feedbackId,
+                review?.createTimestamp ?: "",
+                review?.user?.fullName ?: "",
+                image?.thumbnailURL ?: "",
+                image?.fullsizeURL ?: "",
+                review?.rating ?: 0
+            )
         }
     }
 }
