@@ -15,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 object MenuManager {
     const val MENU_ITEM_ID = 1
 
-    fun addCustomMenu(activity: FragmentActivity?, menu: Menu, onClick: View.OnClickListener){
+    fun addCustomMenu(activity: FragmentActivity?, hasReadPermission: Boolean, menu: Menu, onClick: View.OnClickListener) {
         val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle ?: activity?.getString(R.string.imagepicker_insta_lanjut)
         menu.add(Menu.NONE, 1, Menu.NONE, menuTitle)
         menu.findItem(MenuManager.MENU_ITEM_ID).apply {
@@ -26,13 +26,19 @@ object MenuManager {
                 tv.setWeight(Typography.BOLD)
 
                 val spanText = SpannableString(title)
-                val color = MethodChecker.getColor(activity, R.color.imagepicker_insta_menu)
-                spanText.setSpan(ForegroundColorSpan(color),0,spanText.length,0)
+                var color = MethodChecker.getColor(activity, R.color.imagepicker_insta_menu_inactive)
+                if (hasReadPermission) {
+                    color = MethodChecker.getColor(activity, R.color.imagepicker_insta_menu)
+                    tv.setOnClickListener(onClick)
+                } else {
+                    tv.setOnClickListener(null)
+                }
+                spanText.setSpan(ForegroundColorSpan(color), 0, spanText.length, 0)
                 tv.text = spanText
 
-                tv.setPadding(0,0,16.toPx().toInt(),0)
+                tv.setPadding(0, 0, 16.toPx().toInt(), 0)
                 actionView = tv
-                tv.setOnClickListener(onClick)
+
             }
 
         }

@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker_insta.util
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
