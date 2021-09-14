@@ -183,8 +183,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 context, IconUnify.CHEVRON_RIGHT,
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             chevronRight.layoutParams = ViewGroup.LayoutParams(
-                resources.getDimensionPixelSize(R.dimen.layout_lvl3),
-                resources.getDimensionPixelSize(R.dimen.layout_lvl3)
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
             )
             sortFilterChip.chipItems?.last()?.refChipUnify?.addCustomView(chevronRight)
         }
