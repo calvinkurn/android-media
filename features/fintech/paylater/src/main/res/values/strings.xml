@@ -57,7 +57,7 @@
     <!-- BottomSheet title-->
     <string name="pay_later_find_out_more_heading">Hal yang sering ditanyakan</string>
     <string name="pay_later_how_to_register">Cara daftar</string>
-    <string name="pay_later_how_to_use">Cara gunakan</string>
+    <string name="pay_later_how_to_use">Cara menggunakan</string>
 
     <!-- Verification Bottom Sheet Description -->
     <string name="pay_later_verification_description_waiting">Pengajuanmu masih dalam proses verifikasi. Tunggu kabar selanjutnya ya. \n Verifikasi hingga:</string>

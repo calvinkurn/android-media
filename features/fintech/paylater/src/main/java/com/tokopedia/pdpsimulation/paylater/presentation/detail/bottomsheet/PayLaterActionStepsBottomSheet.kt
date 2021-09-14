@@ -44,6 +44,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var partnerName: String? = ""
     private var listOfSteps: ArrayList<String>? = ArrayList()
     private var noteData: String = ""
+    private var titleText:String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,12 +72,14 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
+                titleText = "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
             } else {
                 if (it.gateway_detail?.how_toApply?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
                     listOfSteps = howToApplyDetail.steps as ArrayList<String>
                 }
+                titleText = "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
             }
 
 
@@ -92,6 +95,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         setButtonType()
         setDefaultParams()
         initAdapter()
+        setTitle(titleText)
     }
 
     private fun initBottomSheet() {
@@ -108,7 +112,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
-        setTitle("${context?.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}")
+
     }
 
     private fun setButtonType() {
