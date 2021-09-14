@@ -76,6 +76,25 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
+    private fun mapTippingData(tipping: Tipping): TippingModel {
+        return TippingModel().apply {
+            status = tipping.status
+            statusTitle = tipping.statusTitle
+            statusSubtitle = tipping.statusSubtitle
+            lastDriver = mapLastDriverData(tipping.lastDriver)
+        }
+    }
+
+    private fun mapLastDriverData(lastDriver: LastDriver): LastDriverModel {
+        return LastDriverModel().apply {
+            phone = lastDriver.phone
+            name = lastDriver.name
+            phone = lastDriver.phone
+            licenseNumber = lastDriver.licenseNumber
+            isChanged = lastDriver.isChanged
+        }
+    }
+
     private fun switchInteger(value: Int): Boolean {
         return value == 1
     }

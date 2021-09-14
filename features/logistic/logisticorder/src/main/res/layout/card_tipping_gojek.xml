@@ -9,8 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_16">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/bg_active_up"
@@ -118,6 +117,7 @@
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_tipping"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/unify_space_12"

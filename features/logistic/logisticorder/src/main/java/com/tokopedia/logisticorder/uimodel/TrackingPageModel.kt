@@ -9,7 +9,8 @@ data class TrackingPageModel(
 
 data class TrackingDataModel(
         var trackOrder: TrackOrderModel = TrackOrderModel(),
-        var page: PageModel = PageModel()
+        var page: PageModel = PageModel(),
+        var tipping: TippingModel = TippingModel()
 )
 
 data class TrackOrderModel(
@@ -58,4 +59,19 @@ data class AdditionalInfoModel(
         var notes: String = "",
         var urlDetail: String = "",
         var urlText: String = ""
+)
+
+data class TippingModel(
+        var status: Int = 0,
+        var statusTitle: String = "",
+        var statusSubtitle: String = "",
+        var lastDriver: LastDriverModel = LastDriverModel()
+)
+
+data class LastDriverModel(
+        var photo: String = "",
+        var name: String = "",
+        var phone: String = "",
+        var licenseNumber: String = "",
+        var isChanged: Boolean = false
 )

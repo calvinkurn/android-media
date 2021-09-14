@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -22,10 +23,12 @@ import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
+import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
@@ -106,6 +109,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             when (it) {
                 is Success -> {
                     hideLoading()
+                    populateTipping(it.data.tipping)
                     populateView(it.data)
                 }
                 is Fail -> {
@@ -169,6 +173,35 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         setTicketInfoCourier(trackingDataModel.page)
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
+    }
+
+    private fun populateTipping(data: TippingModel) {
+        if (data.status != 100 || data.status != 150 || data.status != 200 || data.status != 300) {
+            binding?.tippingGojekLayout?.root?.visibility = View.GONE
+        } else {
+            setTippingData(data)
+            binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setTippingData(data: TippingModel) {
+        binding?.tippingGojekLayout?.apply {
+            ImageHandler.loadImageFitCenter(context, imgDriver, data.lastDriver.photo)
+
+            driverName.text = data.lastDriver.name
+            driverPhone.text = data.lastDriver.phone + "•" + data.lastDriver.licenseNumber
+
+            tippingText.text = "Yuk, beri tip ke driver"
+            tippingDescription.text = "Tip 100% diterima driver"
+
+            btnInformation.setOnClickListener {
+                DriverInfoBottomSheet().show(parentFragmentManager)
+            }
+
+            btnTipping.setOnClickListener {
+                // openBottomsheettipping
+            }
+        }
     }
 
     private fun showLoading() {

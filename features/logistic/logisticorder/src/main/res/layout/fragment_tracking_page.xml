@@ -67,8 +67,7 @@
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingBottom="@dimen/dp_16">
+                android:paddingRight="@dimen/dp_20">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -189,9 +188,21 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/Unify_N100" />
+                android:layout_height="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_24"
+                android:background="@color/Unify_N50" />
+
+            <include
+                android:id="@+id/tipping_gojek_layout"
+                layout="@layout/card_tipping_gojek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -229,8 +240,8 @@
                         android:id="@+id/ticker_info_courier"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tickerShapeType="loose"
-                        app:closeButtonVisibility="gone"/>
+                        app:closeButtonVisibility="gone"
+                        app:tickerShapeType="loose" />
 
                 </LinearLayout>
 
@@ -296,9 +307,9 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/label_live_tracking"
+                android:visibility="gone"
                 app:unifyButtonSize="medium"
-                app:unifyButtonVariant="filled"
-                android:visibility="gone"/>
+                app:unifyButtonVariant="filled" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/retry_pickup_button"

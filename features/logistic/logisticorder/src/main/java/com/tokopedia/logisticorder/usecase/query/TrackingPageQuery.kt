@@ -46,6 +46,18 @@ object TrackingPageQuery {
                   url_text
                 }
               }
+              tipping {
+                status
+                status_title
+                status_subtitle
+                last_driver {
+                  photo
+                  name
+                  phone
+                  license_number
+                  is_changed
+                }
+              }
             }
           }
         }
