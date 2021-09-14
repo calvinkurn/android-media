@@ -42,6 +42,7 @@ class InitialStateUseCase(
                     type
                     discount_percentage
                     original_price
+                    campaign_code
                   }
                 }
               }
