@@ -1,9 +1,12 @@
 package com.tokopedia.createpost.view.posttag
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -102,14 +105,9 @@ class ProductTaggingView @JvmOverloads constructor(
             this.finalPointerView = productTagPointerTop
             position = POSITION_BOTTOM
         }
-        productTagExpandedView.setOnClickListener {
-            if (productTagViewDelete.isVisible)
-                productTagViewDelete.gone()
-            else
-                productTagViewDelete.visible()
-        }
+        setGestureDetectorOnBubble()
         productTagViewDelete.setOnClickListener {
-            listener?.deleteItemFromProductTagList(feedXTag.tagIndex)
+            listener?.deleteItemFromProductTagList(feedXTag.tagIndex, true)
             hideExpandedView()
         }
         finalPointerView.setMargin(
@@ -186,6 +184,46 @@ class ProductTaggingView @JvmOverloads constructor(
             text = priceOriginal
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             visible()
+        }
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setGestureDetectorOnBubble(){
+        val gd = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+
+                        if (!productTagViewDelete.isVisible)
+                            productTagViewDelete.visible()
+
+
+
+                    return true
+                }
+
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    super.onLongPress(e)
+                        if (productTagViewDelete.isVisible)
+                            productTagViewDelete.gone()
+
+                }
+
+                override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+                    return true
+                }
+            })
+        productTagExpandedView.setOnTouchListener { v, event ->
+            gd.onTouchEvent(event)
+            true
         }
     }
 

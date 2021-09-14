@@ -4,8 +4,9 @@ import android.net.Uri
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 
 interface CreateContentPostCOmmonLIstener {
-    fun deleteItemFromProductTagList(position: Int)
+    fun deleteItemFromProductTagList(position: Int, isDeletedFromBubble: Boolean)
     fun updateHeader(header: HeaderViewModel)
     fun launchProductTagFragment(data: ArrayList<Uri>?)
+    fun openProductTagginPageOnPreviewMediaClick(position: Int)
 
 }

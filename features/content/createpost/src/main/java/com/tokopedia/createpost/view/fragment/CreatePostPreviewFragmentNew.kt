@@ -114,6 +114,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
 
         updateCarouselView()
+        feed_content_carousel?.activeIndex = createPostModel.currentCorouselIndex
     }
     private fun setProductTagListener(mediaModel: MediaModel){
         if (getLatestTotalProductCount() < 5) {
@@ -151,7 +152,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
-        createPostModel.currentCorouselIndex = 0
 
         feed_content_carousel.apply {
             stage.removeAllViews()
@@ -203,7 +203,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                         posX = posX,
                                         posY = posY))
 
-                                    openProductTaggingScreen()
+                                    if (getLatestTotalProductCount() < 5)
+                                        openProductTaggingScreen()
                                     return true
                                 }
 
@@ -350,7 +351,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
-    override fun deleteItemFromProductTagList(position: Int) {
+    override fun deleteItemFromProductTagList(position: Int, isDeletedFromBubble: Boolean) {
 
         val currentImagePos = createPostModel.currentCorouselIndex
         removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
@@ -387,10 +388,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         updateResultIntent()
 
-        Toaster.build(requireView(),
-            getString(R.string.feed_content_delete_toaster_text),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL).show()
+        if (!isDeletedFromBubble)
+            Toaster.build(requireView(),
+                getString(R.string.feed_content_delete_toaster_text),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL).show()
 
     }
 
@@ -402,6 +404,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         TODO("Not yet implemented")
     }
 
+    override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+        TODO("Not yet implemented")
+    }
 
 
     private fun openProductTaggingScreen() {

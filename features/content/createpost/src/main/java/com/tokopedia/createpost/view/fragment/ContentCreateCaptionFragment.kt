@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.content_caption_page_preview.*
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
     private val adapter: CaptionPagePreviewImageAdapter by lazy {
-        CaptionPagePreviewImageAdapter()
+        CaptionPagePreviewImageAdapter(listener = activityListener)
     }
 
 

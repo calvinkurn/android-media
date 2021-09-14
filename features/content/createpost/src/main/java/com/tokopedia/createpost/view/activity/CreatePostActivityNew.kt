@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -53,7 +54,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             .commit()
     }
 
-    override fun deleteItemFromProductTagList(position: Int) {
+    override fun deleteItemFromProductTagList(position: Int, isDeletedFromBubble: Boolean) {
         TODO("Not yet implemented")
     }
 
@@ -75,6 +76,14 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
         if (!create_post_toolbar.isVisible)
             create_post_toolbar?.visibility = View.VISIBLE
+        inflateFragment()
+    }
+
+    override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+        (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().currentCorouselIndex =
+            position
+        intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
+        content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
         inflateFragment()
     }
 
@@ -145,8 +154,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             }
         }
 
-
     }
+
 
     override fun onBackPressed() {
 
@@ -176,7 +185,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     private fun postFeed() {
-        (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
+        KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
         cacheManager.put(
             CreatePostViewModel.TAG,

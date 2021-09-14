@@ -48,6 +48,16 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
 
+            <LinearLayout
+                android:id="@+id/bubble_text_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/product_tag_clear" >
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_tag_name_text"
                 android:layout_width="wrap_content"
@@ -59,11 +69,15 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="Fellow - Stagg EKG Electric Pour Over Kett"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/dp_8">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_tag_slashed_price_text"
@@ -97,11 +111,13 @@
                 app:layout_constraintTop_toTopOf="@id/product_tag_slashed_price_text"
                 tools:text="Rp2.750.000"
                 />
+            </LinearLayout>
+            </LinearLayout>
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/product_tag_clear"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:visibility="gone"
@@ -110,7 +126,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/product_tag_name_text"
+                app:layout_constraintStart_toEndOf="@id/bubble_text_layout"
                 app:unify_image_type="circle"
                 tools:visibility="visible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

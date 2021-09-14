@@ -51,11 +51,11 @@ object DeeplinkMapperContent {
 
     fun getContentCreatePostDeepLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
-        if(deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2) && uri.pathSegments.size == 2){
-            if(uri.pathSegments[1] == "v2"){
+        if(deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)){
+
                 val regexExp = "${ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2}/?".toRegex()
                 return deepLink.replace(regexExp, INTERNAL_AFFILIATE_CREATE_POST_V2)
-            }
+
         }
 
         if(deepLink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM)){

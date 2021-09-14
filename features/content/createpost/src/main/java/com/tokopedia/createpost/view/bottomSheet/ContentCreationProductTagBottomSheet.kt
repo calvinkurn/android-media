@@ -61,7 +61,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     }
 
     private fun onDeleteProduct(position: Int) {
-        listener.deleteItemFromProductTagList(position)
+        listener.deleteItemFromProductTagList(position, false)
     }
 
 
