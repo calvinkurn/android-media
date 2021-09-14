@@ -22,33 +22,9 @@ import javax.inject.Named
 
     @Provides
     @NotificationScope
-    @Named(NotificationQueriesConstant.MUTATION_NOTIF_CENTER_PUSH_NOTIF)
-    fun provideRawQuerySendNotif(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_notif_center_send_notif)
-
-    @Provides
-    @NotificationScope
-    @Named(NotificationQueriesConstant.QUERY_IS_TAB_UPDATE)
-    fun provideRawProductInfo(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)
-
-    @Provides
-    @NotificationScope
-    @Named(NotificationQueriesConstant.PRODUCT_STOCK_REMINDER)
-    fun provideProductStockReminder(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_product_stock_reminder)
-
-    @Provides
-    @NotificationScope
     @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
     fun provideSingleNotificationUpdate(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
-
-    @Provides
-    @NotificationScope
-    @Named(NotificationQueriesConstant.PRODUCT_HIGHLIGHT)
-    fun provideProductHighlight(@NotificationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_ace_search_product)
 
     @Provides
     @NotificationScope
