@@ -18,36 +18,6 @@ import com.wmspanel.libstream.Streamer.CONNECTION_STATE as streamerState
 
 class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
-    /**
-     * Test cases without unhappy flow:
-     * ✅ init
-     * ✅ prepare
-     * ⏳ set listener
-     * ⏳ start preview
-     * ✅ stop preview
-     * ✅ switch camera
-     * ✅ start live streaming with init
-     * ✅ start live streaming without init
-     * ✅ resume live
-     * ✅ pause
-     * ⏳ reconnect
-     * ✅ stop
-     * ⏳ get handler
-     * ✅ connection state changed idle
-     * ✅ connection state changed init
-     * ✅ connection state changed setup
-     * ✅ connection state changed connected
-     * ✅ connection state changed record
-     * ✅ connection state changed disconnected
-     * ✅ connection state changed started
-     * ✅ connection state changed resumed
-     * ✅ connection state changed recovered
-     * ⏳ video capture state changed
-     * ⏳ audio capture state changed
-     * ⏳ create streamer
-     * ⏳ safe start preview
-     */
-
     @Before
     fun setUp() {
         mockkObject(BroadcasterUtil)
