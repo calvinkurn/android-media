@@ -10,7 +10,6 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayLikeBubbleUiModel
 import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -118,12 +117,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapMultipleLikeConfig(
         configs: List<MultipleLikeConfig>
     ) = PlayMultipleLikesConfig(
-        bubbles = configs.map { config ->
-            PlayLikeBubbleUiModel(
-                icon = config.icon,
-                bgColor = config.bgColor,
-            )
+        bubbleConfig = configs.groupBy (
+            keySelector = { it.icon }
+        ) {
+            it.bgColor
         }
+//        mapOf(
+//            "https://images.tokopedia.net/img/playassets/join.png" to listOf("#000000", "#FFFFFF")
+//        )
     )
 
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(

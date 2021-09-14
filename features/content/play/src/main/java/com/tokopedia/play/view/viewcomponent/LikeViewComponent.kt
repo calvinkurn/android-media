@@ -53,7 +53,7 @@ class LikeViewComponent(
         this.mode = mode
         when (mode) {
             PlayLikeMode.Single -> animationLike.addAnimatorListener(singleLikeAnimatorListener)
-            PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
+            is PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
             else -> {}
         }
     }

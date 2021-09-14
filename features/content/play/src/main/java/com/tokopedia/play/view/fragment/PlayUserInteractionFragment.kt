@@ -1436,6 +1436,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
         likeView.setTotalLikes(likeState.totalLike)
 
+        if (prevState?.likeMode != likeState.likeMode && likeState.likeMode is PlayLikeMode.Multiple) {
+            spamLikeView.setNewBubbleConfig(likeState.likeMode.config)
+        }
+
         if (likeState.shouldShow) likeView.show()
         else likeView.hide()
     }

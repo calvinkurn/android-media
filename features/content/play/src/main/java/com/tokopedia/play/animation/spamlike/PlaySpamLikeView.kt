@@ -3,7 +3,6 @@ package com.tokopedia.play.animation.spamlike
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -15,13 +14,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
-import com.tokopedia.play.view.viewcomponent.SpamLikeViewComponent
+import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
+import com.tokopedia.play_common.view.RoundedImageView
 import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on August 02, 2021
  */
-
 class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
 
     private val job = SupervisorJob()
@@ -32,10 +31,11 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     /**
      * Custom
      */
-    private var loveList = mutableListOf<Drawable?>()
-    private var sizeList = mutableListOf<Pair<Int, Int>>()
+    private var bubbleList: List<PlayLikeBubbleUiModel> = emptyList()
+
+    private val defaultSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+    private var sizeList = listOf(defaultSize to defaultSize)
     private var sizeMultiplyList = mutableListOf<Float>()
-    private val dotColorList = mutableListOf<Int>()
     private var shot = 0
     private var dot: Drawable? = null
 
@@ -45,7 +45,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     private var maxShot = 30
     private var sizeType = PlaySpamLikeSize.MULTIPLY
     private val duration = 1500L
-    private var isAdditionalShot: Boolean = false
+//    private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
     private var blurOpacity: Float = 0.5F
 
@@ -57,39 +57,22 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeView)
 
         isBouncing = type.getBoolean(R.styleable.PlaySpamLikeView_bouncing, false)
-        isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeView_additionalShot, false)
+//        isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeView_additionalShot, false)
         maxShot = type.getInteger(R.styleable.PlaySpamLikeView_maxShot, 30)
 
         type.recycle()
 
-        setDefaultLoveList()
         setDefaultSizeList()
         setDefaultDotList()
-        setDefaultDotColorList()
-    }
-
-    private fun setDefaultLoveList() {
-        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_star))
-        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_heart))
-        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_thumb))
     }
 
     private fun setDefaultSizeList() {
-        sizeList.add(Pair(50, 50))
-
         sizeMultiplyList.add(0.3f)
         sizeMultiplyList.add(0.2f)
     }
 
     private fun setDefaultDotList() {
         dot = ContextCompat.getDrawable(context, R.drawable.shape_play_cart_dots)
-    }
-
-    private fun setDefaultDotColorList() {
-        dotColorList.add(Color.BLUE)
-        dotColorList.add(Color.RED)
-        dotColorList.add(Color.GREEN)
-        dotColorList.add(Color.CYAN)
     }
 
     /**
@@ -100,23 +83,21 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         this.parentView = parentView
     }
 
-    fun setAdditionalShot(isAdditionalShot: Boolean) {
-        this.isAdditionalShot = isAdditionalShot
-    }
+//    fun setAdditionalShot(isAdditionalShot: Boolean) {
+//        this.isAdditionalShot = isAdditionalShot
+//    }
 
     fun setBouncing(isBouncing: Boolean) {
         this.isBouncing = isBouncing
     }
 
-    fun setLoveList(loveList: List<Drawable?>) {
-        this.loveList.clear()
-        this.loveList.addAll(loveList)
+    fun setBubbleList(bubbleList: List<PlayLikeBubbleUiModel>) {
+        this.bubbleList = bubbleList
     }
 
     fun setSizeList(sizeList: List<Pair<Int, Int>>) {
         sizeType = PlaySpamLikeSize.EXACT
-        this.sizeList.clear()
-        this.sizeList.addAll(sizeList)
+        this.sizeList = sizeList
     }
 
     fun setSizeMultiplyList(sizeMultiplyList: List<Float>) {
@@ -127,11 +108,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
     fun setDot(dot: Drawable) {
         this.dot = dot
-    }
-
-    fun setDotColorList(dotColorList: List<Int>) {
-        this.dotColorList.clear()
-        this.dotColorList.addAll(dotColorList)
     }
 
     fun setMaxShot(maxShot: Int) {
@@ -171,41 +147,38 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * 8. Check Whether Additional Shot is Required Or Not
      */
     private fun shot(reduceOpacity: Boolean) {
-        if(loveList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
+        if(bubbleList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
 
         if(shot < maxShot) {
-            val love = loveList[(0 until loveList.size).random()]
+            val chosenBubble = bubbleList.random()
+            val icon = chosenBubble.icon
             val sizeMultiply = sizeMultiplyList[(0 until sizeMultiplyList.size).random()]
-            val size = sizeList[(0 until sizeList.size).random()]
+            val size = sizeList.random()
 
-            love?.let {
-                val dimension = when(sizeType) {
-                    PlaySpamLikeSize.EXACT -> size
-                    PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(love, sizeMultiply)
-                }
-
-                val image = prepareImage(love, dimension, reduceOpacity)
-
-                parentView?.addView(image)
-                startAnimate(image)
-                imageList.add(image)
-
-                setShot(INCREASE_SHOT)
-
-                scope.launch {
-                    delay(duration)
-                    removeImageFromView(image)
-                }
-
-                if(isAdditionalShot) {
-                    if(dotColorList.isEmpty()) return
-
-                    val showOrNot = (0..10).random() % 2 == 0
-                    if(showOrNot) {
-                        shotAdditional()
-                    }
-                }
+            val dimension = when(sizeType) {
+                PlaySpamLikeSize.EXACT -> size
+                PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(icon, sizeMultiply)
             }
+
+            val image = prepareImage(icon, chosenBubble.colorList, dimension, reduceOpacity)
+
+            parentView?.addView(image)
+            startAnimate(image)
+            imageList.add(image)
+
+            setShot(INCREASE_SHOT)
+
+            scope.launch {
+                delay(duration)
+                removeImageFromView(image)
+            }
+
+//            if(isAdditionalShot) {
+//                val showOrNot = (0..10).random() % 2 == 0
+//                if(showOrNot) {
+//                    shotAdditional()
+//                }
+//            }
         }
     }
 
@@ -215,18 +188,18 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
             withContext(Dispatchers.Main) {
                 dot?.let {
-                    DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
+//                    DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
 
-                    val image = prepareImage(it, Pair(20, 20), false)
-
-                    parentView?.addView(image)
-                    startAnimate(image)
-                    imageList.add(image)
-
-                    scope.launch {
-                        delay(duration)
-                        removeImageFromView(image, false)
-                    }
+//                    val image = prepareImage(it, Pair(20, 20), false)
+//
+//                    parentView?.addView(image)
+//                    startAnimate(image)
+//                    imageList.add(image)
+//
+//                    scope.launch {
+//                        delay(duration)
+//                        removeImageFromView(image, false)
+//                    }
                 }
             }
         }
@@ -242,9 +215,21 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         return Pair(x, y)
     }
 
-    private fun prepareImage(drawable: Drawable, size: Pair<Int, Int>, reduceOpacity: Boolean): ImageView {
-        val image = ImageView(context)
-        image.setImageBitmap(Bitmap.createScaledBitmap(drawable.toBitmap(), size.first, size.second, true))
+    private fun prepareImage(
+        drawable: Drawable,
+        possibleColors: List<Int>,
+        size: Pair<Int, Int>,
+        reduceOpacity: Boolean
+    ): ImageView {
+        val image = RoundedImageView(context).apply {
+            setCornerRadius(500f)
+        }
+        image.setImageBitmap(Bitmap.createScaledBitmap(
+            drawable.toBitmap(),
+            size.first,
+            size.second,
+            true)
+        )
 
         val coordinate = getImageCoordinate()
         image.x = coordinate.first
@@ -253,15 +238,16 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
         if(reduceOpacity) image.alpha = blurOpacity
 
-        image.background = ContextCompat.getDrawable(
-            context,
-            when((1..3).random()) {
-                1 -> R.drawable.bg_play_multiple_like_red
-                2 -> R.drawable.bg_play_multiple_like_green
-                3 -> R.drawable.bg_play_multiple_like_purple
-                else -> R.drawable.bg_play_multiple_like_red
-            }
-        )
+        image.setBackgroundColor(possibleColors.random())
+//        image.background = ContextCompat.getDrawable(
+//            context,
+//            when((1..3).random()) {
+//                1 -> R.drawable.bg_play_multiple_like_red
+//                2 -> R.drawable.bg_play_multiple_like_green
+//                3 -> R.drawable.bg_play_multiple_like_purple
+//                else -> R.drawable.bg_play_multiple_like_red
+//            }
+//        )
 
         val padding = size.first / 2
         image.setPadding(padding, padding, padding, padding)

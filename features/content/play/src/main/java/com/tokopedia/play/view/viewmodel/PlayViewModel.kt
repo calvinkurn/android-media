@@ -177,7 +177,7 @@ class PlayViewModel @Inject constructor(
                     totalLike = channelReport.totalLikeFmt,
                     shouldAnimate = false,
                     likeMode = if (channelDetail.channelInfo.channelType.isLive) {
-                        PlayLikeMode.Multiple
+                        PlayLikeMode.Multiple(channelDetail.multipleLikeConfigInfo)
                     } else PlayLikeMode.Single,
                     isLiked = likeInfo.status == PlayLikeStatus.Liked,
                 ),
