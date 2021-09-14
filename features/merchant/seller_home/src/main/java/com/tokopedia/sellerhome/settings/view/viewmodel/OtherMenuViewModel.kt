@@ -114,6 +114,9 @@ class OtherMenuViewModel @Inject constructor(
         addSource(_kreditTopAdsFormattedLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.Topads, it)
         }
+        addSource(_freeShippingLiveData) {
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.FreeShipping, it)
+        }
     }
 
     private val _secondarySuccessStateMap =
@@ -235,6 +238,7 @@ class OtherMenuViewModel @Inject constructor(
                     OtherMenuDataType.Status -> getUserShopInfo()
                     OtherMenuDataType.Operational -> getShopOperational()
                     OtherMenuDataType.Saldo -> getBalanceInfo()
+                    OtherMenuDataType.FreeShipping -> getFreeShippingStatus()
                     else -> getKreditTopAds()
                 }
             }
