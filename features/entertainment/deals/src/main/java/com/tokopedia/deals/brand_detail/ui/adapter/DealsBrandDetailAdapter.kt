@@ -41,7 +41,7 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
                     }
                 }
                 setOnClickListener {
-                    callback.clickProduct(product.appUrl)
+                    callback.clickProduct(position, product)
                 }
 
                 addOnImpressionListener(product){
@@ -69,7 +69,7 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
     }
 
     interface DealsBrandDetailCallback {
-        fun clickProduct(applink: String)
+        fun clickProduct(position: Int, product: Product)
         fun impressionProduct(position: Int, product: Product)
     }
 }

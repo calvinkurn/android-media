@@ -105,8 +105,9 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         return super.onOptionsItemSelected(item)
     }
 
-    override fun clickProduct(applink: String) {
-        RouteManager.route(context, applink)
+    override fun clickProduct(position: Int, product: Product) {
+        analytics.eventBrandDetailClickProduct(brandDetail.title, position, product)
+        RouteManager.route(context, product.appUrl)
     }
 
     override fun impressionProduct(position: Int, product: Product) {
