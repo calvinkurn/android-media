@@ -40,10 +40,10 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
         val currentGrade = benefitPackageResponse.data?.currentPMGrade?.gradeName
         return BenefitPackageDataUiModel(
             benefitPackageData = benefitPackageResponse.data?.nextBenefitPackageList?.map {
-                val isUpgrade =
+                val isDowngrade =
                     it.pmGradeName == currentGrade
                 val pmStatusText =
-                    if (it.pmGradeName == currentGrade) {
+                    if (isDowngrade) {
                         context?.getString(R.string.pm_benefit_package_downgrade).orEmpty()
                     } else {
                         context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
@@ -51,10 +51,10 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                 val mapDescAndBg = getBgAndDescBenefitPackage(it, pmStatusText)
                 BenefitPackageGradeUiModel(
                     gradeName = it.pmGradeName,
-                    iconBenefitUrl = if (isUpgrade) {
-                        Constant.Image.IC_PM_PRO_UPGRADE_LEVEL
-                    } else {
+                    iconBenefitUrl = if (isDowngrade) {
                         Constant.Image.IC_PM_PRO_DOWNGRADE_WARNING
+                    } else {
+                        Constant.Image.IC_PM_PRO_UPGRADE_LEVEL
                     },
                     descBenefit = mapDescAndBg.first,
                     backgroundUrl = mapDescAndBg.second,

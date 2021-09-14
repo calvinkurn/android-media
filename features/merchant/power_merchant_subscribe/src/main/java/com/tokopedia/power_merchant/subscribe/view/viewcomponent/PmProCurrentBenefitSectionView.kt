@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMShopGrade
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
@@ -39,6 +40,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     fun show(data: WidgetExpandableUiModel) {
         showPmGrade(data.grade?.gradeName.orEmpty())
         setupUpdateInfo(data)
+        setupDescBenefitSection(data)
         setBenefitPackageClicked()
     }
 
@@ -57,12 +59,25 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
     }
 
+    private fun setupDescBenefitSection(data: WidgetExpandableUiModel) {
+        if (data.pmStatus == PMStatusConst.IDLE) {
+            tvNextUpdatePmProStatus?.hide()
+            iconPmProDowngradeStatus?.hide()
+        } else {
+            tvNextUpdatePmProStatus?.show()
+            iconPmProDowngradeStatus?.show()
+        }
+    }
+
     private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
+        val blackColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96.toString()
+
         if (data.isDowngradePeriod()) {
             tvNextUpdatePmProStatus.setTextMakeHyperlink(
                 MethodChecker.fromHtml(
                     context.getString(
                         R.string.pm_next_update_benefit_package_downgrade_status,
+                        blackColor,
                         data.nextMonthlyRefreshDate,
                         data.grade?.shopLevel,
                         data.grade?.gradeName?.asCamelCase()
@@ -83,6 +98,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                     MethodChecker.fromHtml(
                         context.getString(
                             R.string.pm_next_update_benefit_package_upgrade_status,
+                            blackColor,
                             data.nextMonthlyRefreshDate,
                             data.nextShopLevel,
                             data.nextGradeName.asCamelCase()
