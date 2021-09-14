@@ -334,8 +334,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun goToNewTapcash(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_VARIANT_TAPCASH, RollenceKey.VARIANT_OLD_TAPCASH
-            ) == RollenceKey.VARIANT_NEW_TAPCASH
+                    RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL, ""
+            ) == RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL
         } catch (e: Exception) {
             false
         }

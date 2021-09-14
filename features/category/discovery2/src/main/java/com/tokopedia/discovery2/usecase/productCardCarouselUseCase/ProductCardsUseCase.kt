@@ -24,6 +24,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_FILTER_KEU = "rpc_"
         private const val PAGE_START = 1
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
+        private const val RPC_NEXT_PAGE = "rpc_next_page"
         private const val RPC_PAGE__SIZE = "rpc_page_size"
     }
 
@@ -33,7 +34,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
-            val productListData = productCardsRepository.getProducts(
+            val (productListData,nextPage) = productCardsRepository.getProducts(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(PAGE_START,
@@ -44,11 +45,13 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             productsLimit,
                             componentId,
                             pageEndPoint,
+                            it.nextPageKey,
                             it.userAddressData),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
             it.noOfPagesLoaded = 1
+            it.nextPageKey = nextPage
             if (productListData.isEmpty()) return true
             if(it.properties?.tokonowATCActive == true)
                 updateProductAddedInCart(productListData, getCartData(pageEndPoint))
@@ -65,7 +68,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
-            val productListData = productCardsRepository.getProducts(
+            val (productListData,nextPage) = productCardsRepository.getProducts(
                     if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
                         component1.dynamicOriginalId!! else component1.id,
                     getQueryParameterMap(component1.pageLoadedCounter,
@@ -76,10 +79,11 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             productsLimit,
                             componentId,
                             pageEndPoint,
+                            component1.nextPageKey,
                             component.userAddressData),
                     pageEndPoint,
                     component1.name)
-
+            component1.nextPageKey = nextPage
             if (productListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
@@ -103,7 +107,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             }
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
-            val productListData = productCardsRepository.getProducts(
+            val (productListData,nextPage) = productCardsRepository.getProducts(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(it.pageLoadedCounter,
                             parentComponentsItem?.chipSelectionData,
@@ -113,9 +117,11 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             productsLimit,
                             componentId,
                             pageEndPoint,
+                            it.nextPageKey,
                             it.userAddressData),
                     pageEndPoint,
                     it.name)
+            component.nextPageKey = nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
             if(it.properties?.tokonowATCActive == true)
                 updateProductAddedInCart(productListData, getCartData(pageEndPoint))
@@ -133,6 +139,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      productsPerPage: Int,
                                      componentId: String,
                                      pageEndPoint: String,
+                                     nextPageKey : String?,
                                      userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
@@ -177,6 +184,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 queryParameterMap[RPC_FILTER_KEU + item.filterKey] = item.filterValue
             }
         }
+
+        queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 
         queryParameterMap.putAll(addAddressQueryMap(userAddressData))
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
