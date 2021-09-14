@@ -16,6 +16,12 @@ sealed class PdpSimulationEvent {
             PdpSimulationEvent()
 
         data class TenureSortFilterClicker(val tenureSelector: String) : PdpSimulationEvent()
+
+        data class MainBottomSheetClickEvent(
+            val payLaterProduct: String,
+            val tenure: Int,
+            val url: String
+        ) : PdpSimulationEvent()
     }
 
     sealed class CreditCard {

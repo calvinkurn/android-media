@@ -48,7 +48,22 @@ class PdpSimulationAnalytics @Inject constructor(
                 EVENT_ACTION_CC_SEE_MORE_CARD
             )
             is PdpSimulationEvent.PayLater.TenureSortFilterClicker -> sendTenureEvent(event.tenureSelector)
+            is PdpSimulationEvent.PayLater.MainBottomSheetClickEvent -> sendMainBottomSheetClickEvent(
+                event.payLaterProduct,
+                event.tenure,
+                event.url
+            )
         }
+    }
+
+    private fun sendMainBottomSheetClickEvent(payLaterProduct: String, tenure: Int, url: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_BOTTOM_ACTION_SHEET_CLICK,
+            "$EVENT_LABEL_BOTTOM_ACTION_SHEET_CLICK - $tenure - $payLaterProduct - $url"
+        )
+        sendGeneralEvent(map)
     }
 
     private fun sendTenureEvent(tenureSelector: String) {
@@ -70,7 +85,6 @@ class PdpSimulationAnalytics @Inject constructor(
         )
         sendGeneralEvent(map)
     }
-
 
 
     private fun sendChoosePayLaterOptionClickEvent(payLaterProduct: String?) {
@@ -196,6 +210,11 @@ class PdpSimulationAnalytics @Inject constructor(
 
         const val EVENT_BOTTOM_ACTION_SHEET = "sim vcc - impression popup cara pakai"
         const val EVENT_LABEL_BOTTOM_ACTION_SHEET =
+            "pdp paylater simulation page - popup cara pakai"
+
+
+        const val EVENT_BOTTOM_ACTION_SHEET_CLICK = "sim vcc - click cari tahu lebih lanjut"
+        const val EVENT_LABEL_BOTTOM_ACTION_SHEET_CLICK =
             "pdp paylater simulation page - popup cara pakai"
 
         // Credit Card --> CC
