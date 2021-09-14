@@ -59,12 +59,10 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import javax.inject.Inject
@@ -87,6 +85,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+        val TITLE = "title"
+        val SUB_TITLE = "subtitle"
+        val TOOLBAR_ICON_RES = "icon_res"
+        val TOOLBAR_ICON_URL = "icon_url"
+        val MENU_TITLE = "menu_title"
+        val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        val APPLINK_FOR_BACK_NAVIGATION = "link_back"
+        val URIS = "ip_uris"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -415,6 +423,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun requestFeedTab() {
         showLoading()
         viewModel.getDynamicTabs()
+        viewModel.getContentForm()
     }
 
     private fun showLoading() {
@@ -535,15 +544,24 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         else
             fab_feed.hide()
         isFabExpanded = true
-                fab_feed.setOnClickListener {
-                    val intent = this?.context?.let { it1 ->
-                        CreatePostActivityNew.createIntent(it1,
-                            CreatePostViewModel(),
-                            true,
-                            true)
-                    }
-                    startActivity(intent)
-                }
+        fab_feed.setOnClickListener {
+            val authors = viewModel.feedContentForm.authors
+            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+            intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            intent.putExtra(TITLE,
+                getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
+            intent.putExtra(SUB_TITLE,
+                authors.first().name
+                )
+            intent.putExtra(TOOLBAR_ICON_URL,
+                authors.first().thumbnail
+            )
+            intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            startActivity(intent)
+
+        }
     }
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {

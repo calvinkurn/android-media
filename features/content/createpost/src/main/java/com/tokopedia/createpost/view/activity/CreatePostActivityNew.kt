@@ -116,13 +116,34 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
                 bundle.putAll(intent.extras)
             }
         }
+        if (intent.getStringExtra(PARAM_TYPE) == null) {
+            val uris = bundle.get("ip_uris")
+            var finalUri =
+                if (uris.toString().endsWith(","))
+                    (uris as CharSequence).subSequence(0, uris.length - 1)
+                else
+                    uris as CharSequence
+
+            val list = (finalUri).split(",")
+            val createPostViewModel = CreatePostViewModel()
+            list.forEach { uri ->
+                val type = if (isVideoFile(Uri.parse(uri))) MediaType.VIDEO else MediaType.IMAGE
+                val mediaModel = MediaModel(path = uri, type = type)
+                createPostViewModel.fileImageList.add(mediaModel)
+            }
+            intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+            intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
+
+            content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
+            if (!create_post_toolbar.isVisible)
+                create_post_toolbar?.visibility = View.VISIBLE
+        }
 
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_OPEN_IMAGE_PICKER -> ImagePickerFragement.createInstance(intent.extras ?: Bundle())
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras ?: Bundle())
             TYPE_CONTENT_PREVIEW_PAGE -> ContentCreateCaptionFragment.createInstance(intent.extras ?: Bundle())
             else -> {
-                finish()
                 return CreatePostPreviewFragmentNew.createInstance(intent.extras ?: Bundle())
             }
         }
