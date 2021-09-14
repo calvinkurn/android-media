@@ -154,6 +154,23 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 productDetail.productPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
             }
+
+            if(data.variant.products.isNotEmpty() && data.variant.selections.isNotEmpty())
+            {
+                var combination = -1
+               for(i in data.variant.products.indices)
+               {
+                   if(productId == data.variant.products[i].productID){
+                       combination = data.variant.products[i].combination[0]?:-1
+                   }
+               }
+                if(combination != -1)
+                    productDetail.productVariant.text = data.variant.selections[0].options[combination]?.value?:""
+            }
+            else
+            {
+                productDetail.productVariant.gone()
+            }
         }
     }
 

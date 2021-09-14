@@ -197,6 +197,17 @@ const val GQL_GET_PRODUCT_DETAIL =
     productName
     url
     price
+    variant{
+   selections{
+    options{
+      value
+    }
+  }
+    products{
+      productID
+      combination
+    }
+  }
      pictures{
       urlThumbnail
     }

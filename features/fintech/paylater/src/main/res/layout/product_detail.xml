@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_4"
-        app:layout_constraintBottom_toTopOf="@id/productDetail"
+        app:layout_constraintBottom_toTopOf="@id/productVariant"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/productImage"
         app:layout_constraintRight_toRightOf="parent"
@@ -31,12 +31,13 @@
         app:typographyWeight="bold"
         tools:text="Product name  jkef eerfknekjrf" />
 
+
+
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/productDetail"
+        android:id="@+id/productVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/productImage"
         app:layout_constraintLeft_toRightOf="@id/productImage"
         app:layout_constraintTop_toTopOf="@id/productImage"
@@ -51,7 +52,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintLeft_toRightOf="@id/productImage"
-        app:layout_constraintTop_toBottomOf="@id/productDetail"
+        app:layout_constraintTop_toBottomOf="@id/productVariant"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Rp 100" />
