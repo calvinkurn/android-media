@@ -137,6 +137,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun productDetailSuccess(data: GetProductV3) {
         productInfoShimmer.gone()
+        if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
+            productDetail.gone()
+        else {
             data.pictures?.get(0)?.let { pictures ->
                 pictures.urlThumbnail?.let { urlThumbnail ->
                     productDetail.productImage.loadImage(
@@ -151,6 +154,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 productDetail.productPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
             }
+        }
     }
 
 

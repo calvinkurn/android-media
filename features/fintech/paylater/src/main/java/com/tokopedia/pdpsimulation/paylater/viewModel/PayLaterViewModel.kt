@@ -40,19 +40,19 @@ class PayLaterViewModel @Inject constructor(
 
     fun getPayLaterAvailableDetail(price: Long) {
         paylaterGetSimulationV2usecase.cancelJobs()
-        if (payLaterOptionsDetailLiveData.value !is Success) {
+
             paylaterGetSimulationV2usecase.getPayLaterProductDetails(
                 ::onAvailableDetailSuccess,
                 ::onAvailableDetailFail,
                 price
             )
-        }
+
 
     }
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
-        if (productDetailLiveData.value !is Success)
+
             productDetailUseCase.getProductDetail(
                 ::onAvailableProductDetail,
                 ::onFailProductDetail,

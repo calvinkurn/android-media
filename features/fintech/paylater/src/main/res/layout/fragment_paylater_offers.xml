@@ -21,12 +21,25 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.tokopedia.empty_state.EmptyStateUnify
+            android:id="@+id/emptyStateError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
+            app:unifyEmptyStateTitle="@string/somethingWentWrong"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
+            />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleSimulation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:text="@string/pay_later_simulation_header_title"
+            android:text="@string/durationPayLater"
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_16"
-            android:text="Available Pay Later for this product"
+            android:text="@string/installment_using"
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sortFilter"
@@ -111,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:visibility="gone"
-            app:constraint_referenced_ids=" paymentOptionViewPager" />
+            app:constraint_referenced_ids=" paymentOptionViewPager,tvAvailablePaylater" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/paymentOptionViewPager"

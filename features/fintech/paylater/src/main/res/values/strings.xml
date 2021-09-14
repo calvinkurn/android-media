@@ -87,6 +87,9 @@
     <string name="see_more">Selengkapnya</string>
     <string name="whyGateway">Kenapa</string>
     <string name="cicilian">Cicilan</string>
+    <string name="installment_using">Pakai cicilan yang mana, nih?</string>
+    <string name="durationPayLater">Mau dicicil berapa lama?</string>
+    <string name="somethingWentWrong">Ada yang salah</string>
 
 
 </resources>

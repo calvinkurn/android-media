@@ -114,6 +114,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun payLaterAvailableDataLoadFail(throwable: Throwable) {
         payLaterOffersShimmerGroup.gone()
+        emptyStateError.gone()
+        payLaterDataGroup.gone()
         payLaterOffersGlobalError.visible()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
@@ -138,21 +140,33 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
+        payLaterOffersGlobalError.gone()
+        if(paylaterProduct.productList ==null || paylaterProduct.productList.isEmpty())
+        {
+            emptyStateError.visible()
+            payLaterOffersShimmerGroup.gone()
+            payLaterDataGroup.gone()
+            emptyStateError.setPrimaryCTAClickListener {
+                emptyStateError.gone()
+                payLaterOffersShimmerGroup.visible()
+                payLaterViewModel.getPayLaterAvailableDetail(productAmount)
+            }
+        }
 
-        if (paylaterProduct.productList != null && paylaterProduct.productList.isNotEmpty()) {
+        else  {
             payLaterProductList = paylaterProduct.productList
-            generateSortFilter(paylaterProduct)
+            emptyStateError.gone()
             payLaterOffersShimmerGroup.gone()
             payLaterDataGroup.visible()
+            generateSortFilter(paylaterProduct)
             paymentOptionViewPager.post {
                 payLaterProductList[0].detail?.let { detailList ->
                     pagerAdapter.setPaymentData(detailList)
                 }
             }
-        } else {
-            payLaterAvailableDataLoadFail(IllegalStateException())
         }
     }
+
 
     override fun getScreenName(): String {
         return "Detail Penawaran"
