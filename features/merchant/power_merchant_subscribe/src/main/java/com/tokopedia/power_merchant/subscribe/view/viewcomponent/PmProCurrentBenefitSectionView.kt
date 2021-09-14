@@ -77,8 +77,8 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                 MethodChecker.fromHtml(
                     context.getString(
                         R.string.pm_next_update_benefit_package_downgrade_status,
-                        blackColor,
                         data.nextMonthlyRefreshDate,
+                        blackColor,
                         data.grade?.shopLevel,
                         data.grade?.gradeName?.asCamelCase()
                     )
@@ -98,8 +98,8 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                     MethodChecker.fromHtml(
                         context.getString(
                             R.string.pm_next_update_benefit_package_upgrade_status,
-                            blackColor,
                             data.nextMonthlyRefreshDate,
+                            blackColor,
                             data.nextShopLevel,
                             data.nextGradeName.asCamelCase()
                         )
