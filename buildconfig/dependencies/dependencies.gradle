@@ -2,7 +2,7 @@ ext {
 
     compileSdkVersion = 30
     minSdkVersion = 21
-    targetSdkVersion = 29
+    targetSdkVersion = 30
     buildToolsVersion = "30.0.2"
 
     jacocoVersion = "0.8.7"
@@ -248,7 +248,7 @@ ext {
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
-            cameraView            : "com.otaliastudios:cameraview:2.7.1",
+            cameraView            : "com.otaliastudios:cameraview:2.7.1-fix-3",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
@@ -275,7 +275,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.3",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.6",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",

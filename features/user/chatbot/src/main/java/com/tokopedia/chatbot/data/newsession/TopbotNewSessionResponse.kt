@@ -9,6 +9,8 @@ data class TopBotNewSessionResponse(
 ) {
     data class TopBotGetNewSession(
         @SerializedName("isNewSession")
-        val isNewSession: Boolean
+        val isNewSession: Boolean,
+        @SerializedName("isTypingBlocked")
+        val isTypingBlocked: Boolean
     )
 }
