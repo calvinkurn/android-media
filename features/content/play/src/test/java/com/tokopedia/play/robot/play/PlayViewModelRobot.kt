@@ -110,6 +110,10 @@ class PlayViewModelRobot(
         viewModel.focusPage(channelData)
     }
 
+    fun defocusPage(shouldPauseVideo: Boolean) {
+        viewModel.defocusPage(shouldPauseVideo)
+    }
+
     fun setMockResponseReportSummaries(response: ReportSummaries) {
         coEvery { getReportSummariesUseCase.executeOnBackground() } returns response
     }

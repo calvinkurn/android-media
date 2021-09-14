@@ -184,13 +184,14 @@ class PlayUpcomingTest {
      * Watch Now
      */
     @Test
-    fun `given a upcoming channel, when channel already live and user click button, then app should send analytic`() {
+    fun `given a upcoming channel, when channel already live and user click button, then app should send analytic and close SSE`() {
         every { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) } returns Unit
 
         givenPlayViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
         ) {
             setLoggedIn(false)
             createPage(mockChannelData)
@@ -199,6 +200,7 @@ class PlayUpcomingTest {
             submitAction(ClickWatchNowUpcomingChannel)
         } thenVerify {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
+            fakePlayChannelSSE.isConnectionOpen().isFalse()
         }
     }
 
@@ -306,6 +308,24 @@ class PlayUpcomingTest {
         } thenVerify {
             viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(false)
             fakePlayChannelSSE.isConnectionOpen().isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel is defocused, then it should disconnect the SSE`() {
+        givenPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playChannelSSE = fakePlayChannelSSE,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            defocusPage(true)
+        } thenVerify {
+            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
         }
     }
 }
