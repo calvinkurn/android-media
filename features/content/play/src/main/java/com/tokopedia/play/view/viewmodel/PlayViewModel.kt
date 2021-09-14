@@ -17,6 +17,7 @@ import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -38,6 +39,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -56,8 +58,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import com.tokopedia.play.extensions.combine
-import com.tokopedia.play.view.uimodel.state.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -177,14 +177,9 @@ class PlayViewModel @Inject constructor(
                     totalLike = channelReport.totalLikeFmt,
                     shouldAnimate = false,
                     likeMode = if (channelDetail.channelInfo.channelType.isLive) {
-                        PlayLikeMode.Multiple(
-                            type = if (likeInfo.status == PlayLikeStatus.Liked) PlayMultipleLikeType.Liked
-                            else PlayMultipleLikeType.NotLiked(false)
-                        )
-                    }
-                    else PlayLikeMode.Single(
-                        isLiked = likeInfo.status == PlayLikeStatus.Liked,
-                    ),
+                        PlayLikeMode.Multiple
+                    } else PlayLikeMode.Single,
+                    isLiked = likeInfo.status == PlayLikeStatus.Liked,
                 ),
                 totalView = channelReport.totalViewFmt,
                 isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
@@ -1079,15 +1074,15 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkLikeReminderTimer() {
-        fun isLiked() = _likeInfo.value.status == PlayLikeStatus.Liked
+        fun shouldRemindLike() = _likeInfo.value.status != PlayLikeStatus.Liked && channelType.isLive
         suspend fun sendLikeReminder() = _uiEvent.emit(RemindToLikeEvent)
 
-        if (isLiked()) return
+        if (!shouldRemindLike()) return
         cancelReminderLikeTimer()
         likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
             delay(TimeUnit.MINUTES.toMillis(1))
             while (isActive) {
-                if (isLiked()) break
+                if (!shouldRemindLike()) break
                 sendLikeReminder()
                 delay(TimeUnit.MINUTES.toMillis(5))
             }

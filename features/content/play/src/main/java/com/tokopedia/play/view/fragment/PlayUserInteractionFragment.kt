@@ -1430,11 +1430,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         likeView.setMode(likeState.likeMode)
 
-//        likeView.playLikeAnimation(
-//            isPrevLiked = prevState?.isLiked ?: false,
-//            shouldLike = likeState.isLiked,
-//            animate = likeState.shouldAnimate,
-//        )
         if (prevState?.isLiked != likeState.isLiked) {
             likeView.setIsLiked(likeState.isLiked)
         }

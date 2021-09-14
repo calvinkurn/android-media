@@ -52,8 +52,8 @@ class LikeViewComponent(
     fun setMode(mode: PlayLikeMode) {
         this.mode = mode
         when (mode) {
-            is PlayLikeMode.Single -> animationLike.addAnimatorListener(singleLikeAnimatorListener)
-            is PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
+            PlayLikeMode.Single -> animationLike.addAnimatorListener(singleLikeAnimatorListener)
+            PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
             else -> {}
         }
     }
@@ -92,7 +92,7 @@ class LikeViewComponent(
         animationLike.progress = START_ANIMATED_PROGRESS
 
         animationLike.removeAllAnimatorListeners()
-        if (mode is PlayLikeMode.Single) animationLike.addAnimatorListener(singleLikeAnimatorListener)
+        if (mode == PlayLikeMode.Single) animationLike.addAnimatorListener(singleLikeAnimatorListener)
 
         animationLike.playAnimation()
     }
