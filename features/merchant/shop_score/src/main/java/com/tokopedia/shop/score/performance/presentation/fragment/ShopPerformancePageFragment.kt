@@ -51,11 +51,7 @@ import kotlin.collections.ArrayList
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
-    ShopPerformanceListener, ItemShopPerformanceListener,
-    ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-    ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-    GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener,
-    ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener, ProtectedParameterListener {
+    ShopPerformanceListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -69,12 +65,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(
-            ShopPerformanceTypeFactoryListener(
-                this, this,
-                this, this,
-                this, this, this,
-                this, this, this, this, this, this
-            )
+            this
         )
     }
 

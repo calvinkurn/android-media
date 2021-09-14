@@ -8,7 +8,7 @@ import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 
 class ShopPerformanceAdapterTypeFactory(
-    private val shopPerformanceTypeFactoryListener: ShopPerformanceTypeFactoryListener,
+    private val shopPerformanceListener: ShopPerformanceListener,
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -80,58 +80,58 @@ class ShopPerformanceAdapterTypeFactory(
 
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.shopPerformanceListener
+                shopPerformanceListener
             )
             PeriodDetailPerformanceViewHolder.LAYOUT -> PeriodDetailPerformanceViewHolder(parent)
             ItemDetailPerformanceViewHolder.LAYOUT -> ItemDetailPerformanceViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemShopPerformanceListener
+                shopPerformanceListener
             )
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)
             ItemStatusPMViewHolder.LAYOUT -> ItemStatusPMViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemStatusPowerMerchantListener
+                shopPerformanceListener
             )
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemRegularMerchantListener
+                shopPerformanceListener
             )
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemPotentialPowerMerchantListener
+                shopPerformanceListener
             )
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemRecommendationFeatureListener
+                shopPerformanceListener
             )
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemTimerNewSellerListener
+                shopPerformanceListener
             )
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.sectionFaqListener
+                shopPerformanceListener
             )
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.globalErrorListener
+                shopPerformanceListener
             )
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
             ItemRMPotentialPMProViewHolder.LAYOUT -> ItemRMPotentialPMProViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.potentialPMProListener
+                shopPerformanceListener
             )
             ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemStatusPowerMerchantProListener
+                shopPerformanceListener
             )
             ItemPMPotentialPMProViewHolder.LAYOUT -> ItemPMPotentialPMProViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.itemPMPotentialPMProListener
+                shopPerformanceListener
             )
             ItemProtectedParameterSectionViewHolder.LAYOUT -> ItemProtectedParameterSectionViewHolder(
                 parent,
-                shopPerformanceTypeFactoryListener.protectedParameterListener
+                shopPerformanceListener
             )
             else -> return super.createViewHolder(parent, type)
         }

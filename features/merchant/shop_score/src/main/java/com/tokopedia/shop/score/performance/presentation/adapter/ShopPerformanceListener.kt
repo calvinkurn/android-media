@@ -1,6 +1,14 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
-interface ShopPerformanceListener {
+
+interface ShopPerformanceListener :
+    ItemPerformanceHeaderListener, ItemShopPerformanceListener,
+    ItemRMPotentialPMProListener, ItemPMPotentialPMProListener, ItemRegularMerchantListener,
+    ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
+    ItemStatusPowerMerchantListener, ItemStatusPowerMerchantProListener, SectionFaqListener,
+    ProtectedParameterListener, ItemTimerNewSellerListener, GlobalErrorListener
+
+interface ItemPerformanceHeaderListener {
     fun onTooltipLevelClicked(level: Long)
     fun onTooltipScoreClicked()
     fun onTickerClickedToPenaltyPage()
