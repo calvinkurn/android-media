@@ -69,8 +69,6 @@ class PlayUpcomingFragment @Inject constructor(
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
-
-        analytic.impressUpcomingPage()
     }
 
     override fun onCreateView(
@@ -83,6 +81,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendImpression()
         initView(view)
         setupView(view)
         setupInsets()
@@ -99,6 +98,10 @@ class PlayUpcomingFragment @Inject constructor(
                 else UpcomingActionButtonViewComponent.Status.HIDDEN
             )
         }
+    }
+
+    private fun sendImpression() {
+        playViewModel.submitAction(ImpressUpcomingChannel)
     }
 
     private fun initView(view: View) {
@@ -216,12 +219,10 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onClickActionButton() {
         playViewModel.observableUpcomingInfo.value?.let {
             if(it.isAlreadyLive)  {
-                analytic.clickWatchNow()
                 playViewModel.submitAction(ClickWatchNowUpcomingChannel)
                 playParentViewModel.refreshChannel()
             }
             else {
-                analytic.clickRemindMe()
                 playViewModel.submitAction(ClickRemindMeUpcomingChannel)
             }
         }
@@ -260,7 +261,6 @@ class PlayUpcomingFragment @Inject constructor(
             toasterType = when (event) {
                 is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
                 is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-                else -> Toaster.TYPE_NORMAL
             },
             message = text
         )

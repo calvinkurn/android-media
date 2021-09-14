@@ -49,6 +49,7 @@ object SetChannelActiveAction : PlayViewerNewAction()
 /**
  * Upcoming Page
  */
+object ImpressUpcomingChannel: PlayViewerNewAction()
 object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
 object ClickWatchNowUpcomingChannel: PlayViewerNewAction()
 

@@ -637,6 +637,7 @@ class PlayViewModel @Inject constructor(
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
+            ImpressUpcomingChannel -> handleImpressUpcomingChannel()
             ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel()
             ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
@@ -1476,8 +1477,14 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
+    private fun handleImpressUpcomingChannel() {
+        playAnalytic.impressUpcomingPage(channelId)
+    }
+
     private fun handleRemindMeUpcomingChannel() = needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
         viewModelScope.launchCatchError(block = {
+            playAnalytic.clickRemindMe(channelId)
+
             mChannelData?.let {
                 val status: Boolean
 
@@ -1498,6 +1505,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleWatchNowUpcomingChannel() {
+        playAnalytic.clickWatchNow(channelId)
         stopSSE()
     }
 
