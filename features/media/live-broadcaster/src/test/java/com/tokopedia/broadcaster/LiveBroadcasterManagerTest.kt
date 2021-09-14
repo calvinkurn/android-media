@@ -3,6 +3,7 @@ package com.tokopedia.broadcaster
 import android.content.Context
 import android.os.Handler
 import com.tokopedia.broadcaster.camera.CameraManager
+import com.tokopedia.broadcaster.chucker.ui.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
@@ -51,6 +52,40 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     fun setUp() {
         mockkObject(BroadcasterUtil)
         mockkObject(CameraManager)
+        mockkObject(ChuckerNotification)
+    }
+
+    @Test
+    fun `Should be return default broadcaster config`() {
+        // When
+        val mConfig = broadcaster.config
+
+        // Then
+        `Then a property from BroadcasterConfig equals of`(mConfig)
+    }
+
+    @Test
+    fun `Should be return initial broadcaster state as Idle`() {
+        // Given
+        val idle = BroadcasterState.Idle
+
+        // When
+        val mState = broadcaster.state
+
+        // Then
+        `Then the state should be expected with actual`(mState, idle)
+    }
+
+    @Test
+    fun `Should be return empty connection uri`() {
+        // Given
+        `Given connection uri`("")
+
+        // When
+        val mIngestUrl = broadcaster.ingestUrl
+
+        // Then
+        `Then ingestUrl is empty`(mIngestUrl)
     }
 
     @Test
@@ -127,21 +162,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     }
 
     @Test
-    // Ignored for now
-    fun `Should be able to start preview if streamer non-null`() {
-//        runBlocking {
-//            // Given
-//            `Given start video capture from streamerGL`()
-//            `Given start audio capture from streamerGL`()
-//
-//            // When
-//            broadcaster.startPreview(SurfaceView(context))
-//
-//            // Then
-//            `Then startVideoCapture of streamer is called`()
-//            `Then startAudioCapture of streamer is called`()
-//        }
-    }
+    fun `Should be able to start preview if streamer non-null`() {}
 
     @Test
     fun `Should be able to stop preview`() {
@@ -188,7 +209,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.start(INGEST_URL)
 
         // Then
-        `Then the state should be`(BroadcasterState.Connecting)
+        `Then the state should be expected with actual`(BroadcasterState.Connecting)
         `Then the connection config url should be equals of`(INGEST_URL)
         `Then a property from BroadcasterConfig equals of`(
             BroadcasterConfig().apply { ingestUrl = INGEST_URL }
@@ -215,7 +236,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.resume()
 
         // Then
-        `Then the state should be`(BroadcasterState.Connecting)
+        `Then the state should be expected with actual`(BroadcasterState.Connecting)
     }
 
     @Test
@@ -227,7 +248,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.pause()
 
         // Then
-        `Then the state should be`(BroadcasterState.Pause)
+        `Then the state should be expected with actual`(BroadcasterState.Pause)
     }
 
     @Test
@@ -236,7 +257,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.stop()
 
         // Then
-        `Then the state should be`(BroadcasterState.Stop)
+        `Then the state should be expected with actual`(BroadcasterState.Stop)
         `Then the streamer is released`()
     }
 
@@ -256,7 +277,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         )
 
         // Then
-        `Then the state should be`(BroadcasterState.Idle)
+        `Then the state should be expected with actual`(BroadcasterState.Idle)
     }
 
     @Test
@@ -272,7 +293,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Connecting)
+        `Then the state should be expected with actual`(BroadcasterState.Connecting)
     }
 
     @Test
@@ -288,7 +309,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Connecting)
+        `Then the state should be expected with actual`(BroadcasterState.Connecting)
     }
 
     @Test
@@ -322,7 +343,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Recovered)
+        `Then the state should be expected with actual`(BroadcasterState.Recovered)
     }
 
     @Test
@@ -338,7 +359,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Resumed)
+        `Then the state should be expected with actual`(BroadcasterState.Resumed)
     }
 
     @Test
@@ -355,7 +376,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Started)
+        `Then the state should be expected with actual`(BroadcasterState.Started)
     }
 
     @Test
@@ -373,7 +394,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @Test
@@ -391,7 +412,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @Test
@@ -408,7 +429,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @Test
@@ -425,7 +446,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @Test
@@ -447,7 +468,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @Test
@@ -464,7 +485,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         }
 
         // Then
-        `Then the state should be`(BroadcasterState.Error())
+        `Then the state should be expected with actual`(BroadcasterState.Error())
     }
 
     @After

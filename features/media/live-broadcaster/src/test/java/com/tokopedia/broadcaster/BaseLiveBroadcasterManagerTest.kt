@@ -51,6 +51,10 @@ open class BaseLiveBroadcasterManagerTest {
         block(id)
     }
 
+    fun `Given connection uri`(ingestUrl: String) {
+        broadcaster.mConnection.uri = ingestUrl
+    }
+
     fun `Given data logger`() {
         justRun {
             broadcaster.logger.init(
@@ -189,6 +193,10 @@ open class BaseLiveBroadcasterManagerTest {
         }
     }
 
+    fun `Then ingestUrl is empty`(givenUrl: String) {
+        assertTrue { givenUrl.isEmpty() }
+    }
+
     fun `Then the flip camera should be`(called: Boolean) {
         verify(exactly = if (called) 1 else 0) {
             broadcaster.streamer?.flip()
@@ -203,8 +211,15 @@ open class BaseLiveBroadcasterManagerTest {
         assertTrue { broadcaster.mConnection.uri == ingestUrl }
     }
 
-    fun `Then the state should be`(state: BroadcasterState) {
-        assertTrue { broadcaster.mState.javaClass == state.javaClass }
+    fun `Then the state should be expected with actual`(
+        expectedState: BroadcasterState,
+        actualState: BroadcasterState
+    ) {
+        assertTrue { expectedState.javaClass == actualState.javaClass }
+    }
+
+    fun `Then the state should be expected with actual`(state: BroadcasterState) {
+        `Then the state should be expected with actual`(broadcaster.mState, state)
     }
 
     fun `Then a property from BroadcasterConfig equals of`(broadcasterConfig: BroadcasterConfig) {

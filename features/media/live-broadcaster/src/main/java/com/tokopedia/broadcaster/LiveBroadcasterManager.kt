@@ -33,7 +33,6 @@ import kotlin.coroutines.CoroutineContext
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.ladderAscend as ladderAscendMode
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.logarithmicDescend as logarithmicDescendMode
 
-@Suppress("MemberVisibilityCanBePrivate")
 class LiveBroadcasterManager constructor(
     var streamer: LibStreamerGL? = null,
     var mConfig: BroadcasterConfig = BroadcasterConfig(),
@@ -114,7 +113,7 @@ class LiveBroadcasterManager constructor(
             throw IllegalAccessException("you have to initialize first with call init()")
         }
 
-        // showing debug notif for tracking chucker of live broadcaster
+        // showing debug notification for tracking chucker of live broadcaster
         if (GlobalConfig.DEBUG) {
             mContext?.let {
                 ChuckerNotification.build(it, url)

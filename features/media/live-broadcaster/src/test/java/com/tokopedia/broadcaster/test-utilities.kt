@@ -26,7 +26,7 @@ inline fun <reified T> Any.getPrivateProperty(propertyName: String): T? {
         .get(this) as T
 }
 
-fun mockBuildValue(field: Field, value: Any) {
+fun mockStaticValue(field: Field, value: Any) {
     field.isAccessible = true
 
     Field::class.java.getDeclaredField("modifiers").also {
@@ -47,15 +47,15 @@ fun mockArchBuild(isAboveLollipop: Boolean, value: Any) {
         Build::class.java.getField(cpuAbi)
     }
 
-    mockBuildValue(field, value)
+    mockStaticValue(field, value)
 }
 
 fun mockVersionCodeOf(version: String, value: Int) {
     val field = Build.VERSION_CODES::class.java.getField(version)
-    mockBuildValue(field, value)
+    mockStaticValue(field, value)
 }
 
 fun mockSdkInt(value: Int) {
     val field = Build.VERSION::class.java.getField("SDK_INT")
-    mockBuildValue(field, value)
+    mockStaticValue(field, value)
 }
