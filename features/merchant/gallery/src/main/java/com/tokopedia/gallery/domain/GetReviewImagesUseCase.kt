@@ -14,7 +14,7 @@ class GetReviewImagesUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_PAGE = "page"
         const val PARAM_LIMIT = "limit"
-        const val DEFAULT_LIMIT = 10
+        const val DEFAULT_LIMIT = 20
         const val GET_PRODUCT_REVIEW_IMAGE_USE_CASE_CLASS_NAME = "ProductReviewImageQuery"
         const val GET_PRODUCT_REVIEW_IMAGE_QUERY = """
             query getReviewImage(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!) {
