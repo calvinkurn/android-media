@@ -81,7 +81,6 @@ class MilestoneMissionAdapter(
                     is MilestoneFinishMissionUiModel -> setupFinishedMissionButton()
                 }
 
-                btnShcMissionCta.isLoading = mission.missionButton.isLoading
                 btnShcMissionCta.text = mission.missionButton.title
                 btnShcMissionCta.setOnClickListener {
                     onCtaClick(mission)

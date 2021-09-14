@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class MilestoneDataUiModel(
@@ -65,8 +64,7 @@ data class MissionButtonUiModel(
     val urlType: BaseMilestoneMissionUiModel.UrlType = BaseMilestoneMissionUiModel.UrlType.REDIRECT,
     val url: String = "",
     val appLink: String = "",
-    val buttonStatus: BaseMilestoneMissionUiModel.ButtonStatus = BaseMilestoneMissionUiModel.ButtonStatus.ENABLED,
-    var isLoading: Boolean = false
+    val buttonStatus: BaseMilestoneMissionUiModel.ButtonStatus = BaseMilestoneMissionUiModel.ButtonStatus.ENABLED
 )
 
 data class MilestoneMissionUiModel(
@@ -97,7 +95,7 @@ data class MilestoneFinishMissionUiModel(
         return String.format(
             WEB_VIEW_FORMAT,
             ApplinkConst.WEBVIEW,
-            missionButton.url.encodeToUtf8()
+            missionButton.url
         )
     }
 }

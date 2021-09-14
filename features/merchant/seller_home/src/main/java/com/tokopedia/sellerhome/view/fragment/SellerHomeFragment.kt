@@ -1331,10 +1331,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     )
                 }
             }
-            val milestoneWidget = adapter.data.firstOrNull { widget ->
-                widget is MilestoneWidgetUiModel
-            } as? MilestoneWidgetUiModel
-            dismissMilestoneShareMissionLoading(milestoneWidget)
         }
     }
 
@@ -1345,15 +1341,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
                 )
             }
-        }
-    }
-
-    private fun dismissMilestoneShareMissionLoading(widget: MilestoneWidgetUiModel?) {
-        widget?.let {
-            it.data?.milestoneMissions?.forEach { btn ->
-                btn.missionButton.isLoading = false
-            }
-            notifyWidgetChanged(it)
         }
     }
 
@@ -1482,7 +1469,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
             val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
             if (isShareMissionAvailable) {
-                shareMission?.missionButton?.isLoading = true
                 sellerHomeViewModel.getShopInfoById()
             }
         }

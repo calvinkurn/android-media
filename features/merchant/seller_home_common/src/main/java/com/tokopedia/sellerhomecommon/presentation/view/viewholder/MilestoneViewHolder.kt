@@ -180,7 +180,13 @@ class MilestoneViewHolder(
                 PROGRESS_BAR_MIN_VALUE
             }
             progressBarShcMilestone.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
-            progressBarShcMilestone.setValue(milestoneProgress.taskCompleted.times(valuePerIndicator))
+            val isCompleted = milestoneProgress.taskCompleted == milestoneProgress.totalTask
+            val progressValue = if (isCompleted) {
+                PROGRESS_BAR_MAX_VALUE
+            } else {
+                milestoneProgress.taskCompleted.times(valuePerIndicator)
+            }
+            progressBarShcMilestone.setValue(progressValue)
         }
     }
 
