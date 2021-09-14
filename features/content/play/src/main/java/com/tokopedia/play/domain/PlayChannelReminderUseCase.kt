@@ -1,14 +1,14 @@
-package com.tokopedia.play_common.domain
+package com.tokopedia.play.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play_common.domain.model.PlayReminder
+import com.tokopedia.play.data.PlayReminder
 import javax.inject.Inject
 
 /**
- * Created By : Jonathan Darwin on September 03, 2021
+ * Created By : Jonathan Darwin on September 14, 2021
  */
 class PlayChannelReminderUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
@@ -18,7 +18,7 @@ class PlayChannelReminderUseCase @Inject constructor(
         setGraphqlQuery(query)
         setCacheStrategy(
             GraphqlCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(PlayReminder::class.java)
     }
 

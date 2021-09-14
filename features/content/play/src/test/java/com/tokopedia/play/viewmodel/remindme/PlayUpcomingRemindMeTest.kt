@@ -1,6 +1,8 @@
 package com.tokopedia.play.viewmodel.remindme
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.data.PlayReminder
+import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
@@ -9,8 +11,6 @@ import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
-import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
-import com.tokopedia.play_common.domain.model.PlayReminder
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery

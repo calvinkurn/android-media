@@ -28,7 +28,6 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference

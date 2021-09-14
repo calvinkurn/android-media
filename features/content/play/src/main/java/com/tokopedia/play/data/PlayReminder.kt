@@ -1,9 +1,9 @@
-package com.tokopedia.play_common.domain.model
+package com.tokopedia.play.data
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created By : Jonathan Darwin on September 03, 2021
+ * Created By : Jonathan Darwin on September 14, 2021
  */
 data class PlayReminder(
     @SerializedName("playToggleChannelReminder")
