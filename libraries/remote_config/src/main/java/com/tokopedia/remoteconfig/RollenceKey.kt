@@ -78,7 +78,5 @@ object RollenceKey {
     // end of Recommendation page section
 
     //TAPCASH
-    const val KEY_VARIANT_TAPCASH = "BNI_Tap_cash"
-    const val VARIANT_OLD_TAPCASH = "old_tapcash"
-    const val VARIANT_NEW_TAPCASH = "new_tapcash"
+    const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
 }

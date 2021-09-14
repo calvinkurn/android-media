@@ -8,6 +8,8 @@ object HomeMockValueHelper {
     const val DEFAULT_COUNTER_NOTIF_VALUE = "10"
 
     const val MOCK_HEADER_COUNT = 1
+    const val MOCK_HEADER_COUNT_NON_LOGIN = 0
+
     const val MOCK_ATF_COUNT = 5
     const val MOCK_ATF_ERROR_POSITION_COUNT = 1
     const val MOCK_ATF_ERROR_COUNT = 3
@@ -22,7 +24,8 @@ object HomeMockValueHelper {
         balanceWidgetRollence: Boolean = true,
         homeRollence: Boolean = true,
         walletAppRollence: Boolean = true,
-        paymentAbcRollence: Boolean = true
+        paymentAbcRollence: Boolean = true,
+        navigationNewRollence: Boolean = true
         ) {
         if (inboxRollence) {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
@@ -64,6 +67,12 @@ object HomeMockValueHelper {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.HOME_PAYMENT_ABC,
                 RollenceKey.HOME_PAYMENT_ABC
+            )
+        }
+        if (navigationNewRollence) {
+            RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                RollenceKey.NAVIGATION_VARIANT_REVAMP2
             )
         }
     }
