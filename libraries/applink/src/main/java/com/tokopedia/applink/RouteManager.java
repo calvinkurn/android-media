@@ -183,6 +183,15 @@ public class RouteManager {
         }
     }
 
+    public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
+        boolean isFragmentInstalled = FragmentDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
+        if (isFragmentInstalled) {
+            return instantiateFragment(activity, classPathName, extras);
+        } else {
+            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+        }
+    }
+
     private static boolean isClassExist(String className) {
         try  {
             Class.forName(className);
