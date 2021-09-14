@@ -151,8 +151,6 @@ class DiscomPresenterTest {
         }
     }
 
-    // TODO autofill
-
     @Test
     fun `autofill succcess`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
