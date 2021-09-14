@@ -74,6 +74,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
+    String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
     String WEBVIEW_HOST = "webview";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD_HOST = "webviewdownload";
@@ -243,6 +244,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
+    String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
@@ -398,6 +400,9 @@ public interface ApplinkConst {
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
+
+    String SHARING_HOST = "sharing";
+    String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
