@@ -27,7 +27,8 @@ class HomeAdapterTypeFactory(
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null,
     private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null,
-    private val homeSharingEducationWidgetListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null
+    private val homeSharingEducationListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null,
+    private val homeEducationalInformationListener: HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener? = null
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -73,8 +74,8 @@ class HomeAdapterTypeFactory(
             HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowListener, homeProductRecomListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationWidgetListener)
-            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowListener)
+            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
+            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowListener, homeEducationalInformationListener)
             // endregion
 
             // region Global Home Component

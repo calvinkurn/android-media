@@ -89,6 +89,7 @@ import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -121,7 +122,8 @@ class TokoNowHomeFragment: Fragment(),
         TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
         ScreenShotListener,
-        HomeSharingEducationListener
+        HomeSharingEducationListener,
+        HomeEducationalInformationListener
 {
 
     companion object {
@@ -162,7 +164,8 @@ class TokoNowHomeFragment: Fragment(),
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
                 tokoNowProductCardListener = this,
-                homeSharingEducationWidgetListener = this
+                homeSharingEducationListener = this,
+                homeEducationalInformationListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -459,11 +462,15 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
-        activity?.let {
-            SharedPreferencesUtil.setSharingEducationState(it)
-        }
+        SharedPreferencesUtil.setSharingEducationState(activity)
         viewModelTokoNow.removeSharingEducationWidget(id)
     }
+
+    override fun onEducationInformationWidgetImpressed() {
+        SharedPreferencesUtil.setEducationalInformationState(activity)
+    }
+
+    override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
 
     private fun initInjector() {
         DaggerHomeComponent.builder()

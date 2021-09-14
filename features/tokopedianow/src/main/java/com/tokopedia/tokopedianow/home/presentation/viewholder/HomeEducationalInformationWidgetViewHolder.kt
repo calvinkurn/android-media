@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.bottomsheet.TokoNowHomeEducationalInformationBottomSheet
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -22,7 +23,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
-    private val tokoNowListener: TokoNowView? = null
+    private val tokoNowListener: TokoNowView? = null,
+    private val listener: HomeEducationalInformationListener? = null
 ) : AbstractViewHolder<HomeEducationalInformationWidgetUiModel>(itemView) {
 
     companion object {
@@ -40,6 +42,7 @@ class HomeEducationalInformationWidgetViewHolder(
     private var iuGuaranteedQuality: ImageUnify? = null
     private var laChevron: LottieAnimationView? = null
     private var cvChevron: CardView? = null
+    private var cvEducationalInfo: CardView? = null
     private var ivChevronDown: ImageView? = null
 
     init {
@@ -49,13 +52,27 @@ class HomeEducationalInformationWidgetViewHolder(
         ivChevronDown = itemView.findViewById(R.id.iv_chevron_down)
         laChevron = itemView.findViewById(R.id.la_chevron)
         cvChevron = itemView.findViewById(R.id.cv_chevron)
+        cvEducationalInfo = itemView.findViewById(R.id.cv_educational_info)
     }
 
     override fun bind(element: HomeEducationalInformationWidgetUiModel) {
+        if (element.state == HomeLayoutItemState.LOADED) {
+            setupUi()
+            setStateEducationInformation()
+        }
+    }
+
+    private fun setupUi() {
+        cvEducationalInfo?.show()
         iuTwoHours?.setImageUrl(IMG_TWO_HOURS)
         iuStockAvailable?.setImageUrl(IMG_STOCK_AVAILABLE)
         iuGuaranteedQuality?.setImageUrl(IMG_GUARANTEED_QUALITY)
-        setupLottie()
+
+        if(listener?.isEducationInformationLottieStopped() == true) {
+            setupBasicButton()
+        } else {
+            setupLottie()
+        }
     }
 
     private fun setupLottie() {
@@ -70,12 +87,11 @@ class HomeEducationalInformationWidgetViewHolder(
 
             laChevron?.setOnClickListener {
                 showBottomSheet()
-                showBasicImage()
             }
         }
     }
 
-    private fun showBasicImage() {
+    private fun setupBasicButton() {
         cvChevron?.show()
         laChevron?.gone()
         val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
@@ -85,11 +101,22 @@ class HomeEducationalInformationWidgetViewHolder(
         }
     }
 
+    private fun setStateEducationInformation() {
+        if (listener?.isEducationInformationLottieStopped() == false) {
+            listener.onEducationInformationWidgetImpressed()
+        }
+    }
+
     private fun showBottomSheet() {
-        showBasicImage()
+        setupBasicButton()
         val bottomSheet = TokoNowHomeEducationalInformationBottomSheet.newInstance()
         tokoNowListener?.getFragmentManagerPage()?.let { fragmentManager ->
             bottomSheet.show(fragmentManager)
         }
+    }
+
+    interface HomeEducationalInformationListener {
+        fun onEducationInformationWidgetImpressed()
+        fun isEducationInformationLottieStopped(): Boolean
     }
 }

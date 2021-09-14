@@ -12,10 +12,12 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -35,11 +37,9 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemB
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_EDUCATIONAL_INFORMATION_WIDGET
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_SHARING_EDUCATION_WIDGET
+import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -58,9 +58,7 @@ object HomeLayoutMapper {
         EMPTY_STATE_NO_ADDRESS,
         EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE,
         EMPTY_STATE_FAILED_TO_FETCH_DATA,
-        PRODUCT_RECOM_OOC,
-        HOME_EDUCATIONAL_INFORMATION_WIDGET,
-        HOME_SHARING_EDUCATION_WIDGET
+        PRODUCT_RECOM_OOC
     )
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
@@ -69,7 +67,9 @@ object HomeLayoutMapper {
         LEGO_6_IMAGE,
         BANNER_CAROUSEL,
         PRODUCT_RECOM,
-        RECENT_PURCHASE
+        RECENT_PURCHASE,
+        EDUCATIONAL_INFORMATION,
+        SHARING_EDUCATION,
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -95,9 +95,6 @@ object HomeLayoutMapper {
     ) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-        // temp hardcoded
-        add(HomeLayoutItemUiModel(HomeEducationalInformationWidgetUiModel(id = HOME_EDUCATIONAL_INFORMATION_WIDGET), HomeLayoutItemState.LOADED))
-        add(HomeLayoutItemUiModel(HomeSharingEducationWidgetUiModel(id = HOME_SHARING_EDUCATION_WIDGET), HomeLayoutItemState.LOADED))
 
         if (!hasTickerBeenRemoved) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
@@ -150,6 +147,22 @@ object HomeLayoutMapper {
                 val layout = item.copy(categoryList = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapEducationalInformationData(
+        item: HomeEducationalInformationWidgetUiModel
+    ) {
+        updateItemById(item.visitableId) {
+            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED), HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapSharingEducationData(
+        item: HomeSharingEducationWidgetUiModel
+    ) {
+        updateItemById(item.visitableId) {
+            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED), HomeLayoutItemState.LOADED)
         }
     }
 
@@ -365,6 +378,8 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, state)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, state)
             RECENT_PURCHASE -> mapRecentPurchaseUiModel(response, state)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, state)
+            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
             else -> null
         }
     }
