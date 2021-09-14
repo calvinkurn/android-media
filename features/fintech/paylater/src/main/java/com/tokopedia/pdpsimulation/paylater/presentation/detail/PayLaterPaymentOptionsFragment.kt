@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -130,6 +131,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name

@@ -20,7 +20,7 @@ class PayLaterOfferDescriptionViewHolder(val view: View) : RecyclerView.ViewHold
                 ivBenefitsHeader.setImageDrawable(
                     AppCompatResources.getDrawable(
                         context,
-                        R.drawable.ic_paylater_card_info_star
+                        R.drawable.ic_highlighted_feature
                     )
                 )
             } else {
