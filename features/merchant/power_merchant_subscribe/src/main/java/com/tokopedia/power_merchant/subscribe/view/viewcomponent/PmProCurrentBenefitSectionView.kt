@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMShopGrade
@@ -74,19 +73,15 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
 
         if (data.isDowngradePeriod()) {
             tvNextUpdatePmProStatus.setTextMakeHyperlink(
-                MethodChecker.fromHtml(
-                    context.getString(
-                        R.string.pm_next_update_benefit_package_downgrade_status,
-                        data.nextMonthlyRefreshDate,
-                        blackColor,
-                        data.grade?.shopLevel,
-                        data.grade?.gradeName?.asCamelCase()
-                    )
-                ).toString()
+                context.getString(
+                    R.string.pm_next_update_benefit_package_downgrade_status,
+                    data.nextMonthlyRefreshDate,
+                    blackColor,
+                    data.grade?.shopLevel,
+                    data.grade?.gradeName?.asCamelCase()
+                )
             ) {
-                context?.let {
-                    RouteManager.route(it, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
-                }
+                goToShopScorePage()
             }
         } else {
             if (data.nextShopLevel == data.grade?.shopLevel) {
@@ -95,21 +90,23 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                 )
             } else {
                 tvNextUpdatePmProStatus.setTextMakeHyperlink(
-                    MethodChecker.fromHtml(
-                        context.getString(
-                            R.string.pm_next_update_benefit_package_upgrade_status,
-                            data.nextMonthlyRefreshDate,
-                            blackColor,
-                            data.nextShopLevel,
-                            data.nextGradeName.asCamelCase()
-                        )
-                    ).toString()
+                    context.getString(
+                        R.string.pm_next_update_benefit_package_upgrade_status,
+                        data.nextMonthlyRefreshDate,
+                        blackColor,
+                        data.nextShopLevel,
+                        data.nextGradeName.asCamelCase()
+                    )
                 ) {
-                    context?.let {
-                        RouteManager.route(it, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
-                    }
+                    goToShopScorePage()
                 }
             }
+        }
+    }
+
+    private fun goToShopScorePage() {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
         }
     }
 

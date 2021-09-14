@@ -48,7 +48,7 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                     } else {
                         context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
                     }
-                val mapDescAndBg = getBgAndDescBenefitPackage(it, pmStatusText)
+                val (descBenefit, bgBenefit) = getBgAndDescBenefitPackage(it, pmStatusText)
                 BenefitPackageGradeUiModel(
                     gradeName = it.pmGradeName,
                     iconBenefitUrl = if (isDowngrade) {
@@ -56,8 +56,8 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                     } else {
                         Constant.Image.IC_PM_PRO_UPGRADE_LEVEL
                     },
-                    descBenefit = mapDescAndBg.first,
-                    backgroundUrl = mapDescAndBg.second,
+                    descBenefit = descBenefit,
+                    backgroundUrl = bgBenefit,
                     benefitItemList = mapToBenefitItem(it.benefitList)
                 )
             } ?: emptyList()
