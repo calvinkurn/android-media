@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -54,6 +55,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     var parentProductID: Long = 0L
+    var selectedBundleId: Long = 0L
     var pageSource: String = ""
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
@@ -330,11 +332,23 @@ class ProductBundleViewModel @Inject constructor(
         return userSession.userId.isNotBlank()
     }
 
-    fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {
+    fun validateAddToCartInput(
+        selectedProductBundleMaster: ProductBundleMaster,
+        productBundleDetails: List<ProductBundleDetail>
+    ): Boolean {
         var isAddToCartInputValid = true
         if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
+        }
+        if (selectedProductBundleMaster.bundleId == selectedBundleId) {
+            isAddToCartInputValid = false
+            addToCartResultLiveData.value = AddToCartDataResult(
+                requestParams = AddToCartBundleRequestParams(
+                    bundleId = selectedBundleId.toString()
+                ),
+                responseResult = AddToCartBundleDataModel()
+            )
         }
         return isAddToCartInputValid
     }
