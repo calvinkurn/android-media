@@ -27,6 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_timer_label"
         app:timer_unify_highlight_size="small"
-        app:timer_unify_highlight_variant="light_red" />
+        app:timer_unify_highlight_variant="alternate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
