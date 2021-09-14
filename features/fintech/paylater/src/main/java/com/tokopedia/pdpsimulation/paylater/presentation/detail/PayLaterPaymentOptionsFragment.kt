@@ -147,12 +147,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name
-            if(!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+            if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
                 tvSmallSubTitlePaylaterPartner.visible()
                 tvSmallSubTitlePaylaterPartner.text = data.gateway_detail?.smallSubHeader
+            } else {
+                tvSmallSubTitlePaylaterPartner.gone()
             }
-            else
-            {tvSmallSubTitlePaylaterPartner.gone()}
             whyText.text =
                 resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}"
             if (data.tenure != 1 && data.tenure != 0)
@@ -169,14 +169,11 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
 
-            tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader?:""
-            if(!data.gateway_detail?.smallSubHeader.isNullOrEmpty())
-            {
+            tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
+            if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
                 serviceFeeInfoText.visible()
                 serviceFeeInfoText.text = data.gateway_detail?.smallSubHeader
-            }
-            else
-            {
+            } else {
                 serviceFeeInfoText.gone()
 
             }
