@@ -58,6 +58,7 @@ class GetProfileDataUseCase @Inject constructor(
             var walletAppData: WalletAppData? = null
             var isWalletAppError: Boolean = false
             var isSaldoError: Boolean = false
+            var isShopDataError: Boolean = false
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -122,8 +123,12 @@ class GetProfileDataUseCase @Inject constructor(
                 }
             }
 
-            shopData =
-                (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
+            val shopJob = getShopInfoCall.await()
+            if (shopJob is Success) {
+                shopData = (shopJob as? Success<ShopData>)?.data
+            } else if (shopJob is Fail) {
+                isShopDataError = true
+            }
 
             accountHeaderMapper.mapToHeaderModel(
                 userInfoData,
@@ -137,7 +142,8 @@ class GetProfileDataUseCase @Inject constructor(
                 walletAppData = walletAppData,
                 isWalletAppError = isWalletAppError,
                 isEligibleForWalletApp = isEligibleForWalletApp,
-                isSaldoError = isSaldoError
+                isSaldoError = isSaldoError,
+                isShopDataError = isShopDataError
             )
         }
     }

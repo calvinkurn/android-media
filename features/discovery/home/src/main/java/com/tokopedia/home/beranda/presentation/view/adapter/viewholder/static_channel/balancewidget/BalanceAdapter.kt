@@ -135,6 +135,7 @@ class BalanceAdapter(
              */
             itemView.home_iv_logo_shimmering.show()
             itemView.home_progress_bar_balance_layout.show()
+            itemView.home_tv_btn_action_balance.show()
 
             animationJob?.cancel()
 
@@ -500,6 +501,8 @@ class BalanceAdapter(
                 renderTagAttribute(tagAttr, textView)
             } else if (textAttr != null && textAttr.text.isNotEmpty()) {
                 renderTextAttribute(textAttr, textView)
+            } else if ((tagAttr == null && textAttr == null) || (tagAttr != null && tagAttr.text.isEmpty()) || (textAttr != null && textAttr.text.isEmpty())) {
+                textView.gone()
             }
         }
 

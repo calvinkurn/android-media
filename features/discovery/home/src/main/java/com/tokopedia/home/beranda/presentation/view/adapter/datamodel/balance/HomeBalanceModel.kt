@@ -171,7 +171,8 @@ data class HomeBalanceModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
             defaultIconRes = R.drawable.ic_gopay_default,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR
         )
     }
 
@@ -180,7 +181,8 @@ data class HomeBalanceModel(
             drawerItemType = TYPE_WALLET_OVO,
             defaultIconRes = R.drawable.wallet_ic_ovo_home,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR
         )
     }
 
@@ -189,7 +191,8 @@ data class HomeBalanceModel(
             drawerItemType = TYPE_FREE_ONGKIR,
             defaultIconRes = R.drawable.ic_new_bbo,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR
         )
     }
 
@@ -198,7 +201,8 @@ data class HomeBalanceModel(
             drawerItemType = TYPE_TOKOPOINT,
             defaultIconRes = R.drawable.ic_new_tokopoints,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR
         )
     }
 
@@ -207,7 +211,8 @@ data class HomeBalanceModel(
             drawerItemType = TYPE_REWARDS,
             defaultIconRes = R.drawable.ic_new_points,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
+            state = STATE_ERROR
         )
     }
 

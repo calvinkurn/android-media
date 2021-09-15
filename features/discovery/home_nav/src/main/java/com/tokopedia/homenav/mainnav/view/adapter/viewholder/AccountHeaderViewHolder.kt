@@ -79,6 +79,8 @@ class AccountHeaderViewHolder(itemView: View,
 
         private const val ANIMATION_DURATION_MS: Long = 300
         private const val GREETINGS_DELAY = 1000L
+
+        private const val DEFAULT_BALANCE_VALUE = "0"
     }
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
@@ -268,21 +270,25 @@ class AccountHeaderViewHolder(itemView: View,
                     element.profileWalletAppDataModel.let { walletAppModel ->
                         when {
                             walletAppModel.isWalletAppLinked -> {
-                                if (walletAppModel.gopayBalance.isNotEmpty()
-                                        && walletAppModel.gopayPointsBalance.isNotEmpty()) {
-                                    tvOvo.text = String.format(
-                                        itemView.context.getString(R.string.mainnav_wallet_app_format),
-                                        walletAppModel.gopayBalance,
-                                        walletAppModel.gopayPointsBalance
-                                    )
-                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
-                                } else {
+                                if (walletAppModel.gopayBalance.isEmpty()
+                                        && walletAppModel.gopayPointsBalance.isEmpty()) {
                                     /**
                                      * Handle wallet app error state
                                      */
                                     tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
+                                    btnTryAgain.visible()
                                     usrOvoBadge.gone()
                                     usrOvoBadgeShimmer.visible()
+                                } else {
+                                    val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
+                                    val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_VALUE
+
+                                    tvOvo.text = String.format(
+                                        itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                        gopayBalance,
+                                        gopayPointsBalance
+                                    )
+                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
                                 }
                             }
                             !walletAppModel.isWalletAppLinked -> {
@@ -364,23 +370,30 @@ class AccountHeaderViewHolder(itemView: View,
             } else if (profileSeller.isGetShopError) {
                 btnTryAgainShopInfo.visible()
                 tvShopInfo.visible()
-                tvShopTitle.visible()
+                tvShopTitle.gone()
                 shimmerShopInfo.gone()
                 tvShopNotif.gone()
 
                 tvShopInfo.text = getString(R.string.error_state_shop_info)
             } else if (!profileSeller.isGetShopError) {
+                tvShopInfo.visible()
+                tvShopTitle.visible()
+                tvShopNotif.visible()
+
+                btnTryAgainShopInfo.gone()
+                shimmerShopInfo.gone()
+
                 val shopTitle: String
-                val shopInfo: String
+                val shopInfo: CharSequence
                 if (!profileSeller.hasShop){
                     shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName).toString()
+                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
                 } else if (!profileSeller.adminRoleText.isNullOrEmpty()) {
                     shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
                     shopInfo = profileSeller.adminRoleText.orEmpty()
                 } else {
                     shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName).toString()
+                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
                 }
                 tvShopTitle.run {
                     visible()
@@ -388,7 +401,7 @@ class AccountHeaderViewHolder(itemView: View,
                 }
                 tvShopInfo.run {
                     visible()
-                    setText(shopInfo, TextView.BufferType.SPANNABLE)
+                    text = shopInfo
                     setOnClickListener {
                         if (profileSeller.hasShop)
                             onShopClicked(profileSeller.canGoToSellerAccount)
@@ -398,9 +411,8 @@ class AccountHeaderViewHolder(itemView: View,
                         }
                     }
                 }
-                val str = tvShopInfo.text as Spannable
-                str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tvShopInfo.setWeight(Typography.BOLD)
                 if (profileSeller.shopOrderCount > 0) {
                     tvShopNotif.visible()
                     tvShopNotif.setNotification(profileSeller.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
