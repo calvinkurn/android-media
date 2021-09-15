@@ -274,10 +274,11 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult) {
+                        val url = linkerShareData.url ?: return
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
-                        val shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
+                        val shareString = productData.getTextDescription(activity.applicationContext, url)
                         shareModel.subjectName = productData.productName ?: ""
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
                         if (isLog) {
