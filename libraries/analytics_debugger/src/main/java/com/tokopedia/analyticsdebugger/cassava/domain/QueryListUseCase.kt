@@ -32,9 +32,9 @@ class QueryListUseCase @Inject constructor(
                     val cassavaRegexList: MutableList<Pair<Int, Map<String, Any>>> = arrayListOf()
 
                     it.regexData.map { regex ->
-                        if (regex.dataLayerId > 15000) {
+//                        if (regex.dataLayerId > 15000) {
                             cassavaRegexList.add(Pair(regex.dataLayerId, regex.dataLayer))
-                        }
+//                        }
                     }
 
                     CassavaQuery(

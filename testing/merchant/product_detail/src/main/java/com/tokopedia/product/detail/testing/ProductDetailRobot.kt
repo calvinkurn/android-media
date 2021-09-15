@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import org.hamcrest.Description
 import org.hamcrest.core.AllOf
 
@@ -77,7 +78,8 @@ class ProductDetailRobot {
     fun clickVariantAtPosition(position: Int = 0) {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rvContainerVariant))), ViewActions.scrollTo()))
 //        val viewInteraction = onView(AllOf.allOf(withId(R.id.rvContainerVariant))).check(matches(ViewMatchers.isDisplayed()))
-//        onView(AllOf.allOf(withId(R.id.rvContainerVariant))).perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(position, CommonActions.clickChildViewWithId(com.tokopedia.variant_common.R.id.containerChipVariant)))
+        onView(withId(R.id.rvContainerVariant)).check(matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.rvContainerVariant)).perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(position, click()))
     }
 }
 
