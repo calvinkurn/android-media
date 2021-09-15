@@ -110,7 +110,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
     }
     private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
-        BuyerOrderDetailStickyActionButtonHandler(bottomSheetManager, cacheManager, getCartId(), navigator, viewModel)
+        BuyerOrderDetailStickyActionButtonHandler(
+            bottomSheetManager,
+            cacheManager,
+            navigator,
+            viewModel
+        )
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
@@ -182,15 +187,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
-        trackBuyAgainProduct(listOf(product))
+        trackBuyAgainProduct()
     }
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
-    }
-
-    private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "") ?: ""
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -488,14 +489,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
+    private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-                products,
-                viewModel.getOrderId(),
-                getCartId(),
-                viewModel.getShopId(),
-                viewModel.getShopName(),
-                viewModel.getShopType(),
-                viewModel.getUserId())
+            viewModel.getOrderId(),
+            viewModel.getUserId()
+        )
     }
 }
