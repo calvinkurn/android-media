@@ -232,8 +232,9 @@ class SingleProductBundleFragment(
                 setPrimaryCTAText(primaryText)
                 setSecondaryCTAText(getString(R.string.action_back))
                 dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-                setSecondaryCTAClickListener { dismiss() }
+                setSecondaryCTAClickListener { activity?.finish() }
                 setPrimaryCTAClickListener {
+                    dismiss()
                     refreshPage()
                 }
             }.let {
