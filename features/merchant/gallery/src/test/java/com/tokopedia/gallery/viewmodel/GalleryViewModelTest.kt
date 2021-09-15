@@ -1,7 +1,7 @@
 package com.tokopedia.gallery.viewmodel
 
-import com.tokopedia.gallery.networkmodel.ProductrevGetReviewImage
 import com.tokopedia.gallery.networkmodel.ProductrevGetReviewImageResponse
+import com.tokopedia.gallery.uimodel.GalleryData
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,13 +18,14 @@ class GalleryViewModelTest : GalleryViewModelTestFixture() {
         val productId = ArgumentMatchers.anyString()
         val page = ArgumentMatchers.anyInt()
         val expectedResponse = ProductrevGetReviewImageResponse()
+        val expectedLiveDataValue = GalleryData(listOf(), false)
 
         onGetReviewImagesSuccess_thenReturn(expectedResponse)
 
         viewModel.setPage(productId, page)
 
         verifyGetReviewImagesUseCaseExecuted()
-        verifyReviewImagesSuccessEquals(Success(expectedResponse.productrevGetReviewImage))
+        verifyReviewImagesSuccessEquals(Success(expectedLiveDataValue))
     }
 
     @Test
@@ -53,7 +54,7 @@ class GalleryViewModelTest : GalleryViewModelTestFixture() {
         coVerify { getReviewImagesUseCase.executeOnBackground() }
     }
 
-    private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<ProductrevGetReviewImage>) {
+    private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<GalleryData>) {
         viewModel.reviewImages.verifySuccessEquals(expectedSuccessValue)
     }
 
