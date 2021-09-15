@@ -64,6 +64,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultVie
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.view.decoration.RepurchaseGridItemDecoration
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
@@ -79,6 +80,7 @@ class TokoNowRecentPurchaseFragment:
     TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
+    RepurchaseEmptyStateNoHistoryListener,
     SortFilterListener
 {
 
@@ -112,7 +114,8 @@ class TokoNowRecentPurchaseFragment:
                 tokoNowCategoryGridListener = this,
                 tokoNowEmptyStateNoResultListener = this,
                 tokoNowRecommendationCarouselListener = this,
-                sortFilterListener = this
+                emptyStateNoHistorylistener = this,
+                sortFilterListener = this,
             ),
             RecentPurchaseListDiffer()
         )
@@ -201,6 +204,10 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun goToTokopediaNowHome() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onClickEmptyStateNoHistoryBtn() {
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
