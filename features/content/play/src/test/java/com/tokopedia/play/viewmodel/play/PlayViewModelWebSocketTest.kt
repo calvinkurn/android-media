@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.play.data.Voucher
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
@@ -10,12 +11,12 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isEqualToIgnoringFields
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.websocket.response.*
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -303,6 +304,54 @@ class PlayViewModelWebSocketTest {
                         val counter = i+1
                         (productTag.productList[i] as PlayProductUiModel.Product).title.isEqualTo("$mockName $counter")
                         (productTag.productList[i] as PlayProductUiModel.Product).id.isEqualTo("$counter")
+                    }
+                }
+                else -> {
+                    fail(Exception("Model should be PlayProductTagsUiModel.Complete"))
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when get merchant voucher from web socket, then it should update the current pinned voucher`() {
+        val pinnedModelBuilder = PlayPinnedModelBuilder()
+        val productTagModelBuilder = PlayProductTagsModelBuilder()
+
+        val pinnedProductObserver: Observer<PinnedProductUiModel> = mockk(relaxed = true)
+        every { pinnedProductObserver.onChanged(any()) }.just(Runs)
+
+        val mockSize = 3
+        val mockTitle = "Diskon Testing"
+        val mockVoucher = productTagModelBuilder.buildCompleteData(
+            voucherList = List(mockSize) {
+                productTagModelBuilder.buildMerchantVoucher(
+                    title = "$mockTitle ${it+1}%"
+                )
+            }
+        )
+        val mockData = pinnedModelBuilder.buildPinnedProduct(
+            productTags = mockVoucher
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observablePinnedProduct.observeForever(pinnedProductObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayMerchantVoucherSocketResponse.generateResponse(size = 3, title = mockTitle))
+        } thenVerify {
+            when(val merchantVoucher = viewModel.observablePinnedProduct.value?.productTags) {
+                is PlayProductTagsUiModel.Complete -> {
+                    val mockMerchantVoucher = (mockData.productTags as PlayProductTagsUiModel.Complete).voucherList
+                    merchantVoucher.voucherList.forEachIndexed { index, playVoucherUiModel ->
+                        (playVoucherUiModel as MerchantVoucherUiModel).isEqualToIgnoringFields(mockMerchantVoucher[index], MerchantVoucherUiModel::impressHolder)
                     }
                 }
                 else -> {
