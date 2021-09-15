@@ -6,17 +6,23 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.LinearLayout
 
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.remote_config.KeyValueListener
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class KeyValueListAdapter(val listener: KeyValueListener) : Adapter<KeyValueListAdapter.RemoteConfigItemViewHolder>() {
+class KeyValueListAdapter(val listener: KeyValueListener) : Adapter<KeyValueListAdapter.RemoteConfigItemViewHolder>(), Filterable {
 
     private var configListData = arrayListOf<Pair<String, String>>()
+    private var configFilterListData = arrayListOf<Pair<String, String>>()
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RemoteConfigItemViewHolder {
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        viewType: Int
+    ): RemoteConfigItemViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
         val view: View = inflater.inflate(R.layout.remote_config_list_item, viewGroup, false)
 
@@ -35,13 +41,18 @@ class KeyValueListAdapter(val listener: KeyValueListener) : Adapter<KeyValueList
         if (listData.isNotEmpty()) {
             configListData.clear()
 
-            for (configKey: String in listData) {
-                val configValue = remoteConfig?.getString(configKey) ?: ""
-
-                configListData.apply { add(Pair(configKey, configValue)) }
-            }
+            setConfigList(remoteConfig, listData)
 
             notifyDataSetChanged()
+        }
+    }
+
+    private fun setConfigList(remoteConfig: RemoteConfig?, listData: Set<String>) {
+        for (configKey: String in listData) {
+            val configValue = remoteConfig?.getString(configKey) ?: ""
+            val remoteConfigData = Pair(configKey, configValue)
+            configListData.add(remoteConfigData)
+            configFilterListData.add(remoteConfigData)
         }
     }
 
@@ -74,4 +85,35 @@ class KeyValueListAdapter(val listener: KeyValueListener) : Adapter<KeyValueList
             valueTextView.text = itemData.second
         }
     }
+
+    private val searchFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filteredList: MutableList<Pair<String, String>> = mutableListOf()
+            if (constraint.isNullOrBlank()) {
+                filteredList.addAll(configFilterListData)
+            } else {
+                val searchedWords = constraint.toString().trim()
+                for ((key, value) in configFilterListData) {
+                    val isContainsKey = key.contains(searchedWords, true)
+                    val isContainsValue = value.contains(searchedWords, true)
+                    if (isContainsKey || isContainsValue) {
+                        filteredList.add(Pair(key, value))
+                    }
+                }
+            }
+            val filterResults = FilterResults()
+            filterResults.values = filteredList
+            return filterResults
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            configListData.clear()
+            (results?.values as? MutableList<Pair<String, String>>)?.let {
+                configListData.addAll(it)
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+    override fun getFilter(): Filter = searchFilter
 }
