@@ -6,15 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gallery.domain.GetReviewImagesUseCase
-import com.tokopedia.gallery.networkmodel.ProductrevGetReviewImage
-import com.tokopedia.gallery.networkmodel.ReviewDetail
-import com.tokopedia.gallery.networkmodel.ReviewGalleryImage
+import com.tokopedia.gallery.mapper.GalleryMapper
 import com.tokopedia.gallery.uimodel.GalleryData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 
 class GalleryViewModel @Inject constructor(
@@ -47,7 +44,7 @@ class GalleryViewModel @Inject constructor(
             _reviewImages.postValue(
                 Success(
                     GalleryData(
-                        convertNetworkResponseToImageReviewItemList(data.productrevGetReviewImage),
+                        GalleryMapper.convertNetworkResponseToImageReviewItemList(data.productrevGetReviewImage),
                         data.productrevGetReviewImage.hasNext
                     )
                 )
@@ -57,29 +54,5 @@ class GalleryViewModel @Inject constructor(
         }
     }
 
-    private fun convertNetworkResponseToImageReviewItemList(gqlResponse: ProductrevGetReviewImage): List<ImageReviewItem> {
-        val reviewMap = HashMap<String, ReviewDetail>()
-        val imageMap = HashMap<String, ReviewGalleryImage>()
 
-        gqlResponse.detail.reviewGalleryImages.map {
-            imageMap[it.attachmentId] = it
-        }
-
-        gqlResponse.detail.reviewDetail.map {
-            reviewMap[it.feedbackId] = it
-        }
-
-        return gqlResponse.reviewImages.map {
-            val image = imageMap[it.imageId]
-            val review = reviewMap[it.feedbackId]
-            ImageReviewItem(
-                it.feedbackId,
-                review?.createTimestamp ?: "",
-                review?.user?.fullName ?: "",
-                image?.thumbnailURL ?: "",
-                image?.fullsizeURL ?: "",
-                review?.rating ?: 0
-            )
-        }
-    }
 }
