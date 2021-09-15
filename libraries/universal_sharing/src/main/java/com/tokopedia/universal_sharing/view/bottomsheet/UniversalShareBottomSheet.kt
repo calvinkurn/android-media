@@ -233,8 +233,25 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null) {
-        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
-            ?: fragmentManager?.let { show(it, TAG) }
+        screenshotDetector?.detectScreenshots(fragment,
+            {fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }}, true, fragment.requireView())
+            ?: fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }
+    }
+
+    fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
+        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                fragment.lifecycle.removeObserver(this)
+                super.onDestroy(owner)
+            }
+        })
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -630,18 +647,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         clearData()
-        removeFile(savedImagePath)
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
-        removeFile(savedImagePath)
         super.onDismiss(dialog)
-    }
-
-    override fun onStop() {
-        removeFile(savedImagePath)
-        super.onStop()
     }
 }
