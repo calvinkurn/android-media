@@ -1,6 +1,5 @@
 package com.tokopedia.play.websocket.response
 
-import com.tokopedia.play.view.type.MerchantVoucherType
 
 /**
  * Created By : Jonathan Darwin on September 15, 2021

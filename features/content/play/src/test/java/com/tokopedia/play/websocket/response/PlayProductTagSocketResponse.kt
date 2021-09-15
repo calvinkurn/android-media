@@ -1,10 +1,5 @@
 package com.tokopedia.play.websocket.response
 
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.ProductPrice
-import com.tokopedia.play.view.type.ProductStock
-
 /**
  * Created By : Jonathan Darwin on September 15, 2021
  */
