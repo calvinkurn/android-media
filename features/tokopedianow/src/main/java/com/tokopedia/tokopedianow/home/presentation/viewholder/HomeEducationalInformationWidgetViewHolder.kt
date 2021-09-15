@@ -58,7 +58,7 @@ class HomeEducationalInformationWidgetViewHolder(
     override fun bind(element: HomeEducationalInformationWidgetUiModel) {
         if (element.state == HomeLayoutItemState.LOADED) {
             setupUi()
-            setStateEducationInformation()
+            listener?.onEducationInformationWidgetImpressed()
         }
     }
 
@@ -87,6 +87,7 @@ class HomeEducationalInformationWidgetViewHolder(
 
             laChevron?.setOnClickListener {
                 showBottomSheet()
+                listener?.onEducationInformationLottieClicked()
             }
         }
     }
@@ -101,12 +102,6 @@ class HomeEducationalInformationWidgetViewHolder(
         }
     }
 
-    private fun setStateEducationInformation() {
-        if (listener?.isEducationInformationLottieStopped() == false) {
-            listener.onEducationInformationWidgetImpressed()
-        }
-    }
-
     private fun showBottomSheet() {
         setupBasicButton()
         val bottomSheet = TokoNowHomeEducationalInformationBottomSheet.newInstance()
@@ -116,7 +111,8 @@ class HomeEducationalInformationWidgetViewHolder(
     }
 
     interface HomeEducationalInformationListener {
-        fun onEducationInformationWidgetImpressed()
         fun isEducationInformationLottieStopped(): Boolean
+        fun onEducationInformationLottieClicked()
+        fun onEducationInformationWidgetImpressed()
     }
 }

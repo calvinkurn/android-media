@@ -187,6 +187,7 @@ class TokoNowHomeFragment: Fragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollPosition = SparseIntArray()
+    private var hasEducationalInformationAppeared = false
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -466,11 +467,22 @@ class TokoNowHomeFragment: Fragment(),
         viewModelTokoNow.removeSharingEducationWidget(id)
     }
 
-    override fun onEducationInformationWidgetImpressed() {
+    override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
+
+    override fun onEducationInformationLottieClicked() {
         SharedPreferencesUtil.setEducationalInformationState(activity)
     }
 
-    override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
+    override fun onEducationInformationWidgetImpressed() {
+        hasEducationalInformationAppeared = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (!SharedPreferencesUtil.isEducationalInformationStopped(activity) && hasEducationalInformationAppeared) {
+            SharedPreferencesUtil.setEducationalInformationState(activity)
+        }
+    }
 
     private fun initInjector() {
         DaggerHomeComponent.builder()
