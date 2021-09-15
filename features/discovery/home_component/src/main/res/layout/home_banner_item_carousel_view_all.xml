@@ -40,24 +40,24 @@
             >
 
             <androidx.cardview.widget.CardView
-            android:id="@+id/card_image_view_all"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            app:cardCornerRadius="@dimen/dp_8"
-            android:layout_marginHorizontal="@dimen/dp_12"
-            app:cardElevation="@dimen/dp_0"
-            android:layout_gravity="bottom"
-            >
-
-            <ImageView
-                android:id="@+id/iv_gimmick_view_all"
+                android:id="@+id/card_image_view_all"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@color/Unify_N100"
-                android:scaleType="centerCrop"
-                />
+                android:layout_height="58dp"
+                app:cardCornerRadius="@dimen/dp_8"
+                android:layout_marginHorizontal="@dimen/dp_12"
+                app:cardElevation="@dimen/dp_0"
+                android:layout_gravity="bottom"
+                >
 
-        </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/iv_gimmick_view_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@color/Unify_N100"
+                    android:scaleType="centerCrop"
+                    />
+
+            </androidx.cardview.widget.CardView>
 
         </FrameLayout>
 

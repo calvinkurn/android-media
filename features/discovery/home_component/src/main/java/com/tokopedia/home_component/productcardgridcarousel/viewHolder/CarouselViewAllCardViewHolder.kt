@@ -21,10 +21,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 /**
  * created by Dhaba
  */
-class CarouselViewAllCardViewHolder(view: View,
-                                    private val channels: ChannelModel
-)
-    : AbstractViewHolder<CarouselViewAllCardDataModel>(view){
+class CarouselViewAllCardViewHolder(
+    view: View,
+    private val channels: ChannelModel
+) : AbstractViewHolder<CarouselViewAllCardDataModel>(view) {
 
     private val container: View by lazy { view.findViewById<ConstraintLayout>(R.id.container_banner_view_all) }
     private val imageHeading: ImageView by lazy { view.findViewById<ImageView>(R.id.iv_heading_view_all) }

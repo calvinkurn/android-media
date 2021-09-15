@@ -9,10 +9,10 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
  * created by Dhaba
  */
 class CarouselViewAllCardDataModel(
-        val applink: String = "",
-        val channelViewAllCard: ChannelViewAllCard = ChannelViewAllCard(),
-        val listener: CommonProductCardCarouselListener
-): Visitable<CommonCarouselProductCardTypeFactory> {
+    val applink: String = "",
+    val channelViewAllCard: ChannelViewAllCard = ChannelViewAllCard(),
+    val listener: CommonProductCardCarouselListener
+) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }
