@@ -15,7 +15,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.Description
 import org.hamcrest.core.AllOf
 
@@ -66,7 +65,7 @@ class ProductDetailRobot {
     fun clickLihatKeranjangBottomSheetAtc(pdpInterceptor: ProductDetailInterceptor? = null) {
         clickAtcNormal()
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
-        Thread.sleep(1500)
+        Thread.sleep(5000)
         onView(withId(R.id.recycler_view_add_to_cart_done)).perform(RecyclerViewActions.actionOnItemAtPosition<AddToCartDoneAddedProductViewHolder>(
                 0, CommonActions.clickChildViewWithId(R.id.button_go_to_cart)))
     }
@@ -77,8 +76,8 @@ class ProductDetailRobot {
 
     fun clickVariantAtPosition(position: Int = 0) {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rvContainerVariant))), ViewActions.scrollTo()))
-        val viewInteraction = onView(AllOf.allOf(withId(R.id.rvContainerVariant))).check(matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(position, CommonActions.clickChildViewWithId(R.id.containerChipVariant)))
+//        val viewInteraction = onView(AllOf.allOf(withId(R.id.rvContainerVariant))).check(matches(ViewMatchers.isDisplayed()))
+//        onView(AllOf.allOf(withId(R.id.rvContainerVariant))).perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(position, CommonActions.clickChildViewWithId(com.tokopedia.variant_common.R.id.containerChipVariant)))
     }
 }
 

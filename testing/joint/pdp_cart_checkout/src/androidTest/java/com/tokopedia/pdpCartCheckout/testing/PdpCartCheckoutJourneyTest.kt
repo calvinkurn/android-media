@@ -1,17 +1,18 @@
 package com.tokopedia.pdpCartCheckout.testing
 
 import android.content.Context
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.testing.interceptor.AtcInterceptor
 import com.tokopedia.cart.testing.robot.CartPageMocks
 import com.tokopedia.cart.testing.robot.cartPage
+import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.checkout.testing.R
 import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.product.detail.testing.ProductDetailIntentRule
 import com.tokopedia.product.detail.testing.ProductDetailInterceptor
-import com.tokopedia.product.detail.testing.ProductDetailRobot
+import com.tokopedia.product.detail.testing.RESPONSE_P1_PATH
+import com.tokopedia.product.detail.testing.RESPONSE_P2_DATA_PATH
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -24,16 +25,22 @@ import org.junit.Test
 class PdpCartCheckoutJourneyTest {
 
     @get:Rule
-    var activityRule = ProductDetailIntentRule()
+    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java,
+            false,
+            false) {}
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule()
+    var cassavaRule = CassavaTestRule(true, false)
+
+    private val productDetailInterceptor = ProductDetailInterceptor()
 
     @Before
     fun setup() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        productDetailInterceptor.customP1ResponsePath = RESPONSE_P1_PATH
+        productDetailInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_PATH
         GraphqlClient.reInitRetrofitWithInterceptors(
                 listOf(MockInterceptor(
                         object : MockModelConfig() {
@@ -47,21 +54,22 @@ class PdpCartCheckoutJourneyTest {
                                 addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), FIND_BY_CONTAINS)
                                 return this
                             }
-                        }
-                ), AtcInterceptor(context), ProductDetailInterceptor()),
+                        }.createMockModel(context)
+                ), AtcInterceptor(context), productDetailInterceptor),
                 context)
     }
 
     @Test
     fun loadCartAndGoToShipment_PassedAnalyticsTest() {
+//        activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
         activityRule.launchActivity(null)
 
-        ProductDetailRobot().apply {
-//            clickBeli()
-            Thread.sleep(10_000)
-//            Espresso.pressBack()
-            clickLihatKeranjangBottomSheetAtc()
-        }
+//        ProductDetailRobot().apply {
+////            clickBeli()
+//            Thread.sleep(5_000)
+////            Espresso.pressBack()
+//            clickLihatKeranjangBottomSheetAtc()
+//        }
 
         cartPage {
             waitForData()
@@ -80,7 +88,7 @@ class PdpCartCheckoutJourneyTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            hasPassedAnalytics(cassavaRule, "44")
         }
     }
 
