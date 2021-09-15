@@ -52,9 +52,13 @@ class AccountHeaderMapper(
                     data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
                 }
                 saldoPojo?.let {
-                    data.setSaldoData(
-                            saldo = convertPriceValueToIdrFormat(it.saldo.buyerUsable + it.saldo.sellerUsable, false) ?: ""
-                    )
+                    val totalSaldo = it.saldo.buyerUsable + it.saldo.sellerUsable
+                    if (totalSaldo > 0) {
+                        val saldoValue = convertPriceValueToIdrFormat(totalSaldo, false) ?: ""
+                        data.setSaldoData(
+                            saldo =saldoValue
+                        )
+                    }
                 }
                 userMembershipPojo?.let {
                     data.setUserBadge(

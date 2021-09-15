@@ -73,7 +73,7 @@ data class AccountHeaderDataModel(
         this.profileOvoDataModel.isGetOvoError = false
     }
 
-    fun setSaldoData(saldo: String) {
+    fun setSaldoData(saldo: String = "") {
         this.profileSaldoDataModel.saldo = saldo
         this.profileSaldoDataModel.isGetSaldoError = false
     }

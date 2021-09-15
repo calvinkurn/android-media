@@ -235,8 +235,12 @@ class AccountHeaderViewHolder(itemView: View,
                     usrSaldoBadgeShimmer.invisible()
                     tvSaldoShimmer.invisible()
                     usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
-                    tvSaldo.text = profileSaldo.saldo
-                    sectionSaldo.visible()
+                    if (profileSaldo.saldo.isEmpty()) {
+                        sectionSaldo.gone()
+                    } else {
+                        tvSaldo.text = profileSaldo.saldo
+                        sectionSaldo.visible()
+                    }
                 }
             }
         }
