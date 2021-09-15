@@ -24,6 +24,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
+import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
@@ -326,9 +328,11 @@ class OtherMenuViewHolder(
     private fun setupShopInfoClickListener() {
         headerShopNameTextView?.setOnClickListener {
             listener.onShopInfoClicked()
+            sendClickShopNameTracking()
         }
         headerShopNextButton?.setOnClickListener {
             listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
         }
         shopAvatarImage?.setOnClickListener {
             NewOtherMenuTracking.sendEventClickShopAvatar()
@@ -336,9 +340,11 @@ class OtherMenuViewHolder(
         }
         shopNameTextView?.setOnClickListener {
             listener.onShopInfoClicked()
+            sendClickShopNameTracking()
         }
         shopNextButton?.setOnClickListener {
             listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
         }
     }
 

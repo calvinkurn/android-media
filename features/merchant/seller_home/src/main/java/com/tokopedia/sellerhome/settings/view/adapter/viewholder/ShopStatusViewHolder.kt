@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking.sendEventClickShopStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
@@ -49,6 +50,8 @@ class ShopStatusViewHolder(itemView: View?,
     private val errorLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_status)
 
+    private var onItemViewClicked: () -> Unit = {}
+
     override fun bind(element: ShopStatusWidgetUiModel) {
         when(val state = element.state) {
             is SettingResponseState.SettingSuccess -> {
@@ -70,6 +73,11 @@ class ShopStatusViewHolder(itemView: View?,
             is ShopType.OfficialStore -> setOfficialStoreLayout()
         }
 
+        itemView.setOnClickListener {
+            sendEventClickShopStatus(shopType)
+            onItemViewClicked()
+        }
+
         loadingLayout?.gone()
         errorLayout?.gone()
     }
@@ -86,7 +94,7 @@ class ShopStatusViewHolder(itemView: View?,
         warningIcon?.gone()
         successOsLayout?.gone()
 
-        itemView.setOnClickListener {
+        onItemViewClicked = {
             onGoToPowerMerchant(TAB_PM)
         }
     }
@@ -113,7 +121,7 @@ class ShopStatusViewHolder(itemView: View?,
         pmProIcon?.gone()
         successOsLayout?.gone()
 
-        itemView.setOnClickListener {
+        onItemViewClicked = {
             onGoToPowerMerchant(TAB_PM_PRO)
         }
     }
@@ -152,7 +160,7 @@ class ShopStatusViewHolder(itemView: View?,
         pmProIcon?.show()
         successOsLayout?.gone()
 
-        itemView.setOnClickListener {
+        onItemViewClicked = {
             onGoToPowerMerchant(TAB_PM_PRO)
         }
     }
@@ -162,7 +170,7 @@ class ShopStatusViewHolder(itemView: View?,
         hideAllShopStatusSuccessLayouts()
         loadingLayout?.gone()
         errorLayout?.gone()
-        itemView.setOnClickListener(null)
+        onItemViewClicked = {}
     }
 
     private fun setTitle(@StringRes titleStringRes: Int) {

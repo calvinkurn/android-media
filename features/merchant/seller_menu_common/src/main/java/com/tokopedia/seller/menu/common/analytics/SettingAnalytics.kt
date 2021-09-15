@@ -254,6 +254,21 @@ object NewOtherMenuTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+
+    fun sendEventClickShopStatus(shopType: ShopType) {
+        val eventAction =
+            "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_STATE} - ${shopType.mapToEventCategory()}"
+
+        val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.CLICK_NAVIGATION_DRAWER,
+            SettingTrackingConstant.OTHERS_TAB,
+            eventAction,
+            ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     fun sendEventClickShareButton(shopId: String, userId: String) {
         sendLainnyaShareEvent(
             shopId = shopId,

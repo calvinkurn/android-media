@@ -143,6 +143,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var canShowErrorToaster = true
+    private var canShowMultipleErrorToaster = true
 
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
@@ -638,7 +639,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun showMultipleErrorToaster() {
-        if (multipleErrorSnackbar == null || multipleErrorSnackbar?.isShown == false) {
+        if (multipleErrorSnackbar == null || canShowMultipleErrorToaster) {
             multipleErrorSnackbar =
                 view?.run {
                     Toaster.build(
@@ -652,7 +653,17 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     {
                         viewModel.reloadErrorData()
                         viewModel.onReloadErrorData()
-                    }
+                        canShowMultipleErrorToaster = true
+                    }.addCallback(object : Snackbar.Callback() {
+                        override fun onShown(sb: Snackbar?) {
+                            super.onShown(sb)
+                            canShowMultipleErrorToaster = false
+                        }
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            super.onDismissed(transientBottomBar, event)
+                            canShowMultipleErrorToaster = true
+                        }
+                    })
                 }
             multipleErrorSnackbar?.show()
         }
