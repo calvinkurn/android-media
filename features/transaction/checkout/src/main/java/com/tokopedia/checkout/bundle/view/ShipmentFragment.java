@@ -2337,6 +2337,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ProductDetailsItem productDetail = new ProductDetailsItem();
                             productDetail.setProductId(cartItemModel.getProductId());
                             productDetail.setQuantity(cartItemModel.getQuantity());
+                            long tmpBundleId = 0;
+                            try {
+                                tmpBundleId = Long.parseLong(cartItemModel.getBundleId());
+                            } catch (NumberFormatException e) {
+                            }
+                            productDetail.setBundleId(tmpBundleId);
                             productDetailsItems.add(productDetail);
                         }
                     }
@@ -2440,6 +2446,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         ProductDetail productDetail = new ProductDetail();
                         productDetail.setProductId(cartItemModel.getProductId());
                         productDetail.setQuantity(cartItemModel.getQuantity());
+                        long tmpBundleId = 0;
+                        try {
+                            tmpBundleId = Long.parseLong(cartItemModel.getBundleId());
+                        } catch (NumberFormatException e) {
+                        }
+                        productDetail.setBundleId(tmpBundleId);
                         productDetailsItems.add(productDetail);
                     }
                 }

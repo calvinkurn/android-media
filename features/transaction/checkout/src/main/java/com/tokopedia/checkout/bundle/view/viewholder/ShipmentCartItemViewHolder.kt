@@ -34,7 +34,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val productBundlingInfo: ConstraintLayout = itemView.findViewById(R.id.product_bundling_info)
     private val textBundleTitle: Typography = itemView.findViewById(R.id.text_bundle_title)
     private val textBundlePrice: Typography = itemView.findViewById(R.id.text_bundle_price)
-    private val labelBundleSlashPricePercentage: Label = itemView.findViewById(R.id.label_bundle_slash_price_percentage)
     private val textBundleSlashPrice: Typography = itemView.findViewById(R.id.text_bundle_slash_price)
     private val vBundlingProductSeparator: View = itemView.findViewById(R.id.v_bundling_product_separator)
     private val llFrameItemProductContainer: LinearLayout = itemView.findViewById(R.id.ll_frame_item_product_container)
@@ -222,12 +221,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             }
             textBundleTitle.text = cartItemModel.bundleTitle
             textBundlePrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false))
-            if (cartItemModel.bundleSlashPriceLabel.isNotBlank()) {
-                labelBundleSlashPricePercentage.text = cartItemModel.bundleSlashPriceLabel
-                labelBundleSlashPricePercentage.show()
-            } else {
-                labelBundleSlashPricePercentage.gone()
-            }
             textBundleSlashPrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false))
             textBundleSlashPrice.paintFlags = textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             productContainerLayoutParams.bottomMargin = 0

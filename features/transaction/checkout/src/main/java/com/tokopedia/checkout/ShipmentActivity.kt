@@ -2,14 +2,17 @@ package com.tokopedia.checkout
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
 import com.tokopedia.checkout.bundle.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.utils.Switch
 
 class ShipmentActivity : BaseCheckoutActivity() {
     private var shipmentFragment: ShipmentFragment? = null
+    private var oldShipmentFragment: com.tokopedia.checkout.old.view.ShipmentFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op
@@ -23,14 +26,23 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
         val bundle = intent.extras
-        shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
-        return shipmentFragment
+        if (Switch.isBundleToggleOn()) {
+            shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            return shipmentFragment
+        } else {
+            oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            return oldShipmentFragment
+        }
     }
 
     override fun onBackPressed() {
         if (shipmentFragment != null) {
             shipmentFragment?.onBackPressed()
             setResult(shipmentFragment?.resultCode ?: Activity.RESULT_CANCELED)
+            finish()
+        } else if (oldShipmentFragment != null) {
+            oldShipmentFragment?.onBackPressed()
+            setResult(oldShipmentFragment?.resultCode ?: Activity.RESULT_CANCELED)
             finish()
         } else {
             super.onBackPressed()

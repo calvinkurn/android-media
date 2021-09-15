@@ -324,7 +324,7 @@ object CartUiModelMapper {
                 parentId = if (product.parentId.isBlank() || product.parentId == "0") product.productId + cartDetail.bundleDetail.bundleId else product.parentId
                 isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
-                maxOrder = cartDetail.bundleDetail.bundleMaxOrder
+                maxOrder = min(cartDetail.bundleDetail.bundleMaxOrder, cartDetail.bundleDetail.bundleQuota)
                 quantity = product.productQuantity
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId

@@ -83,6 +83,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -2592,7 +2593,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_disabled_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_R600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_6"
+        tools:text="Produk Dilarang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_disabled_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_disabled_title"
+        app:typographyType="body_3"
+        tools:text="Tidak dapat dibeli di platform Android" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

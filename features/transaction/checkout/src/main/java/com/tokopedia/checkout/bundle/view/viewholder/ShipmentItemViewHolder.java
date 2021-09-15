@@ -117,7 +117,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ConstraintLayout productBundlingInfo;
     private Typography textBundleTitle;
     private Typography textBundlePrice;
-    private Label labelBundleSlashPricePercentage;
     private Typography textBundleSlashPrice;
     private LinearLayout llFrameItemProductContainer;
     private ConstraintLayout rlProductInfo;
@@ -166,7 +165,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgShopBadge;
     private LinearLayout llShippingOptionsContainer;
     private Ticker tickerProductError;
-    private FrameLayout flDisableContainer;
     private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
     private Typography tvTradeInShippingPriceTitle;
@@ -261,7 +259,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         productBundlingInfo = itemView.findViewById(R.id.product_bundling_info);
         textBundleTitle = itemView.findViewById(R.id.text_bundle_title);
         textBundlePrice = itemView.findViewById(R.id.text_bundle_price);
-        labelBundleSlashPricePercentage = itemView.findViewById(R.id.label_bundle_slash_price_percentage);
         textBundleSlashPrice = itemView.findViewById(R.id.text_bundle_slash_price);
         llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
@@ -312,7 +309,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         llShippingOptionsContainer = itemView.findViewById(R.id.ll_shipping_options_container);
         tickerProductError = itemView.findViewById(R.id.checkout_ticker_product_error);
-        flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
@@ -658,12 +654,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             textBundleTitle.setText(cartItemModel.getBundleTitle());
             textBundlePrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundlePrice(), false)));
-            if (cartItemModel.getBundleSlashPriceLabel().length() > 0) {
-                labelBundleSlashPricePercentage.setText(cartItemModel.getBundleSlashPriceLabel());
-                labelBundleSlashPricePercentage.setVisibility(View.VISIBLE);
-            } else {
-                labelBundleSlashPricePercentage.setVisibility(View.GONE);
-            }
             textBundleSlashPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundleOriginalPrice(), false)));
             textBundleSlashPrice.setPaintFlags(textBundleSlashPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             productContainerLayoutParams.bottomMargin = 0;
@@ -769,7 +759,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            tvExpandOtherProduct.setText(R.string.label_show_other_item_new);
+            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_show_other_item_count), cartItemModels.size()));
             ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
@@ -1277,7 +1267,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!cartItemModel.isError()) {
                 if (cartItemModel.isBundlingItem()) {
                     if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
-                        totalItemPrice += cartItemModel.getBundlePrice();
+                        totalItemPrice += (cartItemModel.getBundlePrice() * cartItemModel.getBundleQuantity());
                     }
                 } else {
                     totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
@@ -1773,7 +1763,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutWarningAndError.setVisibility(View.GONE);
             }
 
-            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);
             cbInsurance.setEnabled(false);
             llInsurance.setClickable(false);
@@ -1791,7 +1780,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);
 
-            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item));
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);

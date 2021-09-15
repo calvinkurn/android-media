@@ -340,9 +340,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 if (updateCartV2Data.data.outOfService.isOutOfService()) {
                     view.renderErrorToShipmentForm(updateCartV2Data.data.outOfService)
                 } else {
-                    view.renderErrorToShipmentForm(updateCartV2Data.data.message, if (updateCartV2Data.data.toasterAction.showCta) updateCartV2Data.data.toasterAction.text else "")
+                    view.renderErrorToShipmentForm(updateCartV2Data.data.error, if (updateCartV2Data.data.toasterAction.showCta) updateCartV2Data.data.toasterAction.text else "")
                 }
-                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.message), cartItemDataList)
+                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
         }
     }
@@ -466,7 +466,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     )
                 }.toList()
         )
-        summaryTransactionUiModel?.promoValue = lastApplyUiModel.benefitSummaryInfo.finalBenefitAmount
+        summaryTransactionUiModel?.promoValue = lastApplyUiModel.benefitSummaryInfo.finalBenefitAmount.toLong()
     }
 
     override fun reCalculateSubTotal(dataList: List<CartShopHolderData>) {
@@ -493,13 +493,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     private fun updateSummaryTransactionUiModel(subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, totalItemQty: Int, subtotalCashback: Double) {
         summaryTransactionUiModel?.qty = totalItemQty.toString()
         if (subtotalBeforeSlashedPrice == 0.0) {
-            summaryTransactionUiModel?.totalValue = subtotalPrice.toInt()
+            summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
         } else {
-            summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toInt()
+            summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
         }
-        summaryTransactionUiModel?.discountValue = (subtotalBeforeSlashedPrice - subtotalPrice).toInt()
-        summaryTransactionUiModel?.paymentTotal = subtotalPrice.toInt()
-        summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toInt()
+        summaryTransactionUiModel?.discountValue = (subtotalBeforeSlashedPrice - subtotalPrice).toLong()
+        summaryTransactionUiModel?.paymentTotal = subtotalPrice.toLong()
+        summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
     }
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
