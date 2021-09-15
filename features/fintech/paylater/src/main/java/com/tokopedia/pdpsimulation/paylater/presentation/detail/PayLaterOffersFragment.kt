@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -15,6 +16,7 @@ import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
@@ -177,6 +179,44 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
+    fun setViewPagerAdapterListner()
+    {
+        paymentOptionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+               val detail = pagerAdapter.getPaymentDetailByPosition(position)
+                detail?.let {
+                    onPageSelectedByUser(it)
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+        })
+    }
+
+    private fun onPageSelectedByUser(it: Detail) {
+        if(!it.isInvoke)
+        {
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                    it.gateway_detail?.name?:"",
+                    it.cta?.name ?: "",
+                    it.tenure ?: 0
+                )
+            )
+            it.isInvoke = true
+        }
+    }
 
     override fun getScreenName(): String {
         return "Detail Penawaran"
@@ -185,6 +225,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun renderTabAndViewPager() {
         context?.let {
             paymentOptionViewPager.adapter = pagerAdapter
+            setViewPagerAdapterListner()
             paymentOptionViewPager.pageMargin = PAGE_MARGIN.dpToPx(it.resources.displayMetrics)
         }
     }

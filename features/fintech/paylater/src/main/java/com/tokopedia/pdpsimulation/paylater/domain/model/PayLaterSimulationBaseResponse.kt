@@ -66,7 +66,8 @@ data class Detail(
     @SerializedName("disable") val disableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta?,
     @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?,
-    @SerializedName("service_fee_info") val serviceFeeInfo: String?
+    @SerializedName("service_fee_info") val serviceFeeInfo: String?,
+    var isInvoke:Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -81,6 +82,7 @@ data class Faq(
 
     @SerializedName("question") val question: String?,
     @SerializedName("answer") val answer: String?,
+
     var expandLayout: Boolean = false
 ) : Parcelable
 

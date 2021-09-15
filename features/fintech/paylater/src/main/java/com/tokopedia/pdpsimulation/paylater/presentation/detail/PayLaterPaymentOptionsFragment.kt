@@ -86,7 +86,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                                 urlToRedirect
                             )
                     }
-
+                    RedirectionType.NonClickable -> {
+                        btnHowToUse.isClickable = false
+                    }
                 }
 
             }
@@ -127,14 +129,6 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             responseData?.gateway_detail?.faq as ArrayList
         )
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-
-            it.sendAnalytics(
-                PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-                    responseData?.gateway_detail?.name ?: "",
-                    responseData?.cta?.name ?: "",
-                    responseData?.tenure ?: 0
-                )
-            )
 
             it.sendAnalytics(PdpSimulationEvent.PayLater.FaqImpression(responseData?.gateway_detail?.name ?: "",responseData?.tenure ?: 0))
            bundle.putString("partnerName",partnerName)

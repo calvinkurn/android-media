@@ -45,7 +45,15 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) :
 
     fun setPaymentData(paymentProductList: List<Detail>) {
         this.paymentProductList = paymentProductList
+
         notifyDataSetChanged()
+    }
+
+    fun getPaymentDetailByPosition(position: Int): Detail? {
+        return if (position < count) {
+            paymentProductList[position]
+        } else
+            null
     }
 
     override fun getPageWidth(position: Int): Float {
