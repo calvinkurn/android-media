@@ -6,6 +6,7 @@
     android:padding="@dimen/spacing_lvl2"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_2"
+    android:foreground="?attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
