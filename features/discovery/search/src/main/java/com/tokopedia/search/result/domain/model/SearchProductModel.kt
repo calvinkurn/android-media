@@ -418,7 +418,11 @@ data class SearchProductModel(
 
             @SerializedName("productViewUrl")
             @Expose
-            val productViewUrl: String = ""
+            val productViewUrl: String = "",
+
+            @SerializedName("tag")
+            @Expose
+            val tag: Int = 0,
     )
 
     data class ProductShop(

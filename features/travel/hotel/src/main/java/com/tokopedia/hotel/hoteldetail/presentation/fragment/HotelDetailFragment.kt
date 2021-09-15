@@ -66,6 +66,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.item_network_error_view.*
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -115,6 +116,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var loadingProgressDialog: ProgressDialog? = null
     private var isTickerValid = false
     private var isScrolled = false
+    private lateinit var hotelShare: HotelShare
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +126,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
+            val ctx = WeakReference<Activity>(this)
+            hotelShare = HotelShare(ctx)
         }
 
         arguments?.let {
@@ -434,8 +438,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
             trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
-            activity?.run {
-                HotelShare(this).shareEvent(propertyDetailData, isPromo,
+            if(::hotelShare.isInitialized) {
+                hotelShare.shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
                     requireContext())
@@ -780,7 +784,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         }
     }
-
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103

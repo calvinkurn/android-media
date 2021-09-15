@@ -244,6 +244,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
+    String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
@@ -399,6 +400,9 @@ public interface ApplinkConst {
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
+
+    String SHARING_HOST = "sharing";
+    String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";

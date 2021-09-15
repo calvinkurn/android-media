@@ -226,7 +226,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
-                        activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
+                        activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DATE_TICKET)
                         selectedDate = (date.time / DATE_MULTIPLICATION).toString()
                         bottomSheets.dismiss()
                         PACKAGES_ID = ""
