@@ -48,7 +48,7 @@ object SnapshotAnalytics {
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
 
     // others
-    private const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail- marketplace"
+    private const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
 
     private fun Bundle.appendGeneralEventData(
         eventName: String,

@@ -76,5 +76,5 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
 
     // others
-    const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail- marketplace"
+    const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
 }
