@@ -76,7 +76,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `validateAndAddToCart should return not selected toasterError`() = runBlocking {
-        viewModel.validateAndAddToCart("", listOf(
+        viewModel.validateAndAddToCart("", "", "", listOf(
             SingleProductBundleSelectedItem(
                 shopId = "123",
                 bundleId = "123",
@@ -92,7 +92,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `validateAndAddToCart should return variant not selected toasterError`() = runBlocking {
-        viewModel.validateAndAddToCart("", listOf(
+        viewModel.validateAndAddToCart("", "", "", listOf(
             SingleProductBundleSelectedItem(
                 shopId = "123",
                 bundleId = "123",
@@ -107,6 +107,29 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
     }
 
     @Test
+    fun `validateAndAddToCart using same selectedBundleId should invoke success addToCartResult`() = runBlocking {
+        val singleProductBundleSelectedItem = listOf(
+            SingleProductBundleSelectedItem(
+                shopId = "123",
+                bundleId = "123",
+                productId = "123",
+                quantity = 12,
+                isSelected = true,
+                isVariantEmpty = false
+            )
+        )
+
+        // if variant child changed
+        viewModel.validateAndAddToCart("", "123", "456", singleProductBundleSelectedItem)
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+
+        // if variant child not changed
+        viewModel.validateAndAddToCart("", "123", "123", singleProductBundleSelectedItem)
+        val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
+        assertEquals("123", addToCartResult.requestParams.bundleId)
+    }
+
+    @Test
     fun `validateAndAddToCart should throw Exception`() = runBlocking {
         // Given
         val exceptionMessage = "an error"
@@ -115,7 +138,8 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         } throws MessageErrorException(exceptionMessage)
 
         // When
-        viewModel.validateAndAddToCart("", generateSingleProductBundleSelectedItem())
+        viewModel.validateAndAddToCart("", "", "",
+            generateSingleProductBundleSelectedItem())
 
         // Then
         coVerify { addToCartBundleUseCase.executeOnBackground() }
@@ -140,7 +164,8 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // When
-        viewModel.validateAndAddToCart("", generateSingleProductBundleSelectedItem())
+        viewModel.validateAndAddToCart("", "", "",
+            generateSingleProductBundleSelectedItem())
 
         // Then
         coVerify { addToCartBundleUseCase.executeOnBackground() }
@@ -163,7 +188,8 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // When
-        viewModel.validateAndAddToCart("", generateSingleProductBundleSelectedItem())
+        viewModel.validateAndAddToCart("", "", "",
+            generateSingleProductBundleSelectedItem())
 
         // Then
         coVerify { addToCartBundleUseCase.executeOnBackground() }
