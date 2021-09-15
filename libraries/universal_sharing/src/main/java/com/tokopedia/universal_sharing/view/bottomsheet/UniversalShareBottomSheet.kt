@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Telephony
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -157,6 +158,26 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             screenshotDetector?.stop()
             clearData()
         }
+
+        fun removePreviousSavedImage(previousSavedImagePath: String, newSavedImagePath: String) {
+            if (!TextUtils.isEmpty(previousSavedImagePath) &&
+                !TextUtils.isEmpty(newSavedImagePath) &&
+                previousSavedImagePath != newSavedImagePath
+            ) {
+                removeFile(previousSavedImagePath)
+            }
+        }
+
+        private fun removeFile(filePath: String){
+            if (!TextUtils.isEmpty(filePath) &&
+                !filePath.contains(ScreenshotDetector.screenShotRegex)) {
+                File(filePath).apply {
+                    if (exists()) {
+                        delete()
+                    }
+                }
+            }
+        }
     }
 
     enum class MimeType(val type: String) {
@@ -265,7 +286,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    Handler().postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
                     }, DELAY_TIME_MILLISECOND)
                 }
@@ -566,6 +587,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             savedImagePath = screenShotImagePath
         }
         else {
+            removePreviousSavedImage(savedImagePath, imgPath)
             savedImagePath = imgPath
         }
     }
@@ -608,11 +630,18 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         clearData()
+        removeFile(savedImagePath)
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
+        removeFile(savedImagePath)
         super.onDismiss(dialog)
+    }
+
+    override fun onStop() {
+        removeFile(savedImagePath)
+        super.onStop()
     }
 }
