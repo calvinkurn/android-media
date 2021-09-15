@@ -1,4 +1,4 @@
-package com.tokopedia.shop.setting.view.viewmodel
+package com.tokopedia.shop.settings.setting.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,7 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.setting.view.model.ShopSettingAccess
+import com.tokopedia.shop.settings.setting.data.ShopSettingAccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

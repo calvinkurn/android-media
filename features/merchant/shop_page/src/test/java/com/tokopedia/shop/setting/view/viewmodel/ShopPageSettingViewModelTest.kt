@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.setting.view.model.ShopSettingAccess
+import com.tokopedia.shop.settings.setting.view.model.ShopSettingAccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,7 +41,7 @@ class ShopPageSettingViewModelTest {
     }
 
     private val viewModel by lazy {
-        ShopPageSettingViewModel(
+        com.tokopedia.shop.settings.setting.view.viewmodel.ShopPageSettingViewModel(
                 userSessionInterface,
                 getShopInfoUseCase,
                 authorizeAccessUseCaseProvider,
@@ -139,7 +139,7 @@ class ShopPageSettingViewModelTest {
 
         verifyAllCheckAdminUseCasesShouldBeCalled()
         assert(viewModel.shopSettingAccessLiveData.value == Success(
-                ShopSettingAccess(
+                com.tokopedia.shop.settings.setting.view.model.ShopSettingAccess(
                         mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible, mockIsEligible
                 )
         ))

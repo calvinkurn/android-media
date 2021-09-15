@@ -1,14 +1,14 @@
-package com.tokopedia.shop.setting.view.adapter
+package com.tokopedia.shop.settings.setting.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.R
-import com.tokopedia.shop.setting.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.shop.setting.view.adapter.viewholder.ProfileViewHolder
-import com.tokopedia.shop.setting.view.adapter.viewholder.ShippingViewHolder
-import com.tokopedia.shop.setting.view.adapter.viewholder.SupportViewHolder
-import com.tokopedia.shop.setting.view.model.*
+import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.setting.data.*
+import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProfileViewHolder
+import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ShippingViewHolder
+import com.tokopedia.shop.settings.setting.view.adapter.viewholder.SupportViewHolder
 
 class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemClickListener,
                              private val productItemClickListener: ProductItemClickListener,

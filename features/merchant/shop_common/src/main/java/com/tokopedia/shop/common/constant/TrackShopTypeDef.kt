@@ -1,7 +1,5 @@
-package com.tokopedia.shop.analytic.model
+package com.tokopedia.shop.common.constant
 
-import androidx.annotation.StringDef
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 

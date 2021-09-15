@@ -1,9 +1,9 @@
-package com.tokopedia.shop.setting.view.adapter.viewholder
+package com.tokopedia.shop.settings.setting.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.R
-import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
+import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
 
 class SupportViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

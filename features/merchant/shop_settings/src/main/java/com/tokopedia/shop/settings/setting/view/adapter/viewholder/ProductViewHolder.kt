@@ -1,10 +1,10 @@
-package com.tokopedia.shop.setting.view.adapter.viewholder
+package com.tokopedia.shop.settings.setting.view.adapter.viewholder
 
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.R
-import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
+import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
 
 class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

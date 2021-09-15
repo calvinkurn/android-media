@@ -1,4 +1,4 @@
-package com.tokopedia.shop.setting.view.fragment
+package com.tokopedia.shop.settings.setting.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,24 +25,24 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
-import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
-import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
-import com.tokopedia.shop.setting.view.model.*
-import com.tokopedia.shop.setting.view.viewmodel.ShopPageSettingViewModel
-import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.analytics.ShopPageTrackingShopPageSetting
+import com.tokopedia.shop.settings.analytics.model.CustomDimensionShopPageSetting
+import com.tokopedia.shop.settings.common.di.Constant
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.setting.data.*
+import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
+import com.tokopedia.shop.settings.setting.view.viewmodel.ShopPageSettingViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import javax.inject.Named
 
 class ShopPageSettingFragment : BaseDaggerFragment(),
         ShopPageSettingAdapter.ProfileItemClickListener,
@@ -72,8 +71,9 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     @Inject
+    @Named(Constant.SHOP_SETTING_VIEW_MODEL_FACTORY)
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var shopPageSettingViewModel: ShopPageSettingViewModel
+    private var shopPageSettingViewModel: ShopPageSettingViewModel? = null
 
     private lateinit var errorView: View
     private lateinit var dashboardView: View
@@ -85,27 +85,21 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.goldOS?.isGold == 1
-    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
-        CustomDimensionShopPage.create(shopId, isOfficial, isGold)
+    private val customDimensionShopPage: CustomDimensionShopPageSetting by lazy {
+        CustomDimensionShopPageSetting.create(shopId, isOfficial, isGold)
     }
 
-    private var shopPageSettingTracking: ShopPageTrackingShopPageSetting? = null
     private var remoteConfig: RemoteConfig? = null
 
     private var shopId: String? = null
     private var shopDomain: String? = null
     private var shopInfo: ShopInfo? = null
-    private var shopRef: String = ""
     private var shopSettingAccess = ShopSettingAccess()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         remoteConfig = FirebaseRemoteConfigImpl(activity)
-
-        activity?.let {
-            shopPageSettingTracking = ShopPageTrackingShopPageSetting(TrackingQueue(it))
-        }
 
         // get data from extra
         activity?.intent?.run {
@@ -129,10 +123,10 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         }
 
         activity?.run {
-            shopPageSettingViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageSettingViewModel::class.java)
+            shopPageSettingViewModel = ViewModelProvider(this, viewModelFactory).get(ShopPageSettingViewModel::class.java)
         }
 
-        shopPageSettingViewModel.shopInfoResp.observe(this, Observer {
+        shopPageSettingViewModel?.shopInfoResp?.observe(this, {
             when (it) {
                 is Success -> onSuccessGetShopInfo(it.data)
                 is Fail -> onErrorGetShopInfo(it.throwable)
@@ -184,7 +178,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     fun onBackPressed() {
-        shopPageSettingTracking?.clickBackArrow(true, customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickBackArrow(customDimensionShopPage)
     }
 
     override fun getScreenName(): String? {
@@ -192,7 +186,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        getComponent(ShopPageSettingComponent::class.java).inject(this)
+        getComponent(ShopSettingsComponent::class.java).inject(this)
     }
 
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -213,7 +207,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         } else {
             setViewState(VIEW_LOADING)
         }
-        shopPageSettingViewModel.getShop(shopId, shopDomain, isRefresh)
+        shopPageSettingViewModel?.getShop(shopId, shopDomain, isRefresh)
     }
 
     private fun setViewState(viewState: Int) {
@@ -241,7 +235,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Dashboard Toko
     private fun onDashboardClick() {
-        shopPageSettingTracking?.clickShopDashboard(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickShopDashboard(customDimensionShopPage)
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
         } else {
@@ -250,7 +244,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     private fun observeRoleAccess() {
-        shopPageSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
+        shopPageSettingViewModel?.shopSettingAccessLiveData?.observe(viewLifecycleOwner) { result ->
             if (result is Success) {
                 shopSettingAccess = result.data
             }
@@ -273,7 +267,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Ubah profil toko
     override fun onChangeProfileClicked() {
-        shopPageSettingTracking?.clickChangeShopProfile(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickChangeShopProfile(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
             RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
         }
@@ -281,7 +275,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Ubah catatan toko
     override fun onChangeShopNoteClicked() {
-        shopPageSettingTracking?.clickChangeShopNote(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickChangeShopNote(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isNotesAccessAuthorized) {
             RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
         }
@@ -289,7 +283,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Atur jam buka toko
     override fun onEditShopScheduleClicked() {
-        shopPageSettingTracking?.clickSetOpenShopTime(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickSetOpenShopTime(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
             RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
         }
@@ -297,7 +291,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Lihat daftar produk
     override fun onDisplayProductsClicked() {
-        shopPageSettingTracking?.clickSeeProduct(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickSeeProduct(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isProductManageAccessAuthorized) {
             RouteManager.route(activity, ApplinkConst.PRODUCT_MANAGE)
         }
@@ -305,7 +299,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
-        shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickAddAndEditEtalase(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isEtalaseAccessAuthorized) {
             context?.let {
                 val bundle = Bundle()
@@ -325,21 +319,18 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> if (resultCode == Activity.RESULT_OK && data != null) {
-                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
-                val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-
-                val intent = ShopProductListResultActivity.createIntent(
-                        activity,
-                        shopId,
-                        "",
-                        etalaseId,
-                        "",
-                        "",
-                        shopRef
-                )
-                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
-                startActivity(intent)
+                context?.let{
+                    val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+                    val shopPageProductListIntent = RouteManager.getIntent(
+                            it,
+                            ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST,
+                            shopId,
+                            etalaseId
+                    )
+                    shopPageProductListIntent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                    startActivity(shopPageProductListIntent)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -347,19 +338,19 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Pusat bantuan
     override fun onGetSupportClicked() {
-        shopPageSettingTracking?.clickPusatBantuan(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickPusatBantuan(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     // Pusat Seller
     override fun onGetTipsClicked() {
-        shopPageSettingTracking?.clickPusatSeller(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickPusatSeller(customDimensionShopPage)
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, SELLER_CENTER_URL))
     }
 
     // Tambah dan ubah lokasi toko
     override fun onEditLocationClicked() {
-        shopPageSettingTracking?.clickAddAndEditShopLocation(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickAddAndEditShopLocation(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isAddressAccessAuthorized) {
             RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
         }
@@ -367,7 +358,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Atur layanan pengiriman
     override fun onManageShippingServiceClicked() {
-        shopPageSettingTracking?.clickSetShippingService(customDimensionShopPage)
+        ShopPageTrackingShopPageSetting.clickSetShippingService(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isShipmentAccessAuthorized) {
             RouteManager.route(activity, ApplinkConst.SELLER_SHIPPING_EDITOR)
         }

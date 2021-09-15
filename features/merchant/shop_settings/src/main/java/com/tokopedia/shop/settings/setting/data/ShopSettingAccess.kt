@@ -1,4 +1,4 @@
-package com.tokopedia.shop.setting.view.model
+package com.tokopedia.shop.settings.setting.data
 
 data class ShopSettingAccess(
         val isAddressAccessAuthorized: Boolean = true,
