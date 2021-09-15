@@ -31,7 +31,7 @@ data class PMStatusUiModel(
     }
 
     fun isRegularMerchant(): Boolean =
-        status == PMStatusConst.INACTIVE || pmTier == PMTier.REGULAR
+        status == PMStatusConst.INACTIVE && pmTier == PMTier.REGULAR
 
     fun isPowerMerchant(): Boolean = status == PMStatusConst.ACTIVE || status == PMStatusConst.IDLE
 }
