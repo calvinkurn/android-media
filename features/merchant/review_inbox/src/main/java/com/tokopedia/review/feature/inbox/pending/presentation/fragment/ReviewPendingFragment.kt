@@ -43,6 +43,7 @@ import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponen
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
@@ -373,6 +374,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     hideFullPageLoading()
                     hideError()
                     hideLoading()
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                        with(it.data.credibilityWidget) {
+                            addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
+                        }
+                    }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showEmptyState()
                     } else {
@@ -469,6 +475,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             viewModel.getUserId(),
             INBOX_SOURCE
         )
+    }
+
+    private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(ReviewPendingCredibilityUiModel(imageUrl, title, subtitle))
     }
 
 }
