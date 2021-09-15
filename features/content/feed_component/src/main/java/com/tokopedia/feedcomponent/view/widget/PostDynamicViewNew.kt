@@ -708,8 +708,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+                            layoutLihatProdukParent.showWithCondition(products.isNotEmpty())
                             layoutLihatProdukParent.layoutTransition.apply {
-//                                enableTransitionType(LayoutTransition.CHANGING)
                                 setDuration(LayoutTransition.CHANGING,300)
                             }
 
@@ -1252,6 +1252,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+            layoutLihatProdukParent.showWithCondition(products.isNotEmpty())
             layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
 

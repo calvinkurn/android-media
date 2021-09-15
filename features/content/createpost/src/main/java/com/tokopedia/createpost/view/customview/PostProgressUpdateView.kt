@@ -13,12 +13,14 @@ import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.util.concurrent.TimeUnit
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -62,17 +64,28 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.text = context.getString(R.string.feed_content_progress_bar_failed_text)
         processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
-            processingText?.text = context.getString(R.string.feed_content_progress_bar_text)
-            processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-
-            val cacheManager = SaveInstanceCacheManager(this.context, draftId)
-            val viewModel: CreatePostViewModel = cacheManager.get(
-                CreatePostViewModel.TAG,
-                CreatePostViewModel::class.java
-            ) ?: CreatePostViewModel()
-            setCreatePostData(viewModel)
-            retryText?.gone()
+            retryPostingOnFeed(draftId)
         }
+    }
+
+    private fun retryPostingOnFeed(draftId: String){
+        processingText?.text = context.getString(R.string.feed_content_progress_bar_text)
+        processingText?.setTextColor(ContextCompat.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+
+        val cacheManager = SaveInstanceCacheManager(this.context, draftId)
+        val viewModel: CreatePostViewModel = cacheManager.get(
+            CreatePostViewModel.TAG,
+            CreatePostViewModel::class.java
+        ) ?: CreatePostViewModel()
+        setCreatePostData(viewModel)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            viewModel, TimeUnit.DAYS.toMillis(7)
+        )
+        cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
+        retryText?.gone()
+
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {
@@ -106,6 +119,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
                     val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
                     val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
+                    progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
                     if (firstIcon != null)
                         setFirstIcon(firstIcon)
                     setProgressUpdate(progress, maxCount)
