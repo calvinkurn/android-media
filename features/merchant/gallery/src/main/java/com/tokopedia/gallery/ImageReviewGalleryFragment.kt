@@ -16,9 +16,6 @@ import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
 import com.tokopedia.gallery.di.DaggerGalleryComponent
 import com.tokopedia.gallery.di.GalleryComponent
-import com.tokopedia.gallery.networkmodel.ProductrevGetReviewImage
-import com.tokopedia.gallery.networkmodel.ReviewDetail
-import com.tokopedia.gallery.networkmodel.ReviewGalleryImage
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
 import com.tokopedia.gallery.viewmodel.GalleryViewModel
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -51,7 +48,11 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         activity = getActivity() as ImageReviewGalleryActivity?
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_review_gallery_pdp, container, false)
     }
 
@@ -135,9 +136,17 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         }
     }
 
-    override fun handleItemResult(imageReviewItemList: List<ImageReviewItem>, isHasNextPage: Boolean) {
+    override fun handleItemResult(
+        imageReviewItemList: List<ImageReviewItem>,
+        isHasNextPage: Boolean
+    ) {
         renderList(imageReviewItemList, isHasNextPage)
-        activity?.let { it.bottomSheetImageReviewSlider?.onLoadDataSuccess(imageReviewItemList, isHasNextPage) }
+        activity?.let {
+            it.bottomSheetImageReviewSlider?.onLoadDataSuccess(
+                imageReviewItemList,
+                isHasNextPage
+            )
+        }
     }
 
     override fun handleErrorResult(e: Throwable) {
@@ -156,8 +165,12 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onSeeAllButtonClicked() {
         activity?.let {
             it.finish()
-            if (shouldGoToNewGallery())  {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, it.productId)
+            if (shouldGoToNewGallery()) {
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                    it.productId
+                )
             } else {
                 ImageReviewGalleryActivity.moveTo(it, it.productId)
             }
@@ -180,7 +193,8 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     private fun shouldGoToNewGallery(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
+                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
             ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         } catch (e: Exception) {
             false
@@ -190,35 +204,9 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     private fun observeReviewImages() {
         viewModel.reviewImages.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> handleItemResult(convertNetworkResponseToImageReviewItemList(it.data), it.data.hasNext)
+                is Success -> handleItemResult(it.data.reviewItems, it.data.hasNext)
                 is Fail -> handleErrorResult(it.throwable)
             }
         })
-    }
-
-    private fun convertNetworkResponseToImageReviewItemList(gqlResponse: ProductrevGetReviewImage): List<ImageReviewItem> {
-        val reviewMap = HashMap<String, ReviewDetail>()
-        val imageMap = HashMap<String, ReviewGalleryImage>()
-
-        gqlResponse.detail.reviewGalleryImages.map {
-            imageMap[it.attachmentId] = it
-        }
-
-        gqlResponse.detail.reviewDetail.map {
-            reviewMap[it.feedbackId] = it
-        }
-
-        return gqlResponse.reviewImages.map {
-            val image = imageMap[it.imageId]
-            val review = reviewMap[it.feedbackId]
-            ImageReviewItem(
-                it.feedbackId,
-                review?.createTimestamp ?: "",
-                review?.user?.fullName ?: "",
-                image?.thumbnailURL ?: "",
-                image?.fullsizeURL ?: "",
-                review?.rating ?: 0
-            )
-        }
     }
 }
