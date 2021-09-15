@@ -18,7 +18,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<Any?> {
+class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     @Inject
     lateinit var reputationTracking: ReputationTracking
@@ -30,7 +30,7 @@ class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<Any?> {
 
     override fun getNewFragment(): Fragment {
         var tab: Int = -1
-        var isFromApplink: Boolean = false
+        var isFromApplink = false
         var reputationId: String? = DEFAULT_REPUTATION_ID
         val intentData: Uri? = intent.data
         val intentExtras: Bundle? = intent.extras
@@ -72,19 +72,19 @@ class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<Any?> {
     }
 
     companion object {
-        const val ARGS_POSITION: String = "ARGS_POSITION"
+        private const val ARGS_POSITION: String = "ARGS_POSITION"
         const val ARGS_TAB: String = "ARGS_TAB"
         const val ARGS_IS_FROM_APPLINK: String = "ARGS_IS_FROM_APPLINK"
         const val REPUTATION_ID: String = "reputation_id"
-        val CACHE_PASS_DATA: String =
-            InboxReputationDetailActivity::class.java.name + "-passData"
+        val CACHE_PASS_DATA = InboxReputationDetailActivity::class.java.name + "-passData"
         const val DEFAULT_REPUTATION_ID: String = "0"
+
         fun getCallingIntent(
             context: Context?,
             adapterPosition: Int, tab: Int
         ): Intent {
-            val intent: Intent = Intent(context, InboxReputationDetailActivity::class.java)
-            val bundle: Bundle = Bundle()
+            val intent = Intent(context, InboxReputationDetailActivity::class.java)
+            val bundle = Bundle()
             bundle.putInt(ARGS_POSITION, adapterPosition)
             bundle.putInt(ARGS_TAB, tab)
             intent.putExtras(bundle)
@@ -95,8 +95,8 @@ class InboxReputationDetailActivity : BaseSimpleActivity(), HasComponent<Any?> {
             context: Context?,
             reputationId: String?
         ): Intent {
-            val intent: Intent = Intent(context, InboxReputationDetailActivity::class.java)
-            val bundle: Bundle = Bundle()
+            val intent = Intent(context, InboxReputationDetailActivity::class.java)
+            val bundle = Bundle()
             bundle.putString(REPUTATION_ID, reputationId)
             bundle.putBoolean(ARGS_IS_FROM_APPLINK, true)
             intent.putExtras(bundle)

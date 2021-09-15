@@ -53,7 +53,7 @@ class ReputationTracking @Inject constructor() {
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
                 ReputationTrackingConstant.CLICK_OVERFLOW_MENU,
-                orderId + " - " + productId + " - " + adapterPosition
+                "$orderId - $productId - $adapterPosition"
             )
         )
     }
@@ -64,7 +64,7 @@ class ReputationTracking @Inject constructor() {
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
                 ReputationTrackingConstant.CLICK_OVERFLOW_MENU_SHARE,
-                orderId + " - " + productId + " - " + adapterPosition
+                "$orderId - $productId - $adapterPosition"
             )
         )
     }
@@ -79,7 +79,7 @@ class ReputationTracking @Inject constructor() {
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
                 ReputationTrackingConstant.CLICK_SEE_REPLY_TEXT,
-                orderId + " - " + productId + " - " + adapterPosition
+                "$orderId - $productId - $adapterPosition"
             )
         )
     }
@@ -94,7 +94,7 @@ class ReputationTracking @Inject constructor() {
                 ReputationTrackingConstant.EVENT_ACTION,
                 "click - select reason on report abuse",
                 ReputationTrackingConstant.EVENT_LABEL,
-                "reason:" + reasonSelected,
+                "reason:$reasonSelected",
                 ReputationTrackingConstant.SCREEN_NAME,
                 ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
             )
@@ -111,7 +111,7 @@ class ReputationTracking @Inject constructor() {
                 ReputationTrackingConstant.EVENT_ACTION,
                 "click - kirim button reasons",
                 ReputationTrackingConstant.EVENT_LABEL,
-                "feedbackId" + feedbackId,
+                "feedbackId$feedbackId",
                 ReputationTrackingConstant.SCREEN_NAME,
                 ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
             )
@@ -147,10 +147,10 @@ class ReputationTracking @Inject constructor() {
         label: String?
     ): HashMap<String?, Any?> {
         val eventMap: HashMap<String?, Any?> = HashMap()
-        eventMap.put(ReputationTrackingConstant.EVENT, event)
-        eventMap.put(ReputationTrackingConstant.EVENT_CATEGORY, category)
-        eventMap.put(ReputationTrackingConstant.EVENT_ACTION, action)
-        eventMap.put(ReputationTrackingConstant.EVENT_LABEL, label)
+        eventMap[ReputationTrackingConstant.EVENT] = event
+        eventMap[ReputationTrackingConstant.EVENT_CATEGORY] = category
+        eventMap[ReputationTrackingConstant.EVENT_ACTION] = action
+        eventMap[ReputationTrackingConstant.EVENT_LABEL] = label
         return eventMap
     }
 }

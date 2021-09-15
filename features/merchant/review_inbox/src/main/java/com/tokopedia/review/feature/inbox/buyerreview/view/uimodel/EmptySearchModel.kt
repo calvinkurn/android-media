@@ -7,11 +7,11 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 /**
  * @author by nisie on 9/13/17.
  */
-class EmptySearchModel : Visitable<InboxReputationTypeFactory> {
-
-    var title: String? = null
-    var buttonText: String? = null
+class EmptySearchModel(
+    var title: String = "",
+    var buttonText: String = "",
     var buttonListener: View.OnClickListener? = null
+) : Visitable<InboxReputationTypeFactory> {
 
     override fun type(inboxReputationTypeFactory: InboxReputationTypeFactory): Int {
         return inboxReputationTypeFactory.type(this)

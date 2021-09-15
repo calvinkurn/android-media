@@ -8,13 +8,13 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
 /**
  * @author by nisie on 8/15/17.
  */
-class InboxReputationItemUiModel constructor(
+data class InboxReputationItemUiModel(
     val reputationId: String,
-    val revieweeName: String?,
-    val createTime: String?,
-    val revieweePicture: String?,
+    val revieweeName: String,
+    val createTime: String,
+    val revieweePicture: String,
     val reputationDaysLeft: String,
-    val invoice: String?,
+    val invoice: String,
     val reputationDataUiModel: ReputationDataUiModel,
     val role: Int,
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,

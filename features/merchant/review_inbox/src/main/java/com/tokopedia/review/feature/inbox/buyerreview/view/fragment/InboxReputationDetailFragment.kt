@@ -111,16 +111,16 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
                 InboxReputationDetailActivity.REPUTATION_ID,
                 "0"
             )
-        } else if (persistentCacheManager != null) {
+        } else {
             try {
                 val passModel: InboxReputationDetailPassModel? =
                     persistentCacheManager.get<InboxReputationDetailPassModel>(
                         InboxReputationDetailActivity.CACHE_PASS_DATA,
                         InboxReputationDetailPassModel::class.java
                     )
-                reputationId = passModel.reputationId
-                role = passModel.getRole()
-                setToolbar(passModel.getInvoice(), passModel.getCreateTime())
+                reputationId = passModel?.reputationId
+                role = passModel?.role
+                setToolbar(passModel?.invoice, passModel?.createTime)
             } catch (e: Exception) {
                 // Ignore cache expired exception
             }
@@ -247,7 +247,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         adapter?.addHeader(createHeaderModel(inboxReputationItemUiModel))
         adapter?.addList(list)
         adapter?.notifyDataSetChanged()
-        reputationTracking?.onSeeSellerFeedbackPage(orderId)
+        reputationTracking.onSeeSellerFeedbackPage(orderId)
     }
 
     override fun onErrorSendSmiley(errorMessage: String?) {
@@ -259,7 +259,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun finishLoadingDialog() {
-        if (progressDialog?.isShowing && (progressDialog != null) && (getContext() != null)) progressDialog?.dismiss()
+        if (progressDialog?.isShowing == true && (progressDialog != null) && (getContext() != null)) progressDialog?.dismiss()
     }
 
     override fun showRefresh() {
@@ -267,7 +267,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorRefreshInboxDetail(throwable: Throwable?) {
-        if (activity != null and getContext() != null) NetworkErrorHelper.showSnackbar(
+        NetworkErrorHelper.showSnackbar(
             activity, getErrorMessage(
                 (getContext())!!, (throwable)!!
             )
@@ -278,8 +278,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         inboxReputationViewModel: InboxReputationItemUiModel,
         list: List<Visitable<*>>
     ) {
-        if (!list.isEmpty() && list.get(0) is InboxReputationDetailItemUiModel) {
-            orderId = (list.get(0) as InboxReputationDetailItemUiModel).getOrderId()
+        if (list.isNotEmpty() && list.get(0) is InboxReputationDetailItemUiModel) {
+            orderId = (list.get(0) as InboxReputationDetailItemUiModel).orderId
         }
         adapter?.clearList()
         adapter?.addHeader(createHeaderModel(inboxReputationViewModel))
@@ -306,8 +306,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     private fun getTextDeadline(element: InboxReputationItemUiModel?): String {
         return (getContext()?.getString(R.string.deadline_prefix)
-                + " " + element.getReputationDaysLeft() + " " +
-                getContext()!!.getString(R.string.deadline_suffix))
+                + " " + element.reputationDaysLeft + " " +
+                context.getString(R.string.deadline_suffix))
     }
 
     override fun finishRefresh() {
@@ -318,8 +318,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         val listLocation: ArrayList<String?> = ArrayList()
         val listDesc: ArrayList<String?> = ArrayList()
         for (image: ImageUpload? in list!!) {
-            listLocation.add(image.getPicSrcLarge())
-            listDesc.add(image.getDescription())
+            listLocation.add(image.picSrcLarge)
+            listDesc.add(image.description)
         }
         startActivity(
             getCallingIntent(
@@ -356,18 +356,17 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFavoriteShop() {
-        adapter.getHeader().getRevieweeBadgeSellerUiModel().setIsFavorited(
-            if (adapter.getHeader().getRevieweeBadgeSellerUiModel().getIsFavorited() == 1) 0 else 1
-        )
+        adapter?.header?.revieweeBadgeSellerUiModel?.isFavorited =
+            if (adapter?.header?.revieweeBadgeSellerUiModel?.isFavorited == 1) 0 else 1
         adapter?.notifyItemChanged(0)
     }
 
     override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
-        presenter?.deleteReviewResponse(
-            element.getReviewId(),
-            element.getProductId(),
-            element.getShopId().toString(),
-            element.getReputationId().toString()
+        presenter.deleteReviewResponse(
+            element.reviewId,
+            element.productId,
+            element.shopId.toString(),
+            element.reputationId.toString()
         )
     }
 
@@ -383,9 +382,9 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         element: InboxReputationDetailItemUiModel,
         replyReview: String?
     ) {
-        presenter?.sendReplyReview(
-            element.getReputationId(), element.getProductId(),
-            element.getShopId(), element.getReviewId(), replyReview
+        presenter.sendReplyReview(
+            element.reputationId, element.productId,
+            element.shopId, element.reviewId, replyReview
         )
     }
 
@@ -412,17 +411,17 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         if (shareReviewDialog != null) {
             shareReviewDialog?.setModel(
                 ShareModel(
-                    element.getProductName(),
-                    element.getReview(),
-                    element.getProductUrl(),
-                    element.getProductAvatar()
+                    element.productName,
+                    element.review,
+                    element.productUrl,
+                    element.productAvatar
                 )
             )
             shareReviewDialog?.show()
         }
-        reputationTracking?.onClickShareMenuReviewTracker(
-            element.getOrderId(),
-            element.getProductId(),
+        reputationTracking.onClickShareMenuReviewTracker(
+            element.orderId,
+            element.productId,
             adapterPosition
         )
     }
@@ -488,7 +487,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             val dialog: Dialog = builder.create()
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.show()
-            reputationTracking!!.onClickSmileyShopReviewTracker(name, orderId)
+            reputationTracking.onClickSmileyShopReviewTracker(name, orderId)
         }
     }
 
@@ -523,9 +522,9 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
-        reputationTracking!!.onClickReviewOverflowMenuTracker(
-            inboxReputationDetailItemUiModel.getOrderId(),
-            inboxReputationDetailItemUiModel.getProductId(),
+        reputationTracking.onClickReviewOverflowMenuTracker(
+            inboxReputationDetailItemUiModel.orderId,
+            inboxReputationDetailItemUiModel.productId,
             adapterPosition
         )
     }
@@ -536,7 +535,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private val smileySuffixMessage: String
-        private get() {
+        get() {
             return getString(R.string.smiley_prompt_suffix_shop)
         }
 
@@ -546,7 +545,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         }
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage()
-            activity!!.setResult(Activity.RESULT_OK)
+            activity?.setResult(Activity.RESULT_OK)
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(
                 activity,
@@ -556,10 +555,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        presenter.refreshPage(
-            reputationId,
-            arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-        )
+        arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)?.let {
+            presenter.refreshPage(
+                reputationId,
+                it
+            )
+        }
     }
 
     override fun onDestroyView() {

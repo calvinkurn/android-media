@@ -30,6 +30,7 @@ import javax.inject.Inject
  */
 class InboxReputationReportFragment : BaseDaggerFragment(),
     InboxReputationReport.View {
+
     private var sendButton: Button? = null
     private var reportRadioGroup: RadioGroup? = null
     private var otherRadioButton: RadioButton? = null
@@ -37,15 +38,14 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     private var saraRadioButton: RadioButton? = null
     private var otherReason: EditText? = null
     private var progressDialog: ProgressDialog? = null
-    private var feedbackId: String? = null
+    private var feedbackId = ""
 
-    @kotlin.jvm.JvmField
     @Inject
-    var presenter: InboxReputationReportPresenter? = null
+    lateinit var presenter: InboxReputationReportPresenter
 
-    @kotlin.jvm.JvmField
     @Inject
-    var tracking: ReputationTracking? = null
+    lateinit var tracking: ReputationTracking
+
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION_REPORT
     }
@@ -64,7 +64,7 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         retainInstance = true
         val parentView: View = inflater.inflate(
             R.layout.fragment_inbox_reputation_report, container,
@@ -77,7 +77,7 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         spamRadioButton = parentView.findViewById(R.id.report_spam)
         saraRadioButton = parentView.findViewById(R.id.report_sara)
         prepareView()
-        presenter!!.attachView(this)
+        presenter.attachView(this)
         if (arguments != null) {
             feedbackId =
                 arguments!!.getString(InboxReputationReportActivity.ARGS_REVIEW_ID)
@@ -108,10 +108,10 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
 
             override fun afterTextChanged(s: Editable) {}
         })
-        otherReason!!.setOnClickListener(View.OnClickListener({ view: View? ->
+        otherReason!!.setOnClickListener {
             otherRadioButton!!.isChecked = true
-        }))
-        sendButton!!.setOnClickListener(View.OnClickListener({ v: View? ->
+        }
+        sendButton!!.setOnClickListener { v: View? ->
             tracking!!.onSubmitReportAbuse(feedbackId)
             if (arguments != null) {
                 presenter!!.reportReview(
@@ -124,7 +124,7 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
                     otherReason!!.text.toString()
                 )
             }
-        }))
+        }
         initProgressDialog()
     }
 
@@ -168,7 +168,7 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        if (presenter != null) presenter!!.detachView()
+        presenter.detachView()
     }
 
     override fun showLoadingProgress() {
@@ -180,8 +180,10 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessReportReview() {
-        activity!!.setResult(Activity.RESULT_OK)
-        activity!!.finish()
+        activity?.apply {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
     }
 
     override fun removeLoadingProgress() {
@@ -189,9 +191,9 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        fun createInstance(reviewId: String?, shopId: String?): Fragment {
+        fun createInstance(reviewId: String, shopId: String): Fragment {
             val fragment: Fragment = InboxReputationReportFragment()
-            val bundle: Bundle = Bundle()
+            val bundle = Bundle()
             bundle.putString(InboxReputationReportActivity.ARGS_SHOP_ID, shopId)
             bundle.putString(InboxReputationReportActivity.ARGS_REVIEW_ID, reviewId)
             fragment.arguments = bundle

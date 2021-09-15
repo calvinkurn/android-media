@@ -31,25 +31,48 @@ import javax.inject.Inject
  */
 class InboxReputationFilterFragment : BaseDaggerFragment(),
     InboxReputationFilterAdapter.FilterListener, InboxReputationFilterActivity.ResetListener {
-    var list: RecyclerView? = null
-    var saveButton: Button? = null
-    var adapter: InboxReputationFilterAdapter? = null
-    var listOption: ArrayList<OptionUiModel>? = null
-    var timeFilter: String? = null
-    var timeFilterName: String? = null
-    var scoreFilter: String? = null
+
+    companion object {
+        private const val FILTER_ALL_TIME: String = "1"
+        private const val FILTER_LAST_WEEK: String = "2"
+        private const val FILTER_THIS_MONTH: String = "3"
+        private const val FILTER_LAST_3_MONTH: String = "4"
+        private const val FILTER_NO_SCORE: String = "1"
+        private const val FILTER_GIVEN_SCORE: String = "2"
+        const val SELECTED_TIME_FILTER: String = "SELECTED_TIME_FILTER"
+        const val SELECTED_SCORE_FILTER: String = "SELECTED_SCORE_FILTER"
+
+        fun createInstance(timeFilter: String?, statusFilter: String?, tab: Int): Fragment {
+            val fragment = InboxReputationFilterFragment()
+            val bundle = Bundle()
+            bundle.putString(SELECTED_TIME_FILTER, timeFilter)
+            bundle.putString(SELECTED_SCORE_FILTER, statusFilter)
+            bundle.putInt(InboxReputationFragment.PARAM_TAB, tab)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    private var list: RecyclerView? = null
+    private var saveButton: Button? = null
+    private var adapter: InboxReputationFilterAdapter? = null
+    private var listOption: ArrayList<OptionUiModel>? = null
+    private var timeFilter = ""
+    private var timeFilterName = ""
+    private var scoreFilter = ""
 
     @kotlin.jvm.JvmField
     @Inject
     var reputationTracking: ReputationTracking? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            timeFilter = arguments!!.getString(SELECTED_TIME_FILTER, "")
-            scoreFilter = arguments!!.getString(SELECTED_SCORE_FILTER, "")
-        } else if (savedInstanceState != null) {
-            timeFilter = savedInstanceState.getString(SELECTED_TIME_FILTER, "")
-            scoreFilter = savedInstanceState.getString(SELECTED_SCORE_FILTER, "")
+        savedInstanceState?.let {
+            timeFilter = it.getString(SELECTED_TIME_FILTER, "")
+            scoreFilter = it.getString(SELECTED_SCORE_FILTER, "")
+        }
+        arguments?.let {
+            timeFilter = it.getString(SELECTED_TIME_FILTER, "")
+            scoreFilter = it.getString(SELECTED_SCORE_FILTER, "")
         }
         initData()
     }
@@ -68,7 +91,7 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         retainInstance = true
         val parentView: View = inflater.inflate(
             R.layout.fragment_inbox_reputation_filter, container,
@@ -81,20 +104,22 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     private fun prepareView() {
-        list!!.layoutManager = LinearLayoutManager(
-            activity,
-            LinearLayoutManager.VERTICAL, false
-        )
-        adapter =
-            InboxReputationFilterAdapter.createInstance(context, this, listOption)
-        list!!.adapter = adapter
-        saveButton!!.setOnClickListener(View.OnClickListener({ view: View? ->
-            val data: Intent = Intent()
+        list?.apply {
+            layoutManager = LinearLayoutManager(
+                activity,
+                LinearLayoutManager.VERTICAL, false
+            )
+            adapter = InboxReputationFilterAdapter.createInstance(this, listOption)
+        }
+        saveButton?.setOnClickListener {
+            val data = Intent()
             data.putExtra(SELECTED_TIME_FILTER, timeFilter)
             data.putExtra(SELECTED_SCORE_FILTER, scoreFilter)
-            activity!!.setResult(Activity.RESULT_OK, data)
-            activity!!.finish()
-        }))
+            activity?.apply {
+                setResult(Activity.RESULT_OK, data)
+                finish()
+            }
+        }
     }
 
     private fun initData() {
@@ -160,21 +185,23 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     private fun setSelected(listOption: ArrayList<OptionUiModel>?) {
-        if ((!(arguments!!.getString(SELECTED_TIME_FILTER, "") == "")
-                    || !(arguments!!.getString(SELECTED_SCORE_FILTER, "") == ""))
-        ) {
-            for (optionUiModel: OptionUiModel in listOption!!) {
-                if (((optionUiModel.getKey() ==
-                            GetInboxReputationUseCase.PARAM_TIME_FILTER) && (optionUiModel.getValue() ==
-                            arguments!!.getString(SELECTED_TIME_FILTER)))
-                ) {
-                    optionUiModel.setSelected(true)
-                }
-                if (((optionUiModel.getKey() ==
-                            GetInboxReputationUseCase.PARAM_SCORE_FILTER) && (optionUiModel.getValue() ==
-                            arguments!!.getString(SELECTED_SCORE_FILTER)))
-                ) {
-                    optionUiModel.setSelected(true)
+        arguments?.let {
+            if ((it.getString(SELECTED_TIME_FILTER, "") != ""
+                        || it.getString(SELECTED_SCORE_FILTER, "") != "")
+            ) {
+                for (optionUiModel: OptionUiModel in listOption!!) {
+                    if (((optionUiModel.key ==
+                                GetInboxReputationUseCase.PARAM_TIME_FILTER) && (optionUiModel.value ==
+                                it.getString(SELECTED_TIME_FILTER)))
+                    ) {
+                        optionUiModel.isSelected = true
+                    }
+                    if (((optionUiModel.key ==
+                                GetInboxReputationUseCase.PARAM_SCORE_FILTER) && (optionUiModel.value ==
+                                it.getString(SELECTED_SCORE_FILTER)))
+                    ) {
+                        optionUiModel.isSelected = true
+                    }
                 }
             }
         }
@@ -192,7 +219,7 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
             timeFilter = optionUiModel.value
             timeFilterName = optionUiModel.name
         } else if ((optionUiModel.key == GetInboxReputationUseCase.PARAM_SCORE_FILTER)) {
-            scoreFilter = optionUiModel.value()
+            scoreFilter = optionUiModel.value
         }
     }
 
@@ -209,25 +236,5 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
         super.onSaveInstanceState(outState)
         outState.putString(SELECTED_TIME_FILTER, timeFilter)
         outState.putString(SELECTED_SCORE_FILTER, scoreFilter)
-    }
-
-    companion object {
-        private val FILTER_ALL_TIME: String = "1"
-        private val FILTER_LAST_WEEK: String = "2"
-        private val FILTER_THIS_MONTH: String = "3"
-        private val FILTER_LAST_3_MONTH: String = "4"
-        private val FILTER_NO_SCORE: String = "1"
-        private val FILTER_GIVEN_SCORE: String = "2"
-        val SELECTED_TIME_FILTER: String = "SELECTED_TIME_FILTER"
-        val SELECTED_SCORE_FILTER: String = "SELECTED_SCORE_FILTER"
-        fun createInstance(timeFilter: String?, statusFilter: String?, tab: Int): Fragment {
-            val fragment: InboxReputationFilterFragment = InboxReputationFilterFragment()
-            val bundle: Bundle = Bundle()
-            bundle.putString(SELECTED_TIME_FILTER, timeFilter)
-            bundle.putString(SELECTED_SCORE_FILTER, statusFilter)
-            bundle.putInt(InboxReputationFragment.PARAM_TAB, tab)
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }

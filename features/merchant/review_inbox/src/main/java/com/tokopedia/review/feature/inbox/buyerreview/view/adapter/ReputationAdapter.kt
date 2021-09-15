@@ -63,17 +63,15 @@ class ReputationAdapter private constructor(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(
-            holder.smiley,
-            list.get(position).resId
-        )
-        if (list.get(position).name
-                .isEmpty()
-        ) holder.smileyText.visibility = View.GONE else holder.smileyText.setText(
-            list.get(
-                position
-            ).name
-        )
+        list.getOrNull(position)?.resId?.let {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(
+                holder.smiley,
+                it
+            )
+        }
+        if (list.getOrNull(position)?.name?.isEmpty() == true
+        ) holder.smileyText.visibility =
+            View.GONE else holder.smileyText.text = list.getOrNull(position)?.name
     }
 
     override fun getItemCount(): Int {

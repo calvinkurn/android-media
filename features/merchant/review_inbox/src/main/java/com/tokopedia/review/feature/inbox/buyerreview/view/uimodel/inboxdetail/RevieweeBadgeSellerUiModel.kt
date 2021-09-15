@@ -8,24 +8,24 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
  * @author by nisie on 8/30/17.
  */
 class RevieweeBadgeSellerUiModel : Parcelable {
-    var tooltip: String?
+    var tooltip: String
         private set
-    var reputationScore: String?
+    var reputationScore: String
         private set
     var score: Int
         private set
     var minBadgeScore: Int
         private set
-    var reputationBadgeUrl: String?
+    var reputationBadgeUrl: String
         private set
-    var reputationBadge: ReputationBadgeUiModel?
+    var reputationBadge: ReputationBadgeUiModel
         private set
     var isFavorited: Int = -1
 
     constructor(
-        tooltip: String?, reputationScore: String?, score: Int,
-        minBadgeScore: Int, reputationBadgeUrl: String?,
-        reputationBadge: ReputationBadgeUiModel?, isFavorited: Int
+        tooltip: String, reputationScore: String, score: Int,
+        minBadgeScore: Int, reputationBadgeUrl: String,
+        reputationBadge: ReputationBadgeUiModel, isFavorited: Int
     ) {
         this.tooltip = tooltip
         this.reputationScore = reputationScore
@@ -36,12 +36,12 @@ class RevieweeBadgeSellerUiModel : Parcelable {
         this.isFavorited = isFavorited
     }
 
-    protected constructor(`in`: Parcel) {
-        tooltip = `in`.readString()
-        reputationScore = `in`.readString()
+    constructor(`in`: Parcel) {
+        tooltip = `in`.readString().toString()
+        reputationScore = `in`.readString().toString()
         score = `in`.readInt()
         minBadgeScore = `in`.readInt()
-        reputationBadgeUrl = `in`.readString()
+        reputationBadgeUrl = `in`.readString().toString()
         reputationBadge = `in`.readParcelable(ReputationBadgeUiModel::class.java.classLoader)
         isFavorited = `in`.readInt()
     }
@@ -61,14 +61,15 @@ class RevieweeBadgeSellerUiModel : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<RevieweeBadgeSellerUiModel> =
-            object : Parcelable.Creator<RevieweeBadgeSellerUiModel?> {
-                override fun createFromParcel(`in`: Parcel): RevieweeBadgeSellerUiModel? {
+            object : Parcelable.Creator<RevieweeBadgeSellerUiModel> {
+                override fun createFromParcel(`in`: Parcel): RevieweeBadgeSellerUiModel {
                     return RevieweeBadgeSellerUiModel(`in`)
                 }
 
-                override fun newArray(size: Int): Array<RevieweeBadgeSellerUiModel?> {
-                    return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<RevieweeBadgeSellerUiModel> {
+                    return arrayOf()
                 }
             }
     }

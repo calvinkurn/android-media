@@ -7,14 +7,14 @@ import android.os.Parcelable
  * @author by nisie on 8/21/17.
  */
 open class OptionUiModel : Parcelable {
-    var name: String?
-    var key: String?
-    var value: String?
+    var name: String
+    var key: String
+    var value: String
     var isSelected: Boolean
     var isActive: Boolean
     var position: Int
 
-    constructor(name: String?, key: String?, value: String?, position: Int) {
+    constructor(name: String, key: String, value: String, position: Int) {
         this.name = name
         this.key = key
         this.value = value
@@ -23,7 +23,7 @@ open class OptionUiModel : Parcelable {
         this.position = position
     }
 
-    constructor(name: String?) {
+    constructor(name: String) {
         this.name = name
         key = ""
         value = ""
@@ -33,9 +33,9 @@ open class OptionUiModel : Parcelable {
     }
 
     protected constructor(`in`: Parcel) {
-        name = `in`.readString()
-        key = `in`.readString()
-        value = `in`.readString()
+        name = `in`.readString().toString()
+        key = `in`.readString().toString()
+        value = `in`.readString().toString()
         isSelected = `in`.readByte().toInt() != 0
         isActive = `in`.readByte().toInt() != 0
         position = `in`.readInt()

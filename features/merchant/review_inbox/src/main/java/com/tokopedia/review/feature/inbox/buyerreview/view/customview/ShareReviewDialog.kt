@@ -33,9 +33,9 @@ class ShareReviewDialog constructor(
     fragment: Fragment
 ) {
     companion object {
-        val FACEBOOK_ICON_URL: String =
+        const val FACEBOOK_ICON_URL: String =
             "https://images.tokopedia.net/img/android/review/review_ic_facebook_share.png"
-        val LINK_ICON_URL: String =
+        const val LINK_ICON_URL: String =
             "https://images.tokopedia.net/img/android/review/review_ic_copy_share.png"
     }
 
@@ -91,12 +91,10 @@ class ShareReviewDialog constructor(
     }
 
     private fun shareCopyLink(): View.OnClickListener {
-        return object : View.OnClickListener {
-            override fun onClick(view: View) {
-                dismissDialog()
-                ClipboardHandler.CopyToClipboard(context as Activity?, model.getLink())
-                Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-            }
+        return View.OnClickListener {
+            dismissDialog()
+            ClipboardHandler.CopyToClipboard(context as Activity?, model?.link)
+            Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -133,17 +131,17 @@ class ShareReviewDialog constructor(
                     })
                 if (ShareDialog.canShow(ShareLinkContent::class.java)) {
                     val builder: ShareLinkContent.Builder = ShareLinkContent.Builder()
-                    if (model.getTitle() != null && !(model.getTitle() == "")) builder.setContentTitle(
-                        model.getTitle()
+                    if (model?.title != "") builder.setContentTitle(
+                        model?.title
                     )
-                    if (model.getContent() != null && !(model.getContent() == "")) builder.setQuote(
-                        model.getContent()
+                    if (model?.content != "") builder.setQuote(
+                        model?.content
                     )
-                    if (model.getImage() != null && !(model.getImage() == "")) builder.setImageUrl(
-                        Uri.parse(model.getImage())
+                    if (model?.image != "") builder.setImageUrl(
+                        Uri.parse(model?.image)
                     )
-                    if (model.getLink() != null && !(model.getLink() == "")) builder.setContentUrl(
-                        Uri.parse(model.getLink())
+                    if (model?.link != "") builder.setContentUrl(
+                        Uri.parse(model?.link)
                     )
                     val linkContent: ShareLinkContent = builder.build()
                     show(linkContent)

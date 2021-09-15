@@ -20,13 +20,8 @@ class EmptyReputationSearchViewHolder constructor(itemView: View) :
         val LAYOUT: Int = R.layout.list_empty_search_reputation
     }
 
-    private var button: Typography? = null
-    private var title: Typography? = null
-
-    init {
-        title = itemView.findViewById(R.id.title)
-        button = itemView.findViewById(R.id.button)
-    }
+    private var button: Typography? = itemView.findViewById(R.id.title)
+    private var title: Typography? = itemView.findViewById(R.id.button)
 
     override fun bind(element: EmptySearchModel) {
         title?.text = element.title

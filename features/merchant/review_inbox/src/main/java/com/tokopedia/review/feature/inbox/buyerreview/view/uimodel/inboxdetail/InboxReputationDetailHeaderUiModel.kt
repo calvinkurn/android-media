@@ -8,14 +8,15 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDat
  * @author by nisie on 8/19/17.
  */
 class InboxReputationDetailHeaderUiModel constructor(
-    var avatarImage: String?,
-    var name: String?,
+    var avatarImage: String,
+    var name: String,
     var deadline: String,
-    var reputationDataUiModel: ReputationDataUiModel?,
+    var reputationDataUiModel: ReputationDataUiModel,
     var role: Int,
-    val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel?,
-    val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel?,
-    val shopId: Long, val userId: Long
+    val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,
+    val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel,
+    val shopId: Long,
+    val userId: Long
 ) : Visitable<InboxReputationDetailTypeFactory> {
 
     override fun type(typeFactory: InboxReputationDetailTypeFactory): Int {

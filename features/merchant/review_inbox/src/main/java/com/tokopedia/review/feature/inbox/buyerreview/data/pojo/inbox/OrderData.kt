@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 class OrderData(
     @SerializedName("invoice_ref_num")
     @Expose
-    var invoiceRefNum: String? = null,
+    val invoiceRefNum: String = "",
 
     @SerializedName("create_time_fmt")
     @Expose
-    var createTimeFmt: String? = null,
+    val createTimeFmt: String = "",
 
     @SerializedName("invoice_url")
     @Expose
-    var invoiceUrl: String? = null
+    val invoiceUrl: String = ""
 )

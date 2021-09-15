@@ -1,9 +1,8 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail
 
-import android.content.Context
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,124 +28,105 @@ class InboxReputationDetailHeaderViewHolder(
 ) : AbstractViewHolder<InboxReputationDetailHeaderUiModel>(itemView) {
 
     companion object {
-        private val NO_REPUTATION = 0
-        val SMILEY_BAD = -1
-        val SMILEY_NEUTRAL = 1
-        val SMILEY_GOOD = 2
+        private const val NO_REPUTATION = 0
+        const val SMILEY_BAD = -1
+        const val SMILEY_NEUTRAL = 1
+        const val SMILEY_GOOD = 2
 
         @LayoutRes
         val LAYOUT = R.layout.inbox_reputation_detail_header
     }
 
-    var userAvatar: ImageView
-    var name: Typography
-    var userReputationView: UserReputationView
-    var shopReputationView: ShopReputationView
-    var deadlineLayout: View
-    var deadline: Typography
-    var lockedLayout: View
-    var lockedText: Typography
-    var promptMessage: Typography
-    var favoriteButton: View
-    var favoriteText: Typography
-    var changeButton: Typography
-    var smiley: RecyclerView
-    var opponentSmileyText: Typography
-    var opponentSmiley: ImageView
-    var adapter: ReputationAdapter
-    var gridLayout: GridLayoutManager
-    var linearLayoutManager: LinearLayoutManager
-    var context: Context = itemView.context
+    private var userAvatar: ImageView? = itemView.findViewById(R.id.user_avatar)
+    private var name: Typography? = itemView.findViewById(R.id.name)
+    private var userReputationView: UserReputationView? =
+        itemView.findViewById(R.id.user_reputation)
+    private var shopReputationView: ShopReputationView? =
+        itemView.findViewById(R.id.shop_reputation)
+    private var deadlineLayout: View? = itemView.findViewById(R.id.deadline)
+    private var deadline: Typography? = itemView.findViewById(R.id.deadline_text)
+    private var lockedLayout: View? = itemView.findViewById(R.id.locked)
+    private var lockedText: Typography? = itemView.findViewById(R.id.locked_text)
+    private var promptMessage: Typography? = itemView.findViewById(R.id.prompt_text)
+    private var changeButton: Typography? = itemView.findViewById(R.id.change_button)
+    private var smiley: RecyclerView? = itemView.findViewById(R.id.smiley)
+    private var opponentSmileyText: Typography? = itemView.findViewById(R.id.opponent_smiley_text)
+    private var opponentSmiley: ImageView? = itemView.findViewById(R.id.opponent_smiley)
+    private var adapter: ReputationAdapter =
+        ReputationAdapter.createInstance(itemView.context, reputationListener)
+    private var gridLayout: GridLayoutManager =
+        GridLayoutManager(itemView.context, 3, LinearLayoutManager.VERTICAL, false)
+    private var linearLayoutManager: LinearLayoutManager =
+        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
     init {
-        userAvatar = itemView.findViewById(R.id.user_avatar)
-        name = itemView.findViewById<View>(R.id.name) as Typography
-        userReputationView = itemView.findViewById(R.id.user_reputation)
-        shopReputationView = itemView.findViewById(R.id.shop_reputation)
-        deadline = itemView.findViewById<View>(R.id.deadline_text) as Typography
-        deadlineLayout = itemView.findViewById(R.id.deadline)
-        lockedLayout = itemView.findViewById(R.id.locked)
-        lockedText = itemView.findViewById<View>(R.id.locked_text) as Typography
-        promptMessage = itemView.findViewById<View>(R.id.prompt_text) as Typography
-        favoriteButton = itemView.findViewById(R.id.favorite_button)
-        favoriteText = itemView.findViewById<View>(R.id.favorite_text) as Typography
-        changeButton = itemView.findViewById<View>(R.id.change_button) as Typography
-        smiley = itemView.findViewById<View>(R.id.smiley) as RecyclerView
-        opponentSmileyText = itemView.findViewById<View>(R.id.opponent_smiley_text) as Typography
-        opponentSmiley = itemView.findViewById<View>(R.id.opponent_smiley) as ImageView
-        adapter = ReputationAdapter.createInstance(itemView.context, reputationListener)
-        gridLayout = GridLayoutManager(
-            itemView.context, 3,
-            LinearLayoutManager.VERTICAL, false
-        )
-        linearLayoutManager =
-            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        smiley.layoutManager = gridLayout
-        smiley.adapter = adapter
+        smiley?.apply {
+            layoutManager = gridLayout
+            adapter = this@InboxReputationDetailHeaderViewHolder.adapter
+        }
     }
 
     override fun bind(element: InboxReputationDetailHeaderUiModel) {
-        ImageHandler.loadImageCircle2(userAvatar.context, userAvatar, element.avatarImage)
-        userAvatar.setOnClickListener(View.OnClickListener { goToInfoPage(element) })
-        name.text = MethodChecker.fromHtml(element.name)
-        name.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                goToInfoPage(element)
-            }
-        })
+        ImageHandler.loadImageCircle2(userAvatar?.context, userAvatar, element.avatarImage)
+        userAvatar?.setOnClickListener { goToInfoPage(element) }
+        name?.text = MethodChecker.fromHtml(element.name)
+        name?.setOnClickListener { goToInfoPage(element) }
         setReputation(element)
         if (!TextUtils.isEmpty(element.deadline) && element.reputationDataUiModel
                 .isShowLockingDeadline
         ) {
-            deadline.text = element.deadline
-            deadlineLayout.visibility = View.VISIBLE
+            deadline?.text = element.deadline
+            deadlineLayout?.visibility = View.VISIBLE
         } else {
-            deadlineLayout.visibility = View.GONE
+            deadlineLayout?.visibility = View.GONE
         }
-        if (element.reputationDataUiModel.isAutoScored) {
-            lockedLayout.visibility = View.VISIBLE
-            lockedText.setText(R.string.review_auto_scored)
-            promptMessage.text = context.getString(R.string.your_scoring)
-            smiley.layoutManager = linearLayoutManager
-            setSmiley(element, adapter)
-        } else if ((element.reputationDataUiModel.isLocked
-                    && element.reputationDataUiModel.isInserted)
-        ) {
-            lockedLayout.visibility = View.VISIBLE
-            lockedText.setText(R.string.review_is_saved)
-            promptMessage.text = context.getString(R.string.your_scoring)
-            smiley.layoutManager = linearLayoutManager
-            setSmiley(element, adapter)
-        } else if (element.reputationDataUiModel.isLocked) {
-            lockedLayout.visibility = View.VISIBLE
-            lockedText.setText(R.string.locked_reputation)
-            promptMessage.text = context.getString(R.string.your_scoring)
-            smiley.layoutManager = linearLayoutManager
-            adapter.showLockedSmiley()
-        } else if (element.reputationDataUiModel.isInserted) {
-            lockedLayout.visibility = View.GONE
-            promptMessage.text = context.getString(R.string.your_scoring)
-            smiley.layoutManager = linearLayoutManager
-            setSmiley(element, adapter)
-        } else {
-            smiley.layoutManager = gridLayout
-            adapter.showAllSmiley()
-            promptMessage.text = MethodChecker.fromHtml(getPromptText(element))
+        when {
+            element.reputationDataUiModel.isAutoScored -> {
+                lockedLayout?.visibility = View.VISIBLE
+                lockedText?.setText(R.string.review_auto_scored)
+                promptMessage?.text = itemView.context.getString(R.string.your_scoring)
+                smiley?.layoutManager = linearLayoutManager
+                setSmiley(element, adapter)
+            }
+            element.reputationDataUiModel.isLocked
+                    && element.reputationDataUiModel.isInserted -> {
+                lockedLayout?.visibility = View.VISIBLE
+                lockedText?.setText(R.string.review_is_saved)
+                promptMessage?.text = itemView.context.getString(R.string.your_scoring)
+                smiley?.layoutManager = linearLayoutManager
+                setSmiley(element, adapter)
+            }
+            element.reputationDataUiModel.isLocked -> {
+                lockedLayout?.visibility = View.VISIBLE
+                lockedText?.setText(R.string.locked_reputation)
+                promptMessage?.text = itemView.context.getString(R.string.your_scoring)
+                smiley?.layoutManager = linearLayoutManager
+                adapter.showLockedSmiley()
+            }
+            element.reputationDataUiModel.isInserted -> {
+                lockedLayout?.visibility = View.GONE
+                promptMessage?.text = itemView.context.getString(R.string.your_scoring)
+                smiley?.layoutManager = linearLayoutManager
+                setSmiley(element, adapter)
+            }
+            else -> {
+                smiley?.layoutManager = gridLayout
+                adapter.showAllSmiley()
+                promptMessage?.text = MethodChecker.fromHtml(getPromptText(element))
+            }
         }
         if (element.reputationDataUiModel.isEditable) {
-            changeButton.visibility = View.VISIBLE
-            changeButton.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View) {
-                    if ((changeButton.text == context.getString(R.string.change))) {
-                        adapter.showChangeSmiley(element.reputationDataUiModel.reviewerScore)
-                        changeButton.text = context.getString(R.string.title_cancel)
-                    } else {
-                        setSmiley(element, adapter)
-                        changeButton.text = context.getString(R.string.change)
-                    }
+            changeButton?.visibility = View.VISIBLE
+            changeButton?.setOnClickListener {
+                if ((changeButton?.text == itemView.context.getString(R.string.change))) {
+                    adapter.showChangeSmiley(element.reputationDataUiModel.reviewerScore)
+                    changeButton?.text = itemView.context.getString(R.string.title_cancel)
+                } else {
+                    setSmiley(element, adapter)
+                    changeButton?.text = itemView.context.getString(R.string.change)
                 }
-            })
-        } else changeButton.visibility = View.GONE
+            }
+        } else changeButton?.visibility = View.GONE
         setSmileyOpponent(element)
     }
 
@@ -159,7 +139,7 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     private fun setSmileyOpponent(element: InboxReputationDetailHeaderUiModel) {
-        opponentSmileyText.text = getOpponentSmileyPromptText(element)
+        opponentSmileyText?.text = getOpponentSmileyPromptText(element)
         if ((!element.reputationDataUiModel.isShowRevieweeScore
                     && element.reputationDataUiModel.revieweeScore != NO_REPUTATION)
         ) {
@@ -190,15 +170,15 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     private fun getOpponentSmileyPromptText(element: InboxReputationDetailHeaderUiModel): String {
-        return if (element.reputationDataUiModel.revieweeScore == NO_REPUTATION) if (element.role == InboxReputationItemUiModel.ROLE_SELLER) context.getString(
+        return if (element.reputationDataUiModel.revieweeScore == NO_REPUTATION) if (element.role == InboxReputationItemUiModel.ROLE_SELLER) itemView.context.getString(
             R.string.seller_has_not_review
-        ) else context.getString(R.string.buyer_has_not_review) else if (element.role == InboxReputationItemUiModel.ROLE_SELLER) context.getString(
+        ) else itemView.context.getString(R.string.buyer_has_not_review) else if (element.role == InboxReputationItemUiModel.ROLE_SELLER) itemView.context.getString(
             R.string.score_from_seller
-        ) else context.getString(R.string.score_from_buyer)
+        ) else itemView.context.getString(R.string.score_from_buyer)
     }
 
     private fun setSmiley(element: InboxReputationDetailHeaderUiModel, adapter: ReputationAdapter) {
-        changeButton.text = context.getString(R.string.change)
+        changeButton?.text = itemView.context.getString(R.string.change)
         when (element.reputationDataUiModel.reviewerScore) {
             SMILEY_BAD -> adapter.showSmileyBad()
             SMILEY_NEUTRAL -> adapter.showSmileyNeutral()
@@ -207,14 +187,14 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     private fun getPromptText(element: InboxReputationDetailHeaderUiModel): String {
-        return context.getString(R.string.reputation_prompt) + " " + element.name + "?"
+        return itemView.context.getString(R.string.reputation_prompt) + " " + element.name + "?"
     }
 
     fun setReputation(element: InboxReputationDetailHeaderUiModel) {
         if (element.role == InboxReputationItemUiModel.ROLE_BUYER) {
-            userReputationView.visibility = View.VISIBLE
-            shopReputationView.visibility = View.GONE
-            userReputationView.setValue(
+            userReputationView?.visibility = View.VISIBLE
+            shopReputationView?.visibility = View.GONE
+            userReputationView?.setValue(
                 element.revieweeBadgeCustomerUiModel.positivePercentage,
                 element.revieweeBadgeCustomerUiModel.noReputation == 1,
                 element.revieweeBadgeCustomerUiModel.positive,
@@ -222,9 +202,9 @@ class InboxReputationDetailHeaderViewHolder(
                 element.revieweeBadgeCustomerUiModel.negative
             )
         } else {
-            userReputationView.visibility = View.GONE
-            shopReputationView.visibility = View.VISIBLE
-            shopReputationView.setValue(
+            userReputationView?.visibility = View.GONE
+            shopReputationView?.visibility = View.VISIBLE
+            shopReputationView?.setValue(
                 element.revieweeBadgeSellerUiModel.reputationBadge.set,
                 element.revieweeBadgeSellerUiModel.reputationBadge.level,
                 element.revieweeBadgeSellerUiModel.score.toString()

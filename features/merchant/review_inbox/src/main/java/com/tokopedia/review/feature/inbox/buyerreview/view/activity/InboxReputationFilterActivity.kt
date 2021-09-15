@@ -17,11 +17,13 @@ import com.tokopedia.review.inbox.R
  * @author by nisie on 8/21/17.
  */
 class InboxReputationFilterActivity : BaseSimpleActivity() {
+
     interface ResetListener {
         fun resetFilter()
     }
 
     var listener: ResetListener? = null
+
     override fun getNewFragment(): Fragment {
         val timeFilter: String? =
             intent.getStringExtra(InboxReputationFilterFragment.SELECTED_TIME_FILTER)
@@ -43,21 +45,19 @@ class InboxReputationFilterActivity : BaseSimpleActivity() {
     }
 
     private val resetMenu: Drawable
-        private get() {
-            val drawable: TextDrawable = TextDrawable(this)
+        get() {
+            val drawable = TextDrawable(this)
             drawable.text = resources.getString(R.string.reset_title)
             drawable.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             return drawable
         }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if ((item.itemId == R.id.action_reset
-                    && listener != null)
-        ) {
-            listener!!.resetFilter()
-            return true
+        return if ((item.itemId == R.id.action_reset && listener != null)) {
+            listener?.resetFilter()
+            true
         } else {
-            return super.onOptionsItemSelected(item)
+            super.onOptionsItemSelected(item)
         }
     }
 

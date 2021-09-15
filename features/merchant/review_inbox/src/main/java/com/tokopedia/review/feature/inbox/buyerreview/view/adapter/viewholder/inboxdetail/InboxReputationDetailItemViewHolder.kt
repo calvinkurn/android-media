@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -37,33 +36,79 @@ class InboxReputationDetailItemViewHolder(
     private val viewListener: InboxReputationDetail.View
 ) : AbstractViewHolder<InboxReputationDetailItemUiModel>(itemView) {
 
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.inbox_reputation_detail_item
+        private const val MAX_CHAR = 50
+        private const val BY = "Oleh"
+        private const val MENU_EDIT = 101
+        private const val MENU_REPORT = 102
+        private const val MENU_DELETE = 103
+        private const val MENU_SHARE = 104
+    }
 
     var isReplyOpened = false
-    var productName: Typography
-    var productAvatar: ImageView
-    var emptyReviewText: Typography
-    var viewReview: View
-    var reviewerName: Typography
-    var reviewTime: Typography
-    var reviewAttachment: RecyclerView
-    var reviewOverflow: ImageView
-    var review: Typography
-    var reviewStar: RatingBar
-    var giveReview: View
-    var context: Context
-    var adapter: ImageUploadAdapter
-    var replyReviewLayout: View
-    var seeReplyLayout: View
-    var seeReplyText: Typography
-    var replyArrow: ImageView
-    var sellerReplyLayout: View
-    var sellerName: Typography
-    var sellerReplyTime: Typography
-    var sellerReply: Typography
-    var replyOverflow: ImageView
-    var sellerAddReplyLayout: View
-    var sellerAddReplyEditText: EditText
-    var sendReplyButton: ImageView
+    private val productName: Typography? = itemView.findViewById(R.id.product_name)
+    private val productAvatar: ImageView? = itemView.findViewById(R.id.product_image)
+    private val emptyReviewText: Typography? = itemView.findViewById(R.id.empty_review_text)
+    private val viewReview: View? = itemView.findViewById(R.id.review_layout)
+    private val reviewerName: Typography? = itemView.findViewById(R.id.reviewer_name)
+    private val reviewTime: Typography? = itemView.findViewById(R.id.review_time)
+    private val reviewAttachment: RecyclerView? = itemView.findViewById(R.id.product_review_image)
+    private val reviewOverflow: ImageView? = itemView.findViewById(R.id.review_overflow)
+    private val review: Typography? = itemView.findViewById(R.id.review)
+    private val reviewStar: RatingBar? = itemView.findViewById(R.id.product_rating)
+    private val giveReview: View? = itemView.findViewById(R.id.add_review_layout)
+    private val adapter: ImageUploadAdapter = ImageUploadAdapter.createAdapter(itemView.context)
+    private val replyReviewLayout: View? = itemView.findViewById(R.id.reply_review_layout)
+    private val seeReplyLayout: View? = itemView.findViewById(R.id.see_reply_layout)
+    private val seeReplyText: Typography? = seeReplyLayout?.findViewById(R.id.see_reply_button)
+    private val replyArrow: ImageView? = seeReplyLayout?.findViewById(R.id.reply_chevron)
+    private val sellerReplyLayout: View? = itemView.findViewById(R.id.seller_reply_layout)
+    private val sellerName: Typography? = itemView.findViewById(R.id.seller_reply_name)
+    private val sellerReplyTime: Typography?
+    private val sellerReply: Typography?
+    private val replyOverflow: ImageView?
+    private val sellerAddReplyLayout: View?
+    private val sellerAddReplyEditText: EditText?
+    private val sendReplyButton: ImageView?
+
+    init {
+        adapter.setCanUpload(false)
+        adapter.setListener(onImageClicked())
+        reviewAttachment?.layoutManager = LinearLayoutManager(
+            itemView.context,
+            LinearLayoutManager.HORIZONTAL, false
+        )
+        reviewAttachment?.adapter = adapter
+        sellerReplyTime = itemView.findViewById<View>(R.id.seller_reply_time) as Typography
+        sellerReply = itemView.findViewById<View>(R.id.seller_reply) as Typography
+        replyOverflow = itemView.findViewById<View>(R.id.reply_overflow) as ImageView
+        sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout)
+        sellerAddReplyEditText =
+            itemView.findViewById<View>(R.id.seller_reply_edit_text) as EditText
+        sendReplyButton = itemView.findViewById<View>(R.id.send_button) as ImageView
+        sellerAddReplyEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                if (TextUtils.isEmpty(sellerAddReplyEditText.text.toString())) {
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(
+                        sendReplyButton,
+                        R.drawable.ic_send_grey_transparent
+                    )
+                    sendReplyButton.isEnabled = false
+                } else {
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(
+                        sendReplyButton,
+                        R.drawable.ic_send_green
+                    )
+                    sendReplyButton.isEnabled = true
+                }
+            }
+        })
+    }
+
     private fun onImageClicked(): ProductImageListener {
         return object : ProductImageListener {
             override fun onUploadClicked(position: Int): View.OnClickListener {
@@ -86,7 +131,7 @@ class InboxReputationDetailItemViewHolder(
 
     override fun bind(element: InboxReputationDetailItemUiModel) {
         if (element.isProductDeleted) {
-            productName.text = context.getString(R.string.product_is_deleted)
+            productName.text = itemView.context.getString(R.string.product_is_deleted)
             ImageHandler.loadImageRounded2(
                 productAvatar.context,
                 productAvatar,
@@ -94,7 +139,7 @@ class InboxReputationDetailItemViewHolder(
                 5.0f
             )
         } else if (element.isProductBanned) {
-            productName.text = context.getString(R.string.product_is_banned)
+            productName.text = itemView.context.getString(R.string.product_is_banned)
             ImageHandler.loadImageRounded2(
                 productAvatar.context,
                 productAvatar,
@@ -142,7 +187,7 @@ class InboxReputationDetailItemViewHolder(
             val time: String
             time = if (element.isReviewIsEdited) {
                 getFormattedTime(element.reviewTime) +
-                        context.getString(R.string.edited)
+                        itemView.context.getString(R.string.edited)
             } else {
                 getFormattedTime(element.reviewTime)
             }
@@ -150,7 +195,7 @@ class InboxReputationDetailItemViewHolder(
             reviewStar.rating = element.reviewStar.toFloat()
             review.text = getReview(element.review)
             review.setOnClickListener {
-                if (review.text.toString().endsWith(context.getString(R.string.more_to_complete))) {
+                if (review.text.toString().endsWith(itemView.context.getString(R.string.more_to_complete))) {
                     review.text = element.review
                 }
             }
@@ -161,9 +206,7 @@ class InboxReputationDetailItemViewHolder(
             } else {
                 reviewOverflow.visibility = View.GONE
             }
-            if (element.reviewResponseUiModel != null
-                && !TextUtils.isEmpty(element.reviewResponseUiModel.responseMessage)
-            ) {
+            if (!TextUtils.isEmpty(element.reviewResponseUiModel.responseMessage)) {
                 setSellerReply(element)
             } else {
                 seeReplyText.visibility = View.GONE
@@ -224,10 +267,10 @@ class InboxReputationDetailItemViewHolder(
             seeReplyLayout.visibility = View.VISIBLE
             replyOverflow.visibility = View.VISIBLE
             replyOverflow.setOnClickListener { v ->
-                val popup = PopupMenu(context, v)
+                val popup = PopupMenu(itemView.context, v)
                 popup.menu.add(
                     1, MENU_DELETE, 1,
-                    context
+                    itemView.context
                         .getString(R.string.menu_delete)
                 )
                 popup.setOnMenuItemClickListener { item ->
@@ -246,19 +289,19 @@ class InboxReputationDetailItemViewHolder(
     private fun toggleReply() {
         isReplyOpened = !isReplyOpened
         if (isReplyOpened) {
-            seeReplyText.text = context.getText(R.string.close_reply)
+            seeReplyText.text = itemView.context.getText(R.string.close_reply)
             replyArrow.rotation = 180f
             replyReviewLayout.visibility = View.VISIBLE
             viewListener.onSmoothScrollToReplyView(adapterPosition)
         } else {
-            seeReplyText.text = context.getText(R.string.see_reply)
+            seeReplyText.text = itemView.context.getText(R.string.see_reply)
             replyArrow.rotation = 0f
             replyReviewLayout.visibility = View.GONE
         }
     }
 
     private fun getFormattedReplyName(responseBy: String?): String {
-        return BY + " <b>" + responseBy + "</b>"
+        return "$BY <b>$responseBy</b>"
     }
 
     private fun getFormattedTime(reviewTime: String?): String {
@@ -271,15 +314,15 @@ class InboxReputationDetailItemViewHolder(
                 MethodChecker.fromHtml(review).toString()
                     .substring(0, MAX_CHAR)
             HtmlLinkHelper(
-                context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                        + context.getString(R.string.review_expand)
+                itemView.context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                        + itemView.context.getString(R.string.review_expand)
             ).spannedString
         } else {
             MethodChecker.fromHtml(review)
         }
     }
 
-    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentUiModel?>?): ArrayList<ImageUpload> {
+    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentUiModel>): ArrayList<ImageUpload> {
         val list = ArrayList<ImageUpload>()
         for (vm in reviewAttachment!!) {
             list.add(
@@ -325,13 +368,13 @@ class InboxReputationDetailItemViewHolder(
     private fun onReviewOverflowClicked(element: InboxReputationDetailItemUiModel): View.OnClickListener {
         return View.OnClickListener { v ->
             viewListener.onClickReviewOverflowMenu(element, adapterPosition)
-            val popup = PopupMenu(context, v)
+            val popup = PopupMenu(itemView.context, v)
             if (element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW) popup.menu.add(
-                1, MENU_REPORT, 2, context
+                1, MENU_REPORT, 2, itemView.context
                     .getString(R.string.menu_report)
             )
             if (!TextUtils.isEmpty(element.productName)) popup.menu.add(
-                1, MENU_SHARE, 3, context
+                1, MENU_SHARE, 3, itemView.context
                     .getString(R.string.menu_share)
             )
             popup.setOnMenuItemClickListener { item ->
@@ -355,77 +398,10 @@ class InboxReputationDetailItemViewHolder(
     private fun setChevronDownImage() {
         replyArrow.setImageDrawable(
             getIconUnifyDrawable(
-                context,
+                itemView.context,
                 IconUnify.CHEVRON_DOWN,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
             )
         )
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.inbox_reputation_detail_item
-        private const val MAX_CHAR = 50
-        private const val BY = "Oleh"
-        private const val MENU_EDIT = 101
-        private const val MENU_REPORT = 102
-        private const val MENU_DELETE = 103
-        private const val MENU_SHARE = 104
-    }
-
-    init {
-        context = itemView.context
-        this.viewListener = viewListener
-        productName = itemView.findViewById<View>(R.id.product_name) as Typography
-        productAvatar = itemView.findViewById<View>(R.id.product_image) as ImageView
-        emptyReviewText = itemView.findViewById<View>(R.id.empty_review_text) as Typography
-        viewReview = itemView.findViewById(R.id.review_layout)
-        reviewerName = itemView.findViewById<View>(R.id.reviewer_name) as Typography
-        reviewTime = itemView.findViewById<View>(R.id.review_time) as Typography
-        reviewAttachment = itemView.findViewById<View>(R.id.product_review_image) as RecyclerView
-        reviewOverflow = itemView.findViewById<View>(R.id.review_overflow) as ImageView
-        review = itemView.findViewById<View>(R.id.review) as Typography
-        reviewStar = itemView.findViewById<View>(R.id.product_rating) as RatingBar
-        giveReview = itemView.findViewById(R.id.add_review_layout)
-        adapter = ImageUploadAdapter.createAdapter(itemView.context)
-        adapter.setCanUpload(false)
-        adapter.setListener(onImageClicked())
-        reviewAttachment.layoutManager = LinearLayoutManager(
-            itemView.context,
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        reviewAttachment.adapter = adapter
-        sellerReplyLayout = itemView.findViewById(R.id.seller_reply_layout)
-        seeReplyLayout = itemView.findViewById(R.id.see_reply_layout)
-        seeReplyText = seeReplyLayout.findViewById<View>(R.id.see_reply_button) as Typography
-        replyArrow = seeReplyLayout.findViewById<View>(R.id.reply_chevron) as ImageView
-        replyReviewLayout = itemView.findViewById(R.id.reply_review_layout)
-        sellerName = itemView.findViewById<View>(R.id.seller_reply_name) as Typography
-        sellerReplyTime = itemView.findViewById<View>(R.id.seller_reply_time) as Typography
-        sellerReply = itemView.findViewById<View>(R.id.seller_reply) as Typography
-        replyOverflow = itemView.findViewById<View>(R.id.reply_overflow) as ImageView
-        sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout)
-        sellerAddReplyEditText =
-            itemView.findViewById<View>(R.id.seller_reply_edit_text) as EditText
-        sendReplyButton = itemView.findViewById<View>(R.id.send_button) as ImageView
-        sellerAddReplyEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                if (TextUtils.isEmpty(sellerAddReplyEditText.text.toString())) {
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(
-                        sendReplyButton,
-                        R.drawable.ic_send_grey_transparent
-                    )
-                    sendReplyButton.isEnabled = false
-                } else {
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(
-                        sendReplyButton,
-                        R.drawable.ic_send_green
-                    )
-                    sendReplyButton.isEnabled = true
-                }
-            }
-        })
     }
 }

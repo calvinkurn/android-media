@@ -66,21 +66,18 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     private val sellerMigrationReviewModel: SellerMigrationReviewModel =
         SellerMigrationReviewModel()
 
-    @kotlin.jvm.JvmField
     @Inject
-    var presenter: InboxReputationPresenter? = null
+    lateinit var presenter: InboxReputationPresenter
 
-    @kotlin.jvm.JvmField
     @Inject
-    var persistentCacheManager: PersistentCacheManager? = null
+    lateinit var persistentCacheManager: PersistentCacheManager
 
-    @kotlin.jvm.JvmField
     @Inject
-    var reputationTracking: ReputationTracking? = null
+    lateinit var reputationTracking: ReputationTracking
 
-    @kotlin.jvm.JvmField
     @Inject
-    var userSession: UserSession? = null
+    lateinit var userSession: UserSession
+
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION
     }
@@ -118,7 +115,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
             scoreFilter = ""
         }
         val typeFactory: InboxReputationTypeFactory =
-            InboxReputationTypeFactoryImpl(context, this, this)
+            InboxReputationTypeFactoryImpl(this, this)
         adapter = InboxReputationAdapter(typeFactory)
     }
 
@@ -219,14 +216,13 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         if ((activity != null) and (view != null) and (context != null)) {
             NetworkErrorHelper.showEmptyState(
                 activity, view, getErrorMessage(
-                (context)!!, (throwable)!!
-            ),
-                NetworkErrorHelper.RetryClickedListener({
-                    presenter!!.getFirstTimeInboxReputation(
-                        tab
-                    )
-                })
-            )
+                    (context)!!, (throwable)!!
+                )
+            ) {
+                presenter!!.getFirstTimeInboxReputation(
+                    tab
+                )
+            }
         }
     }
 
@@ -251,34 +247,32 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         if (context != null) {
             NetworkErrorHelper.createSnackbarWithAction(
                 activity,
-                getErrorMessage((context)!!, (throwable)!!),
-                NetworkErrorHelper.RetryClickedListener({
-                    presenter!!.getFirstTimeInboxReputation(
-                        tab
-                    )
-                })
-            ).showRetrySnackbar()
+                getErrorMessage((context)!!, (throwable)!!)
+            ) {
+                presenter.getFirstTimeInboxReputation(
+                    tab
+                )
+            }.showRetrySnackbar()
         }
     }
 
     override fun onSuccessGetNextPage(inboxReputationUiModel: InboxReputationUiModel?) {
         adapter!!.removeLoading()
-        adapter!!.addList(inboxReputationUiModel.getList())
-        presenter!!.setHasNextPage(inboxReputationUiModel!!.isHasNextPage())
+        adapter!!.addList(inboxReputationUiModel.list)
+        presenter.setHasNextPage(inboxReputationUiModel!!.isHasNextPage())
     }
 
     override fun onErrorRefresh(throwable: Throwable?) {
         if (context != null) {
             NetworkErrorHelper.showEmptyState(
                 activity, view, getErrorMessage(
-                (context)!!, (throwable)!!
-            ),
-                NetworkErrorHelper.RetryClickedListener({
-                    presenter!!.refreshPage(
-                        query, timeFilter, scoreFilter, tab
-                    )
-                })
-            )
+                    (context)!!, (throwable)!!
+                )
+            ) {
+                presenter.refreshPage(
+                    query, timeFilter, scoreFilter, tab
+                )
+            }
         }
     }
 
@@ -329,7 +323,8 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         if (persistentCacheManager != null) {
             persistentCacheManager!!.put(
                 InboxReputationDetailActivity.CACHE_PASS_DATA,
-                CacheUtil.convertModelToString(inboxReputationDetailPassModel,
+                CacheUtil.convertModelToString(
+                    inboxReputationDetailPassModel,
                     object : TypeToken<InboxReputationDetailPassModel?>() {}.type
                 )
             )
@@ -359,72 +354,67 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     override fun showRefreshing() {
-        swipeToRefresh!!.isRefreshing = true
+        swipeToRefresh?.isRefreshing = true
     }
 
     override fun onSuccessGetFilteredInboxReputation(inboxReputationUiModel: InboxReputationUiModel?) {
-        adapter!!.removeEmpty()
-        adapter!!.setList(inboxReputationUiModel.getList())
-        presenter!!.setHasNextPage(inboxReputationUiModel!!.isHasNextPage())
+        adapter?.removeEmpty()
+        adapter?.setList(inboxReputationUiModel.list)
+        presenter.setHasNextPage(inboxReputationUiModel?.isHasNextPage())
     }
 
     override fun onErrorGetFilteredInboxReputation(throwable: Throwable?) {
         if (context != null) {
             NetworkErrorHelper.createSnackbarWithAction(
                 activity, getErrorMessage(
-                (context)!!, (throwable)!!
-            ),
-                NetworkErrorHelper.RetryClickedListener({
-                    presenter!!.getFilteredInboxReputation(
-                        query, timeFilter, scoreFilter, tab
-                    )
-                })
-            ).showRetrySnackbar()
+                    (context)!!, (throwable)!!
+                )
+            ) {
+                presenter.getFilteredInboxReputation(
+                    query, timeFilter, scoreFilter, tab
+                )
+            }.showRetrySnackbar()
         }
     }
 
     override fun finishRefresh() {
-        swipeToRefresh!!.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
     }
 
     override fun onShowEmpty() {
-        searchView!!.visibility = View.GONE
-        filterButton!!.visibility = View.GONE
-        adapter!!.clearList()
+        searchView?.visibility = View.GONE
+        filterButton?.visibility = View.GONE
+        adapter?.clearList()
         if ((GlobalConfig.isSellerApp()
                     || tab == ReviewInboxConstants.TAB_BUYER_REVIEW)
         ) {
-            adapter!!.showEmpty(getString(R.string.inbox_reputation_seller_empty_title))
+            adapter?.showEmpty(getString(R.string.inbox_reputation_seller_empty_title))
         } else {
-            adapter!!.showEmpty(getString(R.string.inbox_reputation_empty_title),
-                getString(R.string.inbox_reputation_empty_button),
-                object : View.OnClickListener {
-                    override fun onClick(v: View) {
-                        goToHotlist()
-                    }
-                })
+            adapter?.showEmpty(getString(R.string.inbox_reputation_empty_title),
+                getString(R.string.inbox_reputation_empty_button)
+            ) { goToHotlist() }
         }
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 
     private fun goToHotlist() {
         RouteManager.route(context, ApplinkConst.HOME)
-        activity!!.finish()
+        activity?.finish()
     }
 
     override fun onShowEmptyFilteredInboxReputation() {
-        adapter!!.clearList()
-        adapter!!.showEmpty(getString(R.string.inbox_reputation_search_empty_title),
+        adapter?.clearList()
+        adapter?.showEmpty(getString(R.string.inbox_reputation_search_empty_title),
             getString(R.string.inbox_reputation_search_empty_button),
             object : View.OnClickListener {
                 override fun onClick(v: View) {
                     timeFilter = ""
                     scoreFilter = ""
                     onSearchSubmitted("")
-                    searchView!!.searchText = ""
+                    searchView?.searchText = ""
                 }
             })
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -435,12 +425,12 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
                     ) && (resultCode == Activity.RESULT_OK
                     ) && (data != null)
         ) {
-            timeFilter = data.extras!!.getString(
+            timeFilter = data.extras?.getString(
                 InboxReputationFilterFragment.SELECTED_TIME_FILTER, ""
             )
-            scoreFilter = data.extras!!
-                .getString(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, "")
-            presenter!!.getFilteredInboxReputation(
+            scoreFilter = data.extras?
+            .getString(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, "")
+            presenter?.getFilteredInboxReputation(
                 query,
                 timeFilter,
                 scoreFilter,
@@ -451,7 +441,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
 
     private val query: String
         private get() {
-            if (searchView != null) return searchView!!.searchText else return ""
+            if (searchView != null) return searchView?.searchText else return ""
         }
 
     override fun onResume() {
@@ -461,7 +451,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (presenter != null) presenter!!.detachView()
+        presenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -472,7 +462,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     override fun onSearchSubmitted(text: String) {
-        presenter!!.getFilteredInboxReputation(
+        presenter.getFilteredInboxReputation(
             text,
             timeFilter,
             scoreFilter,
@@ -481,9 +471,9 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     override fun onSearchTextChanged(text: String) {
-        if (text.length == 0) {
+        if (text.isEmpty()) {
             setQueryHint()
-            presenter!!.getFilteredInboxReputation(
+            presenter.getFilteredInboxReputation(
                 "",
                 timeFilter,
                 scoreFilter,
@@ -509,17 +499,18 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     companion object {
-        protected val DEFAULT_DELAY_TEXT_CHANGED: Long = TimeUnit.MILLISECONDS.toMillis(300)
-        val PARAM_TAB: String = "tab"
-        private val REQUEST_OPEN_DETAIL: Int = 101
-        private val REQUEST_FILTER: Int = 102
-        private val ARGS_TIME_FILTER: String = "ARGS_TIME_FILTER"
-        private val ARGS_SCORE_FILTER: String = "ARGS_SCORE_FILTER"
-        private val ARGS_QUERY: String = "ARGS_QUERY"
+        private val DEFAULT_DELAY_TEXT_CHANGED: Long = TimeUnit.MILLISECONDS.toMillis(300)
+        const val PARAM_TAB: String = "tab"
+        private const val REQUEST_OPEN_DETAIL: Int = 101
+        private const val REQUEST_FILTER: Int = 102
+        private const val ARGS_TIME_FILTER: String = "ARGS_TIME_FILTER"
+        private const val ARGS_SCORE_FILTER: String = "ARGS_SCORE_FILTER"
+        private const val ARGS_QUERY: String = "ARGS_QUERY"
+
         @kotlin.jvm.JvmStatic
         fun createInstance(tab: Int): Fragment {
-            val fragment: InboxReputationFragment = InboxReputationFragment()
-            val bundle: Bundle = Bundle()
+            val fragment = InboxReputationFragment()
+            val bundle = Bundle()
             bundle.putInt(PARAM_TAB, tab)
             fragment.arguments = bundle
             return fragment

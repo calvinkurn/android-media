@@ -97,6 +97,7 @@ class ReputationDataUiModel : Parcelable {
     }
 
     companion object {
+        @JvmField 
         val CREATOR: Parcelable.Creator<ReputationDataUiModel> =
             object : Parcelable.Creator<ReputationDataUiModel?> {
                 override fun createFromParcel(`in`: Parcel): ReputationDataUiModel? {

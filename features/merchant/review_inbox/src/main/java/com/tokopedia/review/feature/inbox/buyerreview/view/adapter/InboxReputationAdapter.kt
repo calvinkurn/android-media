@@ -19,6 +19,7 @@ import java.util.*
  */
 class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory) :
     RecyclerView.Adapter<AbstractViewHolder<*>>() {
+
     private val list: MutableList<Visitable<*>?>
     private val emptySearchModel: EmptySearchModel
     private val loadingModel: LoadingModel
@@ -33,12 +34,12 @@ class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory
         return typeFactory.createViewHolder(view, viewType)
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>?, position: Int) {
-        holder!!.bind(list.get(position))
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        holder.bind(list.get(position))
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list.get(position)!!.type(typeFactory)
+        return list.getOrNull(position)?.type(typeFactory) ?: 0
     }
 
     override fun getItemCount(): Int {
@@ -104,10 +105,10 @@ class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory
         list.clear()
     }
 
-    fun showEmpty(title: String?) {
-        emptySearchModel.setTitle(title)
-        emptySearchModel.setButtonText("")
-        emptySearchModel.setButtonListener(null)
+    fun showEmpty(title: String) {
+        emptySearchModel.title = title
+        emptySearchModel.buttonText = ""
+        emptySearchModel.buttonListener = null
         list.add(emptySearchModel)
     }
 

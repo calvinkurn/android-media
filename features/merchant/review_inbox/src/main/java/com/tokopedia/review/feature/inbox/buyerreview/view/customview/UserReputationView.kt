@@ -22,6 +22,7 @@ import com.tokopedia.unifyprinciples.Typography
  * @author by stevenfredian on 8/16/17.
  */
 class UserReputationView : BaseCustomView {
+
     private var percentageTextView: Typography? = null
     private var imageViewIcon: ImageView? = null
     private var layout: LinearLayout? = null

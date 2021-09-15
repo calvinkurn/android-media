@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inbox
 
-import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -19,7 +18,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrati
  * @author by nisie on 8/19/17.
  */
 class InboxReputationTypeFactoryImpl constructor(
-    private val context: Context?,
     private val viewListener: InboxReputation.View,
     private val sellerMigrationReviewClickListener: SellerMigrationReviewClickListener
 ) : BaseAdapterTypeFactory(), InboxReputationTypeFactory {
@@ -43,7 +41,7 @@ class InboxReputationTypeFactoryImpl constructor(
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             InboxReputationViewHolder.LAYOUT -> InboxReputationViewHolder(
-                context, view, viewListener
+                view, viewListener
             )
             EmptyReputationSearchViewHolder.LAYOUT -> {
                 EmptyReputationSearchViewHolder(view)
