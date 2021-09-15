@@ -15,10 +15,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_tkpd_voucher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/mvc_dimen_215dp"
+            android:layout_height="@dimen/mvc_dimen_174dp"
             android:scaleType="centerInside"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
