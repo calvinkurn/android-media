@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.data.constant;
+package com.tokopedia.common.topupbills.data.constant;
 
 import androidx.annotation.StringDef;
 

@@ -1,18 +1,19 @@
 package com.tokopedia.smartbills.data
 
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-enum class CategoryTelcoType(val categoryId: String, val categoryValue: String) {
-    PULSA("1", "Pulsa"),
-    PAKET_DATA("2", "Paket Data"),
-    PASCABAYAR("9", "Pasca Bayar");
 
-    companion object {
+object CategoryTelcoType {
         @JvmStatic
-        fun getCategoryString(label: String?): String {
-            for (type in values()) {
-                if (type.categoryId == label) return type.categoryValue
+        fun getCategoryString(category: String?): String {
+            val categoryId = category.toIntOrZero()
+            return when (categoryId) {
+                TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
+                TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
+                TelcoCategoryType.CATEGORY_PASCABAYAR -> TelcoComponentName.PRODUCT_PASCABAYAR
+                else -> TelcoComponentName.PRODUCT_PULSA
             }
-            return PULSA.categoryValue
         }
-    }
 }
