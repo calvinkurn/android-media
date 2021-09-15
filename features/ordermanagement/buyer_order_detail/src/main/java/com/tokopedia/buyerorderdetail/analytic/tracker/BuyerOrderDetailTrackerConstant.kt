@@ -44,9 +44,11 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SEE_COMPLAINT = "click on lihat complain"
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
+    const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
 
     // event labels
     const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
+    const val EVENT_LABEL_BUY_AGAIN_SUCCESS = "success - order_id: "
 
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"

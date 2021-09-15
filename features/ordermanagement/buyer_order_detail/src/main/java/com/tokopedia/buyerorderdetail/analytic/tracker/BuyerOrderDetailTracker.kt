@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -68,26 +70,27 @@ object BuyerOrderDetailTracker {
     }
 
     private fun Bundle.appendBuyAgainProductEE(
-            products: List<ProductListUiModel.ProductUiModel>,
-            cartId: String,
-            shopId: String,
-            shopName: String,
-            shopType: Int
+        products: List<ProductListUiModel.ProductUiModel>,
+        atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,
+        shopId: String,
+        shopName: String,
+        shopType: String
     ): Bundle {
-        val productsPayload = products.map {
+        val productsPayload = products.map { product ->
             Bundle().apply {
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID, it.categoryId)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, cartId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID, product.categoryId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40, BuyerOrderDetailTrackerConstant.MARKER_ORDER_LIST_DETAIL_MARKETPLACE)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, atcResult.find { it.productId.toString() == product.productId }?.cartId.orZero().toString())
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_BRAND, "")
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY, it.category)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID, it.productId)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME, it.productName)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY, product.category)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID, product.productId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME, product.productName)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_VARIANT, "")
-                putDouble(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRICE, it.price)
-                putInt(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_QUANTITY, it.quantity)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRICE, product.price.toString())
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_QUANTITY, product.quantity.toString())
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_ID, shopId)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_NAME, shopName)
-                putInt(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_TYPE, shopType)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_TYPE, shopType)
             }
         }
         putParcelableArrayList(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS_ITEMS, ArrayList(productsPayload))
@@ -179,5 +182,29 @@ object BuyerOrderDetailTracker {
             .appendUserId(userId)
             .appendOrderListDetailMarker()
         TrackApp.getInstance().gtm.sendGeneralEvent(payload)
+    }
+
+    fun eventSuccessATC(
+        products: List<ProductListUiModel.ProductUiModel>,
+        atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,
+        orderId: String,
+        shopId: String,
+        shopName: String,
+        shopType: String,
+        userId: String
+    ) {
+        val payload = Bundle().apply {
+            appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS,
+                eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_BUY_AGAIN_SUCCESS} $orderId")
+            appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            appendBuyAgainProductEE(products, atcResult, shopId, shopName, shopType)
+            putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_ID, products.joinToString(separator = BuyerOrderDetailTrackerConstant.SEPARATOR_COMMA) { it.productId })
+            putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART, payload)
     }
 }
