@@ -87,8 +87,7 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
         RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, GOPAY_HELP_URL)
     }
 
-    private fun uploadPhotoForKyc() =
-        activity?.let { (it as GoPayKycReviewListener).uploadImageToServer() }
+    private fun uploadPhotoForKyc() = viewModel.initiateGoPayKyc()
 
     private fun openKtpCameraScreen() =
         activity?.let { (it as GoPayKycOpenCameraListener).openKtpCameraScreen() }

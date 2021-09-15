@@ -108,8 +108,6 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
     override fun showKycFailedBottomSheet() = GoPayKycUploadFailedBottomSheet
         .show(viewModel.ktpPath, viewModel.selfieKtpPath,supportFragmentManager)
 
-    override fun uploadImageToServer() = viewModel.uploadImage()
-
     override fun openKtpCameraScreen() {
         startActivityForResult(
             GoPayCameraKtpActivity.getIntent(this, false),

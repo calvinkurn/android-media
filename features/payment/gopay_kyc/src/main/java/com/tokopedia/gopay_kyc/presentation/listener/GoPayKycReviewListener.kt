@@ -4,6 +4,5 @@ interface GoPayKycReviewListener {
 
     fun showKycSuccessScreen()
     fun showKycFailedBottomSheet()
-    fun uploadImageToServer()
 
 }

@@ -41,7 +41,6 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(), HasComponent<GoPayKycC
             else -> GoPayPlusKtpInstructionsFragment.newInstance()
         }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {

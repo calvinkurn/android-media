@@ -19,6 +19,7 @@ public interface GraphqlConstant {
 
     enum ExpiryTimes {
         MINUTE_1(MINUTE_MS),
+        MINUTE_15(15 * MINUTE_MS),
         MINUTE_30(30 * MINUTE_MS),
         HOUR(HOUR_MS),
         MINUTE_90(90 * MINUTE_MS),

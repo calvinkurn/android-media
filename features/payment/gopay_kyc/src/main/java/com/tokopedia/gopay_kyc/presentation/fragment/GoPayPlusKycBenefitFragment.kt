@@ -4,15 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.GoPayPlusBenefit
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayPlusBenefitItemViewHolder
+import com.tokopedia.gopay_kyc.viewmodel.GoPayKycViewModel
 import kotlinx.android.synthetic.main.fragment_gopay_benefits_layout.*
+import javax.inject.Inject
 
 class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
 
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(GoPayKycViewModel::class.java)
+    }
     private val benefitList = ArrayList<GoPayPlusBenefit>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +82,9 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.checkKycStatus()
         upgradeNowButton.setOnClickListener {
-            context?.let {
-                it.startActivity(GoPayKtpInstructionActivity.getIntent(it))
-            }
+            checkForKycUpgrade()
         }
         val layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -91,8 +102,13 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun checkForKycUpgrade() {
+        if (viewModel.kycEligibilityStatus)
+            context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
+    }
+
     override fun getScreenName() = null
-    override fun initInjector() {}
+    override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
 
     companion object {
         fun newInstance() = GoPayPlusKycBenefitFragment()

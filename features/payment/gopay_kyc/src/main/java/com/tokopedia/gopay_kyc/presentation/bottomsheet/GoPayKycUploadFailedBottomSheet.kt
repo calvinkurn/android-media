@@ -71,7 +71,7 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         retryUploadButton.setOnClickListener {
             retryUploadButton.isLoading = true
-            viewModel.uploadImage()
+            viewModel.initiateGoPayKyc()
         }
         observeViewModel()
     }
