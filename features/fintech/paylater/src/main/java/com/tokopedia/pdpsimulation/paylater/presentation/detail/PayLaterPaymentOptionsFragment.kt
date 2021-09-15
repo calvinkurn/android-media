@@ -158,7 +158,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             if (data.tenure != 1 && data.tenure != 0)
                 duration.text = resources.getString(R.string.cicilian) + " ${data.tenure}x"
 
-            interestText.text = "Interest(${(data.interest_pct ?: 0)}%)"
+            interestText.text = "${resources.getString(R.string.interest)}(${(data.interest_pct ?: 0)}%)"
             gatewayType =
                 if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
                     GatewayStatusType.Rejected
@@ -172,7 +172,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
             if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
                 serviceFeeInfoText.visible()
-                serviceFeeInfoText.text = data.gateway_detail?.smallSubHeader
+                serviceFeeInfoText.text = data.serviceFeeInfo
             } else {
                 serviceFeeInfoText.gone()
 
@@ -191,9 +191,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 )
             }
             serviceFeeAmount.text =
-                data.total_fee_ceil?.let { total_fee_ceil ->
+                data.total_with_provision_ceil?.let { total_provision_ceil ->
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        total_fee_ceil,
+                        total_provision_ceil,
                         false
                     )
                 }
@@ -221,7 +221,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             else
                 recommendedImg.gone()
 
-            if (data.cta?.button_color.equals("green", true)) {
+            if (data.cta?.button_color.equals("filled", true)) {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
             } else {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST

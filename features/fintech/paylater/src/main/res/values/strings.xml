@@ -93,6 +93,7 @@
     <string name="simulasi_pembayaran">Simulasi pembayaran</string>
     <string name="serviceFee">Biaya Layanan</string>
     <string name="one_month">30 Hari</string>
+    <string name="interest">Bunga</string>
 
 
 </resources>
