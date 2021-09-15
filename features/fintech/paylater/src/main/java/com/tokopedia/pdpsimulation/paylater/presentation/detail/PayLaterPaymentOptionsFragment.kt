@@ -37,8 +37,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private var buttonStatus: RedirectionType? = null
     private var gatewayType: GatewayStatusType? = null
     private var urlToRedirect: String = ""
-    private var partnerName:String? = ""
-    private var tenure:Int? = 0
+    private var partnerName: String? = ""
+    private var tenure: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,9 +130,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         )
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
 
-            it.sendAnalytics(PdpSimulationEvent.PayLater.FaqImpression(responseData?.gateway_detail?.name ?: "",responseData?.tenure ?: 0))
-           bundle.putString("partnerName",partnerName)
-           bundle.putInt("tenure",tenure?:0) ;
+            it.sendAnalytics(
+                PdpSimulationEvent.PayLater.FaqImpression(
+                    responseData?.gateway_detail?.name ?: "", responseData?.tenure ?: 0
+                )
+            )
+            bundle.putString("partnerName", partnerName)
+            bundle.putInt("tenure", tenure ?: 0)
             it.openBottomSheet(
                 bundle, PayLaterFaqBottomSheet::class.java
             )
@@ -145,9 +149,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
-            tvTitlePaymentPartner.text = data.gateway_detail?.name?:""
-            partnerName = data.gateway_detail?.name?:""
-            tenure = data.tenure?:0
+            tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""
+            partnerName = data.gateway_detail?.name ?: ""
+            tenure = data.tenure ?: 0
             if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
                 tvSmallSubTitlePaylaterPartner.visible()
                 tvSmallSubTitlePaylaterPartner.text = data.gateway_detail?.smallSubHeader
@@ -159,7 +163,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             if (data.tenure != 1 && data.tenure != 0)
                 duration.text = resources.getString(R.string.cicilian) + " ${data.tenure}x"
 
-            interestText.text = "${resources.getString(R.string.interest)}(${(data.interest_pct ?: 0)}%)"
+            interestText.text =
+                "${resources.getString(R.string.interest)}(${(data.interest_pct ?: 0)}%)"
             gatewayType =
                 if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
                     GatewayStatusType.Rejected

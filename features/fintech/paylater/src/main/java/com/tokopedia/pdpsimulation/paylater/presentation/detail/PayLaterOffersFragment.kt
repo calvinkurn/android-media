@@ -179,9 +179,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setViewPagerAdapterListner()
-    {
-        paymentOptionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+    fun setViewPagerAdapterListner() {
+        paymentOptionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -191,7 +190,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-               val detail = pagerAdapter.getPaymentDetailByPosition(position)
+                val detail = pagerAdapter.getPaymentDetailByPosition(position)
                 detail?.let {
                     onPageSelectedByUser(it)
                 }
@@ -205,11 +204,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPageSelectedByUser(it: Detail) {
-        if(!it.isInvoke)
-        {
+        if (!it.isInvoke) {
             pdpSimulationCallback?.sendAnalytics(
                 PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-                    it.gateway_detail?.name?:"",
+                    it.gateway_detail?.name ?: "",
                     it.cta?.name ?: "",
                     it.tenure ?: 0
                 )

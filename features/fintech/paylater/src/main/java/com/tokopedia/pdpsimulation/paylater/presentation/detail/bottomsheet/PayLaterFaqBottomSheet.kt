@@ -55,7 +55,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
             faqData = it.getParcelableArrayList(FAQ_DATA) ?: arrayListOf()
             faqUrl = it.getString(FAQ_SEE_MORE_URL) ?: ""
             parterName = it.getString(PARTNER_NAME) ?: ""
-            tenure = it.getInt(TENURE,0)
+            tenure = it.getInt(TENURE, 0)
         }
     }
 
@@ -96,7 +96,13 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnSeeMore.setOnClickListener {
-            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.FaqClickWebImpression(parterName?:"",tenure?:0,faqUrl))
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.FaqClickWebImpression(
+                    parterName ?: "",
+                    tenure ?: 0,
+                    faqUrl
+                )
+            )
             openUrlWebView(faqUrl)
         }
     }
@@ -116,7 +122,11 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         const val PARTNER_NAME = "partnerName"
         const val TENURE = "tenure"
 
-        fun show(bundle: Bundle,  pdpSimulationCallback: PdpSimulationCallback,childFragmentManager: FragmentManager) {
+        fun show(
+            bundle: Bundle,
+            pdpSimulationCallback: PdpSimulationCallback,
+            childFragmentManager: FragmentManager
+        ) {
             val payLaterFaqBottomSheet = PayLaterFaqBottomSheet().apply {
                 arguments = bundle
             }

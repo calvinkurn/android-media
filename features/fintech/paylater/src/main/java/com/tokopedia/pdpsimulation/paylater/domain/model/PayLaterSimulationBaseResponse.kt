@@ -67,7 +67,7 @@ data class Detail(
     @SerializedName("cta") val cta: Cta?,
     @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?,
     @SerializedName("service_fee_info") val serviceFeeInfo: String?,
-    var isInvoke:Boolean = false
+    var isInvoke: Boolean = false
 ) : Parcelable
 
 @Parcelize
