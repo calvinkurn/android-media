@@ -340,9 +340,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 if (updateCartV2Data.data.outOfService.isOutOfService()) {
                     view.renderErrorToShipmentForm(updateCartV2Data.data.outOfService)
                 } else {
-                    view.renderErrorToShipmentForm(updateCartV2Data.data.message, if (updateCartV2Data.data.toasterAction.showCta) updateCartV2Data.data.toasterAction.text else "")
+                    view.renderErrorToShipmentForm(updateCartV2Data.data.error, if (updateCartV2Data.data.toasterAction.showCta) updateCartV2Data.data.toasterAction.text else "")
                 }
-                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.message), cartItemDataList)
+                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
         }
     }
