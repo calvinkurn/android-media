@@ -171,7 +171,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         private fun removeFile(filePath: String){
             if (!TextUtils.isEmpty(filePath) &&
-                !filePath.contains(ScreenshotDetector.screenShotRegex)) {
+                !filePath.contains(ScreenshotDetector.screenShotRegex, true)) {
                 File(filePath).apply {
                     if (exists()) {
                         delete()
