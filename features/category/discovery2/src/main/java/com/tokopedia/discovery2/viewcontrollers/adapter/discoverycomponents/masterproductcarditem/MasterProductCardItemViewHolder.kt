@@ -74,6 +74,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
@@ -230,6 +231,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onQuantityChanged(quantity: Int) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
         masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
             if (!productItem.productId.isNullOrEmpty())
                 (fragment as DiscoveryFragment).addOrUpdateItemCart(
