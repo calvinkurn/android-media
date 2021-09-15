@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChosenAddressDataResponse (
         @SerializedName("addr_id")
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         @SerializedName("receiver_name")
         var receiverName: String = "",
         @SerializedName("addr_name")

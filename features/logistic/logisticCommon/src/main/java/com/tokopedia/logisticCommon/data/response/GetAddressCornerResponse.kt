@@ -31,7 +31,7 @@ data class Token(
 
 data class DataAddress(
         @SerializedName("addr_id")
-        var addrId: Int = 0,
+        var addrId: Long = 0,
         @SerializedName("addr_name")
         var addrName: String = "",
         @SerializedName("address_1")
@@ -61,7 +61,7 @@ data class DataAddress(
         @SerializedName("longitude")
         var longitude: String = "",
         @SerializedName("partner_id")
-        var partnerId: Int = 0,
+        var partnerId: Long = 0,
         @SerializedName("partner_name")
         var partnerName: String = "",
         @SerializedName("phone")

@@ -22,7 +22,7 @@ data class DataShippingEditorPopup(
         @SerializedName("ui_content")
         var uiContent: UiContent = UiContent(),
         @SerializedName("feature_id")
-        var featureId: List<Int> = listOf()
+        var featureId: List<Long> = listOf()
 )
 
 data class UiContent(
@@ -32,12 +32,13 @@ data class UiContent(
         var body: List<String> = listOf(),
         @SerializedName("ticker")
         var ticker: TickerContent = TickerContent(),
-        @SerializedName("header_location")
+        @SerializedName("heade" +
+                "r_location")
         var headerLocation: String = "",
         @SerializedName("warehouses")
         var warehouses: List<Warehouses> = listOf(),
         @SerializedName("warehouse_ids")
-        var warehouseId: List<Int> = listOf()
+        var warehouseId: List<Long> = listOf()
 
 )
 

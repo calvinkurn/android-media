@@ -20,7 +20,7 @@ data class ShopLocations(
 
 data class Error(
 		@SerializedName("id")
-		var id: Int = 0,
+		var id: Long = 0,
 		@SerializedName("description")
 		var description: String = ""
 )
@@ -45,7 +45,7 @@ data class GeneralTicker(
 
 data class Warehouse(
 		@SerializedName("warehouse_id")
-		var warehouseId: Int = 0,
+		var warehouseId: Long = 0,
 		@SerializedName("warehouse_name")
 		var warehouseName: String = "",
 		@SerializedName("warehouse_type")
@@ -61,15 +61,15 @@ data class Warehouse(
 		@SerializedName("latlon")
 		var latLon: String = "",
 		@SerializedName("district_id")
-		var districtId: Int = 0,
+		var districtId: Long = 0,
 		@SerializedName("district_name")
 		var districtName: String = "",
 		@SerializedName("city_id")
-		var cityId: Int = 0,
+		var cityId: Long = 0,
 		@SerializedName("city_name")
 		var cityName: String = "",
 		@SerializedName("province_id")
-		var provinceId: Int = 0,
+		var provinceId: Long = 0,
 		@SerializedName("province_name")
 		var provinceName: String = "",
 		@SerializedName("country")

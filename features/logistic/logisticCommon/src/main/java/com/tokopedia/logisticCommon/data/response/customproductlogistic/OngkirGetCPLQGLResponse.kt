@@ -39,7 +39,7 @@ data class ShipperList(
 
 data class Shipper(
     @SerializedName("shipper_id")
-    var shipperId: Int = 0,
+    var shipperId: Long = 0,
     @SerializedName("shipper_name")
     var shipperName: String = "",
     @SerializedName("logo")
@@ -50,7 +50,7 @@ data class Shipper(
 
 data class ShipperProduct(
     @SerializedName("shipper_product_id")
-    var shipperProductId: Int = 0,
+    var shipperProductId: Long = 0,
     @SerializedName("shipper_product_name")
     var shipperProductName: String = "",
     @SerializedName("ui_hidden")

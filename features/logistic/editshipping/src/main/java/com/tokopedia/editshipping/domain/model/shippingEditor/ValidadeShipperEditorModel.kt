@@ -3,7 +3,7 @@ package com.tokopedia.editshipping.domain.model.shippingEditor
 data class ValidateShippingEditorModel(
         var state: Int = 0,
         var uiContent: UiContentModel = UiContentModel(),
-        var featureId: List<Int> = listOf()
+        var featureId: List<Long> = listOf()
 )
 
 data class UiContentModel(
@@ -12,7 +12,7 @@ data class UiContentModel(
         var ticker: TickerContentModel = TickerContentModel(),
         var headerLocation: String = "",
         var warehouses: List<WarehousesModel> = listOf(),
-        var warehouseId: List<Int> = listOf()
+        var warehouseId: List<Long> = listOf()
 
 )
 

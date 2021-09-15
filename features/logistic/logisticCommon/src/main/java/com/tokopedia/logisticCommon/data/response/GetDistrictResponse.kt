@@ -20,9 +20,9 @@ data class KeroPlacesGetDistrict(
 
 data class Data(
         @SerializedName("city_id")
-        var cityId: Int = 0,
+        var cityId: Long = 0,
         @SerializedName("district_id")
-        var districtId: Int = 0,
+        var districtId: Long = 0,
         @SerializedName("district_name")
         var districtName: String = "",
         @SerializedName("formatted_address")
@@ -36,7 +36,7 @@ data class Data(
         @SerializedName("postal_code")
         var postalCode: String = "",
         @SerializedName("province_id")
-        var provinceId: Int = 0,
+        var provinceId: Long = 0,
         @SerializedName("title")
         var title: String = ""
 )

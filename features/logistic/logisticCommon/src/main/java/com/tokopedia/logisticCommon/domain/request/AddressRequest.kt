@@ -21,5 +21,5 @@ data class AddressRequest(
     @SerializedName("previous_state")
     val previousState: Int? = null,
     @SerializedName("local_state_chosen_address_id")
-    val localStateChosenAddressId: Int? = null
+    val localStateChosenAddressId: Long? = null
 )

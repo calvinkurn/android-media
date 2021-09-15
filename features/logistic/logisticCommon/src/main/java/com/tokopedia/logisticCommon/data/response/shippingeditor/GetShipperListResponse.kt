@@ -32,7 +32,7 @@ data class Shippers(
 
 data class OnDemand(
         @SerializedName("shipper_id")
-        var shipperId: Int = -1,
+        var shipperId: Long = -1,
         @SerializedName("shipper_name")
         var shipperName: String = "",
         @SerializedName("is_active")
@@ -49,7 +49,7 @@ data class OnDemand(
 
 data class Conventional(
         @SerializedName("shipper_id")
-        var shipperId: Int = -1,
+        var shipperId: Long = -1,
         @SerializedName("shipper_name")
         var shipperName: String = "",
         @SerializedName("is_active")

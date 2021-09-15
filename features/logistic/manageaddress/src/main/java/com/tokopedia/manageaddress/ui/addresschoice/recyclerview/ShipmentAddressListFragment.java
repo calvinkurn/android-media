@@ -460,10 +460,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
     }
 
-    private int getChosenAddrId() {
-        int addrId = 0;
+    private long getChosenAddrId() {
+        long addrId = 0;
         if (!localChosenAddr.getAddress_id().isEmpty()) {
-            addrId = Integer.parseInt(localChosenAddr.getAddress_id());
+            addrId = Long.parseLong(localChosenAddr.getAddress_id());
         }
         return addrId;
     }

@@ -56,7 +56,7 @@ data class ManageAddressData(
         @SerializedName("longitude")
         var longitude: String = "",
         @SerializedName("partner_id")
-        var partnerId: Int = 0,
+        var partnerId: Long = 0,
         @SerializedName("partner_name")
         var partnerName: String = "",
         @SerializedName("phone")
