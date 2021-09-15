@@ -68,6 +68,11 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     }
 
+    /**
+     * This method generate the sort filter
+     * @param paylaterProduct contain all detail of the tenure and we are displaying sort filter accordingly
+     */
+
     private fun generateSortFilter(paylaterProduct: PayLaterGetSimulation) {
         val filterData = ArrayList<SortFilterItem>()
         paylaterProduct.productList?.let {
@@ -99,6 +104,12 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
 
     }
+
+    /**
+     * This contain click logic for anu sortFilter
+     * @param position position of the sort filter clicked
+     * @param name name of the sort filter clicked
+     */
 
     private fun selectOtherTenure(position: Int, name: String) {
         pdpSimulationCallback?.sendAnalytics(
@@ -154,6 +165,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * This method pass network response to each viewpager for the paylater partner
+     * @param paylaterProduct contains detail of the paylater partner
+     */
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
         payLaterOffersGlobalError.gone()
         if (paylaterProduct.productList == null || paylaterProduct.productList.isEmpty()) {
@@ -179,7 +194,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setViewPagerAdapterListner() {
+    private fun setViewPagerAdapterListner() {
         paymentOptionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,

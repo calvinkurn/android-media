@@ -104,19 +104,14 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         val bundle = Bundle()
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-            it.sendAnalytics(
-                PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-                    responseData?.gateway_detail?.name ?: "",
-                    responseData?.cta?.name ?: "",
-                    responseData?.tenure ?: 0
-                )
-            )
 
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
             )
         }
     }
+
+
 
     private fun openFaqBottomSheet() {
         val bundle = Bundle()
@@ -146,7 +141,6 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     /**
      * This method set values to all view from the api success response
      */
-    @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""

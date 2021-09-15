@@ -64,6 +64,11 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         } ?: dismiss()
     }
 
+    /**
+     * this contains all the ui set value for the bundle response and logic behind what to display
+     * @param payLaterItemProductData this is all the product detail of the selected partner
+     */
+
     private fun setDataFromArguments(payLaterItemProductData: Detail?) {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
