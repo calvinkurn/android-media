@@ -9,6 +9,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
+import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
@@ -71,6 +72,7 @@ class AddProductInputMapper @Inject constructor() {
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
                 mapVariantParam(variantInputModel),
+                mapCPLData(shipmentInputModel.cplModel),
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }
@@ -221,6 +223,12 @@ class AddProductInputMapper @Inject constructor() {
                     else -> UNIT_MONTH
                 },
                 preorder.isActive
+        )
+    }
+
+    private fun mapCPLData(cpl: CPLModel): CPLData {
+        return CPLData(
+            cpl.shipmentServicesIds
         )
     }
 

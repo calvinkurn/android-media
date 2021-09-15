@@ -284,10 +284,6 @@ data class AceSearchProductModel(
             @Expose
             val name: String = "",
 
-            @SerializedName("ads")
-            @Expose
-            val ads: ProductAds = ProductAds(),
-
             @SerializedName("shop")
             @Expose
             val shop: ProductShop = ProductShop(),
@@ -389,30 +385,9 @@ data class AceSearchProductModel(
             @Expose
             val parentId: String = "",
 
-            @SerializedName("stock")
+            @SerializedName("maxOrder")
             @Expose
-            val stock: Int = 0,
-    ) {
-
-        fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
-    }
-
-    data class ProductAds(
-            @SerializedName("id")
-            @Expose
-            val id: String = "",
-
-            @SerializedName("productClickUrl")
-            @Expose
-            val productClickUrl: String = "",
-
-            @SerializedName("productWishlistUrl")
-            @Expose
-            val productWishlistUrl: String = "",
-
-            @SerializedName("productViewUrl")
-            @Expose
-            val productViewUrl: String = ""
+            val maxOrder: Int = 0,
     )
 
     data class ProductShop(

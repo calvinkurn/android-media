@@ -27,9 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.ImageAssets
-import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
-import com.tokopedia.shop_showcase.common.ShopShowcaseTracking
+import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
@@ -66,6 +64,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
         const val SHOWCASE_DELETED_LIST = "deleted_list"
+        private const val SLIDE_UP_COUNTER_ANIMATION_DELAY_MILLIS = 1800L
+        private const val SLIDE_DOWN_COUNTER_TRANSLATE_Y = 250f
     }
 
     @Inject
@@ -144,11 +144,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 super.onScrolled(view, dx, dy)
                 if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
-                    headerLayout?.cardElevation = 0f
+                    headerLayout?.cardElevation = CARD_HEADER_NO_ELEVATION
                 }
                 else {
                     buttonBackToTop?.show()
-                    headerLayout?.cardElevation = 16.0f
+                    headerLayout?.cardElevation = CARD_HEADER_ELEVATION
                 }
             }
 
@@ -156,7 +156,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 if(newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Handler().postDelayed({
                         slideUpCounter()
-                    }, 1800)
+                    }, SLIDE_UP_COUNTER_ANIMATION_DELAY_MILLIS)
                 }
                 if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     val currentFirstVisible = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
@@ -398,7 +398,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     private fun slideDownCounter() {
-        productSelectedCounter?.animate()?.translationY(250f)
+        productSelectedCounter?.animate()?.translationY(SLIDE_DOWN_COUNTER_TRANSLATE_Y)
         if(buttonBackToTop?.circleMainMenu?.visibility == View.VISIBLE)
             buttonBackToTop?.circleMainMenu?.hide()
     }

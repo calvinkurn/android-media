@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
@@ -20,6 +21,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     companion object {
         private const val TYPE_UNREGISTERED = 1
         private const val TYPE_REGISTERED = 2
+        private const val SCREEN_WIDTH_TARGET_DIVIDER = 0.85
     }
 
     interface MembershipStampAdapterListener {
@@ -56,8 +58,8 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     private fun setWidthPercentage(parent: ViewGroup, layoutParams: ViewGroup.LayoutParams, view: View) {
         if (membershipData.size > 1) {
             // Measure width 85% to screen
-            if (parent.width != 0) {
-                layoutParams.width = (parent.width * 0.85).toInt()
+            if (!parent.width.isZero()) {
+                layoutParams.width = (parent.width * SCREEN_WIDTH_TARGET_DIVIDER).toInt()
             } else {
                 val mWinMgr = view.context
                         .getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -65,7 +67,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
                 val size = Point()
                 display.getSize(size)
                 val width = size.x
-                layoutParams.width = (width * 0.85).toInt()
+                layoutParams.width = (width * SCREEN_WIDTH_TARGET_DIVIDER).toInt()
             }
         }
         view.layoutParams = layoutParams

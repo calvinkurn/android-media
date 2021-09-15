@@ -173,6 +173,9 @@ object ShopPageTrackingConstant {
     const val MEMBERSHIP_COUPON_CLAIM = "click klaim kupon"
     const val MEMBERSHIP_COUPON_CHECK = "click cek kupon saya"
     const val ETALASE_X = "etalase %1s"
+    const val ETALASE_NAVIGATION_BANNER = "etalase navigation banner"
+    const val CLICK_ETALASE_NAVIGATION_BANNER = "click $ETALASE_NAVIGATION_BANNER"
+    const val IMPRESSION_ETALASE_NAVIGATION_BANNER = "impression $ETALASE_NAVIGATION_BANNER"
     const val CLICK_PRODUCT = "click product"
     const val PRODUCT_RECOMMENDATION = "product recommendation"
     const val CLICK_PRODUCT_RECOMMENDATION = "click - " + PRODUCT_RECOMMENDATION
