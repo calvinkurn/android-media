@@ -10,9 +10,8 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -27,6 +26,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.fail
 
 /**
  * Created By : Jonathan Darwin on September 14, 2021
@@ -259,6 +259,55 @@ class PlayViewModelWebSocketTest {
             verifySequence {
                 statusInfoObserver.onChanged(channelData.statusInfo)
                 statusInfoObserver.onChanged(channelData.statusInfo)
+            }
+        }
+    }
+
+    @Test
+    fun `when get product tag from web socket, then it should update the current pinned product`() {
+        val pinnedModelBuilder = PlayPinnedModelBuilder()
+        val productTagModelBuilder = PlayProductTagsModelBuilder()
+
+        val pinnedProductObserver: Observer<PinnedProductUiModel> = mockk(relaxed = true)
+        every { pinnedProductObserver.onChanged(any()) }.just(Runs)
+
+        val mockName = "Product Name Test"
+        val mockSize = 3
+
+        val mockProduct = productTagModelBuilder.buildCompleteData(
+            productList = List(mockSize) { productTagModelBuilder.buildProductLine(title = mockName) },
+        )
+        val mockData = pinnedModelBuilder.buildPinnedProduct(
+            productTags = mockProduct
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        ) {
+            viewModel.observablePinnedProduct.observeForever(pinnedProductObserver)
+
+            createPage(channelData)
+            focusPage(channelData)
+        } andThen {
+            fakePlayWebSocket.fakeReceivedMessage(PlayProductTagSocketResponse.generateResponse(size = 3, title = mockName))
+        } thenVerify {
+            when(val productTag = viewModel.observablePinnedProduct.value?.productTags) {
+                is PlayProductTagsUiModel.Complete -> {
+                    val mockSize = (mockData.productTags as PlayProductTagsUiModel.Complete).productList.size
+                    productTag.productList.size.isEqualTo(mockSize)
+
+                    for(i in 0 until mockSize) {
+                        val counter = i+1
+                        (productTag.productList[i] as PlayProductUiModel.Product).title.isEqualTo("$mockName $counter")
+                        (productTag.productList[i] as PlayProductUiModel.Product).id.isEqualTo("$counter")
+                    }
+                }
+                else -> {
+                    fail(Exception("Model should be PlayProductTagsUiModel.Complete"))
+                }
             }
         }
     }
