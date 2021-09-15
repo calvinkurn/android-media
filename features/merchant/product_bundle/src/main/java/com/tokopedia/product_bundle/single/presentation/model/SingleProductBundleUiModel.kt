@@ -5,7 +5,15 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 data class SingleProductBundleUiModel (
         var items: List<SingleProductBundleItem> = emptyList(),
         var selectedItems: List<SingleProductBundleSelectedItem> = emptyList()
-)
+) {
+        /**
+         * Return selected item, or return `null` if there is no selected item
+         */
+        fun getSelectedSingleProductBundleItem(): SingleProductBundleItem? {
+                val selectedIndex = selectedItems.indexOfFirst { it.isSelected }
+                return items.getOrNull(selectedIndex)
+        }
+}
 
 data class TotalAmountUiModel (
         var price: String = "Rp0",
@@ -27,6 +35,9 @@ data class SingleProductBundleItem (
 ) {
         val hasVariant: Boolean = (productVariant != null)
 
+        /**
+         * Return VariantChild based on productId, or return `null` if not found
+         */
         fun getVariantChildFromProductId(productId: String) = productVariant?.children?.find {
                 it.productId == productId
         }

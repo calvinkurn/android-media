@@ -71,8 +71,13 @@ dependencies {
         transitive = true
     }
 
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.androidxTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
