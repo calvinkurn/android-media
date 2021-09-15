@@ -19,7 +19,7 @@ object ApplinkConstInternalTokopediaNow {
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
     //TokoNowSortFilterActivity
-    val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter?sort_value={sort_value}"
+    val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
 
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"

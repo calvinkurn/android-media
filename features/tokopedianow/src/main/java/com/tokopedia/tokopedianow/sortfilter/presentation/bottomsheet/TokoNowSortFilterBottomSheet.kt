@@ -26,8 +26,8 @@ class TokoNowSortFilterBottomSheet :
 
     companion object {
         private val TAG = TokoNowSortFilterBottomSheet::class.simpleName
-        private const val LAST_BOUGHT = 1
-        private const val FREQUENTLY_BOUGHT = 2
+        const val LAST_BOUGHT = 1
+        const val FREQUENTLY_BOUGHT = 2
 
         fun newInstance(): TokoNowSortFilterBottomSheet {
             return TokoNowSortFilterBottomSheet()

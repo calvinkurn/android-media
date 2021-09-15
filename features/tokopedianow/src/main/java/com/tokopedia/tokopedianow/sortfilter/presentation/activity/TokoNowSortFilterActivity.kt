@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.sortfilter.presentation.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.tokopedianow.sortfilter.presentation.fragment.TokoNowSortFilterFragment
 
 class TokoNowSortFilterActivity: BaseTokoNowActivity() {
@@ -11,7 +12,7 @@ class TokoNowSortFilterActivity: BaseTokoNowActivity() {
     }
 
     override fun getFragment(): Fragment {
-        val sortValue = intent?.data?.getQueryParameter(SORT_VALUE).orEmpty()
+        val sortValue = intent.getIntExtra(SORT_VALUE, FREQUENTLY_BOUGHT)
         return TokoNowSortFilterFragment.newInstance(sortValue)
     }
 }

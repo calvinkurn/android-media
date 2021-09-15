@@ -119,6 +119,25 @@ object RepurchaseLayoutMapper {
         }
     }
 
+    fun MutableList<Visitable<*>>.setSortFilter(sort: Int) {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
+            val sortFilterIndex = indexOf(item)
+            val sortFilter = (item as RepurchaseSortFilterUiModel)
+            val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
+            val filter = sortFilterList.firstOrNull { it.type == SORT }
+            val filterIndex = sortFilterList.indexOf(filter)
+            val updatedFilter = filter?.copy(sort = sort)
+
+            updatedFilter?.let {
+                sortFilterList[filterIndex] = it
+                set(sortFilterIndex, sortFilter.copy(
+                    sortFilterList = sortFilterList
+                ))
+            }
+        }
+    }
+
     private fun <T> MutableList<Visitable<*>>.removeFirstLayout(model: Class<T>) {
         firstOrNull { it.javaClass == model }?.let {
             val index = indexOf(it)

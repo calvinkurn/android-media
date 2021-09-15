@@ -65,6 +65,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouse
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.view.decoration.RepurchaseGridItemDecoration
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 
 import javax.inject.Inject
 
@@ -146,6 +149,7 @@ class TokoNowRecentPurchaseFragment:
 
         when (requestCode) {
             REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET -> onCategoryFilterActivityResult(data)
+            REQUEST_CODE_SORT_FILTER_BOTTOMSHEET -> onSortFilterActivityResult(data)
         }
     }
 
@@ -256,7 +260,10 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onClickSortFilter() {
-
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
+        val selectedFilter = viewModel.getSelectedSortFilter()
+        intent.putExtra(SORT_VALUE, selectedFilter)
+        startActivityForResult(intent, REQUEST_CODE_SORT_FILTER_BOTTOMSHEET)
     }
 
     override fun onClickDateFilter() {
@@ -515,6 +522,11 @@ class TokoNowRecentPurchaseFragment:
         val selectedFilter = data
             ?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.applyCategoryFilter(selectedFilter)
+    }
+
+    private fun onSortFilterActivityResult(data: Intent?) {
+        val selectedFilter = data?.getIntExtra(SORT_VALUE, FREQUENTLY_BOUGHT).orZero()
+        viewModel.applySortFilter(selectedFilter)
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {

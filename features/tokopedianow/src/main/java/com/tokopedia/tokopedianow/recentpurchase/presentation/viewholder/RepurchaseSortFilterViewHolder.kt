@@ -12,6 +12,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class RepurchaseSortFilterViewHolder(
@@ -41,11 +42,25 @@ class RepurchaseSortFilterViewHolder(
         data.sortFilterList.forEach {
             val selectedItems = it.selectedItem?.title.orEmpty()
 
-            val title = if(selectedItems.isNotEmpty() && it.qtyFormat != null) {
-                val selectedFilterCount = selectedItems.count().orZero()
-                itemView.context.getString(it.qtyFormat, selectedFilterCount)
-            } else {
-                getString(it.title)
+            val title = when (it.type) {
+                RepurchaseSortFilterType.SORT -> {
+                    if (it.sort == FREQUENTLY_BOUGHT) {
+                        itemView.context.getString(R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet)
+                    } else {
+                        itemView.context.getString(R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet)
+                    }
+                }
+                RepurchaseSortFilterType.CATEGORY_FILTER -> {
+                    if(selectedItems.isNotEmpty() && it.qtyFormat != null) {
+                        val selectedFilterCount = selectedItems.count().orZero()
+                        itemView.context.getString(it.qtyFormat, selectedFilterCount)
+                    } else {
+                        getString(it.title)
+                    }
+                }
+                RepurchaseSortFilterType.DATE_FILTER -> {
+                    getString(it.title)
+                }
             }
 
             val item = SortFilterItem(title)

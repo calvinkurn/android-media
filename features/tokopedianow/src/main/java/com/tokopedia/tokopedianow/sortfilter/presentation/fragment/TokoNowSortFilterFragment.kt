@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet
@@ -13,10 +13,10 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSor
 class TokoNowSortFilterFragment: Fragment() {
 
     companion object {
-        fun newInstance(sortValue: String): TokoNowSortFilterFragment {
+        fun newInstance(sortValue: Int): TokoNowSortFilterFragment {
             return TokoNowSortFilterFragment().apply {
                 arguments = Bundle().apply {
-                    putString(SORT_VALUE, sortValue)
+                    putInt(SORT_VALUE, sortValue)
                 }
             }
         }
@@ -32,7 +32,7 @@ class TokoNowSortFilterFragment: Fragment() {
     }
 
     private fun showCategoryListBottomSheet() {
-        val sortValue = arguments?.getString(SORT_VALUE).orEmpty()
-        TokoNowSortFilterBottomSheet.newInstance().show(childFragmentManager, sortValue.toIntOrZero())
+        val sortValue = arguments?.getInt(SORT_VALUE).orZero()
+        TokoNowSortFilterBottomSheet.newInstance().show(childFragmentManager, sortValue)
     }
 }
