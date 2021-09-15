@@ -8,7 +8,7 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 object RepurchaseProductMapper {
 
     fun List<RepurchaseProduct>.mapToProductListUiModel() = map {
-        RepurchaseProductUiModel(it.id, createProductCardModel(it))
+        RepurchaseProductUiModel(it.id, it.parentProductId, it.shop.id, createProductCardModel(it))
     }
 
     private fun createProductCardModel(product: RepurchaseProduct): ProductCardModel {
