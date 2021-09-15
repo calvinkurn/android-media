@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate_toko.R
 
 private const val DEFAULT_HEIGHT = 56f
@@ -374,6 +375,15 @@ class LottieBottomNavbar : LinearLayout {
             menu[newPosition ?: 0].imageName?.let {
                 pairNewItem.first.setImageResource(it)
             }
+            titleList.forEachIndexed { index, _ ->
+                if(index == newPosition){
+                    val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
+                    titleList[index].setTextColor(activeSelectedItemColor)
+                }else {
+                    val nonActiveSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].nonActiveButtonColor)
+                    titleList[index].setTextColor(nonActiveSelectedItemColor)
+                }
+            }
             return
         }
 
@@ -465,6 +475,7 @@ data class BottomMenu(val id: Int,
                       val imageName: Int? = null,
                       val imageEnabledName: Int? = null,
                       val activeButtonColor: Int,
+                      val nonActiveButtonColor : Int,
                       val useBadge: Boolean = true,
                       val animSpeed: Float = 1f,
                       val animToEnabledSpeed: Float = 1f)

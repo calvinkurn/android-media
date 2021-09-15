@@ -52,47 +52,47 @@
         app:constraint_referenced_ids="error_image,error_msg"
         />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_guideline"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/lihat_kategori"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/unify_space_32"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/barrier"
-        app:layout_constraintEnd_toStartOf="@id/vertical_guideline"
-        tools:text="Lihat Kategori"
-        app:unifyButtonSize="small"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        />
+        android:id="@+id/buttonsLL"
+        >
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/ganti_link"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/unify_space_32"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/barrier"
-        app:layout_constraintStart_toEndOf="@id/vertical_guideline"
-        tools:text="Ganti Link"
-        app:unifyButtonSize="small"
-        />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/lihat_kategori"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            tools:text="Lihat Kategori"
+            android:layout_weight="1"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/ganti_link"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_weight="1"
+            tools:text="Ganti Link"
+            app:unifyButtonSize="small"
+            />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/ganti_link"
+        app:layout_constraintTop_toBottomOf="@id/buttonsLL"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/Unify_N50"

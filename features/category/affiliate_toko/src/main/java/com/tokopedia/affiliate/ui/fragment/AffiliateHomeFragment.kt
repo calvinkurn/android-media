@@ -75,7 +75,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         home_navToolbar.setIcon(
                 IconBuilder()
                         .addIcon(IconList.ID_INFORMATION) {
-                            AffiliateHowToPromoteBottomSheet.newInstance().show(childFragmentManager, "")
+                            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
                         }
         )
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
@@ -183,7 +183,12 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
     }
 
-    override fun onProductClick(productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
+    override fun onProductClick(productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
+        // TODO Change
+        if(status == 1){
+            AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
+        }else {
+            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
+        }
     }
 }

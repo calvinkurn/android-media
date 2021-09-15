@@ -69,13 +69,26 @@ class AffiliateSearchUseCase @Inject constructor(
         val items = arrayListOf<AffiliateSearchData.Cards.Items>()
         items.add(getItem())
         val card = AffiliateSearchData.Cards("1", false, "Produk ditemukan", items)
-        val error = AffiliateSearchData.Error(0,"Produk ini belum bisa dipromosikan",
-                "Pilih produk dari kategori yang dapat dipromosikan, ya.",
+        val error = AffiliateSearchData.Error(0,"",
+                "",
         arrayListOf(AffiliateSearchData.Error.ErrorCta("Lihat Kategori",0,0,
                 AffiliateSearchData.Cards.Items.Image("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"),
                 AffiliateSearchData.Error.ErrorCta.CtaLink("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"))))
         if(filter.contains("0")){
+            error.title = "Oops, produk nggak ditemukan"
+            error.message = "Cek ulang atau coba link lain untuk temukan produk yang diinginkan."
+            error.error_type = 0
             return AffiliateSearchData(true, null,error)
+        }else if(filter.contains("1")){
+            error.title = "Produk ini belum bisa dipromosikan"
+            error.message = "Pilih produk dari kategori yang dapat dipromosikan, ya."
+            error.error_type = 1
+            return AffiliateSearchData(true, null, error)
+        }else if(filter.contains("2")){
+            error.title = "Oops, produk ini belum bisa dipromosikan"
+            error.message = "Kamu bisa pilih produk dari toko Official Store maupun Power Merchant."
+            error.error_type = 2
+            return AffiliateSearchData(true, null, error)
         }
         return AffiliateSearchData(true, card , null)
     }

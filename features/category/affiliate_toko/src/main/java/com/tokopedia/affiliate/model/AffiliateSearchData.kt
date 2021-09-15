@@ -75,9 +75,9 @@ data class AffiliateSearchData(
     }
 
     data class Error (
-            @SerializedName("error_type") val error_type : Int?,
-            @SerializedName("title") val title : String?,
-            @SerializedName("message") val message : String?,
+            @SerializedName("error_type") var error_type : Int?,
+            @SerializedName("title") var title : String?,
+            @SerializedName("message") var message : String?,
             @SerializedName("error_cta") val error_cta : List<ErrorCta>?
     ){
         data class ErrorCta (

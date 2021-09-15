@@ -36,7 +36,7 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             itemView.shop_name.text = product.footer.firstOrNull()?.footerText
             itemView.setOnClickListener {
                 productClickInterface?.onProductClick(product.title, product.image?.android
-                        ?: "", "", product.id)
+                        ?: "", "", product.id, product.status ?: 0)
             }
         }
     }

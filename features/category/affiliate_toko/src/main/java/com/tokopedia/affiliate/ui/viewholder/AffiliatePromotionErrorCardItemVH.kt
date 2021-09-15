@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -25,9 +27,27 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
         itemView.findViewById<ImageUnify>(R.id.error_image).run {
             //loadImageWithoutPlaceholder(element.error.error_cta?.firstOrNull()?.cta_image?.android ?:"")
         }
-        itemView.findViewById<UnifyButton>(R.id.lihat_kategori).run {
+        // TODO Remove
+        val button1 : UnifyButton = itemView.findViewById<UnifyButton>(R.id.lihat_kategori).apply {
             text = element.error.error_cta?.firstOrNull()?.cta_text
         }
-        itemView.findViewById<UnifyButton>(R.id.ganti_link).text = "Ganti Link"
+        val button2 : UnifyButton = itemView.findViewById<UnifyButton>(R.id.ganti_link).apply { text = "Ganti Link" }
+        when(element.error.error_type){
+            0 -> {
+                button1.hide()
+                button2.show()
+            }
+
+            1 -> {
+                button1.show()
+                button2.show()
+            }
+            2 -> {
+                button1.hide()
+                button2.show()
+            }
+
+        }
+
     }
 }

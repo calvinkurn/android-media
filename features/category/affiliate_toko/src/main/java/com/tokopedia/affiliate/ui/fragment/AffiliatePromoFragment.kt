@@ -66,7 +66,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         promo_navToolbar.setIcon(
                 IconBuilder()
                         .addIcon(IconList.ID_INFORMATION) {
-                            AffiliateHowToPromoteBottomSheet.newInstance().show(childFragmentManager, "")
+                            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE).show(childFragmentManager, "")
                         }
                 )
         promo_global_error.run {

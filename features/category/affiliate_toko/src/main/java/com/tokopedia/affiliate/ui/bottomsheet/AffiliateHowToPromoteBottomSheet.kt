@@ -13,12 +13,18 @@ import com.tokopedia.unifyprinciples.Typography
 class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private val steps: ArrayList<String> = arrayListOf()
+    private var state = STATE_HOW_TO_PROMOTE
 
     companion object {
+        const val STATE = "state"
+        const val STATE_HOW_TO_PROMOTE  = 1
+        const val STATE_PRODUCT_INACTIVE = 2
+        const val STATE_BETA_INFO = 3
 
-        fun newInstance(): AffiliateHowToPromoteBottomSheet {
+        fun newInstance(state : Int): AffiliateHowToPromoteBottomSheet {
             return AffiliateHowToPromoteBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putInt(STATE,state)
                 }
             }
         }
@@ -32,14 +38,25 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private fun init() {
         showCloseIcon = true
         showKnob = false
-        setTitle(getString(R.string.affiliate_how_to_promote))
         contentView = View.inflate(context,
                 R.layout.affiliate_how_to_promote_bottom_sheet, null)
-        steps.add(getString(R.string.affiliate_how_to_get_link))
-        steps.add(getString(R.string.affiliate_how_to_get_link_1))
-        steps.add(getString(R.string.affiliate_how_to_get_link_2))
-        steps.add(getString(R.string.affiliate_how_to_get_link_3))
-        steps.add(getString(R.string.affiliate_how_to_get_link_4))
+        arguments?.let {
+            state = it.getInt(STATE)
+        }
+        if(state == STATE_HOW_TO_PROMOTE){
+            setTitle(getString(R.string.affiliate_how_to_promote))
+            steps.add(getString(R.string.affiliate_how_to_get_link))
+            steps.add(getString(R.string.affiliate_how_to_get_link_1))
+            steps.add(getString(R.string.affiliate_how_to_get_link_2))
+            steps.add(getString(R.string.affiliate_how_to_get_link_3))
+            steps.add(getString(R.string.affiliate_how_to_get_link_4))
+        }else if(state == STATE_PRODUCT_INACTIVE) {
+            setTitle(getString(R.string.affilate_product_inactive))
+            steps.add(getString(R.string.affilate_product_inactive_text))
+        }else {
+            setTitle(getString(R.string.affiliate_beta_info))
+            steps.add(getString(R.string.affiliate_beta_info_text))
+        }
         steps.add("")
         contentView?.findViewById<LinearLayout>(R.id.affiliate_parent_linear)?.let { linearLayout ->
             linearLayout.removeAllViews()
