@@ -336,11 +336,6 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink, _ -> getDiscoveryDeeplink(deeplink) },
             DLP(DLPLogic { _, uri, _ -> matchWithHostAndHasPath(uri, ApplinkConst.HOST_CATEGORY_P) },
                     targetDeeplink = { _, uri, _, _ -> getRegisteredCategoryNavigation(uri) }),
-            DLP(DLPLogic { _, uri, _ -> matchWithHostAndHasPath(uri, ApplinkConst.Notification.BUYER_HOST) },
-                    targetDeeplink = { _, uri, _, _ ->
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO_WITH_ID,
-                                uri.pathSegments.first())
-                    }),
             DLP.startWith(ApplinkConst.MARKETPLACE_ONBOARDING, ApplinkConstInternalMarketplace.ONBOARDING),
             DLP.startWith(ApplinkConst.POWER_MERCHANT_SUBSCRIBE) { ctx, _, _, _ -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(ctx) },
             DLP.exact(ApplinkConst.SELLER_SHIPPING_EDITOR, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING),
@@ -379,7 +374,9 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.NOTIFICATION) { _, _, _, _ ->
                 DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
             },
-            DLP.exact(ApplinkConst.BUYER_INFO, ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO),
+            DLP.exact(ApplinkConst.BUYER_INFO) { _, _, _, _ ->
+                DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
+            },
             DLP.exact(ApplinkConst.SHOP_SETTINGS_NOTE, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
             DLP.exact(ApplinkConst.SHOP_SETTINGS_INFO, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
             DLP.exact(ApplinkConst.MY_SHOP_ETALASE_LIST, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST),

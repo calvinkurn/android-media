@@ -12,7 +12,6 @@ import dagger.Component
         modules = [
             CommonModule::class,
             NotificationQueryModule::class,
-            NotificationUpdateModule::class,
             NotificationViewModelModule::class,
             NotificationModule::class
         ],

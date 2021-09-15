@@ -184,10 +184,6 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
-    const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
-
-    const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
-
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
