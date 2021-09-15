@@ -32,10 +32,19 @@ data class RecommendationCarouselDataModel(
     override fun name(): String = title
 
     override fun equalsWith(newData: HomeRecommendationDataModel): Boolean {
+        var isRecomItemSame = true
+        if (products.size == (newData as RecommendationCarouselDataModel).products.size) {
+            for (i in 0 until products.size) {
+                if (!products[i].equalsWith(newData.products[i])) {
+                    isRecomItemSame = false
+                }
+            }
+        }
         return if (newData is RecommendationCarouselDataModel) {
             title == newData.title &&
                     products.size == newData.products.size &&
-                    products.hashCode() == newData.products.hashCode()
+                    products.hashCode() == newData.products.hashCode() &&
+                    isRecomItemSame
 
         } else {
             false
@@ -48,4 +57,5 @@ data class RecommendationCarouselDataModel(
     }
 
     override fun getChangePayload(newData: HomeRecommendationDataModel): Bundle? = null
+
 }

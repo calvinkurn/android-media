@@ -77,6 +77,7 @@ class RecommendationItemViewHolder(
 
             setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
+                    element.productItem.onCardQuantityChanged(quantity)
                     tokonowListener?.onProductTokonowNonVariantQuantityChanged(
                             recomItem = element.productItem,
                             adapterPosition = adapterPosition,

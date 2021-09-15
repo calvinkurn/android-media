@@ -6,14 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.RecomPageConstant
+import com.tokopedia.home_recom.view.viewholder.RecommendationCPMViewHolder
+import com.tokopedia.home_recom.view.viewholder.RecommendationShimmeringViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
@@ -30,12 +32,12 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        bind(holder as AbstractViewHolder<HomeRecommendationDataModel>, getItem(position))
+        bind(holder as AbstractViewHolder<HomeRecommendationDataModel>, getItem(position), position)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            bind(holder as AbstractViewHolder<HomeRecommendationDataModel>, getItem(position), payloads)
+            bind(holder as AbstractViewHolder<HomeRecommendationDataModel>, getItem(position), payloads, position)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
@@ -51,16 +53,31 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
         } else currentList[position]?.type(adapterTypeFactory) ?: HideViewHolder.LAYOUT
     }
 
-    fun bind(holder: AbstractViewHolder<HomeRecommendationDataModel>, item: HomeRecommendationDataModel) {
+    fun bind(holder: AbstractViewHolder<HomeRecommendationDataModel>, item: HomeRecommendationDataModel, position: Int) {
+        holder.configureSpan(position)
         holder.bind(item)
     }
 
-    fun bind(holder: AbstractViewHolder<HomeRecommendationDataModel>, item: HomeRecommendationDataModel, payloads: MutableList<Any>) {
+    fun bind(holder: AbstractViewHolder<HomeRecommendationDataModel>, item: HomeRecommendationDataModel, payloads: MutableList<Any>, position: Int) {
         val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(RecomPageConstant.DIFFUTIL_PAYLOAD)
+        holder.configureSpan(position)
         if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
             holder.bind(item, listOf(payloadInt))
         } else {
             holder.bind(item)
+        }
+    }
+
+    private fun AbstractViewHolder<HomeRecommendationDataModel>.configureSpan(position: Int) {
+        val layout = this.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when (getItemViewType(position)) {
+            ProductInfoDataModel.LAYOUT -> layout.isFullSpan = true
+            RecommendationCarouselDataModel.LAYOUT -> layout.isFullSpan = true
+            RecommendationCPMViewHolder.LAYOUT -> layout.isFullSpan = true
+            TitleDataModel.LAYOUT -> layout.isFullSpan = true
+            EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationShimmeringViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
         }
     }
 
@@ -74,7 +91,7 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
         submitList(listOf(data))
     }
 
-    fun showEmpty(data: RecommendationEmptyDataModel) {
+    fun showEmpty(data: RecommendationErrorDataModel) {
         submitList(listOf(data))
     }
 

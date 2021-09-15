@@ -17,6 +17,7 @@ object RecomPageConstant {
 
 
     const val DIFFUTIL_PAYLOAD = "payload"
+    const val PAGE_TITLE_RECOM_DEFAULT = "Rekomendasi"
 
     object ItemMapper {
         const val RECOM_INFINITE_ITEM = "recom-infinite-item"

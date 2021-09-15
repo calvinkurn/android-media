@@ -3,6 +3,7 @@ package com.tokopedia.home_recom.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.AsyncDifferConfig
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
@@ -16,6 +17,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.doSuccessOrFail
+import com.tokopedia.home_recom.util.RecomPageConstant.PAGE_TITLE_RECOM_DEFAULT
 import com.tokopedia.home_recom.util.RecomPageConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
@@ -27,6 +29,9 @@ import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
@@ -45,7 +50,8 @@ class InfiniteTokonowRecomFragment :
         RecomPageListener,
         RecommendationListener,
         RecommendationErrorListener,
-        RecommendationTokonowListener {
+        RecommendationTokonowListener,
+        MiniCartWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment"
@@ -96,6 +102,10 @@ class InfiniteTokonowRecomFragment :
         return ""
     }
 
+    override fun setDefaultPageTitle(): String {
+        return PAGE_TITLE_RECOM_DEFAULT
+    }
+
     override fun onCreateExtended(savedInstanceState: Bundle?) {
         activity?.let {
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -110,6 +120,7 @@ class InfiniteTokonowRecomFragment :
         }
         observeLiveData()
         hideChooseAddressWidget()
+        showMiniCartWidget()
         if (isWarehouseIdEmpty()) {
             showErrorFullPage(Throwable())
         } else {
@@ -130,6 +141,31 @@ class InfiniteTokonowRecomFragment :
 
     override fun loadMoreData(pageNumber: Int) {
         viewModel.getRecommendationNextPage(pageName, productId, pageNumber, queryParam)
+    }
+
+    override fun shouldPageImplementChooseAddress(): Boolean {
+        return false
+    }
+
+    override fun shouldPageImplementMiniCartWidget(): Boolean {
+        return true
+    }
+
+    override fun setShopId(): String {
+        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        return localAddress?.shop_id ?: ""
+    }
+
+    override fun setImplementingFragment(): Fragment {
+        return this
+    }
+
+    override fun setMiniCartWidgetListener(): MiniCartWidgetListener {
+        return this
+    }
+
+    override fun setMiniCartPageName(): MiniCartAnalytics.Page {
+        return MiniCartAnalytics.Page.RECOMMENDATION_INFINITE
     }
 
     override fun onResume() {
@@ -161,10 +197,12 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+        recomPageUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
     }
 
     override fun onProductTokonowVariantClicked(recomItem: RecommendationItem, adapterPosition: Int) {
+        goToPDP(recomItem.productId.toString(), adapterPosition)
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
@@ -180,6 +218,10 @@ class InfiniteTokonowRecomFragment :
 
     override fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener {
         return RecomPageChooseAddressWidgetCallback(context = requireContext(), listener = this, fragment = this)
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel.setMiniCartFromWidget(miniCartSimplifiedData)
     }
 
     override fun onDestroy() {
@@ -272,9 +314,15 @@ class InfiniteTokonowRecomFragment :
         submitList(recomPageUiUpdater.dataList.toMutableList())
     }
 
+
     private fun getMiniCartData() {
         val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        viewModel.getMiniCart(localAddress?.shop_id ?: "")
+
+        /**
+         * any changes and result from miniCartWidget.updateData, will call
+         * @see onCartItemsUpdated
+         */
+        miniCartWidget?.updateData(listOf(localAddress?.shop_id ?: ""))
     }
 
     private fun isWarehouseIdEmpty(): Boolean {
@@ -287,7 +335,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     private fun showEmptyPage() {
-        renderEmptyPage(RecommendationEmptyDataModel.TYPE_PAGE_INFINITE_RECOM)
+        renderEmptyPage()
     }
 
     private fun showErrorFullPage(throwable: Throwable) {

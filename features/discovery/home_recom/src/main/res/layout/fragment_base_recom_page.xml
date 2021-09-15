@@ -54,12 +54,21 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_barrier"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/widget_minicart">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.minicart.common.widget.MiniCartWidget
+        android:id="@+id/widget_minicart"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

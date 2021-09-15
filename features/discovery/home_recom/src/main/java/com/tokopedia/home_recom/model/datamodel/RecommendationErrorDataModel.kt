@@ -10,7 +10,8 @@ import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
 data class RecommendationErrorDataModel(
         val throwable: Throwable,
-        val name: String = "recomPageError"
+        val name: String = "recomPageError",
+        val type: Int = -1
 ): HomeRecommendationDataModel {
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
         return typeFactory.type(this)

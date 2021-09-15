@@ -32,7 +32,8 @@ data class RecommendationCarouselItemDataModel(
         return if (newData is RecommendationCarouselItemDataModel) {
             productItem == newData.productItem &&
                     parentPosition == newData.parentPosition &&
-                    productItem.hashCode() == newData.productItem.hashCode()
+                    productItem.hashCode() == newData.productItem.hashCode() &&
+                    areRecomQtyItemTheSame(newData.productItem)
 
         } else {
             false
@@ -44,4 +45,12 @@ data class RecommendationCarouselItemDataModel(
     }
 
     override fun getChangePayload(newData: HomeRecommendationDataModel): Bundle? = null
+
+
+    private fun areRecomQtyItemTheSame(recomItem: RecommendationItem): Boolean {
+        if (this.productItem.quantity != recomItem.quantity || this.productItem.currentQuantity != recomItem.currentQuantity) {
+            return false
+        }
+        return true
+    }
 }

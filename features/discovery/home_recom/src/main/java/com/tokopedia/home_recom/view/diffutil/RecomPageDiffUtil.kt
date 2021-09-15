@@ -2,6 +2,7 @@ package com.tokopedia.home_recom.view.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 
 /**
  * Created by yfsx on 01/09/21.

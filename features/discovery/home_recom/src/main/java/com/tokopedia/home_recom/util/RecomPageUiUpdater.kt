@@ -53,12 +53,29 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
     }
 
-    fun resetFailedRecomTokonowCard(recomItem: RecommendationItem) {
-        dataList.forEach { item ->
-            if (recomItem.productId == recomItem.productId) {
-                recomItem.onFailedUpdateCart()
+    fun updateCurrentQuantityRecomItem(recomItem: RecommendationItem) {
+        dataList.forEach loop@{ item ->
+            if (item is RecommendationItemDataModel && item.productItem.productId == recomItem.productId) {
+                item.productItem.currentQuantity = recomItem.currentQuantity
+                return@loop
             }
         }
+    }
+
+    fun resetFailedRecomTokonowCard(recomItem: RecommendationItem) {
+        val newDataList = mutableListOf<HomeRecommendationDataModel>()
+        dataList.forEach { item ->
+            if (item is RecommendationItemDataModel && item.productItem.productId == recomItem.productId) {
+                val copyItem = (item as RecommendationItemDataModel).copy()
+                val recomItemCopy = copyItem.productItem.copy()
+                recomItemCopy.onFailedUpdateCart()
+                copyItem.productItem = recomItemCopy
+                newDataList.add(copyItem)
+            } else {
+                newDataList.add(item)
+            }
+        }
+        dataList = newDataList
     }
 
     private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {

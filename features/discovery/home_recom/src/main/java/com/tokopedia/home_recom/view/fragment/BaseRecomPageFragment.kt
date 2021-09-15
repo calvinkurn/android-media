@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -14,16 +15,24 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.util.RecomPageConstant.PAGE_TITLE_RECOM_DEFAULT
 import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
 import com.tokopedia.home_recom.util.RecomPageUiUpdater
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -42,6 +51,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     var productAdapter: RecomPageAdapter? = null
     var navToolbar: NavToolbar? = null
     var chooseAddressWidget: ChooseAddressWidget? = null
+    var miniCartWidget: MiniCartWidget? = null
 
     private var recyclerView: RecyclerView? = null
     private lateinit var root: ConstraintLayout
@@ -66,10 +76,26 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     protected abstract fun onCreateExtended(savedInstanceState: Bundle?)
 
+    protected abstract fun setDefaultPageTitle(): String
+
     protected abstract fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener
+
+    protected abstract fun shouldPageImplementChooseAddress(): Boolean
+
+    protected abstract fun shouldPageImplementMiniCartWidget(): Boolean
+
+    protected abstract fun setShopId(): String
+
+    protected abstract fun setImplementingFragment(): Fragment
+
+    protected abstract fun setMiniCartWidgetListener(): MiniCartWidgetListener
+
+    protected abstract fun setMiniCartPageName(): MiniCartAnalytics.Page
 
     companion object {
         private const val ERROR_COBA_LAGI = "Coba Lagi"
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
     }
 
     open fun onSwipeRefresh() {
@@ -91,8 +117,10 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         navToolbar = view.findViewById(R.id.navToolbar)
         root = view.findViewById(R.id.root)
         chooseAddressWidget = view.findViewById(R.id.widget_choose_address)
+        miniCartWidget = view.findViewById(R.id.widget_minicart)
         initNavBar()
         initChooseAddress()
+        initMiniCartWidget()
         return view
     }
 
@@ -142,9 +170,9 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         }
     }
 
-    fun renderEmptyPage(type: Int = RecommendationEmptyDataModel.TYPE_DEFAULT) {
+    fun renderEmptyPage(error: RecommendationErrorDataModel = RecommendationErrorDataModel(throwable = Throwable(), type = GlobalError.PAGE_NOT_FOUND)) {
         context?.let { ctx ->
-            productAdapter?.showEmpty(RecommendationEmptyDataModel(type = type))
+            productAdapter?.showEmpty(error)
             swipeToRefresh?.let {
                 it.isEnabled = false
             }
@@ -194,8 +222,27 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         chooseAddressWidget?.gone()
     }
 
+    fun showMiniCartWidget() {
+        miniCartWidget?.show()
+    }
+
     fun scrollToTop() {
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    fun updateMiniCart(shopId: String) {
+        miniCartWidget?.updateData(listOf(shopId))
+    }
+
+    fun goToPDP(productId: String, position: Int) {
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
@@ -248,17 +295,42 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
         }
         navToolbar?.setIcon(iconBuilder)
-        navToolbar?.setToolbarTitle("tes")
+        navToolbar?.setToolbarTitle(if (setDefaultPageTitle().isNotEmpty()) setDefaultPageTitle() else PAGE_TITLE_RECOM_DEFAULT)
     }
 
     private fun initChooseAddress() {
         chooseAddressWidget?.bindChooseAddress(onChooseAddressImplemented())
     }
 
+    private fun initMiniCartWidget() {
+        if (shouldPageImplementMiniCartWidget()) {
+            miniCartWidget?.initialize(
+                    shopIds = listOf(setShopId()),
+                    fragment = setImplementingFragment(),
+                    listener = setMiniCartWidgetListener(),
+                    autoInitializeData = false,
+                    pageName = setMiniCartPageName()
+            )
+        }
+    }
+
     private fun getRollenceNavigationValue() {
         try {
-            val rollanceNavType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD)
-            this.isNewNavigation = rollanceNavType.equals(ROLLANCE_VARIANT_REVAMP, ignoreCase = true)
+            this.isNewNavigation =
+                    (RemoteConfigInstance
+                            .getInstance()
+                            .abTestPlatform
+                            .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                            == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                            (RemoteConfigInstance
+                                    .getInstance()
+                                    .abTestPlatform
+                                    .getString(
+                                            RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                                            RollenceKey.NAVIGATION_VARIANT_OLD
+                                    )
+                                    == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
+
         } catch (e: java.lang.Exception) {
             this.isNewNavigation = false
         }

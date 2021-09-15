@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param productItem the pojo of product recommendation from the network
  */
 data class RecommendationItemDataModel(
-        val productItem: RecommendationItem
+        var productItem: RecommendationItem
 ) : HomeRecommendationDataModel {
 
     companion object {
@@ -26,7 +26,8 @@ data class RecommendationItemDataModel(
 
     override fun equalsWith(newData: HomeRecommendationDataModel): Boolean {
         return if (newData is RecommendationItemDataModel) {
-            productItem == newData.productItem
+            productItem == newData.productItem &&
+                    areRecomQtyItemTheSame(newData.productItem)
         } else {
             false
         }
@@ -35,4 +36,11 @@ data class RecommendationItemDataModel(
     override fun newInstance(): HomeRecommendationDataModel = this.copy()
 
     override fun getChangePayload(newData: HomeRecommendationDataModel): Bundle? = null
+
+    private fun areRecomQtyItemTheSame(recomItem: RecommendationItem): Boolean {
+        if (this.productItem.quantity != recomItem.quantity || this.productItem.currentQuantity != recomItem.currentQuantity) {
+            return false
+        }
+        return true
+    }
 }

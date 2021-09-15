@@ -15,7 +15,9 @@ import com.tokopedia.home_recom.util.RecomPageConstant.TEXT_ERROR
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -172,6 +174,13 @@ class InfiniteRecomViewModel @Inject constructor(
         }
     }
 
+    fun setMiniCartFromWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val data = miniCartSimplifiedData.miniCartItems.associateBy({ it.productId }) {
+            it
+        }
+        _miniCartData.postValue(data.toMutableMap())
+    }
+
     fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
@@ -197,7 +206,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 if (isFailed) {
                     val error = result.errorMessage.firstOrNull()
                             ?: result.data.message.firstOrNull()
-                    onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
+                    onFailedATCRecomTokonow(MessageErrorException(error ?: ""), recomItem)
                 } else {
                     updateMiniCartAfterATCRecomTokonow(result.data.message.first(), false, recomItem)
                 }
@@ -218,7 +227,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 addToCartUseCase.get().createObservable(param).toBlocking().single()
             }
             if (result.isStatusError()) {
-                onFailedATCRecomTokonow(Throwable(result.errorMessage.firstOrNull()
+                onFailedATCRecomTokonow(MessageErrorException(result.errorMessage.firstOrNull()
                         ?: result.status), recomItem)
             } else {
                 recomItem.cartId = result.data.cartId
@@ -240,7 +249,8 @@ class InfiniteRecomViewModel @Inject constructor(
                 val result = updateCartUseCase.get().executeOnBackground()
 
                 if (result.error.isNotEmpty()) {
-                    onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
+                    onFailedATCRecomTokonow(MessageErrorException(result.error.firstOrNull()
+                            ?: ""), recomItem)
                 } else {
                     updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
@@ -260,7 +270,6 @@ class InfiniteRecomViewModel @Inject constructor(
     }
 
     private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
-        recomItem.onFailedUpdateCart()
         _atcRecomTokonow.value = throwable.asFail()
         _atcRecomTokonowResetCard.value = recomItem
     }
