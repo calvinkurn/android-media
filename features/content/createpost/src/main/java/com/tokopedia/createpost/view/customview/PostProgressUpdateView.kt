@@ -102,8 +102,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
                     val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
                     val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
-
-                    setFirstIcon(firstIcon)
+                    if(firstIcon!=null)
+                        setFirstIcon(firstIcon)
                     setProgressUpdate(progress, maxCount)
                 } else if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false

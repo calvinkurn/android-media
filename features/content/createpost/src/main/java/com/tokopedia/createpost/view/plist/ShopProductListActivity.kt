@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopProductListFragment.newInstance(intent.getStringExtra("shopid"), intent.getStringExtra("source"))
+        return ShopProductListFragment.newInstance(intent.getStringExtra("shopid")?:"", intent.getStringExtra("source")?:"")
 //        return if (mUserSession?.isLoggedIn == true) {
 //            tokoPointsHomeFragmentNew
 //        } else {
