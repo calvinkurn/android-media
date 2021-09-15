@@ -143,7 +143,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var canShowErrorToaster = true
-    private var canShowMultipleErrorToaster = true
+    private var hasShownMultipleErrorToaster = false
 
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
@@ -652,24 +652,24 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 {
                     viewModel.reloadErrorData()
                     viewModel.onShownMultipleError()
+                    hasShownMultipleErrorToaster = false
                 }.addCallback(object : Snackbar.Callback() {
-                    override fun onShown(sb: Snackbar?) {
-                        super.onShown(sb)
-                        viewModel.onShownMultipleError(true)
-                    }
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
                         viewModel.onShownMultipleError()
+                        hasShownMultipleErrorToaster = false
                     }
                 })
             }
         multipleErrorSnackbar?.show()
+        viewModel.onShownMultipleError(true)
+        hasShownMultipleErrorToaster = true
     }
 
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
         viewModel.onCheckDelayErrorResponseTrigger()
         val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
-        if (canShowToaster) {
+        if (canShowToaster && !hasShownMultipleErrorToaster) {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
             } ?: resources.getString(R.string.setting_toaster_error_message)

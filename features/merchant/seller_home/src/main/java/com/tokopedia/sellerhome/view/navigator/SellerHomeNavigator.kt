@@ -159,11 +159,12 @@ class SellerHomeNavigator(
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
         otherSettingsFragment =
-            if (useRevampedOtherMenu()) {
-                OtherMenuFragment.createInstance()
-            } else {
-                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
-            }
+            OtherMenuFragment.createInstance()
+//            if (useRevampedOtherMenu()) {
+//                OtherMenuFragment.createInstance()
+//            } else {
+//                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
+//            }
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
