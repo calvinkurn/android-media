@@ -87,7 +87,8 @@ enum class ComponentNames(val componentName: String) {
     TopadsHeadlineView("topads"),
 
     //Calendar Widget
-    CalendarWidget("calendar"),
+    CalendarWidgetCarousel("calendar"),
+    CalendarWidgetGrid("calendar_grid"),
     CalendarWidgetItem("calendar_item"),
 
 }

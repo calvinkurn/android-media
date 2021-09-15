@@ -104,7 +104,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
-            ComponentNames.CalendarWidget.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
@@ -120,6 +119,24 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     }
                 }
             }
+            ComponentNames.CalendarWidgetCarousel.componentName -> {
+                if(component.properties?.calendarLayout == "Grid"){
+                    component.name = ComponentNames.CalendarWidgetGrid.componentName
+                }
+                if(component.properties?.calendarType.equals("dynamic")
+                    && (component.properties?.calendarLayout.equals("Carousel") || component.properties?.calendarLayout.equals("Grid")))
+                    listComponents.addAll(parseProductVerticalList(component))
+                else if(component.properties?.calendarType == "static"){
+                    for (item in DiscoveryDataMapper().mapListToComponentList(
+                        component.data ?: arrayListOf(),
+                        ComponentNames.CalendarWidgetItem.componentName,
+                        component.properties,
+                        component.creativeName
+                    ))
+                        listComponents.addAll(parseProductVerticalList(item))
+                }
+            }
+
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
@@ -308,7 +325,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 }
                 if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-                } else if (component.getComponentsItem()?.size == 0 && component.name != ComponentNames.CalendarWidget.componentName) {
+                } else if (component.getComponentsItem()?.size == 0 && component.name != ComponentNames.CalendarWidgetGrid.componentName) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
                 }
             }

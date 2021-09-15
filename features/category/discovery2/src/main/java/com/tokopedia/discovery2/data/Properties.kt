@@ -58,4 +58,10 @@ data class Properties(
         @SerializedName("sort")
         val sort:Boolean = true,
 
+        @SerializedName("calendar_layout")
+        val calendarLayout: String = "",
+
+        @SerializedName("calendar_type")
+        val calendarType: String = "",
+
 )

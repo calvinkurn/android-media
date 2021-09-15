@@ -12,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class CalendarWidgetViewModel(
+class CalendarWidgetGridViewModel(
     application: Application,
     val components: ComponentsItem,
     val position: Int
@@ -26,10 +26,10 @@ class CalendarWidgetViewModel(
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@CalendarWidgetViewModel.syncData.value = calenderWidgetUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            this@CalendarWidgetGridViewModel.syncData.value = calenderWidgetUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
             getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-            this@CalendarWidgetViewModel.syncData.value = true
+            this@CalendarWidgetGridViewModel.syncData.value = true
         })
     }
 }
