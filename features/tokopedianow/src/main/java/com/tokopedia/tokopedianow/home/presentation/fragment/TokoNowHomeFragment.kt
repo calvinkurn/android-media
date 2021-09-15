@@ -1023,7 +1023,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getHomeLayout() {
-        viewModelTokoNow.getHomeLayout(localCacheModel)
+        val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
+        viewModelTokoNow.getHomeLayout(localCacheModel, isSharingRemoved)
     }
 
     private fun getMiniCart() {

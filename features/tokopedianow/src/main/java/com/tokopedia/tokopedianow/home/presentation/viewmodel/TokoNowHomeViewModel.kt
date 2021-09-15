@@ -170,11 +170,11 @@ class TokoNowHomeViewModel @Inject constructor(
      * Content data requested lazily for each component.
      * @see getLayoutData for loading content data.
      */
-    fun getHomeLayout(localCacheModel: LocalCacheModel?) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel?, hasSharingEducationBeenRemoved: Boolean) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
             val homeLayoutResponse = getHomeLayoutListUseCase.execute(localCacheModel)
-            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved)
+            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved, hasSharingEducationBeenRemoved)
             val data = HomeLayoutListUiModel(
                 items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW,
