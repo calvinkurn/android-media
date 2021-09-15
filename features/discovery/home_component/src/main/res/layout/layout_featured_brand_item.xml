@@ -28,7 +28,6 @@
         android:contentDescription="@string/content_desc_featured_brand_icon">
         <ImageView
             android:padding="@dimen/unify_space_4"
-            android:src="@drawable/testimg"
             android:adjustViewBounds="true"
             android:id="@+id/item_logo"
             android:scaleType="centerInside"
@@ -55,7 +54,6 @@
         android:id="@+id/item_frame_image"
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
-        android:scaleType="fitCenter"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
@@ -64,7 +62,6 @@
         app:cardBackgroundColor="@color/transparent"
         app:cardElevation="0dp"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -73,6 +70,7 @@
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/Unify_Static_White"
             android:scaleType="centerCrop"
             android:contentDescription="@string/content_desc_featured_brand_image"/>
     </androidx.cardview.widget.CardView>
