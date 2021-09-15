@@ -94,6 +94,7 @@
     <string name="serviceFee">Biaya Layanan</string>
     <string name="one_month">30 Hari</string>
     <string name="interest">Bunga</string>
+    <string name="shippingcost_and_insurance"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
 
 
 </resources>

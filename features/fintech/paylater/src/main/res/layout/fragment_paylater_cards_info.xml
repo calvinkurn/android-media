@@ -226,12 +226,13 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/insuranceDetail"
-                        android:layout_width="@dimen/unify_space_0"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
-                        android:text="Belum termasuk ongkir atau biaya asuransi"
+                        android:text="@string/shippingcost_and_insurance"
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/duration"
                         app:typographyType="small" />
 
