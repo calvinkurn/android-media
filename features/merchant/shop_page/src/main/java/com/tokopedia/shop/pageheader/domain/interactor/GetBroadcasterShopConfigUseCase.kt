@@ -32,7 +32,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(Broadcaster::class.java)

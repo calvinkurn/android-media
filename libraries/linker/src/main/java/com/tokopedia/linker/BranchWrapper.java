@@ -84,7 +84,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void sendPreInstallData(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING, true) && isXiaomiPreInstallApp(context.getPackageName())) {
             Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
             Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }

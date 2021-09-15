@@ -18,7 +18,7 @@
           "price": ".*",
           "index": "\\d+",
           "item_name": ".*",
-          "id": "\\d+",
+          "item_id": "\\d+",
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*"
@@ -42,7 +42,7 @@
           "price": ".*",
           "dimension40": "/my_purchase_list - rekomendasi untuk anda .*",
           "item_name": ".*",
-          "id": "\\d+",
+          "item_id": "\\d+",
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*"
@@ -68,7 +68,7 @@
           "price": ".*",
           "index": "\\d+",
           "item_name": ".*",
-          "id": "\\d+",
+          "item_id": "\\d+",
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*"
