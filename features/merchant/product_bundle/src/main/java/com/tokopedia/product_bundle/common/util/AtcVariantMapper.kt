@@ -1,7 +1,9 @@
 package com.tokopedia.product_bundle.common.util
 
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.product.detail.common.data.model.variant.*
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.Child
 import com.tokopedia.product_bundle.common.data.model.response.VariantOption
 import com.tokopedia.product.detail.common.data.model.variant.VariantOption as AtcVariantOption
 
@@ -13,26 +15,44 @@ object AtcVariantMapper {
         children = mapToVariantChildren(bundleItem)
     )
 
-    private fun mapToVariants(bundleItem: BundleItem): List<Variant> = bundleItem.selections.map {
+    private fun mapToVariants(bundleItem: BundleItem): List<Variant> = bundleItem.selections.mapIndexed { variantLevel, it ->
         Variant(
             pv = it.productVariantID.toString(),
             v = it.variantID.toString(),
             name = it.name,
             identifier = it.identifier,
-            options = mapToVariantOptions(it.options)
+            options = mapToVariantOptions(variantLevel, it.options, bundleItem.children)
         )
     }
 
-    private fun mapToVariantOptions(options: List<VariantOption>) = options.map {
-        AtcVariantOption(
-            it.productVariantOptionID.toString(),
-            it.unitValueID.toString(),
-            it.value,
-            it.hex
-        )
-    }
+    private fun mapToVariantOptions(
+        variantLevel: Int,
+        options: List<VariantOption>,
+        children: List<Child>
+    ) = options
+        .filter { variantOption ->
+            // filter variant option, that not empty
+            val optionId = variantOption.productVariantOptionID
+            children
+                .filter { it.stock.isMoreThanZero() }
+                .any { child ->
+                    child.optionIds.getOrNull(variantLevel)?.let {
+                        it == optionId
+                    } ?: false
+                }
+        }
+        .map {
+            AtcVariantOption(
+                it.productVariantOptionID.toString(),
+                it.unitValueID.toString(),
+                it.value,
+                it.hex
+            )
+        }
 
-    private fun mapToVariantChildren(bundleItem: BundleItem) = bundleItem.children.map {
+    private fun mapToVariantChildren(bundleItem: BundleItem) = bundleItem.children
+        .filter { it.stock.isMoreThanZero() } // filter stock not empty
+        .map {
         try {
             val originalPrice = it.originalPrice
             val discountedPrice = it.bundlePrice
