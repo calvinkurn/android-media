@@ -1677,6 +1677,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             onSuccessGetDataP2(it, boeData, ratesData)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
+            stickyLoginView?.loadContent()
         }
     }
 
@@ -2748,7 +2749,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 updateActionButtonShadow()
             }
         })
-
         stickyLoginView?.hide()
     }
 

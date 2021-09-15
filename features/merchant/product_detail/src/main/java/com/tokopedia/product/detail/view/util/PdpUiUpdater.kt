@@ -411,10 +411,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateTicker(data : List<TickerDataResponse>?) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
-                if (data != null && data.isNotEmpty()) {
-                    tickerDataResponse = data
+                tickerDataResponse = if (data != null && data.isNotEmpty()) {
+                    data
                 } else {
-
+                    listOf()
                 }
             }
         }
