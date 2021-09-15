@@ -184,9 +184,6 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
-    // NotificationActivity
-    const val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
-
     const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
 
     const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"

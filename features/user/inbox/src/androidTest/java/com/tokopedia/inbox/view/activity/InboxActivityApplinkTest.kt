@@ -24,7 +24,7 @@ class InboxActivityApplinkTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val inbox = "com.tokopedia.inbox.view.activity.InboxActivity"
-    private val oldNotifcenter = "com.tokopedia.notifcenter.presentation.activity.NotificationActivity"
+    private val sellerNotifCenter = "com.tokopedia.notifcenter.presentation.activity.NotificationSellerActivity"
 
     @Before
     fun setUp() {
@@ -124,6 +124,33 @@ class InboxActivityApplinkTest {
         // Then
         assertThat(intent, isPointingTo(inbox))
         assertThat(intent, hasQueryParameter(PARAM_SOURCE, source))
+    }
+
+    @Test
+    fun should_point_to_new_inbox_when_using_old_notification_applink() {
+        // Given
+        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(inbox))
+        assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_NOTIFICATION))
+        assertThat(intent, hasQueryParameter(PARAM_SHOW_BOTTOM_NAV, "false"))
+    }
+
+    @Test
+    fun should_always_point_to_seller_notification_when_using_old_notification_applink_in_sellerapp() {
+        // Given
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(sellerNotifCenter))
     }
 
     private fun applyAbKeyValue(key: String, value: String) {

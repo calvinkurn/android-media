@@ -15,7 +15,6 @@ import dagger.Component
         FakeCommonModule::class,
         NotificationQueryModule::class,
         NotificationUpdateModule::class,
-        NotificationTransactionModule::class,
         NotificationViewModelModule::class,
         FakeNotificationModule::class,
         FakeNotifcenterUsecase::class

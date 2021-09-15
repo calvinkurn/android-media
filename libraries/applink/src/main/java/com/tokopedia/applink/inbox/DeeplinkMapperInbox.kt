@@ -8,9 +8,8 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapperInbox {
 
     fun getRegisteredNavigationNotifcenter(): String {
-        var applink = ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
-        if (!GlobalConfig.isSellerApp()) {
-            applink = Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
+        return if (!GlobalConfig.isSellerApp()) {
+            Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
                 appendQueryParameter(
                     ApplinkConst.Inbox.PARAM_PAGE,
                     ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION
@@ -20,7 +19,8 @@ object DeeplinkMapperInbox {
                     false.toString()
                 )
             }.toString()
+        } else {
+            ApplinkConst.SELLER_INFO
         }
-        return applink
     }
 }

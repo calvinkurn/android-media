@@ -21,12 +21,6 @@ class FakeCommonModule {
 
     @Provides
     @NotificationScope
-    fun provideCacheManager(@NotificationContext context: Context): CacheManager {
-        return CacheManager(context)
-    }
-
-    @Provides
-    @NotificationScope
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
