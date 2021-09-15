@@ -75,8 +75,8 @@
     <string name="credit_card_view_more">Lihat Selengkapnya</string>
     <!-- Application Status -->
     <string name="pay_later_status_active">Aktif</string>
-    <string name="gateway_processing">Diproses</string>
-    <string name="rejected_gateway">Belum Disetujui</string>
+    <string name="pay_later_gateway_processing">Diproses</string>
+    <string name="pay_later_rejected_gateway">Belum Disetujui</string>
     <string name="pay_later_status_waiting">Menunggu persetujuan</string>
     <string name="pay_later_status_rejected">Pengajuan ditolak</string>
     <string name="pay_later_status_cancelled">Pengajuan dibatalkan</string>
@@ -84,17 +84,17 @@
     <string name="pay_later_status_suspended">Akun dinonaktifkan</string>
     <string name="pay_later_status_failed">Pengajuan gagal</string>
     <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
-    <string name="see_more">Selengkapnya</string>
-    <string name="whyGateway">Kenapa</string>
-    <string name="cicilian">Cicilan</string>
-    <string name="installment_using">Pakai cicilan yang mana, nih?</string>
-    <string name="durationPayLater">Mau dicicil berapa lama?</string>
-    <string name="somethingWentWrong">Ada yang salah</string>
-    <string name="simulasi_pembayaran">Simulasi pembayaran</string>
-    <string name="serviceFee">Biaya Layanan</string>
-    <string name="one_month">30 Hari</string>
-    <string name="interest">Bunga</string>
-    <string name="shippingcost_and_insurance"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
+    <string name="pay_later_partner_see_more">Selengkapnya</string>
+    <string name="pay_later_partner_why_gateway">Kenapa</string>
+    <string name="pay_later_installment_text">Cicilan</string>
+    <string name="pay_later_installment_used">Pakai cicilan yang mana, nih?</string>
+    <string name="pay_later_duration_to_payoff">Mau dicicil berapa lama?</string>
+    <string name="pay_later_something_went_wrong">Ada yang salah</string>
+    <string name="pay_later_payment_simulation">Simulasi pembayaran</string>
+    <string name="pay_later_service_fee_selected_partner">Biaya Layanan</string>
+    <string name="pay_later_one_month">30 Hari</string>
+    <string name="pay_later_partner_interest">Bunga</string>
+    <string name="pay_later_shippingcost_and_insurance_text"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
 
 
 </resources>

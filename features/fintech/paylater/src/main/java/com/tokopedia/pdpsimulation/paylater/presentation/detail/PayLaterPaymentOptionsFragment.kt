@@ -1,6 +1,5 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -153,12 +152,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 tvSmallSubTitlePaylaterPartner.gone()
             }
             whyText.text =
-                resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}?"
+                resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
             if (data.tenure != 1 && data.tenure != 0)
-                duration.text = resources.getString(R.string.cicilian) + " ${data.tenure}x"
+                duration.text = resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
             interestText.text =
-                "${resources.getString(R.string.interest)}(${(data.interest_pct ?: 0)}%)"
+                "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
             gatewayType =
                 if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
                     GatewayStatusType.Rejected
@@ -242,12 +241,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun updateSubHeader(gatewayType: GatewayStatusType?, subheader: String) {
         when (gatewayType) {
             GatewayStatusType.Processing -> {
-                tvSubTitlePaylaterPartner.text = context?.getString(R.string.gateway_processing)
+                tvSubTitlePaylaterPartner.text = context?.getString(R.string.pay_later_gateway_processing)
                 tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_Y200))
                 tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_Y500))
             }
             GatewayStatusType.Rejected -> {
-                tvSubTitlePaylaterPartner.text = context?.getString(R.string.rejected_gateway)
+                tvSubTitlePaylaterPartner.text = context?.getString(R.string.pay_later_rejected_gateway)
                 tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_R500))
                 tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_R100))
             }
