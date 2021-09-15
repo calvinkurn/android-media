@@ -11,6 +11,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return TrackingDataModel().apply {
             trackOrder = mapTrackOrder(data.trackOrder)
             page = mapPage(data.page)
+            tipping = mapTippingData(data.tipping)
         }
     }
 

@@ -35,5 +35,7 @@ class TrackingPageRepository @Inject constructor(@ApplicationContext private val
         return gql.getResponse(request)
     }
 
+    suspend fun getDriverTip(orderId: String)
+
 
 }
