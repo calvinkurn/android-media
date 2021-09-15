@@ -199,7 +199,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun useOvoRegister(): Boolean = enableOvoRegister
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         clearData()
         callbackManager = CallbackManager.Factory.create()
 
