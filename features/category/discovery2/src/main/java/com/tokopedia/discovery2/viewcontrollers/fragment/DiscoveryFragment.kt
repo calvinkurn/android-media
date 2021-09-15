@@ -561,12 +561,12 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner,{ (parentPosition,position) ->
             if (parentPosition >= 0) {
-                discoveryAdapter.getViewModelAtPosition(parentPosition).let { discoveryBaseViewModel ->
+                discoveryAdapter.getViewModelAtPosition(parentPosition)?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ProductCardCarouselViewModel)
                         discoveryBaseViewModel.handleAtcFailed(position)
                 }
             } else if (position >= 0) {
-                discoveryAdapter.getViewModelAtPosition(position).let { discoveryBaseViewModel ->
+                discoveryAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is MasterProductCardItemViewModel)
                         discoveryBaseViewModel.handleATCFailed()
                 }

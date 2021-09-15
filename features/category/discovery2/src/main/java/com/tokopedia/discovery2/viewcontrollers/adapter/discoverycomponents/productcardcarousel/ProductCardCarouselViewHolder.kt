@@ -114,7 +114,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             })
             mProductCarouselComponentViewModel.atcFailed.observe(lifecycle, { position ->
                 if (position >= 0) {
-                    mDiscoveryRecycleAdapter.getViewModelAtPosition(position).let { discoveryBaseViewModel ->
+                    mDiscoveryRecycleAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
                         if (discoveryBaseViewModel is MasterProductCardItemViewModel) {
                             discoveryBaseViewModel.handleATCFailed()
                         }
