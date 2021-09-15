@@ -35,7 +35,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         rating = recommendation.rating,
                         ratingAverage = recommendation.ratingAverage,
                         countReview = recommendation.countReview,
-                        stock = if (isRecomCardShouldShowVariantOrCart()) recommendation.maxOrder else recommendation.stock,
+                        stock = if (isRecomCardShouldShowVariantOrCart() && recommendation.maxOrder != 0) recommendation.maxOrder else recommendation.stock,
                         recommendationType = recommendation.recommendationType,
                         isTopAds = recommendation.isIsTopads,
                         isWishlist = recommendation.isWishlist,
