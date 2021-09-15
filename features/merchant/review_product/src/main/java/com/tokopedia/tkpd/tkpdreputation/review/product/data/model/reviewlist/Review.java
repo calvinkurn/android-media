@@ -11,10 +11,10 @@ public class Review {
     public static final int DIVIDER_MAX_STAR = 20;
     @SerializedName("review_id")
     @Expose
-    private int reviewId;
+    private Long reviewId;
     @SerializedName("reputation_id")
     @Expose
-    private int reputationId;
+    private Long reputationId;
     @SerializedName("review_title")
     @Expose
     private String reviewTitle;
@@ -48,19 +48,19 @@ public class Review {
     private int totalLike = INACTIVE_LIKE_DISLIKE;
     private int likeStatus;
 
-    public int getReviewId() {
+    public Long getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(int reviewId) {
+    public void setReviewId(Long reviewId) {
         this.reviewId = reviewId;
     }
 
-    public int getReputationId() {
+    public Long getReputationId() {
         return reputationId;
     }
 
-    public void setReputationId(int reputationId) {
+    public void setReputationId(Long reputationId) {
         this.reputationId = reputationId;
     }
 

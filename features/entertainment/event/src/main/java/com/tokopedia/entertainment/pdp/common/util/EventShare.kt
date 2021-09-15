@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.pdp.common.util
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
@@ -14,10 +13,11 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import java.lang.ref.WeakReference
 
-class EventShare (private val activity: Activity) {
+class EventShare (private val activity: WeakReference<Activity>) {
 
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
 
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
@@ -38,7 +38,7 @@ class EventShare (private val activity: Activity) {
             putExtra(Intent.EXTRA_TEXT, url)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
-        activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
+        activity.get()?.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
     }
 
     private fun generateBranchLink(data: ProductDetailData, titleShare: String, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
@@ -70,8 +70,8 @@ class EventShare (private val activity: Activity) {
                 description = data.metaDescription
                 ogUrl = null
                 imgUri = data.thumbnailApp
-                uri = activity.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl)
-                deepLink = activity.resources.getString(R.string.ent_pdp_share_app_link, data.seoUrl)
+                uri = activity.get()?.resources?.getString(R.string.ent_pdp_share_web_link, data.seoUrl) ?: ""
+                deepLink = activity.get()?.resources?.getString(R.string.ent_pdp_share_app_link, data.seoUrl) ?: ""
             }
         }
     }
