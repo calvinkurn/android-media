@@ -26,7 +26,17 @@ class ProductDetailRobot {
         clickVariantAtPosition(2)
         onView(withId(R.id.btn_add_to_cart))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
+                .check(matches(ViewMatchers.withText("+ Keranjang test")))
+
+        onView(withId(R.id.btn_add_to_cart)).perform(click())
+    }
+
+    fun clickBuyNormal() {
+        // select variant with normal button
+        clickVariantAtPosition(2)
+        onView(withId(R.id.btn_buy_now))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                .check(matches(ViewMatchers.withText("Beli test")))
 
         onView(withId(R.id.btn_buy_now)).perform(click())
     }
