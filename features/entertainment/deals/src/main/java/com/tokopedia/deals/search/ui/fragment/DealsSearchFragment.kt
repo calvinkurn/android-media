@@ -28,6 +28,7 @@ import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
+import com.tokopedia.deals.databinding.LayoutDealsSearchBarBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.deals.search.DealsSearchConstants
@@ -89,9 +90,11 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private var binding by autoCleared<FragmentDealsSearchBinding>()
+    private var binding2 by autoCleared<LayoutDealsSearchBarBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDealsSearchBinding.inflate(inflater, container, false)
+        binding2 = LayoutDealsSearchBarBinding.bind(binding.root)
         return binding.root
     }
 
@@ -103,7 +106,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun initViews() {
-        binding.searchLayout.tvLocation.setCompoundDrawablesWithIntrinsicBounds(null, null,
+        binding2.tvLocation.setCompoundDrawablesWithIntrinsicBounds(null, null,
             MethodChecker.getDrawable(context, R.drawable.ic_deals_dropdown_down_24dp), null)
         initObserver()
         setListener()
@@ -254,34 +257,34 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun getSearchKeyword(): String {
         var query = ""
-        if (binding.searchLayout.searchBar.searchBarTextField.text?.isNotEmpty() == true) {
-            query = binding.searchLayout.searchBar.searchBarTextField.text.toString()
+        if (binding2.searchBar.searchBarTextField.text?.isNotEmpty() == true) {
+            query = binding2.searchBar.searchBarTextField.text.toString()
         }
         return query
     }
 
     private fun setListener() {
         setSearchBarListener()
-        binding.searchLayout.ivButtonBack.setOnClickListener { activity?.onBackPressed() }
-        binding.searchLayout.tvLocation.setOnClickListener {
-            bottomSheet = SelectLocationBottomSheet(binding.searchLayout.tvLocation.text.toString(), currentLocation, false, this)
+        binding2.ivButtonBack.setOnClickListener { activity?.onBackPressed() }
+        binding2.tvLocation.setOnClickListener {
+            bottomSheet = SelectLocationBottomSheet(binding2.tvLocation.text.toString(), currentLocation, false, this)
             fragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
         }
     }
 
     private fun setSearchBarListener() {
-        binding.searchLayout.searchBar.requestFocus()
-        binding.searchLayout.searchBar.searchBarTextField.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        binding2.searchBar.requestFocus()
+        binding2.searchBar.searchBarTextField.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             KeyboardHandler.showSoftKeyboard(activity)
         }
 
-        binding.searchLayout.searchBar.searchBarTextField.afterTextChangedDelayed {
+        binding2.searchBar.searchBarTextField.afterTextChangedDelayed {
             onSearchTextChanged(it)
         }
 
-        binding.searchLayout.searchBar.searchBarTextField.setOnEditorActionListener { textView, i, keyEvent ->
+        binding2.searchBar.searchBarTextField.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
-                onSearchSubmitted(binding.searchLayout.searchBar.searchBarTextField.text.toString())
+                onSearchSubmitted(binding2.searchBar.searchBarTextField.text.toString())
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -321,7 +324,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         if (location != null) {
             createToaster(String.format("%s %s", getString(R.string.deals_location_deals_changed_toast), location.name), Toaster.TYPE_NORMAL)
             currentLocation = location
-            binding.searchLayout.tvLocation?.text = location.name
+            binding2.tvLocation?.text = location.name
             return location.name
         }
         return ""
@@ -366,7 +369,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun onLocationItemUpdated() {
         analyticsLocation()
-        binding.searchLayout.searchBar.searchBarTextField.text.clear()
+        binding2.searchBar.searchBarTextField.text.clear()
         loadInitialData()
     }
 
@@ -431,7 +434,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         val previousLocation = dealsLocationUtils.getLocation()
         if (currentLocation?.coordinates != previousLocation.coordinates) {
             currentLocation = previousLocation
-            binding.searchLayout.tvLocation?.text = currentLocation?.name
+            binding2.tvLocation?.text = currentLocation?.name
             viewModel.searchDeals(getSearchKeyword(), currentLocation, childCategoryIds, FIRST_PAGE)
         }
     }

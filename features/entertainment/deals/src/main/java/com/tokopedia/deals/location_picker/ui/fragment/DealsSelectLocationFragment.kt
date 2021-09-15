@@ -24,6 +24,7 @@ import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
 import com.tokopedia.deals.databinding.FragmentDealsSelectLocationBinding
+import com.tokopedia.deals.databinding.LayoutDealsSearchLocationBottomsheetBinding
 import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.domain.viewmodel.DealsLocationViewModel
 import com.tokopedia.deals.location_picker.listener.DealsLocationListener
@@ -51,6 +52,7 @@ class DealsSelectLocationFragment(
         CoroutineScope {
 
     private var binding by autoCleared<FragmentDealsSelectLocationBinding>()
+    private var binding2 by autoCleared<LayoutDealsSearchLocationBottomsheetBinding>()
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
@@ -71,6 +73,7 @@ class DealsSelectLocationFragment(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDealsSelectLocationBinding.inflate(inflater, container, false)
+        binding2 = LayoutDealsSearchLocationBottomsheetBinding.bind(binding.root)
         return binding.root
     }
 
@@ -257,28 +260,28 @@ class DealsSelectLocationFragment(
     }
 
     private fun setListener() {
-        binding.layoutSearchLocation.sbLocation?.requestFocus()
+        binding2.sbLocation.requestFocus()
 
-        binding.layoutSearchLocation.sbLocation?.searchBarTextField?.afterTextChangedDelayed {
+        binding2.sbLocation?.searchBarTextField?.afterTextChangedDelayed {
             onSearchTextChanged(it)
         }
 
-        binding.layoutSearchLocation.sbLocation?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
+        binding2.sbLocation?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
                 onSearchSubmitted(getSearchKeyword())
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
-        binding.layoutSearchLocation.detectCurrentLocation?.setOnClickListener {
+        binding2.detectCurrentLocation?.setOnClickListener {
             getCurrentLocation()
         }
     }
 
     private fun getSearchKeyword(): String {
         var query = ""
-        if (binding.layoutSearchLocation.sbLocation?.searchBarTextField?.text?.isNotEmpty() == true) {
-            query = binding.layoutSearchLocation.sbLocation?.searchBarTextField?.text.toString()
+        if (binding2.sbLocation?.searchBarTextField?.text?.isNotEmpty() == true) {
+            query = binding2.sbLocation?.searchBarTextField?.text.toString()
         }
         return query
     }
