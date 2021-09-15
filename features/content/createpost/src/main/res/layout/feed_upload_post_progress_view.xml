@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_name"
+        android:id="@+id/progress_bar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"

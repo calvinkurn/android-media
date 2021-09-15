@@ -75,6 +75,7 @@ class SubmitPostServiceNew : JobIntentService() {
         ) ?: return
 
         postUpdateProgressManager = getProgressManager(viewModel)
+        postUpdateProgressManager!!.setCreatePostData(viewModel)
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         submitPostUseCase.execute(
@@ -110,10 +111,11 @@ class SubmitPostServiceNew : JobIntentService() {
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
-    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager{
-        val firstImage = FileUtil.createFilePathFromUri(applicationContext,Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
-        val maxCount = viewModel.fileImageList.size
-        return object: PostUpdateProgressManager(maxCount,firstImage,applicationContext){
+    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
+        val firstImage = FileUtil.createFilePathFromUri(applicationContext,
+            Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+        val maxCount = viewModel.completeImageList.size
+        return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
     }
 

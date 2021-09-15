@@ -276,6 +276,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
+        if (!userSession.isLoggedIn || !isSeller)
+            fab_feed.hide()
+        else
+            fab_feed.show()
+
         if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
             activity?.intent?.putExtra("show_posting_progress_bar", false)
             updateVisibility(true)
@@ -380,9 +385,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
         isSeller = userSession.hasShop() || userSession.isAffiliate
-        if (!userSession.isLoggedIn || !isSeller) {
-            fab_feed.hide()
-        }
         setAdapter()
         setViewPager()
         onNotificationChanged(
