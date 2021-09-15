@@ -153,7 +153,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 tvSmallSubTitlePaylaterPartner.gone()
             }
             whyText.text =
-                resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}"
+                resources.getString(R.string.whyGateway) + " ${data.gateway_detail?.name ?: ""}?"
             if (data.tenure != 1 && data.tenure != 0)
                 duration.text = resources.getString(R.string.cicilian) + " ${data.tenure}x"
 
