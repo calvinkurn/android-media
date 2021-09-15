@@ -66,7 +66,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         if (::adapter.isInitialized) {
             if (adapter.itemCount > 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT) {
                 recyclerView.findViewHolderForAdapterPosition(adapter.selectedPosition)?.let {
-                    if(it is FlightPromoChipsViewHolder) it.itemView.performClick()
+                    (it as? FlightPromoChipsViewHolder)?.itemView?.performClick()
                 }
             }
         }
