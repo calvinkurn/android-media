@@ -461,7 +461,7 @@ class AddEditProductShipmentFragment:
         }
 
         radioCustomShipment?.setOnClickListener {
-            updateLayoutShipment()
+            shipmentRadioValue(false)
         }
     }
 
@@ -471,8 +471,7 @@ class AddEditProductShipmentFragment:
             layoutCustomShipmentConventional?.gone()
             shipperServicesIds = arrayListOf()
         } else {
-            layoutCustomShipmentOnDemand?.visible()
-            layoutCustomShipmentConventional?.visible()
+            updateLayoutShipment()
             if (shipperServicesIds?.isEmpty() == true) {
                 val newShipperServiceIds = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
                 shipperServicesIds = ArrayList(newShipperServiceIds)
