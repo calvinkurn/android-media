@@ -141,14 +141,10 @@ class OtherMenuViewModel @Inject constructor(
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
         addSource(_errorStateMap) { map ->
             val errorCounts = map?.count { it.value }.orZero()
-            if (errorCounts <= map?.count().orZero()) {
-                val shouldShowMultipleErrorToaster =
-                    errorCounts >= ERROR_COUNT_THRESHOLD && _hasShownMultipleErrorToaster.value == false
-                value = shouldShowMultipleErrorToaster
-                _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
-            } else {
-                value = false
-            }
+            val shouldShowMultipleErrorToaster =
+                errorCounts >= ERROR_COUNT_THRESHOLD && _hasShownMultipleErrorToaster.value == false
+            value = shouldShowMultipleErrorToaster
+            _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
         }
     }
     val shouldShowMultipleErrorToaster: LiveData<Boolean>
@@ -200,8 +196,8 @@ class OtherMenuViewModel @Inject constructor(
         getShopShareInfoData()
     }
 
-    fun onReloadErrorData() {
-        _hasShownMultipleErrorToaster.value = false
+    fun onShownMultipleError(isShown: Boolean = false) {
+        _hasShownMultipleErrorToaster.value = isShown
     }
 
     fun onCheckDelayErrorResponseTrigger() {

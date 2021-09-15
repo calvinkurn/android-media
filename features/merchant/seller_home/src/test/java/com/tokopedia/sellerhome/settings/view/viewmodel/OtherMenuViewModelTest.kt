@@ -95,7 +95,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getAllOtherMenuData()
 
             mViewModel.reloadErrorData()
-            mViewModel.onReloadErrorData()
+            mViewModel.onShownMultipleError()
 
             verifyGetShopBadgeCalled(atLeast = 2)
             verifyGetShopTotalFollowersCalled(atLeast = 2)

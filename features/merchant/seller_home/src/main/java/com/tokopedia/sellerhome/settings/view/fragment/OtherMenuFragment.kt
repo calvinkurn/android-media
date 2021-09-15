@@ -639,34 +639,31 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun showMultipleErrorToaster() {
-        if (multipleErrorSnackbar == null || canShowMultipleErrorToaster) {
-            multipleErrorSnackbar =
-                view?.run {
-                    Toaster.build(
-                        this,
-                        context?.getString(R.string.setting_header_multiple_error_message)
-                            .orEmpty(),
-                        Snackbar.LENGTH_INDEFINITE,
-                        Toaster.TYPE_NORMAL,
-                        context?.getString(R.string.setting_toaster_error_retry).orEmpty()
-                    )
-                    {
-                        viewModel.reloadErrorData()
-                        viewModel.onReloadErrorData()
-                        canShowMultipleErrorToaster = true
-                    }.addCallback(object : Snackbar.Callback() {
-                        override fun onShown(sb: Snackbar?) {
-                            super.onShown(sb)
-                            canShowMultipleErrorToaster = false
-                        }
-                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                            super.onDismissed(transientBottomBar, event)
-                            canShowMultipleErrorToaster = true
-                        }
-                    })
-                }
-            multipleErrorSnackbar?.show()
-        }
+        multipleErrorSnackbar =
+            view?.run {
+                Toaster.build(
+                    this,
+                    context?.getString(R.string.setting_header_multiple_error_message)
+                        .orEmpty(),
+                    Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.setting_toaster_error_retry).orEmpty()
+                )
+                {
+                    viewModel.reloadErrorData()
+                    viewModel.onShownMultipleError()
+                }.addCallback(object : Snackbar.Callback() {
+                    override fun onShown(sb: Snackbar?) {
+                        super.onShown(sb)
+                        viewModel.onShownMultipleError(true)
+                    }
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                        viewModel.onShownMultipleError()
+                    }
+                })
+            }
+        multipleErrorSnackbar?.show()
     }
 
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
