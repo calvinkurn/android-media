@@ -13,6 +13,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
@@ -176,9 +177,8 @@ class PlayViewModel @Inject constructor(
                     canLike = likeInfo.status != PlayLikeStatus.Unknown,
                     totalLike = channelReport.totalLikeFmt,
                     shouldAnimate = false,
-                    likeMode = if (channelDetail.channelInfo.channelType.isLive) {
-                        PlayLikeMode.Multiple(channelDetail.multipleLikeConfigInfo)
-                    } else PlayLikeMode.Single,
+                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
+                    else PlayLikeMode.Single,
                     isLiked = likeInfo.status == PlayLikeStatus.Liked,
                 ),
                 totalView = channelReport.totalViewFmt,
@@ -677,6 +677,7 @@ class PlayViewModel @Inject constructor(
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
 
+        prepareSelfLikeBubbleIcon()
         checkLeaderboard(channelData.id)
         checkLikeReminderTimer()
     }
@@ -1073,6 +1074,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun prepareSelfLikeBubbleIcon() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                PreloadLikeBubbleIconEvent(
+                    _likeInfo.value.multiLikesConfig.self.bubbleMap.keys
+                )
+            )
+        }
+    }
+
     private fun checkLikeReminderTimer() {
         fun shouldRemindLike() = _likeInfo.value.status != PlayLikeStatus.Liked && channelType.isLive
         suspend fun sendLikeReminder() = _uiEvent.emit(RemindToLikeEvent)
@@ -1141,13 +1152,29 @@ class PlayViewModel @Inject constructor(
 
                 val diffLike = totalLike - prevLike
                 viewModelScope.launch {
+                    val otherConfig = playSocketToModelMapper.mapMultipleLikeConfig(result.configuration)
+                    _likeInfo.setValue { copy(multiLikesConfig = otherConfig) }
+                    _uiEvent.emit(
+                        PreloadLikeBubbleIconEvent(
+                            urls = otherConfig.other.bubbleMap.keys
+                        )
+                    )
+
                     if (diffLike >= LIKE_BURST_THRESHOLD) {
                         _uiEvent.emit(
-                            ShowLikeBubbleEvent.Burst(LIKE_BURST_THRESHOLD, isOpaque = true)
+                            ShowLikeBubbleEvent.Burst(
+                                LIKE_BURST_THRESHOLD,
+                                reduceOpacity = true,
+                                config = _likeInfo.value.multiLikesConfig.other,
+                            )
                         )
                     } else if (diffLike > 0) {
                         _uiEvent.emit(
-                            ShowLikeBubbleEvent.Single(diffLike.toInt(), isOpaque = true)
+                            ShowLikeBubbleEvent.Single(
+                                diffLike.toInt(),
+                                reduceOpacity = true,
+                                config = _likeInfo.value.multiLikesConfig.other,
+                            )
                         )
                     }
                 }
@@ -1238,6 +1265,17 @@ class PlayViewModel @Inject constructor(
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
                 _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
             }
+            is UpdateMultipleLikeConfig -> {
+                val config = playSocketToModelMapper.mapMultipleLikeConfig(
+                    result.configuration
+                )
+                _likeInfo.setValue {
+                    copy(multiLikesConfig = config)
+                }
+                viewModelScope.launch {
+                    _uiEvent.emit(PreloadLikeBubbleIconEvent(config.self.bubbleMap.keys))
+                }
+            }
         }
     }
 
@@ -1316,7 +1354,11 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String, interactive: PlayCurrentInteractiveModel, isUserJoined: Boolean) = coroutineScope {
+        suspend fun fetchLeaderboard(
+            channelId: String,
+            interactive: PlayCurrentInteractiveModel,
+            isUserJoined: Boolean
+        ) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
@@ -1476,7 +1518,11 @@ class PlayViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
-                _uiEvent.emit(ShowLikeBubbleEvent.Single(count = 1, isOpaque = false))
+                _uiEvent.emit(ShowLikeBubbleEvent.Single(
+                    count = 1,
+                    reduceOpacity = false,
+                    config = _likeInfo.value.multiLikesConfig.self,
+                ))
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)

@@ -10,7 +10,6 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -25,6 +24,7 @@ import javax.inject.Inject
 class PlayChannelDetailsWithRecomMapper @Inject constructor(
         private val htmlTextTransformer: HtmlTextTransformer,
         private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+        private val multipleLikesMapper: PlayMultiplelikesMapper,
 ) {
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
@@ -39,10 +39,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                             it.config.realTimeNotif
                         ),
                         videoInfo = mapVideoInfo(it.video),
-                        multipleLikeConfigInfo = mapMultipleLikeConfig(it.config.multipleLikeConfig)
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
-                    likeInfo = mapLikeInfo(it.config.feedLikeParam),
+                    likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                     channelReportInfo = mapChannelReportInfo(),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
@@ -73,12 +72,16 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             status = PlayPartnerFollowStatus.Unknown,
     )
 
-    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel(
-            contentId = feedLikeParamResponse.contentId,
-            contentType = feedLikeParamResponse.contentType,
-            likeType = feedLikeParamResponse.likeType,
-            status = PlayLikeStatus.Unknown,
-            source = LikeSource.Network,
+    private fun mapLikeInfo(
+        feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
+        configs: List<MultipleLikeConfig>,
+    ) = PlayLikeInfoUiModel(
+        contentId = feedLikeParamResponse.contentId,
+        contentType = feedLikeParamResponse.contentType,
+        likeType = feedLikeParamResponse.likeType,
+        status = PlayLikeStatus.Unknown,
+        source = LikeSource.Network,
+        multiLikesConfig = mapMultipleLikeConfig(configs),
     )
 
     private fun mapChannelReportInfo() = PlayChannelReportUiModel()
@@ -116,16 +119,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapMultipleLikeConfig(
         configs: List<MultipleLikeConfig>
-    ) = PlayMultipleLikesConfig(
-        bubbleConfig = configs.groupBy (
-            keySelector = { it.icon }
-        ) {
-            it.bgColor
-        }
-//        mapOf(
-//            "https://images.tokopedia.net/img/playassets/join.png" to listOf("#000000", "#FFFFFF")
-//        )
-    )
+    ) : PlayMultipleLikesConfig {
+        return multipleLikesMapper.mapMultipleLikeConfig(configs)
+    }
 
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
             shouldShow = configResponse.showCart

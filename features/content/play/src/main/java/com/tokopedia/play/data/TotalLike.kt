@@ -19,5 +19,5 @@ data class TotalLike(
         val channelId: Long = 0L,
 
         @SerializedName("configuration")
-        val configuration: MultipleLikeConfig = MultipleLikeConfig()
+        val configuration: List<MultipleLikeConfig> = emptyList(),
 )

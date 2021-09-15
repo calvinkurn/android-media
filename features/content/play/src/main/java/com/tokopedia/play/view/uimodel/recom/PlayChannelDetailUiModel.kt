@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.uimodel.recom
 
-import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 
 /**
@@ -11,5 +10,4 @@ data class PlayChannelDetailUiModel(
         val channelInfo: PlayChannelInfoUiModel = PlayChannelInfoUiModel(),
         val rtnConfigInfo: PlayRealTimeNotificationConfig = PlayRealTimeNotificationConfig(),
         val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
-        val multipleLikeConfigInfo: PlayMultipleLikesConfig = PlayMultipleLikesConfig(),
 )

@@ -11,7 +11,6 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
@@ -83,10 +82,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         this.parentView = parentView
     }
 
-//    fun setAdditionalShot(isAdditionalShot: Boolean) {
-//        this.isAdditionalShot = isAdditionalShot
-//    }
-
     fun setBouncing(isBouncing: Boolean) {
         this.isBouncing = isBouncing
     }
@@ -120,7 +115,8 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         likeAmount: Int,
         shotPerBatch: Int,
         delayInMs: Long = 0L,
-        isOpaque: Boolean = false
+        reduceOpacity: Boolean = false,
+        bubbleList: List<PlayLikeBubbleUiModel> = emptyList(),
     ) {
         scope.launch {
             for(i in 1..likeAmount) {
@@ -128,7 +124,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                 for(j in 1..shotPerBatch) {
                     delay(DEFAULT_DELAY)
                     withContext(Dispatchers.Main) {
-                        shot(isOpaque)
+                        shotInternal(reduceOpacity, bubbleList)
                     }
                 }
             }
@@ -136,7 +132,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     }
 
     /**
-     * Step shot()
+     * Step shotInternal()
      * 1. Randomize config
      * 2. Create the Image
      * 3. Set Image Coordinate
@@ -146,7 +142,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * 7. Set Coroutine for Popping Image from Queue
      * 8. Check Whether Additional Shot is Required Or Not
      */
-    private fun shot(reduceOpacity: Boolean) {
+    private fun shotInternal(reduceOpacity: Boolean, bubbleList: List<PlayLikeBubbleUiModel>) {
         if(bubbleList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
 
         if(shot < maxShot) {
@@ -171,36 +167,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
             scope.launch {
                 delay(duration)
                 removeImageFromView(image)
-            }
-
-//            if(isAdditionalShot) {
-//                val showOrNot = (0..10).random() % 2 == 0
-//                if(showOrNot) {
-//                    shotAdditional()
-//                }
-//            }
-        }
-    }
-
-    private fun shotAdditional() {
-        scope.launch {
-            delay((50..200).random().toLong())
-
-            withContext(Dispatchers.Main) {
-                dot?.let {
-//                    DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
-
-//                    val image = prepareImage(it, Pair(20, 20), false)
-//
-//                    parentView?.addView(image)
-//                    startAnimate(image)
-//                    imageList.add(image)
-//
-//                    scope.launch {
-//                        delay(duration)
-//                        removeImageFromView(image, false)
-//                    }
-                }
             }
         }
     }
@@ -239,15 +205,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         if(reduceOpacity) image.alpha = blurOpacity
 
         image.setBackgroundColor(possibleColors.random())
-//        image.background = ContextCompat.getDrawable(
-//            context,
-//            when((1..3).random()) {
-//                1 -> R.drawable.bg_play_multiple_like_red
-//                2 -> R.drawable.bg_play_multiple_like_green
-//                3 -> R.drawable.bg_play_multiple_like_purple
-//                else -> R.drawable.bg_play_multiple_like_red
-//            }
-//        )
 
         val padding = size.first / 2
         image.setPadding(padding, padding, padding, padding)

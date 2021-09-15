@@ -65,7 +65,7 @@ private fun parseColor(colorHex: String): Int {
 suspend fun Context.getDrawableFromUrl(
     url: String,
     size: Size? = null,
-    cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.RESOURCE,
+    cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE,
 ): Drawable? = suspendCancellableCoroutine { cont ->
     Glide.with(this)
         .asDrawable()

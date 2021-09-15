@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Size
@@ -14,8 +13,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play.R
 import com.tokopedia.play.animation.spamlike.PlaySpamLikeView
+import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
-import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
+import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 import com.tokopedia.play_common.view.getDrawableFromUrl
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
@@ -23,9 +23,10 @@ import kotlinx.coroutines.*
 /**
  * Created By : Jonathan Darwin on August 02, 2021
  */
-class SpamLikeViewComponent(
+class LikeBubbleViewComponent(
     container: ViewGroup,
-    @IdRes idRes: Int
+    @IdRes idRes: Int,
+    private val iconCacheStorage: MultipleLikesIconCacheStorage,
 ) : ViewComponent(container, idRes) {
 
     private val job = Job()
@@ -47,7 +48,7 @@ class SpamLikeViewComponent(
         R.color.play_dms_multiplelike_purple,
     )
 
-    private var bubbleList: List<PlayLikeBubbleUiModel> = iconList.map {
+    private val defaultBubbleList: List<PlayLikeBubbleUiModel> = iconList.map {
         PlayLikeBubbleUiModel(it, bgColorList.map(this::getColor))
     }
 
@@ -55,58 +56,59 @@ class SpamLikeViewComponent(
         spamLike.setParentView(container)
     }
 
+    fun preloadIcons(iconUrls: Set<String>) {
+        scope.launch(Dispatchers.Default) {
+            iconUrls.forEach { iconUrl ->
+                val isCached = iconCacheStorage.getDrawable(iconUrl) != null
+                if (!isCached) {
+                    val drawableFromNetwork = try {
+                        getDrawableFromUrl(iconUrl)
+                    } catch (e: Throwable) { null }
+
+                    if (drawableFromNetwork != null) {
+                        iconCacheStorage.addCache(iconUrl, drawableFromNetwork)
+                    }
+                }
+            }
+        }
+    }
+
     fun shot(
-        amount: Int = 1,
-        reduceOpacity: Boolean = false
+        amount: Int,
+        reduceOpacity: Boolean,
+        config: PlayLikeBubbleConfig,
     ) {
         spamLike.shot(
             likeAmount = amount,
             shotPerBatch = SHOT_PER_BATCH,
             delayInMs = SPAMMING_LIKE_DELAY,
-            reduceOpacity
+            reduceOpacity = reduceOpacity,
+            bubbleList = loadBubblesFromConfig(config)
         )
     }
 
     fun shotBurst(
-        amount: Int = 1,
-        isOpaque: Boolean = false
+        amount: Int,
+        reduceOpacity: Boolean,
+        config: PlayLikeBubbleConfig,
     ) {
         spamLike.shot(
             likeAmount = amount,
             shotPerBatch = SHOT_PER_BATCH,
-            isOpaque = isOpaque
+            reduceOpacity = reduceOpacity,
+            bubbleList = loadBubblesFromConfig(config)
         )
     }
 
-    fun setNewBubbleConfig(config: PlayMultipleLikesConfig) {
-        scope.launch {
-            val newBubbleList = loadNewConfig(config.bubbleConfig)
-            if (newBubbleList.isNotEmpty()) bubbleList = newBubbleList
-            spamLike.setBubbleList(bubbleList)
+    private fun loadBubblesFromConfig(config: PlayLikeBubbleConfig): List<PlayLikeBubbleUiModel> {
+        val bubbleList = config.bubbleMap.mapNotNull { entry ->
+            val drawable = iconCacheStorage.getDrawable(entry.key) ?: return@mapNotNull null
+            PlayLikeBubbleUiModel(
+                icon = drawable,
+                colorList = entry.value,
+            )
         }
-    }
-
-    private suspend fun loadNewConfig(bubbles: Map<String, List<String>>): List<PlayLikeBubbleUiModel> {
-        return bubbles.mapNotNull { entry ->
-            val iconUrl = entry.key
-            val drawable = try { getDrawableFromUrl(iconUrl) } catch (e: Throwable) { null }
-            if (drawable == null) return@mapNotNull null
-            else {
-                val parsedColors = loadNewColorConfig(entry.value)
-                return@mapNotNull if (parsedColors.isEmpty()) null
-                else PlayLikeBubbleUiModel(drawable, parsedColors)
-            }
-        }
-    }
-
-    private fun loadNewColorConfig(bgColors: List<String>): List<Int> {
-        return bgColors.mapNotNull {
-            try {
-                Color.parseColor(it)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }
+        return if (bubbleList.isEmpty()) this.defaultBubbleList else bubbleList
     }
 
     private suspend fun getDrawableFromUrl(url: String): Drawable? {

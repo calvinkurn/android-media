@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -29,6 +30,7 @@ class PlaySocketToModelMapper @Inject constructor(
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+        private val multipleLikesMapper: PlayMultiplelikesMapper,
 ) {
 
     fun mapTotalLike(input: TotalLike): Pair<Long, String> {
@@ -74,6 +76,12 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapRealTimeNotification(input: RealTimeNotification): RealTimeNotificationUiModel {
         return realTimeNotificationMapper.mapRealTimeNotification(input)
+    }
+
+    fun mapMultipleLikeConfig(
+        configs: List<MultipleLikeConfig>
+    ) : PlayMultipleLikesConfig {
+        return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 
     /**

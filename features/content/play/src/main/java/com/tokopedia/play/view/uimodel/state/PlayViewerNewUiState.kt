@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.recom.multiplelikes.PlayMultipleLikesConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
@@ -57,10 +56,10 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
-sealed class PlayLikeMode {
-    object Single : PlayLikeMode()
-    data class Multiple(val config: PlayMultipleLikesConfig) : PlayLikeMode()
-    object Unknown : PlayLikeMode()
+enum class PlayLikeMode {
+    Single,
+    Multiple,
+    Unknown,
 }
 
 data class PlayLikeUiState(

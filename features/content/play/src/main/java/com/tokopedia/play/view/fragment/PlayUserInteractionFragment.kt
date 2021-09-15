@@ -54,6 +54,7 @@ import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideo
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
+import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
@@ -91,7 +92,8 @@ class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -131,7 +133,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
-    private val spamLikeView by viewComponent { SpamLikeViewComponent(it, R.id.view_spam_like) }
+    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_spam_like, multipleLikesIconCacheStorage) }
 
     /**
      * Interactive
@@ -869,12 +871,15 @@ class PlayUserInteractionFragment @Inject constructor(
                         likeView.playLikeAnimation(event.fromIsLiked)
                     }
                     is ShowLikeBubbleEvent -> {
-                        if (event is ShowLikeBubbleEvent.Burst) spamLikeView.shotBurst(event.count, event.isOpaque)
-                        else if (event is ShowLikeBubbleEvent.Single) spamLikeView.shot(event.count, event.isOpaque)
+                        if (event is ShowLikeBubbleEvent.Burst) {
+                            likeBubbleView.shotBurst(event.count, event.reduceOpacity, event.config)
+                        }
+                        else if (event is ShowLikeBubbleEvent.Single) {
+                            likeBubbleView.shot(event.count, event.reduceOpacity, event.config)
+                        }
                     }
-                    RemindToLikeEvent -> {
-                        likeView.playReminderAnimation()
-                    }
+                    RemindToLikeEvent -> likeView.playReminderAnimation()
+                    is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                 }
             }
         }
@@ -1435,10 +1440,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         likeView.setTotalLikes(likeState.totalLike)
-
-        if (prevState?.likeMode != likeState.likeMode && likeState.likeMode is PlayLikeMode.Multiple) {
-            spamLikeView.setNewBubbleConfig(likeState.likeMode.config)
-        }
 
         if (likeState.shouldShow) likeView.show()
         else likeView.hide()
