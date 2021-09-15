@@ -103,7 +103,7 @@ object SnapshotAnalytics {
             putString(KEY_ITEM_VARIANT, "")
             putString(KEY_PRICE, productPrice)
         }
-        putParcelableArray(KEY_ITEMS, arrayOf(productsPayload))
+        putParcelableArrayList(KEY_ITEMS, arrayListOf(productsPayload))
         return this
     }
 
