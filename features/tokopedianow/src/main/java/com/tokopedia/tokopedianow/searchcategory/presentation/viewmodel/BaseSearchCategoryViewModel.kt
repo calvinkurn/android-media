@@ -37,6 +37,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -51,6 +52,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
@@ -649,10 +651,41 @@ abstract class BaseSearchCategoryViewModel(
                 id = "",
                 title = "",
                 productList = listOf(),
-                state = -1
+                state = -1,
             ),
             repurchaseWidget,
+        ).also {
+            updateRepurchaseWidgetQuantity(it)
+        }
+
+    private fun updateRepurchaseWidgetQuantity(
+        recentPurchaseUiModel: TokoNowRecentPurchaseUiModel,
+        index: Int = -1,
+        updatedProductIndices: MutableList<Int>? = null,
+    ) {
+        recentPurchaseUiModel.productList.forEach { productUiModel ->
+            productUiModel.product = createUpdatedRepurchaseWidgetQuantity(productUiModel)
+        }
+
+        updatedProductIndices?.add(index)
+    }
+
+    private fun createUpdatedRepurchaseWidgetQuantity(
+        repurchaseProduct: TokoNowProductCardUiModel,
+    ): ProductCardModel {
+        val quantity = cartService.getProductQuantity(
+            repurchaseProduct.productId,
+            repurchaseProduct.parentId,
         )
+
+        val nonVariant = repurchaseProduct.product.nonVariant?.copy(quantity = quantity)
+        val variant = repurchaseProduct.product.variant?.copy(quantity = quantity)
+
+        return repurchaseProduct.product.copy(
+            nonVariant = nonVariant,
+            variant = variant,
+        )
+    }
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())
@@ -947,8 +980,12 @@ abstract class BaseSearchCategoryViewModel(
         index: Int,
         updatedProductIndices: MutableList<Int>,
     ) {
-        if (visitable is ProductItemDataView)
-            updateProductItemQuantity(index, visitable, updatedProductIndices)
+        when (visitable) {
+            is ProductItemDataView ->
+                updateProductItemQuantity(index, visitable, updatedProductIndices)
+            is TokoNowRecentPurchaseUiModel ->
+                updateRepurchaseWidgetQuantity(visitable, index, updatedProductIndices)
+        }
     }
 
     private fun updateProductItemQuantity(

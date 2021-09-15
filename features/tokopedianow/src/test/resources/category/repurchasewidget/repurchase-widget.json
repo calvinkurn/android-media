@@ -717,7 +717,7 @@
     "applink": "tokopedia://now/repurchase-page",
     "listProduct": [
       {
-        "id": "1868874513",
+        "id": "574261655",
         "name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 9",
         "url": "https://www.tokopedia.com/11515028tknw/c4rt-b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49-9",
         "appUrl": "tokopedia://product/1868874513",
@@ -725,7 +725,7 @@
         "price": "Rp 90.000",
         "slashedPrice": "Rp 100.000",
         "discountPercentage": "10",
-        "parentProductID": "4789",
+        "parentProductId": "0",
         "minOrder": 1,
         "stock": 50,
         "category": "4001",
@@ -743,14 +743,14 @@
         "labelGroupVariant": []
       },
       {
-        "id": "4656",
+        "id": "576261652",
         "name": "Sayuran segar bayam dua ikat",
         "url": "https://www.tokopedia.com/now/sayiran-segar-dua-ikat",
         "imageUrl": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/6/14/583a8228-10e8-4166-bca8-ad37b4676b11.jpg",
         "price": "Rp1.125.000",
         "slashedPrice": "",
         "discountPercentage": "",
-        "parentProductID": "0",
+        "parentProductId": "1682734974",
         "minOrder": 1,
         "maxOrder": 3,
         "stock": 100,

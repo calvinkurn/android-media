@@ -914,7 +914,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
