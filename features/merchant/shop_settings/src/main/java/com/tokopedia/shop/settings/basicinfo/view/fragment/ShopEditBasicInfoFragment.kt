@@ -22,9 +22,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -576,6 +574,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 }
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.SHOP_EDIT_INFO_PAGE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 

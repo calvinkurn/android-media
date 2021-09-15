@@ -38,9 +38,8 @@ class PackageParentViewHolder(
                 if (isExpanded) {
                     val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(R.id.rv_accordion_expandable)
                     for (i in 0 until rvTicketItem.childCount) {
-                        val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
-                                as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
-                        vh.resetQuantities()
+                        val adapter = rvTicketItem.adapter
+                        adapter?.notifyItemChanged(i)
                     }
                 }
                 onBindItemTicketListener.resetPackage()

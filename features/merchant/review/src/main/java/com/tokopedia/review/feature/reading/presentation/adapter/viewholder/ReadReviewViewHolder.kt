@@ -181,6 +181,8 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
                     }
                     setCollapsableReview(message, feedbackId, productId)
                 }
+            } else {
+                setOnClickListener {  }
             }
             show()
         }
