@@ -258,7 +258,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         parentFragmentLifecycleObserver = object: DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 removeFile(savedImagePath)
-                parentFragmentContainer?.lifecycle?.removeObserver(this)
+                parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
                 super.onDestroy(owner)
             }
         }
