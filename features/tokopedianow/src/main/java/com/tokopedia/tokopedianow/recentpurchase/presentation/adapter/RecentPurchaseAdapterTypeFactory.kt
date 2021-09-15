@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -9,13 +10,13 @@ import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseLoadingViewHolder
-import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseProductGridViewHolder
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder
 
 class RecentPurchaseAdapterTypeFactory(
@@ -39,7 +40,7 @@ class RecentPurchaseAdapterTypeFactory(
     // endregion
 
     // region Repurchase Component
-    override fun type(uiModel: RepurchaseProductGridUiModel): Int = RepurchaseProductGridViewHolder.LAYOUT
+    override fun type(uiModel: RepurchaseProductUiModel): Int = RepurchaseProductViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseLoadingUiModel): Int = RepurchaseLoadingViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseEmptyStateNoHistoryUiModel): Int = RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseSortFilterUiModel): Int = RepurchaseSortFilterViewHolder.LAYOUT
@@ -56,12 +57,24 @@ class RecentPurchaseAdapterTypeFactory(
             // endregion
 
             // region Repurchase Component
-            RepurchaseProductGridViewHolder.LAYOUT -> RepurchaseProductGridViewHolder(view, productCardListener)
+            RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
             RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
             // endregion
             else -> super.createViewHolder(view, type)
+        }.apply {
+            if(this !is RepurchaseProductViewHolder) {
+                applyFullSpan()
+            }
+        }
+    }
+
+    private fun AbstractViewHolder<*>.applyFullSpan(): AbstractViewHolder<*> {
+        return apply {
+            val layoutParams = itemView.layoutParams
+                as? StaggeredGridLayoutManager.LayoutParams
+            layoutParams?.isFullSpan = true
         }
     }
 }

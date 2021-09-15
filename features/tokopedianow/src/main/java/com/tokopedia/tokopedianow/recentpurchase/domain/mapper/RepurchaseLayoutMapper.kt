@@ -10,25 +10,35 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.factory.RepurchaseSortFilterFactory.createSortFilterList
+import com.tokopedia.tokopedianow.recentpurchase.presentation.factory.RepurchaseSortFilterFactory
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
 
 object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addLayoutList() {
-        val sortFilterList = createSortFilterList()
-        add(RepurchaseSortFilterUiModel(sortFilterList))
+        val sortFilter = RepurchaseSortFilterUiModel(SORT_FILTER, emptyList())
+
+        add(sortFilter)
         addChooseAddress()
-        add(RepurchaseProductGridUiModel(emptyList()))
     }
 
-    fun MutableList<Visitable<*>>.addProductGrid(response: List<RepurchaseProduct>) {
-        val productList = response.mapToProductListUiModel()
-        add(RepurchaseProductGridUiModel(productList))
+    fun MutableList<Visitable<*>>.addSortFilter() {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let {
+            val uiModel = RepurchaseSortFilterFactory.createSortFilter()
+            val index = indexOf(it)
+            set(index, uiModel)
+        }
+    }
+
+    fun MutableList<Visitable<*>>.addProduct(response: List<RepurchaseProduct>) {
+        addAll(response.mapToProductListUiModel())
     }
 
     fun MutableList<Visitable<*>>.addLoading() {
@@ -36,8 +46,15 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateNoHistory(@StringRes description: Int) {
-        removeFirstLayout(RepurchaseProductGridUiModel::class.java)
         add(RepurchaseEmptyStateNoHistoryUiModel(description))
+    }
+
+    fun MutableList<Visitable<*>>.removeEmptyStateNoHistory() {
+        removeFirstLayout(RepurchaseEmptyStateNoHistoryUiModel::class.java)
+    }
+
+    fun MutableList<Visitable<*>>.removeAllProduct()  {
+        removeAll { it is RepurchaseProductUiModel }
     }
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
@@ -81,6 +98,25 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.removeChooseAddress() {
         removeFirstLayout(TokoNowChooseAddressWidgetUiModel::class.java)
+    }
+
+    fun MutableList<Visitable<*>>.setCategoryFilter(selectedFilter: SelectedSortFilter?) {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
+            val sortFilterIndex = indexOf(item)
+            val sortFilter = (item as RepurchaseSortFilterUiModel)
+            val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
+            val categoryFilter = sortFilterList.firstOrNull { it.type == CATEGORY_FILTER }
+            val categoryFilterIndex = sortFilterList.indexOf(categoryFilter)
+            val updatedCategoryFilter = categoryFilter?.copy(selectedItem = selectedFilter)
+
+            updatedCategoryFilter?.let {
+                sortFilterList[categoryFilterIndex] = it
+                set(sortFilterIndex, sortFilter.copy(
+                    sortFilterList = sortFilterList
+                ))
+            }
+        }
     }
 
     private fun <T> MutableList<Visitable<*>>.removeFirstLayout(model: Class<T>) {
