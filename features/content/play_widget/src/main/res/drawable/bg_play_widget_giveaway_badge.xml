@@ -7,6 +7,6 @@
 
         android:startColor="@color/play_widget_dms_bg_giveaway_badge_start"
         android:endColor="@color/play_widget_dms_bg_giveaway_badge_end"
-        android:angle="118"
+        android:angle="225"
         />
 </shape>

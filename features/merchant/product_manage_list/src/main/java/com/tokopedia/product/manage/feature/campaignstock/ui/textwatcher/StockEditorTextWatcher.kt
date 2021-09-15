@@ -2,12 +2,16 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.textwatcher
 
 import android.text.Editable
 import android.text.TextWatcher
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class StockEditorTextWatcher(
     private val editor: QuantityEditorUnify?,
+    private val emptyStockInfo: Typography?,
     private val onTotalStockChanged: (Int) -> Unit
 ): TextWatcher {
     override fun afterTextChanged(s: Editable) {
@@ -17,6 +21,7 @@ class StockEditorTextWatcher(
         } else {
             EditProductConstant.MINIMUM_STOCK
         }
+        emptyStockInfo?.showWithCondition(stock.isZero())
         toggleQuantityEditorBtn(stock)
         onTotalStockChanged(stock)
     }

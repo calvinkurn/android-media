@@ -26,6 +26,8 @@ internal const val LABEL_ETA = "eta"
 internal const val LABEL_FULFILLMENT = "fulfillment"
 internal const val LABEL_CATEGORY = "category"
 internal const val LABEL_COST_PER_UNIT = "costperunit"
+internal const val LABEL_CATEGORY_SIDE = "category_side"
+internal const val LABEL_CATEGORY_BOTTOM = "category_bottom"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
@@ -60,3 +62,4 @@ internal val FIRE_HEIGHT = R.dimen.dp_13
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 
 internal const val MAX_VARIANT_QUANTITY = 99
+internal const val MIN_QUANTITY_NON_VARIANT = 1

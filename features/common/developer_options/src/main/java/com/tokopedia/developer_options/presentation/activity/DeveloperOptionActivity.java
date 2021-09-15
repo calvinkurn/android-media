@@ -94,6 +94,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
     String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
 
+
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
@@ -341,6 +342,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
+
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+            Intent intent = new Intent(this, ProductDetailDevActivity.class);
+            startActivity(intent);
+        });
 
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,18 +20,18 @@
         app:layout_constraintTop_toTopOf="@id/qte_campaign_stock_amount"
         app:layout_constraintBottom_toBottomOf="@id/qte_campaign_stock_amount"/>
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelCampaign"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_G500"
+        android:gravity="center_vertical"
         android:visibility="gone"
-        app:labelTitle="@string/product_manage_campaign"
-        app:labelType="general_light_red"
-        app:layout_constraintBottom_toBottomOf="@id/qte_campaign_stock_amount"
-        app:layout_constraintLeft_toRightOf="@id/tv_campaign_stock_amount"
-        app:layout_constraintTop_toTopOf="@id/qte_campaign_stock_amount"
-        tools:visibility="visible" />
+        app:typographyType="heading_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_amount"
+        tools:text="3 promosi"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/emptyStockInfo"
@@ -45,7 +45,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_count"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible"/>
 

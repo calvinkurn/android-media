@@ -395,7 +395,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun requestPermissionLocation() {
-        requestPermissions(requiredPermissions, 9876)
+        requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -434,8 +434,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
-                currentLat = data.latitude
-                currentLong = data.longitude
+                if (data != null) {
+                    currentLat = data.latitude
+                    currentLong = data.longitude
+                }
             }
         }
     }
@@ -478,6 +480,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
         private const val REQUEST_ADDRESS_FORM_PAGE = 1599
         private const val REQUEST_PINPOINT_PAGE = 1998
+        private const val REQUEST_CODE_PERMISSION = 9876
 
         private const val DEFAULT_LONG = 0.0
         private const val DEFAULT_LAT = 0.0

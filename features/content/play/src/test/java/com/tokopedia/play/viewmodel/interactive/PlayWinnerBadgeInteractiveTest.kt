@@ -2,13 +2,17 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerRepository
+import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.extensions.isLeaderboardSheetShown
 import com.tokopedia.play.model.*
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isTrue
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
@@ -44,7 +48,9 @@ class PlayWinnerBadgeInteractiveTest {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
             videoMetaInfo = videoInfoBuilder.buildVideoMeta(
                     videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
             )
@@ -61,7 +67,7 @@ class PlayWinnerBadgeInteractiveTest {
     )
     private val socket: PlayChannelWebSocket = mockk(relaxed = true)
 
-    private val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+    private val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
 
     init {
         every { socket.listenAsFlow() } returns socketFlow
@@ -91,7 +97,7 @@ class PlayWinnerBadgeInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher,
                 remoteConfig = mockRemoteConfig,
         ) {
@@ -118,7 +124,7 @@ class PlayWinnerBadgeInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
@@ -142,7 +148,7 @@ class PlayWinnerBadgeInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Giveaway"
         coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Finished,
@@ -154,7 +160,7 @@ class PlayWinnerBadgeInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
@@ -182,7 +188,7 @@ class PlayWinnerBadgeInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)

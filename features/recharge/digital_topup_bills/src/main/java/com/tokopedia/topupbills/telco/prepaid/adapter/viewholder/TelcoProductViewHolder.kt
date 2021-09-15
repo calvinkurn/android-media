@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_telco_product.view.*
 
 class TelcoProductViewHolder(itemView: View, private val productType: Int,
-                             val listener: OnClickListener)
+                             val listener: ActionListener)
     : AbstractViewHolder<TelcoProduct>(itemView) {
 
     lateinit var adapter: TelcoProductAdapter
@@ -23,6 +23,9 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     override fun bind(element: TelcoProduct) {
         with(itemView) {
             telco_prepaid_title_product.text = element.attributes.desc
+
+            if (element.isSpecialProductPromo())
+                listener.onTrackSpecialProductImpression(element, adapterPosition)
 
             renderCardSize()
             renderDescProduct(element)
@@ -144,8 +147,9 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }
 
-    interface OnClickListener {
+    interface ActionListener {
         fun onClickItemProduct(element: TelcoProduct, position: Int)
         fun onClickSeeMoreProduct(element: TelcoProduct, position: Int)
+        fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int)
     }
 }

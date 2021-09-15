@@ -353,11 +353,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             merchantVoucherSummary{
-                title{
-                    text
+                animatedInfo{
+                    title
+                    subTitle
+                    iconURL
                 }
-                subtitle
-                imageURL
                 isShown
             }
             reviewImage{
@@ -424,6 +424,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   name
                 }
               }
+            }
+            rating {
+                ratingScore
+                totalRating
+                totalReviewTextAndImage
             }
         }
     }""".trimIndent()
@@ -494,6 +499,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.rating = rating
         }
         return p2UiData
     }

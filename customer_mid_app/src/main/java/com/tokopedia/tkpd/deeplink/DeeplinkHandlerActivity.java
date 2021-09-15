@@ -51,8 +51,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.webview.WebViewApplinkModule;
-import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,15 +62,13 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        HomeCreditAppLinkModule.class,
-        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -90,8 +86,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new HomeCreditAppLinkModuleLoader(),
-                    new WebViewApplinkModuleLoader()
+                    new HomeCreditAppLinkModuleLoader()
             );
         }
 

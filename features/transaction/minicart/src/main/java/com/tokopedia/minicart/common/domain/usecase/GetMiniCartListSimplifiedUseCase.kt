@@ -52,6 +52,10 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
             status
             data {
               errors
+              beli_button_config {
+                button_type
+                button_wording
+              }
               total_product_count
               total_product_error
               total_product_price
@@ -94,6 +98,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       }
                       product_price
                       product_quantity
+                      product_invenage_value
+                      product_switch_invenage
                     }
                   }
                 }

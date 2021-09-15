@@ -4,9 +4,12 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -33,7 +36,10 @@ interface PlayBroadcastMapper {
             response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel
+    fun mapLiveStream(
+        channelId: String,
+        media: CreateLiveStreamChannelResponse.GetMedia
+    ): LiveStreamInfoUiModel
 
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
 
@@ -70,4 +76,9 @@ interface PlayBroadcastMapper {
     fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
                               title: String,
                               durationInMs: Long): InteractiveSessionUiModel
+
+    fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel
 }

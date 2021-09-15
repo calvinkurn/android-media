@@ -30,8 +30,15 @@ data class CheckoutRequestGqlData(
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
         @SuppressLint("Invalid Data Type")
-        var leasingId: Int = 0
-)
+        var leasingId: Int = 0,
+        @SerializedName("feature_type")
+        var featureType: Int = 0
+) {
+    companion object {
+        const val FEATURE_TYPE_REGULAR_PRODUCT = 3
+        const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
+    }
+}
 
 data class EgoldGqlData(
         @SerializedName("is_egold")
@@ -159,6 +166,7 @@ object CheckoutRequestGqlDataMapper {
             tokopediaCornerData = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
+            featureType = checkoutRequest.featureType
         }
     }
 

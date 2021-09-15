@@ -14,7 +14,8 @@ import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
 
-class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
+class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
+    RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
 
     private val itemFaqList = mutableListOf<ItemFaqUiModel>()
 
@@ -35,11 +36,16 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFaqViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_faq_shop_score, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_faq_shop_score, parent, false)
         return ItemFaqViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ItemFaqViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: ItemFaqViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNullOrEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
@@ -72,10 +78,18 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
                 initAdapterCardLevel(data)
                 initAdapterParameterFaq(data)
 
-                card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_card_level_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                card_shop_score_parameter_faq?.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                tv_desc_parameter_performance_faq?.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                rv_card_level_faq?.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                rv_shop_score_parameter_faq?.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
 
                 if (data.isShow) {
                     ic_info_toggle_faq?.rotation = REVERSE_ROTATION
@@ -113,7 +127,10 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
                     if (itemDecorationCount.isZero()) {
                         addItemDecoration(TooltipLevelItemDecoration())
                     }
-                    layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+                    layoutManager = GridLayoutManager(
+                        context, 2,
+                        GridLayoutManager.VERTICAL, false
+                    )
                     adapter = cardTooltipLevelAdapter
                     isNestedScrollingEnabled = false
                 }

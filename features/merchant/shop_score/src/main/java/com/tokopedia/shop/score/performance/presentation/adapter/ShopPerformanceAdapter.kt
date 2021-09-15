@@ -5,8 +5,8 @@ import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerforman
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
 
 class ShopPerformanceAdapter(
-        shopPerformanceAdapterTypeFactory: ShopPerformanceAdapterTypeFactory
-): BaseAdapter<ShopPerformanceAdapterTypeFactory>(shopPerformanceAdapterTypeFactory) {
+    shopPerformanceAdapterTypeFactory: ShopPerformanceAdapterTypeFactory
+) : BaseAdapter<ShopPerformanceAdapterTypeFactory>(shopPerformanceAdapterTypeFactory) {
 
     fun setShopPerformanceData(data: List<BaseShopPerformance>) {
         visitables.clear()

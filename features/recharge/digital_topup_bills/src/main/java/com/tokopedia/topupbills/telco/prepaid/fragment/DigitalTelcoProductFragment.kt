@@ -161,11 +161,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         if (::selectedOperatorName.isInitialized) {
             topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
                     userSession.userId, labelList)
+            if (itemProduct.isSpecialProductPromo())
+                topupAnalytics.clickSpecialPromoProduct(itemProduct, position,
+                        selectedOperatorName, userSession.userId)
+
         }
     }
 
     override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
-        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, titleProduct)
+        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName,
+                position, userSession.userId, titleProduct)
+
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
         telcoTelcoProductView.selectMccmProductItem(position)
     }
@@ -173,12 +179,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
         topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
         renderSeeMoreBottomSheet(itemProduct, object : DigitalProductBottomSheet.ActionListener {
-            override fun onClickOnProduct() {
+            override fun onClickOnProduct(isSpecialProduct: Boolean) {
                 activity?.run {
                     telcoTelcoProductView.selectProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName,
+                            userSession.userId, isSpecialProduct)
                 }
             }
         })
@@ -187,12 +194,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     override fun onSeeMoreMccmProduct(itemProduct: TelcoProduct, position: Int) {
         topupAnalytics.clickSeeMoreOnMccmProductItem(titleProduct, selectedOperatorName, userSession.userId)
         renderSeeMoreBottomSheet(itemProduct, object : DigitalProductBottomSheet.ActionListener {
-            override fun onClickOnProduct() {
+            override fun onClickOnProduct(isSpecialProduct: Boolean) {
                 activity?.run {
                     telcoTelcoProductView.selectMccmProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId, TelcoComponentName.SPECIAL_PROMO_MCCM)
+                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId,
+                            isSpecialProduct, TelcoComponentName.SPECIAL_PROMO_MCCM)
                 }
             }
         })
@@ -218,14 +226,19 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                     itemProduct.attributes.price,
                     itemProduct.attributes.productPromo?.newPrice,
+                    itemProduct.isSpecialProductPromo(),
                     bottomSheetListener
             )
             seeMoreBottomSheet.setOnDismissListener {
                 topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
             }
             seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
-
         }
+    }
+
+    override fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int) {
+        topupAnalytics.impressionSpecialPromoProduct(itemProduct, position,
+                selectedOperatorName, userSession.userId)
     }
 
     private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
@@ -308,7 +321,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
-                    telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections, sharedModelPrepaid.selectedCategoryViewPager.value == titleProduct)
+                    telcoTelcoProductView.renderProductList(productType, showTitle,
+                            it.product.dataCollections, sharedModelPrepaid.selectedCategoryViewPager.value == titleProduct)
                 } else {
                     onErrorProductList()
                 }

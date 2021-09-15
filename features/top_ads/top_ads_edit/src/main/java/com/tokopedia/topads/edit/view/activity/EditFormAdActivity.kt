@@ -16,7 +16,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
@@ -41,6 +41,7 @@ private const val CLICK_PRODUK_TAB = "click - tab produk"
 private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
 private const val CLICK_ATUR_TAB = "click - tab atur"
 private const val CLICK_SIMPAN_BUTTON = "click - simpan"
+private const val CLICK_SIMPAN_BUTTON_EDIT = "click - simpan edit form"
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
@@ -63,6 +64,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         }
 
         btn_submit.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_SIMPAN_BUTTON_EDIT, "")
             btn_submit?.isEnabled = false
             getDataFromChildFragments()
             saveChanges()

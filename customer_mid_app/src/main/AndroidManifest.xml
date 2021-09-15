@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.customer_mid_app">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.customer_mid_app"
+    android:resizeableActivity="true"
+    tools:replace="android:resizeableActivity">
 
     <application>
 
@@ -86,6 +89,7 @@
             android:launchMode="singleTask"
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
+            android:resizeableActivity="true"
             android:screenOrientation="portrait">
 
             <meta-data

@@ -272,13 +272,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, Observer {
+        viewModel.tokopoints.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetTokopointsDrawerList(it.data)
+                    onSuccessGetTokopoints(it.data)
                 }
                 is Fail -> {
-                    onFailedGetTokopointsDrawerList()
+                    onFailedGetTokopoints()
                 }
             }
         })
@@ -330,14 +330,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter?.notifyDataSetChanged()
     }
 
-    private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
+    private fun onSuccessGetTokopoints(pointDataModel: PointDataModel) {
         financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
-        val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+        val mappedData = mapper.mapTokopoints(pointDataModel)
         financialAdapter?.addSingleItem(mappedData)
         adapter?.notifyDataSetChanged()
     }
 
-    private fun onFailedGetTokopointsDrawerList() {
+    private fun onFailedGetTokopoints() {
         context?.let {
             financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
             val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)

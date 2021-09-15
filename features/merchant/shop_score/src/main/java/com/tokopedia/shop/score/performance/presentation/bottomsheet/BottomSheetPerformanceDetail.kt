@@ -21,15 +21,17 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
+class BottomSheetPerformanceDetail : BaseBottomSheetShopScore() {
 
-    @Inject lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
+    @Inject
+    lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
 
     private var titlePerformanceDetail = ""
     private var identifierPerformanceDetail = ""
     private var tvDescCalculationDetail: Typography? = null
     private var tvDescTipsDetail: Typography? = null
     private var tvMoreInfoPerformanceDetail: Typography? = null
+    private var tvTitleTipsDetail: Typography? = null
     private var separatorTips: DividerUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +63,8 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
 
     private fun getDataFromArguments() {
         titlePerformanceDetail = arguments?.getString(TITLE_PERFORMANCE_DETAIL_KEY).orEmpty()
-        identifierPerformanceDetail = arguments?.getString(IDENTIFIER_PERFORMANCE_DETAIL_KEY).orEmpty()
+        identifierPerformanceDetail =
+            arguments?.getString(IDENTIFIER_PERFORMANCE_DETAIL_KEY).orEmpty()
     }
 
     private fun View.setup() {
@@ -69,6 +72,7 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         tvDescTipsDetail = findViewById(R.id.tvDescTipsDetail)
         tvMoreInfoPerformanceDetail = findViewById(R.id.tvMoreInfoPerformanceDetail)
         separatorTips = findViewById(R.id.separatorTips)
+        tvTitleTipsDetail = findViewById(R.id.tvTitleTipsDetail)
     }
 
     private fun observeShopPerformanceDetail() {
@@ -80,10 +84,13 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
 
     private fun setupData(data: ShopPerformanceDetailUiModel) {
         with(data) {
-            tvDescCalculationDetail?.text = MethodChecker.fromHtml(descCalculation?.let { getString(it) })
+            tvDescCalculationDetail?.text =
+                MethodChecker.fromHtml(descCalculation?.let { getString(it) })
             tvDescTipsDetail?.text = MethodChecker.fromHtml(descTips?.let { getString(it) })
             tvMoreInfoPerformanceDetail?.showWithCondition(moreInformation != null)
-            separatorTips?.showWithCondition(moreInformation != null)
+            separatorTips?.showWithCondition(moreInformation != null && descTips != null)
+            tvTitleTipsDetail?.showWithCondition(descTips != null)
+            tvDescTipsDetail?.showWithCondition(descTips != null)
             moreInformation?.let {
                 tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(it, urlLink)) {
                     if (urlLink.isNotBlank()) {
@@ -101,7 +108,10 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         private const val TITLE_PERFORMANCE_DETAIL_KEY = "title_performance_detail_key"
         private const val IDENTIFIER_PERFORMANCE_DETAIL_KEY = "identifier_performance_detail_key"
 
-        fun createInstance(titlePerformanceDetail: String, identifier: String): BottomSheetPerformanceDetail {
+        fun createInstance(
+            titlePerformanceDetail: String,
+            identifier: String
+        ): BottomSheetPerformanceDetail {
             val bottomSheetPerformanceDetail = BottomSheetPerformanceDetail()
             val args = Bundle()
             args.putString(TITLE_PERFORMANCE_DETAIL_KEY, titlePerformanceDetail)

@@ -37,6 +37,7 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerPageSource;
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.user.session.UserSession;
@@ -270,6 +271,7 @@ public class CreateTicketFormFragment extends TkpdBaseV4Fragment
         ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.IMAGE_PICKER);
         ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
+        ImagePickerRouterKt.putParamPageSource(intent, ImagePickerPageSource.CREATE_TICKET_FORM_PAGE);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 

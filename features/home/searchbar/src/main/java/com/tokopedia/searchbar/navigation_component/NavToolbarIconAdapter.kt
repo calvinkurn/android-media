@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -15,6 +16,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.R
@@ -150,7 +152,8 @@ internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
 }
 
 internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_image
+    val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_image)
+    val iconImageContainer = view.findViewById<View>(R.id.nav_icon_container)
     val context = itemView.context
 
     companion object {
@@ -203,7 +206,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        iconImage.setOnClickListener {
+        iconImageContainer.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = topNavComponentListener.getPageName(),

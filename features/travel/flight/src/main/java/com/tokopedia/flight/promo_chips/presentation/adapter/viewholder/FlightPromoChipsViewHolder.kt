@@ -1,20 +1,19 @@
 package com.tokopedia.flight.promo_chips.presentation.adapter.viewholder
 
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightPromoChipsBinding
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.item_flight_promo_chips.view.*
 
 /**
  * Created by astidhiyaa on 16/02/21.
  */
 
-class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChipsListener: OnFlightPromoChipsListener)
-: AbstractViewHolder<AirlinePrice>(itemView) {
+class FlightPromoChipsViewHolder (val binding: ItemFlightPromoChipsBinding, private val onFlightPromoChipsListener: OnFlightPromoChipsListener)
+: AbstractViewHolder<AirlinePrice>(binding.root) {
 
     lateinit var adapter: FlightPromoChipsAdapter
 
@@ -23,28 +22,28 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
     }
 
     override fun bind(element: AirlinePrice) {
-        with(itemView){
-            tv_flight_promo_chips_price.text = element.price
-            tv_flight_promo_chips_title.text = element.shortName
-            iv_multiairline_logo.setAirlineLogo(element.logo)
+        with(binding){
+            tvFlightPromoChipsPrice.text = element.price
+            tvFlightPromoChipsTitle.text = element.shortName
+            ivMultiairlineLogo.setAirlineLogo(element.logo)
             setSelectedItem(element)
         }
     }
 
     private fun changePromoChipsState(selected: Boolean){
-        with(itemView){
+        with(binding){
             if (selected){
-                card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER_ACTIVE)
-                flight_promochips_side_line.setLabelType(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                cardPromoChips.changeTypeWithTransition(CardUnify.TYPE_BORDER_ACTIVE)
+                flightPromochipsSideLine.setLabelType(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }else{
-                card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER)
-                flight_promochips_side_line.setLabelType(Label.GENERAL_DARK_GREEN)
+                cardPromoChips.changeTypeWithTransition(CardUnify.TYPE_BORDER)
+                flightPromochipsSideLine.setLabelType(Label.GENERAL_DARK_GREEN)
             }
         }
     }
 
     private fun setSelectedItem(element: AirlinePrice) {
-        with(itemView) {
+        with(binding) {
             if (::adapter.isInitialized) {
                 if (adapter.selectedPosition == FlightPromoChipsAdapter.SELECTED_POSITION_INIT) {
                     changePromoChipsState(false)
@@ -56,7 +55,7 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                         changePromoChipsState(false)
                     }
                 }
-                card_promo_chips.setOnClickListener {
+                cardPromoChips.setOnClickListener {
                     if (adapter.selectedPosition != adapterPosition) {
                         onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
                         adapter.setSelectedProduct(adapterPosition)

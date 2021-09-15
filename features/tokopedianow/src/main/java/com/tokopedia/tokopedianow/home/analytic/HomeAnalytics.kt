@@ -94,7 +94,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALA
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -341,7 +341,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
-    fun onImpressRecentPurchase(userId: String, data: HomeProductCardUiModel, products: List<HomeProductCardUiModel>) {
+    fun onImpressRecentPurchase(userId: String, data: TokoNowProductCardUiModel, products: List<TokoNowProductCardUiModel>) {
         val productList = arrayListOf<Bundle>().apply {
             products.forEachIndexed { position, item ->
                 add(
@@ -370,7 +370,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
     }
 
-    fun onClickRecentPurchase(position: Int, userId: String, data: HomeProductCardUiModel) {
+    fun onClickRecentPurchase(position: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
@@ -394,7 +394,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
     }
 
-    fun onRecentPurchaseAddToCart(position: Int, quantity: Int, userId: String, data: HomeProductCardUiModel) {
+    fun onRecentPurchaseAddToCart(position: Int, quantity: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
@@ -605,7 +605,7 @@ class HomeAnalytics {
         return if(parentProductId.isNullOrEmpty()) WITHOUT_VARIANT else WITH_VARIANT
     }
 
-    private fun getProductCardLabel(data: HomeProductCardUiModel): String {
+    private fun getProductCardLabel(data: TokoNowProductCardUiModel): String {
         val halalLabel = getHalalLabel(data.product.labelGroupList)
         val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
         val variantLabel = getVariantLabel(data.parentId)

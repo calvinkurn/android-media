@@ -16,6 +16,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
@@ -25,6 +26,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
+import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.fragment.StatisticFragment
@@ -45,7 +47,12 @@ import javax.inject.Inject
 // Internal applink : ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 
 class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
-        FragmentListener, StatisticPerformanceMonitoringListener {
+    FragmentListener, StatisticPerformanceMonitoringListener {
+
+    companion object {
+        private const val FIRST_TAB_INDEX = 0
+        private const val TAB_LIMIT = 3
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -86,8 +93,8 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     override fun getComponent(): StatisticComponent {
         return DaggerStatisticComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -129,19 +136,21 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
+        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-                StatisticPageHelper.getShopStatistic(this, userSession),
-                StatisticPageHelper.getProductStatistic(this, userSession),
-                StatisticPageHelper.getOperationalStatistic(this, userSession),
-                StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getOperationalStatistic(this, userSession),
+            StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
+        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-                StatisticPageHelper.getShopStatistic(this, userSession),
-                StatisticPageHelper.getProductStatistic(this, userSession),
-                StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }
 
@@ -165,9 +174,14 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
                 page.pageSource == selectedPageSource
             } else {
-                index == 0
+                index == FIRST_TAB_INDEX
             }
-            viewPagerAdapter?.addFragment(StatisticFragment.newInstance(page, shouldLoadDataOnCreate), page.pageTitle)
+            viewPagerAdapter?.addFragment(
+                StatisticFragment.newInstance(
+                    page,
+                    shouldLoadDataOnCreate
+                ), page.pageTitle
+            )
         }
 
         viewPagerAdapter?.let {
@@ -200,8 +214,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                 tabStatistic.tabLayout.removeAllTabs()
             }
             setTabMode(adapter.titles.size)
-            adapter.titles.forEach { title ->
-                val tab = tabStatistic.addNewTab(title)
+            tabStatistic.tabLayout.removeAllTabs()
+            adapter.titles.forEachIndexed { index, title ->
+                val isFirstIndex = index == FIRST_TAB_INDEX
+                val tab = tabStatistic.addNewTab(title, isFirstIndex)
                 sendTabImpressionEvent(tab.view, title)
 
                 getOperationalInsightCoachMark(title, tab.view)?.let {
@@ -217,8 +233,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun setTabMode(numberOfTabs: Int) {
-        val tabLimit = 3
-        if (numberOfTabs <= tabLimit) {
+        if (numberOfTabs <= TAB_LIMIT) {
             tabStatistic.customTabMode = TabLayout.MODE_FIXED
         } else {
             tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
@@ -294,9 +309,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         if (getIsProductInsightTab(title)) {
             if (!CoachMarkPreference.hasShown(this, Const.SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY)) {
                 return CoachMark2Item(
-                        itemView,
-                        getString(R.string.stc_product_coachmark_title),
-                        getString(R.string.stc_product_coachmark_desc)
+                    itemView,
+                    getString(R.string.stc_product_coachmark_title),
+                    getString(R.string.stc_product_coachmark_desc)
                 )
             }
         }
@@ -305,11 +320,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getOperationalInsightCoachMark(title: String, view: View): CoachMark2Item? {
         if (getIsOperationalInsightTab(title)) {
-            if (!CoachMarkPreference.hasShown(this, Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY)) {
+            if (!CoachMarkPreference.hasShown(
+                    this,
+                    Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY
+                )
+            ) {
                 return CoachMark2Item(
-                        view,
-                        getString(R.string.stc_operational_coachmark_title),
-                        getString(R.string.stc_operational_coachmark_desc)
+                    view,
+                    getString(R.string.stc_operational_coachmark_title),
+                    getString(R.string.stc_operational_coachmark_desc)
                 )
             }
         }
