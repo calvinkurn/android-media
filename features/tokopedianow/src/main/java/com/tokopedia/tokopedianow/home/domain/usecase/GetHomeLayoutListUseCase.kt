@@ -30,13 +30,8 @@ class GetHomeLayoutListUseCase @Inject constructor(
             putString(TYPE, TOKONOW)
             putString(LOCATION, mapLocation(localCacheModel))
         }.parameters)
-        // temp hardcoded
-        val data = executeOnBackground().response.data
-        val d: MutableList<HomeLayoutResponse> = mutableListOf()
-        d.addAll(data)
-        d.add(HomeLayoutResponse(id = "test1", layout = "tokonow_usp"))
-        d.add(HomeLayoutResponse(id = "test2", layout = "tokonow_share"))
-        return d
+
+        return executeOnBackground().response.data
     }
 
     private fun mapLocation(localCacheModel: LocalCacheModel?): String {
