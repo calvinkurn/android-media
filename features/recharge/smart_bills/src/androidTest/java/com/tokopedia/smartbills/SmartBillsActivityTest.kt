@@ -17,6 +17,8 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -67,7 +69,7 @@ class SmartBillsActivityTest {
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
-
+        setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -78,6 +80,12 @@ class SmartBillsActivityTest {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, SmartBillsActivity::class.java)
         activityRule.launchActivity(intent)
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.SBM_ADD_BILLS_KEY,
+                RollenceKey.SBM_ADD_BILLS_TRUE)
     }
 
     @Test
