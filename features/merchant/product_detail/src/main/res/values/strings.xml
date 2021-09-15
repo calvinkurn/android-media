@@ -159,6 +159,7 @@
     <string name="ticker_desc_shop_incubated">Tunggu, ya! Sebentar lagi kamu bisa belanja di toko ini. Wishlist barangnya dulu, yuk.</string>
     <string name="ticker_title_shop_idle">Toko tidak aktif > 30 hari</string>
     <string name="ticker_desc_shop_idle">Demi keamanan kamu, jangan bertransaksi dulu di toko ini sampai toko aktif kembali.</string>
+    <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
 
     <!--Bottom Sheet-->
     <string name="bs_title_shop_closed">Keterangan toko tutup</string>
