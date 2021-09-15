@@ -17,6 +17,9 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
+    buildFeatures {
+        buildConfig = false
+    }
 }
 
 dependencies {
@@ -31,6 +34,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
 
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)

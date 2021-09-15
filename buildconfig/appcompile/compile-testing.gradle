@@ -7,4 +7,4 @@ includeIfEnabled("testing:transaction:oneclickcheckout")
 includeIfEnabled("testing:transaction:atc_common")
 
 /********** JOINT TEST MODULES **********/
-includeIfEnabled("testing:joint:pdp_checkout")
+includeIfEnabled("testing:joint:pdp_cart_checkout")

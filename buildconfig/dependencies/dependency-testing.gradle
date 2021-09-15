@@ -2,6 +2,7 @@ ext {
     testing = [
             productDetail           : ":testing:merchant:product_detail",
 
+            atc_common              : ":testing:transaction:atc_common",
             cart                    : ":testing:transaction:cart",
             checkout                : ":testing:transaction:checkout",
             oneclickcheckout        : ":testing:transaction:oneclickcheckout",

@@ -11,7 +11,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.merchant.R
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.unifycomponents.UnifyButton

@@ -6,11 +6,15 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+
+    buildFeatures {
+        buildConfig = false
+    }
 }
 
 dependencies {
-
-    api projectOrAar(rootProject.ext.features.cart)
+    implementation projectOrAar(rootProject.ext.features.cart)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -25,8 +29,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-
-    api projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.testDependencies.espressoCore
     implementation rootProject.ext.testDependencies.espressoContrib
