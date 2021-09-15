@@ -45,7 +45,7 @@ class ShipmentActivity : BaseCheckoutActivity() {
     override fun onStart() {
         super.onStart()
         try {
-            if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn()) {
+            if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn(this)) {
                 recreate()
             }
         } catch (t: Throwable) {
