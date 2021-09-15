@@ -44,6 +44,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -193,6 +194,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var previewImage: ImageUnify? = null
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
+    private var bottomBackgroundImage : ImageUnify? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -214,6 +216,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var channelStr: String = ""
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
+
+    //observer flag
+    private var preserveImage: Boolean = false
+    //parent fragment
+    private var parentFragmentContainer: Fragment? = null
+    //parent fragment lifecycle observer
+    private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -244,14 +253,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             }
     }
 
-    fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
-        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+    private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
+        parentFragmentContainer = fragment
+        parentFragmentLifecycleObserver = object: DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 removeFile(savedImagePath)
-                fragment.lifecycle.removeObserver(this)
+                parentFragmentContainer?.lifecycle?.removeObserver(this)
                 super.onDestroy(owner)
             }
-        })
+        }
+        parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -262,6 +273,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImage = findViewById(R.id.preview_image)
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
+
+            //setting background image for light and dark mode
+            if (context?.isDarkMode() == true) {
+                // set dark mode background
+                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_dark_mode_bg)
+            } else {
+                // set light mode background
+                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_bg)
+            }
 
             //setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
@@ -610,6 +630,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun executeShareOptionClick(shareModel: ShareModel){
+        preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
         bottomSheetListener?.onShareOptionClicked(shareModel)
@@ -645,13 +666,22 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         return otherOptionsShareModel
     }
 
+    private fun removeLifecycleObserverAndSavedImage(){
+        if(!preserveImage){
+            removeFile(savedImagePath)
+            parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        }
+    }
+
     override fun dismiss() {
         clearData()
+        removeLifecycleObserverAndSavedImage()
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
+        removeLifecycleObserverAndSavedImage()
         super.onDismiss(dialog)
     }
 }
