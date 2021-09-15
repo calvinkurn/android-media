@@ -53,7 +53,7 @@ class CartActivity : BaseCheckoutActivity() {
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        isBundleToggleOn = Switch.isBundleToggleOn()
+        isBundleToggleOn = Switch.isBundleToggleOn(this)
         if (isBundleToggleOn == true) {
             fragment = CartFragment.newInstance(bundle, "")
             return fragment

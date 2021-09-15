@@ -353,7 +353,7 @@ public class MainParentActivity extends BaseActivity implements
             routeOnboarding();
         }
         try {
-            if (isBundleToggleOn != null && isBundleToggleOn != Switch.INSTANCE.isBundleToggleOn()) {
+            if (isBundleToggleOn != null && isBundleToggleOn != Switch.INSTANCE.isBundleToggleOn(this)) {
                 recreate();
             }
         } catch (Throwable t) {
@@ -747,7 +747,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn();
+            isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
             if (isBundleToggleOn) {
                 fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             } else {

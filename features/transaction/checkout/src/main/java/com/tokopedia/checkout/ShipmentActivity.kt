@@ -32,7 +32,7 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
         val bundle = intent.extras
-        isBundleToggleOn = Switch.isBundleToggleOn()
+        isBundleToggleOn = Switch.isBundleToggleOn(this)
         if (isBundleToggleOn == true) {
             shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
             return shipmentFragment
