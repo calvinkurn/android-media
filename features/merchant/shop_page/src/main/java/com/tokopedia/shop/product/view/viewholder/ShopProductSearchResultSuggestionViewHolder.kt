@@ -1,13 +1,19 @@
 package com.tokopedia.shop.product.view.viewholder
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopProductSearchResultSuggestionUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductSearchSuggestionListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.net.URLDecoder
 
@@ -31,12 +37,8 @@ class ShopProductSearchResultSuggestionViewHolder(
     private val suggestionTextView: Typography? = itemView.findViewById(R.id.suggestion_text)
 
     override fun bind(element: ShopProductSearchResultSuggestionUiModel) {
-        val suggestionTextString = HtmlLinkHelper(itemView.context, element.suggestionText)
-        val keyword = extractKeyword(queryString = element.queryString)
-        suggestionTextView?.text = suggestionTextString.spannedString
-        suggestionTextView?.setOnClickListener {
-            searchProductsByKeyword(keyword)
-        }
+        suggestionTextView?.text = getClickableSpanText(element.suggestionText, element.queryString)
+        suggestionTextView?.movementMethod = LinkMovementMethod.getInstance()
     }
 
     /**
@@ -53,6 +55,29 @@ class ShopProductSearchResultSuggestionViewHolder(
                 ""
             }
         }
+    }
+
+    private fun getClickableSpanText(suggestionTextHtmlString: String, keywordQueryString: String): SpannableString {
+        val suggestionTextSpannedString = SpannableString(MethodChecker.fromHtml(suggestionTextHtmlString))
+        val keyword = extractKeyword(queryString = keywordQueryString)
+        val keywordWithQuote = "\"$keyword\""
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                searchProductsByKeyword(keyword)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                ds.typeface = Typeface.DEFAULT_BOLD
+            }
+        }
+        suggestionTextSpannedString.setSpan(
+                clickableSpan,
+                suggestionTextSpannedString.indexOf(keywordWithQuote),
+                ((suggestionTextSpannedString.indexOf(keywordWithQuote)) + keywordWithQuote.length),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return suggestionTextSpannedString
     }
 
     private fun searchProductsByKeyword(keyword: String) {

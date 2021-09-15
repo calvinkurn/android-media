@@ -843,7 +843,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     etalaseId = "",
                     attribution = attribution,
                     shopRef = shopRef
-            ))
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
             finish()
         }
     }
