@@ -41,7 +41,6 @@ import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -52,6 +51,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -83,7 +83,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
-    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _miniCartAdd = SingleLiveEvent<Result<AddToCartDataModel>>()
 
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
@@ -91,11 +91,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
-    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
+    private val _miniCartUpdate = SingleLiveEvent<Result<UpdateCartV2Data>>()
 
     val miniCartRemove: LiveData<Result<Pair<String,String>>>
         get() = _miniCartRemove
-    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
+    private val _miniCartRemove = SingleLiveEvent<Result<Pair<String,String>>>()
+
+    val miniCartOperationFailed:LiveData<Pair<Int,Int>>
+        get() = _miniCartOperationFailed
+    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
 
     var pageIdentifier: String = ""
     var pageType: String = ""
@@ -123,21 +127,24 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun addProductToCart(
+        parentPosition:Int,
+        position:Int,
         productId: String,
         quantity: Int,
         shopId: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
-
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
-            quantity.isZero() -> removeItemCart(miniCartItem)
-            else -> updateItemCart(miniCartItem, quantity)
+            miniCartItem == null -> addItemToCart(parentPosition,position,productId, shopId, quantity)
+            quantity.isZero() -> removeItemCart(parentPosition,position,miniCartItem)
+            else -> updateItemCart(parentPosition,position,miniCartItem, quantity)
         }
     }
 
 
-    fun addItemToCart(
+    private fun addItemToCart(
+        parentPosition:Int,
+        position:Int,
         productId: String,
         shopId: String,
         quantity: Int) {
@@ -151,10 +158,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
         })
     }
 
-    fun updateItemCart(
+    private fun updateItemCart(
+        parentPosition:Int,
+        position:Int,
         miniCartItem: MiniCartItem,
         quantity: Int) {
         miniCartItem.quantity = quantity
@@ -171,6 +181,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
         })
     }
 
@@ -190,7 +201,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    fun removeItemCart(miniCartItem: MiniCartItem) {
+    private fun removeItemCart(parentPosition: Int, position: Int, miniCartItem: MiniCartItem) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -200,6 +211,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition, position))
         })
     }
 

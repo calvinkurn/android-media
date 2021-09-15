@@ -49,7 +49,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -76,6 +78,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -513,11 +516,11 @@ class DiscoveryFragment :
                     type = Toaster.TYPE_NORMAL
                 )
             }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
                     showToaster(
                         message = it.throwable.message.orEmpty(),
                         type = Toaster.TYPE_ERROR
                     )
-                reSync()
             }
         })
 
@@ -525,11 +528,11 @@ class DiscoveryFragment :
             if(it is Success) {
                 getMiniCart()
             }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
                 showToaster(
                     message = it.throwable.message.orEmpty(),
                     type = Toaster.TYPE_ERROR
                 )
-                reSync()
             }
         })
 
@@ -541,11 +544,25 @@ class DiscoveryFragment :
                     type = Toaster.TYPE_NORMAL
                 )
             }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
                 showToaster(
                     message = it.throwable.message.orEmpty(),
                     type = Toaster.TYPE_ERROR
                 )
-                reSync()
+            }
+        })
+
+        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner,{ (parentPosition,position) ->
+            if (parentPosition >= 0) {
+                discoveryAdapter.getViewModelAtPosition(parentPosition).let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ProductCardCarouselViewModel)
+                        discoveryBaseViewModel.handleAtcFailed(position)
+                }
+            } else if (position >= 0) {
+                discoveryAdapter.getViewModelAtPosition(position).let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is MasterProductCardItemViewModel)
+                        discoveryBaseViewModel.handleATCFailed()
+                }
             }
         })
     }
@@ -1254,9 +1271,9 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(productId: String, quantity: Int) {
+    fun addOrUpdateItemCart(parentPosition:Int, position:Int, productId: String, quantity: Int) {
         if (UserSession(context).isLoggedIn) {
-            discoveryViewModel.addProductToCart(productId, quantity, userAddressData?.shop_id?:"")
+            discoveryViewModel.addProductToCart(parentPosition, position, productId, quantity, userAddressData?.shop_id?:"")
         } else {
             openLoginScreen()
         }

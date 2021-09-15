@@ -233,7 +233,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         masterProductCardItemViewModel.updateProductQuantity(quantity)
         masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
             if (!productItem.productId.isNullOrEmpty())
-                (fragment as DiscoveryFragment).addOrUpdateItemCart(productItem.productId!!, quantity)
+                (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                    masterProductCardItemViewModel.getParentPositionForCarousel(),
+                    masterProductCardItemViewModel.position,
+                    productItem.productId!!,
+                    quantity
+                )
         }
     }
 }
