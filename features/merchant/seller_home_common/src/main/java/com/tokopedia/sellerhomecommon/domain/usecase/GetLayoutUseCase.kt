@@ -72,6 +72,7 @@ class GetLayoutUseCase(
                       description
                     }
                   }
+                  tag
                   showEmpty
                   postFilter {
                     name
