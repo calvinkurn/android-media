@@ -15,21 +15,34 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_PILIH_VARIANT_BUTTON
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Event.CLICK_TOP_NAV
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.LABEL_GROUP_HALAL
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.NORMAL_PRICE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PRODUCT_ID
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.SLASH_PRICE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_HALAL_LABEL
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_VARIANT
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_HALAL_LABEL
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -92,11 +105,14 @@ object CategoryTracking {
             "click add to cart on tokonow clp product recommendation"
         const val IMPRESSION_CLP_RECOM_OOC = "view product on recom widget-tokonow-clp while the address is out of coverage (OOC)"
         const val CLICK_CLP_RECOM_OOC = "click product on recom widget-tokonow-clp while the address is out of coverage (OOC)"
+        const val IMPRESSION_ON_PAST_PURCHASE_WIDGET = "impression on past purchase widget"
+        const val CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET = "click product on past purchase widget"
     }
 
     object Category {
         const val TOP_NAV_TOKONOW_CATEGORY_PAGE =  "top nav - tokonow category page"
         const val TOKONOW_CATEGORY_PAGE = "tokonow category page"
+        const val TOKONOW_DASH_CATEGORY_PAGE = "tokonow - category page"
     }
 
     object Misc {
@@ -104,6 +120,15 @@ object CategoryTracking {
         const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
         const val RECOM_LIST_PAGE = "clp_product"
         const val RECOM_LIST_PAGE_NON_OOC = "/$RECOM_LIST_PAGE - tokonow - rekomendasi untuk anda"
+        const val WITH_HALAL_LABEL = "with halal label"
+        const val WITHOUT_HALAL_LABEL = "without halal label"
+        const val SLASH_PRICE = "slash price"
+        const val NORMAL_PRICE = "normal price"
+        const val WITH_VARIANT = "with variant"
+        const val WITHOUT_VARIANT = "without variant"
+        const val TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET =
+            "/tokonow - category page - past_purchase_widget"
+        const val LABEL_GROUP_HALAL = "Halal"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -443,5 +468,89 @@ object CategoryTracking {
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
+    }
+
+    fun sendRepurchaseWidgetImpression(
+        trackingQueue: TrackingQueue,
+        repurchaseProduct: TokoNowProductCardUiModel,
+        position: Int,
+        userId: String,
+    ) {
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_ACTION, IMPRESSION_ON_PAST_PURCHASE_WIDGET,
+            EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
+            EVENT_LABEL, createEventLabelRepurchaseWidget(repurchaseProduct),
+            KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            USER_ID, userId,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCYCODE, IDR,
+                IMPRESSIONS, DataLayer.listOf(
+                    repurchaseProduct.getAsImpressionObjectDataLayer(position)
+                )
+            )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    private fun createEventLabelRepurchaseWidget(
+        repurchaseProduct: TokoNowProductCardUiModel,
+    ): String {
+        val product = repurchaseProduct.product
+        val hasHalalLabel = product.labelGroupList.any { it.title.contains(LABEL_GROUP_HALAL) }
+        val hasSlashPrice = product.slashedPrice.isNotBlank()
+        val hasVariant = product.labelGroupVariantList.isNotEmpty()
+
+        val halalLabel = if (hasHalalLabel) WITH_HALAL_LABEL else WITHOUT_HALAL_LABEL
+        val slashPriceLabel = if (hasSlashPrice) SLASH_PRICE else NORMAL_PRICE
+        val hasVariantLabel = if (hasVariant) WITH_VARIANT else WITHOUT_VARIANT
+
+        return "$halalLabel - $slashPriceLabel - $hasVariantLabel"
+    }
+
+    private fun TokoNowProductCardUiModel.getAsImpressionObjectDataLayer(position: Int) =
+        getAsObjectDataLayer(position).also {
+            it["list"] = TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+        }
+
+    private fun TokoNowProductCardUiModel.getAsObjectDataLayer(position: Int) =
+        DataLayer.mapOf(
+            "brand", NONE_OTHER,
+            "category", NONE_OTHER,
+            "id", productId,
+            "name", product.productName,
+            "position", position,
+            "price", product.formattedPrice,
+            "variant", NONE_OTHER,
+        )
+
+    fun sendRepurchaseWidgetClick(
+        repurchaseProduct: TokoNowProductCardUiModel,
+        position: Int,
+        userId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_ACTION, CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET,
+                EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
+                EVENT_LABEL, createEventLabelRepurchaseWidget(repurchaseProduct),
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(
+                            LIST, TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+                        ),
+                        PRODUCTS, DataLayer.listOf(
+                            repurchaseProduct.getAsObjectDataLayer(position)
+                        )
+                    )
+                ),
+            )
+        )
     }
 }
