@@ -22,6 +22,13 @@ sealed class PdpSimulationEvent {
             val tenure: Int,
             val url: String
         ) : PdpSimulationEvent()
+
+        data class FaqImpression(val partnerName: String, val tenure: Int) : PdpSimulationEvent()
+        data class FaqClickWebImpression(
+            val partnerName: String,
+            val tenure: Int,
+            val url: String
+        ) : PdpSimulationEvent()
     }
 
     sealed class CreditCard {

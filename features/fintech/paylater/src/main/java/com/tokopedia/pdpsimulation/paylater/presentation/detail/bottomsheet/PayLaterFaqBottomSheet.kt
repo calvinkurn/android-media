@@ -11,6 +11,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Faq
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,6 +39,9 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.paylater_card_faq_bottomsheet_widget
     private var faqData: ArrayList<Faq>? = null
     private var faqUrl: String = ""
+    private var parterName: String? = ""
+    private var tenure: Int? = 0
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,8 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         arguments?.let {
             faqData = it.getParcelableArrayList(FAQ_DATA) ?: arrayListOf()
             faqUrl = it.getString(FAQ_SEE_MORE_URL) ?: ""
+            parterName = it.getString(PARTNER_NAME) ?: ""
+            tenure = it.getInt(TENURE,0)
         }
     }
 
@@ -89,6 +96,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
     private fun initListeners() {
         btnSeeMore.setOnClickListener {
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.FaqClickWebImpression(parterName?:"",tenure?:0,faqUrl))
             openUrlWebView(faqUrl)
         }
     }
@@ -105,11 +113,14 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         private const val TAG = "PayLaterFaqBottomSheet"
         const val FAQ_DATA = "faqData"
         const val FAQ_SEE_MORE_URL = "faqUrl"
+        const val PARTNER_NAME = "partnerName"
+        const val TENURE = "tenure"
 
-        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+        fun show(bundle: Bundle,  pdpSimulationCallback: PdpSimulationCallback,childFragmentManager: FragmentManager) {
             val payLaterFaqBottomSheet = PayLaterFaqBottomSheet().apply {
                 arguments = bundle
             }
+            payLaterFaqBottomSheet.pdpSimulationCallback = pdpSimulationCallback
             payLaterFaqBottomSheet.show(childFragmentManager, TAG)
         }
     }

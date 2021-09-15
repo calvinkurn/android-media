@@ -53,8 +53,38 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.tenure,
                 event.url
             )
+            is PdpSimulationEvent.PayLater.FaqImpression -> sendFaqImpressionAnalytics(
+                event.partnerName,
+                event.tenure
+            )
+            is PdpSimulationEvent.PayLater.FaqClickWebImpression -> sendFaqClickEvent(
+                event.partnerName,
+                event.tenure,
+                event.url
+            )
         }
     }
+
+    private fun sendFaqClickEvent(partnerName: String, tenure: Int, url: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_CLICK_FAQ,
+            "$EVENT_LABEL_CLICK_FAQ - $tenure - $partnerName -$url"
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendFaqImpressionAnalytics(partnerName: String, tenure: Int) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_FAQ_BOTTOMSHEET,
+            "$EVENT_LABEL_FAQ_BOTTOMSHEET - $tenure - $partnerName"
+        )
+        sendGeneralEvent(map)
+    }
+
 
     private fun sendMainBottomSheetClickEvent(payLaterProduct: String, tenure: Int, url: String) {
         val map = TrackAppUtils.gtmData(
@@ -216,6 +246,13 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_BOTTOM_ACTION_SHEET_CLICK = "sim vcc - click cari tahu lebih lanjut"
         const val EVENT_LABEL_BOTTOM_ACTION_SHEET_CLICK =
             "pdp paylater simulation page - popup cara pakai"
+
+        const val EVENT_FAQ_BOTTOMSHEET = "sim vcc - impression popup lihat selengkapnya"
+        const val EVENT_LABEL_FAQ_BOTTOMSHEET =
+            "pdp paylater simulation page - popup lihat selengkapnya"
+
+        const val EVENT_CLICK_FAQ = "sim vcc - click lihat lebih banyak"
+        const val EVENT_LABEL_CLICK_FAQ = "pdp paylater simulation page - popup lihat selengkapnya "
 
         // Credit Card --> CC
         const val EVENT_ACTION_CC_TAB_CLICK = "sim cc - click tab"
