@@ -85,7 +85,7 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumb_nail_image"
-        android:background="@color/clr_E5E7E9"
+        android:background="@color/Unify_N75"
         />
 
     <androidx.recyclerview.widget.RecyclerView

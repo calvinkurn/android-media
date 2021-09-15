@@ -273,6 +273,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImage = findViewById(R.id.preview_image)
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
+            bottomBackgroundImage = findViewById(R.id.background_image)
 
             //setting background image for light and dark mode
             if (context?.isDarkMode() == true) {
