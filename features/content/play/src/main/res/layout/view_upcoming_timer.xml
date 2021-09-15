@@ -26,6 +26,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_timer_label"
+        app:timer_unify_highlight_remainingDays="0"
+        app:timer_unify_highlight_remainingHours="0"
+        app:timer_unify_highlight_remainingMinutes="0"
+        app:timer_unify_highlight_remainingSeconds="1"
         app:timer_unify_highlight_size="small"
         app:timer_unify_highlight_variant="alternate" />
 
