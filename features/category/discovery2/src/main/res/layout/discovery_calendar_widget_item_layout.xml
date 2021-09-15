@@ -22,8 +22,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:background="#2F89FC"
-            tools:text="Hari ini, 25 Jan" />
+            android:background="#2F89FC"
+            android:text="Hari ini, 25 Jan" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/calendar_title"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toBottomOf="@+id/calendar_date"
             app:typographyType="heading_4"
             app:typographyWeight="bold"
-            tools:text="Title max 25 characters" />
+            android:text="Title max 25 characters" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/calendar_desc"
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/calendar_title"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
-            tools:text="Description maximum 30 character" />
+            android:text="Description maximum 30 character" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/calendar_image"

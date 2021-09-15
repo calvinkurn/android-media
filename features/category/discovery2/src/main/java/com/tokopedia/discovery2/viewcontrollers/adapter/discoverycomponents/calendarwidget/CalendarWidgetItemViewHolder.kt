@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -18,9 +19,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            calendarWidgetItemViewModel.getSyncPageLiveData().observe(it, { needResync->
+                if (needResync) (fragment as DiscoveryFragment).reSync()
+            })
+        }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            calendarWidgetItemViewModel.getSyncPageLiveData().removeObservers(it)
+        }
     }
 }

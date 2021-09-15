@@ -104,6 +104,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
+            ComponentNames.CalendarWidget.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
@@ -307,7 +308,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 }
                 if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-                } else if (component.getComponentsItem()?.size == 0) {
+                } else if (component.getComponentsItem()?.size == 0 && component.name != ComponentNames.CalendarWidget.componentName) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
                 }
             }

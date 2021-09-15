@@ -87,7 +87,7 @@ enum class ComponentNames(val componentName: String) {
     TopadsHeadlineView("topads"),
 
     //Calendar Widget
-    CalendarWidget("component_v2_calendar_campaign"),
-    CalendarWidgetItem("component_v2_calendar_campaign_item"),
+    CalendarWidget("calendar"),
+    CalendarWidgetItem("calendar_item"),
 
 }
