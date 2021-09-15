@@ -1,12 +1,12 @@
 package com.tokopedia.product_bundle.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -54,6 +54,8 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     var parentProductID: Long = 0L
+    var selectedBundleId: Long = 0L
+    var selectedProductIds: List<String> = emptyList()
     var pageSource: String = ""
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
@@ -75,14 +77,6 @@ class ProductBundleViewModel @Inject constructor(
 
     private val atcDialogMessagesLiveData: SingleLiveEvent<Pair<String,String>> = SingleLiveEvent()
     val atcDialogMessages: LiveData<Pair<String,String>> get() = atcDialogMessagesLiveData
-
-    fun getProductIdFromUri(uri: Uri?, pathSegments: List<String>): String {
-        return if (pathSegments.size >= 2) {
-            uri?.pathSegments?.getOrNull(1).orEmpty()
-        } else {
-            "0" // TODO: Please handle this default case if productId is 0
-        }
-    }
 
     fun getUserId(): String {
         return userSession.userId
@@ -330,14 +324,35 @@ class ProductBundleViewModel @Inject constructor(
         return userSession.userId.isNotBlank()
     }
 
-    fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {
+    fun validateAddToCartInput(
+        selectedProductBundleMaster: ProductBundleMaster,
+        productBundleDetails: List<ProductBundleDetail>
+    ): Boolean {
         var isAddToCartInputValid = true
         if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
+        } else if (selectedProductBundleMaster.bundleId == selectedBundleId &&
+            variantProductNotChanged(productBundleDetails)) {
+                isAddToCartInputValid = false
+                addToCartResultLiveData.value = AddToCartDataResult(
+                    requestParams = AddToCartBundleRequestParams(
+                        bundleId = selectedBundleId.toString()
+                    ),
+                    responseResult = AddToCartBundleDataModel()
+                )
         }
         return isAddToCartInputValid
     }
+
+    private fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
+        productBundleDetails
+            .filter { it.hasVariant }
+            .all { bundleDetail ->
+                selectedProductIds.any {
+                    bundleDetail.selectedVariantId == it
+                }
+            }
 
     private fun isProductVariantSelectionComplete(productBundleDetails: List<ProductBundleDetail>): Boolean {
         val invalidInput = productBundleDetails.find { productBundleDetail ->

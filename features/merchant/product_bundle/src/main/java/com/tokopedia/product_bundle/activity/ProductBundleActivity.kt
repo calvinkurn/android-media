@@ -1,6 +1,5 @@
 package com.tokopedia.product_bundle.activity
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -10,13 +9,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
-import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
+import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.common.extension.showUnifyDialog
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
@@ -31,12 +30,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
     private var bundleId: Long = 0
     private var selectedProductIds: List<String> = emptyList()
     private var source: String = ""
-
-    companion object {
-        private const val BUNDLE_ID = "bundleId"
-        private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
-        private const val SOURCE = "source"
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -54,22 +47,13 @@ class ProductBundleActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        initApplinkValues()
 
-        var data = intent.data
-        data?.let {
-//          Applink sample = tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
-            data = RouteManager.getIntent(this, intent.data.toString()).data
-            val pathSegments = it.pathSegments.orEmpty()
-            val parentProductId = viewModel.getProductIdFromUri(it, pathSegments)
-            viewModel.parentProductID = parentProductId.toLongOrZero()
-            getBundleIdFromUri(it)
-            getSelectedProductIdsFromUri(it)
-            getPageSourceFromUri(it)
+        viewModel.parentProductID.let {
+            viewModel.getBundleInfo(it)
+            entryPointFragment.setProductId(it.toString())
+            entryPointFragment.setPageSource(source)
         }
-        val parentProductId = viewModel.parentProductID
-        viewModel.getBundleInfo(parentProductId)
-        entryPointFragment.setProductId(parentProductId.toString())
-        entryPointFragment.setPageSource(source)
 
         setupToolbarActions()
 
@@ -90,25 +74,17 @@ class ProductBundleActivity : BaseSimpleActivity() {
             .inject(this)
     }
 
-    private fun getBundleIdFromUri(uri: Uri) {
-        try {
-            bundleId = if (uri.getQueryParameter(BUNDLE_ID) == null) 0
-            else uri.getQueryParameter(BUNDLE_ID).toLongOrZero()
-        } catch (e: Exception) { }
-    }
-
-    private fun getSelectedProductIdsFromUri(uri: Uri) {
-        try {
-            uri.getQueryParameter(SELECTED_PRODUCT_IDS)?.let {
-                if (it.isNotEmpty())
-                    selectedProductIds = it.split(",").orEmpty()
-            }
-        } catch (e: Exception) { }
-    }
-
-    private fun getPageSourceFromUri(uri: Uri) {
-        if (uri.getQueryParameter(SOURCE) != null) {
-            source = uri.getQueryParameter(SOURCE).orEmpty()
+    private fun initApplinkValues() {
+        var data = intent.data
+        data?.let {
+            data = RouteManager.getIntent(this, intent.data.toString()).data
+            val pathSegments = it.pathSegments.orEmpty()
+            bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
+            selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
+            source = ProductBundleApplinkMapper.getPageSourceFromUri(it)
+            viewModel.parentProductID = ProductBundleApplinkMapper.getProductIdFromUri(it, pathSegments)
+            viewModel.selectedBundleId = bundleId
+            viewModel.selectedProductIds = selectedProductIds
         }
     }
 

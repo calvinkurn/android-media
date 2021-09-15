@@ -47,7 +47,6 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
@@ -182,7 +181,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             atcResult?.let {
                 if (viewModel.pageSource == PAGE_SOURCE_CART) {
                     val intent = Intent()
-                    val oldBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+                    val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
                     intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
                     activity?.setResult(Activity.RESULT_OK, intent)
@@ -242,7 +241,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                 // validate add to cart input
-                val isAddToCartInputValid = viewModel.validateAddToCartInput(selectedBundleDetails)
+                val isAddToCartInputValid = viewModel.validateAddToCartInput(
+                    selectedProductBundleMaster, selectedBundleDetails)
                 if (isAddToCartInputValid) {
                     // collect required data
                     val bundleId = selectedProductBundleMaster.bundleId
