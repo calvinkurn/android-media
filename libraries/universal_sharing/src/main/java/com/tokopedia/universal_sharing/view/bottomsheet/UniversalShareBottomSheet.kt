@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Telephony
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -157,6 +158,26 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             screenshotDetector?.stop()
             clearData()
         }
+
+        fun removePreviousSavedImage(previousSavedImagePath: String, newSavedImagePath: String) {
+            if (!TextUtils.isEmpty(previousSavedImagePath) &&
+                !TextUtils.isEmpty(newSavedImagePath) &&
+                previousSavedImagePath != newSavedImagePath
+            ) {
+                removeFile(previousSavedImagePath)
+            }
+        }
+
+        private fun removeFile(filePath: String){
+            if (!TextUtils.isEmpty(filePath) &&
+                !filePath.contains(ScreenshotDetector.screenShotRegex)) {
+                File(filePath).apply {
+                    if (exists()) {
+                        delete()
+                    }
+                }
+            }
+        }
     }
 
     enum class MimeType(val type: String) {
@@ -212,8 +233,25 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null) {
-        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
-            ?: fragmentManager?.let { show(it, TAG) }
+        screenshotDetector?.detectScreenshots(fragment,
+            {fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }}, true, fragment.requireView())
+            ?: fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }
+    }
+
+    fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
+        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                fragment.lifecycle.removeObserver(this)
+                super.onDestroy(owner)
+            }
+        })
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -265,7 +303,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    Handler().postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
                     }, DELAY_TIME_MILLISECOND)
                 }
@@ -566,6 +604,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             savedImagePath = screenShotImagePath
         }
         else {
+            removePreviousSavedImage(savedImagePath, imgPath)
             savedImagePath = imgPath
         }
     }
