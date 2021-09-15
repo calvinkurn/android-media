@@ -158,9 +158,9 @@ class SingleProductBundleFragment(
     ) {
         val selectedProductId = selectedData.firstOrNull {
             it.isSelected
-        }?.productId
-        if (selectedProductId != null && selectedProductVariant != null) {
-            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId.toString())
+        }?.productId.orEmpty()
+        if (selectedProductId.isNotEmpty() && selectedProductVariant != null) {
+            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId)
             adapter.setSelectedVariant(selectedProductId, selectedVariantText)
         }
     }

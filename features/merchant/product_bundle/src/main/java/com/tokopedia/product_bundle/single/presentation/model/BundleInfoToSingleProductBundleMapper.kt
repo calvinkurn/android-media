@@ -1,6 +1,8 @@
 package com.tokopedia.product_bundle.single.presentation.model
 
 import android.content.Context
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
@@ -59,25 +61,38 @@ object BundleInfoToSingleProductBundleMapper {
     private fun mapToBundleItem(context: Context, bundleInfos: List<BundleInfo>) = bundleInfos.map {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
-        SingleProductBundleItem(
-            quantity = bundleItem.minOrder,
-            productName = bundleItem.name,
-            originalPrice = bundleItem.originalPrice,
-            discountedPrice = bundleItem.bundlePrice,
-            discount = DiscountUtil.getDiscountPercentage(bundleItem.originalPrice,
-                bundleItem.bundlePrice),
-            imageUrl = bundleItem.picURL,
-            preorderDurationWording = getPreorderWording(context, it.preorder),
-            productVariant = if (productVariant.hasVariant) productVariant else null
-        )
+        if (productVariant.hasVariant) {
+            val child = productVariant.children.firstOrNull()
+            SingleProductBundleItem(
+                quantity = child?.stock?.minimumOrder.toIntOrZero(),
+                productName = bundleItem.name,
+                originalPrice = child?.finalMainPrice.orZero(),
+                discountedPrice = child?.finalPrice.orZero(),
+                discount = child?.campaign?.discountedPercentage?.toInt().orZero(),
+                imageUrl = bundleItem.picURL,
+                preorderDurationWording = getPreorderWording(context, it.preorder),
+                productVariant = productVariant
+            )
+        } else {
+            SingleProductBundleItem(
+                quantity = bundleItem.minOrder,
+                productName = bundleItem.name,
+                originalPrice = bundleItem.originalPrice,
+                discountedPrice = bundleItem.bundlePrice,
+                discount = DiscountUtil.getDiscountPercentage(bundleItem.originalPrice,
+                    bundleItem.bundlePrice),
+                imageUrl = bundleItem.picURL,
+                preorderDurationWording = getPreorderWording(context, it.preorder)
+            )
+        }
     }
 
     private fun mapToSelectedItem(
-        BundleInfos: List<BundleInfo>,
+        bundleInfos: List<BundleInfo>,
         selectedBundleId: String,
         selectedProductId: Long,
         emptyVariantProductIds: List<String>
-    ) = BundleInfos.map { bundleInfo ->
+    ) = bundleInfos.map { bundleInfo ->
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
             productId = when {
