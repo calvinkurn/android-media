@@ -11,10 +11,7 @@ import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -213,6 +210,20 @@ class DiscomPresenterTest {
 
         verifyOrder {
             view.showToasterError()
+        }
+    }
+
+    @Test
+    fun `autofill fails return error`() {
+        val defaultThrowable = spyk(Throwable())
+        every { revGeocodeUseCase.execute(any()) } answers {
+            Observable.error(defaultThrowable)
+        }
+
+        presenter.autoFill(0.1, 0.1)
+
+        verifyOrder {
+            defaultThrowable.printStackTrace()
         }
     }
 

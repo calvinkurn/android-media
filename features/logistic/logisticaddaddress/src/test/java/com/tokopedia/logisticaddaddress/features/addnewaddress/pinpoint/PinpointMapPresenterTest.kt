@@ -15,6 +15,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verifyOrder
 import org.junit.Assert
 import org.junit.Before
@@ -125,6 +126,20 @@ class PinpointMapPresenterTest {
 
         verifyOrder {
             view.goToAddNewAddressNegative()
+        }
+    }
+
+    @Test
+    fun `autofill fails return error`() {
+        val defaultThrowable = spyk(Throwable())
+        every { revGeoCodeUseCase.execute(any()) } answers {
+            Observable.error(defaultThrowable)
+        }
+
+        presenter.autoFill(0.1, 0.1, 0.0f)
+
+        verifyOrder {
+            defaultThrowable.printStackTrace()
         }
     }
 
