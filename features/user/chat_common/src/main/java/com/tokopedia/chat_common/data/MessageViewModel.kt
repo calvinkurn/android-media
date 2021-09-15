@@ -64,7 +64,8 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
         isDummy = false,
         isSender = !pojo.isOpposite,
         message = pojo.message.censoredReply,
-        source = pojo.source
+        source = pojo.source,
+        localId = pojo.localId
     ) {
         label = pojo.label
         this.attachment = attachment

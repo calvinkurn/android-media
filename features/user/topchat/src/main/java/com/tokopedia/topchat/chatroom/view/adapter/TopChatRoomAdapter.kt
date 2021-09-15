@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
@@ -68,6 +69,22 @@ class TopChatRoomAdapter constructor(
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
+
+    fun hasPreviewOnList(localId: String?): Boolean {
+        return localId != null && replyMap.contains(localId)
+    }
+
+    fun updatePreviewFromWs(
+        visitable: Visitable<*>,
+        localId: String
+    ) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatViewModel && it.localId == localId
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        visitables[chatBubblePosition] = visitable
+        notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
 
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)

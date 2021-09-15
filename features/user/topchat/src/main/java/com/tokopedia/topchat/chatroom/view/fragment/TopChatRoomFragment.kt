@@ -841,7 +841,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        super.onReceiveMessageEvent(visitable)
+        val chatBubble = visitable as? BaseChatViewModel
+        val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
+        if (chatBubble != null && hasPreviewOnList) {
+            adapter.updatePreviewFromWs(visitable, chatBubble.localId)
+        } else {
+            viewState?.removeDummyIfExist(visitable)
+            viewState?.onReceiveMessageEvent(visitable)
+        }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
     }
