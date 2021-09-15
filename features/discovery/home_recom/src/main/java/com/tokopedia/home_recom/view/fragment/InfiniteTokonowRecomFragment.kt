@@ -33,6 +33,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -190,7 +191,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        getMiniCartData()
+        goToPDP(item.productId.toString(), item.position)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -202,7 +203,18 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductTokonowVariantClicked(recomItem: RecommendationItem, adapterPosition: Int) {
-        goToPDP(recomItem.productId.toString(), adapterPosition)
+        requireContext().let {
+            AtcVariantHelper.goToAtcVariant(
+                    context = it,
+                    productId = recomItem.productId.toString(),
+                    pageSource = "tokonow",
+                    isTokoNow = true,
+                    shopId = recomItem.shopId.toString(),
+                    startActivitResult = { data, _ ->
+                        startActivity(data)
+                    }
+            )
+        }
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
@@ -314,10 +326,8 @@ class InfiniteTokonowRecomFragment :
         submitList(recomPageUiUpdater.dataList.toMutableList())
     }
 
-
     private fun getMiniCartData() {
         val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-
         /**
          * any changes and result from miniCartWidget.updateData, will call
          * @see onCartItemsUpdated

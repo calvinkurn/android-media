@@ -36,7 +36,6 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.atc_common)
-    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -58,9 +57,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
-
-    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
