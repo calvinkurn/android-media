@@ -291,7 +291,7 @@
     <string name="title_coachmark_shop_score_2">Pelajari Parameter Skornya, yuk!</string>
     <string name="desc_coachmark_shop_score_2">Parameter Skor akan memengaruhi skor tokomu dan akan diperbarui setiap minggu. Klik di setiap Parameter untuk lihat detailnya, ya.</string>
 
-    <string name="title_coachmark_shop_score_3">Lihat status tokomu dulu, yuk!</string>
+    <string name="title_coachmark_shop_score_3">lihat status tokomu di sini!</string>
     <string name="desc_coachmark_shop_score_3">Kamu bisa cek status dan potensi grade Power Merchant untuk tokomu di sini, ya!</string>
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
