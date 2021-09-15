@@ -127,7 +127,7 @@ class SmartBillsAddBillsSuccessActivityTest {
     }
 
     private fun choose_product(){
-        Thread.sleep(2000)
+        Thread.sleep(5000)
         Espresso.onView(ViewMatchers.withText("Rp16.500")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
