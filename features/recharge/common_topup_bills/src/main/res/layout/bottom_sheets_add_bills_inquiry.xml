@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rv_inquiry_result"
-        android:layout_weight="1"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton

@@ -26,7 +26,11 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -335,7 +339,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 val category = data?.getStringExtra(EXTRA_ADD_BILLS_CATEGORY)
                 message?.let { message ->
                     view?.let {
-                        Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                        val errorHandler = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
+                        Toaster.build(it, errorHandler, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -765,7 +770,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun getRemoteConfigAddBillsEnabler(): Boolean {
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true))
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true)
     }
 
     private fun showProgressBar(){

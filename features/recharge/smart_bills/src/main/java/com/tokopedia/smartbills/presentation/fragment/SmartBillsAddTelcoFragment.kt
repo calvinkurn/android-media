@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
@@ -219,7 +220,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     if(!errorMessage.isNullOrEmpty()){
                         commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                         view?.let {
-                            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            val errorHandler = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
+                            Toaster.build(it, errorHandler, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
                     } else {
@@ -355,7 +357,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 commonTopUpBillsAnalytic.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                 if(!isNumberValid()){
                     validationNumber()
-                } else if (isPostaid()) {
+                } else if (isPostPaid()) {
                     if (!operatorActive.id.isNullOrEmpty()){
                          isButtonTelcoLoading(true)
                          getInquiryData()
@@ -377,7 +379,9 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun renderSelectedProduct(rechargeProduct: RechargeProduct){
         selectedProduct = rechargeProduct
-        text_field_sbm_product_nominal.textFieldInput.setText(selectedProduct?.attributes?.price)
+        selectedProduct?.attributes?.price?.let {
+            text_field_sbm_product_nominal.textFieldInput.setText(it)
+        }
     }
 
     private fun getNumber(): String = text_field_sbm_product_number.textFieldInput.text.toString()
@@ -455,7 +459,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO)
     }
 
-    private fun isPostaid(): Boolean {
+    private fun isPostPaid(): Boolean {
         return !templateTelco.isNullOrEmpty() &&
                 templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO)
     }
@@ -465,7 +469,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun isDisableButton(){
-        btn_sbm_add_telco.isEnabled = ((isNumberValid() && isPostaid())
+        btn_sbm_add_telco.isEnabled = ((isNumberValid() && isPostPaid())
                 || (isNumberValid() && isPrepaid() && !selectedProduct?.id.isNullOrEmpty()))
     }
 
