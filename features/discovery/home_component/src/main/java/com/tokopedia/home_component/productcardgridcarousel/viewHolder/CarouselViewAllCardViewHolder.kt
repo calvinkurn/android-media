@@ -138,6 +138,6 @@ class CarouselViewAllCardViewHolder(
         private const val CONTENT_TITLE_AS_INTEGER = "title-as-integer"
         private const val CONTENT_SINGLE_IMAGE = "single-image"
         const val CONTENT_DEFAULT = "default"
-        const val DEFAULT_VIEW_ALL_ID = "0"
+        const val DEFAULT_VIEW_ALL_ID = "-1"
     }
 }

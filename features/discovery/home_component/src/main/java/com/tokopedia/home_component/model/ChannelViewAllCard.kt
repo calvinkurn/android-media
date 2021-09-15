@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * created by Dhaba
  */
 data class ChannelViewAllCard(
-    val id: String = "0",
+    val id: String = "-1",
     val contentType: String = "",
     val title: String = "",
     val description: String = "",
