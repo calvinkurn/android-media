@@ -337,7 +337,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         setupNewInboxAbButton();
-        setupNewNotifcenterAbButton();
 
         TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -470,30 +469,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                             RollenceKey.VARIANT_NEW_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setupNewNotifcenterAbButton() {
-        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
-        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
-
-        oldInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_OLD_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
-        });
-        newInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_NEW_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 

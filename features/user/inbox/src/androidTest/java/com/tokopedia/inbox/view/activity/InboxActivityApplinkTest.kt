@@ -126,54 +126,6 @@ class InboxActivityApplinkTest {
         assertThat(intent, hasQueryParameter(PARAM_SOURCE, source))
     }
 
-    @Test
-    fun should_point_to_new_inbox_when_whitelisted_ab_old_to_new_notifcenter() {
-        // Given
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
-        )
-        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
-
-        // When
-        val intent = RouteManager.getIntent(context, applinkUri.toString())
-
-        // Then
-        assertThat(intent, isPointingTo(inbox))
-        assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_NOTIFICATION))
-        assertThat(intent, hasQueryParameter(PARAM_SHOW_BOTTOM_NAV, "false"))
-    }
-
-    @Test
-    fun should_point_to_old_inbox_when_not_whitelisted_ab_old_to_new_notifcenter() {
-        // Given
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
-        )
-        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
-
-        // When
-        val intent = RouteManager.getIntent(context, applinkUri.toString())
-
-        // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
-    }
-
-    @Test
-    fun should_always_point_to_old_inbox_when_whitelisted_ab_old_to_new_notifcenter_on_sellerapp() {
-        // Given
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
-        )
-        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
-
-        // When
-        val intent = RouteManager.getIntent(context, applinkUri.toString())
-
-        // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
-    }
-
     private fun applyAbKeyValue(key: String, value: String) {
         RemoteConfigInstance.getInstance().abTestPlatform.apply {
             setString(

@@ -1099,22 +1099,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check notification appLink then should return tokopedia internal notification in customerapp`() {
-        // Given
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/notification"
-
-        // When
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
-            )
-        } returns RollenceKey.VARIANT_OLD_NOTFICENTER
-
-        // Then
-        assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION, expectedDeepLink)
-    }
-
-    @Test
     fun `check notification troubleshooter appLink then should return tokopedia internal notification troubleshooter in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/push-notification-troubleshooter"
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, expectedDeepLink)
