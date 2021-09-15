@@ -57,14 +57,14 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
     }
 
-    fun eventClickSearchBox(userId: String) {
+    fun eventClickSearchBox(userId: String, screenName: String) {
         val data = mutableMapOf<String, Any>(
                 TrackAppUtils.EVENT to CLICK_TOPUP_BILLS,
                 TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
                 TrackAppUtils.EVENT_ACTION to SEARCH_BOX_CLICK,
                 TrackAppUtils.EVENT_LABEL to TOPUP_BILLS
         )
-        data.putAll(getDefaultFields(userId))
+        data.putAll(getDefaultFields(userId, screenName))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_TOPUP_BILLS, convertToBundle(data))
     }
 
@@ -76,7 +76,9 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
     }
 
-    fun eventSearchResultPageImpression(items: List<DigitalHomePageSearchCategoryModel>, userId: String) {
+    fun eventSearchResultPageImpression(items: List<DigitalHomePageSearchCategoryModel>,
+                                        userId: String,
+                                        screenName: String) {
         val promotions = items.mapIndexed { index, item ->
             mapOf(
                     ITEM_ID to item.id,
@@ -93,7 +95,7 @@ class RechargeHomepageAnalytics {
                 TrackAppUtils.EVENT_LABEL to "",
                 PROMOTIONS to promotions
         )
-        data.putAll(getDefaultFields(userId))
+        data.putAll(getDefaultFields(userId, screenName))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, convertToBundle(data))
     }
@@ -159,7 +161,7 @@ class RechargeHomepageAnalytics {
         )
     }
 
-    fun sliceOpenApp(userId: String){
+    fun sliceOpenApp(userId: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 TrackAppUtils.EVENT, "clickGAMain",
                 TrackAppUtils.EVENT_CATEGORY, "ga main app",

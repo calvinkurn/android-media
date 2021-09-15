@@ -387,7 +387,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
-            rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
+            rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId,
+                    viewModel.getSearchBarScreenName())
 
             redirectToSearchByDynamicIconsFragment()
         }

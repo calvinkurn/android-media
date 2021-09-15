@@ -206,7 +206,8 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
-        rechargeHomepageAnalytics.eventSearchResultPageImpression(list, userSession.userId)
+        rechargeHomepageAnalytics.eventSearchResultPageImpression(list,
+                userSession.userId, searchBarScreenName)
     }
 
     open fun searchCategory(searchQuery: String) {
