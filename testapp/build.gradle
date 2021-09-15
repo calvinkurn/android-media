@@ -122,11 +122,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.officialStore)
-	implementation project(rootProject.ext.features.homeComponent)
-	implementation project(rootProject.ext.features.homeNav)
-	implementation project(rootProject.ext.features.dynamicBanner)
-	implementation project(rootProject.ext.features.navigationCommon)
-	implementation project(rootProject.ext.features.homeRecom)
-	implementation project(rootProject.ext.features.home)
 }
