@@ -60,17 +60,16 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
 
     private fun setupDescBenefitSection(data: WidgetExpandableUiModel) {
         if (data.pmStatus == PMStatusConst.IDLE) {
-            tvNextUpdatePmProStatus?.hide()
-            iconPmProDowngradeStatus?.hide()
+            containerDescBenefitPackage?.hide()
         } else {
-            tvNextUpdatePmProStatus?.show()
-            iconPmProDowngradeStatus?.show()
+            containerDescBenefitPackage?.show()
         }
     }
 
     private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
         val blackColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96.toString()
 
+        iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
         if (data.isDowngradePeriod()) {
             tvNextUpdatePmProStatus.setTextMakeHyperlink(
                 context.getString(

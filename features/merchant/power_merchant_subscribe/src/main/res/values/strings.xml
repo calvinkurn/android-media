@@ -230,9 +230,9 @@
     <string name="pm_desc_new_seller_before_30_days">Kamu bisa daftar PM PRO setelah 30 hari bergabung, ya. %s</string>
 
     <string name="pm_title_new_seller_eligible_after_30_days">Karena Performamu, kamu terpilih untuk bisa daftar Power Merchant PRO!</string>
-    <string name="pm_desc_new_seller_eligible_benefit_package">Dengan biaya layanan 1,5%, kamu bisa dapat keuntungan eksklusif Power Merchant PRO</string>
+    <string name="pm_desc_new_seller_eligible_benefit_package"><![CDATA[Dengan <b>biaya layanan 1,5%</b>, kamu bisa dapat keuntungan eksklusif Power Merchant PRO.]]></string>
     <string name="pm_title_new_seller_not_eligible_after_30_days">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
-    <string name="pm_desc_new_seller_not_eligible_benefit_package">Yuk, penuhi semua syarat dan daftar PM PRO! Dengan biaya layanan 1,5% saja, kamu bisa dapat banyak keuntungan eksklusifnya!</string>
+    <string name="pm_desc_new_seller_not_eligible_benefit_package"><![CDATA[Yuk, penuhi semua syarat dan daftar PM PRO! Dengan <b>biaya layanan 1,5% saja</b>, kamu bisa dapat banyak keuntungan eksklusifnya!]]></string>
 
     <string name="pm_pro_new_seller_title_coachmark_1">Pantau status keanggotaan dan proyeksi Performa Tokomu</string>
     <string name="pm_pro_new_seller_desc_coachmark_1">Sebagai Seller baru, kamu bisa lihat status toko dan proyeksi Performa Tokomu di sini, ya.</string>

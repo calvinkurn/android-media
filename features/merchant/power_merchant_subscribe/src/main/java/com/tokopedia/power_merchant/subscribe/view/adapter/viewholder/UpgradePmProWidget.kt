@@ -4,6 +4,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PATTERN_DATE_TEXT
 import com.tokopedia.gm.common.constant.PMConstant
@@ -59,13 +60,15 @@ class UpgradePmProWidget(
                             getString(R.string.pm_title_new_seller_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
-                            getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                            MethodChecker.fromHtml(
+                                getString(R.string.pm_desc_new_seller_eligible_benefit_package))
                     } else {
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
-                            getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
+                            MethodChecker.fromHtml(
+                                getString(R.string.pm_desc_new_seller_not_eligible_benefit_package))
                         hidePmProUpgradeSection()
                     }
                 } else {

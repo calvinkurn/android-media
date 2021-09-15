@@ -420,10 +420,15 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         with(pmRegistrationFooterView) {
-            if (isRMNewSeller && isPmProSelected) hideCtaButton() else showCtaButton()
+            val isHideCta = isRMNewSeller && isPmProSelected
+            if (isHideCta) hideCtaButton() else showCtaButton()
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
-            setTnCVisibility(needTnC)
+            if (isHideCta) {
+                setTnCVisibility(false)
+            } else {
+                setTnCVisibility(needTnC)
+            }
             setOnTickboxCheckedListener {
                 powerMerchantTracking.sendEventClickTickBox()
             }
