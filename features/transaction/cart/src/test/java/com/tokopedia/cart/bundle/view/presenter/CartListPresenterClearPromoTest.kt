@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -114,4 +115,4 @@ object CartListPresenterClearPromoTest : Spek({
 
     }
 
-})
+})*/

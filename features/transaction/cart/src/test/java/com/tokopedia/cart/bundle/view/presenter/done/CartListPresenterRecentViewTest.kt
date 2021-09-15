@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -29,7 +29,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterRecommendationTest : Spek({
+object CartListPresenterRecentViewTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +55,7 @@ object CartListPresenterRecommendationTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recommendation test") {
+    Feature("get recent view test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,8 +74,7 @@ object CartListPresenterRecommendationTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recommendation success") {
-
+        Scenario("get recent view success") {
             val recommendationWidgetStringData = """
                 {
                     "recommendationItemList":
@@ -86,40 +85,39 @@ object CartListPresenterRecommendationTest : Spek({
                     ]
                 }
             """.trimIndent()
-
             val response = mutableListOf<RecommendationWidget>().apply {
                 val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
                 add(recommendationWidget)
             }
 
             Given("success response") {
-                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             Given("request params") {
-                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recommendation") {
-                cartListPresenter.processGetRecommendationData(1, emptyList())
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
-            Then("should render recommendation") {
+            Then("should render recent view") {
                 verify {
-                    view.renderRecommendation(response[0])
+                    view.renderRecentView(response[0])
                 }
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecommendation()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get recommendation empty") {
+        Scenario("get recent view empty") {
 
             val recommendationWidgetStringData = """
                 {
@@ -128,56 +126,55 @@ object CartListPresenterRecommendationTest : Spek({
                     ]
                 }
             """.trimIndent()
-
             val response = mutableListOf<RecommendationWidget>().apply {
                 val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
                 add(recommendationWidget)
             }
 
-            Given("empty response") {
-                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
+            Given("success response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             Given("request params") {
-                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recommendation") {
-                cartListPresenter.processGetRecommendationData(1, emptyList())
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
-            Then("should not render recommendation") {
+            Then("should not render recent view") {
                 verify(inverse = true) {
-                    view.renderRecommendation(response[0])
+                    view.renderRecentView(response[0])
                 }
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecommendation()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get recommendation empty") {
+        Scenario("get recent view error") {
 
             Given("error response") {
-                every { getRecommendationUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
             Given("request params") {
-                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recommendation") {
-                cartListPresenter.processGetRecommendationData(1, emptyList())
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecommendation()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }

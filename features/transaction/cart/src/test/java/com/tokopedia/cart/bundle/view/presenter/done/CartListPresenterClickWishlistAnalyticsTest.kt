@@ -1,17 +1,17 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,15 +20,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterAddCartToWishlistTest : Spek({
+object CartListPresenterClickWishlistAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,10 +50,9 @@ object CartListPresenterAddCartToWishlistTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
-
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("add cart item to wishlist") {
+    Feature("generate wishlist data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,98 +71,50 @@ object CartListPresenterAddCartToWishlistTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success add cart item to wishlist") {
+        Scenario("1 item selected and cart is not empty") {
 
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
+            lateinit var result: Map<String, Any>
 
-            val addToCartWishlistData = AddCartToWishlistData().apply {
-                isSuccess = true
-                message = "success"
+            When("generate wishlist data click analytics") {
+                result = cartListPresenter.generateWishlistProductClickDataLayer(CartWishlistItemHolderData(), 0)
             }
 
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            Then("key `list` value should be `cart`") {
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
             }
 
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-            }
-
-            Then("should render success") {
-                verify {
-                    view.onAddCartToWishlistSuccess(addToCartWishlistData.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-                }
-            }
         }
 
-        Scenario("failed add cart item to wishlist") {
+        Scenario("1 item selected and cart is empty") {
 
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
+            lateinit var result: Map<String, Any>
 
-            val addToCartWishlistData = AddCartToWishlistData().apply {
-                isSuccess = false
-                message = "failed"
+            When("generate wishlist data click analytics") {
+                result = cartListPresenter.generateWishlistProductClickEmptyCartDataLayer(CartWishlistItemHolderData(), 0)
             }
 
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
+            Then("should be containing 1 product") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            Then("key `list` value should be `empty cart`") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
             }
 
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-            }
-
-            Then("should render failed") {
-                verify {
-                    view.showToastMessageRed(addToCartWishlistData.message)
-                }
-            }
         }
 
-        Scenario("failed add cart item to wishlist with exception") {
-
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
-
-            val exception = ResponseErrorException("Error")
-
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-            }
-
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-            }
-
-            Then("should render failed") {
-                verify {
-                    view.showToastMessageRed(exception)
-                }
-            }
-        }
     }
 
 })

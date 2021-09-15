@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -12,7 +12,6 @@ import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.bundle.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.bundle.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase

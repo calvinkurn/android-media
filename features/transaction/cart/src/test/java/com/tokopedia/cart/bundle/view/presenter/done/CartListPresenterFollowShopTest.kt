@@ -1,35 +1,35 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
-import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterRecentViewTest : Spek({
+object CartListPresenterFollowShopTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +55,7 @@ object CartListPresenterRecentViewTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recent view test") {
+    Feature("follow shop") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,111 +74,59 @@ object CartListPresenterRecentViewTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recent view success") {
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                        {
-                            "productId":0
-                        }
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
-            }
+        Scenario("success follow shop") {
 
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should render recent view") {
-                verify {
-                    view.renderRecentView(response[0])
+            val dataFollowShop = DataFollowShop().apply {
+                followShop = FollowShop().apply {
+                    isSuccess = true
+                    message = "Success"
                 }
             }
 
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
                 }
             }
 
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
+                }
+            }
         }
 
-        Scenario("get recent view empty") {
+        Scenario("failed follow shop") {
 
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
-            }
+            val exception = ResponseErrorException("Failed")
 
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should not render recent view") {
-                verify(inverse = true) {
-                    view.renderRecentView(response[0])
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
                 }
             }
 
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
+            }
+
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(exception)
                 }
             }
-
-        }
-
-        Scenario("get recent view error") {
-
-            Given("error response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
         }
 
     }

@@ -1,35 +1,35 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
-import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
+import com.tokopedia.wishlist.common.response.GetWishlistResponse
+import com.tokopedia.wishlist.common.response.WishlistDataResponse
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterFollowShopTest : Spek({
+object CartListPresenterWishlistTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +55,7 @@ object CartListPresenterFollowShopTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("follow shop") {
+    Feature("get wishlist test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,59 +74,87 @@ object CartListPresenterFollowShopTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success follow shop") {
+        Scenario("get wishlist success") {
 
-            val dataFollowShop = DataFollowShop().apply {
-                followShop = FollowShop().apply {
-                    isSuccess = true
-                    message = "Success"
+            val response = GetWishlistResponse().apply {
+                gqlWishList = WishlistDataResponse().apply {
+                    wishlistDataList = mutableListOf<Wishlist>().apply {
+                        add(Wishlist())
+                    }
                 }
             }
 
-            Given("follow shop data") {
-                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
-                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
+            Given("success response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+            }
+
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
+            }
+
+            Then("should render wishlist") {
+                verify {
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, true)
                 }
             }
 
-            When("process follow shop") {
-                cartListPresenter.followShop("1")
-            }
-
-            Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
+
         }
 
-        Scenario("failed follow shop") {
+        Scenario("get wishlist empty") {
 
-            val exception = ResponseErrorException("Failed")
-
-            Given("follow shop data") {
-                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
-                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
+            val response = GetWishlistResponse().apply {
+                gqlWishList = WishlistDataResponse().apply {
+                    wishlistDataList = mutableListOf()
                 }
             }
 
-            When("process follow shop") {
-                cartListPresenter.followShop("1")
+            Given("success response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(exception)
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
+            }
+
+            Then("should not render wishlist") {
+                verify(inverse = true) {
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, false)
                 }
             }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
+        }
+
+        Scenario("get wishlist error") {
+
+            Given("error response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+            }
+
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
     }

@@ -1,6 +1,6 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -10,12 +10,9 @@ import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -25,13 +22,13 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterValidateUseTest : Spek({
+object CartListPresenterAddToCartExternalTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -57,7 +54,7 @@ object CartListPresenterValidateUseTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("validate use action") {
+    Feature("add to cart") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -76,63 +73,58 @@ object CartListPresenterValidateUseTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success validate use") {
+        Scenario("success add to cart") {
 
-            val validateUseModel = ValidateUsePromoRevampUiModel().apply {
-                promoUiModel = PromoUiModel()
-            }
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
-            }
-
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
-            }
-
-            Then("should update promo state") {
-                verify {
-                    view.updatePromoCheckoutStickyButton(validateUseModel.promoUiModel)
+            val addToCartExternalModel = AddToCartExternalModel().apply {
+                success = 1
+                message = arrayListOf<String>().apply {
+                    add("Success message")
                 }
             }
 
-        }
-
-        Scenario("failed validate use promo") {
-
-            val exception = CartResponseErrorException("error message")
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
-            Then("should set promo button inactive") {
-                verify {
-                    view.showPromoCheckoutStickyButtonInactive()
+            When("process to add to cart") {
+                cartListPresenter.processAddToCartExternal(1)
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(addToCartExternalModel.message[0])
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }
 
-        Scenario("failed validate use promo with akamai exception") {
+        Scenario("failed add to cart") {
 
-            val exception = AkamaiErrorException("error message")
+            val errorMessage = "Error message"
+            val exception = MessageErrorException(errorMessage)
 
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
-            Then("should show red toast and set promo button inactive") {
-                verify {
+            When("process to update cart data") {
+                cartListPresenter.processAddToCartExternal(1)
+            }
+
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
                     view.showToastMessageRed(exception)
-                    view.showPromoCheckoutStickyButtonInactive()
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }

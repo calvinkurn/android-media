@@ -1,17 +1,18 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cartcommon.data.response.undodeletecart.Data
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,13 +21,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.mockk
-import org.junit.Assert
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClickRecentViewAnalyticsTest : Spek({
+object CartListPresenterUndoDeleteCartTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +52,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate recent view data click analytics") {
+    Feature("undo delete cart test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,46 +71,52 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected and cart is not empty") {
+        Scenario("undo delete cart success") {
 
-            lateinit var result: Map<String, Any>
+            val response = UndoDeleteCartDataResponse(
+                    status = "OK",
+                    data = Data(success = 1, message = listOf("success message"))
+            )
 
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+            Given("success response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
+                }
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
             }
 
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+            Then("should render success") {
+                verify {
+                    view.onUndoDeleteCartDataSuccess()
+                }
             }
 
         }
 
-        Scenario("1 item selected and cart is empty") {
+        Scenario("undo delete cart failed with exception") {
 
-            lateinit var result: Map<String, Any>
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
 
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+            Given("error response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
+            Then("should render error") {
+                verify {
+                    view.showToastMessageRed(throwable)
+                }
             }
 
         }
