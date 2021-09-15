@@ -101,9 +101,11 @@ object FileUtil {
     @Throws(IOException::class)
     fun getDateTaken(path: String?): Long {
         var ret: Long = 0
-        val exif = ExifInterface(path)
-        val dateTime = exif.getAttribute(ExifInterface.TAG_DATETIME)
-        ret = parseDateTaken(dateTime)
+        if(!path.isNullOrEmpty()) {
+            val exif = ExifInterface(path)
+            val dateTime = exif.getAttribute(ExifInterface.TAG_DATETIME)
+            ret = parseDateTaken(dateTime)
+        }
         return ret
     }
 
