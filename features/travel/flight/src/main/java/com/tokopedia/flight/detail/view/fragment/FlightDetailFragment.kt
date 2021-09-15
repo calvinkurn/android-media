@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.FragmentFlightDetailBinding
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailListener
-import kotlinx.android.synthetic.main.fragment_flight_detail.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by furqan on 21/04/2020
@@ -20,8 +21,11 @@ class FlightDetailFragment : BaseListFragment<FlightDetailRouteModel, FlightDeta
 
     lateinit var listener: FlightDetailListener
 
+    private var binding by autoClearedNullable<FragmentFlightDetailBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_flight_detail, container, false)
+        binding = FragmentFlightDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onResume() {
@@ -53,13 +57,13 @@ class FlightDetailFragment : BaseListFragment<FlightDetailRouteModel, FlightDeta
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     private fun enableScrolling() {
-        recycler_view.isNestedScrollingEnabled = true
-        recycler_view.requestLayout()
+        binding?.recyclerView?.isNestedScrollingEnabled = true
+        binding?.recyclerView?.requestLayout()
     }
 
     private fun disableScrolling() {
-        recycler_view.isNestedScrollingEnabled = false
-        recycler_view.requestLayout()
+        binding?.recyclerView?.isNestedScrollingEnabled = false
+        binding?.recyclerView?.requestLayout()
     }
 
 }
