@@ -1301,13 +1301,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun startTokopointRotation() {
+    private fun startTokopointRotation(rotateNow: Boolean = false) {
         isNeedToRotateTokopoints = true
+        if (rotateNow) {
+            val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+            (view as? HomeHeaderOvoViewHolder)?.let {
+                val balanceWidgetView = getBalanceWidgetView()
+                balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
+            }
+        }
     }
 
     private fun conditionalViewModelRefresh() {
         if (!fragmentCreatedForFirstTime) {
-            getHomeViewModel().getHeaderData()
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
@@ -2727,6 +2733,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 isUserVisibleHint = isVisibleToUser
             )
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
+            startTokopointRotation(rotateNow = true)
         }
     }
 

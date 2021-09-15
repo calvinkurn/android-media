@@ -283,6 +283,8 @@ open class HomeRevampViewModel @Inject constructor(
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
+        } else {
+            getHeaderData()
         }
     }
 
