@@ -64,13 +64,14 @@ public class InboxReputationFilterAdapter
                         }
                     }
 
-                    if (listOption.get(getAdapterPosition()).isSelected()) {
-                        listener.onFilterSelected(listOption.get(getAdapterPosition()));
-                    }else{
-                        listener.onFilterUnselected(listOption.get(getAdapterPosition()));
-
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        if (listOption.get(getAdapterPosition()).isSelected()) {
+                            listener.onFilterSelected(listOption.get(getAdapterPosition()));
+                        } else {
+                            listener.onFilterUnselected(listOption.get(getAdapterPosition()));
+                        }
+                        notifyDataSetChanged();
                     }
-                    notifyDataSetChanged();
                 }
             });
         }
