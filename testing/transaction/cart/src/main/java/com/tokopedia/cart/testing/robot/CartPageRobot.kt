@@ -178,6 +178,10 @@ class CartPageRobot {
         onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
     }
 
+    fun clickBackButton() {
+
+    }
+
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
         return ResultRobot().apply(func)
     }
