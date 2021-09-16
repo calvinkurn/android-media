@@ -20,9 +20,9 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    private static final String PARAM_1 = "af_param_1";
     // consider replacing this with getGtm().sendCampaignV4V5 instead.
     @Deprecated
-    private static final String PARAM_1 = "af_param_1";
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
 
