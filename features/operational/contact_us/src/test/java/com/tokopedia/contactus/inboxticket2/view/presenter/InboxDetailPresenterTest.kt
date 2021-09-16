@@ -5,34 +5,27 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
-import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
-import com.tokopedia.contactus.inboxticket2.data.model.Data
-import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
-import com.tokopedia.contactus.inboxticket2.data.model.Tickets
+import com.tokopedia.contactus.inboxticket2.data.model.*
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
-import com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenter.Companion.KEY_LIKED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.jvm.Throws
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 
 @ExperimentalCoroutinesApi
 class InboxDetailPresenterTest {
@@ -50,6 +43,8 @@ class InboxDetailPresenterTest {
     private lateinit var submitRatingUseCase: SubmitRatingUseCase
     private lateinit var closeTicketByUserUseCase: CloseTicketByUserUseCase
     private lateinit var uploadImageUseCase: ContactUsUploadImageUseCase
+    private lateinit var chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase
+    private lateinit var secureUploadUseCase: SecureUploadUseCase
     private lateinit var userSession: UserSessionInterface
 
     private lateinit var presenter: InboxDetailPresenter
@@ -68,15 +63,23 @@ class InboxDetailPresenterTest {
         submitRatingUseCase = mockk(relaxed = true)
         closeTicketByUserUseCase = mockk(relaxed = true)
         uploadImageUseCase = mockk(relaxed = true)
+        chipUploadHostConfigUseCase = mockk(relaxed = true)
+        secureUploadUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
-        presenter = spyk(InboxDetailPresenter(postMessageUseCase,
+        presenter = spyk(
+            InboxDetailPresenter(
+                postMessageUseCase,
                 postMessageUseCase2,
                 postRatingUseCase,
                 inboxOptionUseCase,
                 submitRatingUseCase,
                 closeTicketByUserUseCase,
-                uploadImageUseCase, userSession, testRule.dispatchers))
+                uploadImageUseCase,
+                chipUploadHostConfigUseCase,
+                secureUploadUseCase,
+                userSession, testRule.dispatchers)
+        )
 
         view = mockk(relaxed = true)
         presenter.attachView(view)
@@ -763,7 +766,7 @@ class InboxDetailPresenterTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -797,7 +800,7 @@ class InboxDetailPresenterTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -838,7 +841,7 @@ class InboxDetailPresenterTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -878,7 +881,7 @@ class InboxDetailPresenterTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -920,17 +923,18 @@ class InboxDetailPresenterTest {
         every { presenter.isUploadImageValid } returns 2
 
 
-        every { uploadImageUseCase.getFile(any()) } returns mockk()
+        every { uploadImageUseCase.getFile(any()) } returns listOf("")
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
+
+        coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns mockk(relaxed = true)
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
         every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns response2
-
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -942,7 +946,7 @@ class InboxDetailPresenterTest {
 
         every { view.updateAddComment(capture(slot)) } answers { actual = slot.captured.attachment?.getOrNull(0)?.thumbnail?:""}
 
-        presenter.sendMessage()
+        coEvery { presenter.getSecurelyUploadedImages(any(), any()) } returns arrayListOf(ImageUpload())
 
         presenter.sendMessage()
 
@@ -968,7 +972,7 @@ class InboxDetailPresenterTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), any()) } returns listOf()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 

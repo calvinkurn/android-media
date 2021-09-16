@@ -57,6 +57,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
@@ -69,6 +70,8 @@ import com.tokopedia.seller_migration_common.presentation.util.goToInformationWe
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
+import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
@@ -78,9 +81,10 @@ import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
@@ -100,7 +104,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener {
+        FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener,
+        InterfaceShopPageFab {
 
     override val androidContext: Context
         get() = requireContext()
@@ -111,6 +116,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isForceRefresh = false
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
+
+    private val fabConfig: ShopPageFabConfig by lazy {
+        ShopPageFabConfig(
+            items = arrayListOf(FloatingButtonItem(iconUnifyID = IconUnify.ADD, title = "")),
+            onMainCircleButtonClicked = {
+                goToCreatePost(getSellerApplink())
+                shopAnalytics.eventClickCreatePost()
+            }
+        )
+    }
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -193,13 +208,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         super.onDestroy()
     }
 
+    override fun shouldShowShopPageFab(): Boolean {
+        val firstItem = adapter?.data?.firstOrNull()
+        return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
+                whitelistDomain.authors.isNotEmpty() && firstItem != null &&
+                firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
+    }
+
+    override fun getShopPageFabConfig(): ShopPageFabConfig? {
+        return fabConfig
+    }
+
     private fun initVar() {
-        hideFAB()
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
             createPostUrl = it.getString(PARAM_CREATE_POST_URL) ?: ""
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -222,7 +247,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun hasFeed(): Boolean {
         return (adapter.list != null
-                && !adapter.list.isEmpty()
+                && adapter.list.isNotEmpty()
                 && adapter.list.size > 1
                 && adapter.list[0] !is EmptyModel)
     }
@@ -270,12 +295,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                         onSuccessReportContent()
                     } else {
                         onErrorReportContent(
-                                data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
+                                data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG) ?: ""
                         )
                     }
                 }
                 OPEN_DETAIL -> {
-                    showSnackbar(data!!.getStringExtra("message"))
+                    showSnackbar(data!!.getStringExtra("message") ?: "")
                 }
                 LOGIN_CODE -> {
                     loadInitialData()
@@ -317,11 +342,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onSwipeRefresh() {
+        hideFloatingActionButton()
         hideSnackBarRetry()
         presenter.clearCache()
         isLoadingInitialData = true
         presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
-        recyclerView.scrollToPosition(0)
+        getRecyclerView(view).scrollToPosition(0)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -331,11 +357,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLoading = false
         if (element.isNotEmpty()) {
             trackFeedShopImpression(element)
-            if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
-                showFAB()
-            } else {
-                hideFAB()
-            }
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
@@ -347,6 +368,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             }
             renderList(dataList)
         }
+        reshowFloatingActionButton()
     }
 
     private fun trackFeedShopImpression(listFeed: List<Visitable<*>>) {
@@ -424,6 +446,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             adapter.notifyItemRemoved(rowNumber)
         }
+        reshowFloatingActionButton()
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -674,6 +697,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
+    override fun onPostTagBubbleClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct,
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override fun onPostTagItemBSImpression(
         activityId: String,
         postTagItemList: List<FeedXProduct>,
@@ -837,7 +868,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onGridItemClick(
         positionInFeed: Int,
         contentPosition: Int,
-        productPosition: Int,
+        productPosition: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
@@ -951,18 +982,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun hideFAB() {
-        fab_feed.hide()
+    private fun hideFloatingActionButton() {
+        (parentFragment as? NewShopPageFragment)?.hideShopPageFab()
     }
 
-    fun showFAB() {
-        if(!isSellerMigrationEnabled(context)) {
-            fab_feed.show()
-            fab_feed.setOnClickListener {
-                goToCreatePost(getSellerApplink())
-                shopAnalytics.eventClickCreatePost()
-            }
-        }
+    private fun showFloatingActionButton() {
+        (parentFragment as? NewShopPageFragment)?.showShopPageFab()
     }
 
     private fun getSellerApplink(): String {
@@ -1144,4 +1169,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    private fun reshowFloatingActionButton() {
+        if (shouldShowShopPageFab()) {
+            (parentFragment as? NewShopPageFragment)?.setupShopPageFab(fabConfig)
+            showFloatingActionButton()
+        } else {
+            hideFloatingActionButton()
+        }
+    }
 }

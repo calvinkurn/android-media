@@ -11,8 +11,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.widget.Button
-import android.widget.CheckBox
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -36,11 +36,11 @@ class ScreenRecorderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_recorder_activity_screen_record)
-        findViewById<Button>(R.id.btnActivate).setOnClickListener { v -> activateScreenRecorder() }
+        findViewById<UnifyButton>(R.id.btnActivate).setOnClickListener { v -> activateScreenRecorder() }
     }
 
     private fun activateScreenRecorder() {
-        isRecordMic = findViewById<CheckBox>(R.id.checkboxRecordMic)?.isChecked ?: false
+        isRecordMic = findViewById<CheckboxUnify>(R.id.checkboxRecordMic)?.isChecked ?: false
 
         if (isRecordMic) PERMISSIONS.add(Manifest.permission.RECORD_AUDIO)
 
@@ -85,7 +85,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(21)
+    @TargetApi(ANDROID_LOLLIPOP)
     private fun requestProjectScreen() {
         val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION)

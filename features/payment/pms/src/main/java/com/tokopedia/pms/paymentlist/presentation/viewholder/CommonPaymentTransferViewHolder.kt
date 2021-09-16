@@ -8,10 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
-import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.KlicBCAPaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.StorePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_CHEVRON_ACTIONS
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_HOW_TO_PAY_REDIRECTION
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION
@@ -32,7 +29,7 @@ class CommonPaymentTransferViewHolder(
         view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
-        val cardTitle = getCardTitle(item.transactionList.size)
+        val cardTitle = getCardTitle(item.transactionList)
         bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime)
         bindPaymentGatewayData(item)
         bindVATransactionAmountData(item)
@@ -128,8 +125,9 @@ class CommonPaymentTransferViewHolder(
     private fun handleActionList(isActionListEmpty: Boolean) =
         if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
 
-    private fun getCardTitle(size: Int): String =
-        if (size > 1) combinedCardTitle else defaultCardTitle
+    private fun getCardTitle(transaction: ArrayList<VaTransactionItem>): String =
+        if (transaction.size > 1) combinedCardTitle else transaction.getOrNull(0)?.productName
+            ?: defaultCardTitle
 
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item

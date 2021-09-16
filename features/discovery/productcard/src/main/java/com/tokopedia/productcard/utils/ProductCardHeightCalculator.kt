@@ -22,6 +22,9 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
             val bestSellerLabelHeight = getLabelBestSellerHeight(context, hasLabelBestSeller)
 
+            val hasLabelCategoryBottom = productCardModel.isShowLabelCategoryBottom()
+            val categoryBottomLabelHeight = getTextCategoryBottomHeight(context, hasLabelCategoryBottom)
+
             val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
@@ -36,6 +39,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             imageHeight +
                             cardPaddingBottom +
                             bestSellerLabelHeight +
+                            categoryBottomLabelHeight +
                             campaignLabelHeight +
                             contentMarginTop +
                             contentHeight +
@@ -63,6 +67,12 @@ private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boole
     else 0
 }
 
+private fun getTextCategoryBottomHeight(context: Context, hasLabelBestSeller: Boolean): Int {
+    return if (hasLabelBestSeller)
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height)
+    else 0
+}
+
 private fun getGridViewContentMarginTop(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
         context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
@@ -81,6 +91,9 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
             val bestSellerLabelHeight = getLabelBestSellerHeight(context, hasLabelBestSeller)
 
+            val hasLabelCategoryBottom = productCardModel.isShowLabelCategoryBottom()
+            val categoryBottomLabelHeight = getTextCategoryBottomHeight(context, hasLabelCategoryBottom)
+
             val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
@@ -96,6 +109,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
             val totalHeight = cardPaddingTop +
                     bestSellerLabelHeight +
+                    categoryBottomLabelHeight +
                     campaignLabelHeight +
                     contentMarginTop +
                     cardPaddingBottom +
@@ -297,7 +311,7 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
         it.add(getSalesRatingFloatHeight(context))
     }
 
-    return credibilitySectionHeightList.max() ?: 0
+    return credibilitySectionHeightList.maxOrNull() ?: 0
 }
 
 private fun ProductCardModel.getRatingHeight(context: Context): Int {

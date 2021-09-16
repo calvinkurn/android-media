@@ -35,6 +35,10 @@ internal object GetProductList {
                     status
                     management
                 }
+                campaignType {
+                    name
+                    iconURL
+                }
             }
         }
     }

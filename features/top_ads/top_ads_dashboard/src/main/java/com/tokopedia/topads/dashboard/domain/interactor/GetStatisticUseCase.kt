@@ -39,11 +39,12 @@ constructor(): RestRequestUseCase() {
     }
 
     fun createRequestParams(startDate: Date, endDate: Date,
-                            @TopAdsStatisticsType type: Int, shopId: String, groupId: String?): RequestParams {
+                            @TopAdsStatisticsType type: Int, shopId: String, groupId: String?, goalId: Int = 0): RequestParams {
 
         var requestParams = RequestParams.create()
-        requestParams.putInt("shopID", shopId.toInt())
+        requestParams.putString("shopID", shopId)
         requestParams.putString(ParamObject.GROUP, groupId)
+        requestParams.putInt(ParamObject.GOAL_ID, goalId)
         requestParams.putInt(TopAdsDashboardConstant.PARAM_TYPE, type)
         requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,
                 SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate))

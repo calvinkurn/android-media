@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_EDIT
+import com.tokopedia.topads.common.data.internal.ParamObject.EDIT_PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
@@ -13,11 +15,11 @@ import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
-import com.tokopedia.topads.edit.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
@@ -123,7 +125,7 @@ class EditFormDefaultViewModel @Inject constructor(
 
     fun topAdsCreated(dataPro: Bundle, dataKey: HashMap<String, Any?>,
                       dataGrp: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
-        val param = topAdsCreateUseCase.setParam(dataPro, dataKey, dataGrp)
+        val param = topAdsCreateUseCase.setParam(EDIT_PAGE, dataPro, dataKey, dataGrp)
         topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type

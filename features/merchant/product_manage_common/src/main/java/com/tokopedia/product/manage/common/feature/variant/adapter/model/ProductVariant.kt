@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.adapter.factory.ProductVariantAdapterFactory
 import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
+import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductVariant(
@@ -13,12 +14,13 @@ data class ProductVariant(
         val combination: List<Int>,
         val isPrimary: Boolean,
         val isCampaign: Boolean,
-        val price: Int,
+        val price: Double,
         val sku: String,
         val stock: Int,
         val pictures: List<Picture>,
         val isAllStockEmpty: Boolean = false,
-        val access: ProductManageAccess
+        val access: ProductManageAccess,
+        val campaignTypeList: List<CampaignType>?
 ): Visitable<ProductVariantAdapterFactory> {
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {

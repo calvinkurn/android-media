@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,6 +19,8 @@ import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
+import com.tokopedia.loginfingerprint.listener.AuthenticationFingerprintCallback
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
@@ -31,7 +32,7 @@ import kotlinx.android.synthetic.main.fragment_setting_fingerprint.*
 import javax.inject.Inject
 
 
-class SettingFingerprintFragment: BaseDaggerFragment() {
+class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback?): BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,6 +43,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker: BiometricTracker
 
     private var enableSwitch = true
 
@@ -96,11 +100,13 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                 is Success -> {
                     enableSwitch = false
                     fragment_fingerprint_setting_switch?.isChecked = false
+                    tracker.trackRemoveFingerprintSuccess()
                 }
                 is Fail -> {
                     enableSwitch = false
                     fragment_fingerprint_setting_switch?.isChecked = true
-                    NetworkErrorHelper.showSnackbar(activity, it.throwable.message)
+                    tracker.trackRemoveFingerprintFailed(it.throwable.message ?: "")
+                    showToaster(it.throwable.message)
                 }
             }
             enableSwitch = true
@@ -118,6 +124,19 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             enableSwitch = true
             hideLoading()
         })
+    }
+
+    private fun showToaster(message: String?) {
+        if(context != null) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message ?: getString(R.string.error_default_fp),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        }
     }
 
     private fun goToVerification() {
@@ -145,19 +164,22 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     fun onSuccessRegisterFingerprint(data: RegisterFingerprintResult) {
         if (data.success) {
+            tracker.trackRegisterFpSuccess()
             enableSwitch = false
             fragment_fingerprint_setting_switch?.isChecked = true
             view?.let {
                 Toaster.build(it, getString(R.string.fingerprint_success_login_toaster), Toaster.LENGTH_LONG).show()
             }
         } else {
+            tracker.trackRegisterFpFailed(data.errorMessage)
             onErrorRegisterFingerprint(Throwable(message = getString(R.string.error_failed_register_fingerprint)))
         }
         enableSwitch = true
     }
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
+        tracker.trackRegisterFpFailed(throwable.message ?: "")
+        showToaster(throwable.message)
     }
 
     fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintPojo) {
@@ -167,40 +189,53 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     fun onFailedGetFingerprintStatus(throwable: Throwable) {
-        activity?.let {
-            NetworkErrorHelper.showSnackbar(activity, throwable.message)
-        }
+        showToaster(throwable.message)
     }
 
     fun loading() {
-        fragment_fingerprint_setting_container?.alpha = 0.4F
+        fragment_fingerprint_setting_container?.alpha = LESS_ALPHA
         fragment_fingerprint_setting_loader.show()
     }
 
     fun hideLoading() {
-        fragment_fingerprint_setting_container?.alpha = 1.0F
+        fragment_fingerprint_setting_container?.alpha = NORMAL_ALPHA
         fragment_fingerprint_setting_loader.hide()
     }
 
-    fun showBiometricPrompt () {
-        activity?.let {
-            if(BiometricPromptHelper.isBiometricAvailable(it)) {
-                BiometricPromptHelper.showBiometricPrompt(it,
-                    onSuccess = {
-                        goToVerification()
-                    },
-                    onFailed = {
-                        enableSwitch = true
-                    }, onError = { errCode ->
-                        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
-                            FingerprintDialogHelper.showFingerprintLockoutDialog(activity)
-                        }
-                        enableSwitch = true
-                    })
-            } else {
-                FingerprintDialogHelper.showNotRegisteredFingerprintDialog(activity)
-            }
+    private fun onSuccessAuthentication() {
+        tracker.trackClickOnLoginWithFingerprintSuccessDevice()
+        goToVerification()
+    }
+
+    private fun onFailedAuthentication() {
+        tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+        enableSwitch = true
+    }
+
+    private fun onErrorAuthentication(errCode: Int, errString: String) {
+        if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+            tracker.trackButtonCloseVerify()
+        } else {
+            tracker.trackOpenVerifyFingerprintFailed(errString)
         }
+        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
+            FingerprintDialogHelper.showFingerprintLockoutDialog(activity)
+        }
+        enableSwitch = true
+    }
+
+    private fun showBiometricPrompt () {
+        listener?.onShowFingerprintAuthentication(
+            { onSuccessAuthentication() },
+            { onFailedAuthentication() },
+            { code, msg ->
+                onErrorAuthentication(code, msg)
+            }
+        )
+    }
+
+    fun trackBackButton() {
+        tracker.trackClickBtnBackAccountSetting()
     }
 
     companion object {
@@ -209,8 +244,11 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
         const val OTP_SECURITY_QUESTION = 158
         const val REQUEST_SECURITY_QUESTION = 104
 
-        fun createInstance(bundle: Bundle): Fragment {
-            val fragment = SettingFingerprintFragment()
+        private const val NORMAL_ALPHA = 1.0F
+        private const val LESS_ALPHA = 0.4f
+
+        fun createInstance(bundle: Bundle, listener: AuthenticationFingerprintCallback? = null): Fragment {
+            val fragment = SettingFingerprintFragment(listener)
             fragment.arguments = bundle
             return fragment
         }

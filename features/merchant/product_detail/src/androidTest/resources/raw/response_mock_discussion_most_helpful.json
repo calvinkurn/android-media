@@ -2,39 +2,34 @@
   {
     "data": {
       "discussionMostHelpful": {
-        "shopID": "123",
-        "shopURL": "",
-        "productID": "456",
-        "totalQuestion": 10,
+        "productID": "1994427767",
         "question": [
           {
-            "questionID": "789",
-            "content": "Ada garansi nggak ya?",
-            "userName": "user",
-            "userThumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/209/user_thumbnail/desktop",
-            "userID": "209",
-            "createTime": "2020-04-24T12:31:06Z",
-            "createTimeFormatted": "24 Apr 2020",
-            "totalAnswer": 5,
             "answer": {
-              "answerID": "543",
-              "content": "Ada, 1 tahun",
-              "userName": "asdfasdf",
-              "userThumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/210/user_thumbnail/desktop",
-              "userThumbnail2": "https://accounts-staging.tokopedia.com/image/v1/u/210/user_thumbnail/desktop",
-              "userID": "210",
-              "isSeller": false,
-              "createTime": "2020-04-24T16:27:06Z",
-              "createTimeFormatted": "24 Apr 2020",
-              "attachedProductCount": 3
+              "answerID": "609746814",
+              "attachedProductCount": 0,
+              "content": "ready",
+              "createTime": "2021-07-12T12:13:37Z",
+              "createTimeFormatted": "12 Jul",
+              "isSeller": true,
+              "userID": "132674703",
+              "userName": "qa-zxccv01",
+              "userThumbnail": "https://images.tokopedia.net/img/seller_no_logo_0.png",
+              "userThumbnail2": "https://images.tokopedia.net/img/seller_no_logo_0.png"
             },
-            "answererThumbnail": [
-              "thumbnail1",
-              "thumbnail2",
-              "thumbnail3"
-            ]
+            "content": "MOCK MOCK MOCK",
+            "createTime": "2021-07-12T12:13:12Z",
+            "createTimeFormatted": "12 Jul",
+            "questionID": "310838370",
+            "totalAnswer": 1,
+            "userID": "144354868",
+            "userName": "MOCK MOCK MOCK",
+            "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/144354868/user_thumbnail/desktop"
           }
-        ]
+        ],
+        "shopID": "10241240",
+        "shopURL": "https://www.tokopedia.com/qa-zxccv01",
+        "totalQuestion": 1
       }
     }
   }

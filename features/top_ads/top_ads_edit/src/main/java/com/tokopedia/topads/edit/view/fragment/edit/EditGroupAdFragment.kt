@@ -12,8 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
@@ -23,7 +28,6 @@ import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
-import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
@@ -36,7 +40,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val AUTOBID_DEFUALT_BUDGET = 16000
-
+private const val EDIT_GROUP = "android.edit_group"
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
@@ -49,7 +53,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation3 = true
     private var currentBudget = 0
     private var groupId: Int? = 0
-    private var priceDaily = 0
+    private var priceDaily = 0.0F
     private var groupName: String = ""
     private var currentAutoBidState = ""
     private var initialToggleState = false
@@ -98,12 +102,19 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         group_name?.textFieldInput?.setText(data.groupName)
-        sharedViewModel.setBudget(data.priceBid)
-        priceDaily = data.priceDaily
-        if (priceDaily != 0) {
+        var bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf<TopAdsBidSettingsModel>()
+        data?.bidSettings?.forEach {
+            var topAdsBidSettingsModel: TopAdsBidSettingsModel = TopAdsBidSettingsModel()
+            topAdsBidSettingsModel.bidType = it.bidType
+            topAdsBidSettingsModel.priceBid = it.priceBid
+            bidSettingsList.add(topAdsBidSettingsModel)
+        }
+        sharedViewModel.setBidSettings(bidSettingsList)
+        priceDaily = data.daiyBudget
+        if (priceDaily != 0.0F) {
             toggle?.isChecked = true
             daily_budget?.visible()
-            setCurrentDailyBudget((priceDaily).toString())
+            setCurrentDailyBudget((priceDaily).toInt().toString())
         } else {
             daily_budget?.gone()
         }
@@ -252,7 +263,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setObservers() {
-        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, {
+        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner, {
             setCurrentDailyBudget(it.toString())
             currentBudget = it
         })
@@ -261,6 +272,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             if (currentAutoBidState.isNotEmpty()) {
                 setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
                 actionEnable()
+            } else {
+                viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
             }
         })
     }
@@ -294,10 +307,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
         try {
+            dataMap[ACTION_TYPE] = ParamObject.ACTION_EDIT
             dataMap[IS_DATA_CHANGE] = checkDataChanged()
             dataMap[GROUP_NAME] = getCurrentTitle()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
-            dataMap[GROUP_ID] = groupId
+            dataMap[GROUPID] = groupId
             dataMap[BUDGET_LIMITED] = toggle?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {

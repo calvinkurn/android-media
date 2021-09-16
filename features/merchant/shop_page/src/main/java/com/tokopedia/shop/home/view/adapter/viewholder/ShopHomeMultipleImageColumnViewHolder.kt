@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,7 +15,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -32,9 +33,14 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_SINGLE = 6
         private const val SPAN_SIZE_DOUBLE = 3
         private const val SPAN_SIZE_TRIPLE = 2
+        private const val SPAN_SIZE_DOUBLE_DATA_SIZE = 2
+        private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
+
     }
 
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
+    private val rvShopHomeMultiple: RecyclerView? = itemView.findViewById(R.id.rvShopHomeMultiple)
+    private val textViewTitle: Typography? = itemView.findViewById(R.id.textViewTitle)
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
@@ -42,21 +48,21 @@ class ShopHomeMultipleImageColumnViewHolder(
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (element.data?.size) {
-                    2 -> SPAN_SIZE_DOUBLE
-                    3 -> SPAN_SIZE_TRIPLE
+                    SPAN_SIZE_DOUBLE_DATA_SIZE -> SPAN_SIZE_DOUBLE
+                    SPAN_SIZE_TRIPLE_DATA_SIZE -> SPAN_SIZE_TRIPLE
                     else -> SPAN_SIZE_SINGLE
                 }
             }
         }
 
-        itemView.rvShopHomeMultiple.apply {
+        rvShopHomeMultiple?.apply {
             layoutManager = gridLayoutManager
             if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeMultipleImageColumnAdapter
         }
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (element.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {

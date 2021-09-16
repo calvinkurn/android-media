@@ -77,11 +77,13 @@ object VoucherCreationAnalyticConstant {
             const val PERIOD = "voucher creation - period"
             const val REVIEW = "voucher creation - review"
             const val CREATE = "merchant voucher code - create"
+            const val PAGE = "voucher creation page"
         }
 
         object VoucherList {
             const val ACTIVE = "voucher list active"
             const val HISTORY = "voucher list history"
+            const val PAGE = "voucher list page"
         }
 
         object VoucherDetail {
@@ -209,6 +211,7 @@ object VoucherCreationAnalyticConstant {
             const val SHARE_BROADCAST = "share - broadcast"
             const val SHARE_OTHERS = "share - lainnya"
             const val PERIOD = "click periode"
+            const val BROADCAST_CREATION = "click broadcast creation"
         }
     }
 

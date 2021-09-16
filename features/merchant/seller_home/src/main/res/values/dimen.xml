@@ -33,6 +33,7 @@
     <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
     <dimen name="setting_topads_button_margin">20dp</dimen>
     <dimen name="setting_topads_padding_bottom">30dp</dimen>
+    <dimen name="setting_logout_margin_start">60dp</dimen>
 
     // centralized promo
     <dimen name="centralized_promo_dimen_minus_2dp">-2dp</dimen>

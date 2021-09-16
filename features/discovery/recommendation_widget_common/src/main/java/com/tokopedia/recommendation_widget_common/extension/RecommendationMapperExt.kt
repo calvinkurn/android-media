@@ -20,7 +20,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
     return RecommendationWidget(
             recommendationItemList = recommendation.mapIndexed { index, recommendation ->
                 RecommendationItem(
-                        productId = recommendation.id.toInt(),
+                        productId = recommendation.id,
                         name = recommendation.name,
                         categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
                         url = recommendation.url,
@@ -32,8 +32,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         price = recommendation.price,
                         priceInt = recommendation.priceInt,
                         departmentId = recommendation.departmentId,
-                        rating = if (isRecomCardShouldShowVariantOrCart()) 0 else recommendation.rating,
-                        ratingAverage = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.ratingAverage,
+                        rating = recommendation.rating,
+                        ratingAverage = recommendation.ratingAverage,
                         countReview = recommendation.countReview,
                         stock = recommendation.stock,
                         recommendationType = recommendation.recommendationType,

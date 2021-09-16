@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void sendPreInstallData(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING, true) && isXiaomiPreInstallApp(context.getPackageName())) {
             Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
             Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }
@@ -316,6 +317,12 @@ public class BranchWrapper implements WrapperInterface {
                     RechargeBranchHelper.sendDigitalScreenLaunchEvent(context,
                             (RechargeLinkerData) linkerGenericRequest.getDataObj()
                     );
+                }
+                break;
+            case LinkerConstants.EVENT_SEARCH:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof ArrayList) {
+                    BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
                 }
                 break;
         }
