@@ -45,6 +45,14 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (view == null) {
+            unsubscribe();
+        }
+    }
+
+    @Override
     public void onError(Throwable e) {
         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
 
@@ -76,7 +84,6 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-
         if (graphqlResponse.getError(CampaignGqlResponse.class) != null
                 && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
             CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
