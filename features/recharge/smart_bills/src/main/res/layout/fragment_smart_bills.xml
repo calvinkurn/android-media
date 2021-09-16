@@ -68,6 +68,7 @@
                         android:layout_toRightOf="@+id/cb_smart_bills_select_all"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
                         android:text="@string/smart_bills_select_all"
                         app:typographyType="body_3"
                         app:typographyWeight="bold" />
@@ -77,6 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/smart_bills_add_bills_title"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
                         android:textColor="@color/Unify_G500"
                         android:layout_alignParentRight="true"
                         app:typographyType="body_3"
