@@ -26,6 +26,7 @@ internal object GetRecentPurchase {
                         ratingAverage
                         countReview
                         minOrder
+                        maxOrder
                         stock
                         category
                         labelGroup{

@@ -35,8 +35,8 @@ object RepurchaseProductMapper {
                 labelGroupList = mapLabelGroup(product),
                 labelGroupVariantList = mapLabelGroupVariant(product),
                 nonVariant = NonVariant(
-                    minQuantity = product.minOrder.toInt(),
-                    maxQuantity = product.stock.toInt()
+                    minQuantity = product.minOrder,
+                    maxQuantity = product.maxOrder
                 )
             )
         }
