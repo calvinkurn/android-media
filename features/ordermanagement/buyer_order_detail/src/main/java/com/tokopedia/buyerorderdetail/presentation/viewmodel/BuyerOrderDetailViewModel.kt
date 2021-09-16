@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
@@ -20,7 +19,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -72,20 +70,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
-    private fun trackSuccessATC(products: List<ProductListUiModel.ProductUiModel>, result: Result<AtcMultiData>) {
-        if (result is Success) {
-            BuyerOrderDetailTracker.eventSuccessATC(
-                products,
-                result.data.atcMulti.buyAgainData.listProducts,
-                getOrderId(),
-                getShopId(),
-                getShopName(),
-                getShopType().toString(),
-                getUserId()
-            )
-        }
-    }
-
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
@@ -110,9 +94,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
         launchCatchError(block = {
-            val result = atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(product.mapToAddToCartParam()))
-            trackSuccessATC(listOf(product), result)
-            _singleAtcResult.postValue(product to result)
+            _singleAtcResult.postValue(product to atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(product.mapToAddToCartParam())))
         }, onError = {
             _singleAtcResult.postValue(product to Fail(it))
         })
@@ -125,9 +107,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 val params = ArrayList(buyerOrderDetailResult.data.productListUiModel.productList.map {
                     it.mapToAddToCartParam()
                 })
-                val result = atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params)
-                trackSuccessATC(buyerOrderDetailResult.data.productListUiModel.productList, result)
-                _multiAtcResult.postValue(result)
+                _multiAtcResult.postValue(atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
             } else {
                 _multiAtcResult.postValue(Fail(MessageErrorException(resourceProvider.get().getErrorMessageNoProduct())))
             }
