@@ -248,6 +248,10 @@ class BuyerOrderDetailAction {
         clickView(matcher)
     }
 
+    fun login() {
+        Utils.login()
+    }
+
     fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivity>) {
         activityRule.launchActivity(BuyerOrderDetailActivity.createIntent(
                 InstrumentationRegistry.getInstrumentation().targetContext,
