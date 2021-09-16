@@ -42,7 +42,9 @@ data class RepurchaseProduct(
     @SerializedName("countReview")
     val countReview: String = "",
     @SerializedName("minOrder")
-    val minOrder: String = "",
+    val minOrder: Int = 0,
+    @SerializedName("maxOrder")
+    val maxOrder: Int = 0,
     @Expose
     @SerializedName("stock")
     val stock: String = "",

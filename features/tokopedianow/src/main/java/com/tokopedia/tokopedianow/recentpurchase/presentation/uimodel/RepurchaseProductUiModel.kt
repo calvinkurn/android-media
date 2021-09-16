@@ -7,6 +7,8 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurc
 
 data class RepurchaseProductUiModel(
     val id: String,
+    val parentId: String,
+    val shopId: String,
     val productCard: ProductCardModel
 ) : Visitable<RecentPurchaseTypeFactory>, ImpressHolder() {
 

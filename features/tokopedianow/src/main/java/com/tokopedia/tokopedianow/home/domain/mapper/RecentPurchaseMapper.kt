@@ -67,7 +67,7 @@ object RecentPurchaseMapper {
                 hasAddToCartButton = true,
                 labelGroupList = mapLabelGroup(data),
                 labelGroupVariantList = mapLabelGroupVariant(data),
-                nonVariant = NonVariant(minQuantity = data.minOrder.toInt(), maxQuantity = data.stock.toInt())
+                nonVariant = NonVariant(minQuantity = data.minOrder, maxQuantity = data.maxOrder)
             )
         }
     }

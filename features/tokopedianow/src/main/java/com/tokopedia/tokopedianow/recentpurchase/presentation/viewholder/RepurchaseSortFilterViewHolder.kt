@@ -24,6 +24,7 @@ class RepurchaseSortFilterViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter
 
         private const val FIRST_ITEM_INDEX = 0
+        private const val INACTIVE_SORT_FILTER = 0
     }
 
     private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
@@ -78,7 +79,7 @@ class RepurchaseSortFilterViewHolder(
 
     private fun setupLayout(data: RepurchaseSortFilterUiModel) {
         val filterApplied = data.sortFilterList.any {
-            !it.selectedItem?.id.isNullOrEmpty()
+            !it.selectedItem?.id.isNullOrEmpty() || it.sort != INACTIVE_SORT_FILTER
         }
         setupSortFilterMargin(filterApplied)
         setupFilterChipMargin(filterApplied)

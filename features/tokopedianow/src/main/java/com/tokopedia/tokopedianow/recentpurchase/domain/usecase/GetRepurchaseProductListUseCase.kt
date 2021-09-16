@@ -53,6 +53,7 @@ class GetRepurchaseProductListUseCase @Inject constructor(
                     ratingAverage
                     countReview
                     minOrder
+                    maxOrder
                     stock
                     category
                     labelGroup {

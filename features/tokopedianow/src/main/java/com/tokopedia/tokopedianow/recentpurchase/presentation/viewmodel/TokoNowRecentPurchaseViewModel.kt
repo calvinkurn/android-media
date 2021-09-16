@@ -52,6 +52,8 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setCategoryFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.updateDeletedATCQuantity
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.updateProductATCQuantity
 import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
@@ -95,8 +97,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         get() = _miniCartUpdate
     val miniCartRemove: LiveData<Result<Pair<String, String>>>
         get() = _miniCartRemove
-    val productAddToCartQuantity: LiveData<Result<MiniCartSimplifiedData>>
-        get() = _productAddToCartQuantity
+    val atcQuantity: LiveData<Result<RepurchaseLayoutUiModel>>
+        get() = _atcQuantity
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
 
@@ -106,7 +108,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
-    private val _productAddToCartQuantity = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    private val _atcQuantity = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
     private var localCacheModel: LocalCacheModel? = null
@@ -122,7 +124,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
             state = TokoNowLayoutState.LOADING
         )
 
@@ -135,7 +136,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
             state = TokoNowLayoutState.SHOW
         )
 
@@ -148,7 +148,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
                 state = TokoNowLayoutState.LOADED
             )
 
@@ -163,7 +162,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    val isInitialLoad = true
+                    val isInitialLoad = _getLayout.value == null
 
                     if(isInitialLoad) {
                         setMiniCartAndProductQuantity(it)
@@ -196,8 +195,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.LOADED
+                state = TokoNowLayoutState.EMPTY
             )
 
             _getLayout.postValue(Success(layout))
@@ -209,8 +207,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
-            state = TokoNowLayoutState.LOADED
+            state = TokoNowLayoutState.UPDATE
         )
 
         _getLayout.postValue(Success(layout))
@@ -219,11 +216,17 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
-            _productAddToCartQuantity.postValue(Success(miniCart))
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _atcQuantity.postValue(Success(layout))
         }) {}
     }
 
-    fun onCartItemUpdated(productId: String, quantity: Int, shopId: String) {
+    fun onClickAddToCart(productId: String, quantity: Int, shopId: String) {
         val miniCartItem = getMiniCartItem(productId)
 
         when {
@@ -265,6 +268,25 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
+    fun getAddToCartQuantity() {
+        val shopId = localCacheModel?.shop_id.orEmpty()
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val isLoggedIn = userSession.isLoggedIn
+
+        if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(listOf(shopId))
+                getMiniCartUseCase.execute({
+                    setProductAddToCartQuantity(it)
+                }, {
+                    _atcQuantity.postValue(Fail(it))
+                })
+            }) {
+                _atcQuantity.postValue(Fail(it))
+            }
+        }
+    }
+
     fun setLocalCacheModel(localCacheModel: LocalCacheModel?) {
         this.localCacheModel = localCacheModel
     }
@@ -291,8 +313,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
-            state = TokoNowLayoutState.LOADED
+            state = TokoNowLayoutState.UPDATE
         )
 
         selectedCategoryFilter = selectedFilter
@@ -307,8 +328,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
-            state = TokoNowLayoutState.LOADED
+            state = TokoNowLayoutState.UPDATE
         )
 
         selectedSortFilter = sort
@@ -320,7 +340,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
             state = TokoNowLayoutState.LOADED
         )
 
@@ -372,8 +391,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
                 val layout = RepurchaseLayoutUiModel(
                     layoutList = layoutList,
-                    nextPage = INITIAL_PAGE,
-                    state = TokoNowLayoutState.LOADED
+                    state = TokoNowLayoutState.UPDATE
                 )
 
                 _getLayout.postValue(Success(layout))
@@ -389,8 +407,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.LOADED
+                state = TokoNowLayoutState.UPDATE
             )
 
             _getLayout.postValue(Success(layout))
@@ -417,10 +434,13 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
             layoutList.addProduct(productList)
 
+            miniCartSimplifiedData?.let {
+                setMiniCartAndProductQuantity(it)
+            }
+
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
-                nextPage = page,
-                state = TokoNowLayoutState.LOADED
+                state = TokoNowLayoutState.LOAD_MORE
             )
 
             _loadMore.postValue(Success(layout))
@@ -490,16 +510,9 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
-        setMiniCartSimplifiedData(miniCart)
-        updateProductQuantity(miniCart)
-    }
-
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
         miniCartSimplifiedData = miniCart
-    }
-
-    private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
-        //TO-DO: Update product quantity here
+        layoutList.updateProductATCQuantity(miniCart)
+        layoutList.updateDeletedATCQuantity(miniCart)
     }
 
     private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {

@@ -69,6 +69,7 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.Repurch
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
+import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject
 
@@ -97,6 +98,8 @@ class TokoNowRecentPurchaseFragment:
 
     @Inject
     lateinit var viewModel: TokoNowRecentPurchaseViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var rvRecentPurchase: RecyclerView? = null
@@ -108,7 +111,7 @@ class TokoNowRecentPurchaseFragment:
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
-                productCardListener = RepurchaseProductCardListener(requireContext()),
+                productCardListener = createProductCardListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
@@ -421,18 +424,24 @@ class TokoNowRecentPurchaseFragment:
                 onSuccessGetLayout(it.data)
             }
 
+            addScrollListeners()
             resetSwipeLayout()
         }
 
         observe(viewModel.loadMore) {
             removeScrollListeners()
-
             if(it is Success) {
                 submitList(it.data)
-                addScrollListeners()
             }
+            addScrollListeners()
+        }
 
-            resetSwipeLayout()
+        observe(viewModel.atcQuantity) {
+            removeScrollListeners()
+            if(it is Success) {
+                submitList(it.data)
+            }
+            addScrollListeners()
         }
 
         observe(viewModel.miniCart) {
@@ -542,7 +551,7 @@ class TokoNowRecentPurchaseFragment:
         when(data.state) {
             TokoNowLayoutState.LOADING -> onLoadingLayout()
             TokoNowLayoutState.SHOW -> viewModel.getLayoutData()
-            TokoNowLayoutState.LOADED -> addScrollListeners()
+            TokoNowLayoutState.LOADED -> viewModel.getAddToCartQuantity()
         }
     }
 
@@ -683,5 +692,14 @@ class TokoNowRecentPurchaseFragment:
 
     private fun clearFilters() {
         viewModel.clearSelectedFilters()
+    }
+
+    private fun createProductCardListener(): RepurchaseProductCardListener {
+        return RepurchaseProductCardListener(
+            requireContext(),
+            viewModel,
+            userSession,
+            this::startActivityForResult
+        )
     }
 }

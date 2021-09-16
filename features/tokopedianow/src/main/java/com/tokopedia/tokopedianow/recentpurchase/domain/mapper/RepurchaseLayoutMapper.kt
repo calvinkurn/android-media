@@ -2,6 +2,8 @@ package com.tokopedia.tokopedianow.recentpurchase.domain.mapper
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -22,6 +24,9 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 
 object RepurchaseLayoutMapper {
+
+    private const val DEFAULT_QUANTITY = 0
+    private const val DEFAULT_PARENT_ID = "0"
 
     fun MutableList<Visitable<*>>.addLayoutList() {
         val sortFilter = RepurchaseSortFilterUiModel(SORT_FILTER, emptyList())
@@ -143,6 +148,65 @@ object RepurchaseLayoutMapper {
                     sortFilterList = sortFilterList
                 ))
             }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData) {
+        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+
+        miniCart.miniCartItems.map { miniCartItem ->
+            val productId = miniCartItem.productId
+            val parentId = miniCartItem.productParentId
+            val quantity = if (parentId != DEFAULT_PARENT_ID) {
+                val miniCartItemsWithSameParentId = variantGroup[miniCartItem.productParentId]
+                miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+            } else {
+                miniCartItem.quantity
+            }
+            updateProductQuantity(productId, quantity)
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData) {
+        val productList = filterIsInstance<RepurchaseProductUiModel>()
+        val cartProductIds = miniCart.miniCartItems.map { it.productId }
+        val deletedProducts = productList.filter { it.id !in cartProductIds }
+        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+
+        deletedProducts.forEach { model ->
+            val productId = model.id
+            val parentId = model.parentId
+
+            if (parentId != DEFAULT_PARENT_ID) {
+                val miniCartItemsWithSameParentId = variantGroup[parentId]
+                val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+                if (totalQuantity == DEFAULT_QUANTITY) {
+                    updateProductQuantity(productId, DEFAULT_QUANTITY)
+                } else {
+                    updateProductQuantity(productId, totalQuantity)
+                }
+            } else {
+                updateProductQuantity(productId, DEFAULT_QUANTITY)
+            }
+        }
+    }
+
+    private fun MutableList<Visitable<*>>.updateProductQuantity(productId: String, quantity: Int) {
+        val productList = filterIsInstance<RepurchaseProductUiModel>()
+
+        productList.firstOrNull { it.id == productId }?.let {
+            val index = indexOf(it)
+            val productCard = it.productCard.run {
+                if (hasVariant()) {
+                    copy(variant = variant?.copy(quantity = quantity))
+                } else {
+                    copy(
+                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                        nonVariant = nonVariant?.copy(quantity = quantity)
+                    )
+                }
+            }
+            set(index, it.copy(productCard = productCard))
         }
     }
 

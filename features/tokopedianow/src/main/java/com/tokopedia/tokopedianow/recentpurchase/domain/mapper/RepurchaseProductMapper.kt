@@ -8,7 +8,7 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 object RepurchaseProductMapper {
 
     fun List<RepurchaseProduct>.mapToProductListUiModel() = map {
-        RepurchaseProductUiModel(it.id, createProductCardModel(it))
+        RepurchaseProductUiModel(it.id, it.parentProductId, it.shop.id, createProductCardModel(it))
     }
 
     private fun createProductCardModel(product: RepurchaseProduct): ProductCardModel {
@@ -35,8 +35,8 @@ object RepurchaseProductMapper {
                 labelGroupList = mapLabelGroup(product),
                 labelGroupVariantList = mapLabelGroupVariant(product),
                 nonVariant = NonVariant(
-                    minQuantity = product.minOrder.toInt(),
-                    maxQuantity = product.stock.toInt()
+                    minQuantity = product.minOrder,
+                    maxQuantity = product.maxOrder
                 )
             )
         }
