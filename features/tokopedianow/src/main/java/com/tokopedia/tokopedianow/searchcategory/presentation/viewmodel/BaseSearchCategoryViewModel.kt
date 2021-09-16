@@ -212,6 +212,13 @@ abstract class BaseSearchCategoryViewModel(
     protected val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
+    protected val addToCartRepurchaseWidgetTrackingMutableLiveData =
+        SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
+
+    val addToCartRepurchaseWidgetTrackingLiveData:
+        LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
+        addToCartRepurchaseWidgetTrackingMutableLiveData
+
     init {
         updateQueryParams()
 
@@ -1237,6 +1244,62 @@ abstract class BaseSearchCategoryViewModel(
         recommendationItem.quantity = quantity
         refreshMiniCart()
     }
+
+    open fun onViewATCRepurchaseWidget(
+        repurchaseProduct: TokoNowProductCardUiModel,
+        quantity: Int,
+    ) {
+        val nonVariant = repurchaseProduct.product.nonVariant ?: return
+        val productId = repurchaseProduct.productId
+        val shopId = repurchaseProduct.shopId
+        val currentQuantity = nonVariant.quantity
+
+        cartService.handleCart(
+            CartProductItem(productId, shopId, currentQuantity),
+            quantity,
+            onSuccessAddToCart = {
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
+            },
+            onSuccessUpdateCart = {
+                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+            },
+            onSuccessDeleteCart = {
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
+            },
+            onError = ::onAddToCartFailed,
+            handleCartEventNonLogin = {
+                handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
+            }
+        )
+    }
+
+    private fun onSuccessATCRepurchaseWidgetProduct(
+        repurchaseProduct: TokoNowProductCardUiModel,
+        quantity: Int,
+    ) {
+        val nonVariant = repurchaseProduct.product.nonVariant ?: return
+
+        repurchaseProduct.product = repurchaseProduct.product.copy(
+            nonVariant = nonVariant.copy(quantity = quantity)
+        )
+
+        refreshMiniCart()
+    }
+
+    private fun sendAddToCartRepurchaseProductTracking(
+        quantity: Int,
+        cartId: String,
+        repurchaseProduct: TokoNowProductCardUiModel,
+    ) {
+        addToCartRepurchaseWidgetTrackingMutableLiveData.value =
+            Triple(quantity, cartId, repurchaseProduct)
+    }
+
+    private fun getRepurchaseWidgetIndex() =
+        visitableList.indexOfFirst { it is TokoNowRecentPurchaseUiModel }
 
     protected class HeaderDataView(
             val title: String = "",

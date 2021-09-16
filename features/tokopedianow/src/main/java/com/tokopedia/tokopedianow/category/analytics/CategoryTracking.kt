@@ -4,9 +4,9 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.REMOVE_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_BANNER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CATEGORY_FILTER
@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.REMOVE_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
@@ -107,6 +108,7 @@ object CategoryTracking {
         const val CLICK_CLP_RECOM_OOC = "click product on recom widget-tokonow-clp while the address is out of coverage (OOC)"
         const val IMPRESSION_ON_PAST_PURCHASE_WIDGET = "impression on past purchase widget"
         const val CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET = "click product on past purchase widget"
+        const val CLICK_ATC_ON_PAST_PURCHASE_WIDGET = "click atc on past purchase widget"
     }
 
     object Category {
@@ -470,7 +472,7 @@ object CategoryTracking {
         ))
     }
 
-    fun sendRepurchaseWidgetImpression(
+    fun sendRepurchaseWidgetImpressionEvent(
         trackingQueue: TrackingQueue,
         repurchaseProduct: TokoNowProductCardUiModel,
         position: Int,
@@ -511,22 +513,26 @@ object CategoryTracking {
     }
 
     private fun TokoNowProductCardUiModel.getAsImpressionObjectDataLayer(position: Int) =
-        getAsObjectDataLayer(position).also {
+        getAsClickObjectDataLayer(position).also {
             it["list"] = TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
         }
 
-    private fun TokoNowProductCardUiModel.getAsObjectDataLayer(position: Int) =
+    private fun TokoNowProductCardUiModel.getAsClickObjectDataLayer(position: Int) =
+        getAsObjectDataLayer().also {
+            it["position"] = position
+        }
+
+    private fun TokoNowProductCardUiModel.getAsObjectDataLayer() =
         DataLayer.mapOf(
             "brand", NONE_OTHER,
             "category", NONE_OTHER,
             "id", productId,
             "name", product.productName,
-            "position", position,
             "price", product.formattedPrice,
             "variant", NONE_OTHER,
         )
 
-    fun sendRepurchaseWidgetClick(
+    fun sendRepurchaseWidgetClickEvent(
         repurchaseProduct: TokoNowProductCardUiModel,
         position: Int,
         userId: String,
@@ -546,11 +552,56 @@ object CategoryTracking {
                             LIST, TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
                         ),
                         PRODUCTS, DataLayer.listOf(
-                            repurchaseProduct.getAsObjectDataLayer(position)
+                            repurchaseProduct.getAsClickObjectDataLayer(position)
                         )
                     )
                 ),
             )
         )
     }
+
+    fun sendRepurchaseWidgetAddToCartEvent(
+        repurchaseProduct: TokoNowProductCardUiModel,
+        quantity: Int,
+        cartId: String,
+        userId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, SearchCategoryTrackingConst.Event.ADD_TO_CART,
+                EVENT_ACTION, CLICK_ATC_ON_PAST_PURCHASE_WIDGET,
+                EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
+                EVENT_LABEL, createEventLabelRepurchaseWidget(repurchaseProduct),
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    ADD, DataLayer.mapOf(
+                        PRODUCTS, DataLayer.listOf(
+                            repurchaseProduct.getAsATCObjectDataLayer(quantity, cartId)
+                        )
+                    ),
+                    CURRENCYCODE, IDR,
+                ),
+            )
+        )
+    }
+
+    private fun TokoNowProductCardUiModel.getAsATCObjectDataLayer(quantity: Int, cartId: String) =
+        getAsObjectDataLayer().also {
+            it["category_id"] = ""
+            it["dimension40"] = TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+            it["dimension45"] = cartId
+            it["dimension79"] = ""
+            it["dimension80"] = ""
+            it["dimension81"] = ""
+            it["dimension82"] = ""
+            it["dimension83"] = ""
+            it["dimension84"] = ""
+            it["dimension96"] = ""
+            it["quantity"] = quantity
+            it["shop_id"] = shopId
+            it["shop_name"] = ""
+            it["shop_type"] = ""
+        }
 }

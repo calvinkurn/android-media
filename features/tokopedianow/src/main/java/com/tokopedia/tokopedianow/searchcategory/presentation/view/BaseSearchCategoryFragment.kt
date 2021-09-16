@@ -452,6 +452,9 @@ abstract class BaseSearchCategoryFragment:
                 this::sendAddToCartRecommendationTrackingEvent
         )
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
+            ::sendAddToCartRepurchaseProductTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -930,5 +933,11 @@ abstract class BaseSearchCategoryFragment:
             data.productId,
             data.shopId,
         )
+    }
+
+    protected open fun sendAddToCartRepurchaseProductTrackingEvent(
+        addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
+    ) {
+
     }
 }

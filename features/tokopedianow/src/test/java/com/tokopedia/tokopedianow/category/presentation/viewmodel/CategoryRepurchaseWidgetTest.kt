@@ -1,18 +1,26 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.cartId
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.errorMessage
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartMessage
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartResponse
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.PRODUCT_ID_NON_VARIANT_ATC
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.every
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.everyItem
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.instanceOf
@@ -115,7 +123,10 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     private fun List<Visitable<*>>.getRepurchaseWidgetUiModel() =
         find { it is TokoNowRecentPurchaseUiModel } as TokoNowRecentPurchaseUiModel
 
-    private fun `Then verify non variant product quantity`(miniCartItems: List<MiniCartItem>, repurchaseProductList: List<TokoNowProductCardUiModel>) {
+    private fun `Then verify non variant product quantity`(
+        miniCartItems: List<MiniCartItem>,
+        repurchaseProductList: List<TokoNowProductCardUiModel>,
+    ) {
         val miniCartItemsNonVariant = miniCartItems.filter {
             it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
         }
@@ -125,14 +136,21 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
                 it.productId == miniCartItem.productId
             } ?: return@forEach
             val reason = createInvalidNonVariantQtyReason(miniCartItem)
-            assertThat(reason, productItem.product.nonVariant!!.quantity, shouldBe(miniCartItem.quantity))
+            assertThat(
+                reason,
+                productItem.product.nonVariant!!.quantity,
+                shouldBe(miniCartItem.quantity)
+            )
         }
     }
 
     private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem) =
         "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
-    private fun `Then verify product variant quantity`(miniCartItems: List<MiniCartItem>, repurchaseProductList: List<TokoNowProductCardUiModel>) {
+    private fun `Then verify product variant quantity`(
+        miniCartItems: List<MiniCartItem>,
+        repurchaseProductList: List<TokoNowProductCardUiModel>,
+    ) {
         val miniCartItemsVariant = miniCartItems.filter {
             it.productParentId != NO_VARIANT_PARENT_PRODUCT_ID
         }
@@ -163,5 +181,244 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         }
 
         assertThat(updatedVisitableList, hasItem(repurchaseWidgetIndex))
+    }
+
+    @Test
+    fun `add to cart repurchase widget product`() {
+        val addToCartTestHelper = AddToCartNonVariantTestHelper(
+            tokoNowCategoryViewModel,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartListSimplifiedUseCase,
+            getRecommendationUseCase,
+            userSession,
+            object : AddToCartNonVariantTestHelper.Callback {
+                override fun `Given first page API will be successful`() { }
+
+                override fun `Given first page API can show recommendation`() { }
+            },
+        )
+
+        addToCartTestHelper.`add to cart repurchase widget product`()
+    }
+
+    private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget product`() {
+        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+            .jsonToObject<CategoryModel>()
+
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
+        `Given add to cart API will success`(addToCartSuccessModel)
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
+        val repurchaseWidgetProduct = repurchaseWidget.productList.find {
+            it.productId == PRODUCT_ID_NON_VARIANT_ATC
+        }!!
+
+        `When add to cart repurchase product`(repurchaseWidgetProduct, addToCartQty)
+
+        `Then assert cart message event`(
+            expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
+        )
+        `Then assert repurchase product quantity`(repurchaseWidgetProduct, addToCartQty)
+        `Then verify mini cart is refreshed`()
+        `Then verify add to cart tracking repurchase product`(
+            repurchaseWidgetProduct,
+            addToCartQty,
+            cartId,
+        )
+    }
+
+    private fun `When add to cart repurchase product`(
+        repurchaseWidgetProduct: TokoNowProductCardUiModel,
+        quantity: Int,
+    ) {
+        tokoNowCategoryViewModel.onViewATCRepurchaseWidget(repurchaseWidgetProduct, quantity)
+    }
+
+    private fun `Then assert repurchase product quantity`(
+        repurchaseProductCardUiModel: TokoNowProductCardUiModel,
+        expectedQuantity: Int,
+    ) {
+        assertThat(
+            repurchaseProductCardUiModel.product.nonVariant?.quantity,
+            shouldBe(expectedQuantity)
+        )
+    }
+
+    private fun `Then verify add to cart tracking repurchase product`(
+        repurchaseWidgetProduct: TokoNowProductCardUiModel,
+        addToCartQty: Int,
+        cartId: String,
+    ) {
+        val addToCartEvent = tokoNowCategoryViewModel.addToCartRepurchaseWidgetTrackingLiveData.value!!
+
+        val (actualQuantity, actualCartId, actualRepurchaseProduct) = addToCartEvent
+        assertThat(actualQuantity, shouldBe(addToCartQty))
+        assertThat(actualCartId, shouldBe(cartId))
+        assertThat(actualRepurchaseProduct, shouldBe(repurchaseWidgetProduct))
+    }
+
+    @Test
+    fun `add to cart repurchase widget product failed`() {
+        val addToCartTestHelper = AddToCartNonVariantTestHelper(
+            tokoNowCategoryViewModel,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartListSimplifiedUseCase,
+            getRecommendationUseCase,
+            userSession,
+            object : AddToCartNonVariantTestHelper.Callback {
+                override fun `Given first page API will be successful`() { }
+
+                override fun `Given first page API can show recommendation`() { }
+            },
+        )
+
+        addToCartTestHelper.`add to cart repurchase widget product failed`()
+    }
+
+    private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget product failed`() {
+        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+            .jsonToObject<CategoryModel>()
+
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
+        `Given add to cart API will fail`(responseErrorException)
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
+        val repurchaseWidgetProduct = repurchaseWidget.productList.find {
+            it.productId == PRODUCT_ID_NON_VARIANT_ATC
+        }!!
+
+        `When add to cart repurchase product`(repurchaseWidgetProduct, addToCartQty)
+
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert repurchase product quantity`(repurchaseWidgetProduct, 0)
+    }
+
+    @Test
+    fun `update repurchase widget product`() {
+        val addToCartTestHelper = AddToCartNonVariantTestHelper(
+            tokoNowCategoryViewModel,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartListSimplifiedUseCase,
+            getRecommendationUseCase,
+            userSession,
+            object : AddToCartNonVariantTestHelper.Callback {
+                override fun `Given first page API will be successful`() {
+                    val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+                        .jsonToObject<CategoryModel>()
+
+                    `Given get category first page use case will be successful`(categoryModel)
+                }
+
+                override fun `Given first page API can show recommendation`() { }
+            },
+        )
+
+        addToCartTestHelper.`update repurchase widget product`()
+    }
+
+    private fun AddToCartNonVariantTestHelper.`update repurchase widget product`() {
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = SearchCategoryDummyUtils.miniCartItems.find {
+            it.productId == productIdToATC
+        }!!
+        val productUpdatedQuantity = productInMiniCart.quantity - 3
+
+        `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
+        val repurchaseWidgetProduct = repurchaseWidget.productList.find {
+            it.productId == PRODUCT_ID_NON_VARIANT_ATC
+        }!!
+
+        `When add to cart repurchase product`(repurchaseWidgetProduct, productUpdatedQuantity)
+
+        `Then assert repurchase product quantity`(repurchaseWidgetProduct, productUpdatedQuantity)
+        `Then verify mini cart is refreshed`(2)
+    }
+
+    @Test
+    fun `delete cart repurchase widget product`() {
+        val addToCartTestHelper = AddToCartNonVariantTestHelper(
+            tokoNowCategoryViewModel,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartListSimplifiedUseCase,
+            getRecommendationUseCase,
+            userSession,
+            object : AddToCartNonVariantTestHelper.Callback {
+                override fun `Given first page API will be successful`() {
+                    val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+                        .jsonToObject<CategoryModel>()
+
+                    `Given get category first page use case will be successful`(categoryModel)
+                }
+
+                override fun `Given first page API can show recommendation`() { }
+            },
+        )
+
+        addToCartTestHelper.`delete cart repurchase widget product`()
+    }
+
+    private fun AddToCartNonVariantTestHelper.`delete cart repurchase widget product`() {
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        `Given delete cart use case will be successful`(deleteCartResponse)
+        `Given view setup to delete`(productId)
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
+        val repurchaseWidgetProduct = repurchaseWidget.productList.find {
+            it.productId == PRODUCT_ID_NON_VARIANT_ATC
+        }!!
+
+        `When add to cart repurchase product`(repurchaseWidgetProduct, 0)
+
+        `Then assert repurchase product quantity`(repurchaseWidgetProduct, 0)
+        `Then assert cart message event`(expectedSuccessMessage = deleteCartMessage)
+        `Then verify mini cart is refreshed`(2)
+    }
+
+    @Test
+    fun `add to cart repurchase widget product non login`() {
+        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+            .jsonToObject<CategoryModel>()
+
+        `Given user not logged in`()
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
+        val repurchaseWidgetProduct = repurchaseWidget.productList.find {
+            it.productId == PRODUCT_ID_NON_VARIANT_ATC
+        }!!
+
+        `When add to cart repurchase product`(repurchaseWidgetProduct, addToCartQty)
+
+        `Then assert route to login page`()
+        `Then assert recent purchase widget visitable is updated`(visitableList)
+    }
+
+    private fun `Given user not logged in`() {
+        every { userSession.isLoggedIn } returns false
+    }
+
+    private fun `Then assert route to login page`() {
+        assertThat(
+            tokoNowCategoryViewModel.routeApplinkLiveData.value!!,
+            shouldBe(ApplinkConst.LOGIN)
+        )
     }
 }
