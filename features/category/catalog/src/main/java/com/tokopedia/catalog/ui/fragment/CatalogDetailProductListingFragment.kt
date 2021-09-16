@@ -494,25 +494,30 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onQuickFilterSelected(option: Option) {
-        if (!isQuickFilterSelected(option)) {
-            val filter = getAllFilterParameters()
-            filter[option.key] = option.value
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
+        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        if(isQuickFilterSelectedReversed){
             CatalogDetailAnalytics.sendEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId)
-        } else {
-            val filter = getAllFilterParameters()
-            filter.remove(option.key)
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
         }
+        setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
+
+        val queryParams = filterController?.getParameter()
+        queryParams?.let {
+            refreshSearchParameter(queryParams)
+            refreshFilterController(java.util.HashMap(queryParams))
+        }
+        reloadData()
+    }
+
+    private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
+        if (option.isCategoryOption)
+            filterController?.setFilter(option, isQuickFilterSelected, true)
+        else
+            filterController?.setFilter(option, isQuickFilterSelected)
     }
 
     private fun getAllFilterParameters(): HashMap<String, String> {
@@ -520,7 +525,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun isQuickFilterSelected(option: Option): Boolean {
-        return getSelectedFilter().containsKey(option.key)
+        return filterController?.getFilterViewState(option.uniqueId) ?: return false
     }
 
     override fun onChangeList() {
@@ -696,9 +701,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun openBottomSheetFilterRevamp(){
         activity?.supportFragmentManager?.let{
             CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId)
             sortFilterBottomSheet?.show(
@@ -711,17 +716,24 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
-        filterController?.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
+        val searchParameterMap = searchParameter.getSearchParameterHashMap() ?: mapOf()
+        filterController?.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
         sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
         renderDynamicFilter(dynamicFilterModel.data)
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        applySort(applySortFilterModel)
         filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
         searchParameter.getSearchParameterHashMap().clear()
         searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
         viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
         reloadData()
+    }
+
+    private fun applySort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        if (applySortFilterModel.selectedSortName.isEmpty()
+                || applySortFilterModel.selectedSortMapParameter.isEmpty()) return
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
