@@ -61,4 +61,7 @@ data class ChuckerLog(
     @ColumnInfo(name = "traffic")
     var traffic: String = "",
 
+    @ColumnInfo(name = "packet_loss_increasing")
+    var packetLossIncrease: Boolean = false,
+
 )

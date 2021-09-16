@@ -22,7 +22,8 @@ fun List<ChuckerLog>.mapToUI(): MutableList<ChuckerLogUIModel> {
             audioBitrate = it.audioBitrate,
             bitrateMode = it.bitrateMode,
             appVersion = it.appVersion,
-            userId = it.userId
+            userId = it.userId,
+            isPacketLossIncreasing = it.packetLossIncrease
         )
     }.toMutableList()
 }
@@ -44,6 +45,7 @@ fun ChuckerLogUIModel.mapToData(): ChuckerLog {
         audioBitrate = audioBitrate,
         bitrateMode = bitrateMode,
         appVersion = appVersion,
-        userId = userId
+        userId = userId,
+        packetLossIncrease = isPacketLossIncreasing
     )
 }

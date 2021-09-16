@@ -83,7 +83,8 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
             "bitrateMode" to bitrateMode.status,
             "fps" to fps,
             "bandwidth" to bandwidth,
-            "traffic" to traffic
+            "traffic" to traffic,
+            "isPacketLossIncreasing" to isPacketLossIncreasing.toString(),
         )
     }
 

@@ -22,15 +22,15 @@ abstract class BroadcasterChuckerDb : RoomDatabase() {
     abstract fun chuckerDao(): ChuckerDao
 
     companion object {
+        private const val DATABASE_NAME = "internal_broadcaster"
         @Volatile private var instance: BroadcasterChuckerDb? = null
-        private const val databaseName = "internal_broadcaster"
 
         fun instance(context: Context): BroadcasterChuckerDb {
             return instance ?: synchronized(BroadcasterChuckerDb::class) {
                 Room.databaseBuilder(
                     context.applicationContext,
                     BroadcasterChuckerDb::class.java,
-                    databaseName
+                    DATABASE_NAME
                 ).fallbackToDestructiveMigration().build().also {
                     instance = it
                 }

@@ -72,7 +72,7 @@ class LiveBroadcasterLogger constructor(
         return String.format("%d fps", fps)
     }
 
-    fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
+    private fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
     fun update(context: Context, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
@@ -113,6 +113,7 @@ class LiveBroadcasterLogger constructor(
             fps = getFps(),
             bandwidth = getBandwidth(),
             traffic = getTraffic(),
+            isPacketLossIncreasing = isPacketLossIncreasing()
         )
 
         if (GlobalConfig.DEBUG) {

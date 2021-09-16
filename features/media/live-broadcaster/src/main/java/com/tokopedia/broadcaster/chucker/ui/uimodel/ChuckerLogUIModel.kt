@@ -24,4 +24,5 @@ data class ChuckerLogUIModel(
     var fps: String = "",
     var bandwidth: String = "",
     var traffic: String = "",
+    var isPacketLossIncreasing: Boolean = false,
 ) : Parcelable
