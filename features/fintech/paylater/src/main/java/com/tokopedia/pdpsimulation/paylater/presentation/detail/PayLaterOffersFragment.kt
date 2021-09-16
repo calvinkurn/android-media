@@ -129,6 +129,11 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             payLaterProductList[position].detail?.let { detailList ->
                 pagerAdapter.setPaymentData(detailList)
             }
+
+            payLaterProductList[position].detail?.get(0)?.let { detail->
+                onPageSelectedByUser(detail)
+            }
+
         }
 
 
