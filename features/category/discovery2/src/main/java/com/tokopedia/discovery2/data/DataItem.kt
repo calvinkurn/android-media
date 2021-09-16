@@ -50,7 +50,7 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
-        @SerializedName("button_applink")
+        @SerializedName("button_applink", alternate = ["cta_applink"])
         val buttonApplink: String? = "",
 
         @SerializedName("code")
@@ -110,7 +110,7 @@ data class DataItem(
         @SerializedName("notification_description")
         val notificationDescription: String? = "",
 
-        @SerializedName("description")
+        @SerializedName("description", alternate = ["description_copywriting"])
         val description: String? = "",
 
         @SerializedName("start_date")
@@ -134,7 +134,7 @@ data class DataItem(
         @SerializedName("alternate_background_url_mobile")
         val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("box_color", alternate = ["background_color"])
+        @SerializedName("box_color", alternate = ["background_color", "header_color"])
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
@@ -146,7 +146,7 @@ data class DataItem(
         @SerializedName("creative_name")
         var creativeName: String? = "",
 
-        @SerializedName("title")
+        @SerializedName("title", alternate = ["title_copywriting"])
         var title: String? = "",
 
         @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
@@ -379,6 +379,12 @@ data class DataItem(
 
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
+
+        @SerializedName("text_date")
+        var textDate: String? = null,
+
+        @SerializedName("title_logo_url")
+        var titleLogoUrl: String? = null,
 
         var shopAdsClickURL: String? = "",
 

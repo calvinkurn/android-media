@@ -120,20 +120,27 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 }
             }
             ComponentNames.CalendarWidgetCarousel.componentName -> {
-                if(component.properties?.calendarLayout == "Grid"){
+                listComponents.add(component)
+                if(component.properties?.calendarLayout == "grid"){
                     component.name = ComponentNames.CalendarWidgetGrid.componentName
                 }
                 if(component.properties?.calendarType.equals("dynamic")
-                    && (component.properties?.calendarLayout.equals("Carousel") || component.properties?.calendarLayout.equals("Grid")))
+                    && component.properties?.calendarLayout.equals("grid"))
                     listComponents.addAll(parseProductVerticalList(component))
                 else if(component.properties?.calendarType == "static"){
-                    for (item in DiscoveryDataMapper().mapListToComponentList(
-                        component.data ?: arrayListOf(),
-                        ComponentNames.CalendarWidgetItem.componentName,
-                        component.properties,
-                        component.creativeName
-                    ))
-                        listComponents.addAll(parseProductVerticalList(item))
+                    if(component.getComponentsItem().isNullOrEmpty()) {
+                        component.setComponentsItem(
+                            DiscoveryDataMapper().mapListToComponentList(
+                                component.data ?: arrayListOf(),
+                                ComponentNames.CalendarWidgetItem.componentName,
+                                component.properties,
+                                component.creativeName
+                            )
+                        )
+                    }
+                    if(component.properties?.calendarLayout.equals("grid"))
+                        for (item in component.getComponentsItem() ?: arrayListOf())
+                            listComponents.addAll(parseProductVerticalList(item))
                 }
             }
 

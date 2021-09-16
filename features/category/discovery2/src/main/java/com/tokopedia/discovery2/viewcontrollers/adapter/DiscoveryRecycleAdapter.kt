@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shim
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
@@ -63,7 +64,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun getItemId(position: Int): Long {
-        if (componentList.isNullOrEmpty() || position >= componentList.size || componentList[position].data.isNullOrEmpty()) {
+        if (componentList.isNullOrEmpty() || position >= componentList.size || componentList[position].data.isNullOrEmpty() || componentList[position].data!![0].productId.isNullOrEmpty()) {
             return super.getItemId(position)
         }
         return componentList[position].data?.get(0)?.productId?.toLong()!!
