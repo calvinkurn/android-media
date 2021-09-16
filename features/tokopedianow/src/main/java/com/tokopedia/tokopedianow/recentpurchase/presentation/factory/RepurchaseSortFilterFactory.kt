@@ -4,6 +4,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseSortFilterFactory {
@@ -12,7 +13,9 @@ object RepurchaseSortFilterFactory {
         val sortFilterList = mutableListOf<RepurchaseSortFilter>().apply {
             val sortFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_sort_chip_title,
-                type = RepurchaseSortFilterType.SORT
+                type = RepurchaseSortFilterType.SORT,
+                sort = FREQUENTLY_BOUGHT,
+                chipType = ChipsUnify.TYPE_SELECTED
             )
 
             val categoryFilter = RepurchaseSortFilter(

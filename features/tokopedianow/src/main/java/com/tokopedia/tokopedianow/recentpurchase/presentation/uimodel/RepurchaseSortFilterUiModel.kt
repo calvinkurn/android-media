@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseTypeFactory
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.parcel.Parcelize
 
@@ -21,6 +22,7 @@ data class RepurchaseSortFilterUiModel(
         @StringRes val qtyFormat: Int? = null,
         val selectedItem: SelectedSortFilter? = null,
         val chipType: String = ChipsUnify.TYPE_NORMAL,
+        val sort: Int = FREQUENTLY_BOUGHT,
         val type: RepurchaseSortFilterType
     )
 

@@ -51,13 +51,14 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeEmptyStateNoHistory
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setCategoryFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
-import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam.Companion.SORT_FREQUENTLY_BOUGHT
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.recentpurchase.presentation.model.RepurchaseProductListMeta
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -111,6 +112,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
     private var selectedCategoryFilter: SelectedSortFilter? = null
+    private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
@@ -247,13 +249,32 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
+    fun applySortFilter(sort: Int) {
+        launchCatchError(block = {
+            setSortFilter(sort)
+            val productList = getProductList()
+            layoutList.removeLoading()
+
+            if(productList.isEmpty()) {
+                showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
+            } else {
+                showProductList(productList)
+            }
+        }) {
+
+        }
+    }
+
     fun setLocalCacheModel(localCacheModel: LocalCacheModel?) {
         this.localCacheModel = localCacheModel
     }
 
     fun getSelectedCategoryFilter() = selectedCategoryFilter
 
+    fun getSelectedSortFilter() = selectedSortFilter
+
     fun clearSelectedFilters() {
+        selectedSortFilter = FREQUENTLY_BOUGHT
         selectedCategoryFilter = null
     }
 
@@ -275,6 +296,22 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         )
 
         selectedCategoryFilter = selectedFilter
+        _getLayout.postValue(Success(layout))
+    }
+
+    private fun setSortFilter(sort: Int) {
+        layoutList.setSortFilter(sort)
+        layoutList.removeEmptyStateNoHistory()
+        layoutList.removeAllProduct()
+        layoutList.addLoading()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.LOADED
+        )
+
+        selectedSortFilter = sort
         _getLayout.postValue(Success(layout))
     }
 
@@ -441,13 +478,14 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         val warehouseID = localCacheModel?.warehouse_id.orEmpty()
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
+        val sort = selectedSortFilter
 
         return GetRepurchaseProductListParam(
             warehouseID = warehouseID,
-            sort = SORT_FREQUENTLY_BOUGHT,
+            sort = sort,
             totalScan = totalScan,
             page = page,
-            catIds = categoryIds
+            catIds = categoryIds,
         )
     }
 
