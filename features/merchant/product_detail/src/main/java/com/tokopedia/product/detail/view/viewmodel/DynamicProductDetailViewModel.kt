@@ -44,6 +44,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest

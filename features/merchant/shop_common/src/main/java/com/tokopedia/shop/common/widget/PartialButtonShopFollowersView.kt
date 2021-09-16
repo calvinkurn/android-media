@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.unifycomponents.UnifyButton
@@ -31,11 +31,14 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
 
-    val shadowDrawable: Drawable by lazy {
-        RoundedShadowUtill.generateBackgroundWithShadow(view,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                R.dimen.dp_12,
+    val shadowDrawable: Drawable? by lazy {
+        view.generateBackgroundWithShadow(com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_12,
+                R.dimen.dp_12,
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                R.dimen.dp_2,
                 R.dimen.dp_2,
                 Gravity.TOP)
     }
@@ -171,7 +174,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun setupRoundedTopShadow() = with(view) {
-        background = shadowDrawable
+        if (shadowDrawable != null) {
+            background = shadowDrawable
+        }
     }
 
 }

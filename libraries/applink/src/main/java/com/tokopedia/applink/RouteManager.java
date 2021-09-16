@@ -357,6 +357,10 @@ public class RouteManager {
         return intent;
     }
 
+    /**
+     * return direct Home Intent.
+     * to getHome Intent from public function, use RouteManager.getIntent(context, ApplinkConst.HOME) instead.
+     */
     private static Intent getHomeIntent(Context context) {
         Intent intent = new Intent();
         String packageName;
