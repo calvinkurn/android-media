@@ -75,8 +75,7 @@ internal class KeywordFilterDataView(
     private fun String.sanitize() =
         this.trim()
             .removePrefix("-").trim()
-            .removePrefix("\"").trim()
-            .removeSuffix("\"").trim()
+            .removeSurrounding("\"").trim()
 
     private fun isMaximum() = itemList.size == MAX_NEGATIVE_KEYWORD
 
@@ -99,7 +98,8 @@ internal class KeywordFilterDataView(
             .map(KeywordFilterItemDataView::negativeKeyword)
             .joinToString(separator = " ", transform = ::modifyNegative)
 
-    private fun modifyNegative(keyword: String) = "-\"$keyword\""
+    private fun modifyNegative(keyword: String) =
+        "-\"${keyword.removeSurrounding("\"")}\""
 
     fun removeKeyword(negativeKeyword: String) {
         mutableItemList.removeFirst { it.negativeKeyword == negativeKeyword }

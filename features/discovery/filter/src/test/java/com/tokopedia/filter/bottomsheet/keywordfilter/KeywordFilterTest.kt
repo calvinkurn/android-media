@@ -139,7 +139,7 @@ internal class KeywordFilterTest {
     @Test
     fun `addKeyword cannot add word contained in original keyword`() {
         val dataView = KeywordFilterDataView(
-            filter = "keywordfilter/keyword-filter-samsung-tv.json".jsonToObject(),
+            filter = "keywordfilter/keyword-filter-multiword-main-keyword.json".jsonToObject(),
         )
 
         dataView.addKeyword("tv")
@@ -214,5 +214,16 @@ internal class KeywordFilterTest {
         dataView.removeKeyword("tv")
 
         dataView.generateKeyword() shouldBe "samsung"
+    }
+
+    @Test
+    fun `generate keyword with negative already containing quotes`() {
+        val dataView = KeywordFilterDataView(
+            filter = "keywordfilter/keyword-filter-quotes-negative-keyword.json".jsonToObject(),
+        )
+
+        dataView.addKeyword("galaxy")
+
+        dataView.generateKeyword() shouldBe "samsung -\"tv\" -\"remote\" -\"galaxy\""
     }
 }
