@@ -124,6 +124,7 @@ class OtherMenuViewHolder(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         setInitialValues()
+        balanceTopadsTopupView?.stopAnimation()
     }
 
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {

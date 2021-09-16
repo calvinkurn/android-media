@@ -26,7 +26,7 @@ class TopadsTopupView @JvmOverloads constructor(
 
     private var isValueShowing = true
     private var isAnimating = false
-
+    private var isStoppingAnimation = false
 
     private var onAnimationFinished: (Boolean) -> Unit = {}
 
@@ -36,18 +36,26 @@ class TopadsTopupView @JvmOverloads constructor(
     }
 
     fun setTopadsValue(value: String) {
+        stopAnimation()
+        valueTextView?.text = value
+        isAnimating = false
+        isValueShowing = true
+    }
+
+    fun stopAnimation() {
+        isStoppingAnimation = true
         valueTextView?.run {
-            clearAnimation()
-            text = value
-            alpha = VISIBLE_ALPHA_FLOAT
-            translationY = 0f
+            valueTextView?.run {
+                clearAnimation()
+                alpha = VISIBLE_ALPHA_FLOAT
+                translationY = 0f
+            }
         }
         messageTextView?.run {
             clearAnimation()
             alpha = HIDDEN_ALPHA_FLOAT
             translationY = ANIM_TRANSLATION_Y
         }
-        isValueShowing = true
     }
 
     fun setOnAnimationFinishedListener(onAnimFinished: (Boolean) -> Unit) {
@@ -55,6 +63,7 @@ class TopadsTopupView @JvmOverloads constructor(
     }
 
     fun toggleTopadsTopupWithAnimation() {
+        isStoppingAnimation = false
         if (!isAnimating) {
             isAnimating = true
             if (isValueShowing) {
@@ -83,10 +92,12 @@ class TopadsTopupView @JvmOverloads constructor(
                     override fun onAnimationStart(p0: Animator?) {}
 
                     override fun onAnimationEnd(p0: Animator?) {
-                        if (hasNextAnimation) {
-                            animateMessage(false)
-                        } else {
-                            onAnimationFinished()
+                        if (!isStoppingAnimation) {
+                            if (hasNextAnimation) {
+                                animateMessage(false)
+                            } else {
+                                onAnimationFinished()
+                            }
                         }
                     }
 
@@ -111,10 +122,12 @@ class TopadsTopupView @JvmOverloads constructor(
                     override fun onAnimationStart(p0: Animator?) {}
 
                     override fun onAnimationEnd(p0: Animator?) {
-                        if (hasNextAnimation) {
-                            animateValue(false)
-                        } else {
-                            onAnimationFinished()
+                        if (!isStoppingAnimation) {
+                            if (hasNextAnimation) {
+                                animateValue(false)
+                            } else {
+                                onAnimationFinished()
+                            }
                         }
                     }
 
