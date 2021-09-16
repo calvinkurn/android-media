@@ -44,4 +44,8 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     fun isSingleProduct(): Boolean {
         return singleProduct != null
     }
+
+    fun hasCampaignLabel(): Boolean {
+        return banner?.isCampaign == true
+    }
 }

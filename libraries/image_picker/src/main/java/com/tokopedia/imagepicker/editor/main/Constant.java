@@ -16,4 +16,5 @@ public class Constant {
     public static final int TYPE_WATERMARK_TOPED = 123;
     public static final int TYPE_WATERMARK_USER_INFO = 456;
     public static final int TYPE_WATERMARK_BOTH = 789;
+    public static final int TYPE_WATERMARK_CENTER_TOPED = 321;
 }

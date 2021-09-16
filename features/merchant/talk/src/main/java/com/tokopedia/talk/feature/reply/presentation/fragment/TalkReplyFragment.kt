@@ -171,7 +171,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     if (!it.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
                         return
                     }
-                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY) ?: ArrayList()
                     setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)

@@ -34,6 +34,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                         status {
                           seen
                           isEligible
+                          incentiveLabel
                         }
                       }
                       page
