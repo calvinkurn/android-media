@@ -61,9 +61,9 @@ class ShopPerformanceViewModel @Inject constructor(
                     GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 shopInfoPeriodUseCase.get().executeOnBackground()
             }
-            _shopInfoPeriod.postValue(Success(dataShopInfo))
+            _shopInfoPeriod.value = Success(dataShopInfo)
         }, onError = {
-            _shopInfoPeriod.postValue(Fail(it))
+            _shopInfoPeriod.value = Fail(it)
         })
     }
 
@@ -81,16 +81,14 @@ class ShopPerformanceViewModel @Inject constructor(
                 shopScoreLevelResponse,
                 shopInfoPeriodUiModel
             )
-            _shopPerformancePage.postValue(
-                Success(
+            _shopPerformancePage.value = Success(
                     Pair(
                         shopScoreLevelData,
                         shopScoreLevelResponse
                     )
                 )
-            )
         }, onError = {
-            _shopPerformancePage.postValue(Fail(it))
+            _shopPerformancePage.value = Fail(it)
         })
     }
 

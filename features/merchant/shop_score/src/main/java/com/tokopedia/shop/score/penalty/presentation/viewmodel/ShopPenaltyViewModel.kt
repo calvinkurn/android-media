@@ -112,7 +112,7 @@ class ShopPenaltyViewModel @Inject constructor(
                     )
                 getShopPenaltySummaryTypesUseCase.get().executeOnBackground()
             }, onError = {
-                _penaltyPageData.postValue(Fail(it))
+                _penaltyPageData.value = Fail(it)
                 null
             })
 
@@ -127,7 +127,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 )
                 getShopPenaltyDetailUseCase.get().executeOnBackground()
             }, onError = {
-                _penaltyPageData.postValue(Fail(it))
+                _penaltyPageData.value = Fail(it)
                 null
             })
 
@@ -149,7 +149,7 @@ class ShopPenaltyViewModel @Inject constructor(
                     itemSortFilterWrapperList =
                         penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
                             .toMutableList()
-                    _penaltyPageData.postValue(Success(penaltyMapperData))
+                    _penaltyPageData.value =  Success(penaltyMapperData)
                 }
             }
         }, onError = {})
@@ -190,18 +190,18 @@ class ShopPenaltyViewModel @Inject constructor(
                     getShopPenaltyDetailUseCase.get().executeOnBackground()
                 )
             }
-            shopPenaltyDetailMediator.postValue(Success(penaltyDetail))
+            shopPenaltyDetailMediator.value = Success(penaltyDetail)
         }, onError = {
-            shopPenaltyDetailMediator.postValue(Fail(it))
+            shopPenaltyDetailMediator.value = Fail(it)
         })
     }
 
     fun getFilterPenalty(filterPenaltyList: List<PenaltyFilterUiModel>) {
         launchCatchError(block = {
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
-            _filterPenaltyData.postValue(Success(penaltyFilterUiModel))
+            _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }, onError = {
-            _filterPenaltyData.postValue(Fail(it))
+            _filterPenaltyData.value = Fail(it)
         })
     }
 

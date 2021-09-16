@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.utils.GoldMerchantUtil.setTypeGlobalError
 import com.tokopedia.shop.score.R
@@ -20,6 +21,12 @@ class ItemShopPerformanceErrorViewHolder(
 
     override fun bind(element: ItemShopPerformanceErrorUiModel?) {
         with(itemView) {
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
             globalErrorShopPerformance?.setTypeGlobalError(element?.throwable)
             globalErrorShopPerformance?.errorAction?.setOnClickListener {
                 globalErrorListener.onBtnErrorStateClicked()
