@@ -17,6 +17,8 @@ import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chat_common.domain.pojo.roommetadata.User
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
@@ -336,5 +338,28 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             ReviewReminderAttribute::class.java
         )
         return ReviewUiModel(message, review.reviewCard)
+    }
+
+    fun generateRoomMetaData(
+        messageId: String,
+        chat: GetExistingChatPojo
+    ): RoomMetaData {
+        val interlocutor = chat.chatReplies.getInterlocutorContact()
+        val sender = chat.chatReplies.getSenderContact()
+        val interlocutorMetaData = User(
+            name = interlocutor.name,
+            uid = interlocutor.userId.toString(),
+            uname = interlocutor.name,
+            role = interlocutor.role,
+            thumbnail = interlocutor.thumbnail
+        )
+        val senderMetaData = User(
+            name = sender.name,
+            uid = sender.userId.toString(),
+            uname = sender.name,
+            role = sender.role,
+            thumbnail = sender.thumbnail
+        )
+        return RoomMetaData(messageId, interlocutorMetaData, senderMetaData)
     }
 }

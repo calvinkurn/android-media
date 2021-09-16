@@ -44,7 +44,15 @@ data class ChatReplies(
         @Expose
         @SerializedName("block")
         val block: Block = Block()
-)
+) {
+        fun getInterlocutorContact(): Contact {
+                return contacts.firstOrNull { contact -> contact.isInterlocutor } ?: Contact()
+        }
+
+        fun getSenderContact(): Contact {
+                return contacts.firstOrNull { contact -> !contact.isInterlocutor } ?: Contact()
+        }
+}
 
 data class Contact(
         @Expose

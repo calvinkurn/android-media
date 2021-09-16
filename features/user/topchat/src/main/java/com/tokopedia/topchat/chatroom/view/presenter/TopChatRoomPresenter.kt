@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
@@ -142,6 +143,8 @@ open class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
+    var roomMetaData: RoomMetaData = RoomMetaData()
+        private set
 
     private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
     val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
@@ -319,8 +322,14 @@ open class TopChatRoomPresenter @Inject constructor(
                 messageId = messageId,
                 onSuccess = onSuccessGetExistingMessage,
                 onErrorGetChat = onError
-            )
+            ) {
+                updateRoomMetaData(it)
+            }
         }
+    }
+
+    private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
+        this.roomMetaData = roomMetaData
     }
 
     override fun getMessageId(
