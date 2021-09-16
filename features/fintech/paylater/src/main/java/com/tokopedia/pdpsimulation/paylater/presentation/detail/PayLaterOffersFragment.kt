@@ -104,13 +104,13 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         sortFilter.addItem(filterData)
 
         // THis analytics is for the sort filter impression
-       if(paylaterProduct.productList?.size?:0 > 0) {
-           pdpSimulationCallback?.sendAnalytics(
-               PdpSimulationEvent.PayLater.TenureListImpression(
-                   paylaterProduct.productList?.get(0)?.text ?: ""
-               )
-           )
-       }
+        if (paylaterProduct.productList?.size ?: 0 > 0) {
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.TenureListImpression(
+                    paylaterProduct.productList?.get(0)?.text ?: ""
+                )
+            )
+        }
     }
 
     /**

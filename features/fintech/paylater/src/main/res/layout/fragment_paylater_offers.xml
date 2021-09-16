@@ -27,12 +27,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:visibility="gone"
-            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
-            app:unifyEmptyStateTitle="@string/pay_later_something_went_wrong"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
             app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
-            />
+            app:unifyEmptyStateTitle="@string/pay_later_something_went_wrong" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleSimulation"

@@ -32,7 +32,6 @@
         tools:text="Product name  jkef eerfknekjrf" />
 
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productVariant"
         android:layout_width="wrap_content"

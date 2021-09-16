@@ -190,8 +190,9 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         const val STEPS_DATA = "stepsData"
         const val PRODUCT_URL = "productUrl"
         const val APPLICATION_STATUS_DATA = "applicationStatusData"
-       // If CTA type is 4 the show How to Use list else show how to apply list
-        const val  howToUse = 4
+
+        // If CTA type is 4 the show How to Use list else show how to apply list
+        const val howToUse = 4
 
         fun show(
             bundle: Bundle,

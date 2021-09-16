@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -105,13 +104,19 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         val bundle = Bundle()
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-            it.sendAnalytics(PdpSimulationEvent.PayLater.ClickCardButton(responseData?.tenure?:0,responseData?.gateway_detail?.name?:"",responseData?.cta?.name?:"",responseData?.cta?.android_url?:""))
+            it.sendAnalytics(
+                PdpSimulationEvent.PayLater.ClickCardButton(
+                    responseData?.tenure ?: 0,
+                    responseData?.gateway_detail?.name ?: "",
+                    responseData?.cta?.name ?: "",
+                    responseData?.cta?.android_url ?: ""
+                )
+            )
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
             )
         }
     }
-
 
 
     private fun openFaqBottomSheet() {
@@ -156,8 +161,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
             whyText.text =
                 resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
-            if (data.tenure != PAY_LATER_BASE_TENURE )
-                duration.text = resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
+            if (data.tenure != PAY_LATER_BASE_TENURE)
+                duration.text =
+                    resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
             interestText.text =
                 "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
@@ -234,7 +240,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             if (data.disableDetail?.status == true) {
                 disableVisibilityGroup.gone()
-                tvTitlePaymentPartner.setTextColor(resources.getColor(R.color.Unify_N700_32));
+                tvTitlePaymentPartner.setTextColor(resources.getColor(R.color.Unify_N700_32))
                 interestText.text = data.disableDetail.description ?: ""
                 simulasiHeading.text = data.disableDetail.header ?: ""
             }
@@ -245,12 +251,14 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun updateSubHeader(gatewayType: GatewayStatusType?, subheader: String) {
         when (gatewayType) {
             GatewayStatusType.Processing -> {
-                tvSubTitlePaylaterPartner.text = context?.getString(R.string.pay_later_gateway_processing)
+                tvSubTitlePaylaterPartner.text =
+                    context?.getString(R.string.pay_later_gateway_processing)
                 tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_Y200))
                 tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_Y500))
             }
             GatewayStatusType.Rejected -> {
-                tvSubTitlePaylaterPartner.text = context?.getString(R.string.pay_later_rejected_gateway)
+                tvSubTitlePaylaterPartner.text =
+                    context?.getString(R.string.pay_later_rejected_gateway)
                 tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_R500))
                 tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_R100))
             }

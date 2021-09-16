@@ -67,9 +67,11 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     }
 
     private fun sendImpressionAnalytic() {
-        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.FaqImpression(
-            parterName?:"", tenure?:0
-        ))
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.FaqImpression(
+                parterName ?: "", tenure ?: 0
+            )
+        )
     }
 
     private fun initBottomSheet() {
