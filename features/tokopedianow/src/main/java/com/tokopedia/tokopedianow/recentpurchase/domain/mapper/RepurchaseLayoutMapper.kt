@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 
 object RepurchaseLayoutMapper {
 
@@ -117,6 +118,32 @@ object RepurchaseLayoutMapper {
 
             updatedCategoryFilter?.let {
                 sortFilterList[categoryFilterIndex] = it
+                set(sortFilterIndex, sortFilter.copy(
+                    sortFilterList = sortFilterList
+                ))
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.setSortFilter(sort: Int) {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
+            val sortFilterIndex = indexOf(item)
+            val sortFilter = (item as RepurchaseSortFilterUiModel)
+            val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
+            val filter = sortFilterList.firstOrNull { it.type == SORT }
+            val filterIndex = sortFilterList.indexOf(filter)
+            val title = if (sort == FREQUENTLY_BOUGHT) {
+                R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet
+            } else {
+                R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet
+            }
+            val updatedFilter = filter?.copy(
+                sort = sort,
+                title = title
+            )
+            updatedFilter?.let {
+                sortFilterList[filterIndex] = it
                 set(sortFilterIndex, sortFilter.copy(
                     sortFilterList = sortFilterList
                 ))

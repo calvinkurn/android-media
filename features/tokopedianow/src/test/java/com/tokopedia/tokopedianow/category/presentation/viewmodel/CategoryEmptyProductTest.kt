@@ -5,7 +5,6 @@ import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.usecase.RequestParams
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
@@ -50,7 +49,7 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
 
         val categoryGridUiModel = this as TokoNowCategoryGridUiModel
 
-        assertThat(categoryGridUiModel.title, shouldBe(CATEGORY_GRID_TITLE))
+        assertThat(categoryGridUiModel.title, shouldBe(""))
     }
 
     @Test
