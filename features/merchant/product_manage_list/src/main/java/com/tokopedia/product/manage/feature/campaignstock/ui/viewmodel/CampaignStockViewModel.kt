@@ -79,7 +79,8 @@ class CampaignStockViewModel @Inject constructor(
     val showSaveBtn: LiveData<Boolean>
         get() = mShowSaveBtn
 
-    fun getStockAllocation(productIds: List<String>) {
+    fun getStockAllocation(productIds: List<String>,
+                           isProductBundling: Boolean = false) {
         if(productIds.isNotEmpty()) {
             productId = productIds.first()
 
@@ -87,16 +88,19 @@ class CampaignStockViewModel @Inject constructor(
                 block = {
                     mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
                         val warehouseId = getWarehouseId(shopId)
-                        campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId, warehouseId)
+                        campaignStockAllocationUseCase.run {
+                            params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId, warehouseId)
+                            isBundling = isProductBundling
+                        }
                         val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
                         campaignProductName = stockAllocationData.summary.productName
                         stockAllocationData.summary.isVariant.let { isVariant ->
                             isStockVariant = isVariant
 
                             if (isVariant) {
-                                getVariantResult(productId, stockAllocationData)
+                                getVariantResult(productId, stockAllocationData, isProductBundling)
                             } else {
-                                getNonVariantResult(productId, stockAllocationData)
+                                getNonVariantResult(productId, stockAllocationData, isProductBundling)
                             }
                         }
                     })
@@ -332,10 +336,14 @@ class CampaignStockViewModel @Inject constructor(
 
     private suspend fun getNonVariantResult(
         productId: String,
-        stockAllocationData: GetStockAllocationData
+        stockAllocationData: GetStockAllocationData,
+        isProductBundling: Boolean = false
     ): NonVariantStockAllocationResult {
         val warehouseId = getWarehouseId(userSession.shopId)
-        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId, warehouseId)
+        otherCampaignStockDataUseCase.run {
+            params = OtherCampaignStockDataUseCase.createRequestParams(productId, warehouseId)
+            isBundling = isProductBundling
+        }
 
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
         nonVariantStock = stockAllocationData.summary.sellableStock.toIntOrZero()
@@ -363,13 +371,21 @@ class CampaignStockViewModel @Inject constructor(
 
     private suspend fun getVariantResult(
         productId: String,
-        stockAllocationData: GetStockAllocationData
+        stockAllocationData: GetStockAllocationData,
+        isProductBundling: Boolean = false
     ): VariantStockAllocationResult {
         campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
 
         val warehouseId = getWarehouseId(userSession.shopId)
-        val getProductVariantUseCaseRequestParams = GetProductVariantUseCase.createRequestParams(productId, warehouseId = warehouseId)
-        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId, warehouseId)
+        val getProductVariantUseCaseRequestParams =
+            GetProductVariantUseCase.createRequestParams(
+                productId,
+                warehouseId = warehouseId,
+                isBundling = isProductBundling)
+        otherCampaignStockDataUseCase.run {
+            params = OtherCampaignStockDataUseCase.createRequestParams(productId, warehouseId)
+            isBundling = isProductBundling
+        }
 
         val getProductVariantData = async { getProductVariantUseCase.execute(getProductVariantUseCaseRequestParams) }
         val otherCampaignStockData = async { otherCampaignStockDataUseCase.executeOnBackground() }

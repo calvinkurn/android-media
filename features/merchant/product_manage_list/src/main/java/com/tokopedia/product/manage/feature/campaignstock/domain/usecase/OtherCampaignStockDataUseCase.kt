@@ -14,7 +14,7 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
 
     companion object {
         private const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!, \$extraInfo:ExtraInfoV3!, \$warehouseID: String) {\n" +
-                "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {\n" +
+                "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo, warehouseID: ${'$'}warehouseID %1s) {\n" +
                 "    pictures {\n" +
                 "      urlThumbnail\n" +
                 "    }\n" +
@@ -24,6 +24,7 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
                 "    }"+
                 "  }\n" +
                 "}"
+        private const val BUNDLE_EXTRA_INFO_QUERY = ",extraInfo:{bundle:true}"
 
         private const val PRODUCT_ID_KEY = "productID"
         private const val OPTIONS_KEY = "options"
@@ -46,9 +47,16 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
     }
 
     var params: RequestParams = RequestParams.EMPTY
+    var isBundling = false
 
     override suspend fun executeOnBackground(): OtherCampaignStockData {
-        val gqlRequest = GraphqlRequest(QUERY, OtherCampaignStockResponse::class.java, params.parameters)
+        val query =
+            if (isBundling) {
+                String.format(QUERY, BUNDLE_EXTRA_INFO_QUERY)
+            } else {
+                String.format(QUERY, "")
+            }
+        val gqlRequest = GraphqlRequest(query, OtherCampaignStockResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors = gqlResponse.getError(OtherCampaignStockResponse::class.java)
         if (errors.isNullOrEmpty()) {
