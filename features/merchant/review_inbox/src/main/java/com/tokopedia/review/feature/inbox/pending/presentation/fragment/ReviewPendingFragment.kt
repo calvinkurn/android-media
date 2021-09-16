@@ -48,6 +48,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
+import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
@@ -69,6 +70,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
+        const val COACH_MARK_SHOWN = false
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -84,6 +86,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
     private var containerListener: InboxFragmentContainer? = null
+    private var reviewPendingPreference: ReviewPendingPreference? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -176,6 +179,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSharedPrefs()
         initView()
         showFullPageLoading()
     }
@@ -277,6 +281,14 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         if (context is InboxFragmentContainer) {
             containerListener = context
         }
+    }
+
+    override fun shouldShowCoachMark(): Boolean {
+        return reviewPendingPreference?.isShowCoachMark() ?: false
+    }
+
+    override fun updateCoachMark() {
+        reviewPendingPreference?.updateSharedPrefs(COACH_MARK_SHOWN)
     }
 
     private fun initView() {
@@ -479,6 +491,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
         (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(ReviewPendingCredibilityUiModel(imageUrl, title, subtitle))
+    }
+
+    private fun initSharedPrefs() {
+        reviewPendingPreference = ReviewPendingPreference(context)
     }
 
 }

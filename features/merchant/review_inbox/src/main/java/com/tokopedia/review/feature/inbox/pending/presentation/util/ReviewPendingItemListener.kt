@@ -9,4 +9,6 @@ interface ReviewPendingItemListener {
     fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain)
     fun onDismissOvoIncentiveTicker(subtitle: String)
     fun onReviewCredibilityWidgetClicked()
+    fun shouldShowCoachMark(): Boolean
+    fun updateCoachMark()
 }
