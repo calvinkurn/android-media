@@ -58,6 +58,7 @@ import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME2
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
@@ -632,7 +633,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun isNavOld(): Boolean {
         return try {
-            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+            getAbTestPlatform().getString(AB_TEST_EXP_NAME, getAbTestPlatform().getString(AB_TEST_EXP_NAME2, AB_TEST_VARIANT_OLD)) == AB_TEST_VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
             true

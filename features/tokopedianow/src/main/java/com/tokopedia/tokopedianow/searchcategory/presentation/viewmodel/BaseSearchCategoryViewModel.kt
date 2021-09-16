@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
@@ -44,8 +45,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -240,11 +243,14 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun isABTestNavigationRevamp() =
             getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
+                || getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP2
 
     private fun getNavigationExpVariant() =
             abTestPlatformWrapper
                     .getABTestRemoteConfig()
-                    ?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
+                    ?.getString(NAVIGATION_EXP_TOP_NAV, abTestPlatformWrapper
+                    .getABTestRemoteConfig()
+                    ?.getString(NAVIGATION_EXP_TOP_NAV2, NAVIGATION_VARIANT_OLD))
 
     open fun onViewCreated() {
         val shopId = chooseAddressData?.shop_id ?: ""
@@ -333,6 +339,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
         appendChooseAddressParams(tokonowQueryParam)
+        appendUniqueIdParam(tokonowQueryParam)
     }
 
     private fun appendDeviceParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -356,6 +363,10 @@ abstract class BaseSearchCategoryViewModel(
             tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
         if (chooseAddressData.warehouse_id.isNotEmpty())
             tokonowQueryParam[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
+    }
+
+    protected open fun appendUniqueIdParam(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam[SearchApiConst.UNIQUE_ID] = getUniqueId()
     }
 
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -1300,6 +1311,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun getRepurchaseWidgetIndex() =
         visitableList.indexOfFirst { it is TokoNowRecentPurchaseUiModel }
+
+    private fun getUniqueId() =
+        if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
+        else AuthHelper.getMD5Hash(userSession.deviceId)
 
     protected class HeaderDataView(
             val title: String = "",

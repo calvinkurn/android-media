@@ -501,8 +501,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             getIncentiveOvoData()
             return
         }
-        activity?.setResult(Activity.RESULT_OK)
-        dismiss()
+        finishIfRoot(true)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
