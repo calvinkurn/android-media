@@ -247,6 +247,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val COORDINATE_HEIGHT_DIVISOR = 3
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
+        const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -460,7 +461,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (resultCode == Activity.RESULT_OK) {
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
             val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
-            if (oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) {
+            val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
+            if ((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) {
                 val cartItems = cartAdapter.getCartItemByBundleId(oldBundleId)
                 if (cartItems.isNotEmpty()) {
                     val allCartItemDataList = cartAdapter.allCartItemData
