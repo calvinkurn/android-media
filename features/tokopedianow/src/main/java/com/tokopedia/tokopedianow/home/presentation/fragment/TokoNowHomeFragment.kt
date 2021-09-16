@@ -925,6 +925,7 @@ class TokoNowHomeFragment: Fragment(),
                     showHomeLayout(data)
                 }
             }
+            TokoNowLayoutState.UPDATE -> showHomeLayout(data)
         }
     }
 

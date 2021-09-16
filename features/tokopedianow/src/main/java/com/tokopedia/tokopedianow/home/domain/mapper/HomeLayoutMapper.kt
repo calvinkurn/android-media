@@ -69,7 +69,7 @@ object HomeLayoutMapper {
         PRODUCT_RECOM,
         RECENT_PURCHASE,
         EDUCATIONAL_INFORMATION,
-        SHARING_EDUCATION,
+        SHARING_EDUCATION
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {

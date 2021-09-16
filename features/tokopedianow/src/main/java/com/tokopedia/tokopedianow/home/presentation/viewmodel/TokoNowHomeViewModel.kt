@@ -394,7 +394,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             val data = HomeLayoutListUiModel(
                 items = homeLayoutItemList,
-                state = TokoNowLayoutState.SHOW
+                state = TokoNowLayoutState.UPDATE
             )
 
             _homeLayoutList.postValue(Success(data))

@@ -20,7 +20,6 @@ import com.tokopedia.tokopedianow.home.presentation.bottomsheet.TokoNowHomeEduca
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
-
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
     private val tokoNowListener: TokoNowView? = null,
