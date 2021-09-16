@@ -24,7 +24,11 @@ class ReviewBasicInfoWidget : BaseCustomView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init()
     }
 
@@ -55,17 +59,29 @@ class ReviewBasicInfoWidget : BaseCustomView {
         timeStamp?.text = createTime
     }
 
-    fun setReviewerName(name: String, userId: String = "", listener: ReviewBasicInfoListener? = null) {
+    fun setReviewerName(
+        name: String,
+        userId: String = "",
+        listener: ReviewBasicInfoListener? = null,
+        isAnonymous: Boolean = true
+    ) {
         reviewerName?.apply {
             text = name
-            setOnClickListener {
-                listener?.onUserNameClicked(context, userId)
+            if (isAnonymous) {
+                setOnClickListener { }
+            } else {
+                setOnClickListener {
+                    listener?.onUserNameClicked(context, userId)
+                }
             }
         }
     }
 
     fun invertColors() {
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96)
+        val color = ContextCompat.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96
+        )
         timeStamp?.setTextColor(color)
         reviewerName?.setTextColor(color)
         variant?.setTextColor(color)
@@ -79,22 +95,34 @@ class ReviewBasicInfoWidget : BaseCustomView {
         }
     }
 
-    fun setStats(userStats: List<UserReviewStats>, userId: String, listener: ReviewBasicInfoListener) {
+    fun setStats(
+        userStats: List<UserReviewStats>,
+        userId: String,
+        listener: ReviewBasicInfoListener,
+        isAnonymous: Boolean
+    ) {
         var textToShow = ""
         userStats.forEach {
             if (it.formatted.isNotBlank()) {
                 if (textToShow.isNotBlank()) {
                     textToShow += " "
                 }
-                textToShow += context.getString(R.string.review_reading_reviewer_stats, it.formatted)
+                textToShow += context.getString(
+                    R.string.review_reading_reviewer_stats,
+                    it.formatted
+                )
             }
         }
         if (textToShow.isNotBlank()) {
             reviewerStats?.apply {
                 text = textToShow
                 show()
-                setOnClickListener {
-                    listener.onUserNameClicked(context, userId)
+                if (isAnonymous) {
+                    setOnClickListener {}
+                } else {
+                    setOnClickListener {
+                        listener.onUserNameClicked(context, userId)
+                    }
                 }
             }
         }

@@ -72,8 +72,8 @@ class ReadReviewViewHolder(view: View,
             }
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
-            setReviewerName(user.fullName, user.userID)
-            setReviewerStats(userReviewStats, user.userID)
+            setReviewerName(user.fullName, user.userID, isAnonymous)
+            setReviewerStats(userReviewStats, user.userID, isAnonymous)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -148,8 +148,8 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setReviewerName(name: String, userId: String) {
-        basicInfo?.setReviewerName(name, userId, reviewBasicInfoListener)
+    private fun setReviewerName(name: String, userId: String, isAnonymous: Boolean) {
+        basicInfo?.setReviewerName(name, userId, reviewBasicInfoListener, isAnonymous)
     }
 
     private fun setVariantName(variantName: String) {
@@ -293,7 +293,7 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String) {
-        basicInfo?.setStats(userStats, userId, reviewBasicInfoListener)
+    private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String, isAnonymous: Boolean) {
+        basicInfo?.setStats(userStats, userId, reviewBasicInfoListener, isAnonymous)
     }
 }
