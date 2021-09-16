@@ -44,7 +44,7 @@
       ]
     },
     {
-      "event": "viewHotelIris",
+      "event": "promoView",
       "eventCategory": "digital - native",
       "eventAction": "view nearby landmark",
       "eventLabel": "hotel - .+ - .+",
