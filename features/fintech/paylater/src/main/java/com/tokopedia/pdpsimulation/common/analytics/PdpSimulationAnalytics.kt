@@ -72,7 +72,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.buttonName,
                 event.redirectionUrl
             )
-            PdpSimulationEvent.PayLater.SelectedPayLater -> sendPayLaterImpressionEvent()
+            is PdpSimulationEvent.PayLater.SelectedPayLater -> sendPayLaterImpressionEvent()
             is PdpSimulationEvent.PayLater.TenureListImpression -> sendSortFilterTenureImpression(event.tenure)
         }
     }
@@ -82,7 +82,7 @@ class PdpSimulationAnalytics @Inject constructor(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
             EVENT_TENURE_FILTER,
-            "EVENT_LABEL_TENURE_FILTER - $tenure"
+            "$EVENT_LABEL_TENURE_FILTER - $tenure"
         )
         sendGeneralEvent(map)
     }
