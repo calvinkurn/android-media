@@ -213,21 +213,29 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
-            context?.startActivity(intent)
+        context?.let {
+            if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+                RouteManager.route(it, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+            else {
+                val intent =
+                    RouteManager.getIntent(
+                        it,
+                        ApplinkConstInternalGlobal.WEBVIEW,
+                        ApplinkConst.WebViewUrl.SALDO_DETAIL)
+                it.startActivity(intent)
+            }
         }
     }
 
     override fun onKreditTopadsClicked() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
-        if (bottomSheet is BottomSheetUnify) {
-            bottomSheet.dismiss()
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
-        } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+        context?.let {
+            val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
+            if (bottomSheet is BottomSheetUnify) {
+                bottomSheet.dismiss()
+                RouteManager.route(it, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
+            } else {
+                RouteManager.route(it, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            }
         }
     }
 
@@ -757,7 +765,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun goToSettings() {
-        startActivity(Intent(context, MenuSettingActivity::class.java))
+        context?.let {
+            startActivity(Intent(it, MenuSettingActivity::class.java))
+        }
     }
 
     private fun isActivityResumed(): Boolean {

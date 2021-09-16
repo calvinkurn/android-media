@@ -36,14 +36,14 @@ class GetShopOperationalUseCase @Inject constructor(
     }
 
     private suspend fun getSettingsAccess(): Boolean {
-        return if(!userSession.isShopOwner) {
+        return if(userSession.isShopOwner) {
+            true
+        } else {
             val requestParams = AuthorizeAccessUseCase.createRequestParams(
                 userSession.shopId.toLongOrZero(),
                 AccessId.SHOP_SETTING_INFO
             )
             authorizeAccessUseCase.execute(requestParams)
-        } else {
-            true
         }
     }
 }
