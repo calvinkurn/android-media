@@ -168,12 +168,11 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             interestText.text =
                 "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
             gatewayType =
-                if (data.activation_status == 2 || data.activation_status == 10 || data.activation_status == 9)
-                    GatewayStatusType.Rejected
-                else if (data.activation_status == 1)
-                    GatewayStatusType.Processing
-                else
-                    GatewayStatusType.Accepted
+                when {
+                    rejectionList.contains(data.activation_status) -> GatewayStatusType.Rejected
+                    processiongList.contains(data.activation_status) -> GatewayStatusType.Processing
+                    else -> GatewayStatusType.Accepted
+                }
 
             updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
 
@@ -187,10 +186,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
             urlToRedirect = data.cta?.android_url ?: ""
             data.cta?.cta_type?.let {
-                buttonStatus = when (it) {
-                    in 1..2 -> RedirectionType.RedirectionWebView
-                    in 3..4 -> RedirectionType.HowToDetail
-                    else -> RedirectionType.NonClickable
+                buttonStatus = when{
+                    buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
+                    buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
+                    else ->RedirectionType.NonClickable
                 }
             }
             interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
@@ -285,6 +284,11 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_BASE_TENURE = 1
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
+         val rejectionList = listOf(2,10,9)
+        val processiongList = listOf(1)
+        val buttonRedirectionWeb = listOf(1,2)
+        val buttonRedirectionBottomSheet = listOf(3,4)
+
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
             return PayLaterPaymentOptionsFragment().apply {
                 arguments = bundle
