@@ -32,8 +32,8 @@ data class ShipmentInfoUiModel(
             val courierNameAndProductName: String,
             val isFreeShipping: Boolean,
             val boBadgeUrl: String,
-            // TODO DYNAMICETA: set is_changed probably here
-            val etaChanged: Boolean
+            val etaChanged: Boolean,
+            val etaUserInfo: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

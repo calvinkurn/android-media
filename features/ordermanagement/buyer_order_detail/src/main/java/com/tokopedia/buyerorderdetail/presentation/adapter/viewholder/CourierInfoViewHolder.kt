@@ -26,7 +26,7 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
         element?.let {
             setupCourierNameAndProductName(it.courierNameAndProductName)
             setupFreeShippingBadge(it.isFreeShipping, it.boBadgeUrl)
-            setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping, it.etaChanged)
+            setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping, it.etaChanged, it.etaUserInfo)
         }
     }
 
@@ -43,7 +43,7 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
                         setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
                     if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
-                        setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged)
+                        setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged, newItem.etaUserInfo)
                     }
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
@@ -64,14 +64,14 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
         }
     }
 
-    private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean, etaChanged: Boolean) {
+    private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean, etaChanged: Boolean, etaChangedDescription: String) {
         tvBuyerOrderDetailArrivalEstimationValue?.text = arrivalEstimation
         tvBuyerOrderDetailArrivalEstimationValue?.setPadding(0, getArrivalEstimationTopMargin(freeShipping), 0, 0)
         tvBuyerOrderDetailArrivalEstimationValue?.showWithCondition(arrivalEstimation.isNotBlank())
         if (etaChanged) {
             tvBuyerOrderDetailArrivalEstimationValue?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
             tvBuyerOrderDetailArrivalEstimationValue?.setOnClickListener {
-                listener.onEtaChangedClicked(arrivalEstimation)
+                listener.onEtaChangedClicked(etaChangedDescription)
             }
         }
     }
@@ -81,6 +81,6 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
     }
 
     interface CourierInfoViewHolderListener {
-        fun onEtaChangedClicked(changedArrivalEstimation: String)
+        fun onEtaChangedClicked(delayedInfo: String)
     }
 }

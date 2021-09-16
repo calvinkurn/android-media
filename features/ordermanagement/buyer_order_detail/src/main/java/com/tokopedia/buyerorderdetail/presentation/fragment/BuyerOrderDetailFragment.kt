@@ -547,12 +547,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onEtaChangedClicked(changedArrivalEstimation: String) {
-        showEtaBottomSheet(changedArrivalEstimation)
+    override fun onEtaChangedClicked(delayedInfo: String) {
+        showEtaBottomSheet(delayedInfo)
     }
 
-    private fun showEtaBottomSheet(formattedEta: String) {
-        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(formattedEta)
+    private fun showEtaBottomSheet(etaChangedDescription: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
         parentFragmentManager?.run {
             delayedEtaBottomSheetFragment.show(this, "")
         }

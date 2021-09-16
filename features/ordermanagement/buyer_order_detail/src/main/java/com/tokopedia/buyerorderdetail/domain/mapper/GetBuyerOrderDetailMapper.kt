@@ -302,8 +302,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
                 boBadgeUrl = meta.boImageUrl,
-            // TODO DYNAMICETA: change this with response from contract
-                etaChanged = false
+                etaChanged = shipment.etaIsUpdated,
+                etaUserInfo = shipment.userUpdatedInfo
         )
     }
 
