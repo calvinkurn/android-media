@@ -328,7 +328,11 @@ object CartUiModelMapper {
                 quantity = product.productQuantity
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
-                bundleQuantity = cartDetail.bundleDetail.bundleQty
+                bundleQuantity = when {
+                    minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
+                    maxOrder < cartDetail.bundleDetail.bundleQty -> maxOrder
+                    else -> cartDetail.bundleDetail.bundleQty
+                }
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel
