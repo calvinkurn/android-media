@@ -108,7 +108,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isTrue()
+                winnerBadge.shouldShow.isTrue()
             }
         }
     }
@@ -134,7 +134,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.isFalse()
             }
         }
     }
@@ -170,7 +170,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.isFalse()
             }
         }
     }

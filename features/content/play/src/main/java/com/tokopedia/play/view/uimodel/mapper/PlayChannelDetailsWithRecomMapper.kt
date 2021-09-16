@@ -22,9 +22,9 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayChannelDetailsWithRecomMapper @Inject constructor(
-        private val htmlTextTransformer: HtmlTextTransformer,
-        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
-        private val multipleLikesMapper: PlayMultiplelikesMapper,
+    private val htmlTextTransformer: HtmlTextTransformer,
+    private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+    private val multipleLikesMapper: PlayMultipleLikesMapper,
 ) {
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {

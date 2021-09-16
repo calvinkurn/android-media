@@ -11,7 +11,7 @@ import javax.inject.Inject
  * Created by jegul on 15/09/21
  */
 @PlayScope
-class PlayMultiplelikesMapper @Inject constructor() {
+class PlayMultipleLikesMapper @Inject constructor() {
 
     fun mapMultipleLikeConfig(configs: List<MultipleLikeConfig>): PlayMultipleLikesConfig {
         val bubbleMap = mutableMapOf<String, List<Int>>()

@@ -198,7 +198,7 @@ class PlayLiveInitialInteractiveTest {
                 interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.isFalse()
             }
         }
     }

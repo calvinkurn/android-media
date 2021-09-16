@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.google.gson.JsonObject
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
@@ -24,13 +23,13 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlaySocketToModelMapper @Inject constructor(
-        private val productTagMapper: PlayProductTagUiMapper,
-        private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
-        private val chatMapper: PlayChatUiMapper,
-        private val channelStatusMapper: PlayChannelStatusMapper,
-        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
-        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
-        private val multipleLikesMapper: PlayMultiplelikesMapper,
+    private val productTagMapper: PlayProductTagUiMapper,
+    private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
+    private val chatMapper: PlayChatUiMapper,
+    private val channelStatusMapper: PlayChannelStatusMapper,
+    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+    private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+    private val multipleLikesMapper: PlayMultipleLikesMapper,
 ) {
 
     fun mapTotalLike(input: TotalLike): Pair<Long, String> {
