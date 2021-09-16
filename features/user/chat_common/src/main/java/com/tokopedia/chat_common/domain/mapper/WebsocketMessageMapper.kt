@@ -116,7 +116,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 remainingStock = pojoAttribute.productProfile.remainingStock,
                 status = pojoAttribute.productProfile.status,
                 source = pojo.source,
-                rating = pojoAttribute.productProfile.rating
+                rating = pojoAttribute.productProfile.rating,
+                localId = pojo.localId
         ).apply {
             finishLoading()
         }

@@ -724,9 +724,14 @@ open class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             handleSrwBubbleState(attachment)
-            val wsMsgPayload = attachment.generateMsgObj(
-                messageId, opponentId, message, listInterceptor, userLocationInfo
+            val previewMsg = attachment.generatePreviewMessage(
+                roomMetaData, message
             )
+            val wsMsgPayload = attachment.generateMsgObj(
+                messageId, opponentId, message, listInterceptor,
+                userLocationInfo, previewMsg.localId
+            )
+            processPreviewMessage(previewMsg)
             sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)
         }

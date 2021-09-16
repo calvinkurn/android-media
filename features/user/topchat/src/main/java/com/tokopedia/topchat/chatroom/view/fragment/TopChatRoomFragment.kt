@@ -844,6 +844,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val chatBubble = visitable as? BaseChatViewModel
         val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
         if (chatBubble != null && hasPreviewOnList) {
+            // TODO: add header date if different
             adapter.updatePreviewFromWs(visitable, chatBubble.localId)
         } else {
             viewState?.removeDummyIfExist(visitable)

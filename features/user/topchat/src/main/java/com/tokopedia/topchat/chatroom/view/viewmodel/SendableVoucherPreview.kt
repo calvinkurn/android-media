@@ -5,6 +5,7 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTACHMENT
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -39,7 +40,8 @@ class SendableVoucherPreview(
         opponentId: String,
         message: String,
         listInterceptor: List<Interceptor>,
-        userLocationInfo: LocalCacheModel
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): Any {
         val voucherPayload = generatePayload(messageId, opponentId)
         return CommonUtil.toJson(voucherPayload)
@@ -84,6 +86,18 @@ class SendableVoucherPreview(
 
     override fun notEnoughRequiredData(): Boolean {
         return false
+    }
+
+    override fun generatePreviewMessage(
+        roomMetaData: RoomMetaData,
+        message: String
+    ): SendableViewModel {
+        // TODO: implement with invoice
+        return SendableViewModel(
+            "", "", "", "", "", "",
+            "", "", false, false, false, "",
+            "", "", ""
+        )
     }
 
     @Keep

@@ -157,7 +157,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
             categoryId: Long, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
-            rating: TopchatProductRating, replyId: String
+            rating: TopchatProductRating, replyId: String, localId: String = ""
     ) : super(
             messageId = messageId,
             fromUid = fromUid,
@@ -172,7 +172,8 @@ open class ProductAttachmentViewModel : SendableViewModel,
             isSender = isSender,
             message = message,
             source = source,
-            replyId = replyId
+            replyId = replyId,
+            localId = localId
     ) {
         this.productId = productId
         this.productName = productName
@@ -228,12 +229,12 @@ open class ProductAttachmentViewModel : SendableViewModel,
             blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
             categoryId: Long, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
-            source: String, rating: TopchatProductRating
+            source: String, rating: TopchatProductRating, localId: String = ""
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,
             false, false, isSender, message,
-            source
+            source, localId = localId
     ) {
         this.productId = productId
         this.productName = productName
