@@ -447,6 +447,16 @@ public class DeveloperOptionActivity extends BaseActivity {
                 }
             }
         });
+
+        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
+            getSharedPreferences("CART_CHECKOUT_BUNDLING").edit().putBoolean("CART_CHECKOUT_BUNDLING", false).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
+            getSharedPreferences("CART_CHECKOUT_BUNDLING").edit().putBoolean("CART_CHECKOUT_BUNDLING", true).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void setupNewInboxAbButton() {
