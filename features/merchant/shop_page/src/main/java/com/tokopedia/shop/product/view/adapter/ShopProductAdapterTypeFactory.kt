@@ -33,6 +33,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
                                     private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
                                     private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
+                                    private val shopProductSearchSuggestionListener: ShopProductSearchSuggestionListener?,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
@@ -111,6 +112,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductChangeGridSectionViewHolder.LAYOUT
     }
 
+    fun type(shopProductSearchResultSuggestionUiModel: ShopProductSearchResultSuggestionUiModel): Int {
+        return ShopProductSearchResultSuggestionViewHolder.LAYOUT
+    }
+
     fun type(shopProductAddUiModel: ShopProductAddUiModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
@@ -153,6 +158,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
+            ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)
             } else {
