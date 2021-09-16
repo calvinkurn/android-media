@@ -110,6 +110,8 @@ import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoRe
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
@@ -2420,7 +2422,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun executeProductShare(productData: ProductData) {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        val enablePdpCustomSharing = remoteConfig()?.getBoolean(
+            REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
+            REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
+        ) ?: REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)?.replace("(\r\n|\n)".toRegex(), " ") ?: ""
             productData.productShareDescription = "$description..."
             executeUniversalShare(productData)

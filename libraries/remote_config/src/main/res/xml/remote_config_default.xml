@@ -582,6 +582,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_pdp_custom_sharing</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_ss_permission_attempt_counter</key>
         <value>10</value>
     </entry>
