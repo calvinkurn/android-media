@@ -108,9 +108,11 @@ class InstallmentDetailBottomSheetRobot {
 class OvoActivationBottomSheetRobot {
 
     fun performActivation(isSuccess: Boolean) {
+        //block main thread for webview processing
+        Thread.sleep(2000)
         onView(withId(R.id.web_view)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
-            (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
+            (view as WebView).loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
         }
         //block main thread for webview processing
         Thread.sleep(2000)

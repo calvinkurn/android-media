@@ -3,7 +3,16 @@ package com.tokopedia.checkout.testing.journey.analytics
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.checkout.testing.R
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.CHECKOUT_DEFAULT_RESPONSE
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.CHECKOUT_KEY
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.RATES_V3_DEFAULT_RESPONSE
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.RATES_V3_KEY
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SAVE_SHIPMENT_DEFAULT_RESPONSE
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SAVE_SHIPMENT_KEY
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.VALIDATE_USE_DEFAULT_RESPONSE
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.VALIDATE_USE_KEY
 import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -33,11 +42,11 @@ class CheckoutAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, SAVE_SHIPMENT_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, RATES_V3_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, VALIDATE_USE_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, CHECKOUT_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -47,11 +56,11 @@ class CheckoutAnalyticsTest {
 
         checkoutPage {
             waitForData()
-            clickChooseDuration(activityRule)
+            clickChooseDuration()
             waitForData()
             selectFirstShippingDurationOption()
             waitForData()
-            clickChoosePaymentButton(activityRule)
+            clickChoosePaymentButton()
         } validateAnalytics  {
             waitForData()
             hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
@@ -64,12 +73,6 @@ class CheckoutAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
-        private const val SAVE_SHIPMENT_KEY = "save_shipment"
-        private const val RATES_V3_KEY = "ratesV3"
-        private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
-        private const val CHECKOUT_KEY = "checkout"
-
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
 

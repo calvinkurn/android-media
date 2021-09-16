@@ -77,11 +77,11 @@ class PdpCartCheckoutJourneyTest {
 
         checkoutPage {
             waitForData()
-            clickChooseDuration(activityRule)
+            clickChooseDuration()
             waitForData()
             selectFirstShippingDurationOption()
             waitForData()
-            clickChoosePaymentButton(activityRule)
+            clickChoosePaymentButton()
         } validateAnalytics {
             waitForData()
             hasPassedAnalytics(cassavaRule, "44")

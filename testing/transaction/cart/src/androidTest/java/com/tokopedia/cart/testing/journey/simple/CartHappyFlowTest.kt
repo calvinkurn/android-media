@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.testing.R
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_MOCK_HAPPY_FLOW_RESPONSE
 import com.tokopedia.cart.testing.robot.cartPage
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -31,7 +33,7 @@ class CartHappyFlowTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, GET_CART_LIST_MOCK_HAPPY_FLOW_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -73,9 +75,5 @@ class CartHappyFlowTest {
     @After
     fun tearDown() {
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
-    }
-
-    companion object {
-        const val GET_CART_LIST_KEY = "cart_revamp"
     }
 }

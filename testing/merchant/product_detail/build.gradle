@@ -24,8 +24,8 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetail)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.features.variantCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
