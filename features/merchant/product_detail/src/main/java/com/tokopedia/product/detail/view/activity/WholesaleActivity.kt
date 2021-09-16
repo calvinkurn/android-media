@@ -31,7 +31,7 @@ class WholesaleActivity : BaseSimpleActivity() {
         }
     }
 
-    private lateinit var binding: ActivityWholesaleDetailBinding
+    private var binding: ActivityWholesaleDetailBinding? = null
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_wholesale_detail
@@ -52,9 +52,9 @@ class WholesaleActivity : BaseSimpleActivity() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.recyclerView.adapter = wholesaleAdapter
-        binding.recyclerView.addItemDecoration(DividerItemDecoration(this@WholesaleActivity))
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding?.recyclerView?.adapter = wholesaleAdapter
+        binding?.recyclerView?.addItemDecoration(DividerItemDecoration(this@WholesaleActivity))
     }
 
     fun showData() {

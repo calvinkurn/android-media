@@ -20,7 +20,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     private var videoUrls = listOf<String>()
 
     lateinit var youtubePlayerScreen: YouTubePlayer
-    private lateinit var binding: ActivityProductYoutubePlayerBinding
+    private var binding: ActivityProductYoutubePlayerBinding? = null
 
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_DATA = "EXTRA_YOUTUBE_VIDEO_DATA"
@@ -36,18 +36,18 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductYoutubePlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         selectedIndex = intent.getIntExtra(EXTRA_YOUTUBE_VIDEO_INDEX, 0)
         videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA)?.asList() ?: listOf()
 
-        binding.youtubeList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding?.youtubeList?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         if (videoUrls.size > 1){
-            binding.youtubeList.adapter = YoutubeThumbnailAdapter(videoUrls.map { YoutubeVideo(url = it) }.toMutableList()){ _, index -> playVideoAt(index)
+            binding?.youtubeList?.adapter = YoutubeThumbnailAdapter(videoUrls.map { YoutubeVideo(url = it) }.toMutableList()){ _, index -> playVideoAt(index)
             }
         }
-        binding.youtubePlayerMain.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
+        binding?.youtubePlayerMain?.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
@@ -95,7 +95,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     override fun onVideoStarted() {}
 
     override fun onLoaded(p0: String?) {
-        binding.youtubeList.visible()
+        binding?.youtubeList?.visible()
     }
 
     override fun onVideoEnded() {
