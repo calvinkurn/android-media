@@ -247,6 +247,7 @@ class InfiniteTokonowRecomFragment :
         viewModel.atcRecomTokonowResetCard.removeObservers(this)
         viewModel.atcRecomTokonowNonLogin.removeObservers(this)
         viewModel.refreshMiniCartDataTrigger.removeObservers(this)
+        viewModel.minicartWidgetUpdater.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -267,6 +268,11 @@ class InfiniteTokonowRecomFragment :
             it?.let {
                 recomPageUiUpdater.updateRecomWithMinicartData(it)
                 updateUi()
+            }
+        })
+        viewModel.minicartWidgetUpdater.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                miniCartWidget?.updateData(it)
             }
         })
         viewModel.recommendationNextLiveData.observe(viewLifecycleOwner, Observer {
@@ -328,11 +334,12 @@ class InfiniteTokonowRecomFragment :
 
     private fun getMiniCartData() {
         val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        /**
-         * any changes and result from miniCartWidget.updateData, will call
-         * @see onCartItemsUpdated
-         */
-        miniCartWidget?.updateData(listOf(localAddress?.shop_id ?: ""))
+//        /**
+//         * any changes and result from miniCartWidget.updateData, will call
+//         * @see onCartItemsUpdated
+//         */
+//        miniCartWidget?.updateData(listOf(localAddress?.shop_id ?: ""))
+        viewModel.getMiniCart(localAddress?.shop_id ?: "")
     }
 
     private fun isWarehouseIdEmpty(): Boolean {

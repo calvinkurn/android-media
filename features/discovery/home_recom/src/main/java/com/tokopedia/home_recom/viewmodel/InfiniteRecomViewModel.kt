@@ -60,6 +60,9 @@ class InfiniteRecomViewModel @Inject constructor(
     val miniCartData: LiveData<MutableMap<String, MiniCartItem>> get() = _miniCartData
     private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
 
+    val minicartWidgetUpdater: SingleLiveEvent<MiniCartSimplifiedData> get() = _minicartWidgetUpdater
+    private val _minicartWidgetUpdater = SingleLiveEvent<MiniCartSimplifiedData>()
+
     val errorGetRecomData: LiveData<RecomErrorResponse> get() = _errorGetRecomData
     private val _errorGetRecomData = MutableLiveData<RecomErrorResponse>()
 
@@ -170,6 +173,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 it
             }
             _miniCartData.postValue(data.toMutableMap())
+            _minicartWidgetUpdater.postValue(result)
         }) {
         }
     }
