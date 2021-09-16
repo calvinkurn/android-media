@@ -81,7 +81,7 @@ class RechargeGeneralLoginMockResponseConfig(
     private fun createMockProductAddBillsError(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY_MENU_DETAIL,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_menu_detail_listrik_login),
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_menu_detail_add_bills_login),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_FAV_NUMBER,

@@ -83,7 +83,7 @@ class RechargeGeneralAddBillsActivityTest {
 
     private fun close_ticker(){
         Thread.sleep(2000)
-        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(R.id.ticker_content_single), withChild(withText("Proteksi Tagihan")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(R.id.ticker_content_single), withChild(withText("Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
         Thread.sleep(2000)
     }
