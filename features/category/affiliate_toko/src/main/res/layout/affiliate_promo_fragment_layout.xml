@@ -15,10 +15,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarContentType="typeCustom"
         app:toolbarInitialFillColor="transparent"
-        app:toolbarContentType="typeTitle"
-        app:toolbarInitialTheme="light"
-        app:toolbarTitle="@string/affiliate_promo" />
+        app:toolbarInitialTheme="light"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_link_text"

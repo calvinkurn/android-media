@@ -15,10 +15,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
-        app:toolbarContentType="typeTitle"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarContentType="typeCustom"
         app:toolbarInitialFillColor="transparent"
-        app:toolbarInitialTheme="light"
-        app:toolbarTitle="@string/label_affiliate" />
+        app:toolbarInitialTheme="light" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"

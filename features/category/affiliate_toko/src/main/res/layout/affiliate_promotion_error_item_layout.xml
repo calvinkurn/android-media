@@ -71,8 +71,8 @@
             tools:text="Lihat Kategori"
             android:layout_weight="1"
             app:unifyButtonSize="small"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -84,6 +84,8 @@
             android:layout_weight="1"
             tools:text="Ganti Link"
             app:unifyButtonSize="small"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
     </LinearLayout>

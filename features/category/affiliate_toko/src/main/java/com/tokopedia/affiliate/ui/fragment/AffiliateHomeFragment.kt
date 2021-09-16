@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
 import java.util.ArrayList
 import javax.inject.Inject
@@ -72,12 +73,15 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         products_rv.layoutManager = layoutManager
         products_rv.adapter = adapter
         user_name.text = affiliateHomeViewModel.getUserName()
-        home_navToolbar.setIcon(
-                IconBuilder()
-                        .addIcon(IconList.ID_INFORMATION) {
-                            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
-                        }
-        )
+        home_navToolbar.run {
+            setIcon(
+                    IconBuilder()
+                            .addIcon(IconList.ID_INFORMATION) {
+                                AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
+                            }
+            )
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
+        }
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
     }
 

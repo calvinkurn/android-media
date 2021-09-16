@@ -31,6 +31,4 @@ class AffiliateGenerateLinkUseCase @Inject constructor(
         private const val PARAM_LINK = "link"
         private const val PARAM_PDP = "pdp"
     }
-
-
 }

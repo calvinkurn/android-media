@@ -15,9 +15,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
-        app:toolbarContentType="typeTitle"
-        app:toolbarInitialTheme="light"
-        app:toolbarTitle="@string/affiliate_bantuan" />
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarContentType="typeCustom"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class AffiliateSearchData(
-        @SerializedName("status") val status : Boolean?,
+        @SerializedName("status") val status : Int?,
         @SerializedName("cards") val cards : Cards?,
         @SerializedName("error") val error : Error?
 ) {
@@ -75,17 +75,18 @@ data class AffiliateSearchData(
     }
 
     data class Error (
-            @SerializedName("error_type") var error_type : Int?,
+            @SerializedName("errorType") var errorType : Int?,
             @SerializedName("title") var title : String?,
             @SerializedName("message") var message : String?,
-            @SerializedName("error_cta") val error_cta : List<ErrorCta>?
+            @SerializedName("errorStatus") var erroStatus : Int?,
+            @SerializedName("errorImage") val errorImage : Cards.Items.Image?,
+            @SerializedName("errorCta") val errorCta : List<ErrorCta>?
     ){
         data class ErrorCta (
-                @SerializedName("cta_text") val cta_text : String?,
-                @SerializedName("cta_type") val cta_type : Int?,
-                @SerializedName("cta_action") val cta_action : Int?,
-                @SerializedName("cta_image") val cta_image : Cards.Items.Image?,
-                @SerializedName("cta_link") val cta_link : CtaLink?,
+                @SerializedName("ctaText") val ctaText : String?,
+                @SerializedName("ctaType") val ctaType : Int?,
+                @SerializedName("ctaAction") val ctaAction : Int?,
+                @SerializedName("ctaLink") val ctaLink : CtaLink?,
         ){
 
             data class CtaLink (

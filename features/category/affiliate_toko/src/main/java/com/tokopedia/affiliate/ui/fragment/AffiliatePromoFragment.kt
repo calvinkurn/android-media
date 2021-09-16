@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -26,16 +27,18 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() , PromotionClickInterface{
+class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(null,null,this))
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(null, null, this))
 
     companion object {
         fun getFragmentInstance(): Fragment {
@@ -63,12 +66,15 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             setRelatedView(dim_layer)
             setDoneAction { affiliatePromoViewModel.getSearch(editText.text.toString()) }
         }
-        promo_navToolbar.setIcon(
-                IconBuilder()
-                        .addIcon(IconList.ID_INFORMATION) {
-                            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE).show(childFragmentManager, "")
-                        }
-                )
+        promo_navToolbar.run {
+            setIcon(
+                    IconBuilder()
+                            .addIcon(IconList.ID_INFORMATION) {
+                                AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE).show(childFragmentManager, "")
+                            }
+            )
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_promo)
+        }
         promo_global_error.run {
             show()
             errorIllustration.hide()
@@ -77,7 +83,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             setButtonFull(true)
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
-               product_link_et.editingState(true)
+                product_link_et.editingState(true)
             }
             errorSecondaryAction.gone()
         }
@@ -110,21 +116,30 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
             adapter.clearAllElements()
-            affiliateSearchData.cards?.items?.firstOrNull()?.let {
-                showData(false)
-                affiliateSearchData.cards.items.forEach {
-                    adapter.addElement(AffiliatePromotionCardModel(it))
-                }
-            } ?: kotlin.run {
+            if (affiliateSearchData.status == 0) {
                 showData(true)
-                affiliateSearchData.error?.let {
-                    adapter.addElement(AffiliatePromotionErrorCardModel(it))
+                if (affiliateSearchData.error?.erroStatus == 0) {
+                    view?.rootView?.let {
+                        Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
+                                Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    }
+                } else {
+                    affiliateSearchData.error?.let {
+                        adapter.addElement(AffiliatePromotionErrorCardModel(it))
+                    }
+                }
+            } else {
+                affiliateSearchData.cards?.items?.firstOrNull()?.let {
+                    showData(false)
+                    affiliateSearchData.cards.items.forEach {
+                        adapter.addElement(AffiliatePromotionCardModel(it))
+                    }
                 }
             }
         })
     }
 
-    private fun showData(isErrorData : Boolean){
+    private fun showData(isErrorData: Boolean) {
         if (isErrorData) promotion_card_title.hide() else promotion_card_title.show()
         error_group.hide()
         promotion_recycler_view.show()
@@ -153,7 +168,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
     }
 
     override fun onPromotionClick(productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
+        AffiliatePromotionBottomSheet.newInstance(productName, productImage, productUrl, productIdentifier).show(childFragmentManager, "")
     }
 
     override fun onViewMoreClick() {
