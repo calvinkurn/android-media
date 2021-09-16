@@ -3,7 +3,6 @@ package com.tokopedia.broadcaster
 import android.content.Context
 import android.os.Handler
 import com.tokopedia.broadcaster.camera.CameraManager
-import com.tokopedia.broadcaster.chucker.ui.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
@@ -22,7 +21,6 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     fun setUp() {
         mockkObject(BroadcasterUtil)
         mockkObject(CameraManager)
-        mockkObject(ChuckerNotification)
     }
 
     @Test
