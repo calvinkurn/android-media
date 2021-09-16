@@ -16,9 +16,11 @@ import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrder
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationListAdapterTypeFactory
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.cancellationdetail.presentation.viewmodel.FlightOrderCancellationListViewModel
+import com.tokopedia.flight.databinding.FragmentFlightCancellationListBinding
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -32,6 +34,8 @@ class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancella
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightOrderCancellationViewModel: FlightOrderCancellationListViewModel
 
+    private var binding by autoClearedNullable<FragmentFlightCancellationListBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,8 +48,10 @@ class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancella
         flightOrderCancellationViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_cancellation_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightCancellationListBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

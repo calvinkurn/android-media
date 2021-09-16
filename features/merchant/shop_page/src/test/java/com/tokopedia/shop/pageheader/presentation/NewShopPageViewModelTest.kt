@@ -93,6 +93,7 @@ class NewShopPageViewModelTest {
     private lateinit var shopPageViewModel : NewShopPageViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE = "follow_green_small"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
 
@@ -225,7 +226,7 @@ class NewShopPageViewModelTest {
     fun `check whether get follow status is success`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(null)
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID)
+        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageViewModel.followStatusData.value is Success)
     }
@@ -234,7 +235,7 @@ class NewShopPageViewModelTest {
     fun `check whether get follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID)
+        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageViewModel.followStatusData.value is Fail)
     }

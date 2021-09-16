@@ -52,10 +52,7 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHS
 import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -227,11 +224,6 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         setHasOptionsMenu(true)
     }
 
-    override fun onResume() {
-        super.onResume()
-        launchAutoRefresh()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
@@ -240,7 +232,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
-                        id.toLong(),
+                        id.toLongOrZero(),
                         wishlistStatusFromPdp
                 )
             }
@@ -249,7 +241,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") as String
+        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") ?: ""
 
         initView()
         initCartLocalCacheHandler()
