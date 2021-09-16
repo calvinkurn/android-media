@@ -16,6 +16,7 @@ buildscript {
         }
         gradlePluginPortal()
         google()
+        jcenter()
         mavenLocal()
         mavenCentral()
         maven {
