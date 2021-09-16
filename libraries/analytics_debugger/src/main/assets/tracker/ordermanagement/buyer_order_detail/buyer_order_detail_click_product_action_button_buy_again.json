@@ -10,7 +10,6 @@
       "businessUnit": "Physical Goods",
       "currentSite": "Marketplace",
       "userId": "\\d+",
-      "dimension40": "/order list detail - marketplace",
       "sessionIris": ".{1,}"
     }
   ]

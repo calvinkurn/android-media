@@ -203,7 +203,6 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
             .appendUserId(userId)
-            .appendOrderListDetailMarker()
             .sendGeneralEvent()
     }
 
