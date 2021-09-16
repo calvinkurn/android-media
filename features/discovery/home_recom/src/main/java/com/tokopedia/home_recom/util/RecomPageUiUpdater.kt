@@ -34,6 +34,7 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
     }
 
     fun updateRecomWithMinicartData(miniCart: MutableMap<String, MiniCartItem>?) {
+        val newDataList = mutableListOf<HomeRecommendationDataModel>()
         dataList.filterIsInstance(RecommendationItemDataModel::class.java).forEach {
             val recomItem = it.productItem.copy()
             if (recomItem.isRecomProductShowVariantAndCart) {
@@ -50,7 +51,9 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
                     })
                 }
             }
+            newDataList.add(RecommendationItemDataModel(recomItem))
         }
+        dataList = newDataList
     }
 
     fun updateCurrentQuantityRecomItem(recomItem: RecommendationItem) {
