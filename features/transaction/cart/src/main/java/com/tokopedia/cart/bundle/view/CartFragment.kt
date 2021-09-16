@@ -2682,10 +2682,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         setTopLayoutVisibility()
 
-        if (removeAllItems || isFromEditBundle) {
-            refreshCartWithSwipeToRefresh()
-        } else {
-            setLastItemAlwaysSelected()
+        when {
+            removeAllItems -> {
+                refreshCartWithSwipeToRefresh()
+            }
+            isFromEditBundle -> {
+                refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
+            }
+            else -> {
+                setLastItemAlwaysSelected()
+            }
         }
 
     }
