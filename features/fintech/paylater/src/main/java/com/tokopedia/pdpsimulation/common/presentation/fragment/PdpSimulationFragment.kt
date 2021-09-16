@@ -190,10 +190,12 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun initListeners() {
+        
+        // This analytics is here as for now the kardu credit is disabled so tab is also disable
+        sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
             if (paymentMode == PayLater) {
                 sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(tab.getCustomText()))
-                sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
             }
             else sendAnalytics(PdpSimulationEvent.CreditCard.TabChangeEvent(tab.getCustomText()))
             handleRegisterWidgetVisibility(tab.position)
