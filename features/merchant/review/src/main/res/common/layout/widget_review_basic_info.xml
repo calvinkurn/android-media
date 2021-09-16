@@ -39,18 +39,29 @@
         tools:text="Karina Nana" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_item_reviewer_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@id/review_item_reviewer_name"
+        app:layout_constraintBottom_toBottomOf="@id/review_item_reviewer_name"
+        app:layout_constraintStart_toEndOf="@id/review_item_reviewer_name" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_item_variant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_item_reviewer_name"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:visibility="visible"
-        tools:text="Varian: Green" />
+        tools:text="Varian: Green"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

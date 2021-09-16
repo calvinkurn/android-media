@@ -13,10 +13,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
-import com.tokopedia.review.feature.reading.data.LikeDislike
-import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
-import com.tokopedia.review.feature.reading.data.ProductReviewResponse
+import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
@@ -76,6 +73,7 @@ class ReadReviewViewHolder(view: View,
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName, user.userID)
+            setReviewerStats(userReviewStats, user.userID)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -293,5 +291,9 @@ class ReadReviewViewHolder(view: View,
             setImages(imageAttachments, attachedImagesClickListener, productReview, shopId, adapterPosition)
             show()
         }
+    }
+
+    private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String) {
+        basicInfo?.setStats(userStats, userId, reviewBasicInfoListener)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.util.getReviewStar
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -31,6 +32,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var timeStamp: Typography? = null
     private var reviewerName: Typography? = null
     private var variant: Typography? = null
+    private var reviewerStats: Typography? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_review_basic_info, this)
@@ -42,6 +44,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         timeStamp = findViewById(R.id.review_item_timestamp)
         reviewerName = findViewById(R.id.review_item_reviewer_name)
         variant = findViewById(R.id.review_item_variant)
+        reviewerStats = findViewById(R.id.review_item_reviewer_stats)
     }
 
     fun setRating(rating: Int) {
@@ -73,6 +76,27 @@ class ReviewBasicInfoWidget : BaseCustomView {
         this.variant?.apply {
             text = context.getString(R.string.review_gallery_variant, variantName)
             show()
+        }
+    }
+
+    fun setStats(userStats: List<UserReviewStats>, userId: String, listener: ReviewBasicInfoListener) {
+        var textToShow = ""
+        userStats.forEach {
+            if (it.formatted.isNotBlank()) {
+                if (textToShow.isNotBlank()) {
+                    textToShow += " "
+                }
+                textToShow += context.getString(R.string.review_reading_reviewer_stats, it.formatted)
+            }
+        }
+        if (textToShow.isNotBlank()) {
+            reviewerStats?.apply {
+                text = textToShow
+                show()
+                setOnClickListener {
+                    listener.onUserNameClicked(context, userId)
+                }
+            }
         }
     }
 }
