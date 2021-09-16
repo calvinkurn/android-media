@@ -11,14 +11,14 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
 
-    private var eta: String = ""
+    private var description: String = ""
     private var tvDescription: Typography? = null
     private var btnDismiss: UnifyButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            eta = it.getString(ETA, "")
+            description = it.getString(DELAYED_INFO, "")
         }
     }
 
@@ -35,8 +35,7 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
             setChild(this)
             bindView(this)
         }
-        if (eta.isNotEmpty()) tvDescription?.text =
-            getString(R.string.delayed_eta_bottomsheet_description, eta)
+        if (description.isNotEmpty()) tvDescription?.text = description
         setViewListener()
     }
 
@@ -54,15 +53,15 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
     }
 
     companion object {
-        private const val ETA = "eta"
+        private const val DELAYED_INFO = "eta"
         fun newInstance(): DelayedEtaBottomSheetFragment {
             return DelayedEtaBottomSheetFragment()
         }
 
-        fun newInstance(eta: String): DelayedEtaBottomSheetFragment {
+        fun newInstance(delayedInfo: String): DelayedEtaBottomSheetFragment {
             return DelayedEtaBottomSheetFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ETA, eta)
+                    putString(DELAYED_INFO, delayedInfo)
                 }
             }
         }

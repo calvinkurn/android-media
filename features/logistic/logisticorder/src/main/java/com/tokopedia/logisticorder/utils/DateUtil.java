@@ -51,25 +51,4 @@ public class DateUtil {
             return unformattedTime;
         }
     }
-
-    public String getFormattedDateTime(String unformattedDateTime, String outputPattern) {
-        //"2009-11-10T23:00:00Z"
-        String inputPattern = "yyyy-MM-dd'T'HH:mm:ssZ";
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
-                new Locale("in", "ID"));
-
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,
-                new Locale("in", "ID"));
-
-        try {
-            Date date = inputFormat.parse(unformattedDateTime);
-            return outputFormat.format(date);
-        } catch (ParseException e) {
-            return unformattedDateTime;
-        }
-    }
-
-    public String getFormattedDateTime(String unformattedDateTime) {
-        return getFormattedDateTime(unformattedDateTime, "dd MMMM yyyy");
-    }
 }

@@ -20,9 +20,19 @@ object TrackingPageQuery {
                   service_code
                   tracking_url
                   eta {
+                    triggered_by
                     eta_min
                     eta_max
-                    is_changed
+                    event_time
+                    is_updated
+                    user_info
+                    user_updated_info
+                    eta_histories { 
+                        triggered_by
+                        eta_min
+                        eta_max
+                        event_time
+                    }
                   }
                 }
                 track_history {

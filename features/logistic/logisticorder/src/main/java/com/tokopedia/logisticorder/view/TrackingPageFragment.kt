@@ -217,19 +217,18 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setEtaDetail(model: EtaModel) {
-        val formattedEta = formatEta(model)
-        binding?.eta?.text = formattedEta
+        binding?.eta?.text = model.userInfo
         if (model.isChanged) {
-            showEtaBottomSheet(formattedEta)
+            showEtaBottomSheet(model.userUpdatedInfo)
             binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
             binding?.eta?.setOnClickListener {
-                showEtaBottomSheet(formattedEta)
+                showEtaBottomSheet(model.userUpdatedInfo)
             }
         }
     }
 
-    private fun showEtaBottomSheet(formattedEta: String) {
-        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(formattedEta)
+    private fun showEtaBottomSheet(description: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(description)
         parentFragmentManager?.run {
             delayedEtaBottomSheetFragment.show(this, "")
         }
@@ -375,17 +374,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun formatTitleHtml(desc: String, urlText: String, url: String): String {
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
-    }
-
-    private fun formatEta(eta: EtaModel) : String {
-        if (eta.etaMin.isNotEmpty() && eta.etaMax.isNotEmpty()) {
-            return "${dateUtil.getFormattedDateTime(eta.etaMin, "dd")} - ${dateUtil.getFormattedDateTime(eta.etaMax)}"
-        } else if (eta.etaMax.isEmpty()) {
-            return dateUtil.getFormattedDateTime(eta.etaMin)
-        } else if (eta.etaMin.isEmpty()) {
-            return dateUtil.getFormattedDateTime(eta.etaMax)
-        }
-        return ""
     }
 
     companion object {
