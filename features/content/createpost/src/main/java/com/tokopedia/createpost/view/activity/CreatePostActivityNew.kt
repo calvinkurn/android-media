@@ -12,7 +12,10 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.di.CreatePostModule
+import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
@@ -29,15 +32,24 @@ import com.tokopedia.imagepicker.common.model.MimeType
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
+    @Inject
+    lateinit var createPostAnalytics: CreatePostAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UploadMultipleImageUsecaseNew.mContext =applicationContext as Application?
+        initInjector()
+        UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -54,8 +66,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             .commit()
     }
 
-    override fun deleteItemFromProductTagList(position: Int, isDeletedFromBubble: Boolean) {
-        TODO("Not yet implemented")
+    override fun deleteItemFromProductTagList(
+        position: Int,
+        productId: String,
+        isDeletedFromBubble: Boolean,
+        mediaType: String,
+    ) {
     }
 
     override fun updateHeader(header: HeaderViewModel) {
@@ -87,23 +103,39 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         inflateFragment()
     }
 
-    private fun isVideoFile(uri: Uri):Boolean{
+    override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
+        TODO("Not yet implemented")
+    }
+
+    private fun isVideoFile(uri: Uri): Boolean {
         val cR = contentResolver
         return MimeType.isVideo(cR.getType(uri))
     }
 
+    private fun initInjector() {
+        DaggerCreatePostComponent.builder()
+            .createPostModule(CreatePostModule(applicationContext))
+            .build()
+            .inject(this)
+    }
+
     companion object {
-        const val TYPE_CONTENT_TAGGING_PAGE= "content-tagging-page"
+        const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
         const val TYPE_OPEN_IMAGE_PICKER = "open_image_picker"
-        fun createIntent(context: Context, createPostViewModel: CreatePostViewModel, isCreatePostPage: Boolean, isFirstLaunch: Boolean): Intent {
+        fun createIntent(
+            context: Context,
+            createPostViewModel: CreatePostViewModel,
+            isCreatePostPage: Boolean,
+            isFirstLaunch: Boolean,
+        ): Intent {
             val intent = Intent(context, CreatePostActivityNew::class.java)
 
-                if (isCreatePostPage)
-                    intent.putExtra(PARAM_TYPE, TYPE_OPEN_IMAGE_PICKER)
-                else
-                    intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-                    intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+            if (isCreatePostPage)
+                intent.putExtra(PARAM_TYPE, TYPE_OPEN_IMAGE_PICKER)
+            else
+                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+            intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
 
             return intent
         }
@@ -118,7 +150,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
         if (intent.getStringExtra(PARAM_TYPE) == null) {
             val uris = bundle.get("ip_uris")
-            var finalUri =
+            val finalUri =
                 if (uris.toString().endsWith(","))
                     (uris as CharSequence).subSequence(0, uris.length - 1)
                 else
@@ -141,8 +173,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_OPEN_IMAGE_PICKER -> ImagePickerFragement.createInstance(intent.extras ?: Bundle())
-            TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras ?: Bundle())
-            TYPE_CONTENT_PREVIEW_PAGE -> ContentCreateCaptionFragment.createInstance(intent.extras ?: Bundle())
+            TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
+                ?: Bundle())
+            TYPE_CONTENT_PREVIEW_PAGE -> ContentCreateCaptionFragment.createInstance(intent.extras
+                ?: Bundle())
             else -> {
                 return CreatePostPreviewFragmentNew.createInstance(intent.extras ?: Bundle())
             }
@@ -152,9 +186,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun getLayoutRes(): Int {
         return R.layout.activity_create_post_new
     }
+
     override fun getParentViewResourceID(): Int {
         return R.id.content_parent_view
     }
+
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         content_back_button.setOnClickListener {
@@ -167,6 +203,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
         content_action_post_button.setOnClickListener {
             if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
+                createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)
                 intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
                 content_action_post_button?.text = getString(R.string.feed_content_text_post)
                 inflateFragment()
@@ -182,6 +219,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
         if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE) {
 
+            createPostAnalytics.eventClickBackOnProductTaggingPage()
+
             val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.feed_content_dialog_title))
             dialog.setDescription(getString(R.string.feed_content_dialog_desc))
@@ -189,14 +228,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             dialog.setSecondaryCTAText(getString(R.string.feed_content_sec_cta_text))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
+                createPostAnalytics.eventClickContinueOnConfirmationPopup()
 
             }
             dialog.setSecondaryCTAClickListener {
+                createPostAnalytics.eventClickExitOnConfirmationPopup()
                 dialog.dismiss()
                 finish()
             }
             dialog.show()
         } else {
+            createPostAnalytics.eventClickBackOnPreviewPage()
             supportFragmentManager.popBackStack()
             content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
@@ -206,6 +248,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     private fun postFeed() {
+        createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
         cacheManager.put(
@@ -222,7 +265,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         this.let {
             val applink = ApplinkConst.HOME_FEED
             val intent = RouteManager.getIntent(it, applink)
-            intent.putExtra("show_posting_progress_bar",true)
+            intent.putExtra("show_posting_progress_bar", true)
             startActivity(intent)
         }
     }

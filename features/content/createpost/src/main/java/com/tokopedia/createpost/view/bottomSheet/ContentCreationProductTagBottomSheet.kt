@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.adapter.CreatePostTagAdapter
+import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -20,6 +20,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.content_creation_product_tag_bottom_sheet
     private var productData: List<RelatedProductItem>? = null
+    private var mediaType: String = ""
     private val createPostTagAdapter: CreatePostTagAdapter by lazy {
         CreatePostTagAdapter(onDeleteProduct = this::onDeleteProduct)
     }
@@ -61,7 +62,10 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     }
 
     private fun onDeleteProduct(position: Int) {
-        listener.deleteItemFromProductTagList(position, false)
+        listener.deleteItemFromProductTagList(position,
+            productData?.get(position)?.id.toString(),
+            false,
+            mediaType)
     }
 
 
@@ -75,11 +79,13 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
         childFragmentManager: FragmentManager,
         productList: List<RelatedProductItem>,
         listener: CreateContentPostCOmmonLIstener,
+        mediaType: String,
     ) {
         arguments = bundle
         val tag = "ContentCreationProductTagBottomSheet"
         this.productData = productList
         this.listener = listener
+        this.mediaType = mediaType
         show(childFragmentManager, tag)
 
     }

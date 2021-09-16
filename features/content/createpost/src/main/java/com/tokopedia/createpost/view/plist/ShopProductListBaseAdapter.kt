@@ -14,18 +14,15 @@ import com.tokopedia.productcard.ProductCardModel
 
 open class ShopProductListBaseAdapter(
     val viewModel: ShopPageProductListViewModel,
-    val callback: AdapterCallback
+    val callback: AdapterCallback,
+    val listener: ShopPageListener
 ) : BaseAdapter<ShopPageProduct>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
 
     inner class ViewHolder(view: View) : BaseVH(view) {
-        internal var productView: ProductCardGridView
+        internal var productView: ProductCardGridView = view.findViewById(R.id.product_card)
         var isVisited = false
-
-        init {
-            productView = view.findViewById(R.id.product_card)
-        }
 
         override fun bindView(item: ShopPageProduct, position: Int) {
             setData(this, item)
@@ -64,7 +61,7 @@ open class ShopProductListBaseAdapter(
         if (holder.itemView != null) {
             holder.itemView.setOnClickListener { v ->
                 viewModel.setNewProductValue(item)
-//                sendClickEvent(itemContext, item, holder.getAdapterPosition())
+                sendClickEvent(itemContext, item, holder.adapterPosition)
             }
         }
     }
@@ -73,64 +70,16 @@ open class ShopProductListBaseAdapter(
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(vh)
 
-//        if (vh is ViewHolder) {
-//            val holder = vh as ViewHolder
-//
-//            val data = items[holder.getAdapterPosition()] ?: return
-//
-//            if (!holder.isVisited) {
-//                val item = HashMap<String, String?>()
-//                item["id"] = data.catalogId.toString()
-//                item["name"] = String.format(KUPON_ITEMNAME, vh.adapterPosition + 1)
-//                item["position"] = (holder.adapterPosition + 1).toString()
-//                item["creative"] = data.title
-//                item["creative_url"] = data.imageUrlMobile
-//                item["promo_code"] = data.code
-//
-//                val promotions = HashMap<String, List<Map<String, String?>>>()
-//                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-//
-//                val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
-//                promoView["promoView"] = promotions
-//
-//                var eventLabel = ""
-//                if (data.title != null && data.title.isNotEmpty()) {
-//                    eventLabel = data.title
-//                }
-//                AnalyticsTrackerUtil.sendECommerceEvent(holder.itemView.context,
-//                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-//                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-//                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-//                    eventLabel, promoView)
-//                holder.isVisited = true
-//            }
-//        }
+
+        if (vh is ViewHolder) {
+            val holder = vh as ViewHolder
+            val data = items[holder.adapterPosition] ?: return
+            listener.shopProductImpressed(holder.adapterPosition, data)
+        }
     }
 
     private fun sendClickEvent(context: Context, data: ShopPageProduct, position: Int) {
-//        val item = HashMap<String, String?>()
-//        item["id"] = data.catalogId.toString()
-//        item["name"] = String.format(KUPON_ITEMNAME, position+1)
-//        item["position"] = (position + 1).toString()
-//        item["creative"] = data.title
-//        item["creative_url"] = data.imageUrlMobile
-//        item["promo_code"] = data.code
-//
-//        val promotions = HashMap<String, List<Map<String, String?>>>()
-//        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-//
-//        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
-//        promoClick["promoClick"] = promotions
-//
-//        var eventLabel = ""
-//        if (data.title != null && data.title.isNotEmpty()) {
-//            eventLabel = data.title
-//        }
-//        AnalyticsTrackerUtil.sendECommerceEvent(context,
-//            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
-//            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-//            AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-//            eventLabel, promoClick)
+        listener.shopProductClicked(position, data)
     }
 
 

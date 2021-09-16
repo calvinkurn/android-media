@@ -41,9 +41,9 @@ class CreatePostTagAdapter(
         }
     }
     private fun removeProduct(adapterPosition: Int) {
-          itemList.removeAt(adapterPosition)
-          notifyItemRangeRemoved(adapterPosition, 1)
-          onDeleteProduct?.invoke(adapterPosition)
+        itemList.removeAt(adapterPosition)
+        notifyItemRangeRemoved(adapterPosition, 1)
+        onDeleteProduct?.invoke(adapterPosition)
     }
     fun updateProduct(products: List<RelatedProductItem>){
         this.itemList.clear()

@@ -7,20 +7,15 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle("Tag Produk")
+        updateTitle(PRODUCT_PAGE_TITLE)
     }
 
     override fun getNewFragment(): Fragment? {
         return ShopProductListFragment.newInstance(intent.getStringExtra("shopid")?:"", intent.getStringExtra("source")?:"")
-//        return if (mUserSession?.isLoggedIn == true) {
-//            tokoPointsHomeFragmentNew
-//        } else {
-//            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-//            null
-//        }
     }
 
     companion object {
+        const val PRODUCT_PAGE_TITLE = "Tag Produk"
         private const val REQUEST_CODE_LOGIN = 1
     }
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
+import com.tokopedia.createpost.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
@@ -34,7 +34,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     lateinit var presenter: CreatePostContract.Presenter
 
     @Inject
-    lateinit var affiliateAnalytics: AffiliateAnalytics
+    lateinit var createPostAnalytics: CreatePostAnalytics
 
     protected var createPostModel: CreatePostViewModel = CreatePostViewModel()
 

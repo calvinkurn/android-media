@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Categor
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_COMMENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_MENU
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_CREATION
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_TIMELINE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
@@ -104,6 +105,8 @@ class FeedAnalyticTracker
         const val CATEGORY_FEED_TIMELINE_COMMENT = "content feed timeline - comment"
         const val CATEGORY_FEED_TIMELINE_MENU = "content feed timeline - three dots page"
         const val CATEGORY_FEED_TIMELINE_FEED_DETAIL = "content feed timeline - product detail"
+        const val CONTENT_FEED_CREATION = "content feed creation"
+
     }
 
     private object Action {
@@ -132,6 +135,9 @@ class FeedAnalyticTracker
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
+
+        const val CLICK_RETRY_ON_FEED_TO_POST = "click on retry button"
+
 
 
         const val PARAM_ACTION_LOGIN = "login"
@@ -226,6 +232,17 @@ class FeedAnalyticTracker
             SGC_IMAGE_RECOM
         else
             SGC_IMAGE
+    }
+    private fun eventClickRetryToPostOnProgressBar(shopId: String) {
+        val map = mapOf(
+            EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CONTENT_FEED_CREATION,
+            EVENT_ACTION to Action.CLICK_RETRY_ON_FEED_TO_POST,
+            EVENT_LABEL to shopId,
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839

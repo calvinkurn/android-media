@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.util.util.doOnLayout
@@ -105,9 +106,12 @@ class ProductTaggingView @JvmOverloads constructor(
             this.finalPointerView = productTagPointerTop
             position = POSITION_BOTTOM
         }
-        setGestureDetectorOnBubble()
+        setGestureDetectorOnBubble(product.id, MediaType.IMAGE)
         productTagViewDelete.setOnClickListener {
-            listener?.deleteItemFromProductTagList(feedXTag.tagIndex, true)
+            listener?.deleteItemFromProductTagList(feedXTag.tagIndex,
+                product.id,
+                true,
+                MediaType.IMAGE)
             hideExpandedView()
         }
         finalPointerView.setMargin(
@@ -187,11 +191,12 @@ class ProductTaggingView @JvmOverloads constructor(
         }
     }
     @SuppressLint("ClickableViewAccessibility")
-    private fun setGestureDetectorOnBubble(){
+    private fun setGestureDetectorOnBubble(productId: String, mediaType: String) {
         val gd = GestureDetector(
             context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                    listener?.clickProductTagBubbleAnalytics(mediaType, productId)
 
                         if (!productTagViewDelete.isVisible)
                             productTagViewDelete.visible()

@@ -82,6 +82,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
             createPostModel.caption = it
         }
         caption.setOnTouchListener { v, event ->
+            createPostAnalytics.eventClickOnCaptionBox()
             if (v.id == R.id.caption) {
                 showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
