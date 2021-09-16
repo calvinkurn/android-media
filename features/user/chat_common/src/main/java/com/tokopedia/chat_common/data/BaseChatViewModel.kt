@@ -38,6 +38,23 @@ open class BaseChatViewModel constructor(
     val label: String = ""
 ) {
 
+    constructor(builder: Builder<*, *>) : this(
+        messageId = builder.messageId,
+        fromUid = builder.fromUid,
+        from = builder.from,
+        fromRole = builder.fromRole,
+        attachmentId = builder.attachmentId,
+        attachmentType = builder.attachmentType,
+        replyTime = builder.replyTime,
+        message = builder.message,
+        source = builder.source,
+        replyId = builder.replyId,
+        localId = builder.localId,
+        blastId = builder.blastId,
+        fraudStatus = builder.fraudStatus,
+        label = builder.label,
+    )
+
     /**
      * Set in [BaseChatAdapter]
      *

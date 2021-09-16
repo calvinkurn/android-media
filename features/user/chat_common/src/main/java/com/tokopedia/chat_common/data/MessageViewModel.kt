@@ -10,33 +10,11 @@ open class MessageViewModel
 /**
  * Primary constructor, use [Builder] class to create this instance.
  */
-protected constructor(builder: Builder) : SendableViewModel(
-    messageId = builder.messageId,
-    fromUid = builder.fromUid,
-    from = builder.from,
-    fromRole = builder.fromRole,
-    attachmentId = builder.attachmentId,
-    attachmentType = builder.attachmentType,
-    replyTime = builder.replyTime,
-    message = builder.message,
-    source = builder.source,
-    replyId = builder.replyId,
-    localId = builder.localId,
-    blastId = builder.blastId,
-    fraudStatus = builder.fraudStatus,
-    label = builder.label,
-    startTime = builder.startTime,
-    isRead = builder.isRead,
-    isDummy = builder.isDummy,
-    isSender = builder.isSender,
-), Visitable<BaseChatTypeFactory> {
+protected constructor(builder: Builder) : SendableViewModel(builder),
+    Visitable<BaseChatTypeFactory> {
 
-    var attachment: Any? = null
+    var attachment: Any? = builder.attachment
         private set
-
-    init {
-        this.attachment = builder.attachment
-    }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
