@@ -19,7 +19,7 @@ class UmrahCheckoutContactDataActivity : BaseSimpleActivity(), HasComponent<Umra
 
     override fun getNewFragment(): Fragment =
           UmrahCheckoutContactDataFragment.getInstance(
-                  intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA)
+                  intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA) ?: ContactUser()
           )
 
     override fun getComponent(): UmrahCheckoutComponent =

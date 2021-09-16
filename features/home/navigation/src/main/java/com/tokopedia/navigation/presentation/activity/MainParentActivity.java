@@ -179,8 +179,10 @@ public class MainParentActivity extends BaseActivity implements
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
     private static final String ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV;
+    private static final String ROLLANCE_EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2;
     private static final String ROLLANCE_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
     private static final String ROLLANCE_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
+    private static final String ROLLANCE_VARIANT_REVAMP2 = RollenceKey.NAVIGATION_VARIANT_REVAMP2;
 
 
     private static final String OS_KEY_MOBILE = "mobile";
@@ -1332,7 +1334,8 @@ public class MainParentActivity extends BaseActivity implements
     private void validateNavigationRollence() {
         try {
             String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-            this.isNewNavigation = rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
+            String rollanceNavType2 = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME2, ROLLANCE_VARIANT_OLD);
+            this.isNewNavigation = rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP) || rollanceNavType2.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP2);
         } catch (Exception e) {
             this.isNewNavigation = false;
         }

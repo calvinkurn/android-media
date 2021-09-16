@@ -16,9 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -503,8 +501,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             getIncentiveOvoData()
             return
         }
-        activity?.setResult(Activity.RESULT_OK)
-        dismiss()
+        finishIfRoot(true)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -587,6 +584,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
             startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
         }
     }

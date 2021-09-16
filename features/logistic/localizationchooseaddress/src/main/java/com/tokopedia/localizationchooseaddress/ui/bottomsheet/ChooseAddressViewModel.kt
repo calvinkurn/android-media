@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,11 +44,9 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         }
     }
 
-    fun setStateChosenAddress(status: Int, addressId: String?, receiverName: String, addressName: String, latitude: String?, longitude: String?,
-                              districtId: String, postalCode: String, isTokonow: Boolean) {
+    fun setStateChosenAddress(model: StateChooseAddressParam) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
-            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId?.toInt(), receiverName, addressName, latitude, longitude,
-                    districtId.toInt(), postalCode, isTokonow)
+            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(model)
             _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
     }

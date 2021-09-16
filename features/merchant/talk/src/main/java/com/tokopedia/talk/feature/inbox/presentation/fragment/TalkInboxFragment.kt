@@ -604,8 +604,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun isNewNav(): Boolean {
         return getAbTestPlatform()?.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
+            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP || getAbTestPlatform()?.getString(
+            RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
     }
 
     private fun isSellerView(): Boolean {

@@ -29,14 +29,13 @@ import com.tokopedia.flight.cancellation_navigation.presentation.bottomsheet.Fli
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_CANCEL_WRAPPER
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_INVOICE_ID
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.flight.databinding.FragmentFlightCancellationRefundableStepTwoBinding
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_cancellation_refundable_step_two.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -52,6 +51,8 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     private lateinit var adapter: FlightCancellationAttachmentAdapter
 
     override fun getScreenName(): String = FlightAnalyticsScreenName.FLIGHT_CANCELLATION_STEP_TWO
+
+    private var binding by autoClearedNullable<FragmentFlightCancellationRefundableStepTwoBinding>()
 
     override fun initInjector() {
         getComponent(FlightCancellationComponent::class.java).inject(this)
@@ -77,8 +78,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_cancellation_refundable_step_two, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightCancellationRefundableStepTwoBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -154,6 +157,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         val imagePickerBuilder = ImagePickerBuilder.getOriginalImageBuilder(requireContext())
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(imagePickerBuilder)
+        intent.putParamPageSource(ImagePickerPageSource.FLIGHT_CANCELATION_REASON_PAGE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
@@ -162,10 +166,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun buildView() {
-        til_saved_passenger.textFieldInput.isClickable = true
-        til_saved_passenger.textFieldInput.isFocusable = false
-        til_saved_passenger.textFieldInput.isSingleLine = true
-        til_saved_passenger.textFieldInput.setOnClickListener {
+        binding?.tilSavedPassenger?.textFieldInput?.isClickable = true
+        binding?.tilSavedPassenger?.textFieldInput?.isFocusable = false
+        binding?.tilSavedPassenger?.textFieldInput?.isSingleLine = true
+        binding?.tilSavedPassenger?.textFieldInput?.setOnClickListener {
             val bottomsheet = FlightCancellationChooseReasonBottomSheet.getInstance(cancellationReasonViewModel.selectedReason)
             bottomsheet.listener = object : FlightCancellationChooseReasonBottomSheet.FlightChooseReasonListener {
                 override fun onReasonChoosed(selectedReason: FlightCancellationPassengerEntity.Reason) {
@@ -180,12 +184,12 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
         val adapterTypeFactory = FlightCancellationAttachmentAdapterTypeFactory(this, true)
         adapter = FlightCancellationAttachmentAdapter(adapterTypeFactory)
-        rv_attachments.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rv_attachments.setHasFixedSize(true)
-        rv_attachments.isNestedScrollingEnabled = false
-        rv_attachments.adapter = adapter
+        binding?.rvAttachments?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding?.rvAttachments?.setHasFixedSize(true)
+        binding?.rvAttachments?.isNestedScrollingEnabled = false
+        binding?.rvAttachments?.adapter = adapter
 
-        btn_next.setOnClickListener {
+        binding?.btnNext?.setOnClickListener {
             showProgressBar()
             cancellationReasonViewModel.onNextButtonClicked()
         }
@@ -196,20 +200,20 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun showProgressBar() {
-        container.visibility = View.GONE
-        btn_next.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        binding?.container?.visibility = View.GONE
+        binding?.btnNext?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {
-        container.visibility = View.VISIBLE
-        btn_next.visibility = View.VISIBLE
-        progress_bar.visibility = View.GONE
+        binding?.container?.visibility = View.VISIBLE
+        binding?.btnNext?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.GONE
     }
 
     private fun renderSelectedReason() {
         cancellationReasonViewModel.selectedReason?.let {
-            til_saved_passenger.textFieldInput.setText(it.title)
+            binding?.tilSavedPassenger?.textFieldInput?.setText(it.title)
             deleteAllAttachments()
             if (it.formattedRequiredDocs.size > 0) {
                 cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toInt())
@@ -237,11 +241,11 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun showAttachmentContainer() {
-        attachment_container.visibility = View.VISIBLE
+        binding?.attachmentContainer?.visibility = View.VISIBLE
     }
 
     private fun hideAttachmentContainer() {
-        attachment_container.visibility = View.GONE
+        binding?.attachmentContainer?.visibility = View.GONE
     }
 
     private fun renderAttachments(attachmentList: MutableList<FlightCancellationAttachmentModel>) {
@@ -266,7 +270,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
             }
         }
 
-        btn_next.isEnabled = shouldEnabledNextButton
+        binding?.btnNext?.isEnabled = shouldEnabledNextButton
     }
 
     private fun showErrorSnackbar(resId: Int) {

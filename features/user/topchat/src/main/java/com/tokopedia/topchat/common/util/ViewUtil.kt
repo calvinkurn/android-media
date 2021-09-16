@@ -1,22 +1,37 @@
 package com.tokopedia.topchat.common.util
 
 import android.content.Context
+import android.content.res.Resources
+import android.content.res.Resources.getSystem
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.provider.Settings
+import android.util.TypedValue
+import android.util.StateSet
 import android.view.Gravity
 import android.view.View
+import android.view.Window
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.window.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
-
+import com.tokopedia.topchat.R
 
 object ViewUtil {
+
+    private const val ELEVATION_VALUE_DIVIDER = 3f
+    private const val FIVE_MARGIN = 5
+
+    @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
             view: View?,
             @ColorRes backgroundColor: Int,
@@ -67,17 +82,17 @@ object ViewUtil {
             Gravity.TOP -> {
                 shapeDrawablePadding.top = elevationValue * 2
                 shapeDrawablePadding.bottom = elevationValue
-                DY = -1 * elevationValue / 3f
+                DY = -1 * elevationValue / ELEVATION_VALUE_DIVIDER
             }
             Gravity.BOTTOM -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3f
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3f
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
         }
 
@@ -121,9 +136,10 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
+        val stateDrawable = StateListDrawable()
+        stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
-        return drawable
-
+        return stateDrawable
     }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
@@ -135,5 +151,149 @@ object ViewUtil {
                 context.contentResolver,
                 Settings.Global.TRANSITION_ANIMATION_SCALE, 0f)
         return duration != 0f && transition != 0f
+    }
+
+    fun alignViewToDeviceFeatureBoundaries(
+        resources: Resources,
+        theme: Resources.Theme,
+        window: Window,
+        newLayoutInfo: WindowLayoutInfo,
+        constraintLayoutParent: ConstraintLayout?,
+        @IdRes firstContainerId: Int,
+        @IdRes secondContainerId: Int,
+        @IdRes toolbarId: Int,
+        @IdRes deviceFeatureId: Int
+    ) {
+        val set = ConstraintSet()
+        set.clone(constraintLayoutParent)
+
+        val rect = newLayoutInfo.displayFeatures[0].bounds
+        setupDeviceFeatureLine(set, toolbarId, deviceFeatureId)
+
+        if (rect.top == 0) {
+            //Device feature is placed vertically
+            set.setMargin(deviceFeatureId, ConstraintSet.START, rect.left)
+            setupVerticalFlex(set,
+                firstContainerId, secondContainerId,
+                toolbarId, deviceFeatureId
+            )
+        } else {
+            //Device feature is placed horizontally
+            val statusBarHeight = calculateStatusBarHeight(window)
+            val toolBarHeight = calculateToolbarHeight(resources, theme)
+            set.setMargin(
+                deviceFeatureId, ConstraintSet.TOP,
+                rect.top - statusBarHeight - toolBarHeight
+            )
+            setupHorizontalFlex(set,
+                firstContainerId, secondContainerId,
+                toolbarId, deviceFeatureId
+            )
+        }
+
+        set.setVisibility(deviceFeatureId, View.VISIBLE)
+        set.applyTo(constraintLayoutParent)
+    }
+
+    private fun setupDeviceFeatureLine(
+        set: ConstraintSet,
+        @IdRes toolbarId: Int,
+        @IdRes deviceFeatureId: Int
+    ) {
+        set.connect(
+            deviceFeatureId, ConstraintSet.START,
+            ConstraintSet.PARENT_ID, ConstraintSet.START, 0
+        )
+        set.connect(
+            deviceFeatureId, ConstraintSet.TOP,
+            toolbarId, ConstraintSet.BOTTOM, 0
+        )
+    }
+
+    private fun setupHorizontalFlex(
+        set: ConstraintSet,
+        @IdRes firstContainerId: Int,
+        @IdRes secondContainerId: Int,
+        @IdRes toolbarId: Int,
+        @IdRes deviceFeatureId: Int
+    ) {
+        set.connect(
+            firstContainerId, ConstraintSet.TOP,
+            deviceFeatureId, ConstraintSet.BOTTOM, 0
+        )
+        set.connect(
+            firstContainerId, ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
+        )
+
+        set.connect(
+            secondContainerId, ConstraintSet.TOP,
+            toolbarId, ConstraintSet.BOTTOM, 0
+        )
+        set.connect(
+            secondContainerId, ConstraintSet.BOTTOM,
+            deviceFeatureId, ConstraintSet.TOP, 0
+        )
+    }
+
+    private fun setupVerticalFlex(
+        set: ConstraintSet,
+        @IdRes firstContainerId: Int,
+        @IdRes secondContainerId: Int,
+        @IdRes toolbarId: Int,
+        @IdRes deviceFeatureId: Int
+    ) {
+        set.connect(
+            firstContainerId, ConstraintSet.TOP,
+            toolbarId, ConstraintSet.BOTTOM, 0
+        )
+        set.connect(
+            firstContainerId, ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
+        )
+        set.connect(
+            firstContainerId, ConstraintSet.START,
+            ConstraintSet.PARENT_ID, ConstraintSet.START, 0
+        )
+        set.connect(
+            firstContainerId, ConstraintSet.END,
+            deviceFeatureId, ConstraintSet.START, 0
+        )
+
+        set.connect(
+            secondContainerId, ConstraintSet.TOP,
+            toolbarId, ConstraintSet.BOTTOM, FIVE_MARGIN
+        )
+        set.connect(
+            secondContainerId, ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
+        )
+        set.connect(
+            secondContainerId, ConstraintSet.START,
+            deviceFeatureId, ConstraintSet.END, 0
+        )
+        set.connect(
+            secondContainerId, ConstraintSet.END,
+            ConstraintSet.PARENT_ID, ConstraintSet.END, 0
+        )
+    }
+
+    private fun calculateToolbarHeight(resources: Resources, theme: Resources.Theme): Int {
+        val typedValue = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+            TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+        } else {
+            0
+        }
+    }
+
+    private fun calculateStatusBarHeight(window: Window): Int {
+        val rect = Rect()
+        window.decorView.getWindowVisibleDisplayFrame(rect)
+        return rect.top
+    }
+
+    fun convertToPx(dp: Int): Int {
+        return (dp * getSystem().displayMetrics.density).toInt()
     }
 }
