@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
@@ -184,6 +185,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
                     intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
+                    intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
+                        atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                     activity?.setResult(Activity.RESULT_OK, intent)
                 } else {
                     RouteManager.route(context, ApplinkConst.CART)
