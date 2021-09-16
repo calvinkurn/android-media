@@ -27,6 +27,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
@@ -192,6 +193,8 @@ class SingleProductBundleFragment(
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
+                intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
+                    it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                 activity?.setResult(Activity.RESULT_OK, intent)
             } else {
                 RouteManager.route(context, ApplinkConst.CART)
