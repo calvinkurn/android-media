@@ -29,7 +29,7 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
             isLoading = element?.buttonLoad == true
             setOnClickListener {
                 isLoading = true
-                shareButtonInterface?.onShareButtonClick(element?.name)
+                shareButtonInterface?.onShareButtonClick(element?.name,element?.id)
             }
         }
         itemView.share_platform.text = element?.name

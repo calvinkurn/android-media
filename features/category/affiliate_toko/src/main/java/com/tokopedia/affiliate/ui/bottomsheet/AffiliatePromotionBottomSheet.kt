@@ -38,14 +38,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
     private var url: String? = null
     private var identifier: String? = null
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM),
-            AffiliateShareModel("TikTok", IconUnify.TIKTOK),
-            AffiliateShareModel("Youtube", IconUnify.YOUTUBE),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER),
-            AffiliateShareModel("Blog", IconUnify.GLOBE),
-            AffiliateShareModel("Whatsapp", IconUnify.WHATSAPP),
-            AffiliateShareModel("Line", IconUnify.LINE),
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,3),
+            AffiliateShareModel("TikTok", IconUnify.TIKTOK,9),
+            AffiliateShareModel("Youtube", IconUnify.YOUTUBE,13),
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,1),
+            AffiliateShareModel("Twitter", IconUnify.TWITTER,10),
+            AffiliateShareModel("Blog", IconUnify.GLOBE,11),
+            AffiliateShareModel("Whatsapp", IconUnify.WHATSAPP,12),
+            AffiliateShareModel("Line", IconUnify.LINE,4),
             AffiliateShareModel("Lainnya", null)
     )
 
@@ -121,9 +121,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
 
     private fun setObservers(contentView: View) {
         affiliatePromotionBSViewModel.generateLinkData().observe(this, {
-            it.data.firstOrNull()?.let { data ->
+            it?.let { data ->
                 val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url.short))
+                clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url?.shortURL))
                 Toaster.build(contentView.rootView, getString(R.string.affiliate_link_generated_succesfully, currentName),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             }
@@ -154,9 +154,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
         }
     }
 
-    override fun onShareButtonClick(name: String?) {
+    override fun onShareButtonClick(name : String?, id: Int?) {
         currentName = name
-        affiliatePromotionBSViewModel.affiliateGenerateLink(name, url, identifier)
+        affiliatePromotionBSViewModel.affiliateGenerateLink(id, url, identifier)
     }
 
 }
