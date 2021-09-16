@@ -301,9 +301,9 @@
                     "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-m",
                     "sku": "",
                     "stock": {
-                      "isBuyable": false,
+                      "isBuyable": true,
                       "minimumOrder": "1",
-                      "stock": "0",
+                      "stock": "99",
                       "stockWording": "",
                       "stockWordingHTML": ""
                     },
@@ -403,9 +403,9 @@
                     "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-xl",
                     "sku": "",
                     "stock": {
-                      "isBuyable": false,
+                      "isBuyable": true,
                       "minimumOrder": "1",
-                      "stock": "0",
+                      "stock": "99",
                       "stockWording": "",
                       "stockWordingHTML": ""
                     },

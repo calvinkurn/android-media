@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-class PaymentTestInterceptor : BaseOccInterceptor() {
+class OccPaymentTestInterceptor : BaseOccInterceptor() {
 
     var customGetListingParamResponsePath: String? = null
     var customGetListingParamThrowable: IOException? = null

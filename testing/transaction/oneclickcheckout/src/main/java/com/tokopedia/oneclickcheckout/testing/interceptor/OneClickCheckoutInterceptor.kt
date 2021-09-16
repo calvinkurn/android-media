@@ -4,12 +4,12 @@ import android.content.Context
 import com.tokopedia.graphql.data.GraphqlClient
 
 object OneClickCheckoutInterceptor {
-    val cartInterceptor = CartTestInterceptor()
+    val cartInterceptor = OccCartTestInterceptor()
     val preferenceInterceptor = PreferenceTestInterceptor()
-    val logisticInterceptor = LogisticTestInterceptor()
-    val promoInterceptor = PromoTestInterceptor()
-    val checkoutInterceptor = CheckoutTestInterceptor()
-    val paymentInterceptor = PaymentTestInterceptor()
+    val logisticInterceptor = OccLogisticTestInterceptor()
+    val promoInterceptor = OccPromoTestInterceptor()
+    val checkoutInterceptor = OccCheckoutTestInterceptor()
+    val paymentInterceptor = OccPaymentTestInterceptor()
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(

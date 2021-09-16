@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-class LogisticTestInterceptor : BaseOccInterceptor() {
+class OccLogisticTestInterceptor : BaseOccInterceptor() {
 
     var customRatesResponsePath: String? = null
     var customRatesThrowable: IOException? = null

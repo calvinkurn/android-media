@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-class PromoTestInterceptor : BaseOccInterceptor() {
+class OccPromoTestInterceptor : BaseOccInterceptor() {
 
     var customValidateUseResponsePath: String? = null
     var customValidateUseThrowable: IOException? = null

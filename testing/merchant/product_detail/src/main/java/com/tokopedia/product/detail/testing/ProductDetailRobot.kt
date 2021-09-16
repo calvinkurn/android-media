@@ -63,8 +63,8 @@ class ProductDetailRobot {
     }
 
     fun clickLihatKeranjangBottomSheetAtc(pdpInterceptor: ProductDetailInterceptor? = null) {
-        clickAtcNormal()
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
+        clickAtcNormal()
         Thread.sleep(5000)
         onView(withId(R.id.recycler_view_add_to_cart_done)).perform(RecyclerViewActions.actionOnItemAtPosition<AddToCartDoneAddedProductViewHolder>(
                 0, CommonActions.clickChildViewWithId(R.id.button_go_to_cart)))

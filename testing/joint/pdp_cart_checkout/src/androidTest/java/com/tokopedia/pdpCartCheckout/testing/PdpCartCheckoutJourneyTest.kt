@@ -1,18 +1,16 @@
 package com.tokopedia.pdpCartCheckout.testing
 
 import android.content.Context
-import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.testing.interceptor.AtcInterceptor
 import com.tokopedia.cart.testing.robot.CartPageMocks
 import com.tokopedia.cart.testing.robot.cartPage
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.product.detail.testing.ProductDetailInterceptor
-import com.tokopedia.product.detail.testing.RESPONSE_P1_PATH
-import com.tokopedia.product.detail.testing.RESPONSE_P2_DATA_PATH
+import com.tokopedia.product.detail.testing.*
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -25,14 +23,12 @@ import org.junit.Test
 class PdpCartCheckoutJourneyTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java,
-            false,
-            false) {}
+    var activityRule = ProductDetailIntentRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(true, false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
 
@@ -61,15 +57,15 @@ class PdpCartCheckoutJourneyTest {
 
     @Test
     fun loadCartAndGoToShipment_PassedAnalyticsTest() {
-//        activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
-        activityRule.launchActivity(null)
+        activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
-//        ProductDetailRobot().apply {
-////            clickBeli()
-//            Thread.sleep(5_000)
-////            Espresso.pressBack()
-//            clickLihatKeranjangBottomSheetAtc()
-//        }
+        ProductDetailRobot().apply {
+            Thread.sleep(5_000)
+            clickBuyNormal()
+            Thread.sleep(5_000)
+            Espresso.pressBack()
+            clickLihatKeranjangBottomSheetAtc(productDetailInterceptor)
+        }
 
         cartPage {
             waitForData()
@@ -103,7 +99,5 @@ class PdpCartCheckoutJourneyTest {
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
         private const val CHECKOUT_KEY = "checkout"
-
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
 }
