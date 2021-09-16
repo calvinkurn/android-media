@@ -614,7 +614,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         val subtotalWholesalePriceMap = HashMap<String, Double>()
         val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
-        val calculatedBundlingId = HashSet<String>()
+        val calculatedBundlingGroupId = HashSet<String>()
 
         for (cartItemHolderData in allCartItemDataList) {
             var itemQty =
@@ -635,10 +635,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
 
             if (cartItemHolderData.isBundlingItem) {
-                if (!calculatedBundlingId.contains(cartItemHolderData.bundleId)) {
+                if (!calculatedBundlingGroupId.contains(cartItemHolderData.bundleGroupId)) {
                     subtotalPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundlePrice
                     subtotalBeforeSlashedPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundleOriginalPrice
-                    calculatedBundlingId.add(cartItemHolderData.bundleId)
+                    calculatedBundlingGroupId.add(cartItemHolderData.bundleGroupId)
                 }
             } else if (!cartItemHolderData.wholesalePriceData.isNullOrEmpty()) {
                 // Calculate price and cashback for wholesale marketplace product

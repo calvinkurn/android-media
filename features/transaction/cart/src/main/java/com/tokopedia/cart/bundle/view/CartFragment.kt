@@ -1116,7 +1116,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach { product ->
-                    if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId) {
+                    if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
                         toBeDeletedProducts.add(product)
                     }
                 }
@@ -1694,7 +1694,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
         cartShopHolderData?.let {
             it.productUiModelList.forEachIndexed { index, data ->
-                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId) {
+                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
                     cartAdapter.setItemSelected(index, cartItemHolderData)
                 }
             }
@@ -3179,7 +3179,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach {
-                    if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId) {
+                    if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
                         it.bundleQuantity = newQuantity
                     }
                 }
