@@ -2,20 +2,19 @@ package com.tokopedia.shop.home.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
-import com.tokopedia.play.widget.data.*
-import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -30,13 +29,12 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
-import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
-import com.tokopedia.shop.home.domain.*
+import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
@@ -46,7 +44,6 @@ import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
@@ -55,14 +52,10 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -165,15 +158,13 @@ class ShopHomeViewModelTest {
             listOf()
     )
 
-    private val coroutineDispatcher = TestCoroutineDispatcher()
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopHomeViewModel(
                 userSessionInterface,
                 getShopProductUseCase,
-                coroutineDispatcher,
+                testCoroutineDispatcherProvider,
                 addToCartUseCase,
                 addToCartOccUseCase,
                 gqlCheckWishlistUseCaseProvider,
@@ -239,30 +230,6 @@ class ShopHomeViewModelTest {
 
         assertTrue(viewModel.productListData.value is Fail)
     }
-
-//    @Test
-//    fun `check get data from play usecase`() {
-//        coEvery { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.ShopPage("")) } returns PlayWidget()
-//
-//        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-//                listWidget = listOf(
-//                        ShopLayoutWidget.Widget(
-//                                type = WidgetType.DYNAMIC,
-//                                name = WidgetName.PLAY_CAROUSEL_WIDGET
-//                        )
-//                )
-//        )
-//        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-//
-//        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
-//
-//        coVerify {
-//            getShopPageHomeLayoutUseCase.executeOnBackground()
-//        }
-//
-//        assertTrue(viewModel.shopHomeLayoutData.value is Success)
-//        assertTrue((viewModel.shopHomeLayoutData.value as? Success)!!.data.listWidget.filterIsInstance<CarouselPlayWidgetUiModel>().isNotEmpty())
-//    }
 
     @Test
     fun `check whether get merchant voucher is success`() {
@@ -570,10 +537,6 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether playWidgetObservable value is not null when get data is success`() {
         val playWidgetMock = PlayWidget()
-//        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-//                listWidget = listOf(ShopLayoutWidget.Widget(type ="dynamic" ))
-//        )
-//        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
@@ -586,33 +549,6 @@ class ShopHomeViewModelTest {
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
     }
-
-//    @Test
-//    fun `check whether playWidgetObservable value is null when shopHomeLayoutData value is fail`() {
-////        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } throws Exception()
-////        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
-//        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
-//                "",
-//                0,
-//                "",
-//                "",
-//                BaseShopHomeWidgetUiModel.Header()
-//        ))
-//        assert(viewModel.playWidgetObservable.value == null)
-//    }
-
-//    @Test
-//    fun `check whether playWidgetObservable value is null when play widget not found on shopHomeLayoutData`() {
-////        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-////                listWidget = listOf(ShopLayoutWidget.Widget(
-////                        type = "promo",
-////                        data = listOf(ShopLayoutWidget.Widget.Data())
-////                ))
-////        )
-////        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
-//        viewModel.getPlayWidget(mockShopId)
-//        assert(viewModel.playWidgetObservable.value == null)
-//    }
 
     @Test
     fun `check play widget success delete channel`() {
@@ -698,11 +634,7 @@ class ShopHomeViewModelTest {
                         )
                 )
         )
-//        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-//                listWidget = listOf(ShopLayoutWidget.Widget(type = "dynamic"))
-//        )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-//        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
@@ -745,48 +677,49 @@ class ShopHomeViewModelTest {
         assert(viewModel.playWidgetObservable.value == null)
     }
 
-    //    @Test
-//    fun `when getWidgetContentData success should return expected results`() {
-//        runBlockingTest {
-////            val value = launch {
-////                viewModel.shopHomeWidgetContentData.first()
-////            }
-////            value.cancel()
-//            val _intSharedFlow = MutableSharedFlow<Int>()
-//            val intSharedFlow: SharedFlow = _intSharedFlow
-//            val testResults = mutableListOf<Int>()
-//
-//            val job = launch {
-//                intSharedFlow.toList(testResults)
-//            }
-//            _intSharedFlow.emit(5)
-//
-//            assertEquals(1, testResults.size)
-//            assertEquals(5, testResults.first())
-//            job.cancel()
-//
-//
-////            coEvery {
-////                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
-////            } returns ShopLayoutWidgetV2()
-////            viewModel.getWidgetContentData(
-////                    listOf(),
-////                    mockShopId,
-////                    addressWidgetData
-////            )
-//
-////            result = value.await()
-//
-//
-////            runBlocking {
-////                val gg = viewModel.shopHomeWidgetContentData.first()
-////            }
-////            val ggz = viewModel.shopHomeWidgetContentData.collect {
-////
-////            }
-//
-////            assert(viewModel.shopHomeWidgetContentData.ob.count.first() is Fail)
-//        }
-//    }
+    @Test
+    fun `when getWidgetContentData success should return expected results`() {
+        runBlocking {
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } returns ShopLayoutWidgetV2()
+            viewModel.getWidgetContentData(
+                    listOf(
+                            ShopPageHomeWidgetLayoutUiModel.WidgetLayout()
+                    ),
+                    mockShopId,
+                    addressWidgetData
+            )
+            assert(shopHomeWidgetContentData.await() is Success)
+            assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
+        }
+    }
+
+    @Test
+    fun `when getWidgetContentData error should return expected results`() {
+        runBlocking {
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            val shopHomeWidgetContentDataError = async {
+                viewModel.shopHomeWidgetContentDataError.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } throws Exception()
+            viewModel.getWidgetContentData(
+                    listOf(
+                            ShopPageHomeWidgetLayoutUiModel.WidgetLayout()
+                    ),
+                    mockShopId,
+                    addressWidgetData
+            )
+            assert(shopHomeWidgetContentData.await() is Fail)
+            assert(shopHomeWidgetContentDataError.await().isNotEmpty())
+        }
+    }
 
 }
