@@ -657,10 +657,18 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `on success send attachment and message through Websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage,
-            IdentifierUtil.generateLocalId()
-        )
+        val dummyMessage = MessageViewModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid(userSession.userId)
+            .withFrom(userSession.name)
+            .withReplyTime(BaseChatViewModel.SENDING_TEXT)
+            .withStartTime(exStartTime)
+            .withMsg(exSendMessage)
+            .withLocalId(IdentifierUtil.generateLocalId())
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
         val paramSendMessage = "paramSendMessage"
         val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
@@ -701,7 +709,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 exOpponentId,
                 exSendMessage,
                 listInterceptor,
-                LocalCacheModel()
+                LocalCacheModel(),
+                dummyMessage.localId
             )
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
@@ -716,10 +725,18 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         // Given
         val slot = slot<Subscriber<ReplyChatViewModel>>()
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage,
-            IdentifierUtil.generateLocalId()
-        )
+        val dummyMessage = MessageViewModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid(userSession.userId)
+            .withFrom(userSession.name)
+            .withReplyTime(BaseChatViewModel.SENDING_TEXT)
+            .withStartTime(exStartTime)
+            .withMsg(exSendMessage)
+            .withLocalId(IdentifierUtil.generateLocalId())
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {

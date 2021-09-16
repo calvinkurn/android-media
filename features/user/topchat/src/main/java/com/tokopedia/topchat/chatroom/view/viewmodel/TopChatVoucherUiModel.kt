@@ -24,13 +24,13 @@ class TopChatVoucherUiModel
  * @param redirectUrlTop    redirect url in http for Top image click
  * @param imageUrlBottom    image url Bottom image
  * @param redirectUrlBottom redirect url in http for Bottom image click
- * @param blastId           blast id for campaign.
+ * @param voucherBlastId           blast id for campaign.
  */
 constructor(
-        messageId: String, fromUid: String, from: String, fromRole: String,
-        attachmentId: String, attachmentType: String, replyTime: String, message: String,
-        isRead: Boolean, isDummy: Boolean, isSender: Boolean, var voucherModel: MerchantVoucherModel,
-        replyId: String, var blastId: String, source: String, val isPublic: Int
+    messageId: String, fromUid: String, from: String, fromRole: String,
+    attachmentId: String, attachmentType: String, replyTime: String, message: String,
+    isRead: Boolean, isDummy: Boolean, isSender: Boolean, var voucherModel: MerchantVoucherModel,
+    replyId: String, var voucherBlastId: String, source: String, val isPublic: Int
 ) : SendableViewModel(
         messageId, fromUid, from, fromRole,
         attachmentId, attachmentType, replyTime, "",

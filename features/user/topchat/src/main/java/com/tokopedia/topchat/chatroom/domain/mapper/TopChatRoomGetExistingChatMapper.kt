@@ -98,7 +98,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(chatItemPojoByDateByTime)
+        return MessageViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .build()
     }
 
     private fun createBroadCastUiModel(
@@ -208,7 +210,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val attachment = gson.fromJson(
             reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel(reply, attachment)
+        return MessageViewModel.Builder()
+            .withResponseFromGQL(reply)
+            .withAttachment(attachment)
+            .build()
     }
 
     override fun convertToImageAnnouncement(item: Reply): Visitable<*> {
@@ -283,7 +288,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             redirectUrlTop = pojoAttribute.url,
             imageUrlBottom = pojoAttribute.imageUrl2,
             redirectUrlBottom = pojoAttribute.url2,
-            blastId = item.blastId,
+            broadcastBlastId = item.blastId,
             source = item.source
         )
     }

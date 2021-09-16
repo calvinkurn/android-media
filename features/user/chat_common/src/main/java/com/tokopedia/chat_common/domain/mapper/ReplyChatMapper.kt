@@ -41,23 +41,9 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
         }
     }
 
-    private fun generateMessage(temp: ChatItemPojo): MessageViewModel {
-        var viewModel = MessageViewModel(
-                temp.msgId.toString(),
-                temp.senderId,
-                temp.senderName,
-                temp.role,
-                temp.attachmentId.toString(),
-                temp.attachment?.type.toString(),
-                System.currentTimeMillis().toString(),
-                "",
-                temp.msg,
-                false,
-                false,
-                true,
-                temp.source.orEmpty()
-        )
-        return viewModel
+    private fun generateMessage(reply: ChatItemPojo): MessageViewModel {
+        return MessageViewModel.Builder().withResponseFromAPI(reply)
+            .build()
     }
 
     private fun generateImageMessage(temp: ChatItemPojo): ImageUploadViewModel {

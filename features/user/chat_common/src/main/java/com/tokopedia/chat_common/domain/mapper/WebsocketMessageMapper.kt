@@ -30,21 +30,9 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = "",
-                attachmentType = "",
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                isRead = false,
-                isDummy = false,
-                isSender = !pojo.isOpposite,
-                source = pojo.source
-        )
+        return MessageViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .build()
     }
 
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -164,18 +152,10 @@ open class WebsocketMessageMapper @Inject constructor() {
         pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                message = fallbackMessage,
-                isOpposite = pojo.isOpposite,
-                source = pojo.source
-        )
+        return FallbackAttachmentViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsg(fallbackMessage)
+            .build()
     }
 
     open fun hasAttachment(pojo: ChatSocketPojo): Boolean {

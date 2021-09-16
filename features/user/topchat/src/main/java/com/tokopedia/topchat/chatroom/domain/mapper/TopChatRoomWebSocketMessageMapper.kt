@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_M
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
@@ -34,7 +35,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(pojo)
+        return MessageViewModel.Builder().withResponseFromWs(pojo).build()
     }
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -54,7 +55,10 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
         val attachment = gson.fromJson(
             jsonAttributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel(pojo, attachment)
+        return MessageViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withAttachment(attachment)
+            .build()
     }
 
     private fun convertToSticker(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -154,8 +158,17 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             messageText: String
     ): Visitable<*> {
         val localId = IdentifierUtil.generateLocalId()
-        return MessageViewModel(
-                messageId, userId, name, startTime, messageText, localId
-        )
+        return MessageViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(generateCurrentReplyTime())
+            .withStartTime(startTime)
+            .withMsg(messageText)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
     }
 }

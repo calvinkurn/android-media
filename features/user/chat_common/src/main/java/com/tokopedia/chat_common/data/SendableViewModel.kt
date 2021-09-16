@@ -21,10 +21,24 @@ import java.util.*
  */
 
 open class SendableViewModel constructor(
-    messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
-    attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
-    var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
-    replyId: String = "", localId: String = ""
+    messageId: String,
+    fromUid: String,
+    from: String,
+    fromRole: String,
+    attachmentId: String,
+    attachmentType: String,
+    replyTime: String,
+    var startTime: String,
+    var isRead: Boolean,
+    var isDummy: Boolean,
+    val isSender: Boolean,
+    message: String,
+    source: String,
+    replyId: String = "",
+    localId: String = "",
+    blastId: Long = 0,
+    fraudStatus: Int = 0,
+    label: String = ""
 ) : BaseChatViewModel(
     messageId = messageId,
     fromUid = fromUid,
@@ -36,14 +50,15 @@ open class SendableViewModel constructor(
     message = message,
     source = source,
     replyId = replyId,
-    localId = localId
+    localId = localId,
+    blastId = blastId,
+    fraudStatus = fraudStatus,
+    label = label
 ) {
 
-    var startTime: String protected set
     var isShowRole = true
 
     init {
-        this.startTime = startTime
         this.fromRole = checkRole(fromRole)
     }
 
@@ -70,9 +85,45 @@ open class SendableViewModel constructor(
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(
-                    SendableViewModel.START_TIME_FORMAT, Locale.US)
+                SendableViewModel.START_TIME_FORMAT, Locale.US
+            )
             date.timeZone = TimeZone.getTimeZone("UTC")
             return date.format(Calendar.getInstance().time)
+        }
+    }
+
+    abstract class Builder<
+            out T : Builder<T, UI>,
+            out UI : SendableViewModel
+            > : BaseChatViewModel.Builder<T, UI>() {
+
+        var startTime: String = ""
+            private set
+        var isRead: Boolean = false
+            private set
+        var isDummy: Boolean = false
+            private set
+        var isSender: Boolean = true
+            private set
+
+        fun withStartTime(startTime: String): T {
+            this.startTime = startTime
+            return self()
+        }
+
+        fun withIsRead(isRead: Boolean): T {
+            this.isRead = isRead
+            return self()
+        }
+
+        fun withIsDummy(isDummy: Boolean): T {
+            this.isDummy = isDummy
+            return self()
+        }
+
+        fun withIsSender(isSender: Boolean): T {
+            this.isSender = isSender
+            return self()
         }
     }
 }

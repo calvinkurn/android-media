@@ -34,7 +34,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         private set
     var canShowFooter: Boolean = false
         private set
-    var blastId: Long = 0
+    var productBlastId: Long = 0
         private set
     var priceInt: Long = 0
         private set
@@ -72,7 +72,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
-    val stringBlastId: String get() = blastId.toString()
+    val stringBlastId: String get() = productBlastId.toString()
     var campaignId: Long = 0
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
@@ -182,7 +182,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.productUrl = productUrl
         this.productImage = productImage
         this.canShowFooter = canShowFooter
-        this.blastId = blastId
+        this.productBlastId = blastId
         this.priceInt = productPriceInt
         this.category = category
         this.dropPercentage = dropPercentage
@@ -243,7 +243,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.productUrl = productUrl
         this.productImage = productImage
         this.canShowFooter = canShowFooter
-        this.blastId = blastId
+        this.productBlastId = blastId
         this.priceInt = productPriceInt
         this.category = category
         this.dropPercentage = dropPercentage
@@ -320,14 +320,14 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     fun getAtcEventLabel(): String {
         val atcEventLabel = when {
-            blastId == 0L -> "chat"
-            blastId == -1L -> "drop price alert"
-            blastId == -2L -> "limited stock"
-            blastId > 0 -> "broadcast"
+            productBlastId == 0L -> "chat"
+            productBlastId == -1L -> "drop price alert"
+            productBlastId == -2L -> "limited stock"
+            productBlastId > 0 -> "broadcast"
             else -> "chat"
         }
 
-        return "$atcEventLabel - $blastId"
+        return "$atcEventLabel - $productBlastId"
     }
 
     fun getAtcEventAction(): String {
@@ -383,7 +383,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     private fun getField(): String {
-        return if (blastId > 0) {
+        return if (productBlastId > 0) {
             "/broadcast"
         } else {
             "/chat"
@@ -395,7 +395,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun fromBroadcast(): Boolean {
-        return blastId != 0L
+        return productBlastId != 0L
     }
 
     fun isEligibleOcc(): Boolean {

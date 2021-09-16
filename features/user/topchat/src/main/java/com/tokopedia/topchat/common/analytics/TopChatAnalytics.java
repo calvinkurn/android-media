@@ -10,7 +10,6 @@ import androidx.collection.ArrayMap;
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
-import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
@@ -27,8 +26,6 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import androidx.annotation.Nullable;
-
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -596,7 +593,7 @@ public class TopChatAnalytics {
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_IMAGE_THUMBNAIL,
-                getField(String.valueOf(product.getBlastId())) + " - " + product.getBlastId()
+                getField(String.valueOf(product.getProductBlastId())) + " - " + product.getProductBlastId()
         );
     }
 
@@ -716,7 +713,7 @@ public class TopChatAnalytics {
     public void trackClickUpdateStock(ProductAttachmentViewModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +
-                product.getRemainingStock() + " - " + product.getBlastId() + " - " +
+                product.getRemainingStock() + " - " + product.getProductBlastId() + " - " +
                 product.getReplyId();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(

@@ -158,7 +158,10 @@ class TopChatRoomAdapter constructor(
         val position = itemPair.first
         if (position == RecyclerView.NO_POSITION) return
         itemPair.second ?: return
-        val message = FallbackAttachmentViewModel(element.reply)
+        val message = FallbackAttachmentViewModel.Builder()
+            .withResponseFromGQL(element.reply)
+            .withMsg(element.reply.attachment.fallback.html)
+            .build()
         visitables[position] = message
         notifyItemChanged(position)
     }

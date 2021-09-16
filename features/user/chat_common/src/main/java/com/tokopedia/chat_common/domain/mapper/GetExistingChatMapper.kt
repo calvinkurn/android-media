@@ -96,22 +96,9 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(
-                chatItemPojoByDateByTime.msgId.toString(),
-                chatItemPojoByDateByTime.senderId.toString(),
-                chatItemPojoByDateByTime.senderName,
-                chatItemPojoByDateByTime.role,
-                chatItemPojoByDateByTime.attachment?.id ?: "",
-                chatItemPojoByDateByTime.attachment?.type.toString(),
-                chatItemPojoByDateByTime.replyTime,
-                "",
-                chatItemPojoByDateByTime.isRead,
-                false,
-                !chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.msg,
-                chatItemPojoByDateByTime.source,
-                blastId = chatItemPojoByDateByTime.blastId
-        )
+        return MessageViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .build()
     }
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -139,7 +126,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 redirectUrl = pojoAttribute.url,
                 isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
-                blastId = item.blastId,
+                broadcastBlastId = item.blastId,
                 source = item.source
         )
         return imageAnnouncement
@@ -150,18 +137,10 @@ open class GetExistingChatMapper @Inject constructor() {
         chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel(
-                msgId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                message = fallbackMessage,
-                isOpposite = chatItemPojoByDateByTime.isOpposite,
-                source = chatItemPojoByDateByTime.source
-        )
+        return FallbackAttachmentViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withMsg(fallbackMessage)
+            .build()
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {

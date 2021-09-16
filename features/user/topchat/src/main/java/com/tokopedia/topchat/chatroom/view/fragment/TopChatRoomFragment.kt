@@ -806,7 +806,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.blastId.toString(), viewModel.attachmentId)
+        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
         super.onImageAnnouncementClicked(viewModel)
     }
 

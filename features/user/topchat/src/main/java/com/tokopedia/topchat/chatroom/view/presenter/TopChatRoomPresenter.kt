@@ -13,6 +13,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -660,14 +661,18 @@ open class TopChatRoomPresenter @Inject constructor(
         messageId: String, messageText: String, startTime: String
     ): SendableViewModel {
         val localId = IdentifierUtil.generateLocalId()
-        return MessageViewModel(
-            messageId = messageId,
-            fromUid = userSession.userId,
-            from = userSession.name,
-            startTime = startTime,
-            message = messageText,
-            localId = localId
-        )
+        return MessageViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userSession.userId)
+            .withFrom(userSession.name)
+            .withReplyTime(generateCurrentReplyTime())
+            .withStartTime(startTime)
+            .withMsg(messageText)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
     }
 
     private fun mapToDummyMessage(

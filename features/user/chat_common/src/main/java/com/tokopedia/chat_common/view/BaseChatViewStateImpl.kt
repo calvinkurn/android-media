@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
@@ -169,16 +170,19 @@ abstract class BaseChatViewStateImpl(
 
     override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
         val localId = IdentifierUtil.generateLocalId()
-        getAdapter().addElement(
-                MessageViewModel(
-                        messageId,
-                        userId,
-                        name,
-                        startTime,
-                        sendMessage,
-                        localId
-                )
-        )
+        val message = MessageViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatViewModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
+        getAdapter().addElement(message)
     }
 
     override fun removeDummyIfExist(successVisitable: Visitable<*>) {
