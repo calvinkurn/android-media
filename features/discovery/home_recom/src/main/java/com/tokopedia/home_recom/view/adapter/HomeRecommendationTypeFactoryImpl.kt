@@ -86,6 +86,14 @@ class HomeRecommendationTypeFactoryImpl(
         return RecommendationCPMViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: LoadMoreDataModel): Int {
+        return LoadMoreViewHolder.LAYOUT
+    }
+
+    override fun type(dataModel: FirstLoadDataModel): Int {
+        return FirstLoadViewHolder.LAYOUT
+    }
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder
@@ -101,6 +109,8 @@ class HomeRecommendationTypeFactoryImpl(
             RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
             RecommendationShimmeringViewHolder.LAYOUT -> RecommendationShimmeringViewHolder(view)
             RecommendationCPMViewHolder.LAYOUT -> RecommendationCPMViewHolder(view, recommendationListener)
+            LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view)
+            FirstLoadViewHolder.LAYOUT -> FirstLoadViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

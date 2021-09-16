@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,6 +15,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.RecomPageConstant
+import com.tokopedia.home_recom.view.viewholder.FirstLoadViewHolder
+import com.tokopedia.home_recom.view.viewholder.LoadMoreViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationCPMViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationShimmeringViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -78,14 +81,34 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
             EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
             RecommendationShimmeringViewHolder.LAYOUT -> layout.isFullSpan = true
             RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
+            LoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
+            FirstLoadViewHolder.LAYOUT -> layout.isFullSpan = true
         }
     }
 
-//    fun showLoading() {
-//        if (!isLoading()) {
-//            submitList(listOf(LoadingMoreModel()))
-//        }
-//    }
+    fun showFirstLoading() {
+        if (!isLoading()) {
+            submitList(listOf(FirstLoadDataModel()))
+        }
+    }
+
+    fun removeFirstLoading() {
+        submitList(mutableListOf())
+    }
+
+    fun appendLoadingForLoadMore() {
+        if (!isLoading()) {
+            val newList = mutableListOf(currentList)
+            newList.add(listOf(LoadMoreDataModel()))
+            submitList(currentList)
+        }
+    }
+
+    fun removeLoadingForLoadMore() {
+        val newList = mutableListOf<HomeRecommendationDataModel>()
+        currentList.forEach { data -> if (data !is LoadMoreDataModel) newList.add(data) }
+        submitList(newList)
+    }
 
     fun showError(data: RecommendationErrorDataModel) {
         submitList(listOf(data))

@@ -157,8 +157,20 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         endlessRecyclerViewScrollListener?.setHasNextPage(true)
     }
 
-    fun showLoading() {
-//        productAdapter?.showLoading()
+    fun showFirstLoading() {
+        productAdapter?.showFirstLoading()
+    }
+
+    fun removeFirstLoading() {
+        productAdapter?.removeFirstLoading()
+    }
+
+    fun appendLoadingForLoadMore() {
+        productAdapter?.appendLoadingForLoadMore()
+    }
+
+    fun removeLoadingForLoadMore() {
+        productAdapter?.removeLoadingForLoadMore()
     }
 
     fun renderPageError(throwable: Throwable) {
@@ -252,7 +264,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     protected open fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerView!!.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                if (page != 0) appendLoadingForLoadMore()
                 loadMoreData(page + 1)
             }
         }
@@ -281,8 +293,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         recyclerView?.isNestedScrollingEnabled = false
         recyclerView?.layoutManager = StaggeredGridLayoutManager(RV_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.itemAnimator = null
-        showLoading()
-
+        showFirstLoading()
         recyclerView?.adapter = productAdapter
     }
 

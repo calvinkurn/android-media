@@ -260,6 +260,7 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.recommendationFirstLiveData.observe(viewLifecycleOwner, Observer {
             it?.let { response ->
+                removeFirstLoading()
                 recomPageUiUpdater.appendFirstData(response.toList())
                 submitInitialList(recomPageUiUpdater.dataList.toMutableList())
             }
@@ -277,6 +278,7 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.recommendationNextLiveData.observe(viewLifecycleOwner, Observer {
             it?.let { response ->
+                removeLoadingForLoadMore()
                 recomPageUiUpdater.appendNextData(response.toList())
                 updateUi()
             }
