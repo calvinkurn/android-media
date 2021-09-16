@@ -104,6 +104,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -119,6 +120,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
+        protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()

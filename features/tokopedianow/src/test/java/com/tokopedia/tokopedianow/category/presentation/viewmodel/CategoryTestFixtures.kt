@@ -95,6 +95,7 @@ open class CategoryTestFixtures {
                 getCategoryListUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
+                userSession,
         )
     }
 

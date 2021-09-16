@@ -85,6 +85,7 @@ open class SearchTestFixtures {
                 getRecommendationUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
+                userSession,
         )
     }
 

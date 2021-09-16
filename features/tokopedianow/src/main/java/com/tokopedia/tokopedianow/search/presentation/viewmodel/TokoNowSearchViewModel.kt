@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
@@ -56,6 +57,7 @@ class TokoNowSearchViewModel @Inject constructor (
         getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
+        userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -67,6 +69,7 @@ class TokoNowSearchViewModel @Inject constructor (
         getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
+        userSession,
 ) {
 
     private val addToCartBroadMatchTrackingMutableLiveData =

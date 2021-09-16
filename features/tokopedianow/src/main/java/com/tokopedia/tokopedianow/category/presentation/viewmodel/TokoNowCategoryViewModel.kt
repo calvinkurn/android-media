@@ -24,7 +24,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
-import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
@@ -44,6 +43,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -68,6 +68,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         private val getCategoryListUseCase: GetCategoryListUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
+        userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -79,6 +80,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
+        userSession,
 ) {
 
     val categoryIdTracking: String
