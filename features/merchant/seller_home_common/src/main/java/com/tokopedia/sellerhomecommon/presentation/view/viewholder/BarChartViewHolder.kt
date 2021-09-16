@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.*
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
@@ -64,6 +65,7 @@ class BarChartViewHolder(
         }
 
         setupTooltip(element)
+        setTagNotification(element.tag)
 
         val data = element.data
 
@@ -127,6 +129,20 @@ class BarChartViewHolder(
                 }
             } else {
                 animateHideEmptyState()
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagBarChart.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagBarChart.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
