@@ -11,7 +11,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
  * Created by jegul on 28/06/21
  */
 data class PlayViewerNewUiState(
-    val interactive: PlayInteractiveViewUiState,
+    val interactiveView: PlayInteractiveViewUiState,
     val partner: PlayPartnerUiState,
     val winnerBadge: PlayWinnerBadgeUiState,
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,

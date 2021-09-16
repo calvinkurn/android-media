@@ -26,6 +26,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
@@ -87,6 +88,7 @@ class PlayViewModel @Inject constructor(
         private val playChannelWebSocket: PlayChannelWebSocket,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
+        private val timerFactory: TimerFactory,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -240,7 +242,7 @@ class PlayViewModel @Inject constructor(
         _rtnUiState.distinctUntilChanged(),
     ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, cart, rtn ->
         PlayViewerNewUiState(
-            interactive = interactive,
+            interactiveView = interactive,
             partner = partner,
             winnerBadge = winnerBadge,
             bottomInsets = bottomInsets,
@@ -1142,11 +1144,11 @@ class PlayViewModel @Inject constructor(
         cancelReminderLikeTimer()
         likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
             delay(TimeUnit.MINUTES.toMillis(1))
-            while (isActive) {
-                if (!shouldRemindLike()) break
-                sendLikeReminder()
-                delay(TimeUnit.MINUTES.toMillis(5))
-            }
+            timerFactory.createLoopingAlarm(
+                millisInFuture = TimeUnit.MINUTES.toMillis(5),
+                stopCondition = { !shouldRemindLike() },
+                onStart = { sendLikeReminder() }
+            )
         }
     }
 

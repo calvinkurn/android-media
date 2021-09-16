@@ -10,6 +10,8 @@ import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalyticImpl
 import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.util.timer.PlayTimerFactory
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
 import dagger.Binds
@@ -63,4 +65,11 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindSocketAnalytic(analytic: PlaySocketAnalyticImpl): PlaySocketAnalytic
+
+    /**
+     * Utils
+     */
+    @Binds
+    @PlayScope
+    abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
 }

@@ -832,7 +832,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactive, state.interactive, state.partner)
+                renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
                 renderToolbarView(state.partner, state.share, state.cart)
                 renderLikeView(prevState?.like, state.like)

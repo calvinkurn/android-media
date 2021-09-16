@@ -21,6 +21,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -41,7 +42,9 @@ class PlayWinnerBadgeInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
@@ -74,16 +77,6 @@ class PlayWinnerBadgeInteractiveTest {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     @Test
     fun `given has leaderboard, when interactive is finished, there should be winner badge shown`() {
         val title = "Giveaway"
@@ -105,7 +98,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
                 winnerBadge.shouldShow.isTrue()
@@ -131,7 +124,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
                 winnerBadge.shouldShow.isFalse()
@@ -167,7 +160,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
                 winnerBadge.shouldShow.isFalse()
