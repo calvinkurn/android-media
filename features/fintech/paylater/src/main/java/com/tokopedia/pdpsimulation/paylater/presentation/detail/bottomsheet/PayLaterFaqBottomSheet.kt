@@ -63,6 +63,13 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         if (faqUrl.isEmpty()) btnSeeMore.gone()
         initAdapter()
         initListeners()
+        sendImpressionAnalytic()
+    }
+
+    private fun sendImpressionAnalytic() {
+        pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.FaqImpression(
+            parterName?:"", tenure?:0
+        ))
     }
 
     private fun initBottomSheet() {

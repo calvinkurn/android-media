@@ -57,20 +57,77 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.partnerName,
                 event.tenure
             )
-            is PdpSimulationEvent.PayLater.FaqClickWebImpression -> sendFaqClickEvent(
+            is PdpSimulationEvent.PayLater.FaqClickWebImpression -> sendFaqWebClickEvent(
                 event.partnerName,
                 event.tenure,
                 event.url
             )
+            is PdpSimulationEvent.PayLater.FaqOptionClicked -> sendFaqClickEvent(
+                event.partnerName,
+                event.tenure
+            )
+            is PdpSimulationEvent.PayLater.ClickCardButton -> sendClickCardEvent(
+                event.tenure,
+                event.partnerName,
+                event.buttonName,
+                event.redirectionUrl
+            )
+            PdpSimulationEvent.PayLater.SelectedPayLater -> sendPayLaterImpressionEvent()
+            is PdpSimulationEvent.PayLater.TenureListImpression -> sendSortFilterTenureImpression(event.tenure)
         }
     }
 
-    private fun sendFaqClickEvent(partnerName: String, tenure: Int, url: String) {
+    private fun sendSortFilterTenureImpression(tenure: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_TENURE_FILTER,
+            "EVENT_LABEL_TENURE_FILTER - $tenure"
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendPayLaterImpressionEvent() {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_PAY_LATER_TAB_IMPRESSION,
+            EVENT_LABEL_PAY_LATER_TAB_IMPRESSION
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendClickCardEvent(
+        tenure: Int,
+        partnerName: String,
+        buttonName: String,
+        redirectionUrl: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_CARD_BUTTON_CLICK,
+            "$EVENT_LABEL_CARD_BUTTON_CLICK - $tenure - $partnerName - $buttonName - $redirectionUrl"
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendFaqClickEvent(partnerName: String, tenure: Int) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
             EVENT_CLICK_FAQ,
-            "$EVENT_LABEL_CLICK_FAQ - $tenure - $partnerName -$url"
+            "$EVENT_LABEL_CLICK_FAQ - $tenure - $partnerName"
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendFaqWebClickEvent(partnerName: String, tenure: Int, url: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_FIN_TECH,
+            EVENT_CATEGORY_FIN_TECH,
+            EVENT_CLICK_FAQ_WEB,
+            "$EVENT_LABEL_CLICK_FAQ_WEB - $tenure - $partnerName -$url"
         )
         sendGeneralEvent(map)
     }
@@ -235,6 +292,9 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_LABEL_CLICKED_TENURE_FILTER = "pdp paylater simulation page"
         const val EVENT_CLICKED_TENURE_FILTER = "sim vcc - click paylater tenure option"
 
+        const val EVENT_LABEL_TENURE_FILTER = "pdp paylater simulation page"
+        const val EVENT_TENURE_FILTER = "sim vcc - impression paylater cicilan simulation"
+
         const val EVENT_LABEL_PAYLATER_PRODUCT_DETAIL = "pdp paylater simulation page"
         const val EVENT_PAYLATER_PRODUCT_DETAIL = "sim vcc - impression paylater option"
 
@@ -251,8 +311,19 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_LABEL_FAQ_BOTTOMSHEET =
             "pdp paylater simulation page - popup lihat selengkapnya"
 
-        const val EVENT_CLICK_FAQ = "sim vcc - click lihat lebih banyak"
-        const val EVENT_LABEL_CLICK_FAQ = "pdp paylater simulation page - popup lihat selengkapnya "
+        const val EVENT_CLICK_FAQ_WEB = "sim vcc - click lihat lebih banyak"
+        const val EVENT_LABEL_CLICK_FAQ_WEB =
+            "pdp paylater simulation page - popup lihat selengkapnya "
+
+        const val EVENT_CLICK_FAQ = "sim vcc - click lihat selengkapnya"
+        const val EVENT_LABEL_CLICK_FAQ = "pdp paylater simulation page"
+
+        const val EVENT_CARD_BUTTON_CLICK = "sim vcc - click card button"
+        const val EVENT_LABEL_CARD_BUTTON_CLICK = "pdp paylater simulation page"
+
+        const val EVENT_PAY_LATER_TAB_IMPRESSION =
+            "sim vcc - impression pdp paylater simulation page"
+        const val EVENT_LABEL_PAY_LATER_TAB_IMPRESSION = "pdp paylater simulation page"
 
         // Credit Card --> CC
         const val EVENT_ACTION_CC_TAB_CLICK = "sim cc - click tab"

@@ -29,6 +29,20 @@ sealed class PdpSimulationEvent {
             val tenure: Int,
             val url: String
         ) : PdpSimulationEvent()
+
+        data class FaqOptionClicked(val partnerName: String, val tenure: Int) : PdpSimulationEvent()
+
+        data class ClickCardButton(
+            val tenure: Int,
+            val partnerName: String,
+            val buttonName: String,
+            val redirectionUrl: String
+        ) : PdpSimulationEvent()
+
+        object SelectedPayLater : PdpSimulationEvent()
+
+        data class TenureListImpression(val tenure: String) : PdpSimulationEvent()
+
     }
 
     sealed class CreditCard {

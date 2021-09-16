@@ -191,8 +191,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun initListeners() {
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
-            if (paymentMode == PayLater)
+            if (paymentMode == PayLater) {
                 sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(tab.getCustomText()))
+                sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
+            }
             else sendAnalytics(PdpSimulationEvent.CreditCard.TabChangeEvent(tab.getCustomText()))
             handleRegisterWidgetVisibility(tab.position)
         }

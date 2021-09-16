@@ -86,10 +86,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_2"
                         android:textColor="@color/Unify_N700_68"
+                        android:visibility="gone"
                         app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
                         app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
                         app:typographyType="small"
-                        android:visibility="gone"
                         tools:text="Yuk, daftar sekarang!" />
 
 
@@ -122,15 +122,13 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_2"
-                        tools:text="@string/pay_later_service_fee_selected_partner"
-                        android:visibility="gone"
                         android:textColor="@color/Unify_N700_68"
+                        android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/serviceFeeText"
-                        app:typographyType="small" />
-
-
+                        app:typographyType="small"
+                        tools:text="@string/pay_later_service_fee_selected_partner" />
 
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -144,7 +142,6 @@
                         app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/interestText"
                         app:typographyType="body_3" />
-
 
 
                     <com.tokopedia.unifyprinciples.Typography

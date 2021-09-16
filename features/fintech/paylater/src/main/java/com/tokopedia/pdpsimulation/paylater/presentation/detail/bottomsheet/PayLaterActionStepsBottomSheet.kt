@@ -74,7 +74,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == 4) {
+            if (it.cta?.cta_type == howToUse) {
                 if (it.gateway_detail?.how_toUse?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
@@ -190,6 +190,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         const val STEPS_DATA = "stepsData"
         const val PRODUCT_URL = "productUrl"
         const val APPLICATION_STATUS_DATA = "applicationStatusData"
+       // If CTA type is 4 the show How to Use list else show how to apply list
+        const val  howToUse = 4
 
         fun show(
             bundle: Bundle,

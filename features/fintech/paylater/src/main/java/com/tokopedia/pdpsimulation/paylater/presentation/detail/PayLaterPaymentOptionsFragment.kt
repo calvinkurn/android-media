@@ -1,10 +1,12 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -103,7 +105,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         val bundle = Bundle()
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-
+            it.sendAnalytics(PdpSimulationEvent.PayLater.ClickCardButton(responseData?.tenure?:0,responseData?.gateway_detail?.name?:"",responseData?.cta?.name?:"",responseData?.cta?.android_url?:""))
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
             )
@@ -125,7 +127,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
 
             it.sendAnalytics(
-                PdpSimulationEvent.PayLater.FaqImpression(
+                PdpSimulationEvent.PayLater.FaqOptionClicked(
                     responseData?.gateway_detail?.name ?: "", responseData?.tenure ?: 0
                 )
             )
@@ -140,6 +142,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     /**
      * This method set values to all view from the api success response
      */
+    @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
             tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""
@@ -153,7 +156,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
             whyText.text =
                 resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
-            if (data.tenure != 1 && data.tenure != 0)
+            if (data.tenure != PAY_LATER_BASE_TENURE )
                 duration.text = resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
             interestText.text =
@@ -197,7 +200,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     )
                 }
             data.installment_per_month_ceil?.let { montlyInstallment ->
-                if (data.tenure != 1 && data.tenure != 0) {
+                if (data.tenure != PAY_LATER_BASE_TENURE) {
                     totalAmount.text = "${
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             montlyInstallment, false
@@ -231,6 +234,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             if (data.disableDetail?.status == true) {
                 disableVisibilityGroup.gone()
+                tvTitlePaymentPartner.setTextColor(resources.getColor(R.color.Unify_N700_32));
                 interestText.text = data.disableDetail.description ?: ""
                 simulasiHeading.text = data.disableDetail.header ?: ""
             }
@@ -271,6 +275,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
+        const val PAY_LATER_BASE_TENURE = 1
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
             return PayLaterPaymentOptionsFragment().apply {
