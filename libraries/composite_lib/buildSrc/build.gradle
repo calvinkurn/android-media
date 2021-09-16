@@ -2,7 +2,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         gradlePluginPortal()
     }
 
@@ -17,8 +16,7 @@ plugins { id 'base' }
 apply plugin: 'kotlin'
 
 repositories {
-    jcenter()
-}
+    }
 
 task createClasspathManifest {
     def outputDir = file("$buildDir/$name")
