@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_all_banner"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    tools:layout_width="match_parent"
     android:clickable="true"
     android:focusable="true"
     android:layout_width="@dimen/product_card_flashsale_width"

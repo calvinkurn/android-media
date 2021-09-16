@@ -30,9 +30,11 @@ class CarouselViewAllCardViewHolder(
             CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isGradientWhite)
             CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isGradientWhite)
         }
+        //set foreground to selectableItemBackground
         val outValue = TypedValue()
         itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
         card.cardView.foreground = itemView.context.getDrawable(outValue.resourceId)
+
         card.setOnClickListener {
             element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)
         }
