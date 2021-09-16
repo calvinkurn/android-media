@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -62,12 +61,70 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:textAlignment="center"
                             android:layout_marginLeft="@dimen/spacing_lvl4"
                             android:layout_marginTop="@dimen/spacing_lvl4"
                             android:layout_marginRight="@dimen/spacing_lvl4"
                             android:textColor="@color/Unify_N700_96"
                             app:typographyType="heading_2"
                             app:typographyWeight="bold" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.tokopedia.unifycomponents.LoaderUnify
+                                android:id="@+id/loader_brand_detail"
+                                android:layout_width="@dimen/spacing_lvl4"
+                                android:layout_height="@dimen/spacing_lvl4"
+                                android:layout_gravity="center"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:visibility="visible" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tg_desc_brand_detail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/spacing_lvl4"
+                                android:maxLines="3"
+                                android:textColor="@color/Unify_N700_68"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:typographyType="body_2" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tg_desc_brand_detail_more"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_lvl4"
+                                android:layout_marginTop="@dimen/spacing_lvl3"
+                                android:text="@string/deals_brand_detail"
+                                android:textColor="@color/Unify_G500"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail"
+                                app:typographyType="body_2"
+                                app:typographyWeight="bold" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tg_desc_brand_detail_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_lvl4"
+                                android:layout_marginTop="@dimen/spacing_lvl3"
+                                android:textColor="@color/Unify_N700_96"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail_more"
+                                app:typographyType="heading_4"
+                                app:typographyWeight="bold" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
 
@@ -88,74 +145,16 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/Unify_N0"
+            android:id="@+id/rv_brand_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Unify_Background"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_brand_detail"
-                android:layout_width="@dimen/spacing_lvl4"
-                android:layout_height="@dimen/spacing_lvl4"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tg_desc_brand_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_lvl4"
-                android:maxLines="3"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tg_desc_brand_detail_more"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:text="@string/deals_brand_detail"
-                android:textColor="@color/Unify_G500"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail"
-                app:typographyType="body_2"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tg_desc_brand_detail_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:textColor="@color/Unify_N700_96"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail_more"
-                app:typographyType="heading_4"
-                app:typographyWeight="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_brand_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail_count" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include
