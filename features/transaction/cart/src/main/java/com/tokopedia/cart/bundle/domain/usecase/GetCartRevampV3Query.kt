@@ -185,6 +185,7 @@ fun getQueryCartRevampV3(): String {
                       slash_price_label
                     }
                     products {
+                      checkbox_state
                       cart_id
                       product_information
                       product_tracker_data {
@@ -315,7 +316,6 @@ fun getQueryCartRevampV3(): String {
                     }
                     errors
                     messages
-                    checkbox_state
                   }
                   total_cart_details_error
                   total_cart_price
@@ -433,6 +433,7 @@ fun getQueryCartRevampV3(): String {
                       slash_price_label
                     }
                     products {
+                      checkbox_state
                       selected_unavailable_action_link
                       cart_id
                       product_information
@@ -553,7 +554,7 @@ fun getQueryCartRevampV3(): String {
                       booking_stock
                       is_product_volume_weight
                       initial_price
-                      initial_price_fmt
+                      initial_price_fmt 
                       slash_price_label
                       product_warning_message
                       product_alert_message
@@ -564,7 +565,6 @@ fun getQueryCartRevampV3(): String {
                     }
                     errors
                     messages
-                    checkbox_state
                   }
                   total_cart_details_error
                   total_cart_price
