@@ -10,7 +10,9 @@ import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
-class LiveBroadcasterLogger {
+class LiveBroadcasterLogger constructor(
+    val tracker: BroadcasterTracker = BroadcasterTrackerImpl()
+) {
 
     private var mStreamer: LibStreamerGL? = null
     private var mConnectionId: Int? = null
@@ -26,8 +28,6 @@ class LiveBroadcasterLogger {
 
     private val mLocale = Locale.getDefault()
 
-    private val tracker: BroadcasterTracker = BroadcasterTrackerImpl()
-
     private fun Int?.orZero(): Int {
         if (this == null) return 0
         return this
@@ -41,9 +41,11 @@ class LiveBroadcasterLogger {
     fun init(streamer: LibStreamerGL?, connectionId: Int?) {
         mStreamer = streamer
         mConnectionId = connectionId
+
         val time = System.currentTimeMillis()
         mStartTime = time
         mPrevTime = time
+
         mPrevBytes = mStreamer?.getBytesSent(mConnectionId.orZero()).orZero()
     }
 

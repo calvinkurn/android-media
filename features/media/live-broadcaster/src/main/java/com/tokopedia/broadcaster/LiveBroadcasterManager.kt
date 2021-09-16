@@ -412,6 +412,7 @@ class LiveBroadcasterManager constructor(
     private fun cancelStatsJob() {
         try {
             statisticUpdateTimer?.cancel()
+            logger.tracker.stopTrack()
         } catch (ignored: Exception) { }
     }
 
