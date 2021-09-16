@@ -128,6 +128,10 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
+    fun getButtonLoadingStatus(): Boolean {
+        return followersBtn?.isLoading ?: false
+    }
+
     private fun animateSlideUp() = with(view) {
         visibility = View.VISIBLE
         animate().translationY(0F).setDuration(GONE_ANIMATION_DURATION).setListener(null)

@@ -249,6 +249,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun observeToggleFavorite() {
         viewModel.toggleFavoriteShop.observe(viewLifecycleOwner) {
+            nplFollowersButton?.stopLoading()
             when (it) {
                 is Success -> {
                     showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_follow_shop_npl))
@@ -323,7 +324,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun updateNplButtonFollowers(reData: RestrictionData) {
-        val shouldShowReShopFollowers = !reData.isEligible
+        val shouldShowReShopFollowers = !reData.isEligible && !viewModel.getActivityResultData().isFollowShop
         if (shouldShowReShopFollowers) {
             if (nplFollowersButton?.view?.isShown == false) {
                 nplFollowersButton?.view?.translationY = 100.toPx().toFloat()
@@ -876,11 +877,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun onButtonFollowNplClick() {
-        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        val productId = adapter.getHeaderDataModel()?.productId ?: ""
-        val shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: ""
-        ProductTrackingCommon.onFollowNplClickedVariantBottomSheet(productId, pageSource, shopId)
-        viewModel.toggleFavorite(shopId)
+        if (nplFollowersButton?.getButtonLoadingStatus() == false) {
+            val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+            val productId = adapter.getHeaderDataModel()?.productId ?: ""
+            val shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: ""
+            ProductTrackingCommon.onFollowNplClickedVariantBottomSheet(productId, pageSource, shopId)
+            viewModel.toggleFavorite(shopId)
+            nplFollowersButton?.startLoading()
+        }
     }
 
     override fun onTokoCabangClicked(uspImageUrl: String) {
