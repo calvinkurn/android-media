@@ -34,16 +34,14 @@ import timber.log.Timber
  */
 
 class PostListViewHolder(
-        view: View?,
-        private val listener: Listener
+    view: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<PostListWidgetUiModel>(view) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
     }
-
-    private var dataKey: String = ""
 
     private var pagerAdapter: PostListPagerAdapter? = null
 
@@ -104,7 +102,7 @@ class PostListViewHolder(
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
                 text = element.emptyState.title.takeIf { it.isNotBlank() }
-                        ?: getString(R.string.shc_empty_state_title)
+                    ?: getString(R.string.shc_empty_state_title)
                 visible()
             }
             tvShcPostEmptyDescription.run {
@@ -116,7 +114,9 @@ class PostListViewHolder(
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                imgShcPostEmpty,
+                element.emptyState.imageUrl.takeIf { it.isNotBlank() }
                     ?: SellerHomeUrl.IMG_EMPTY_STATE)
         }
     }
@@ -197,7 +197,6 @@ class PostListViewHolder(
     }
 
     private fun addImpressionTracker(element: PostListWidgetUiModel) {
-        this@PostListViewHolder.dataKey = element.dataKey
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendPostListImpressionEvent(element)
         }
@@ -292,9 +291,10 @@ class PostListViewHolder(
             pageControlShcPostPager.isVisible = pagers.size > 1
 
             rvPostList.run {
-                val mLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
-                    override fun canScrollVertically(): Boolean = false
-                }
+                val mLayoutManager =
+                    object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+                        override fun canScrollVertically(): Boolean = false
+                    }
                 layoutManager = mLayoutManager
                 adapter = pagerAdapter
 
