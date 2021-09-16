@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.network.exception.Header
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class GetRecentPurchaseResponse(
     @SerializedName("TokonowRepurchaseWidget")
@@ -89,7 +89,7 @@ data class GetRecentPurchaseResponse(
         }
 
         fun isVariant(): Boolean {
-            return parentProductId.toIntOrZero() != 0
+            return parentProductId.toLongOrZero() != 0L
         }
 
         fun getDiscount(): String {
