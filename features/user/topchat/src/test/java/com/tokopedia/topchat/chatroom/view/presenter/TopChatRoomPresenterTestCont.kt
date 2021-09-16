@@ -7,6 +7,8 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
@@ -305,6 +307,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         // Given
         val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
         val mockOnError: (Throwable) -> Unit = mockk()
+        val mockRoomMetaData: (RoomMetaData) -> Unit = mockk()
 
         // When
         presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
@@ -314,7 +317,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             getChatUseCase.getFirstPageChat(
                 exMessageId,
                 mockOnSuccess,
-                mockOnError
+                mockOnError,
+                mockRoomMetaData
             )
         }
     }
@@ -654,7 +658,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
+            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage,
+            IdentifierUtil.generateLocalId()
         )
         val paramSendMessage = "paramSendMessage"
         val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
@@ -671,6 +676,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         } returns dummyMessage
         every {
             TopChatWebSocketParam.generateParamSendMessage(
+                any(),
                 any(),
                 any(),
                 any(),
@@ -711,7 +717,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         val slot = slot<Subscriber<ReplyChatViewModel>>()
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
+            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage,
+            IdentifierUtil.generateLocalId()
         )
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
