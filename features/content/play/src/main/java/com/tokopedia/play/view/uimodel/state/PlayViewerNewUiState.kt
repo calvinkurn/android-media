@@ -71,6 +71,7 @@ data class PlayLikeUiState(
         val totalLike: String,
         val likeMode: PlayLikeMode,
         val isLiked: Boolean,
+        val canShowBubble: Boolean,
 )
 
 data class PlayCartUiState(

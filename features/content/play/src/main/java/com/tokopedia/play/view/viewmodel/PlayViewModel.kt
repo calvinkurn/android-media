@@ -183,6 +183,9 @@ class PlayViewModel @Inject constructor(
             likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
             else PlayLikeMode.Single,
             isLiked = likeInfo.status == PlayLikeStatus.Liked,
+            canShowBubble = !bottomInsets.isAnyShown &&
+                    channelDetail.channelInfo.channelType.isLive &&
+                    status.isActive,
         )
     }
 

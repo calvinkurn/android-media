@@ -836,6 +836,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadgeView(state.winnerBadge)
                 renderToolbarView(state.partner, state.share, state.cart)
                 renderLikeView(prevState?.like, state.like)
+                renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
             }
@@ -1443,6 +1444,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (likeState.shouldShow) likeView.show()
         else likeView.hide()
+    }
+
+    private fun renderLikeBubbleView(likeState: PlayLikeUiState) {
+        if (likeState.canShowBubble) likeBubbleView.show()
+        else likeBubbleView.hide()
     }
 
     private fun renderStatsInfoView(totalView: PlayTotalViewUiState) {
