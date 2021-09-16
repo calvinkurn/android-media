@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
@@ -101,6 +102,10 @@ class ReviewBasicInfoWidget : BaseCustomView {
         listener: ReviewBasicInfoListener,
         isAnonymous: Boolean
     ) {
+        if (isAnonymous) {
+            reviewerStats?.hide()
+            return
+        }
         var textToShow = ""
         userStats.forEach {
             if (it.formatted.isNotBlank()) {
@@ -117,14 +122,14 @@ class ReviewBasicInfoWidget : BaseCustomView {
             reviewerStats?.apply {
                 text = textToShow
                 show()
-                if (isAnonymous) {
-                    setOnClickListener {}
-                } else {
-                    setOnClickListener {
-                        listener.onUserNameClicked(context, userId)
-                    }
+                setOnClickListener {
+                    listener.onUserNameClicked(context, userId)
                 }
             }
         }
+    }
+
+    fun setCountColorToGreen() {
+        reviewerStats?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 }

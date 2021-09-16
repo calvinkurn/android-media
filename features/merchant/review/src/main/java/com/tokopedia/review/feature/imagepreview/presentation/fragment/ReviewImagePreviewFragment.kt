@@ -529,7 +529,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         reviewCreateTimestamp,
                         user.fullName,
                         message,
-                        variantName
+                        variantName,
+                        userReviewStats,
+                        user.userID,
+                        isAnonymous
                     )
             }
         }

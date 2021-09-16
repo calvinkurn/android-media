@@ -7,21 +7,30 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
+class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBasicInfoListener {
 
     companion object {
         const val REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG = "Review Gallery Expanded Review BottomSheet Tag"
-        fun createInstance(rating: Int, timeStamp: String, reviewerName: String, reviewMessage: String, variantName: String = ""): ReviewImagePreviewExpandedReviewBottomSheet {
+        fun createInstance(rating: Int, timeStamp: String, reviewerName: String,
+                           reviewMessage: String, variantName: String = "",
+                           userStats: List<UserReviewStats> = listOf(), userId: String = "",
+                           isAnonymous: Boolean = false,
+        ): ReviewImagePreviewExpandedReviewBottomSheet {
             return ReviewImagePreviewExpandedReviewBottomSheet().apply {
                 this.rating = rating
                 this.timeStamp = timeStamp
                 this.reviewerName = reviewerName
                 this.reviewMessage = reviewMessage
                 this.variantName = variantName
+                this.userStats = userStats
+                this.userId = userId
+                this.isAnonymous = isAnonymous
             }
         }
     }
@@ -31,7 +40,9 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
     private var reviewerName = ""
     private var reviewMessage = ""
     private var variantName = ""
+    private var userStats = listOf<UserReviewStats>()
     private var userId = ""
+    private var isAnonymous = false
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
@@ -56,6 +67,8 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
             setCreateTime(timeStamp)
             setReviewerName(reviewerName)
             setVariantName(variantName)
+            setStats(userStats, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)
+            setCountColorToGreen()
         }
     }
 
