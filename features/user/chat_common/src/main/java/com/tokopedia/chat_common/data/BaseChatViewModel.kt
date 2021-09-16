@@ -1,5 +1,8 @@
 package com.tokopedia.chat_common.data
 
+import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import java.util.*
 
 /**
@@ -97,6 +100,57 @@ open class BaseChatViewModel constructor(
             private set
         var label: String = ""
             private set
+
+        open fun withResponseFromGQL(
+            reply: Reply
+        ): B {
+            withMsgId(reply.msgId.toString())
+            withFromUid(reply.senderId.toString())
+            withFrom(reply.senderName)
+            withFromRole(reply.role)
+            withAttachmentId(reply.attachment.id)
+            withAttachmentType(reply.attachment.type.toString())
+            withReplyTime(reply.replyTime)
+            withMsg(reply.msg)
+            withSource(reply.source)
+            withReplyId(reply.replyId)
+            withBlastId(reply.blastId)
+            withFraudStatus(reply.fraudStatus)
+            withLabel(reply.label)
+            return self()
+        }
+
+        open fun withResponseFromWs(
+            reply: ChatSocketPojo
+        ): B {
+            withMsgId(reply.msgId.toString())
+            withFromUid(reply.fromUid)
+            withFrom(reply.from)
+            withFromRole(reply.fromRole)
+            withAttachmentId(reply.attachment?.id ?: DEFAULT_ATTACHMENT_ID)
+            withAttachmentType(reply.attachment?.type ?: DEFAULT_ATTACHMENT_TYPE)
+            withReplyTime(reply.message.timeStampUnixNano)
+            withMsg(reply.message.censoredReply)
+            withSource(reply.source)
+            withLabel(reply.label)
+            withLocalId(reply.localId)
+            return self()
+        }
+
+        open fun withResponseFromAPI(
+            reply: ChatItemPojo
+        ): B {
+            withMsgId(reply.msgId.toString())
+            withFromUid(reply.senderId)
+            withFrom(reply.senderName)
+            withFromRole(reply.role)
+            withAttachmentId(reply.attachmentId.toString())
+            withAttachmentType(reply.attachment?.type.toString())
+            withReplyTime(System.currentTimeMillis().toString())
+            withMsg(reply.msg)
+            withSource(reply.source.orEmpty())
+            return self()
+        }
 
         fun withMsgId(messageId: String): B {
             this.messageId = messageId

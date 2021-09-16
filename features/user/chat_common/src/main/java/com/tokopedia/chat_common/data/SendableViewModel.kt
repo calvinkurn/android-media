@@ -1,5 +1,8 @@
 package com.tokopedia.chat_common.data
 
+import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -93,9 +96,9 @@ open class SendableViewModel constructor(
     }
 
     abstract class Builder<
-            out T : Builder<T, UI>,
+            out B : Builder<B, UI>,
             out UI : SendableViewModel
-            > : BaseChatViewModel.Builder<T, UI>() {
+            > : BaseChatViewModel.Builder<B, UI>() {
 
         var startTime: String = ""
             private set
@@ -106,22 +109,43 @@ open class SendableViewModel constructor(
         var isSender: Boolean = true
             private set
 
-        fun withStartTime(startTime: String): T {
+        override fun withResponseFromGQL(reply: Reply): B {
+            return super.withResponseFromGQL(reply).also {
+                withIsDummy(false)
+                withIsRead(reply.isRead)
+                withIsSender(!reply.isOpposite)
+            }
+        }
+
+        override fun withResponseFromWs(reply: ChatSocketPojo): B {
+            return super.withResponseFromWs(reply).also {
+                withIsSender(!reply.isOpposite)
+                withStartTime(reply.startTime)
+            }
+        }
+
+        override fun withResponseFromAPI(reply: ChatItemPojo): B {
+            return super.withResponseFromAPI(reply).also {
+                withIsSender(true)
+            }
+        }
+
+        fun withStartTime(startTime: String): B {
             this.startTime = startTime
             return self()
         }
 
-        fun withIsRead(isRead: Boolean): T {
+        fun withIsRead(isRead: Boolean): B {
             this.isRead = isRead
             return self()
         }
 
-        fun withIsDummy(isDummy: Boolean): T {
+        fun withIsDummy(isDummy: Boolean): B {
             this.isDummy = isDummy
             return self()
         }
 
-        fun withIsSender(isSender: Boolean): T {
+        fun withIsSender(isSender: Boolean): B {
             this.isSender = isSender
             return self()
         }

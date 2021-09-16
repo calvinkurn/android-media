@@ -73,63 +73,6 @@ protected constructor(builder: Builder) : SendableViewModel(
 
         fun withAttachment(attachment: Any): Builder {
             this.attachment = attachment
-            return this
-        }
-
-        fun withResponseFromGQL(
-            reply: Reply
-        ): Builder {
-            withMsgId(reply.msgId.toString())
-            withFromUid(reply.senderId.toString())
-            withFrom(reply.senderName)
-            withFromRole(reply.role)
-            withAttachmentId(reply.attachment.id)
-            withAttachmentType(reply.attachment.type.toString())
-            withReplyTime(reply.replyTime)
-            withMsg(reply.msg)
-            withSource(reply.source)
-            withReplyId(reply.replyId)
-            withIsRead(reply.isRead)
-            withIsSender(!reply.isOpposite)
-            withBlastId(reply.blastId)
-            withFraudStatus(reply.fraudStatus)
-            withLabel(reply.label)
-            withIsDummy(false)
-            return self()
-        }
-
-        fun withResponseFromWs(
-            reply: ChatSocketPojo
-        ): Builder {
-            withMsgId(reply.msgId.toString())
-            withFromUid(reply.fromUid)
-            withFrom(reply.from)
-            withFromRole(reply.fromRole)
-            withAttachmentId(reply.attachment?.id ?: DEFAULT_ATTACHMENT_ID)
-            withAttachmentType(reply.attachment?.type ?: DEFAULT_ATTACHMENT_TYPE)
-            withReplyTime(reply.message.timeStampUnixNano)
-            withStartTime(reply.startTime)
-            withMsg(reply.message.censoredReply)
-            withSource(reply.source)
-            withIsSender(!reply.isOpposite)
-            withLabel(reply.label)
-            withLocalId(reply.localId)
-            return self()
-        }
-
-        fun withResponseFromAPI(
-            reply: ChatItemPojo
-        ): Builder {
-            withMsgId(reply.msgId.toString())
-            withFromUid(reply.senderId)
-            withFrom(reply.senderName)
-            withFromRole(reply.role)
-            withAttachmentId(reply.attachmentId.toString())
-            withAttachmentType(reply.attachment?.type.toString())
-            withReplyTime(System.currentTimeMillis().toString())
-            withMsg(reply.msg)
-            withSource(reply.source.orEmpty())
-            withIsSender(true)
             return self()
         }
 
