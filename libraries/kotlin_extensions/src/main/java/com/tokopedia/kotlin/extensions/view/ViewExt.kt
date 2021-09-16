@@ -29,6 +29,11 @@ import timber.log.Timber
  * @author by milhamj on 30/11/18.
  */
 
+private const val DY_CENTER = 1f
+private const val DY_TOP = -1
+private const val DY_ELEVATION_DIVIDER = 3f
+private const val SHADOW_LAYER_DX = 0f
+
 fun View.show() {
     this.visibility = View.VISIBLE
 }
@@ -355,29 +360,29 @@ fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
         Gravity.CENTER -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue
-            DY = 1F
+            DY = DY_CENTER
         }
         Gravity.TOP -> {
             shapeDrawablePadding.top = elevationValue * 2
             shapeDrawablePadding.bottom = elevationValue
-            DY = -1 * elevationValue / 3f
+            DY = DY_TOP * elevationValue / DY_ELEVATION_DIVIDER
         }
         Gravity.BOTTOM -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
-            DY = elevationValue / 3f
+            DY = elevationValue / DY_ELEVATION_DIVIDER
         }
         else -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
-            DY = elevationValue / 3f
+            DY = elevationValue / DY_ELEVATION_DIVIDER
         }
     }
 
     val shapeDrawable = ShapeDrawable()
     shapeDrawable.setPadding(shapeDrawablePadding)
     shapeDrawable.paint.color = backgroundColorValue
-    shapeDrawable.paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
+    shapeDrawable.paint.setShadowLayer(shadowRadiusValue, SHADOW_LAYER_DX, DY, shadowColorValue)
 
     setLayerType(View.LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
 
