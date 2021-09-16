@@ -1,17 +1,17 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
+import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,13 +20,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClickRecentViewAnalyticsTest : Spek({
+object CartListPresenterAddToCartExternalTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +54,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate recent view data click analytics") {
+    Feature("add to cart") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,48 +73,60 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected and cart is not empty") {
+        Scenario("success add to cart") {
 
-            lateinit var result: Map<String, Any>
-
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+            val addToCartExternalModel = AddToCartExternalModel().apply {
+                success = 1
+                message = arrayListOf<String>().apply {
+                    add("Success message")
+                }
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
             }
 
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
+            When("process to add to cart") {
+                cartListPresenter.processAddToCartExternal(1)
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(addToCartExternalModel.message[0])
+                    view.refreshCartWithSwipeToRefresh()
+                }
+            }
         }
 
-        Scenario("1 item selected and cart is empty") {
+        Scenario("failed add to cart") {
 
-            lateinit var result: Map<String, Any>
+            val errorMessage = "Error message"
+            val exception = MessageErrorException(errorMessage)
 
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
+            When("process to update cart data") {
+                cartListPresenter.processAddToCartExternal(1)
             }
 
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(exception)
+                    view.refreshCartWithSwipeToRefresh()
+                }
+            }
         }
 
     }

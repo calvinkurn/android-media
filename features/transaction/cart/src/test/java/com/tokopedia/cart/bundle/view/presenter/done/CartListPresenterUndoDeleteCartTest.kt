@@ -1,15 +1,17 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cartcommon.data.response.undodeletecart.Data
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -19,15 +21,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterSeamlessLoginTest : Spek({
+object CartListPresenterUndoDeleteCartTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +52,7 @@ object CartListPresenterSeamlessLoginTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("seamless login") {
+    Feature("undo delete cart test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -72,96 +71,54 @@ object CartListPresenterSeamlessLoginTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success redirect to lite") {
+        Scenario("undo delete cart success") {
 
-            val url = "http://"
+            val response = UndoDeleteCartDataResponse(
+                    status = "OK",
+                    data = Data(success = 1, message = listOf("success message"))
+            )
 
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onUrlGenerated(url)
-                }
-                val adsId = "123"
-                every { view.getAdsId() } returns adsId
-            }
-
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
-            }
-
-            Then("should navigate to lite") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.goToLite(url)
+            Given("success response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
                 }
             }
+
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            }
+
+            Then("should render success") {
+                verify {
+                    view.onUndoDeleteCartDataSuccess()
+                }
+            }
+
         }
 
-        Scenario("failed redirect to lite") {
+        Scenario("undo delete cart failed with exception") {
 
-            val url = "http://"
-            val errorMessage = "error"
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
 
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onError(errorMessage)
-                }
-                val adsId = "123"
-                every { view.getAdsId() } returns adsId
-            }
-
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
-            }
-
-            Then("should navigate show error") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+            Given("error response") {
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
                 }
             }
-        }
 
-        Scenario("failed redirect to lite with error param") {
-
-            val url = "http://"
-            val errorMessage = "error"
-
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onError(errorMessage)
-                }
-                val adsId = null
-                every { view.getAdsId() } returns adsId
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
             }
 
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
-            }
-
-            Then("should navigate show error") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.showToastMessageRed()
+            Then("should render error") {
+                verify {
+                    view.showToastMessageRed(throwable)
                 }
             }
+
         }
 
     }

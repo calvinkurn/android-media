@@ -183,7 +183,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
-            processUpdateCartCounter()
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
             it.renderLoadGetCartDataFinish()

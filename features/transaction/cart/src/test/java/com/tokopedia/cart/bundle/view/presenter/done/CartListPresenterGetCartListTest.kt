@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -29,7 +29,6 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-/*
 object CartListPresenterGetCartListTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
@@ -82,7 +81,7 @@ object CartListPresenterGetCartListTest : Spek({
             Given("empty response") {
                 coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
                 coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
+                    firstArg<(CartData) -> Unit>().invoke(cartData)
                 }
             }
 
@@ -94,18 +93,24 @@ object CartListPresenterGetCartListTest : Spek({
                 cartListPresenter.processInitialGetCartData("", true, false)
             }
 
+            Then("should render then finish loading") {
+                verify {
+                    view.renderLoadGetCartDataFinish()
+                }
+            }
+
             Then("should render success") {
                 verify {
                     view.renderInitialGetCartListDataSuccess(cartData)
                 }
             }
 
-            Then("should render then finish loading") {
+            Then("should try to stop performance trace") {
                 verify {
-                    view.renderLoadGetCartData()
-                    view.renderLoadGetCartDataFinish()
+                    view.stopCartPerformanceTrace()
                 }
             }
+
         }
 
         Scenario("refresh load success") {
@@ -127,16 +132,21 @@ object CartListPresenterGetCartListTest : Spek({
                 cartListPresenter.processInitialGetCartData("", false, false)
             }
 
+            Then("should render then finish loading") {
+                verify {
+                    view.renderLoadGetCartDataFinish()
+                }
+            }
+
             Then("should render success") {
                 verify {
                     view.renderInitialGetCartListDataSuccess(cartData)
                 }
             }
 
-            Then("should show then hide progress loading") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.hideProgressLoading()
+            Then("should try to stop performance trace") {
+                verify {
+                    view.stopCartPerformanceTrace()
                 }
             }
         }
@@ -161,7 +171,7 @@ object CartListPresenterGetCartListTest : Spek({
             Given("throw error") {
                 coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
                 coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    secondArg<(Throwable) -> Unit>().invoke(ResponseErrorException())
+                    secondArg<(Throwable) -> Unit>().invoke(exception)
                 }
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
@@ -179,6 +189,13 @@ object CartListPresenterGetCartListTest : Spek({
                     view.renderErrorInitialGetCartListData(exception)
                 }
             }
+
+            Then("should try to stop performance trace") {
+                verify {
+                    view.stopCartPerformanceTrace()
+                }
+            }
+
         }
 
         Scenario("refresh load failed") {
@@ -200,7 +217,7 @@ object CartListPresenterGetCartListTest : Spek({
             Given("throw error") {
                 coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
                 coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    secondArg<(Throwable) -> Unit>().invoke(Throwable())
+                    secondArg<(Throwable) -> Unit>().invoke(exception)
                 }
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
@@ -218,8 +235,14 @@ object CartListPresenterGetCartListTest : Spek({
                     view.renderErrorInitialGetCartListData(exception)
                 }
             }
+
+            Then("should try to stop performance trace") {
+                verify {
+                    view.stopCartPerformanceTrace()
+                }
+            }
         }
 
     }
 
-})*/
+})

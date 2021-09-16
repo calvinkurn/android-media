@@ -1,16 +1,16 @@
-/*
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.domain.usecase.GetCartRevampV3UseCase
-import com.tokopedia.cart.old.domain.usecase.*
-import com.tokopedia.cart.old.view.CartListPresenter
-import com.tokopedia.cart.old.view.ICartListView
+import com.tokopedia.cart.bundle.domain.usecase.*
+import com.tokopedia.cart.bundle.view.CartListPresenter
+import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -19,13 +19,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClearPromoTest : Spek({
+object CartListPresenterSeamlessLoginTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -51,7 +53,7 @@ object CartListPresenterClearPromoTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("clear promo action") {
+    Feature("seamless login") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -70,49 +72,98 @@ object CartListPresenterClearPromoTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success clear promo") {
+        Scenario("success redirect to lite") {
 
-            val clearPromoModel = ClearPromoUiModel()
+            val url = "http://"
 
-            Given("clear promo data") {
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+            Given("redirect to lite data") {
+                val slot = slot<CartSeamlessLoginSubscriber>()
+                every {
+                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
+                } answers {
+                    val captured = slot.captured
+                    captured.onUrlGenerated(url)
+                }
+                val adsId = "123"
+                every { view.getAdsId() } returns adsId
             }
 
-            When("process clear promo") {
-                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+            When("process redirect to lite") {
+                cartListPresenter.redirectToLite(url)
             }
 
-            Then("should navigate to checkout page") {
-                verify {
+            Then("should navigate to lite") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    view.getAdsId()
                     view.hideProgressLoading()
-                    view.onSuccessClearRedPromosThenGoToCheckout()
+                    view.goToLite(url)
                 }
             }
-
         }
 
-        Scenario("failed validate use promo") {
+        Scenario("failed redirect to lite") {
 
-            val exception = CartResponseErrorException("error message")
+            val url = "http://"
+            val errorMessage = "error"
 
-            Given("clear promo data") {
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("redirect to lite data") {
+                val slot = slot<CartSeamlessLoginSubscriber>()
+                every {
+                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
+                } answers {
+                    val captured = slot.captured
+                    captured.onError(errorMessage)
+                }
+                val adsId = "123"
+                every { view.getAdsId() } returns adsId
             }
 
-            When("process clear promo") {
-                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+            When("process redirect to lite") {
+                cartListPresenter.redirectToLite(url)
             }
 
-            Then("should navigate to checkout page") {
-                verify {
+            Then("should navigate show error") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    view.getAdsId()
                     view.hideProgressLoading()
-                    view.onSuccessClearRedPromosThenGoToCheckout()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("failed redirect to lite with error param") {
+
+            val url = "http://"
+            val errorMessage = "error"
+
+            Given("redirect to lite data") {
+                val slot = slot<CartSeamlessLoginSubscriber>()
+                every {
+                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
+                } answers {
+                    val captured = slot.captured
+                    captured.onError(errorMessage)
+                }
+                val adsId = null
+                every { view.getAdsId() } returns adsId
+            }
+
+            When("process redirect to lite") {
+                cartListPresenter.redirectToLite(url)
+            }
+
+            Then("should navigate show error") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    view.getAdsId()
+                    view.hideProgressLoading()
+                    view.showToastMessageRed()
                 }
             }
         }
 
     }
 
-})*/
+})

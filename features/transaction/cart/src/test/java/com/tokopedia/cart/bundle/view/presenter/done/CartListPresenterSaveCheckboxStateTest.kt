@@ -1,12 +1,12 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
-import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -14,7 +14,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,13 +22,12 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterRecentViewTest : Spek({
+object CartListPresenterSaveCheckboxStateTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -53,9 +51,10 @@ object CartListPresenterRecentViewTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
+
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recent view test") {
+    Feature("add cart item to wishlist") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,111 +73,32 @@ object CartListPresenterRecentViewTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recent view success") {
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                        {
-                            "productId":0
-                        }
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
+        Scenario("success save checkbox state") {
+
+            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
+                add(
+                        CartItemHolderData(
+                                isSelected = true,
+                                cartId = "123"
+                        )
+                )
             }
 
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+            Given("mock save checkbox state response") {
+                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(true)
             }
 
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+            Given("mock params") {
+                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
             }
 
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
+            When("process save checkbox state") {
+                cartListPresenter.saveCheckboxState(cartItemDataList)
             }
 
-            Then("should render recent view") {
-                verify {
-                    view.renderRecentView(response[0])
-                }
+            Then("should success") {
+                assert(true)
             }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get recent view empty") {
-
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
-            }
-
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should not render recent view") {
-                verify(inverse = true) {
-                    view.renderRecentView(response[0])
-                }
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get recent view error") {
-
-            Given("error response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
         }
 
     }

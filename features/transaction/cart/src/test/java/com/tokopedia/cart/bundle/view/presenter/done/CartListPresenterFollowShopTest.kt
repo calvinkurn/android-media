@@ -1,37 +1,35 @@
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterValidateUseTest : Spek({
+object CartListPresenterFollowShopTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -57,7 +55,7 @@ object CartListPresenterValidateUseTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("validate use action") {
+    Feature("follow shop") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -76,63 +74,57 @@ object CartListPresenterValidateUseTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success validate use") {
+        Scenario("success follow shop") {
 
-            val validateUseModel = ValidateUsePromoRevampUiModel().apply {
-                promoUiModel = PromoUiModel()
-            }
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
-            }
-
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
-            }
-
-            Then("should update promo state") {
-                verify {
-                    view.updatePromoCheckoutStickyButton(validateUseModel.promoUiModel)
+            val dataFollowShop = DataFollowShop().apply {
+                followShop = FollowShop().apply {
+                    isSuccess = true
+                    message = "Success"
                 }
             }
 
-        }
-
-        Scenario("failed validate use promo") {
-
-            val exception = CartResponseErrorException("error message")
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
+                }
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
-            Then("should set promo button inactive") {
-                verify {
-                    view.showPromoCheckoutStickyButtonInactive()
+            Then("should render success") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
                 }
             }
         }
 
-        Scenario("failed validate use promo with akamai exception") {
+        Scenario("failed follow shop") {
 
-            val exception = AkamaiErrorException("error message")
+            val exception = ResponseErrorException("Failed")
 
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
+                }
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
-            Then("should show red toast and set promo button inactive") {
-                verify {
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
                     view.showToastMessageRed(exception)
-                    view.showPromoCheckoutStickyButtonInactive()
                 }
             }
         }

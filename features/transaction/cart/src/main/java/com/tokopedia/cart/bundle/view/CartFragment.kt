@@ -1809,6 +1809,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun renderInitialGetCartListDataSuccess(cartData: CartData) {
         recommendationPage = 1
+        dPresenter.processUpdateCartCounter()
         if (cartData.outOfService.isOutOfService()) {
             renderCartOutOfService(cartData.outOfService)
             return
