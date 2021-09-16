@@ -684,11 +684,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             android.R.id.home -> {
                 activity?.onBackPressed(); true
             }
-            R.id.action_share, R.id.action_report -> {
+            R.id.action_share -> {
                 onClickShareProduct(); true
             }
             R.id.action_cart -> {
                 gotoCart(); true
+            }
+            R.id.action_report -> {
+                reportProductFromToolbar(); true
             }
             else -> super.onOptionsItemSelected(item)
         }
