@@ -158,9 +158,9 @@ class SingleProductBundleFragment(
     ) {
         val selectedProductId = selectedData.firstOrNull {
             it.isSelected
-        }?.productId
-        if (selectedProductId != null && selectedProductVariant != null) {
-            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId.toString())
+        }?.productId.orEmpty()
+        if (selectedProductId.isNotEmpty() && selectedProductVariant != null) {
+            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId)
             adapter.setSelectedVariant(selectedProductId, selectedVariantText)
         }
     }
@@ -232,8 +232,9 @@ class SingleProductBundleFragment(
                 setPrimaryCTAText(primaryText)
                 setSecondaryCTAText(getString(R.string.action_back))
                 dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-                setSecondaryCTAClickListener { dismiss() }
+                setSecondaryCTAClickListener { activity?.finish() }
                 setPrimaryCTAClickListener {
+                    dismiss()
                     refreshPage()
                 }
             }.let {
