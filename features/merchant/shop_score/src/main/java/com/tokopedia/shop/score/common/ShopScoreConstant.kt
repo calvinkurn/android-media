@@ -55,9 +55,9 @@ object ShopScoreConstant {
         "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
     const val PM_PRO_BENEFIT_URL_1 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro1@3x.png"
+        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_1@3x.png"
     const val PM_PRO_BENEFIT_URL_2 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro2@3x.png"
+        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_2@3x.png"
     const val PM_PRO_BENEFIT_URL_3 =
         "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro_3@3x.png"
 
@@ -113,7 +113,6 @@ object ShopScoreConstant {
         "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
 
     const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
-    const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
 
     const val AND_SYMBOL = "&"
     const val AND_TEXT = "dan"
