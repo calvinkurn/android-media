@@ -1,16 +1,15 @@
 package com.tokopedia.play.viewmodel.like
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.util.assertFalse
-import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -119,7 +118,7 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
+        val (state, event) = robot.recordStateAndEvent {
             setLoggedIn(false)
             createPage(mockVODChannelData)
             focusPage(mockVODChannelData)
@@ -128,6 +127,11 @@ class PlayLikeTest {
         }
 
         state.like.isLiked.assertFalse()
+        event.last()
+            .isEqualToIgnoringFields(
+                OpenPageEvent(ApplinkConst.LOGIN),
+                OpenPageEvent::requestCode
+            )
     }
 
 }
