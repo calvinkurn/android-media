@@ -108,7 +108,7 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
             every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
         }
 
-        coEvery { atcUseCase.execute(any(), any(), any()) } returns Success(mockk())
+        coEvery { atcUseCase.execute(any(), any(), any()) } returns Success(mockk(relaxed = true))
 
         createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
         viewModel.addSingleToCart(product)
@@ -139,7 +139,7 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
             every { productListUiModel.productList } returns listOf(product)
         }
 
-        coEvery { atcUseCase.execute(any(), any(), any()) } returns Success(mockk())
+        coEvery { atcUseCase.execute(any(), any(), any()) } returns Success(mockk(relaxed = true))
 
         createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
         viewModel.addMultipleToCart()

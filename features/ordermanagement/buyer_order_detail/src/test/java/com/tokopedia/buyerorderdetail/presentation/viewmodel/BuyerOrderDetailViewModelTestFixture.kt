@@ -4,19 +4,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 
@@ -95,6 +94,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkStatic(TrackApp::class)
         viewModel = BuyerOrderDetailViewModel(
                 coroutineDispatchers = coroutineDispatchers,
                 atcMultiQuery = { "" },
@@ -106,6 +106,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         )
 
         every { userSession.userId } returns userId
+        every { TrackApp.getInstance() } returns mockk(relaxed = true)
     }
 
     fun createSuccessBuyerOrderDetailResult(result: BuyerOrderDetailUiModel) {
