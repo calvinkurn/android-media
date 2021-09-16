@@ -358,7 +358,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             reviewImagePreviewDetail?.apply {
                 setPhotoCount(index, imageAttachments.size.toLong())
                 setRating(productRating)
-                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment)
+                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment, isAnonymous)
                 setTimeStamp(reviewCreateTimestamp)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
@@ -621,7 +621,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
                         setRating(rating)
-                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment)
+                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment,)
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setLikeCount(totalLiked.toString())

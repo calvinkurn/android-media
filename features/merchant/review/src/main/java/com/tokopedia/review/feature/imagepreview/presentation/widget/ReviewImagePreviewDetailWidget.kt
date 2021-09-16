@@ -64,8 +64,8 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         basicInfo?.setCreateTime(timeStamp)
     }
 
-    fun setReviewerName(reviewerName: String, userId: String, basicInfoListener: ReviewBasicInfoListener) {
-        basicInfo?.setReviewerName(reviewerName, userId, basicInfoListener)
+    fun setReviewerName(reviewerName: String, userId: String, basicInfoListener: ReviewBasicInfoListener, isAnonymous: Boolean = true) {
+        basicInfo?.setReviewerName(reviewerName, userId, basicInfoListener, isAnonymous)
     }
 
     fun setLikeCount(totalLike: String) {
