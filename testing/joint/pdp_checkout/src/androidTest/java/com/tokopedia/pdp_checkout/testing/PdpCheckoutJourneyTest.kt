@@ -1,10 +1,10 @@
 package com.tokopedia.pdp_checkout.testing
 
-import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.testing.robot.CartPageIntentTestRule
 import com.tokopedia.cart.testing.robot.CartPageMocks
 import com.tokopedia.cart.testing.robot.cartPage
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.product.detail.testing.ProductDetailRobot
@@ -20,7 +20,7 @@ import org.junit.Test
 class PdpCheckoutJourneyTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
+    var activityRule = object : CartPageIntentTestRule(false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -50,9 +50,10 @@ class PdpCheckoutJourneyTest {
         activityRule.launchActivity(null)
 
         ProductDetailRobot().apply {
+            clickBeli()
+            Espresso.pressBack()
             clickPlusKeranjang()
-            dismissAtcDoneBottomSheet()
-            goToCartPage()
+            clickLihatKeranjang()
         }
 
         cartPage {

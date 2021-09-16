@@ -1,10 +1,9 @@
 package com.tokopedia.cart.testing.journey.analytics
 
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.testing.R
+import com.tokopedia.cart.testing.robot.CartPageIntentTestRule
 import com.tokopedia.cart.testing.robot.cartPage
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -18,7 +17,7 @@ import org.junit.Test
 class CartAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
+    var activityRule = object : CartPageIntentTestRule(false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
