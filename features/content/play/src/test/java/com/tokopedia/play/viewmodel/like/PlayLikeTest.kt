@@ -10,6 +10,7 @@ import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.event.ShowLikeBubbleEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -46,7 +47,7 @@ class PlayLikeTest {
     )
 
     @Test
-    fun `given user is logged in and channel is not liked, when click like, then channel should be liked`() {
+    fun `given user is logged in, channel is VOD, and channel is not liked, when click like, then channel should be liked`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsLiked(any(), any()) } returns false
 
@@ -64,6 +65,33 @@ class PlayLikeTest {
         }
 
         state.like.isLiked.assertTrue()
+    }
+
+    @Test
+    fun `given user is logged in, channel is Live, and channel is not liked, when click like, then channel should be liked and show bubble`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns false
+
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher
+        )
+
+        val (state, event) = robot.recordStateAndEvent {
+            setLoggedIn(true)
+            createPage(mockLiveChannelData)
+            focusPage(mockLiveChannelData)
+
+            submitAction(ClickLikeAction)
+        }
+
+        state.like.isLiked.assertTrue()
+
+        event.last()
+            .isEqualToIgnoringFields(
+                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                ShowLikeBubbleEvent.Single::config
+            )
     }
 
     @Test
@@ -88,7 +116,7 @@ class PlayLikeTest {
     }
 
     @Test
-    fun `given user is logged in, channel is VOD and channel is liked, when click like, then channel is still liked`() {
+    fun `given user is logged in, channel is Live and channel is liked, when click like, then channel is still liked`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsLiked(any(), any()) } returns true
 
@@ -97,7 +125,7 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
+        val (state, event) = robot.recordStateAndEvent {
             setLoggedIn(true)
             createPage(mockLiveChannelData)
             focusPage(mockLiveChannelData)
@@ -106,6 +134,12 @@ class PlayLikeTest {
         }
 
         state.like.isLiked.assertTrue()
+
+        event.last()
+            .isEqualToIgnoringFields(
+                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                ShowLikeBubbleEvent.Single::config
+            )
     }
 
     @Test

@@ -61,5 +61,3 @@ sealed class UiString {
     data class Resource(@StringRes val resource: Int) : UiString()
     data class Text(val text: String) : UiString()
 }
-
-private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 500L
