@@ -5,43 +5,102 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_tipping_gojek"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/payment_tipping_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tickerShapeType="loose"
-        app:tickerType="announcement" />
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_tipping_gojek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Pilih atau tulis sendiri jumlah tip"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ticker_tipping_gojek"
-        app:typographyType="heading_4" />
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_tipping_gojek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chips_tip"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_tipping_gojek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="Pilih atau tulis sendiri jumlah tip"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ticker_tipping_gojek"
+            app:typographyType="heading_4" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chips_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_tipping_gojek" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/et_nominal_tip"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
+            app:text_field_label="Tulis Nominal Tip" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/result_tipping_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_tipping_gojek" />
+        android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_nominal_tip"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_40"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
-        app:text_field_label="Tulis Nominal Tip" />
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_tip_driver"
+            android:layout_width="118dp"
+            android:layout_height="@dimen/dp_112"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_tip_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_tip_driver"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_tip_result_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_tip_result"
+            app:typographyType="body_2" />
+
+        <View
+            android:id="@+id/divider_tipping_gojek"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/dp_44"
+            android:background="@color/Unify_N50"
+            app:layout_constraintTop_toBottomOf="@id/tv_tip_result_desc"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/bottom_choose_payment"
@@ -71,11 +130,11 @@
         android:layout_height="@dimen/dp_64"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:loader_type="circular"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="visible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
