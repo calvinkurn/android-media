@@ -1,8 +1,10 @@
 package com.tokopedia.play.view.fragment
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -280,5 +282,12 @@ class PlayUpcomingFragment @Inject constructor(
             actionText = actionText,
             clickListener = onClick
         ).show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        playViewModel.submitAction(
+            OpenPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
+        )
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
