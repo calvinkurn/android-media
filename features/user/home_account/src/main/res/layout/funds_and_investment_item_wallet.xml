@@ -42,6 +42,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/image"
         app:layout_constraintEnd_toStartOf="@+id/action_layout"
         app:layout_constraintStart_toEndOf="@+id/image"
