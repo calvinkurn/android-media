@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.remoteconfig.RollenceKey
 
 /**
  * Created by yfsx on 3/10/21.
@@ -17,14 +18,6 @@ const val PREF_KEY_WALLETAPP_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_WALLET
 const val PREF_KEY_WALLETAPP2_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_WALLETAPP2"
 const val PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NEW_WALLETAPP"
 const val PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NEW_TOKOPOINT"
-
-fun isP1CoachmarkShown(context: Context): Boolean {
-    return isNavigationCoachmarkShown(context) ||
-            isInboxCoachmarkShown(context) ||
-            isBalanceWidgetCoachmarkShown(context) ||
-            isWalletAppCoachmarkShown(context) ||
-            isWalletApp2CoachmarkShown(context)
-}
 
 fun isNavigationCoachmarkShown(context: Context): Boolean {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
@@ -124,5 +117,21 @@ fun setFalseNewTokopointCoachmarkShown(context: Context) {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
         PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false).apply()
+}
+
+fun isP1HomeCoachmarkDone(
+    context: Context,
+    isUseInboxRollence: Boolean,
+    isUseWalletAppRollence: Boolean,
+    isUseNavigationRollence: Boolean
+): Boolean {
+    var isDone = true
+    if (
+        (isUseInboxRollence && !isInboxCoachmarkShown(context)) ||
+        (isUseWalletAppRollence && !isWalletAppCoachmarkShown(context) && !isWalletApp2CoachmarkShown(context)) ||
+        (isUseNavigationRollence && !isNavigationCoachmarkShown(context))) {
+        isDone = false
+    }
+    return isDone
 }
 

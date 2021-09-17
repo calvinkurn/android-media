@@ -887,12 +887,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 coachmark = CoachMark2(ctx)
                 coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
                 coachmark?.let {
-                    it.setStepListener(object : CoachMark2.OnStepListener {
-                        override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
-                            coachMark2Item.setCoachmarkShownPref()
-                        }
-                    })
                     it.setOnDismissListener {
+                        coachMarkItem.forEach { item ->
+                            item.setCoachmarkShownPref()
+                        }
                         showBalanceWidgetCoachmark(
                             ctx,
                             containsNewGopayAndTokopoints,
@@ -905,7 +903,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
                             coachMarkIsShowing = true
                             it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
-                            coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
                         } else if (coachMarkItem.isEmpty()) {
                             showBalanceWidgetCoachmark(
                                 ctx,
@@ -927,10 +924,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark?
     ) {
-        if (!isNewWalletAppCoachmarkShown(ctx)) {
-            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-        } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
-            showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+        if (isP1HomeCoachmarkDone(
+                context = ctx,
+                isUseInboxRollence = useNewInbox,
+                isUseNavigationRollence = isNavRevamp(),
+                isUseWalletAppRollence = isUsingWalletApp()
+            )) {
+            if (!isNewWalletAppCoachmarkShown(ctx)) {
+                showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
+                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+            }
         }
     }
 
@@ -2739,8 +2743,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
-            false -> if (coachMarkIsShowing) {
-                coachmark?.hideCoachMark()
+            false -> {
+                if (coachMarkIsShowing) {
+                    coachmark?.dismiss()
+                }
+                if (gopayCoachmarkIsShowing) {
+                    coachmarkGopay?.dismiss()
+                }
+                if (tokopointsCoachmarkIsShowing) {
+                    coachmarkTokopoint?.dismiss()
+                }
             }
         }
     }
