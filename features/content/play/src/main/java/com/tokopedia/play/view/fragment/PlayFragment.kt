@@ -267,6 +267,9 @@ class PlayFragment @Inject constructor(
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
             if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            playViewModel.upcomingInfo?.let {
+                putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
+            }
         })
     }
 
@@ -634,6 +637,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
 
         private const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
