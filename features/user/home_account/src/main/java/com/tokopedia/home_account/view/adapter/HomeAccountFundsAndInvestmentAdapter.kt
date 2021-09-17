@@ -25,12 +25,6 @@ class HomeAccountFundsAndInvestmentAdapter(
         addItem(walletShimmeringUiModel)
     }
 
-    fun showPlaceholderFundsAndInvestments(items: List<WalletUiModel>) {
-        clearAllItems()
-        notifyDataSetChanged()
-        addItemsAndAnimateChanges(items)
-    }
-
     fun changeItemBySameId(walletUiModel: WalletUiModel) {
         val items = getItems().toMutableList()
         items.forEach {
@@ -44,7 +38,6 @@ class HomeAccountFundsAndInvestmentAdapter(
                         notifyItemChanged(position)
                     }
                 }
-
                 is WalletShimmeringUiModel -> {
                     if (it.id == walletUiModel.id) {
                         walletUiModel.title = it.title
@@ -69,7 +62,6 @@ class HomeAccountFundsAndInvestmentAdapter(
                         notifyItemChanged(position)
                     }
                 }
-
                 is WalletShimmeringUiModel -> {
                     if (it.id == id) {
                         val position = items.indexOf(it)
@@ -93,7 +85,6 @@ class HomeAccountFundsAndInvestmentAdapter(
                         notifyItemRemoved(position)
                     }
                 }
-
                 is WalletShimmeringUiModel -> {
                     if (it.id == id) {
                         val position = items.indexOf(it)
@@ -103,5 +94,24 @@ class HomeAccountFundsAndInvestmentAdapter(
                 }
             }
         }
+    }
+
+    fun isWalletExistById(id: String): Boolean {
+        val items = getItems().toMutableList()
+        items.forEach {
+            when (it) {
+                is WalletUiModel -> {
+                    if (it.id == id) {
+                        return true
+                    }
+                }
+                is WalletShimmeringUiModel -> {
+                    if (it.id == id) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 }

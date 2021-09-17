@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS_AND_INVESTMENT
 import com.tokopedia.home_account.R
@@ -32,6 +31,7 @@ import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.UiModelMapper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,6 +44,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -138,9 +139,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfigVertical.forEach {
-            if (it.id == AccountConstants.WALLET.GOPAY) {
-                viewModel.getGopayWalletEligible()
-            } else {
+            if (it.id != AccountConstants.WALLET.GOPAY && it.id != AccountConstants.WALLET.GOPAYLATER) {
                 viewModel.getBalanceAndPoint(it.id)
             }
         }
@@ -164,6 +163,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             addWalletView(fundAndInvestmentPlaceholders)
         }
 
+        viewModel.getGopayWalletEligible()
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
@@ -171,7 +171,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         hideLoading()
         showErrorState()
     }
-    
+
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
         adapter?.changeItemBySameId(
             UiModelMapper.getWalletUiModel(
@@ -188,16 +188,23 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         val eligibility = walletappWalletEligibility.data
         if (eligibility.isNotEmpty()) {
             if (eligibility[0].isEligible) {
-                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse()) {
+                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                }
+                if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
+                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+                }
                 adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             } else {
                 adapter?.removeById(AccountConstants.WALLET.GOPAY)
+                adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)
             }
         }
     }
 
     private fun onFailedGetWalletEligible() {
-        adapter?.changeItemToFailed(AccountConstants.WALLET.GOPAY)
+        adapter?.removeById(AccountConstants.WALLET.GOPAY)
+        adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)
     }
 
     private fun setupAdapter() {
@@ -269,16 +276,10 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         }
     }
 
-    private fun goToWebview(link: String) {
-        if (link.isNotEmpty()) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
-            startActivity(intent)
-        }
-    }
-
     companion object {
 
-        private const val FAILED_IMG_URL = "https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png"
+        private const val FAILED_IMG_URL =
+            "https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE = "asset_page"
 
         fun newInstance(bundle: Bundle?): Fragment {
