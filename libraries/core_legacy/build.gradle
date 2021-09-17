@@ -77,7 +77,6 @@ dependencies {
     }
     implementation rootProject.ext.analyticsDependencies.installRef
 
-    implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
