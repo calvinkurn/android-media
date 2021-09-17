@@ -113,7 +113,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addNewMessage(item: SendableViewModel) {
-        if (item is Visitable<*>) {
+        if (item is Visitable<*> && item.localId.isNotEmpty()) {
             replyMap[item.localId] = item
             visitables.add(0, item)
             notifyItemInserted(0)
