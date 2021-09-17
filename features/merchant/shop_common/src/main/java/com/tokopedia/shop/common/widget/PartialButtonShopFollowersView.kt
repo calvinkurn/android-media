@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
 
 /**
  * Created by Yehezkiel on 06/10/20
@@ -76,9 +75,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             return@with
         }
 
-        shop_followers_desc?.maxLines = maxLine
-        shop_followers_title.text = title
-        shop_followers_desc.text = desc
+        followersDesc?.maxLines = maxLine
+        followersTitle?.text = title
+        followersDesc?.text = desc
 
         setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
