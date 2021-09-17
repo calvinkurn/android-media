@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/spacing_lvl4">
 
-    <include layout="@layout/include_header_detail_flight" />
+    <include android:id="@+id/headerDetailFlight" layout="@layout/include_header_detail_flight" />
 
     <LinearLayout
         android:layout_width="match_parent"

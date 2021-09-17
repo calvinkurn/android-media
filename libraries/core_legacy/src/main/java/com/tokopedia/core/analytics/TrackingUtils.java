@@ -47,27 +47,6 @@ public class TrackingUtils{
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
-    public static String extractFirstSegment(Context context,String inputString, String separator) {
-        String firstSegment = "";
-        if (!TextUtils.isEmpty(inputString)) {
-            String token[] = inputString.split(separator);
-            if (token.length > 1) {
-                firstSegment = token[0];
-            } else {
-                firstSegment = separator;
-            }
-        }
-
-        return firstSegment;
-    }
-
-    public static String normalizePhoneNumber(String phoneNum) {
-        if (!TextUtils.isEmpty(phoneNum))
-            return phoneNum.replaceFirst("^0(?!$)", "62");
-        else
-            return "";
-    }
-
     public static void sendMoEngageClickMainCategoryIcon(Context context, String categoryName) {
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.CATEGORY, categoryName

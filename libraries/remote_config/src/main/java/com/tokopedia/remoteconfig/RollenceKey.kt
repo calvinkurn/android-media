@@ -7,6 +7,10 @@ object RollenceKey {
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
     const val AB_TEST_SHOP_REVIEW = "review_shop"
     const val OLD_REVIEW_SHOP = "old_review_shop"
@@ -74,7 +78,5 @@ object RollenceKey {
     // end of Recommendation page section
 
     //TAPCASH
-    const val KEY_VARIANT_TAPCASH = "BNI_Tap_cash"
-    const val VARIANT_OLD_TAPCASH = "old_tapcash"
-    const val VARIANT_NEW_TAPCASH = "new_tapcash"
+    const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
 }
