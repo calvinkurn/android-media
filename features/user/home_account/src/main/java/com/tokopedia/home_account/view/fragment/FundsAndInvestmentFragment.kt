@@ -176,7 +176,9 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         adapter?.changeItemBySameId(
             UiModelMapper.getWalletUiModel(
                 balanceAndPoint
-            )
+            ).apply {
+                this.isVertical = true
+            }
         )
     }
 

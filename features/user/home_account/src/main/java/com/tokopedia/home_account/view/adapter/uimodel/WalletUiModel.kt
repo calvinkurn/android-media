@@ -7,5 +7,6 @@ data class WalletUiModel(
     var urlImage: String = "",
     var applink: String = "",
     var isFailed: Boolean = false,
-    var isActive: Boolean = true
+    var isActive: Boolean = true,
+    var isVertical: Boolean = false
 )

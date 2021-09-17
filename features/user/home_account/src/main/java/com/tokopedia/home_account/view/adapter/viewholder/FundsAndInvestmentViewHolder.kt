@@ -26,7 +26,7 @@ class FundsAndInvestmentViewHolder(
         setImage(item?.urlImage)
         setTitleText(item?.title)
         setSubtitleText(item?.subtitle)
-        setAction(item?.isFailed.orFalse(), item?.isActive.orTrue())
+        setAction(item?.isFailed.orFalse(), item?.isActive.orTrue(), item?.isVertical.orFalse())
         setClickLitener(item?.id,
             item?.applink,
             item?.isFailed.orFalse(),
@@ -51,7 +51,7 @@ class FundsAndInvestmentViewHolder(
         }
     }
 
-    private fun setAction(isFailed: Boolean, isActive: Boolean) {
+    private fun setAction(isFailed: Boolean, isActive: Boolean, isVertical: Boolean) {
         binding?.imageAction?.gone()
         binding?.textAction?.gone()
         when {
@@ -62,7 +62,8 @@ class FundsAndInvestmentViewHolder(
                     binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
                 }
             }
-            !isActive -> {
+            !isActive && isVertical -> {
+                binding?.subtitle?.gone()
                 binding?.textAction?.visible()
                 binding?.textAction?.text = getString(R.string.funds_and_investment_actiivate)
             }
