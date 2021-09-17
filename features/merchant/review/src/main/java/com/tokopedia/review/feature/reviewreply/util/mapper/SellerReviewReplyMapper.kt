@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reviewreply.util.mapper
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
@@ -16,39 +17,53 @@ import com.tokopedia.unifycomponents.toPx
 
 object SellerReviewReplyMapper {
 
-
-    fun mapToInsertReplyUiModel(inboxReviewInsertReviewResponse: ReviewReplyInsertResponse.InboxReviewInsertReviewResponse): InsertReplyResponseUiModel {
-        return InsertReplyResponseUiModel(inboxReviewInsertReviewResponse.isSuccesss)
+    fun mapToInsertReplyUiModel(
+        inboxReviewInsertReviewResponse:
+        ReviewReplyInsertResponse.InboxReviewInsertReviewResponse
+    ): InsertReplyResponseUiModel {
+        return InsertReplyResponseUiModel(inboxReviewInsertReviewResponse.isSuccesss.toLongOrZero())
     }
 
-    fun mapToUpdateReplyUiModel(productrevUpdateSellerResponse: ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse): UpdateReplyResponseUiModel {
+    fun mapToUpdateReplyUiModel(
+        productrevUpdateSellerResponse:
+        ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse
+    ): UpdateReplyResponseUiModel {
         return UpdateReplyResponseUiModel(
-                isSuccess = productrevUpdateSellerResponse.success,
-                feedbackId = productrevUpdateSellerResponse.data.feedbackID,
-                responseBy = productrevUpdateSellerResponse.data.responseBy,
-                shopId = productrevUpdateSellerResponse.data.shopID,
-                responseMessage = productrevUpdateSellerResponse.data.responseMessage)
+            isSuccess = productrevUpdateSellerResponse.success,
+            feedbackId = productrevUpdateSellerResponse.data.feedbackID,
+            responseBy = productrevUpdateSellerResponse.data.responseBy,
+            shopId = productrevUpdateSellerResponse.data.shopID,
+            responseMessage = productrevUpdateSellerResponse.data.responseMessage
+        )
     }
 
-    fun mapToItemTemplateUiModel(templateList: ReviewReplyTemplateListResponse.ReviewResponseTemplateList): List<ReplyTemplateUiModel> {
+    fun mapToItemTemplateUiModel(
+        templateList:
+        ReviewReplyTemplateListResponse.ReviewResponseTemplateList
+    ): List<ReplyTemplateUiModel> {
         val data = mutableListOf<ReplyTemplateUiModel>()
         templateList.list.map {
-            data.add(ReplyTemplateUiModel(
+            data.add(
+                ReplyTemplateUiModel(
                     message = it.message,
-                    status = it.status,
-                    templateId = it.templateId,
+                    status = it.status.toLongOrZero(),
+                    templateId = it.templateId.toLongOrZero(),
                     title = it.title,
                     isSelected = true
-            ))
+                )
+            )
         }
         return data
     }
 
-    fun mapToInsertTemplateReplyUiModel(reviewReplyInsertTemplateResponse: ReviewReplyInsertTemplateResponse.InsertResponseTemplate): InsertTemplateReplyUiModel {
+    fun mapToInsertTemplateReplyUiModel(
+        reviewReplyInsertTemplateResponse:
+        ReviewReplyInsertTemplateResponse.InsertResponseTemplate
+    ): InsertTemplateReplyUiModel {
         return InsertTemplateReplyUiModel(
-                isSuccess = reviewReplyInsertTemplateResponse.success,
-                defaultTemplateID = reviewReplyInsertTemplateResponse.defaultTemplateID,
-                error = reviewReplyInsertTemplateResponse.error
+            isSuccess = reviewReplyInsertTemplateResponse.success,
+            defaultTemplateID = reviewReplyInsertTemplateResponse.defaultTemplateID.toLongOrZero(),
+            error = reviewReplyInsertTemplateResponse.error
         )
     }
 
@@ -58,21 +73,19 @@ object SellerReviewReplyMapper {
 
         itemUnifyList.apply {
             val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)
-
             add(
-                    ListItemUnify(
-                            title = context.getString(R.string.report_label),
-                            description = "").apply {
-                        listDrawable = iconReport
-                        listIconHeight = iconSize
-                        listIconWidth = iconSize
-                    }
-
+                ListItemUnify(
+                    title = context.getString(R.string.report_label),
+                    description = ""
+                ).apply {
+                    listDrawable = iconReport
+                    listIconHeight = iconSize
+                    listIconWidth = iconSize
+                }
             )
         }
-
         return itemUnifyList
     }
 
-    const val ICON_SIZE = 24
+    private const val ICON_SIZE = 24
 }
