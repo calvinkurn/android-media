@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -19,6 +21,8 @@ class RepurchaseProductViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_product_grid_card
+
+        private const val PARAM_CATEGORY_L1 = "category_l1"
     }
 
     private val productCard: ProductCardGridView? by lazy {
@@ -38,6 +42,10 @@ class RepurchaseProductViewHolder(
                 listener?.onAddToCartVariant(item)
             }
 
+            setSimilarProductClickListener {
+                goToCategoryPage(item)
+            }
+
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     listener?.onAddToCartNonVariant(item, quantity)
@@ -50,6 +58,14 @@ class RepurchaseProductViewHolder(
                 }
             })
         }
+    }
+
+    private fun goToCategoryPage(item: RepurchaseProductUiModel) {
+        val uri = UriUtil.buildUriAppendParam(
+            ApplinkConstInternalTokopediaNow.CATEGORY,
+            mapOf(PARAM_CATEGORY_L1 to item.categoryId)
+        )
+        RouteManager.route(itemView.context, uri)
     }
 
     private fun goToProductDetail(item: RepurchaseProductUiModel) {
