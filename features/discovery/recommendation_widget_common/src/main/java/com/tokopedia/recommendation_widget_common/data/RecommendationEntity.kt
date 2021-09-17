@@ -75,24 +75,35 @@ data class RecommendationEntity (
         val recommendationType: String = ""
         @SerializedName("stock")
         val stock: Int = 0
+
         @SerializedName("isTopads")
         val isIsTopads: Boolean = false
+
         @SerializedName("isWishlist")
         val isWishlist: Boolean = false
+
         @SerializedName("labelgroup")
         val labelGroups: List<LabelGroup> = listOf()
+
         @SerializedName("badges")
         val badges: List<Badges> = listOf()
+
         @SerializedName("minOrder")
         val minOrder: Int = 0
+
+        @SerializedName("maxOrder")
+        val maxOrder: Int = 0
+
         @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf()
+
         @SerializedName("parentID")
         val parentID: Long = 0L
 
         class SpecificationsLabels {
             @SerializedName("key")
             val key: String = ""
+
             @SerializedName("value")
             val value: String = ""
         }
