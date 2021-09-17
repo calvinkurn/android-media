@@ -59,7 +59,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
-            mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
+            mWidgetListener?.onWidgetOpenAppLink(view, item.webLink)
             mAnalyticListener?.onClickChannelCard(
                     view = this@PlayWidgetSmallView,
                     item = item,

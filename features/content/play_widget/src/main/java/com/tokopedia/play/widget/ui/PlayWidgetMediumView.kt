@@ -106,9 +106,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                     && (item.channelType == PlayWidgetChannelType.Live
                             || item.channelType == PlayWidgetChannelType.Vod
                             || GlobalConfig.isSellerApp())) {
-                mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
+                mWidgetListener?.onWidgetOpenAppLink(view, item.webLink)
             } else {
-                RouteManager.route(context, item.appLink)
+                RouteManager.route(context, item.webLink)
             }
         }
 
