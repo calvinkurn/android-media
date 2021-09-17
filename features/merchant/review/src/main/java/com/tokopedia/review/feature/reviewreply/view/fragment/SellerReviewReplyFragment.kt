@@ -130,6 +130,10 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         initToolbar()
         initViewBottomSheet()
         initWidgetView()
+        observeReviewTemplate()
+        observeInsertReviewReply()
+        observeUpdateReviewReply()
+        observeInsertTemplateReviewReply()
         observeLiveData()
     }
 
@@ -201,8 +205,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         viewModelReviewReply?.getTemplateListReply(shopId)
     }
 
-    private fun observeLiveData() {
-        viewModelReviewReply?.reviewTemplate?.observe(viewLifecycleOwner, Observer {
+    private fun observeReviewTemplate() {
+        viewModelReviewReply?.reviewTemplate?.observe(viewLifecycleOwner, {
             showData()
             when (it) {
                 is Success -> {
@@ -212,31 +216,34 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     setTemplateList(it.data)
                 }
                 is Fail -> {
-                    view?.let { it1 ->
-                        Toaster.build(it1,
+                    view?.let { view ->
+                        Toaster.build(view,
                             context?.getString(R.string.error_message_load_more_review_product)
                                 .orEmpty(),
                             type = Toaster.TYPE_ERROR,
-                            actionText = context?.getString(R.string.action_retry_toaster_review_product)
+                            actionText =
+                            context?.getString(R.string.action_retry_toaster_review_product)
                                 .orEmpty(),
-                            clickListener = View.OnClickListener {
+                            clickListener = {
                                 getReviewTemplate()
                             }).show()
                     }
                 }
             }
         })
+    }
 
-        viewModelReviewReply?.insertReviewReply?.observe(viewLifecycleOwner, Observer {
+    private fun observeInsertReviewReply() {
+        viewModelReviewReply?.insertReviewReply?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     isEmptyReply = false
                     insertReviewReplySuccess(it.data)
                 }
                 is Fail -> {
-                    view?.let { it1 ->
+                    view?.let { view ->
                         Toaster.build(
-                            it1,
+                            view,
                             it.throwable.message.orEmpty(),
                             type = Toaster.TYPE_ERROR
                         ).show()
@@ -244,16 +251,18 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
 
-        viewModelReviewReply?.updateReviewReply?.observe(viewLifecycleOwner, Observer {
+    private fun observeUpdateReviewReply() {
+        viewModelReviewReply?.updateReviewReply?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     updateReviewReplySuccess(it.data)
                 }
                 is Fail -> {
-                    view?.let { it1 ->
+                    view?.let { view ->
                         Toaster.build(
-                            it1,
+                            view,
                             it.throwable.message.orEmpty(),
                             type = Toaster.TYPE_ERROR
                         ).show()
@@ -261,8 +270,10 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
 
-        viewModelReviewReply?.insertTemplateReply?.observe(viewLifecycleOwner, Observer {
+    private fun observeInsertTemplateReviewReply() {
+        viewModelReviewReply?.insertTemplateReply?.observe(viewLifecycleOwner, {
             bottomSheetAddTemplate?.dismiss()
             when (it) {
                 is Success -> {
@@ -271,9 +282,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    view?.let { it1 ->
+                    view?.let { view ->
                         Toaster.build(
-                            it1,
+                            view,
                             it.throwable.message.orEmpty(),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG
@@ -282,7 +293,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
 
+    private fun observeLiveData() {
         getReviewTemplate()
         submitReplyReview()
     }
