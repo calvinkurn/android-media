@@ -244,7 +244,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgObj = JsonObject()
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
         } returns msgObj
 
         // When
@@ -262,7 +262,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgAttachment = CommonUtil.toJson("WebsocketVoucherPayload")
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
         } returns msgAttachment
 
         // When
@@ -726,11 +726,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `onGoingStockUpdate added`() {
         // Given
         val productId = "123"
-        val product = ProductAttachmentViewModel(
-            "", productId, "",
-            "", "", "",
-            "", false, 1
-        )
+        val product = ProductAttachmentViewModel.Builder().build()
 
         // When
         presenter.addOngoingUpdateProductStock(productId, product, 0, null)

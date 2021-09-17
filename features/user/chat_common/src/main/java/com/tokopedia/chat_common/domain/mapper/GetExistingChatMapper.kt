@@ -164,89 +164,25 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-
-        val pojoAttribute = gson.fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
-                ProductAttachmentAttributes::class.java)
-
-        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
-
-        if (pojoAttribute.isBannedProduct()) {
-            return BannedProductAttachmentViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                isRead = chatItemPojoByDateByTime.isRead,
-                productId = pojoAttribute.productId,
-                productName = pojoAttribute.productProfile.name,
-                productPrice = pojoAttribute.productProfile.price,
-                productUrl = pojoAttribute.productProfile.url,
-                productImage = pojoAttribute.productProfile.imageUrl,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                message = chatItemPojoByDateByTime.msg,
-                canShowFooter = canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
-                    chatItemPojoByDateByTime.role),
-                blastId = chatItemPojoByDateByTime.blastId,
-                productPriceInt = pojoAttribute.productProfile.priceInt,
-                category = pojoAttribute.productProfile.category,
-                variant = variant,
-                dropPercentage = pojoAttribute.productProfile.dropPercentage,
-                priceBefore = pojoAttribute.productProfile.priceBefore,
-                shopId = pojoAttribute.productProfile.shopId,
-                freeShipping = pojoAttribute.productProfile.freeShipping,
-                categoryId = pojoAttribute.productProfile.categoryId,
-                playStoreData = pojoAttribute.productProfile.playStoreData,
-                minOrder = pojoAttribute.productProfile.minOrder,
-                remainingStock = pojoAttribute.productProfile.remainingStock,
-                status = pojoAttribute.productProfile.status,
-                wishList = pojoAttribute.productProfile.wishList,
-                images = pojoAttribute.productProfile.images,
-                source = chatItemPojoByDateByTime.source,
-                rating = pojoAttribute.productProfile.rating,
-                replyId = chatItemPojoByDateByTime.replyId
-            )
-        }
-
-        return ProductAttachmentViewModel(
-            messageId = chatItemPojoByDateByTime.msgId.toString(),
-            fromUid = chatItemPojoByDateByTime.senderId.toString(),
-            from = chatItemPojoByDateByTime.senderName,
-            fromRole = chatItemPojoByDateByTime.role,
-            attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-            attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-            replyTime = chatItemPojoByDateByTime.replyTime,
-            isRead = chatItemPojoByDateByTime.isRead,
-            productId = pojoAttribute.productId,
-            productName = pojoAttribute.productProfile.name,
-            productPrice = pojoAttribute.productProfile.price,
-            productUrl = pojoAttribute.productProfile.url,
-            productImage = pojoAttribute.productProfile.imageUrl,
-            isSender = !chatItemPojoByDateByTime.isOpposite,
-            message = chatItemPojoByDateByTime.msg,
-            canShowFooter = canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.role),
-            blastId = chatItemPojoByDateByTime.blastId,
-            productPriceInt = pojoAttribute.productProfile.priceInt,
-            category = pojoAttribute.productProfile.category,
-            variants = variant,
-            dropPercentage = pojoAttribute.productProfile.dropPercentage,
-            priceBefore = pojoAttribute.productProfile.priceBefore,
-            shopId = pojoAttribute.productProfile.shopId,
-            freeShipping = pojoAttribute.productProfile.freeShipping,
-            categoryId = pojoAttribute.productProfile.categoryId,
-            playStoreData = pojoAttribute.productProfile.playStoreData,
-            minOrder = pojoAttribute.productProfile.minOrder,
-            remainingStock = pojoAttribute.productProfile.remainingStock,
-            status = pojoAttribute.productProfile.status,
-            wishList = pojoAttribute.productProfile.wishList,
-            images = pojoAttribute.productProfile.images,
-            source = chatItemPojoByDateByTime.source,
-            rating = pojoAttribute.productProfile.rating,
-            replyId = chatItemPojoByDateByTime.replyId
+        val pojoAttribute = gson.fromJson(
+            chatItemPojoByDateByTime.attachment?.attributes,
+            ProductAttachmentAttributes::class.java
         )
+        val canShowFooter = canShowFooterProductAttachment(
+            chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
+        )
+        if (pojoAttribute.isBannedProduct()) {
+            return BannedProductAttachmentViewModel.Builder()
+                .withResponseFromGQL(chatItemPojoByDateByTime)
+                .withProductAttributesResponse(pojoAttribute)
+                .withCanShowFooter(canShowFooter)
+                .build()
+        }
+        return ProductAttachmentViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withProductAttributesResponse(pojoAttribute)
+            .withCanShowFooter(canShowFooter)
+            .build()
     }
 
     private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {

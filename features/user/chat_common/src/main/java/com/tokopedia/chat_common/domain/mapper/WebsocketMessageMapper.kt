@@ -68,47 +68,16 @@ open class WebsocketMessageMapper @Inject constructor() {
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
     JsonObject): ProductAttachmentViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
-                ProductAttachmentAttributes::class.java)
-
-        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
-
-        return ProductAttachmentViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                productId = pojoAttribute.productId,
-                productName = pojoAttribute.productProfile.name,
-                productPrice = pojoAttribute.productProfile.price,
-                productUrl = pojoAttribute.productProfile.url,
-                productImage = pojoAttribute.productProfile.imageUrl,
-                isSender = !pojo.isOpposite,
-                message = pojo.message.censoredReply,
-                startTime = pojo.startTime,
-                canShowFooter = canShowFooterProductAttachment(pojo.isOpposite,
-                        pojo.fromRole),
-                blastId = pojo.blastId,
-                productPriceInt = pojoAttribute.productProfile.priceInt,
-                category = pojoAttribute.productProfile.category,
-                variants = variant,
-                dropPercentage = pojoAttribute.productProfile.dropPercentage,
-                priceBefore = pojoAttribute.productProfile.priceBefore,
-                shopId = pojoAttribute.productProfile.shopId,
-                freeShipping = pojoAttribute.productProfile.freeShipping,
-                categoryId = pojoAttribute.productProfile.categoryId,
-                playStoreData = pojoAttribute.productProfile.playStoreData,
-                remainingStock = pojoAttribute.productProfile.remainingStock,
-                status = pojoAttribute.productProfile.status,
-                source = pojo.source,
-                rating = pojoAttribute.productProfile.rating,
-                localId = pojo.localId
-        ).apply {
-            finishLoading()
-        }
+        val canShowFooter = canShowFooterProductAttachment(pojo.isOpposite, pojo.fromRole)
+        val pojoAttribute = GsonBuilder().create().fromJson(
+            jsonAttribute, ProductAttachmentAttributes::class.java
+        )
+        return ProductAttachmentViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withProductAttributesResponse(pojoAttribute)
+            .withCanShowFooter(canShowFooter)
+            .withNeedSync(false)
+            .build()
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):

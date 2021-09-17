@@ -76,50 +76,38 @@ class SendableProductPreview(
         roomMetaData: RoomMetaData,
         message: String
     ): SendableViewModel {
-        return ProductAttachmentViewModel(
-            messageId = roomMetaData.msgId,
-            fromUid = roomMetaData.sender.uid,
-            from = roomMetaData.sender.name,
-            fromRole = roomMetaData.sender.name,
-            attachmentId = AttachmentId.NOT_YET_GENERATED,
-            attachmentType = AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT,
-            replyTime = TimeHelper.getNowTimeStamp().toString(),
-            isRead = false,
-            productId = productPreview.id,
-            productName = productPreview.name,
-            productPrice = productPreview.price,
-            productUrl = productPreview.url,
-            productImage = productPreview.imageUrl,
-            isSender = true,
-            message = message,
-            canShowFooter = canShowFooterProductAttachment(
+        return ProductAttachmentViewModel.Builder()
+            .withLocalId(IdentifierUtil.generateLocalId())
+            .withMsgId(roomMetaData.msgId)
+            .withFromUid(roomMetaData.sender.uid)
+            .withFrom(roomMetaData.sender.name)
+            .withFromRole(roomMetaData.sender.name)
+            .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
+            .withAttachmentType(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
+            .withReplyTime(TimeHelper.getNowTimeStamp().toString())
+            .withProductId(productPreview.id)
+            .withProductName(productPreview.name)
+            .withProductPrice(productPreview.price)
+            .withProductUrl(productPreview.url)
+            .withProductImage(productPreview.imageUrl)
+            .withIsSender(true)
+            .withMsg(message)
+            .withCanShowFooter(canShowFooterProductAttachment(
                 true, roomMetaData.sender.role
-            ),
-            blastId = 0,
-            productPriceInt = productPreview.priceBeforeInt.toLong(),
-            category = "",
-            variants = listOf(),
-            dropPercentage = productPreview.dropPercentage,
-            priceBefore = productPreview.priceBefore,
-            shopId = 0,
-            freeShipping = FreeShipping(
+            ))
+            .withPriceInt(productPreview.priceBeforeInt.toLong())
+            .withDropPercentage(productPreview.dropPercentage)
+            .withPriceBefore(productPreview.priceBefore)
+            .withFreeShipping(FreeShipping(
                 productPreview.productFsIsActive,
                 productPreview.productFsImageUrl
-            ),
-            categoryId = 0,
-            playStoreData = PlayStoreData(),
-            minOrder = 1,
-            remainingStock = productPreview.remainingStock,
-            status = productPreview.status,
-            wishList = false,
-            images = listOf(productPreview.imageUrl),
-            source = "",
-            rating = TopchatProductRating(),
-            replyId = "",
-            localId = IdentifierUtil.generateLocalId()
-        ).apply {
-            finishLoading()
-        }
+            ))
+            .withMinOrder(1)
+            .withRemainingStock(productPreview.remainingStock)
+            .withStatus(productPreview.status)
+            .withImages(listOf(productPreview.imageUrl))
+            .withNeedSync(false)
+            .build()
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
