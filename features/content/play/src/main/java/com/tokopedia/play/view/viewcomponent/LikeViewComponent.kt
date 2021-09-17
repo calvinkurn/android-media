@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
+import android.view.HapticFeedbackConstants
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
@@ -95,6 +96,13 @@ class LikeViewComponent(
         if (mode == PlayLikeMode.Single) animationLike.addAnimatorListener(singleLikeAnimatorListener)
 
         animationLike.playAnimation()
+
+        /**
+         * Test Haptic when animation like is playing
+         * This haptic is currently not forced and will only play if user enabled it from settings
+         */
+        animationLike.isHapticFeedbackEnabled = true
+        animationLike.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
     }
 
     fun playReminderAnimation() {
