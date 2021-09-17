@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.detail.domain
 
 import android.content.Context
-import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.SendEventEmail
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest

@@ -34,7 +34,7 @@ object ProductRecomMapper {
         channelGrids.forEach { grid ->
             recommendationItems.add(
                 RecommendationItem(
-                        productId = grid.id.toIntOrZero(),
+                        productId = grid.id.toLongOrZero(),
                         name = grid.name,
                         price = grid.price,
                         rating = grid.rating,

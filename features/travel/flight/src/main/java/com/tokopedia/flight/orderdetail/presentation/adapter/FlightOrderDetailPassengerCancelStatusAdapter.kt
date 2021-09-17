@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderdetail.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailPassengerCancelStatusBinding
 import com.tokopedia.flight.orderdetail.presentation.adapter.viewholder.FlightOrderDetailPassengerCancelStatusViewHolder
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
 
@@ -13,8 +14,9 @@ class FlightOrderDetailPassengerCancelStatusAdapter(private val itemList: List<F
     : RecyclerView.Adapter<FlightOrderDetailPassengerCancelStatusViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightOrderDetailPassengerCancelStatusViewHolder =
-            FlightOrderDetailPassengerCancelStatusViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(FlightOrderDetailPassengerCancelStatusViewHolder.LAYOUT, parent, false))
+            FlightOrderDetailPassengerCancelStatusViewHolder(
+                ItemFlightOrderDetailPassengerCancelStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            )
 
     override fun getItemCount(): Int = itemList.size
 

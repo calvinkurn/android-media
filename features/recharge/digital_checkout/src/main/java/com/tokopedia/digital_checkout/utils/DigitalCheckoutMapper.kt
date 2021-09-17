@@ -27,10 +27,19 @@ import com.tokopedia.track.TrackApp
 
 object DigitalCheckoutMapper {
 
+    const val COUPON_NOT_ACTIVE = 0
+    const val VOUCHER_IS_COUPON = 1
+
     fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
+        val isEnableVoucher = cartInfo.attributes.isEnableVoucher
+
         cartInfo.attributes.autoApplyVoucher.let {
-            if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
+            if (!isEnableVoucher) {
+                promoData = PromoData(description = it.discountAmountLabel,
+                        amount = it.discountAmount.toInt(),
+                        state = TickerCheckoutView.State.INACTIVE)
+            } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
                 promoData = PromoData(title = it.title,
                         description = it.messageSuccess,
                         promoCode = it.code,
@@ -42,9 +51,12 @@ object DigitalCheckoutMapper {
         return promoData
     }
 
-    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response): CartDigitalInfoData {
+    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response, isSpecialProduct: Boolean)
+            : CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
+
+            cartDigitalInfoData.isSpecialProduct = isSpecialProduct
 
             responseRechargeGetCart.response.mainnInfo.let { mainInfos ->
                 cartDigitalInfoData.mainInfo = mainInfos.map {
@@ -93,6 +105,7 @@ object DigitalCheckoutMapper {
                 applyVoucher.code = entity.code
                 applyVoucher.isSuccess = entity.success
                 applyVoucher.discountAmount = entity.discountAmount
+                applyVoucher.discountAmountLabel = entity.discountAmountLabel
                 applyVoucher.isCoupon = entity.isCoupon
                 applyVoucher.promoId = entity.promoId.toLongOrZero()
                 applyVoucher.title = entity.titleDescription
