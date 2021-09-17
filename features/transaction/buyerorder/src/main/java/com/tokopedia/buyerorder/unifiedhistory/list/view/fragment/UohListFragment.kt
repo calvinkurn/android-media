@@ -258,6 +258,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
         const val PARAM_HOME = "home"
+        private var CATEGORIES_DIGITAL = "streaming,kartu_prakerja,paket_data,invoicing,tagihan_cc,ovo,air_pdam,bridestory_pay,premi_asuransi,m_tix,iuran_properti,penerimaan_negara,properti,pulsa,biaya_pendidikan,angsuran_kredit,listrik_pln,telkom,upgrade_internet_tv,uang_elektronik,belajar,pajak,pasca_bayar,voucher_game,gas_pgn,roaming,internet_tv_kabel,special_promo,retribusi,samsat,bpjs"
+        private var CATEGORIES_MP = "mp_pym,marketplace"
+        private var CATEGORIES_TRAVELENT = "train,flight,hotel,deals,event"
+        private var CATEGORIES_KEUANGAN = "mutual_fund,insr_tec,modal_toko,gold,insurance,gift_card"
+        private var CATEGORIES_HALAL_CORNER = "zakat_mal,donasi,umrah,zakat_fitrah,wakaf"
+        private var CATEGORIES_LANGSUNG_LAKU = "money_in"
+        private var CATEGORIES_LS_PRINT = "ls_print"
+        private var CATEGORIES_TOKONOW = "mp_pym_tokonow,tokonow"
+
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
             return UohListFragment().apply {
