@@ -3,6 +3,7 @@ package com.tokopedia.home_account.linkaccount.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.webkit.WebView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -14,6 +15,7 @@ import com.tokopedia.webview.BaseSessionWebViewFragment
 class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun onLoadFinished() {
+        super.onLoadFinished()
         when {
             url.contains(GOJEK_OTP_PAGE, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
@@ -28,6 +30,11 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
                 (activity as LinkAccountWebViewActivity).setToolbarTitle("   Aktifin GoPay")
             }
+        }
+    }
+
+    override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+        when {
             url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
                 // Finish activity from webview
                 activity?.finish()
@@ -44,7 +51,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 (activity as LinkAccountWebViewActivity).hideToolbar()
             }
         }
-        super.onLoadFinished()
+        return super.shouldOverrideUrlLoading(webview, url)
     }
 
     fun showSkipDialog() {
@@ -55,9 +62,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    webView?.loadUrl(GOJEK_OTP_PAGE)
-
-//                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
+                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
