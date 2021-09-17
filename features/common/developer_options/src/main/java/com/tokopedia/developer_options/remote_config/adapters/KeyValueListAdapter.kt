@@ -11,11 +11,10 @@ import android.widget.Filterable
 import android.widget.LinearLayout
 
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.remote_config.RemoteConfigListener
+import com.tokopedia.developer_options.remote_config.KeyValueListener
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class RemoteConfigListAdapter(val listener: RemoteConfigListener) :
-    Adapter<RemoteConfigListAdapter.RemoteConfigItemViewHolder>(), Filterable {
+class KeyValueListAdapter(val listener: KeyValueListener) : Adapter<KeyValueListAdapter.RemoteConfigItemViewHolder>(), Filterable {
 
     private var configListData = arrayListOf<Pair<String, String>>()
     private var configFilterListData = arrayListOf<Pair<String, String>>()
@@ -57,9 +56,18 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) :
         }
     }
 
+    fun setData(listData: List<Pair<String, String>>) {
+        if (listData.isNotEmpty()) {
+            configListData.clear()
+            configListData.addAll(listData)
+
+            notifyDataSetChanged()
+        }
+    }
+
     class RemoteConfigItemViewHolder(
-        itemView: View,
-        listener: RemoteConfigListener
+            itemView: View,
+            listener: KeyValueListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val keyTextView: AppCompatTextView = itemView.findViewById(R.id.config_key)
