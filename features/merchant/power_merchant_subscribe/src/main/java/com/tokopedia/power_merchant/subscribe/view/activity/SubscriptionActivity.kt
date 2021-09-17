@@ -55,7 +55,8 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 25/02/21
  */
 
-class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent>, SubscriptionActivityInterface {
+class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent>,
+    SubscriptionActivityInterface {
 
     companion object {
         private const val PM_TAB_INDEX = 0
@@ -130,8 +131,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun getComponent(): PowerMerchantSubscribeComponent {
         val appComponent = (applicationContext as BaseMainApplication).baseAppComponent
         return DaggerPowerMerchantSubscribeComponent.builder()
-                .baseAppComponent(appComponent)
-                .build()
+            .baseAppComponent(appComponent)
+            .build()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -212,7 +213,10 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             stopCustomMetricMonitoring(PerformanceMonitoringConst.PM_SHOP_MODERATION_STATUS_METRICS)
             when (it) {
                 is Success -> showModerationShopTicker(it.data)
-                is Fail -> logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_SHOP_MODERATION_STATUS_ERROR)
+                is Fail -> logToCrashlytics(
+                    it.throwable,
+                    PowerMerchantErrorLogger.PM_SHOP_MODERATION_STATUS_ERROR
+                )
             }
         }
     }
@@ -240,7 +244,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         tickerPmContainer.visible()
         val tickerTitle = getString(R.string.pm_moderated_shop_ticker_title)
         val tickerDescription = getString(R.string.pm_moderated_shop_ticker_description)
-        val tickersData = listOf(TickerData(tickerTitle, tickerDescription, Ticker.TYPE_WARNING, false))
+        val tickersData =
+            listOf(TickerData(tickerTitle, tickerDescription, Ticker.TYPE_WARNING, false))
         tickerPmView.run {
             val adapter = TickerPagerAdapter(context, tickersData)
             addPagerView(adapter, tickersData)
@@ -289,7 +294,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         tabPmSubscription.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-        tabPmSubscription.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabPmSubscription.tabLayout.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val tabIndex = tabPmSubscription.tabLayout.selectedTabPosition
                 setOnTabIndexSelected(data, tabIndex)
@@ -345,15 +351,24 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun setOnTabIndexSelected(data: PowerMerchantBasicInfoUiModel, tabIndex: Int) {
         val isPmProSelected = tabIndex == 1
+        val isNewSeller = data.shopInfo.isNewSeller
 
         if (isPmProSelected) {
             imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM_PRO)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
-            tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
+            if (isNewSeller) {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro_new_seller)
+            } else {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
+            }
         } else {
             imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
-            tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
+            if (isNewSeller) {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_new_seller)
+            } else {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
+            }
         }
 
         setupFooterView(data, isPmProSelected)
@@ -367,14 +382,25 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         val shopInfo = data.shopInfo
 
+        val isRegularMerchant = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+                data.pmStatus.status == PMStatusConst.INACTIVE
+        val isRMNewSeller = data.shopInfo.isNewSeller &&
+                isRegularMerchant
+
         val registrationTerms = if (isPmProSelected) {
-            PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo)
+            PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo, isPmProSelected)
         } else {
-            PMRegistrationTermHelper.getPmRegistrationTerms(this, shopInfo)
+            PMRegistrationTermHelper.getPmRegistrationTerms(
+                this,
+                shopInfo,
+                isPmProSelected,
+                isRegularMerchant
+            )
         }
 
-        val isEligiblePm = (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
-                && !registrationTerms.any { !it.isChecked }
+        val isEligiblePm =
+            (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
+                    && !registrationTerms.any { !it.isChecked }
 
         val firstPriorityTerm = registrationTerms.filter {
             if (!shopInfo.isNewSeller) {
@@ -394,17 +420,33 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         with(pmRegistrationFooterView) {
+            val isHideCta = isRMNewSeller && isPmProSelected
+            if (isHideCta) hideCtaButton() else showCtaButton()
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
-            setTnCVisibility(needTnC)
+            if (isHideCta) {
+                setTnCVisibility(false)
+            } else {
+                setTnCVisibility(needTnC)
+            }
             setOnTickboxCheckedListener {
                 powerMerchantTracking.sendEventClickTickBox()
             }
             setOnCtaClickListener { tncAgreed ->
                 if (isPmProSelected) {
-                    pmProRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT_PRO)
+                    pmProRegistrationPage.second.setOnFooterCtaClickedListener(
+                        firstPriorityTerm,
+                        isEligiblePm,
+                        tncAgreed,
+                        PMConstant.ShopTierType.POWER_MERCHANT_PRO
+                    )
                 } else {
-                    pmRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT)
+                    pmRegistrationPage.second.setOnFooterCtaClickedListener(
+                        firstPriorityTerm,
+                        isEligiblePm,
+                        tncAgreed,
+                        PMConstant.ShopTierType.POWER_MERCHANT
+                    )
                 }
             }
             setOnTncClickListener {
@@ -424,10 +466,15 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun switchPMToWebView() {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-        val isSwitchPMToWebView = remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
+        val isSwitchPMToWebView =
+            remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
 
         if (isSwitchPMToWebView) {
-            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL)
+            RouteManager.route(
+                this,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL
+            )
             finish()
         }
     }
