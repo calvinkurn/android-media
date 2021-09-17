@@ -250,24 +250,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherUiModel(
-            item.msgId.toString(),
-            item.senderId.toString(),
-            item.senderName,
-            item.role,
-            item.attachment?.id ?: "",
-            item.attachment?.type.toString(),
-            item.replyTime,
-            item.msg,
-            item.isRead,
-            false,
-            !item.isOpposite,
-            voucherModel,
-            item.replyId.toString(),
-            item.blastId.toString(),
-            item.source,
-            voucher.isPublic
-        )
+        return TopChatVoucherUiModel.Builder()
+            .withResponseFromGQL(item)
+            .withVoucherModel(voucherModel)
+            .withIsPublic(voucher.isPublic)
+            .build()
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {

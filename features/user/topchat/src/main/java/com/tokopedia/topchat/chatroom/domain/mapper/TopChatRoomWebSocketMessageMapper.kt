@@ -106,24 +106,11 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherUiModel(
-                item.msgId.toString(),
-                item.fromUid,
-                item.from,
-                item.fromRole,
-                item.attachment?.id.toString(),
-                item.attachment?.type.toString(),
-                item.message.timeStampUnixNano,
-                item.message.censoredReply,
-                false,
-                false,
-                !item.isOpposite,
-                voucherModel,
-                "",
-                item.blastId.toString(),
-                item.source,
-                voucher.isPublic
-        )
+        return TopChatVoucherUiModel.Builder()
+            .withResponseFromWs(item)
+            .withVoucherModel(voucherModel)
+            .withIsPublic(voucher.isPublic)
+            .build()
     }
 
     private fun convertToQuotation(payload: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
