@@ -35,8 +35,8 @@ class CarouselViewAllCardViewHolder(
                     channelViewAllCard = ChannelViewAllCard(),
                     listener = element.listener
                 ),
-                isGradientWhite
-            )
+                true
+            ) //other content type will show empty view all card
         }
         //set foreground to selectableItemBackground
         val outValue = TypedValue()
