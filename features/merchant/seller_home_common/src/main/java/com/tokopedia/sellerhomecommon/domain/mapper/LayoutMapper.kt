@@ -42,6 +42,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                             )
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
+                            WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -345,6 +346,28 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun mapToMilestoneWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): MilestoneWidgetUiModel {
+        return MilestoneWidgetUiModel(
+            id = (widget.id ?: 0L).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
