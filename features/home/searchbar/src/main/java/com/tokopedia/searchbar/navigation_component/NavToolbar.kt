@@ -224,7 +224,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Call this function to let the NavToolbar manage your status bar transparency
      */
-    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true) {
+    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true, applyPaddingNegative: Boolean = false) {
         statusBarUtil = StatusBarUtil(WeakReference(activity))
 
         statusBarTheme?.let {
@@ -235,7 +235,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             }
         }
 
-        if (applyPadding) applyStatusBarPadding() else resetPadding()
+        if (applyPadding) applyStatusBarPadding()
+        if (applyPaddingNegative) resetPadding()
     }
 
     /**

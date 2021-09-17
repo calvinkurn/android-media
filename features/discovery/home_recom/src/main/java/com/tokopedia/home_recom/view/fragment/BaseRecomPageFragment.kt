@@ -310,7 +310,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             it.setIcon(iconBuilder)
             it.setToolbarTitle(if (setDefaultPageTitle().isNotEmpty()) setDefaultPageTitle() else PAGE_TITLE_RECOM_DEFAULT)
             activity?.let { actv ->
-                it.setupToolbarWithStatusBar(activity = actv, applyPadding = false)
+                it.setupToolbarWithStatusBar(activity = actv, applyPadding = false, applyPaddingNegative = true)
             }
         }
     }
