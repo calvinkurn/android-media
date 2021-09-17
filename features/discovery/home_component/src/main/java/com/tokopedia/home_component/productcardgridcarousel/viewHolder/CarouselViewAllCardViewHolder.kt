@@ -29,6 +29,7 @@ class CarouselViewAllCardViewHolder(
             CONTENT_TITLE_AS_STRING -> renderTypeTitleAsString(element, isGradientWhite)
             CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isGradientWhite)
             CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isGradientWhite)
+            else -> renderTypeTitleAsString(element, isGradientWhite)
         }
         //set foreground to selectableItemBackground
         val outValue = TypedValue()

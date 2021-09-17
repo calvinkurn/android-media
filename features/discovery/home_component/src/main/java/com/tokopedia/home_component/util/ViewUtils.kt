@@ -62,22 +62,20 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
     }
 }
 
-//function check is gradient all white
+//function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>) : Boolean {
-    try {
-        val colorWhite = "#FFFFFF"
+    val colorWhite = "#FFFFFF"
+    if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it != colorWhite }
-            if(colorArrayNotWhite.isNotEmpty())
+            if (colorArrayNotWhite.isNotEmpty())
                 return false
             return true
         } else {
             return colorArray[0].equals(colorWhite, true)
         }
-    } catch (e: Exception) {
-        //default background white return true
+    } else
         return true
-    }
 }
 
 fun convertDpToPixel(dp: Float, context: Context): Int {
