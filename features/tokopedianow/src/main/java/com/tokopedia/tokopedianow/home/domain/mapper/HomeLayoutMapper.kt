@@ -38,13 +38,14 @@ import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.Re
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper.mapToRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
 
-    private const val DEFAULT_QUANTITY = 0
+    const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
 
     /**
@@ -122,9 +123,10 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(
         item: HomeLayoutUiModel,
-        response: HomeLayoutResponse
+        response: HomeLayoutResponse,
+        miniCartData: MiniCartSimplifiedData? = null
     ) {
-        mapToHomeUiModel(response, HomeLayoutItemState.LOADED)?.let {
+        mapToHomeUiModel(response, HomeLayoutItemState.LOADED, miniCartData)?.let {
             updateItemById(item.visitableId) { it }
         }
     }
@@ -191,12 +193,30 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapProductPurchaseData(
         item: TokoNowRecentPurchaseUiModel,
-        response: RecentPurchaseData
+        response: RecentPurchaseData,
+        miniCartData: MiniCartSimplifiedData? = null
     ) {
         updateItemById(item.visitableId) {
-            val uiModel = RecentPurchaseMapper.mapToRecentPurchaseUiModel(item, response)
+            val uiModel = mapToRecentPurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
+    }
+
+    fun getAddToCartQuantity(productId: String, miniCartData: MiniCartSimplifiedData?): Int {
+        return miniCartData?.run {
+            val miniCartItem = miniCartData.miniCartItems.firstOrNull {
+                it.productId == productId
+            }
+            val productParentId = miniCartItem?.productParentId
+
+            return if(productParentId != DEFAULT_PARENT_ID) {
+                val variantGroup = miniCartItems.groupBy { it.productParentId }
+                val miniCartItemsWithSameParentId = variantGroup[productParentId]
+                miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+            } else {
+                miniCartItem.quantity.orZero()
+            }
+        } ?: DEFAULT_QUANTITY
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateRecentPurchaseQuantity(
@@ -218,17 +238,9 @@ object HomeLayoutMapper {
         miniCartData: MiniCartSimplifiedData,
         @TokoNowLayoutType type: String
     ) {
-        val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
-
         miniCartData.miniCartItems.map { miniCartItem ->
             val productId = miniCartItem.productId
-            val parentId = miniCartItem.productParentId
-            val quantity = if (parentId != DEFAULT_PARENT_ID) {
-                val miniCartItemsWithSameParentId = variantGroup[miniCartItem.productParentId]
-                miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
-            } else {
-                miniCartItem.quantity
-            }
+            val quantity = getAddToCartQuantity(productId, miniCartData)
             updateProductQuantity(productId, quantity, type)
         }
     }
@@ -261,7 +273,7 @@ object HomeLayoutMapper {
                     deletedProducts.forEach { model ->
                         if (model.parentId != DEFAULT_PARENT_ID) {
                             val miniCartItemsWithSameParentId = variantGroup[model.parentId]
-                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateRecentPurchaseQuantity(model.productId, DEFAULT_QUANTITY)
                             } else {
@@ -274,7 +286,7 @@ object HomeLayoutMapper {
                 }
             }
             PRODUCT_RECOM -> {
-                filter { it.layout is HomeProductRecomUiModel }?.forEach { homeLayoutItemUiModel->
+                filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
                     val deletedProducts = layout.recomWidget.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
@@ -283,7 +295,7 @@ object HomeLayoutMapper {
                     deletedProducts.forEach { item ->
                         if (item.parentID.toString() != DEFAULT_PARENT_ID) {
                             val miniCartItemsWithSameParentId = variantGroup[item.parentID.toString()]
-                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
                             } else {
@@ -373,13 +385,14 @@ object HomeLayoutMapper {
 
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse,
-        state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED
+        state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
+        miniCartData: MiniCartSimplifiedData? = null
     ): HomeLayoutItemUiModel? {
         return when (response.layout) {
             CATEGORY -> mapToCategoryLayout(response, state)
             LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, state)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, state)
-            PRODUCT_RECOM -> mapProductRecomDataModel(response, state)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, state, miniCartData)
             RECENT_PURCHASE -> mapRecentPurchaseUiModel(response, state)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, state)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)

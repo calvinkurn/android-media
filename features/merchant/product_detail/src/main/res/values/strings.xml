@@ -151,6 +151,8 @@
     <!--Ticker-->
     <string name="ticker_desc_shop_close">Tenang, kamu bisa kembali belanja di toko ini mulai %1s. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
     <string name="ticker_title_shop_close">Toko sedang tutup</string>
+    <string name="ticker_title_shop_holiday">Toko sedang libur</string>
+    <string name="ticker_desc_shop_holiday">Kamu bisa belanja setelah toko buka. Chat penjual atau akses Pusat Bantuan jika ada transaksi yang tertunda.</string>
     <string name="ticker_title_shop_moderated_seller">Toko kamu sedang dimoderasi</string>
     <string name="ticker_title_shop_moderated_buyer">Toko sedang tidak terima pesanan</string>
     <string name="ticker_desc_shop_moderated_seller">Untuk sementara, kamu tidak bisa menerima pesanan hingga moderasi berakhir. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>

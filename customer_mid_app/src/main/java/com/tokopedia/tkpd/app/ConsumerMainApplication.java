@@ -700,10 +700,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
-    public Class<?> getDeeplinkClass() {
-        return DeepLinkActivity.class;
-    }
-
     @Override
     public void onNewIntent(Context context, Intent intent) {
         super.onNewIntent(context, intent);

@@ -27,7 +27,7 @@ class FlightCancellationReasonActivity : BaseSimpleActivity(),
                     .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cancellationWrapperModel = intent.getParcelableExtra(EXTRA_CANCELLATION_MODEL)
+        cancellationWrapperModel = intent.getParcelableExtra(EXTRA_CANCELLATION_MODEL) ?: FlightCancellationWrapperModel()
         super.onCreate(savedInstanceState)
         setupToolbar()
     }

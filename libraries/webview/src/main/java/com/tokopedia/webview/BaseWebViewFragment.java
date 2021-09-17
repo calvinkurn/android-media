@@ -342,7 +342,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+            if(resultCode == RESULT_OK){
+                webView.loadAuthUrl(getUrl(), userSession);
+            }else {
+                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+                    ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
+            }
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();

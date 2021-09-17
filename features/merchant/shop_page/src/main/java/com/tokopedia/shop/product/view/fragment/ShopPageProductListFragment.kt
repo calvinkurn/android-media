@@ -108,7 +108,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -809,6 +808,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopProductEmptySearchListener = null,
                 shopProductChangeGridSectionListener = this,
                 shopShowcaseEmptySearchListener = null,
+                shopProductSearchSuggestionListener = null,
                 isGridSquareLayout = true,
                 deviceWidth = deviceWidth,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,
@@ -1587,7 +1587,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun scrollToTop() {
         isClickToScrollToTop = true
-        recycler_view?.scrollToPosition(0)
+        getRecyclerView(view)?.scrollToPosition(0)
     }
 
     override fun isShowScrollToTopButton(): Boolean {
