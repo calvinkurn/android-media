@@ -3,7 +3,6 @@ package com.tokopedia.navigation.presentation.customview
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
@@ -19,8 +18,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.R
-import com.tokopedia.notifications.common.CMNotificationUtils.isDarkMode
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.DarkModeUtils.isDarkMode
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
