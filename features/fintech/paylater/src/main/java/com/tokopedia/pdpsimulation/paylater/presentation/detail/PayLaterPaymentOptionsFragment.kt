@@ -252,18 +252,18 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             GatewayStatusType.Processing -> {
                 tvSubTitlePaylaterPartner.text =
                     context?.getString(R.string.pay_later_gateway_processing)
-                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_Y200))
-                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_Y500))
+                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y200))
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500))
             }
             GatewayStatusType.Rejected -> {
                 tvSubTitlePaylaterPartner.text =
                     context?.getString(R.string.pay_later_rejected_gateway)
-                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_R500))
-                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(R.color.Unify_R100))
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                tvSubTitlePaylaterPartner.setBackgroundColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R100))
             }
             else -> {
                 tvSubTitlePaylaterPartner.text = subheader
-                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(R.color.Unify_N700))
+                tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 tvSubTitlePaylaterPartner.setBackgroundColor(Color.TRANSPARENT)
             }
         }
