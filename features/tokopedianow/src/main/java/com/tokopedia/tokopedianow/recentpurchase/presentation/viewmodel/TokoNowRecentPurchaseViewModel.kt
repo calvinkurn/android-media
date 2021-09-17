@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayout
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
@@ -45,6 +46,7 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
@@ -131,7 +133,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     }
 
     fun getLayoutList() {
-        layoutList.removeLoading()
         layoutList.addLayoutList()
 
         val layout = RepurchaseLayoutUiModel(
@@ -364,6 +365,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private fun getProductListAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
             val productList = getProductList()
+            layoutList.removeLoading()
 
             if (productList.isNullOrEmpty()) {
                 addEmptyState(id = EMPTY_STATE_NO_RESULT)
@@ -372,7 +374,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 layoutList.addProduct(productList)
             }
         }) {
-
+            addEmptyState(ERROR_STATE_FAILED_TO_FETCH_DATA)
         }
     }
 
@@ -534,6 +536,10 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateOoc()
                 getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+            }
+            ERROR_STATE_FAILED_TO_FETCH_DATA -> {
+                layoutList.clear()
+                layoutList.addServerErrorState()
             }
             else -> {
                 layoutList.clear()

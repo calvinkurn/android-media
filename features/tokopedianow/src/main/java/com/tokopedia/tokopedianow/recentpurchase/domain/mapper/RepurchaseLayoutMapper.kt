@@ -98,6 +98,10 @@ object RepurchaseLayoutMapper {
         add(TokoNowEmptyStateNoResultUiModel())
     }
 
+    fun MutableList<Visitable<*>>.addServerErrorState() {
+        add(TokoNowServerErrorUiModel)
+    }
+
     fun MutableList<Visitable<*>>.removeLoading() {
         removeFirstLayout(RepurchaseLoadingUiModel::class.java)
     }
