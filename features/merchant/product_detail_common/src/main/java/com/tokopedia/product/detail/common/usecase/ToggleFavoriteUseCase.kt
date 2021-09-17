@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.usecase
+package com.tokopedia.product.detail.common.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -6,19 +6,25 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_INPUT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_TEASER_ACTION
-import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ToggleFavoriteUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                private val graphqlRepository: GraphqlRepository) : UseCase<DataFollowShop>() {
+class ToggleFavoriteUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<DataFollowShop>() {
 
     private var requestParams: RequestParams = RequestParams.EMPTY
 
     companion object {
         const val FOLLOW_ACTION = "follow"
+        val QUERY = """
+                mutation followShop(${'$'}input: ParamFollowShop!) {
+                  followShop(input:${'$'}input){
+                    success
+                    message
+                  }
+                }
+        """.trimIndent()
 
         fun createParams(shopId: String, action: String?) = RequestParams.create().apply {
             putString(PARAM_SHOP_ID, shopId)
@@ -37,7 +43,7 @@ class ToggleFavoriteUseCase @Inject constructor(private val rawQueries: Map<Stri
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = requestParams.parameters
 
-        val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_FAVORITE_SHOP],
+        val request = GraphqlRequest(QUERY,
                 DataFollowShop::class.java, variables)
 
         val gqlResponse = graphqlRepository.getReseponse(listOf(request))
