@@ -12,7 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play.R
-import com.tokopedia.play.animation.spamlike.PlaySpamLikeView
+import com.tokopedia.play.animation.multiplelikes.PlayLikeBubbleView
 import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
@@ -32,7 +32,7 @@ class LikeBubbleViewComponent(
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private val spamLike = findViewById<PlaySpamLikeView>(R.id.spam_like_animation)
+    private val spamLike = findViewById<PlayLikeBubbleView>(R.id.spam_like_animation)
 
     private val preferredIconSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
 

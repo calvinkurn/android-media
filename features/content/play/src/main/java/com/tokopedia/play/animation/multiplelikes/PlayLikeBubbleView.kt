@@ -1,4 +1,4 @@
-package com.tokopedia.play.animation.spamlike
+package com.tokopedia.play.animation.multiplelikes
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -20,7 +20,7 @@ import kotlinx.coroutines.*
 /**
  * Created By : Jonathan Darwin on August 02, 2021
  */
-class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
+class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
 
     private val job = SupervisorJob()
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + job)
@@ -30,8 +30,6 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     /**
      * Custom
      */
-    private var bubbleList: List<PlayLikeBubbleUiModel> = emptyList()
-
     private val defaultSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
     private var sizeList = listOf(defaultSize to defaultSize)
     private var sizeMultiplyList = mutableListOf<Float>()
@@ -42,7 +40,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * Config
      */
     private var maxShot = 30
-    private var sizeType = PlaySpamLikeSize.MULTIPLY
+    private var sizeType = PlayLikeBubbleSize.MULTIPLY
     private val duration = 1500L
 //    private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
@@ -86,17 +84,13 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         this.isBouncing = isBouncing
     }
 
-    fun setBubbleList(bubbleList: List<PlayLikeBubbleUiModel>) {
-        this.bubbleList = bubbleList
-    }
-
     fun setSizeList(sizeList: List<Pair<Int, Int>>) {
-        sizeType = PlaySpamLikeSize.EXACT
+        sizeType = PlayLikeBubbleSize.EXACT
         this.sizeList = sizeList
     }
 
     fun setSizeMultiplyList(sizeMultiplyList: List<Float>) {
-        sizeType = PlaySpamLikeSize.MULTIPLY
+        sizeType = PlayLikeBubbleSize.MULTIPLY
         this.sizeMultiplyList.clear()
         this.sizeMultiplyList.addAll(sizeMultiplyList)
     }
@@ -152,8 +146,8 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
             val size = sizeList.random()
 
             val dimension = when(sizeType) {
-                PlaySpamLikeSize.EXACT -> size
-                PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(icon, sizeMultiply)
+                PlayLikeBubbleSize.EXACT -> size
+                PlayLikeBubbleSize.MULTIPLY -> getDimensionMultiply(icon, sizeMultiply)
             }
 
             val image = prepareImage(icon, chosenBubble.colorList, dimension, reduceOpacity)
@@ -252,7 +246,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         val xStart = image.x - bouncingLimit
         val xEnd = image.x + bouncingLimit
         var xCurrent = image.x
-        var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
+        var xMove: PlayLikeBubbleMove = if((0..1).random() % 2 == 0) PlayLikeBubbleMove.Right else PlayLikeBubbleMove.Left
 
         /**
          * Setup scaling constraint
@@ -289,26 +283,26 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
              */
             if(isBouncing) {
                 when(xMove) {
-                    is PlaySpamLikeMove.Center -> {
+                    is PlayLikeBubbleMove.Center -> {
                         image.x = xCurrent
-                        val xMoveCenter = (xMove as PlaySpamLikeMove.Center)
+                        val xMoveCenter = (xMove as PlayLikeBubbleMove.Center)
                         if(xMoveCenter.counter+1 == xMove.threshold) {
                             xMove = xMoveCenter.next
                         }
                         else xMoveCenter.counter++
                     }
-                    PlaySpamLikeMove.Right -> {
+                    PlayLikeBubbleMove.Right -> {
                         xCurrent += bouncingMultiplier
                         image.x = xCurrent
                         if(xCurrent > xEnd) {
-                            xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Left, 0)
+                            xMove = PlayLikeBubbleMove.Center(PlayLikeBubbleMove.Left, 0)
                         }
                     }
-                    PlaySpamLikeMove.Left -> {
+                    PlayLikeBubbleMove.Left -> {
                         xCurrent -= bouncingMultiplier
                         image.x = xCurrent
                         if(xCurrent < xStart) {
-                            xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Right, 0)
+                            xMove = PlayLikeBubbleMove.Center(PlayLikeBubbleMove.Right, 0)
                         }
                     }
                 }
