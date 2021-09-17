@@ -369,9 +369,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
             viewModel.tradeInParams.deviceId = imei
             viewModel.getIMEI(laku6TradeIn, imei)
         } else {
-            if(::laku6TradeIn.isInitialized)
-                laku6TradeIn.startGUITest()
-            else
+            if(!::laku6TradeIn.isInitialized)
                 setLaku6()
             laku6TradeIn.startGUITest()
         }
