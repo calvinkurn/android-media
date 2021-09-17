@@ -291,10 +291,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     }
 
     private fun init() {
-        var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
-        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
-        laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE)
+        setLaku6()
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
@@ -307,6 +304,13 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
 
         //init sessionid
         viewModel.initSessionId(laku6TradeIn)
+    }
+
+    private fun setLaku6() {
+        var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
+        laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
+            TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE)
     }
 
     private fun getTradeInParams() {
@@ -365,6 +369,10 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
             viewModel.tradeInParams.deviceId = imei
             viewModel.getIMEI(laku6TradeIn, imei)
         } else {
+            if(::laku6TradeIn.isInitialized)
+                laku6TradeIn.startGUITest()
+            else
+                setLaku6()
             laku6TradeIn.startGUITest()
         }
     }
