@@ -74,6 +74,9 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -82,8 +85,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-
-    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
