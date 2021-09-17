@@ -8,12 +8,10 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEm
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselFeaturedShopViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselProductCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselSeeMorePdpViewHolder
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetProductCardViewHolder
 
@@ -44,10 +42,6 @@ class RechargeBUWidgetProductCardTypeFactoryImpl(private val channels: ChannelMo
         return RechargeBUWidgetProductCardViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: CarouselViewAllCardDataModel): Int {
-        return CarouselViewAllCardViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -64,9 +58,6 @@ class RechargeBUWidgetProductCardTypeFactoryImpl(private val channels: ChannelMo
             }
             RechargeBUWidgetProductCardViewHolder.LAYOUT -> {
                 RechargeBUWidgetProductCardViewHolder(parent, channels)
-            }
-            CarouselViewAllCardViewHolder.LAYOUT -> {
-                CarouselViewAllCardViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)
