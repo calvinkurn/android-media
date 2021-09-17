@@ -95,7 +95,11 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateNoResult() {
-        add(TokoNowEmptyStateNoResultUiModel())
+        add(TokoNowEmptyStateNoResultUiModel(
+            defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
+            defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
+            globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
+        ))
     }
 
     fun MutableList<Visitable<*>>.addServerErrorState() {

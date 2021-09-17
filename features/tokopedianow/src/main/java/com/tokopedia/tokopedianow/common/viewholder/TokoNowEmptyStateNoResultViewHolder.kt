@@ -55,40 +55,36 @@ class TokoNowEmptyStateNoResultViewHolder(
 
         val hasActiveFilter = !element.activeFilterList.isNullOrEmpty()
 
-        bindTitle(hasActiveFilter, element.defaultTitle)
-        bindDescription(hasActiveFilter, element.defaultDescription)
+        bindTitle(hasActiveFilter, element)
+        bindDescription(hasActiveFilter, element)
         bindFilterList(hasActiveFilter, element)
-        bindGoToGlobalSearchButton(hasActiveFilter)
+        bindGoToGlobalSearchButton(hasActiveFilter, element)
         bindChangeKeywordButton(hasActiveFilter)
     }
 
-    private fun bindTitle(hasActiveFilter: Boolean, defaultTitle: String) {
+    private fun bindTitle(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
+        val defaultTitle = element.defaultTitle
+        val defaultTitleResId = element.defaultTitleResId
+
         val title = when {
-            defaultTitle.isNotEmpty() -> {
-                defaultTitle
-            }
-            hasActiveFilter -> {
-                getString(R.string.tokopedianow_empty_product_filter_title)
-            }
-            else -> {
-                getString(R.string.tokopedianow_empty_product_title)
-            }
+            defaultTitle.isNotEmpty() -> defaultTitle
+            defaultTitleResId != null -> getString(defaultTitleResId)
+            hasActiveFilter -> getString(R.string.tokopedianow_empty_product_filter_title)
+            else -> getString(R.string.tokopedianow_empty_product_title)
         }
 
         titleTextView?.text = title
     }
 
-    private fun bindDescription(hasActiveFilter: Boolean, defaultDescription: String) {
+    private fun bindDescription(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
+        val defaultDescription = element.defaultDescription
+        val defaultDescriptionResId = element.defaultDescriptionResId
+
         val description = when {
-            defaultDescription.isNotEmpty() -> {
-                defaultDescription
-            }
-            hasActiveFilter -> {
-                getString(R.string.tokopedianow_empty_product_filter_description)
-            }
-            else -> {
-                getString(R.string.tokopedianow_empty_product_description)
-            }
+            defaultDescription.isNotEmpty() -> defaultDescription
+            defaultDescriptionResId != null -> getString(defaultDescriptionResId)
+            hasActiveFilter -> getString(R.string.tokopedianow_empty_product_filter_description)
+            else -> getString(R.string.tokopedianow_empty_product_description)
         }
 
         descriptionTextView?.text = description
@@ -113,10 +109,20 @@ class TokoNowEmptyStateNoResultViewHolder(
         }
     }
 
-    private fun bindGoToGlobalSearchButton(hasActiveFilter: Boolean) {
+    private fun bindGoToGlobalSearchButton(
+        hasActiveFilter: Boolean,
+        element: TokoNowEmptyStateNoResultUiModel
+    ) {
+        bindGlobalSearchBtnText(element)
         globalSearchButton?.showWithCondition(!hasActiveFilter)
         globalSearchButton?.setOnClickListener {
             tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
+        }
+    }
+
+    private fun bindGlobalSearchBtnText(element: TokoNowEmptyStateNoResultUiModel) {
+        element.globalSearchBtnTextResId?.let {
+            globalSearchButton?.text = getString(it)
         }
     }
 
