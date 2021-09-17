@@ -58,13 +58,13 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         setupSaveBtn()
         setupVariantList()
         setupBottomSheet()
-        setupErrorView(productId)
+        setupErrorView(productId, isBundling)
 
         observeGetVariant()
         observeClickSaveBtn()
         observeViewState()
 
-        getData(productId)
+        getData(productId, isBundling)
     }
 
     override fun onAttach(context: Context) {
