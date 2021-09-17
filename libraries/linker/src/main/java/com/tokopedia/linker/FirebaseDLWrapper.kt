@@ -57,11 +57,6 @@ class FirebaseDLWrapper {
 
             }
             .addOnFailureListener(activity) { e ->
-                Log.w(
-                    "FirebaseDLWrapper",
-                    "getDynamicLink:onFailure",
-                    e
-                )
             }
 
     }
@@ -138,12 +133,10 @@ class FirebaseDLWrapper {
 
             }
         }.addOnSuccessListener { (shortLink, flowchartLink) ->
-            // You'll need to import com.google.firebase.dynamiclinks.ktx.component1 and
-            // com.google.firebase.dynamiclinks.ktx.component2
-
-            // Short link created
-            var link = shortLink.toString() // null check
-            shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
+            if(shortLink!= null) {
+                var link = shortLink.toString()
+                shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
+            }
 
         }.addOnFailureListener {
             // Error
@@ -230,14 +223,9 @@ class FirebaseDLWrapper {
             }
             sendCampaignToTrackApp(param)
         }
-        Log.d(
-            "FirebaseDLWrapper",
-            "source=$utmSource, campaign=$utmCampaign, medium=$utmMedium, term=$utmTerm"
-        )
     }
 
     private fun sendCampaignToTrackApp( param: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendCampaign(param)
-        Log.d("FirebaseDLWrapper", "sent")
     }
 }
