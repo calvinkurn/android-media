@@ -2,6 +2,7 @@ package com.tokopedia.home_account.linkaccount.view
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.Menu
@@ -58,6 +59,10 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
         }
     }
 
+    fun setToolbarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
     fun showToolbar() {
         supportActionBar?.show()
     }
@@ -68,6 +73,11 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
 
     fun hideToolbarBackBtn() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hideToolbar()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

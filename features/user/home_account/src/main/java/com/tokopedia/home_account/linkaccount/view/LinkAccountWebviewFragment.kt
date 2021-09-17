@@ -14,18 +14,20 @@ import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
-    override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+    override fun onLoadFinished() {
         when {
-            url.contains(GOJEK_PAGE, ignoreCase = true) -> {
+            url.contains(GOJEK_OTP_PAGE, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
                 (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
                 (activity as LinkAccountWebViewActivity).showToolbar()
+                (activity as LinkAccountWebViewActivity).setToolbarTitle("Verifikasi Akun")
             }
-            url.contains(GOPAY_PAGE, ignoreCase = true) -> {
+            url.contains(GOPAY_PIN_PAGE, ignoreCase = true) -> {
                 // Check gopay input pin page, and hide back btn
                 (activity as LinkAccountWebViewActivity).showToolbar()
                 (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
                 (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
+                (activity as LinkAccountWebViewActivity).setToolbarTitle("   Aktifin GoPay")
             }
             url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
                 // Finish activity from webview
@@ -43,6 +45,40 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 (activity as LinkAccountWebViewActivity).hideToolbar()
             }
         }
+        super.onLoadFinished()
+    }
+
+    override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+//        when {
+//            url.contains(GOJEK_OTP_PAGE, ignoreCase = true) -> {
+//                // Check gojek accounts page, show toolbar
+//                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
+//                (activity as LinkAccountWebViewActivity).showToolbar()
+//                (activity as LinkAccountWebViewActivity).setToolbarTitle("Verifikasi Akun")
+//            }
+//            url.contains(GOPAY_PIN_PAGE, ignoreCase = true) -> {
+//                // Check gopay input pin page, and hide back btn
+//                (activity as LinkAccountWebViewActivity).showToolbar()
+//                (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
+//                (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
+//                (activity as LinkAccountWebViewActivity).setToolbarTitle("Aktifin GoPay")
+//            }
+//            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
+//                // Finish activity from webview
+//                activity?.finish()
+//            }
+//            url.startsWith(GOJEK_LINK, ignoreCase = true) -> {
+//                // Check for gojek.link url
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+//                startActivity(intent)
+//                activity?.finish()
+//            }
+//            else -> {
+//                // Default is hidden
+//                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
+//                (activity as LinkAccountWebViewActivity).hideToolbar()
+//            }
+//        }
         return super.shouldOverrideUrlLoading(webview, url)
     }
 
@@ -54,7 +90,9 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
+                    webView?.loadUrl(GOJEK_OTP_PAGE)
+
+//                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
@@ -65,8 +103,8 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     companion object {
         const val KEY_URL = "url"
 
-        const val GOPAY_PAGE = "gws-app.gopayapi.com/app"
-        const val GOJEK_PAGE = "accounts.gojek.com"
+        const val GOPAY_PIN_PAGE = "gws-app.gopayapi.com/app"
+        const val GOJEK_OTP_PAGE = "accounts-integration.gojek.com"
 
         const val GOJEK_LINK = "https://gojek.link/"
 
