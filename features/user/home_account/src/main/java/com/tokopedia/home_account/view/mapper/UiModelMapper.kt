@@ -37,7 +37,11 @@ object UiModelMapper {
         val subTitle = if (walletappGetAccountBalance.isActive) {
             when (walletappGetAccountBalance.id) {
                 AccountConstants.WALLET.GOPAY -> {
-                    if (walletappGetAccountBalance.subtitle.equals(AccountConstants.WALLET.GOPAY, ignoreCase = true)) {
+                    if (walletappGetAccountBalance.subtitle.equals(
+                            AccountConstants.WALLET.GOPAY,
+                            ignoreCase = true
+                        )
+                    ) {
                         walletappGetAccountBalance.title
                     } else {
                         "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
@@ -87,7 +91,10 @@ object UiModelMapper {
         )
     }
 
-    fun getWalletUiModel(walletShimmeringUiModel: WalletShimmeringUiModel, isFailed: Boolean): WalletUiModel {
+    fun getWalletUiModel(
+        walletShimmeringUiModel: WalletShimmeringUiModel,
+        isFailed: Boolean
+    ): WalletUiModel {
         return WalletUiModel(
             id = walletShimmeringUiModel.id,
             title = walletShimmeringUiModel.title,
