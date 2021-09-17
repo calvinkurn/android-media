@@ -15,7 +15,7 @@ class DiagnosticDataUseCase @Inject constructor(
         private val repository: CommonTradeInRepository) {
 
     fun createRequestParamsDeviceDiag(tradeInParams: TradeInParams?, tradeInType: Int): HashMap<String, Any> {
-        val productid = tradeInParams?.productId ?: 0
+        val productid = tradeInParams?.productId
         val deviceid = tradeInParams?.deviceId
         val newprice = tradeInParams?.newPrice ?: 0
         val params = DeviceDiagParams()

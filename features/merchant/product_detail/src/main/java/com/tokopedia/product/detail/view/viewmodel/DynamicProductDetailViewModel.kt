@@ -1097,7 +1097,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
             tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeInParams.productId = it.basic.getProductId()
+            tradeInParams.productId = it.basic.productID
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()

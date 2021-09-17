@@ -51,7 +51,7 @@ class DiagnosticDataUseCaseTest {
 
     @Test
     fun createRequestParams() {
-        tradeInParams.productId = 2
+        tradeInParams.productId = "2"
 
         val variables = diagnosticDataUseCase.createRequestParamsDeviceDiag(tradeInParams, tradeInType)
 
