@@ -80,9 +80,12 @@ object ShopUtil {
     fun isUsingNewNavigation(): Boolean {
         val navType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                RollenceKey.NAVIGATION_VARIANT_OLD
+                RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                    RollenceKey.NAVIGATION_VARIANT_OLD
+                )?: RollenceKey.NAVIGATION_VARIANT_OLD
         )
-        return (navType == RollenceKey.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
+        return ((navType == RollenceKey.NAVIGATION_VARIANT_REVAMP || navType == RollenceKey.NAVIGATION_VARIANT_REVAMP2)  && !GlobalConfig.isSellerApp())
     }
 
     fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {

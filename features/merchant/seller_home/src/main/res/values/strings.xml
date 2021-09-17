@@ -107,7 +107,7 @@
     <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
     <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
     <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
-    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan grade tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
+    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
     <string name="settings_shop_status_label">Status toko:</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
@@ -115,4 +115,7 @@
     <string name="shop_operational_hour_24_hour">24 Jam</string>
     <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
     <string name="sah_content_desc_image_operational_hour">image operational hour</string>
+    <string name="sah_share_action_copy_success">Teks berhasil disalin</string>
+    <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
 </resources>
