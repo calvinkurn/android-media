@@ -77,14 +77,9 @@ class SendableProductPreview(
         message: String
     ): SendableViewModel {
         return ProductAttachmentViewModel.Builder()
-            .withLocalId(IdentifierUtil.generateLocalId())
-            .withMsgId(roomMetaData.msgId)
-            .withFromUid(roomMetaData.sender.uid)
-            .withFrom(roomMetaData.sender.name)
-            .withFromRole(roomMetaData.sender.name)
+            .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
-            .withReplyTime(TimeHelper.getNowTimeStamp().toString())
             .withProductId(productPreview.id)
             .withProductName(productPreview.name)
             .withProductPrice(productPreview.price)

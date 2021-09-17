@@ -3,6 +3,9 @@ package com.tokopedia.chat_common.data
 import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.utils.time.TimeHelper
 import java.util.*
 
 /**
@@ -166,6 +169,18 @@ open class BaseChatViewModel constructor(
             withReplyTime(System.currentTimeMillis().toString())
             withMsg(reply.msg)
             withSource(reply.source.orEmpty())
+            return self()
+        }
+
+        open fun withRoomMetaData(
+            roomMetaData: RoomMetaData
+        ): B {
+            withLocalId(IdentifierUtil.generateLocalId())
+            withMsgId(roomMetaData.msgId)
+            withFromUid(roomMetaData.sender.uid)
+            withFrom(roomMetaData.sender.name)
+            withFromRole(roomMetaData.sender.name)
+            withReplyTime(TimeHelper.getNowTimeStamp().toString())
             return self()
         }
 
