@@ -19,7 +19,7 @@ class UmrahPdpDetailActivity : BaseSimpleActivity(), HasComponent<UmrahPdpCompon
             .build()
 
     override fun getNewFragment(): Fragment? = UmrahPdpDetailFragment().getInstance(
-            intent.getStringExtra(UmrahPdpActivity.EXTRA_SLUG_NAME),
+            intent.getStringExtra(UmrahPdpActivity.EXTRA_SLUG_NAME) ?: "",
             intent.getIntExtra(EXTRA_TOTAL_AVAILABILITY,0)
     )
 

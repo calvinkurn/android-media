@@ -29,6 +29,11 @@ internal object GetProductVariant {
                   url300
                   status
                 }
+                campaign_types{
+                  id
+                  name
+                  icon_url
+                }
               }
               selections {
                   variantID

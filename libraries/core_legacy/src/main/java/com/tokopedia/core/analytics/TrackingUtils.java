@@ -26,6 +26,8 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    // consider replacing this with getGtm().sendCampaignV4V5 instead.
+    @Deprecated
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
 
@@ -43,27 +45,6 @@ public class TrackingUtils{
             afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(context));
         }
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
-    }
-
-    public static String extractFirstSegment(Context context,String inputString, String separator) {
-        String firstSegment = "";
-        if (!TextUtils.isEmpty(inputString)) {
-            String token[] = inputString.split(separator);
-            if (token.length > 1) {
-                firstSegment = token[0];
-            } else {
-                firstSegment = separator;
-            }
-        }
-
-        return firstSegment;
-    }
-
-    public static String normalizePhoneNumber(String phoneNum) {
-        if (!TextUtils.isEmpty(phoneNum))
-            return phoneNum.replaceFirst("^0(?!$)", "62");
-        else
-            return "";
     }
 
     public static void sendMoEngageClickMainCategoryIcon(Context context, String categoryName) {

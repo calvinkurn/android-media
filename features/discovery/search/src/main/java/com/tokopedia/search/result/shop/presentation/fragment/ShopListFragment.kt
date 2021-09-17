@@ -190,6 +190,7 @@ internal class ShopListFragment:
         observeShimmeringLayoutVisibility()
         observeQuickFilterVisibility()
         observeActiveFilterCount()
+        observeGeneralSearchTracking()
     }
 
     private fun observeSearchShopLiveData() {
@@ -637,5 +638,11 @@ internal class ShopListFragment:
     override fun configure(shouldRemove: Boolean) {
         if (shouldRemove) removeQuickFilterElevation(searchShopQuickSortFilter)
         else applyQuickFilterElevation(context, searchShopQuickSortFilter)
+    }
+
+    private fun observeGeneralSearchTracking() {
+        searchShopViewModel
+                ?.generalSearchTrackingLiveData
+                ?.observe(viewLifecycleOwner, SearchTracking::trackEventGeneralSearchShop)
     }
 }

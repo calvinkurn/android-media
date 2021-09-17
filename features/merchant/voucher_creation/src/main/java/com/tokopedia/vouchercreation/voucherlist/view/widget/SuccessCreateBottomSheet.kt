@@ -99,5 +99,4 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
         onDownloadClickAction = action
         return this
     }
-
 }

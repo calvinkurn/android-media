@@ -22,7 +22,11 @@ class ShopScorePMWidget : FrameLayout {
         initView(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initView(context)
     }
 
@@ -53,36 +57,94 @@ class ShopScorePMWidget : FrameLayout {
     fun setProgressColor(state: State) {
         val colors = when (state) {
             is State.Good -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
+                tv_current_progress.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                )
+                intArrayOf(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G600
+                    )
+                )
             }
             is State.Warning -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                tv_current_progress.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Y400
+                    )
+                )
+                intArrayOf(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Y300
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Y400
+                    )
+                )
             }
             is State.Custom -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context, state.valueTextColorResId))
-                intArrayOf(ContextCompat.getColor(context, state.barStartColorResId), ContextCompat.getColor(context, state.barEndColorResId))
+                tv_current_progress.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        state.valueTextColorResId
+                    )
+                )
+                intArrayOf(
+                    ContextCompat.getColor(context, state.barStartColorResId),
+                    ContextCompat.getColor(context, state.barEndColorResId)
+                )
             }
             else -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_R500))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                tv_current_progress.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    )
+                )
+                intArrayOf(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R400
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    )
+                )
             }
         }
         progress_bar_current.setProgressColor(colors)
     }
 
-    sealed class State {
-        object Good : State()
+    sealed class State(open val name: String) {
 
-        object Warning : State()
+        companion object {
+            private const val GOOD = "GOOD"
+            private const val WARNING = "WARNING"
+            private const val DANGER = "DANGER"
+            private const val CUSTOM = "CUSTOM"
+        }
 
-        object Danger : State()
+        object Good : State(GOOD)
+
+        object Warning : State(WARNING)
+
+        object Danger : State(DANGER)
 
         data class Custom(
-                val valueTextColorResId: Int,
-                val barStartColorResId: Int,
-                val barEndColorResId: Int
-        ) : State()
+            val valueTextColorResId: Int,
+            val barStartColorResId: Int,
+            val barEndColorResId: Int
+        ) : State(CUSTOM)
     }
 }

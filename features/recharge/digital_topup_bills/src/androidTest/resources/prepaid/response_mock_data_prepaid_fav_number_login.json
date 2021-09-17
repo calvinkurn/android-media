@@ -1,63 +1,43 @@
 [
   {
     "data": {
-      "recharge_favorite_number": {
+      "rechargeFetchFavoriteNumber": {
+        "client_number": "",
+        "operator_id": 0,
+        "product_id": 0,
+        "category_id": 0,
         "list": [
           {
-            "client_number": "087855813789",
-            "label": "Tes2",
-            "product_id": 30,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
             "client_number": "08121111111",
-            "label": "Tes",
-            "product_id": 70,
             "operator_id": 12,
-            "category_id": 1
+            "product_id": 316,
+            "category_id": 2,
+            "label": "Danur Kebab 2",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
           },
           {
-            "client_number": "08121111112",
-            "label": "",
-            "product_id": 68,
+            "client_number": "081232323239",
             "operator_id": 12,
-            "category_id": 1
+            "product_id": 316,
+            "category_id": 2,
+            "label": "Tokopedia",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
           },
           {
-            "client_number": "0811111111111",
-            "label": "",
-            "product_id": 70,
+            "client_number": "0812345678909",
             "operator_id": 12,
-            "category_id": 1
+            "product_id": 316,
+            "category_id": 2,
+            "label": "Selalu Ada",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
           },
           {
-            "client_number": "081911111111",
-            "label": "",
-            "product_id": 1137,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "087786807105",
-            "label": "",
-            "product_id": 31,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "087889514776",
-            "label": "",
-            "product_id": 30,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "081908878591",
-            "label": "",
-            "product_id": 32,
-            "operator_id": 5,
-            "category_id": 1
+            "client_number": "0812900000009",
+            "operator_id": 12,
+            "product_id": 316,
+            "category_id": 2,
+            "label": "Selalu Bisa",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
           }
         ]
       }

@@ -36,6 +36,7 @@ class SharingUtil {
         const val labelFbfeed = "fbfeed"
         const val labelFbstory = "fbstory"
         const val labelIgfeed = "igfeed"
+        const val labelIgMessage = "igmessage"
         const val labelIgstory = "igstory"
         const val labelLine = "line"
         const val labelTwitter = "twitter"

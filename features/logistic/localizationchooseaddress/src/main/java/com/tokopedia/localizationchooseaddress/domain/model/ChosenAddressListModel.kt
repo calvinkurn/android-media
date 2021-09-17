@@ -25,6 +25,7 @@ data class ChosenAddressList(
         var latitude: String = "",
         var longitude: String = "",
         var isStateChosenAddress: Boolean = false,
+        var tokonow: TokonowAddress = TokonowAddress()
 ) :  ChosenAddressListVisitable()
 
 data class OtherAddressModel(var text: String? = null) : ChosenAddressListVisitable()

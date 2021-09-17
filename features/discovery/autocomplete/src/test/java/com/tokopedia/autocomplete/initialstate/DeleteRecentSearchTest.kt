@@ -10,7 +10,10 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
@@ -22,8 +25,12 @@ private const val initialStateWith5DataSeeMoreRecentSearch = "autocomplete/initi
 internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private val isSuccessful = true
+    private val deleteRecentSearchRequestParams = slot<RequestParams>()
 
-    private fun `Test Delete Recent Search Data`(initialStateData: List<InitialStateData>, item: BaseItemInitialStateSearch) {
+    private fun `Test Delete Recent Search Data`(
+        initialStateData: List<InitialStateData>,
+        item: BaseItemInitialStateSearch
+    ) {
         `Given view already get initial state`(initialStateData)
 
         `Given delete recent search API will return data`()
@@ -44,7 +51,9 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify deleteRecentSearch API is called`() {
-        verify { deleteRecentSearchUseCase.execute(any(), any()) }
+        verify {
+            deleteRecentSearchUseCase.execute(capture(deleteRecentSearchRequestParams), any())
+        }
     }
 
     private fun `Then verify initial state view called deleteRecentSearch`() {
@@ -71,7 +80,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have the deleted keyword in recent search`(item: BaseItemInitialStateSearch) {
-        val recentSearchDataView = slotDeletedVisitableList.captured.find { it is RecentSearchDataView } as RecentSearchDataView
+        val recentSearchDataView = slotDeletedVisitableList.last().find { it is RecentSearchDataView } as RecentSearchDataView
         assert(!recentSearchDataView.list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
@@ -94,7 +103,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have shop in recent search`(item: BaseItemInitialStateSearch) {
-        val newList = slotDeletedVisitableList.captured
+        val newList = slotDeletedVisitableList.last()
         assert(newList[3] is RecentSearchDataView) {
             "Should be RecentSearchDataView"
         }
@@ -123,7 +132,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list still have RecentSearchSeeMoreDataView`() {
-        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.last().find { it is RecentSearchSeeMoreDataView }
         assert(recentSearchSeeMoreDataView != null) {
             "Visitable list should have SeeMoreRecentSearchDataView"
         }
@@ -149,7 +158,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`() {
-        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.last().find { it is RecentSearchSeeMoreDataView }
         assert(recentSearchSeeMoreDataView == null) {
             "Visitable list should not have SeeMoreRecentSearchDataView"
         }
@@ -194,7 +203,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have recent search anymore`() {
-        val list = slotDeletedVisitableList.captured
+        val list = slotDeletedVisitableList.last()
         Assert.assertTrue(list[0] is RecentViewTitleDataView)
         Assert.assertTrue(list[1] is RecentViewDataView)
         Assert.assertTrue(list[2] is PopularSearchTitleDataView)

@@ -31,7 +31,6 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -42,7 +41,6 @@ import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_pdp_emoney.R
@@ -175,8 +173,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             when (it) {
                 is Fail -> renderErrorMessage(it.throwable)
                 is Success -> {
-                    if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
-                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
+                    if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber
+                                ?: ""))
                     } else if (emoneyCardNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
                     } else {
@@ -405,8 +404,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
                 REQUEST_CODE_CART_DIGITAL -> {
                     if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!message.isNullOrEmpty()) renderErrorMessage(MessageErrorException(message))
+                        val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                            as Throwable
+                        if (!throwable.message.isNullOrEmpty())
+                            renderErrorMessage(throwable)
                     }
                 }
 
@@ -433,7 +434,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun renderErrorMessage(error: Throwable) {
         var errorThrowable = error
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
-            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+            errorThrowable = MessageErrorException(getString(
+                com.tokopedia.common_digital.R.string.digital_common_grpc_toaster))
         }
         Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
@@ -490,7 +492,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
         startActivityForResult(
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
-                        ClientNumberType.TYPE_INPUT_NUMERIC, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
+                        ClientNumberType.TYPE_INPUT_NUMERIC.value, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
     }
 
@@ -501,9 +503,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
-        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance.isNotEmpty()) {
-            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber,
-                    detailPassData.additionalETollBalance)
+        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance?.isNotEmpty() == true) {
+            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber
+                    ?: "",
+                    detailPassData.additionalETollBalance ?: "")
         } else {
             emoneyPdpHeaderView.configureCheckBalanceView()
         }
@@ -514,8 +517,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         showProducts()
         emoneyPdpProductWidget.showShimmering()
         emoneyBuyWidgetLayout.hide()
-        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero()
-                , prefix.key)
+        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero(), prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -585,7 +587,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
-            val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             emoneyPdpViewModel.digitalCheckoutPassData.categoryId = categoryId
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, emoneyPdpViewModel.digitalCheckoutPassData)
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)

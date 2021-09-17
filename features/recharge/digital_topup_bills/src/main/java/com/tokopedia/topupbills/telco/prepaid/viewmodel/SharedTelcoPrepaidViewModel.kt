@@ -3,12 +3,8 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -43,8 +39,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productAutoCheckout: LiveData<TelcoProduct>
         get() = _productAutoCheckout
 
-    private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
-    val favNumberSelected: LiveData<TopupBillsFavNumberItem>
+    private val _favNumberSelected = MutableLiveData<String>()
+    val favNumberSelected: LiveData<String>
         get() = _favNumberSelected
 
     private val _showTotalPrice = MutableLiveData<Boolean>()
@@ -83,8 +79,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _positionScrollItem.postValue(position)
     }
 
-    fun setFavNumberSelected(favNumber: TopupBillsFavNumberItem) {
-        _favNumberSelected.postValue(favNumber)
+    fun setFavNumberSelected(productId: String) {
+        _favNumberSelected.postValue(productId)
     }
 
     fun setVisibilityTotalPrice(show: Boolean) {
@@ -97,6 +93,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setSelectedFilter(filter: ArrayList<HashMap<String, Any>>) {
         _selectedFilter.postValue(filter)
+    }
+
+    fun clearCatalogProductList() {
+        _productList.value = Success(emptyList())
     }
 
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
@@ -121,7 +121,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
+                setFavNumberSelected(autoSelectProductId.toString())
             }
         }) {
             _loadingProductList.postValue(false)

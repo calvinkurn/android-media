@@ -54,6 +54,37 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             query
             text
           }
+          related {
+            relatedKeyword
+            position
+            otherRelated {
+                keyword
+                url
+                applink
+                product {
+                    id
+                    name
+                    price
+                    imageUrl
+                    url
+                    applink
+                    priceStr
+                    wishlist
+                    ratingAverage
+                    stock
+                    minOrder
+                    labelGroups {
+                        title
+                        position
+                        type
+                        url
+                    }
+                    shop {
+                        id
+                    }
+                }
+            }
+          }
           products {
             id
             imageUrl300
@@ -64,7 +95,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             originalPrice
             childs
             parentId
-            stock
+            maxOrder
             ratingAverage
             minOrder
             source_engine

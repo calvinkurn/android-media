@@ -54,5 +54,14 @@ data class ChosenAddressListResponse(
         @SerializedName("longitude")
         var longitude: String = "",
         @SerializedName("is_state_chosen_address")
-        var isStateChosenAddress: Boolean = false
+        var isStateChosenAddress: Boolean = false,
+        @SerializedName("tokonow")
+        var tokonow: TokonowAddressList = TokonowAddressList()
+)
+
+data class TokonowAddressList(
+        @SerializedName("warehouse_id")
+        var warehouseId: Long = 0,
+        @SerializedName("coverage_label")
+        var coverageLabel: String = ""
 )

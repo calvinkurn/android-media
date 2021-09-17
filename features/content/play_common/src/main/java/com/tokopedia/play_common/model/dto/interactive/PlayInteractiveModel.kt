@@ -12,6 +12,7 @@ data class PlayCurrentInteractiveModel(
         val type: InteractiveType = InteractiveType.Unknown,
         val title: String = "",
         val timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,
+        val endGameDelayInMs: Long = 0L,
 )
 
 enum class InteractiveType(val type: Int) {

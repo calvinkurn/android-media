@@ -105,7 +105,8 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_USERID, userData.getUserId())
                     .addContentItems(branchUniversalObjects)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL);
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
 
@@ -166,6 +167,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                 .setRevenue(0)
                 .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo);
@@ -201,6 +203,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
                 .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                 .addContentItems(buo);
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
@@ -227,6 +230,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
                 .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_FLIGHT)
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice());
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
@@ -243,6 +247,14 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
                 .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+        branchEvent.logEvent(context);
+        saveBranchEvent(branchEvent);
+    }
+
+    public static void sendSearchEvent(Context context, ArrayList<String> searchItems){
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
+                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
     }

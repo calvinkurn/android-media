@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewholder.ShowcaseProductPreviewViewHolder
@@ -67,7 +69,7 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         appendedProductList.remove(selectedProductList[position])
         selectedProductList.removeAt(position)
         notifyDataSetChanged()
-        if(deletedProductList.size > 0) {
+        if(deletedProductList.size.isMoreThanZero()) {
             listener.setupDeleteCounter(deletedProductList[0] as ShowcaseProduct)
             listener.showDeleteCounter()
         }
@@ -81,7 +83,7 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
             notifyDataSetChanged()
         }
         deletedProductList.clear()
-        if(deletedProductList.size == 0)
+        if(deletedProductList.size.isZero())
             listener.hideDeleteCounter()
     }
 

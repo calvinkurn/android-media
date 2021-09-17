@@ -35,6 +35,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     companion object {
         const val SECOND_FRAGMENT_TAG = "second"
+        const val DELAY_TIMER_IN_MILISECOND = 3000L
     }
 
     override fun onAttach(context: Context) {
@@ -71,7 +72,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
                     ?.navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
             }
             EspressoIdlingResource.decrement()
-        }, 3000)
+        }, DELAY_TIMER_IN_MILISECOND)
     }
 
     private fun setupIconImage(view: View) {

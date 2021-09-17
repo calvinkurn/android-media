@@ -15,7 +15,7 @@ import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 /**
@@ -37,6 +37,7 @@ class ShopHomeSliderBannerViewHolder(
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
     private var carouselData: ArrayList<Any>? = null
+    private var textViewTitle: Typography? = view?.findViewById(R.id.textViewTitle)
 
     private var itmListener = { view: View, data: Any ->
         val img: ShopCarouselBannerImageUnify = view.findViewById(R.id.imageCarousel)
@@ -116,7 +117,7 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {

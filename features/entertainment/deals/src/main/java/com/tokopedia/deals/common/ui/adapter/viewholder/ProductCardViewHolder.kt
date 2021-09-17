@@ -10,7 +10,6 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_deals_product_card.view.*
 
 class ProductCardViewHolder(itemView: View, private val productCardListener: ProductCardListener) :
@@ -28,14 +27,20 @@ class ProductCardViewHolder(itemView: View, private val productCardListener: Pro
             }
             txt_product_card_title.text = productCardDataView.title
 
-            if (productCardDataView.discount.isNotEmpty()) {
+            if (productCardDataView.discount.isNotEmpty() && !productCardDataView.discount.startsWith(ZERO_PERCENT)) {
+                label_product_card_discount.show()
                 label_product_card_discount.setLabel(productCardDataView.discount)
+            } else {
+                label_product_card_discount.hide()
+            }
+
+            if(productCardDataView.oldPrice.isNotEmpty() && productCardDataView.oldPrice != productCardDataView.price){
+                txt_product_card_old_price.show()
                 txt_product_card_old_price.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = productCardDataView.oldPrice
                 }
             } else {
-                label_product_card_discount.hide()
                 txt_product_card_old_price.hide()
             }
 
@@ -54,5 +59,6 @@ class ProductCardViewHolder(itemView: View, private val productCardListener: Pro
 
     companion object {
         val LAYOUT = R.layout.item_deals_product_card
+        private const val ZERO_PERCENT = "0%"
     }
 }
