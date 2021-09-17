@@ -21,7 +21,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -155,19 +154,16 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getCentralizedUserAssetConfig(entryPoint: String) {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.main, block = {
             val result = getCentralizedUserAssetConfigUseCase(entryPoint)
-
-            withContext(dispatcher.main) {
-                _centralizedUserAssetConfig.value = Success(result.data)
-            }
+            _centralizedUserAssetConfig.value = Success(result.data)
         }, onError = {
             _centralizedUserAssetConfig.value = Fail(it)
         })
     }
 
-    fun getBalanceAndPoint(walletId: String) {
-        launchCatchError(block = {
+    fun getBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
+        launchCatchError(context=dispatcher.main, block = {
             val result = when (walletId) {
                 AccountConstants.WALLET.GOPAY -> {
                     getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
@@ -182,7 +178,17 @@ class HomeAccountUserViewModel @Inject constructor(
                     getTokopointsBalanceAndPointUseCase(Unit)
                 }
                 AccountConstants.WALLET.SALDO -> {
-                    getSaldoBalanceUseCase(Unit)
+                    BalanceAndPointDataModel().apply {
+                        assetConfig?.let {
+                            this.data.id = assetConfig.id
+                            this.data.title = assetConfig.title
+                            this.data.subtitle = assetConfig.subtitle
+                            this.data.icon = assetConfig.icon
+                            this.data.applink = assetConfig.applink
+                            this.data.weblink = assetConfig.weblink
+                            this.data.isActive = assetConfig.isActive
+                        }
+                    }
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     getCoBrandCCBalanceAndPointUseCase(Unit)
@@ -192,12 +198,10 @@ class HomeAccountUserViewModel @Inject constructor(
                 }
             }
 
-            withContext(dispatcher.main) {
-                if (result.data.id.isNotEmpty()) {
-                    _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
-                } else {
-                    _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
-                }
+            if (result.data.id.isNotEmpty()) {
+                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
+            } else {
+                _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
             }
         }, onError = {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
@@ -205,13 +209,11 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getGopayWalletEligible() {
-        launchCatchError(block = {
+        launchCatchError(context=dispatcher.main, block = {
             val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
             val result = getWalletEligibleUseCase(params)
 
-            withContext(dispatcher.main) {
-                _walletEligible.value = Success(result.data)
-            }
+            _walletEligible.value = Success(result.data)
         }, onError = {
             _walletEligible.value = Fail(it)
         })

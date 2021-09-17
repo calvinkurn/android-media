@@ -567,12 +567,19 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         displayBalanceAndPointLocalLoad(false)
         val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id == AccountConstants.WALLET.GOPAY) {
-                tempAssetConfig = it
-                viewModel.getGopayWalletEligible()
-            } else {
-                balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
-                viewModel.getBalanceAndPoint(it.id)
+            when (it.id) {
+                AccountConstants.WALLET.GOPAY -> {
+                    tempAssetConfig = it
+                    viewModel.getGopayWalletEligible()
+                }
+                AccountConstants.WALLET.SALDO -> {
+                    viewModel.getBalanceAndPoint(it.id, it)
+                    balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
+                }
+                else -> {
+                    viewModel.getBalanceAndPoint(it.id)
+                    balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
+                }
             }
         }
         balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
@@ -600,12 +607,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         if (walletappWalletEligibility.data.isEligible) {
             tempAssetConfig?.let {
                 balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-                balanceAndPointAdapter?.addItem(
-                    BALANCE_AND_POINT_LEFT_INDEX,
-                    UiModelMapper.getBalanceAndPointUiModel(it)
-                )
                 viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
             }
+        } else {
+            balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
         }
     }
 
@@ -642,27 +647,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onBalanceAndPointErrorClicked() {
         displayBalanceAndPointLocalLoad(false)
-//        balanceAndPointAdapter?.displayShimmer()
-//        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
-
-
-        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(
-            listOf(
-                BalanceAndPointUiModel(
-                    AccountConstants.WALLET.OVO,
-                    "Aktifkan",
-                    "OVO",
-                    AccountConstants.Url.OVO_ICON
-                ),
-                BalanceAndPointUiModel(
-                    AccountConstants.WALLET.SALDO,
-                    "Rp100.000.000",
-                    "Saldo Tokopedia",
-                    AccountConstants.Url.SALDO_ICON
-                ),
-                BalanceAndPointUiModel(AccountConstants.WALLET.TOKOPOINT, isFailed = true),
-            )
-        )
+        balanceAndPointAdapter?.displayShimmer()
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
     }
 
     private fun onFailGetData() {

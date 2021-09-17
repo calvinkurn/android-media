@@ -5,28 +5,28 @@ import com.google.gson.annotations.SerializedName
 
 class BalanceAndPointDataModel {
     @SerializedName("walletappGetAccountBalance") @Expose
-    val data: WalletappGetAccountBalance = WalletappGetAccountBalance()
+    var data: WalletappGetAccountBalance = WalletappGetAccountBalance()
 }
 
 data class WalletappGetAccountBalance(
     @SerializedName("id") @Expose
-    val id: String = "",
+    var id: String = "",
     @SerializedName("title") @Expose
-    val title: String = "",
+    var title: String = "",
     @SerializedName("subtitle") @Expose
-    val subtitle: String = "",
+    var subtitle: String = "",
     @SerializedName("subtitle_color") @Expose
-    val subtitleColor: String = "",
+    var subtitleColor: String = "",
     @SerializedName("applink") @Expose
-    val applink: String = "",
+    var applink: String = "",
     @SerializedName("weblink") @Expose
-    val weblink: String = "",
+    var weblink: String = "",
     @SerializedName("icon") @Expose
-    val icon: String = "",
+    var icon: String = "",
     @SerializedName("is_active") @Expose
-    val isActive: Boolean = false,
+    var isActive: Boolean = false,
     @SerializedName("is_hidden") @Expose
-    val isHidden: Boolean = false,
+    var isHidden: Boolean = false,
     @SerializedName("is_show") @Expose
-    val isShow: Boolean = false
+    var isShow: Boolean = false
 )

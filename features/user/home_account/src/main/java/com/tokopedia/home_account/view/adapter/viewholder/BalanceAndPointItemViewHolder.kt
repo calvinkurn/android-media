@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.HomeAccountItemBalanceAndPointBinding
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
@@ -12,6 +11,7 @@ import com.tokopedia.home_account.view.listener.BalanceAndPointListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.regex.Pattern
 
 class BalanceAndPointItemViewHolder(
     private val balanceAndPointListener: BalanceAndPointListener,
@@ -23,7 +23,7 @@ class BalanceAndPointItemViewHolder(
     fun bind(item: BalanceAndPointUiModel?) {
         setImage(item?.urlImage)
         setTitleText(item?.isFailed.orFalse(), item?.title)
-        setSubtitleText(item?.subtitle)
+        setSubtitleText(item)
         setClickLitener(
             item?.id,
             item?.applink,
@@ -47,26 +47,38 @@ class BalanceAndPointItemViewHolder(
 
         binding?.homeAccountItemBalanceAndPointTitle?.text = title
 
-        when (text) {
-            getString(R.string.home_account_balance_and_point_activate),
-            getString(R.string.home_account_balance_and_point_add_point),
-            getString(R.string.home_account_balance_and_point_retry) -> {
-                setTitleToGreen()
-            }
+        if(!checkAnyNumbers(text?: "")) {
+            setTitleToGreen()
         }
+    }
+
+    private fun checkAnyNumbers(text: String): Boolean {
+        val pattern = Pattern.compile(NUMBER_ONLY_REGEX)
+        val matcher = pattern.matcher(text)
+        return matcher.find()
     }
 
     private fun setTitleToGreen() {
         binding?.homeAccountItemBalanceAndPointTitle?.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                R.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
             )
         )
     }
 
-    private fun setSubtitleText(text: String?) {
-        binding?.homeAccountItemBalanceAndPointSubtitle?.text = text
+    private fun setSubtitleText(item: BalanceAndPointUiModel?) {
+        binding?.homeAccountItemBalanceAndPointSubtitle?.text = if(item?.isFailed == true) {
+            item.title
+        } else {
+            item?.subtitle
+        }
+        binding?.homeAccountItemBalanceAndPointSubtitle?.setTextColor(
+            ContextCompat.getColor(
+                view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700
+            )
+        )
     }
 
     private fun setClickLitener(
@@ -85,5 +97,7 @@ class BalanceAndPointItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_account_item_balance_and_point
+
+        private const val NUMBER_ONLY_REGEX = "\\d"
     }
 }

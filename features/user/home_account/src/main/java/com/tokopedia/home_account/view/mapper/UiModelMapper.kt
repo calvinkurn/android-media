@@ -1,8 +1,10 @@
 package com.tokopedia.home_account.view.mapper
 
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.AssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
+import com.tokopedia.home_account.view.adapter.uimodel.WalletShimmeringUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 
 object UiModelMapper {
@@ -32,14 +34,32 @@ object UiModelMapper {
     }
 
     fun getWalletUiModel(walletappGetAccountBalance: WalletappGetAccountBalance): WalletUiModel {
+        val subTitle = if (walletappGetAccountBalance.isActive) {
+            "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
+        } else {
+            walletappGetAccountBalance.subtitle
+        }
+
         return WalletUiModel(
             id = walletappGetAccountBalance.id,
             title = walletappGetAccountBalance.title,
-            subtitle = walletappGetAccountBalance.subtitle,
+            subtitle = subTitle,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
             weblink = walletappGetAccountBalance.weblink,
             isActive = walletappGetAccountBalance.isActive
+        )
+    }
+
+    fun getWalletShimmeringUiModel(assetConfig: AssetConfig): WalletShimmeringUiModel {
+        return WalletShimmeringUiModel(
+            id = assetConfig.id,
+            title = assetConfig.title,
+            subtitle = assetConfig.subtitle,
+            urlImage = assetConfig.icon,
+            applink = assetConfig.applink,
+            weblink = assetConfig.weblink,
+            isActive = assetConfig.isActive
         )
     }
 
@@ -53,5 +73,23 @@ object UiModelMapper {
             weblink = assetConfig.weblink,
             isActive = assetConfig.isActive
         )
+    }
+
+    fun getSaldoUiModel(walletShimmeringUiModel: WalletShimmeringUiModel): WalletUiModel {
+        return WalletUiModel().apply {
+            if (walletShimmeringUiModel.id == AccountConstants.WALLET.SALDO) {
+                title = walletShimmeringUiModel.subtitle
+                subtitle = walletShimmeringUiModel.title
+            } else {
+                title = walletShimmeringUiModel.title
+                subtitle = walletShimmeringUiModel.subtitle
+            }
+
+            id = walletShimmeringUiModel.id
+            urlImage = walletShimmeringUiModel.urlImage
+            applink = walletShimmeringUiModel.applink
+            weblink = walletShimmeringUiModel.weblink
+            isActive = walletShimmeringUiModel.isActive
+        }
     }
 }

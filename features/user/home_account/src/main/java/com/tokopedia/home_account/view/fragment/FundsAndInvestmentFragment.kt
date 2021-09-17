@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS_AND_INVESTMENT
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
@@ -33,7 +32,6 @@ import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.UiModelMapper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -140,18 +138,15 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         hideLoading()
         addTitleView()
-        var fundAndInvestmentPlaceholders = mutableListOf<WalletUiModel>()
         centralizedUserAssetConfig.assetConfigVertical.forEach {
-            fundAndInvestmentPlaceholders.add(UiModelMapper.getWalletUiModel(it))
+            adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
             viewModel.getBalanceAndPoint(it.id)
         }
-        addWalletView(fundAndInvestmentPlaceholders)
         if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
             addSubtitleView()
-            fundAndInvestmentPlaceholders = mutableListOf()
+            val fundAndInvestmentPlaceholders = mutableListOf<WalletUiModel>()
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
                 fundAndInvestmentPlaceholders.add(UiModelMapper.getWalletUiModel(it))
-                viewModel.getBalanceAndPoint(it.id)
             }
             addWalletView(fundAndInvestmentPlaceholders)
         }
@@ -207,7 +202,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun onRefresh() {
         showLoading()
-        adapter?.clearAllItems()
+        adapter?.clearAllItemsAndAnimateChanges()
         viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
     }
 
