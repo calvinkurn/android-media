@@ -305,8 +305,11 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
                     .addIcon(IconList.ID_CART) {}
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
         }
-        navToolbar?.setIcon(iconBuilder)
-        navToolbar?.setToolbarTitle(if (setDefaultPageTitle().isNotEmpty()) setDefaultPageTitle() else PAGE_TITLE_RECOM_DEFAULT)
+        navToolbar?.let {
+            it.setShowShadowEnabled(true)
+            it.setIcon(iconBuilder)
+            it.setToolbarTitle(if (setDefaultPageTitle().isNotEmpty()) setDefaultPageTitle() else PAGE_TITLE_RECOM_DEFAULT)
+        }
     }
 
     private fun initChooseAddress() {
