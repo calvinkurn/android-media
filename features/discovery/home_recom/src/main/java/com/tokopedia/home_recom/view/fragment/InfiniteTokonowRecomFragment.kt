@@ -137,7 +137,7 @@ class InfiniteTokonowRecomFragment :
             enableLoadMore()
             resetLoadMore()
         }
-        viewModel.getRecommendationFirstPage(pageName, productId, queryParam)
+        viewModel.getRecommendationFirstPage(pageName, productId, queryParam, forceRefresh)
     }
 
     override fun loadMoreData(pageNumber: Int) {
@@ -287,6 +287,9 @@ class InfiniteTokonowRecomFragment :
             it?.let {
                 disableLoadMore()
                 when {
+                    it.isForceRefreshAndError -> {
+                        showErrorSnackbar(it.errorThrowable)
+                    }
                     it.isEmptyFirstPage -> {
                         showEmptyPage()
                     }
@@ -365,6 +368,10 @@ class InfiniteTokonowRecomFragment :
         showToastErrorWithAction(throwable, View.OnClickListener {
             loadMoreData(pageNumber)
         })
+    }
+
+    private fun showErrorSnackbar(throwable: Throwable) {
+        showToastError(throwable)
     }
 
     private fun goToLogin() {

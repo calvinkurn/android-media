@@ -81,21 +81,21 @@ class InfiniteRecomViewModel @Inject constructor(
     private val _refreshMiniCartDataTrigger = SingleLiveEvent<Boolean>()
     val refreshMiniCartDataTrigger: LiveData<Boolean> get() = _refreshMiniCartDataTrigger
 
-    fun getRecommendationFirstPage(pageName: String, productId: String, queryParam: String) {
+    fun getRecommendationFirstPage(pageName: String, productId: String, queryParam: String, forceRefresh: Boolean) {
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
-                _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
+                _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true, isForceRefreshAndError = forceRefresh))
             } else {
                 _recommendationWidgetData.postValue(result[0])
                 if (result[0].recommendationItemList.isEmpty()) {
-                    _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
+                    _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true, isForceRefreshAndError = forceRefresh))
                 } else {
                     _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
                 }
             }
         }) {
-            _errorGetRecomData.postValue(RecomErrorResponse(pageNumber = 1, errorThrowable = it, isErrorFirstPage = true))
+            _errorGetRecomData.postValue(RecomErrorResponse(pageNumber = 1, errorThrowable = it, isErrorFirstPage = true, isForceRefreshAndError = forceRefresh))
         }
     }
 

@@ -8,5 +8,6 @@ data class RecomErrorResponse(
         val errorThrowable: Throwable = Throwable(),
         val isEmptyFirstPage: Boolean = false,
         val isErrorFirstPage: Boolean = false,
-        val isEmptyNextPage: Boolean = false
+        val isEmptyNextPage: Boolean = false,
+        val isForceRefreshAndError: Boolean = false
 )
