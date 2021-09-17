@@ -745,6 +745,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onDestroyView() {
         mPresenter.onDestroy();
         mPresenter2.onDestroy();
+        mPresenter.detachView();
+        mPresenter2.detachView();
         super.onDestroyView();
     }
 
