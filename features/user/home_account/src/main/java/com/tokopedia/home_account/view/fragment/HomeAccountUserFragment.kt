@@ -446,22 +446,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     override fun onClickBalanceAndPoint(
         id: String,
         applink: String?,
-        weblink: String?,
         isFailed: Boolean,
         isActive: Boolean
     ) {
         homeAccountAnalytic.eventClickAccountPage(id, isActive, isFailed)
         if (isFailed) {
             viewModel.getBalanceAndPoint(id)
-        } else {
-            when {
-                !applink.isNullOrEmpty() -> {
-                    goToApplink(applink)
-                }
-                !weblink.isNullOrEmpty() -> {
-                    goToWebview(weblink)
-                }
-            }
+        } else if (!applink.isNullOrEmpty()) {
+            goToApplink(applink)
         }
     }
 

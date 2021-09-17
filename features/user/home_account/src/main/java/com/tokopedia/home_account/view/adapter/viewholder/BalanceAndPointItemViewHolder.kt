@@ -27,7 +27,6 @@ class BalanceAndPointItemViewHolder(
         setClickLitener(
             item?.id,
             item?.applink,
-            item?.weblink,
             item?.isFailed.orFalse(),
             item?.isActive.orTrue(),
             balanceAndPointListener
@@ -84,13 +83,12 @@ class BalanceAndPointItemViewHolder(
     private fun setClickLitener(
         id: String?,
         applink: String?,
-        weblink: String?,
         isFailed: Boolean,
         isActive: Boolean,
         listener: BalanceAndPointListener
     ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, weblink, isFailed, isActive) }
+            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, isFailed, isActive) }
         }
     }
 

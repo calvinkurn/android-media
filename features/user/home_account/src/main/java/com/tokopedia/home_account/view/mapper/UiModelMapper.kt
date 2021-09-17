@@ -46,7 +46,6 @@ object UiModelMapper {
             subtitle = subTitle,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
-            weblink = walletappGetAccountBalance.weblink,
             isActive = walletappGetAccountBalance.isActive
         )
     }
@@ -70,7 +69,6 @@ object UiModelMapper {
             subtitle = assetConfig.subtitle,
             urlImage = assetConfig.icon,
             applink = assetConfig.applink,
-            weblink = assetConfig.weblink,
             isActive = assetConfig.isActive
         )
     }
@@ -88,7 +86,6 @@ object UiModelMapper {
             id = walletShimmeringUiModel.id
             urlImage = walletShimmeringUiModel.urlImage
             applink = walletShimmeringUiModel.applink
-            weblink = walletShimmeringUiModel.weblink
             isActive = walletShimmeringUiModel.isActive
         }
     }

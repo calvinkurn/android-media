@@ -87,25 +87,12 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         homeAccountAnalytic.eventViewAssetPage()
     }
 
-    override fun onClickWallet(
-        id: String,
-        applink: String?,
-        weblink: String?,
-        isFailed: Boolean,
-        isActive: Boolean
-    ) {
+    override fun onClickWallet(id: String, applink: String?, isFailed: Boolean, isActive: Boolean) {
         homeAccountAnalytic.eventClickAssetPage(id, isActive, isFailed)
         if (isFailed) {
             viewModel.getBalanceAndPoint(id)
-        } else {
-            when {
-                !applink.isNullOrEmpty() -> {
-                    goToApplink(applink)
-                }
-                !weblink.isNullOrEmpty() -> {
-                    goToWebview(weblink)
-                }
-            }
+        } else if (!applink.isNullOrEmpty()) {
+            goToApplink(applink)
         }
     }
 

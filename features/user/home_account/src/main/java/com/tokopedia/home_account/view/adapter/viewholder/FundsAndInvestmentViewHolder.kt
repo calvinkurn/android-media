@@ -29,7 +29,6 @@ class FundsAndInvestmentViewHolder(
         setAction(item?.isFailed.orFalse(), item?.isActive.orTrue())
         setClickLitener(item?.id,
             item?.applink,
-            item?.weblink,
             item?.isFailed.orFalse(),
             item?.isActive.orTrue(),
             walletListener
@@ -79,13 +78,12 @@ class FundsAndInvestmentViewHolder(
 
     private fun setClickLitener(id: String?,
                                 applink: String?,
-                                weblink: String?,
                                 isFailed: Boolean,
                                 isActive: Boolean,
                                 listener: WalletListener
     ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickWallet(id, applink, weblink, isFailed, isActive) }
+            id?.let { id -> listener.onClickWallet(id, applink, isFailed, isActive) }
         }
     }
 
