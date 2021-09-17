@@ -62,7 +62,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityImagePreviewPdpBinding.inflate(layoutInflater)
+        binding = ActivityImagePreviewPdpBinding.bind(findViewById(R.id.imagePreviewPdpContainer))
 
         val extraData = intent?.extras
         if (extraData != null) {
