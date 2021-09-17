@@ -1488,7 +1488,8 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
             val currentVisibility = castView?.isHidden() ?: true
-            if(currentVisibility) analytic.impressCast()
+            if(currentVisibility)
+                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
 
             castView?.show()
         }
