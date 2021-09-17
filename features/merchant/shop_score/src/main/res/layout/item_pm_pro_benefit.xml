@@ -12,6 +12,7 @@
         android:id="@+id/iv_potential_pm_pro_benefit"
         android:layout_width="@dimen/width_img_benefit_pm_pro"
         android:layout_height="@dimen/height_img_benefit_pm_pro"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
