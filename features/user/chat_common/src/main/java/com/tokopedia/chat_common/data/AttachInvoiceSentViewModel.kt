@@ -13,28 +13,20 @@ class AttachInvoiceSentViewModel private constructor(
     builder: Builder
 ) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
-    var imageUrl: String? = null
-    var description: String? = null
-    var totalAmount: String? = null
-    var statusId: Int? = null
-    var status: String? = null
-    var invoiceId: String? = null
-    var invoiceUrl: String? = null
-    var createTime: String? = null
+    var imageUrl: String = builder.imageUrl
+    var description: String = builder.description
+    var totalAmount: String = builder.totalAmount
+    var statusId: Int = builder.statusId
+    var status: String = builder.status
+    var invoiceId: String = builder.invoiceId
+    var invoiceUrl: String = builder.invoiceUrl
+    var createTime: String = builder.createTime
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
     override val id: String get() = attachmentId
 
     init {
-        this.description = builder.description
-        this.imageUrl = builder.imageUrl
-        this.totalAmount = builder.totalAmount
-        this.statusId = builder.statusId
-        this.status = builder.status
-        this.invoiceId = builder.invoiceId
-        this.invoiceUrl = builder.invoiceUrl
-        this.createTime = builder.createTime
         if (!builder.needSync) {
             finishLoading()
         }
