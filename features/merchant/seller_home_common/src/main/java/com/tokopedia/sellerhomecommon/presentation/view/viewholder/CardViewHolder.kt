@@ -5,7 +5,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
@@ -15,8 +17,8 @@ import kotlinx.android.synthetic.main.shc_card_widget.view.*
  */
 
 class CardViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
@@ -89,8 +91,10 @@ class CardViewHolder(
         with(itemView) {
             if (element.appLink.isNotBlank()) {
                 val selectableItemBg = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
-                        selectableItemBg, true)
+                context.theme.resolveAttribute(
+                    android.R.attr.selectableItemBackground,
+                    selectableItemBg, true
+                )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
                 containerCard.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -114,6 +118,24 @@ class CardViewHolder(
                         listener.sendCardClickTracking(element)
                     }
                 }
+            }
+
+            showCardState(element.data)
+        }
+    }
+
+    private fun showCardState(data: CardDataUiModel?) {
+        with(itemView.imgShcCardState) {
+            when (data?.state) {
+                CardDataUiModel.State.DANGER -> {
+                    visible()
+                    loadImage(R.drawable.bg_shc_card_stata_danger)
+                }
+                CardDataUiModel.State.WARNING -> {
+                    visible()
+                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                }
+                CardDataUiModel.State.NORMAL -> gone()
             }
         }
     }
