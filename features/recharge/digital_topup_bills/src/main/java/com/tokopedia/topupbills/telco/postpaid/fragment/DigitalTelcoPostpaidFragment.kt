@@ -439,13 +439,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
-                    validatePhoneNumber(operatorData, postpaidClientNumberWidget)
+                    validatePhoneNumber(operatorData, postpaidClientNumberWidget, buyWidget)
                 }
             }
         } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
                 getString(R.string.telco_number_error_prefix_not_found)
             )
+            buyWidget.setBuyButtonState(false)
         }
     }
 

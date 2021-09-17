@@ -231,14 +231,12 @@ class TopupBillsFavoriteNumberFragment:
             commonTopupBillsAnalytics.eventImpressionFavoriteNumberEmptyState(
                     currentCategoryName, userSession.userId)
         }
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (numberListAdapter.visitables.isNotEmpty() &&
-                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
-            ) {
-                show()
-            } else {
-                hide()
-            }
+        if (numberListAdapter.visitables.isNotEmpty() &&
+            numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
+        ) {
+            savedNumberViewModel.setClueVisibility(true)
+        } else {
+            savedNumberViewModel.setClueVisibility(false)
         }
 
         if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -267,7 +265,7 @@ class TopupBillsFavoriteNumberFragment:
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
-                binding?.commonTopupbillsFavoriteNumberClue?.hide()
+                savedNumberViewModel.setClueVisibility(false)
             }
         }
     }
@@ -302,7 +300,7 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            binding?.commonTopupbillsFavoriteNumberClue?.show()
+            savedNumberViewModel.setClueVisibility(true)
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -311,7 +309,7 @@ class TopupBillsFavoriteNumberFragment:
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
             }
-            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+            savedNumberViewModel.setClueVisibility(false)
         }
     }
 

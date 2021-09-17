@@ -128,11 +128,11 @@ class TopupBillsContactListFragment:
         this.contacts = contacts
         if (this.contacts.isEmpty()) {
             contactListAdapter.setEmptyState()
-            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+            savedNumberViewModel.setClueVisibility(false)
         } else {
             contactListAdapter.setContacts(
                 CommonTopupBillsDataMapper.mapContactToDataView(this.contacts))
-            binding?.commonTopupbillsFavoriteNumberClue?.show()
+            savedNumberViewModel.setClueVisibility(true)
         }
     }
 
@@ -206,8 +206,10 @@ class TopupBillsContactListFragment:
 
         contactListAdapter.setContacts(
             CommonTopupBillsDataMapper.mapContactToDataView(searchClientNumbers))
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (searchClientNumbers.isEmpty()) hide() else show()
+        if (searchClientNumbers.isEmpty()) {
+            savedNumberViewModel.setClueVisibility(false)
+        } else {
+            savedNumberViewModel.setClueVisibility(true)
         }
     }
 

@@ -6,24 +6,12 @@
     android:orientation="vertical"
     android:background="@color/Unify_Background">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/common_topupbills_favorite_number_clue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/common_topup_fav_number_clue"
-        android:layout_margin="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        app:typographyType="heading_4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/common_topupbills_favorite_number_rv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/common_topupbills_favorite_number_clue"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

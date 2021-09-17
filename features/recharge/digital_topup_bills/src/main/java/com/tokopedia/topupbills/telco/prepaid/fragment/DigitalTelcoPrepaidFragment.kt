@@ -402,21 +402,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
-                validatePhoneNumber(operatorData, telcoClientNumberWidget)
+                validatePhoneNumber(operatorData, telcoClientNumberWidget, buyWidget)
 
                 // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
 //                hitTrackingForInputNumber(selectedOperator)
-                if (operatorId != selectedOperator.operator.id) {
-                    operatorId = selectedOperator.operator.id
-                    productId = 0
-                    sharedModelPrepaid.setVisibilityTotalPrice(false)
-                    telcoClientNumberWidget.run {
-                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
-                        clearErrorState()
-                    }
-                    renderProductViewPager()
-                    getProductListData()
+                operatorId = selectedOperator.operator.id
+                productId = 0
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
+                telcoClientNumberWidget.run {
+                    setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    clearErrorState()
                 }
+                renderProductViewPager()
+                getProductListData()
             }
         } catch (exception: NoSuchElementException) {
             operatorId = ""
@@ -425,6 +423,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 getString(R.string.telco_number_error_prefix_not_found),
                 true
             )
+            buyWidget.setBuyButtonState(false)
         }
     }
 
@@ -728,7 +727,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             Handler().run {
                 postDelayed({
                     val coachMarks = ArrayList<CoachMark2Item>()
-                    val sortFilterItems: LinearLayout? = telcoClientNumberWidget.findViewById(R.id.sort_filter_items)
+                    val sortFilterItems: LinearLayout? =
+                        telcoClientNumberWidget.findViewById(com.tokopedia.sortfilter.R.id.sort_filter_items)
                     val firstChip = sortFilterItems?.getChildAt(0)
 
                     if (firstChip != null) {

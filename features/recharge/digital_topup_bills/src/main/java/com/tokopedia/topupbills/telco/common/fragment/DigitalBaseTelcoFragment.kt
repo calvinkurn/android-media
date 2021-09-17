@@ -375,7 +375,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected fun validatePhoneNumber(
         operatorData: TelcoCatalogPrefixSelect,
-        clientNumberWidget: DigitalClientNumberWidget
+        clientNumberWidget: DigitalClientNumberWidget,
+        buyWidget: TopupBillsCheckoutWidget
     ) {
         phoneValidatorJob?.cancel()
         phoneValidatorJob = CoroutineScope(Dispatchers.Main).launch {
@@ -385,9 +386,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     .matcher(clientNumberWidget.getInputNumber()).matches()
                 if (!phoneIsValid) {
                     clientNumberWidget.setErrorInputNumber(validation.message)
+                    buyWidget.setBuyButtonState(false)
                     break
                 }
             }
+            buyWidget.setBuyButtonState(true)
         }
     }
 

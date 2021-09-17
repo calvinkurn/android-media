@@ -83,6 +83,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
         inputNumberField.clearIconView.setOnClickListener {
             inputNumberField.editText.setText("")
+            inputNumberField.isInputError = false
             inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
             imgOperator.hide()
@@ -158,6 +159,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     setContactName(number.clientName)
                 }
                 setInputNumber(number.clientNumber)
+                clearFocusAutoComplete()
             }
             sortFilter.add(sortFilterItem)
         }
@@ -179,10 +181,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         if (isMoreThanFive) {
             val chevronRight = IconUnify(
                 context, IconUnify.CHEVRON_RIGHT,
-                ContextCompat.getColor(context, R.color.Unify_GN500))
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             chevronRight.layoutParams = ViewGroup.LayoutParams(
-                resources.getDimensionPixelSize(R.dimen.layout_lvl3),
-                resources.getDimensionPixelSize(R.dimen.layout_lvl3)
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
             )
             sortFilterChip.chipItems?.last()?.refChipUnify?.addCustomView(chevronRight)
         }
