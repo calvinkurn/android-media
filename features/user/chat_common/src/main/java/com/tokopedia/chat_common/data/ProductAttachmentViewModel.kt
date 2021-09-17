@@ -34,8 +34,6 @@ open class ProductAttachmentViewModel protected constructor(
         private set
     var canShowFooter: Boolean = builder.canShowFooter
         private set
-    var productBlastId: Long = builder.blastId
-        private set
     var priceInt: Long = builder.priceInt
         private set
     var category: String = builder.category
@@ -68,7 +66,7 @@ open class ProductAttachmentViewModel protected constructor(
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
-    val stringBlastId: String get() = productBlastId.toString()
+    val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
@@ -156,14 +154,14 @@ open class ProductAttachmentViewModel protected constructor(
 
     fun getAtcEventLabel(): String {
         val atcEventLabel = when {
-            productBlastId == 0L -> "chat"
-            productBlastId == -1L -> "drop price alert"
-            productBlastId == -2L -> "limited stock"
-            productBlastId > 0 -> "broadcast"
+            blastId == 0L -> "chat"
+            blastId == -1L -> "drop price alert"
+            blastId == -2L -> "limited stock"
+            blastId > 0 -> "broadcast"
             else -> "chat"
         }
 
-        return "$atcEventLabel - $productBlastId"
+        return "$atcEventLabel - $blastId"
     }
 
     fun getAtcEventAction(): String {
@@ -219,7 +217,7 @@ open class ProductAttachmentViewModel protected constructor(
     }
 
     private fun getField(): String {
-        return if (productBlastId > 0) {
+        return if (blastId > 0) {
             "/broadcast"
         } else {
             "/chat"
@@ -231,7 +229,7 @@ open class ProductAttachmentViewModel protected constructor(
     }
 
     fun fromBroadcast(): Boolean {
-        return productBlastId != 0L
+        return blastId != 0L
     }
 
     fun isEligibleOcc(): Boolean {
@@ -296,8 +294,6 @@ open class ProductAttachmentViewModel protected constructor(
         var productImage: String = ""
             private set
         var canShowFooter: Boolean = false
-            private set
-        var productBlastId: Long = 0
             private set
         var priceInt: Long = 0
             private set
@@ -391,12 +387,6 @@ open class ProductAttachmentViewModel protected constructor(
 
         fun withCanShowFooter(canShowFooter: Boolean): Builder {
             this.canShowFooter = canShowFooter
-            return self()
-        }
-
-        //TODO: Soon removed
-        fun withProductBlastId(productBlastId: Long): Builder {
-            this.productBlastId = productBlastId
             return self()
         }
 

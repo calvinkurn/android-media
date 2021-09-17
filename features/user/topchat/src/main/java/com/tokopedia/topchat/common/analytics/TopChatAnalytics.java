@@ -593,7 +593,7 @@ public class TopChatAnalytics {
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_IMAGE_THUMBNAIL,
-                getField(String.valueOf(product.getProductBlastId())) + " - " + product.getProductBlastId()
+                getField(String.valueOf(product.getBlastId())) + " - " + product.getBlastId()
         );
     }
 
@@ -713,7 +713,7 @@ public class TopChatAnalytics {
     public void trackClickUpdateStock(ProductAttachmentViewModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +
-                product.getRemainingStock() + " - " + product.getProductBlastId() + " - " +
+                product.getRemainingStock() + " - " + product.getBlastId() + " - " +
                 product.getReplyId();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
