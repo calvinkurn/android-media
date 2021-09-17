@@ -63,11 +63,12 @@ class PdpOccJourneyTest {
         }
 
         orderSummaryPage {
+            Thread.sleep(5_000)
             Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             pay()
         }
 
-        assertThat(cassavaRule.validate("47"), hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
     }
 
     @After
@@ -77,7 +78,6 @@ class PdpOccJourneyTest {
     }
 
     companion object {
-
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_ID = "47"
     }
 }
