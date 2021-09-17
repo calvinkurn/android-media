@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model.raw
+package com.tokopedia.affiliate.model.raw.request
 
 data class GenerateLinkRequest(
         val input: Input

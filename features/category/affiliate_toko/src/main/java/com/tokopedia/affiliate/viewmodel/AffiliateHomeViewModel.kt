@@ -25,7 +25,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             progressBar.value = false
-            validateUserdata.value = affiliateValidateUseCase.validateUserStatus(userSessionInterface.userId, userSessionInterface.email)
+            validateUserdata.value = affiliateValidateUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             progressBar.value = false
             it.printStackTrace()

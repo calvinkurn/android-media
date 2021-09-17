@@ -65,8 +65,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
-            //TODO
-            affiliateHomeViewModel.getAffiliatePerformance()
+            affiliateHomeViewModel.getAffiliateValidateUser()
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
@@ -134,8 +133,12 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
-            if (validateUserdata.validateUserStatus.data.isEligible) {
+            if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 affiliateHomeViewModel.getAffiliatePerformance()
+            }else {
+                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it))
+                }
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
@@ -188,7 +191,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     override fun onProductClick(productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
-        // TODO Change
         if(status == 1){
             AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
         }else {

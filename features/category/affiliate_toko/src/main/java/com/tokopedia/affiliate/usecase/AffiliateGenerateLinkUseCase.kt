@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.usecase
 
 import com.tokopedia.affiliate.model.AffiliateGenerateLinkData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Generate_Link
-import com.tokopedia.affiliate.model.raw.GenerateLinkRequest
+import com.tokopedia.affiliate.model.raw.request.GenerateLinkRequest
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class AffiliateGenerateLinkUseCase @Inject constructor(
                 arrayListOf(GenerateLinkRequest.Input.Link(
                         PARAM_PDP,
                         "https://staging.tokopedia.com/newshopaja/jersey-mantap-asik",
-                        "",
+                        identifier ?: "",
                         0
                 ))))
     }

@@ -49,9 +49,9 @@ class AffiliatePromotionBSViewModelTest {
     @Test
     fun affiliateGenerateLink() {
         val data: AffiliateGenerateLinkData.AffiliateGenerateLink.Data = mockk(relaxed = true)
-        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any(), any()) } returns data
+        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any()) } returns data
 
-        affiliatePromotionBSViewModel.affiliateGenerateLink("", "", "")
+        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "", "")
 
         assertEquals(affiliatePromotionBSViewModel.generateLinkData().value, data)
         assertEquals(affiliatePromotionBSViewModel.loading().value, false)
@@ -61,9 +61,9 @@ class AffiliatePromotionBSViewModelTest {
     @Test
     fun affiliateGenerateLinkException() {
         val exception = "Generate Link Exception"
-        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any(), any()) } throws Exception(exception)
+        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any()) } throws Exception(exception)
 
-        affiliatePromotionBSViewModel.affiliateGenerateLink("", "", "")
+        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "", "")
 
         assertEquals(affiliatePromotionBSViewModel.getErrorMessage().value, exception)
         assertEquals(affiliatePromotionBSViewModel.loading().value, false)
