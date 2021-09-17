@@ -7,6 +7,5 @@ data class WalletShimmeringUiModel(
     var urlImage: String = "",
     var applink: String = "",
     var weblink: String = "",
-    var isFailed: Boolean = false,
     var isActive: Boolean = true
 )

@@ -25,7 +25,7 @@ class FundsAndInvestmentViewHolder(
     fun bind(item: WalletUiModel?) {
         setImage(item?.urlImage)
         setTitleText(item?.title)
-        setSubtitleText(item?.subtitle)
+        setSubtitleText(item?.subtitle, item?.isFailed.orFalse())
         setAction(item?.isFailed.orFalse(), item?.isActive.orTrue(), item?.isVertical.orFalse())
         setClickLitener(item?.id,
             item?.applink,
@@ -43,8 +43,10 @@ class FundsAndInvestmentViewHolder(
         binding?.title?.text = text
     }
 
-    private fun setSubtitleText(text: String?) {
-        if (text.isNullOrEmpty()) {
+    private fun setSubtitleText(text: String?, isFailed: Boolean) {
+        if (isFailed) {
+            binding?.subtitle?.text = getString(R.string.funds_and_investment_failed)
+        } else if (text.isNullOrEmpty()) {
             binding?.subtitle?.gone()
         } else {
             binding?.subtitle?.text = text

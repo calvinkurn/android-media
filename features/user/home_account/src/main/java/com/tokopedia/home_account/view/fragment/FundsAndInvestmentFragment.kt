@@ -139,7 +139,9 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfigVertical.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY && it.id != AccountConstants.WALLET.GOPAYLATER) {
+            if (it.id != AccountConstants.WALLET.GOPAY &&
+                it.id != AccountConstants.WALLET.GOPAYLATER &&
+                it.id != AccountConstants.WALLET.SALDO) {
                 viewModel.getBalanceAndPoint(it.id)
             }
         }
@@ -150,7 +152,11 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         addTitleView()
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
-                adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
+                if (it.id == AccountConstants.WALLET.SALDO) {
+                    adapter?.addItem(UiModelMapper.getWalletUiModel(it))
+                } else {
+                    adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
+                }
             }
         }
 

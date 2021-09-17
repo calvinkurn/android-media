@@ -73,20 +73,15 @@ object UiModelMapper {
         )
     }
 
-    fun getDefaultAssetConfigUiModel(walletShimmeringUiModel: WalletShimmeringUiModel): WalletUiModel {
-        return WalletUiModel().apply {
-            if (walletShimmeringUiModel.id == AccountConstants.WALLET.SALDO) {
-                title = walletShimmeringUiModel.subtitle
-                subtitle = walletShimmeringUiModel.title
-            } else {
-                title = walletShimmeringUiModel.title
-                subtitle = walletShimmeringUiModel.subtitle
-            }
-
-            id = walletShimmeringUiModel.id
-            urlImage = walletShimmeringUiModel.urlImage
-            applink = walletShimmeringUiModel.applink
-            isActive = walletShimmeringUiModel.isActive
-        }
+    fun getWalletUiModel(walletShimmeringUiModel: WalletShimmeringUiModel, isFailed: Boolean): WalletUiModel {
+        return WalletUiModel(
+            id = walletShimmeringUiModel.id,
+            title = walletShimmeringUiModel.title,
+            subtitle = walletShimmeringUiModel.subtitle,
+            urlImage = walletShimmeringUiModel.urlImage,
+            applink = walletShimmeringUiModel.applink,
+            isActive = walletShimmeringUiModel.isActive,
+            isFailed = isFailed
+        )
     }
 }

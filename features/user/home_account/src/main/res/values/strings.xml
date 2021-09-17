@@ -106,6 +106,7 @@
     <string name="funds_and_investment_balance_and_points">Saldo &amp; Points</string>
     <string name="funds_and_investment_try_another">Cobain ini juga, yuk</string>
     <string name="funds_and_investment_actiivate">Aktifkan</string>
+    <string name="funds_and_investment_failed">Gagal memuat</string>
 
     <!--  Balance and Point  -->
     <string name="home_account_balance_and_point_title">Saldo &amp; Points</string>

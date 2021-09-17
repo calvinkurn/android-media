@@ -66,7 +66,7 @@ class HomeAccountFundsAndInvestmentAdapter(
                     if (it.id == id) {
                         val position = items.indexOf(it)
                         removeItemAt(position)
-                        addItem(position, UiModelMapper.getDefaultAssetConfigUiModel(it))
+                        addItem(position, UiModelMapper.getWalletUiModel(it, true))
                         notifyItemChanged(position)
                     }
                 }
