@@ -10,55 +10,55 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentModel
-import kotlinx.android.synthetic.main.item_flight_cancellation_attachment.view.*
+import com.tokopedia.flight.databinding.ItemFlightCancellationAttachmentBinding
 import java.io.File
 
 /**
  * @author by furqan on 20/07/2020
  */
-class FlightCancellationAttachmentViewHolder(itemView: View,
+class FlightCancellationAttachmentViewHolder(val binding: ItemFlightCancellationAttachmentBinding,
                                              private val listener: FlightCancellationAttachmentAdapterTypeFactory.AdapterInteractionListener,
                                              private val showChangeButton: Boolean)
-    : AbstractViewHolder<FlightCancellationAttachmentModel>(itemView) {
+    : AbstractViewHolder<FlightCancellationAttachmentModel>(binding.root) {
 
     override fun bind(element: FlightCancellationAttachmentModel) {
-        with(itemView) {
-            tv_filename.text = element.filename
-            tv_passenger_name.text = element.passengerName
+        with(binding) {
+            tvFilename.text = element.filename
+            tvPassengerName.text = element.passengerName
 
             if (element.filepath != null && element.filepath.isNotEmpty()) {
                 Glide.with(itemView.context)
                         .asBitmap()
                         .load(File((element.filepath)))
                         .centerCrop()
-                        .into(getRoundedImageViewTarget(iv_attachment))
+                        .into(getRoundedImageViewTarget(ivAttachment))
 
-                iv_attachment.setOnClickListener {
+                ivAttachment.setOnClickListener {
                     listener.viewImage(element.filepath)
                 }
 
                 resizeAttachmentTo60()
 
                 if (showChangeButton) {
-                    tv_change_image.visibility = View.VISIBLE
-                    tv_view_image.visibility = View.VISIBLE
+                    tvChangeImage.visibility = View.VISIBLE
+                    tvViewImage.visibility = View.VISIBLE
                 } else {
-                    tv_change_image.visibility = View.GONE
-                    tv_view_image.visibility = View.GONE
+                    tvChangeImage.visibility = View.GONE
+                    tvViewImage.visibility = View.GONE
                 }
 
-                tv_change_image.setOnClickListener {
+                tvChangeImage.setOnClickListener {
                     listener.onUploadAttachmentButtonClicked(adapterPosition)
                 }
 
-                image_container.setBackgroundResource(R.drawable.bg_flight_gray_rounded_stroke)
+                imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_stroke)
             } else {
-                iv_attachment.setOnClickListener {
+                ivAttachment.setOnClickListener {
                     listener.onUploadAttachmentButtonClicked(adapterPosition)
                 }
 
-                tv_change_image.visibility = View.GONE
-                image_container.setBackgroundResource(R.drawable.bg_flight_gray_rounded_dashed)
+                tvChangeImage.visibility = View.GONE
+                imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_dashed)
 
                 resizeAttachmentTo40()
             }
@@ -77,27 +77,27 @@ class FlightCancellationAttachmentViewHolder(itemView: View,
             }
 
     private fun resizeAttachmentTo60() {
-        with(itemView) {
-            iv_attachment.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.attachment_60)
-            iv_attachment.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.attachment_60)
-            iv_attachment.requestLayout()
+        with(binding) {
+            ivAttachment.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.attachment_60)
+            ivAttachment.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.attachment_60)
+            ivAttachment.requestLayout()
         }
     }
 
     private fun resizeAttachmentTo40() {
-        with(itemView) {
-            iv_attachment.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.attachment_40)
-            iv_attachment.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.attachment_40)
-            iv_attachment.requestLayout()
+        with(binding) {
+            ivAttachment.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.attachment_40)
+            ivAttachment.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.attachment_40)
+            ivAttachment.requestLayout()
         }
     }
 
     private fun renderFileName(element: FlightCancellationAttachmentModel) {
-        with(itemView) {
+        with(binding) {
             if (element.filename.isNotEmpty()) {
-                tv_filename.visibility = View.VISIBLE
+                tvFilename.visibility = View.VISIBLE
             } else {
-                tv_filename.visibility = View.GONE
+                tvFilename.visibility = View.GONE
             }
         }
     }

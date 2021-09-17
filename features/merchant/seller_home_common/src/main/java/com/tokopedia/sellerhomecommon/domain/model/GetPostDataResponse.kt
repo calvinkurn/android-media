@@ -62,6 +62,9 @@ data class PostItemDataModel(
         @SerializedName("stateMediaURL")
         @Expose
         val stateMediaUrl: String? = "",
+        @SerializedName("pinned")
+        @Expose
+        val isPinned: Boolean = false
 )
 
 data class PostCtaDataModel(
