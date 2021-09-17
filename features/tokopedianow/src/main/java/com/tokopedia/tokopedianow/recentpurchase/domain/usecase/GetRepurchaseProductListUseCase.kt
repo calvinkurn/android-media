@@ -56,6 +56,7 @@ class GetRepurchaseProductListUseCase @Inject constructor(
                     maxOrder
                     stock
                     category
+                    categoryID
                     labelGroup {
                       position
                       title

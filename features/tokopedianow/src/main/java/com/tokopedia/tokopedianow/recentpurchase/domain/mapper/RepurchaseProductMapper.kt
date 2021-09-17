@@ -8,7 +8,13 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 object RepurchaseProductMapper {
 
     fun List<RepurchaseProduct>.mapToProductListUiModel() = map {
-        RepurchaseProductUiModel(it.id, it.parentProductId, it.shop.id, createProductCardModel(it))
+        RepurchaseProductUiModel(
+            it.id,
+            it.parentProductId,
+            it.shop.id,
+            it.categoryId,
+            createProductCardModel(it)
+        )
     }
 
     private fun createProductCardModel(product: RepurchaseProduct): ProductCardModel {
@@ -19,7 +25,7 @@ object RepurchaseProductMapper {
                 discountPercentage = product.getDiscount(),
                 slashedPrice = product.slashedPrice,
                 formattedPrice = product.price,
-                hasAddToCartButton = false,
+                hasSimilarProductButton = product.isStockEmpty(),
                 labelGroupList = mapLabelGroup(product),
                 labelGroupVariantList = mapLabelGroupVariant(product),
                 variant = Variant()
@@ -31,7 +37,7 @@ object RepurchaseProductMapper {
                 discountPercentage = product.getDiscount(),
                 slashedPrice = product.slashedPrice,
                 formattedPrice = product.price,
-                hasAddToCartButton = true,
+                hasSimilarProductButton = product.isStockEmpty(),
                 labelGroupList = mapLabelGroup(product),
                 labelGroupVariantList = mapLabelGroupVariant(product),
                 nonVariant = NonVariant(
@@ -39,6 +45,12 @@ object RepurchaseProductMapper {
                     maxQuantity = product.maxOrder
                 )
             )
+        }.run {
+            if(product.isStockEmpty()) {
+                copy(variant = null, nonVariant = null)
+            } else {
+                this
+            }
         }
     }
 

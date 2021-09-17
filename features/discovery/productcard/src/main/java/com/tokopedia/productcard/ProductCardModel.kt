@@ -38,6 +38,7 @@ data class ProductCardModel (
         val labelGroupList: List<LabelGroup> = listOf(),
         val hasDeleteProductButton: Boolean = false,
         val hasAddToCartButton: Boolean = false,
+        val hasSimilarProductButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",

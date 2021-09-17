@@ -34,9 +34,12 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         findView<QuantityEditorUnify?>(R.id.quantityEditorNonVariant)
     }
     val buttonAddVariant by lazy { findView<UnifyButton?>(R.id.buttonAddVariant) }
+    val buttonSimilarProduct by lazy { findView<UnifyButton?>(R.id.buttonSeeSimilarProduct) }
+
     val textVariantQuantity by lazy { findView<Typography?>(R.id.textVariantQuantity) }
 
     var addToCartClickListener: ((View) -> Unit)? = null
+    var similarProductClickListener: ((View) -> Unit)? = null
     var addToCartNonVariantClickListener: ATCNonVariantListener? = null
 
     private val context = productCardView.context
@@ -56,6 +59,9 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
             productCardModel.hasAddToCartButton ->
                 buttonAddToCart?.configureButtonAddToCart()
+
+            productCardModel.hasSimilarProductButton ->
+                buttonSimilarProduct?.configureButtonSimilarProduct()
 
             else ->
                 buttonAddToCart?.gone()
@@ -85,6 +91,14 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     private fun UnifyButton.configureButtonAddToCart() {
         setOnClickListener {
             addToCartClickListener?.invoke(it)
+        }
+
+        show()
+    }
+
+    private fun UnifyButton.configureButtonSimilarProduct() {
+        setOnClickListener {
+            similarProductClickListener?.invoke(it)
         }
 
         show()
