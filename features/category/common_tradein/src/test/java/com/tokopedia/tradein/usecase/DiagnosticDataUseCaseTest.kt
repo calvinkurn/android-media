@@ -63,7 +63,7 @@ class DiagnosticDataUseCaseTest {
         /** Null params**/
         val nullVariables = diagnosticDataUseCase.createRequestParamsDeviceDiag(null, tradeInType)
 
-        assertEquals((nullVariables["params"] as DeviceDiagParams).productId, "")
+        assertEquals((nullVariables["params"] as DeviceDiagParams).productId, "0")
         assertEquals((nullVariables["params"] as DeviceDiagParams).deviceId, "")
         assertEquals((nullVariables["params"] as DeviceDiagParams).newPrice, 0)
         assertEquals((nullVariables["params"] as DeviceDiagParams).tradeInType, tradeInType)
