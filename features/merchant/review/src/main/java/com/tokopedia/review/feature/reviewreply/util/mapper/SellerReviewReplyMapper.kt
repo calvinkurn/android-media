@@ -54,7 +54,7 @@ object SellerReviewReplyMapper {
 
     fun mapToItemUnifyMenuReport(context: Context): ArrayList<ListItemUnify> {
         val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
-        val iconSize = 24.toPx()
+        val iconSize = ICON_SIZE.toPx()
 
         itemUnifyList.apply {
             val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)
@@ -74,4 +74,5 @@ object SellerReviewReplyMapper {
         return itemUnifyList
     }
 
+    const val ICON_SIZE = 24
 }
