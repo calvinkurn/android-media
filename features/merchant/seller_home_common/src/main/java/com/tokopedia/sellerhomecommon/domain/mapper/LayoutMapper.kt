@@ -368,6 +368,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
