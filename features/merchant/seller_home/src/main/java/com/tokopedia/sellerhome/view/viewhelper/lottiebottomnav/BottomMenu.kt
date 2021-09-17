@@ -9,6 +9,8 @@ data class BottomMenu(
         val title: String,
         val animName: Int? = null,
         val animToEnabledName: Int? = null,
+        val animDarkName: Int? = null,
+        val animDarkToEnabledName: Int? = null,
         val imageName: Int? = null,
         val imageEnabledName: Int? = null,
         val activeButtonColor: Int,
