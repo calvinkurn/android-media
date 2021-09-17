@@ -8,7 +8,6 @@ import android.os.Handler
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
@@ -24,7 +23,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -60,6 +58,7 @@ import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -324,14 +323,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         val cardValue = model.data?.value ?: "0"
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         SellerHomeTracking.sendClickCardEvent(
             model.dataKey,
-            model.data?.state.orEmpty(), model.data?.value ?: "0"
+            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
         )
     }
 
@@ -607,10 +606,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
-        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<TableWidgetUiModel>().map {
-            val postFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
-        }
+        val dataKeys: List<TableAndPostDataKey> =
+            widgets.filterIsInstance<TableWidgetUiModel>().map {
+                val postFilter =
+                    it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
+                return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
+            }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
         sellerHomeViewModel.getTableWidgetData(dataKeys)
     }
@@ -1034,22 +1035,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
-        val errorType =
-            when (throwable) {
-                is MessageErrorException -> null
-                is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
-                else -> GlobalError.SERVER_ERROR
-            }
+        val errorType: Int? = when (throwable) {
+            is MessageErrorException -> null
+            is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+            is EmptyLayoutException -> GlobalError.PAGE_NOT_FOUND
+            else -> GlobalError.SERVER_ERROR
+        }
 
-        if (errorType == null) {
-            sahGlobalError?.gone()
-            emptyState?.showMessageExceptionError(throwable)
-        } else {
-            sahGlobalError?.run {
-                setType(errorType)
-                visible()
+        when (errorType) {
+            null -> {
+                sahGlobalError?.gone()
+                emptyState?.showMessageExceptionError(throwable)
             }
-            emptyState?.gone()
+            GlobalError.PAGE_NOT_FOUND -> {
+                emptyState?.run {
+                    //emptyState?.setImageUrl()
+                    setTitle(throwable.message.orEmpty())
+                    setDescription("")
+                    setPrimaryCTAText("")
+                    visible()
+                }
+                sahGlobalError?.gone()
+            }
+            else -> {
+                sahGlobalError?.run {
+                    setType(errorType)
+                    visible()
+                }
+                emptyState?.gone()
+            }
         }
     }
 
