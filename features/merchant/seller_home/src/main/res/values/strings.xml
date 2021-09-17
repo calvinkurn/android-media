@@ -133,4 +133,7 @@
     <string name="shop_operational_hour_24_hour">24 Jam</string>
     <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
     <string name="sah_content_desc_image_operational_hour">image operational hour</string>
+    <string name="sah_share_action_copy_success">Teks berhasil disalin</string>
+    <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
 </resources>

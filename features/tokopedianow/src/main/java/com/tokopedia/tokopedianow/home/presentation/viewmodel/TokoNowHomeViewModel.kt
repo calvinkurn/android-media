@@ -243,12 +243,6 @@ class TokoNowHomeViewModel @Inject constructor(
                     setItemStateToLoading(item)
                     getLayoutComponentData(layout, warehouseId, localCacheModel)
 
-                    if (layout is HomeProductRecomUiModel || layout is TokoNowRecentPurchaseUiModel) {
-                        miniCartSimplifiedData?.let {
-                            setMiniCartAndProductQuantity(it)
-                        }
-                    }
-
                     val data = HomeLayoutListUiModel(
                         items = homeLayoutItemList,
                         state = TokoNowLayoutState.LOAD_MORE
@@ -463,7 +457,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val channelId = item.visitableId
             val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
-            homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+            homeLayoutItemList.mapGlobalHomeLayoutData(item, response, miniCartSimplifiedData)
         }) {
             val id = item.visitableId
             homeLayoutItemList.removeItem(id)
@@ -477,7 +471,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val response = getRecentPurchaseUseCase.execute(warehouseId)
             if(response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response)
+                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartSimplifiedData)
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }
