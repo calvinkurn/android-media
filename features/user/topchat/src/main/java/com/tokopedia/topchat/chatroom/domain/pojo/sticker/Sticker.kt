@@ -31,8 +31,10 @@ data class Sticker(
         val payload = WebSocketStickerPayload(
                 groupUUID, stickerUUID, imageUrl, intention
         )
+        // TODO: use real local_id
         val data = WebsocketAttachmentData(
                 message_id = messageId.toLongOrZero(),
+                local_id = "",
                 message = intention,
                 source = "inbox",
                 attachment_type = TYPE_STICKER,
