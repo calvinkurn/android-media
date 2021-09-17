@@ -22,7 +22,7 @@ class DisabledAccordionViewHolder(private val binding: ItemCartDisabledAccordion
         }
 
         itemView.setOnClickListener {
-            actionListener?.onAccordionClicked(data, binding.textAccordion.text.toString())
+            actionListener?.onToggleUnavailableItemAccordion(data, binding.textAccordion.text.toString())
         }
     }
 }

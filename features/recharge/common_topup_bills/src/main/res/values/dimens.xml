@@ -6,4 +6,6 @@
     <dimen name="input_field_info_icon_size">14dp</dimen>
 
     <dimen name="telco_promo_item_min_width">56dp</dimen>
+    <dimen name="common_topup_bills_ic_error_illustration_width">248dp</dimen>
+    <dimen name="common_topup_bills_ic_error_illustration_height">186dp</dimen>
 </resources>

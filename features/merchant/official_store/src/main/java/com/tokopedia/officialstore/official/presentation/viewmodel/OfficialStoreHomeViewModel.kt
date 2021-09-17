@@ -3,10 +3,15 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
+import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -16,8 +21,11 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
@@ -42,6 +50,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
+        private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
+        private val bestSellerMapper: BestSellerMapper,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -79,6 +90,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
+    val featuredShopResult: LiveData<Result<FeaturedShopDataModel>>
+        get() = _featuredShopResult
+    val _featuredShopResult by lazy { MutableLiveData<Result<FeaturedShopDataModel>>() }
+
+    val featuredShopRemove: LiveData<FeaturedShopDataModel>
+        get() = _featuredShopRemove
+    val _featuredShopRemove by lazy { MutableLiveData<FeaturedShopDataModel>() }
+
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
@@ -88,6 +107,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
+
+    private val _recomWidget = MutableLiveData<Result<BestSellerDataModel>>()
+    val recomWidget : LiveData<Result<BestSellerDataModel>>
+        get() = _recomWidget
 
     fun loadFirstData(category: Category?, location: String = "") {
         launchCatchError(block = {
@@ -160,9 +183,35 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
-            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+            val result = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
+            _officialStoreDynamicChannelResult.postValue(Success(result))
+            result.forEach {
+                //call external api
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
+                    getDisplayTopAdsHeader(FeaturedShopDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
+                }
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_BEST_SELLING){
+                    fetchRecomWidegtData(it.channel.pageName,  it.channel.widgetParam)
+                }
+            }
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun fetchRecomWidegtData(pageName: String, widgetParam: String) {
+        try {
+            val data = getRecommendationUseCaseCoroutine.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    queryParam = widgetParam
+                )
+            )
+            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
+            _recomWidget.value = Success(bestSellerDataModel)
+        } catch (t: Throwable) {
+            Fail(t)
         }
     }
 
@@ -224,6 +273,26 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
+    private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
+        launchCatchError(coroutineContext, block={
+            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+            val data = getDisplayHeadlineAds.executeOnBackground()
+            if(data.isEmpty()){
+                _featuredShopRemove.value = featuredShopDataModel
+            } else {
+                _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                        channelModel = featuredShopDataModel.channelModel.copy(
+                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                        ),
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page)
+                )
+            }
+        }){
+            _featuredShopRemove.value = featuredShopDataModel
+        }
+    }
+
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
     fun getUserId() = userSessionInterface.userId
@@ -234,5 +303,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         addWishListUseCase.unsubscribe()
         topAdsWishlishedUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
+        getDisplayHeadlineAds.cancelJobs()
     }
 }

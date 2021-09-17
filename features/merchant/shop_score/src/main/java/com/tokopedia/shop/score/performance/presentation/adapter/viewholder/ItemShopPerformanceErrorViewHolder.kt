@@ -12,7 +12,10 @@ import kotlinx.android.synthetic.main.item_shop_performance_error.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class ItemShopPerformanceErrorViewHolder(view: View, private val globalErrorListener: GlobalErrorListener): AbstractViewHolder<ItemShopPerformanceErrorUiModel>(view) {
+class ItemShopPerformanceErrorViewHolder(
+    view: View,
+    private val globalErrorListener: GlobalErrorListener
+) : AbstractViewHolder<ItemShopPerformanceErrorUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_shop_performance_error

@@ -3,7 +3,6 @@ package com.tokopedia.rechargegeneral.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
@@ -15,7 +14,6 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
-import timber.log.Timber
 
 /**
  * applink
@@ -43,7 +41,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     }
 
     override fun onBackPressed() {
-        (fragment as RechargeGeneralFragment).onBackPressed()
+        (fragment as? RechargeGeneralFragment)?.onBackPressed()
         super.onBackPressed()
     }
 

@@ -60,7 +60,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 .build()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent?.extras != null) {
             bundle.putAll(intent.extras)
@@ -100,7 +100,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                         }
                     }
                 }
-                REQUEST_CODE_LOGOUT -> gotoLogin(uri)
+                REQUEST_CODE_LOGOUT -> gotoLogin()
                 REQUEST_CODE_LOGIN -> gotoHome()
             }
         } else {
@@ -113,10 +113,8 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
     }
 
-    private fun isForceLogout(uri: Uri): Boolean {
-        val segment = uri.pathSegments[0]
-        return segment.contains(CLEAR_CACHE_PREFIX)
-    }
+    private fun isForceLogout(uri: Uri): Boolean =
+        uri.path?.contains(CLEAR_CACHE_PREFIX) == true
 
     private fun gotoLogout() {
         val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT)
@@ -125,17 +123,19 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         startActivityForResult(intent, REQUEST_CODE_LOGOUT)
     }
 
-    private fun gotoLogin(uri: Uri) {
-        val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
-        val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
-
+    private fun gotoLogin(uri: Uri? = null) {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-        if (!email.isNullOrEmpty()) {
-            intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
-            userSession.autofillUserData = decodeParam(email)
-        } else if (!phone.isNullOrEmpty()) {
-            intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
-            userSession.autofillUserData = decodeParam(phone)
+        if(uri != null) {
+            val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
+            val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
+
+            if (!email.isNullOrEmpty()) {
+                intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
+                userSession.autofillUserData = decodeParam(email)
+            } else if (!phone.isNullOrEmpty()) {
+                intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
+                userSession.autofillUserData = decodeParam(phone)
+            }
         }
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }

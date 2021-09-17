@@ -12,7 +12,7 @@ class TokoNowCategoryListViewModelTest: TokoNowCategoryListViewModelTestFixture(
 
         viewModelTokoNow.getCategoryList("1123")
 
-        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetCategoryListUseCaseCalled()
 
         val expectedResponse = CategoryListMapper.mapToUiModel(createCategoryList().data)
         verifyGetCategoryListResponseSuccess(expectedResponse)

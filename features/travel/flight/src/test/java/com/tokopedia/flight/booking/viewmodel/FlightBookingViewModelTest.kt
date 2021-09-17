@@ -1809,4 +1809,56 @@ class FlightBookingViewModelTest {
         assert(viewModel.tickerData.value is Fail)
     }
 
+
+    @Test
+    fun cancelVoucher_returnSucces(){
+        // given
+        val gqlResponse = GraphqlResponse(
+            mapOf<Type, Any>(
+                FlightCancelVoucher.Response::class.java to DUMMY_CANCEL_VOUCHER_SUCCESS
+            ),
+            mapOf(),
+            false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { gqlResponse }
+
+        //when
+        viewModel.onCancelAppliedVoucher("")
+
+        // then
+        assert(viewModel.errorCancelVoucher.value is Int)
+        viewModel.errorCancelVoucher.value shouldBe 0
+    }
+
+    @Test
+    fun cancelVoucher_returnSuccesbutFailedFromBE(){
+        // given
+        val gqlResponse = GraphqlResponse(
+            mapOf<Type, Any>(
+                FlightCancelVoucher.Response::class.java to DUMMY_CANCEL_VOUCHER_FAILED
+            ),
+            mapOf(),
+            false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { gqlResponse }
+
+        //when
+        viewModel.onCancelAppliedVoucher("")
+
+        // then
+        assert(viewModel.errorCancelVoucher.value is Int)
+        viewModel.errorCancelVoucher.value shouldBe R.string.flight_error_cancel_voucher
+    }
+
+
+    @Test
+    fun cancelVoucher_returnFailed(){
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+
+        //when
+        viewModel.onCancelAppliedVoucher("")
+
+        //then
+        assert(viewModel.errorCancelVoucher.value is Int)
+        viewModel.errorCancelVoucher.value shouldBe R.string.flight_error_cancel_voucher
+    }
 }

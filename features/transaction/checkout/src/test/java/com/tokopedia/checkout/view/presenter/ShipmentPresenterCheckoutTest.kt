@@ -507,8 +507,7 @@ class ShipmentPresenterCheckoutTest {
         val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
                 ShipmentCartItemModel().apply {
-                    cartItemModels = ArrayList<CartItemModel>()
-                    cartItemModels.add(
+                    cartItemModels = arrayListOf(
                             CartItemModel().apply {
                                 isError = false
                             }
@@ -517,8 +516,7 @@ class ShipmentPresenterCheckoutTest {
         )
         shipmentCartItemModelList.add(
                 ShipmentCartItemModel().apply {
-                    cartItemModels = ArrayList<CartItemModel>()
-                    cartItemModels.add(
+                    cartItemModels = arrayListOf(
                             CartItemModel().apply {
                                 isError = true
                             }
@@ -554,8 +552,7 @@ class ShipmentPresenterCheckoutTest {
         val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
                 ShipmentCartItemModel().apply {
-                    cartItemModels = ArrayList<CartItemModel>()
-                    cartItemModels.add(
+                    cartItemModels = arrayListOf(
                             CartItemModel().apply {
                                 isError = false
                             }
@@ -675,7 +672,7 @@ class ShipmentPresenterCheckoutTest {
         verifyOrder {
             view.setHasRunningApiCall(false)
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
-            analyticsPurchaseProtection.eventClickOnBuy(any())
+            analyticsPurchaseProtection.eventClickOnBuy(any(), any())
             view.renderCheckoutCartSuccess(any())
         }
     }

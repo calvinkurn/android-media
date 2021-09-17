@@ -46,7 +46,7 @@
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@id/view_recharge_home_single_banner_image"
             app:layout_constraintLeft_toLeftOf="@id/view_recharge_home_single_banner_image"
-            app:typographyType="heading_3" />
+            app:typographyType="heading_4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

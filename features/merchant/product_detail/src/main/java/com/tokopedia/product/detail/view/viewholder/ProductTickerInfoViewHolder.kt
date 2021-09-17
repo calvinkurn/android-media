@@ -50,7 +50,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
             showComponent()
             setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
-        } else if (element.isOos()) {
+        } else if (element.isOos() && !element.isProductParent) {
             showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis), element.impressHolder)
         } else if (element.isProductInactive()) {
@@ -74,11 +74,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 addImpressionListener(statusMessage, statusTitle, impressHolder)
             }
             ShopStatusDef.CLOSED -> {
-                val openDate = closedInfo?.closeDetail?.openDateUnixUtc.toDateId("EEEE, dd MMM yyyy")
-                val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
-                val statusTitle = getStringRes(R.string.ticker_title_shop_close)
-                addImpressionListener(statusMessage, statusTitle, impressHolder)
-                renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
+                renderShopClosed(closedInfo, impressHolder)
             }
             ShopStatusDef.MODERATED_PERMANENTLY, ShopStatusDef.MODERATED -> {
                 val statusMessage = if (listener.isOwner()) getStringRes(R.string.ticker_desc_shop_moderated_seller) else getStringRes(R.string.ticker_desc_shop_moderated_buyer)
@@ -97,6 +93,24 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                         ?: "", null)
             }
         }
+    }
+
+    private fun renderShopClosed(closedInfo: ShopInfo.ClosedInfo?, impressHolder: ImpressHolder) {
+        val openDateUnix = closedInfo?.closeDetail?.openDateUnixUtc
+        var statusTitle = ""
+        var statusMessage = ""
+        if (openDateUnix == null || openDateUnix == "0") {
+            statusTitle = getStringRes(R.string.ticker_title_shop_holiday)
+            statusMessage = getStringRes(R.string.ticker_desc_shop_holiday)
+            renderShopTicker(statusTitle, statusMessage, null)
+        } else {
+            val openDate = closedInfo?.closeDetail?.openDateUnixUtc.toDateId("EEEE, dd MMM yyyy")
+            statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
+            statusTitle = getStringRes(R.string.ticker_title_shop_close)
+            renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
+        }
+
+        addImpressionListener(statusMessage, statusTitle, impressHolder)
     }
 
     private fun renderOutOfStockTicker(tickerDescription: String, tickerTitle: String, impressHolder: ImpressHolder) {

@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemOrderListLinearLayout : LinearLayout {
@@ -60,8 +60,8 @@ class ItemOrderListLinearLayout : LinearLayout {
     }
 
     fun bindItem(
-            order: Card,
-            onClick: () -> Unit
+        order: OrderWidgetUiModel,
+        onClick: () -> Unit
     ) {
         bindIcon(order)
         bindTitle(order)
@@ -69,7 +69,7 @@ class ItemOrderListLinearLayout : LinearLayout {
         bindClick(order, onClick)
     }
 
-    private fun bindIcon(order: Card) {
+    private fun bindIcon(order: OrderWidgetUiModel) {
         val iconImage = order.icon
         if (iconImage.isNotEmpty()) {
             icon?.show()
@@ -79,11 +79,11 @@ class ItemOrderListLinearLayout : LinearLayout {
         }
     }
 
-    private fun bindTitle(order: Card) {
+    private fun bindTitle(order: OrderWidgetUiModel) {
         title?.text = order.text
     }
 
-    private fun bindCounter(order: Card) {
+    private fun bindCounter(order: OrderWidgetUiModel) {
         if (order.hasCounter()) {
             counter?.show()
             counter?.text = order.counter
@@ -93,8 +93,8 @@ class ItemOrderListLinearLayout : LinearLayout {
     }
 
     private fun bindClick(
-            order: Card,
-            onClick: () -> Unit
+        order: OrderWidgetUiModel,
+        onClick: () -> Unit
     ) {
         setOnClickListener {
             RouteManager.route(context, order.link.androidLink)

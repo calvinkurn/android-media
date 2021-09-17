@@ -37,19 +37,28 @@ class FeaturedShopViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_featured_shop
+        const val SIZE_2 = 2
     }
 
     private lateinit var adapter: FeaturedShopAdapter
 
     override fun bind(element: FeaturedShopDataModel) {
-        if(element.channelModel.channelGrids.size < 2){
+        invokeState(element.state,{
+            itemView.loading_view?.show()
+        },{
+            if(element.channelModel.channelGrids.size < SIZE_2){
+                itemView.content_container?.hide()
+            } else {
+                itemView.content_container?.show()
+                itemView.loading_view?.hide()
+                setHeaderComponent(element)
+                setChannelDivider(element)
+                initView(element)
+            }
+        },{
             itemView.content_container?.hide()
-        } else {
-            itemView.content_container?.show()
-            setHeaderComponent(element)
-            setChannelDivider(element)
-            initView(element)
-        }
+        })
+
     }
 
     override fun bind(element: FeaturedShopDataModel, payloads: MutableList<Any>) {
@@ -130,6 +139,14 @@ class FeaturedShopViewHolder(
             ))
         }
         return list
+    }
+
+    private fun invokeState(state: Int, stateLoading: () -> Unit, stateReady: () -> Unit, stateFailed: () -> Unit) {
+        when (state) {
+            FeaturedShopDataModel.STATE_LOADING -> {stateLoading.invoke()}
+            FeaturedShopDataModel.STATE_READY -> {stateReady.invoke()}
+            FeaturedShopDataModel.STATE_FAILED -> {stateFailed.invoke()}
+        }
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {

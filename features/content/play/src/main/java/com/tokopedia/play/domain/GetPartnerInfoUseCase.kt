@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -15,7 +16,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-10.
  */
-
+@GqlQuery(GetPartnerInfoUseCase.QUERY_NAME, GetPartnerInfoUseCase.QUERY)
 class GetPartnerInfoUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<ShopInfo>(graphqlRepository) {
@@ -23,7 +24,7 @@ class GetPartnerInfoUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopInfo {
-        val gqlRequest = GraphqlRequest(query, ShopInfo.Response::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GetPartnerInfoUseCaseQuery.GQL_QUERY, ShopInfo.Response::class.java, params.parameters)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
@@ -40,20 +41,13 @@ class GetPartnerInfoUseCase @Inject constructor(
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SOURCE = "source"
         private const val SOURCE_VALUE = "gql-play"
-
-        private val query = getQuery()
-
-        private fun getQuery(): String {
-            val shopId = "\$shopIds"
-            val fields = "\$fields"
-            val source = "\$source"
-
-
-            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!, $source: String){
+        const val QUERY_NAME = "GetPartnerInfoUseCaseQuery"
+        const val QUERY = """
+            query getShopInfo(${'$'}shopIds: [Int!]!, ${'$'}fields: [String!]!, ${'$'}source: String){
                  shopInfoByID(input: {
-                     shopIDs: $shopId,
-                     fields: $fields,
-                     source: $source}){
+                     shopIDs: ${'$'}shopIds,
+                     fields: ${'$'}fields,
+                     source: ${'$'}source}){
                      result {
                          shopCore {
                             name,
@@ -69,16 +63,15 @@ class GetPartnerInfoUseCase @Inject constructor(
                      }
                  }
              }
-            """.trimIndent()
-        }
+        """
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
-        fun createParam(partnerId: Int, partnerType: PartnerType, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
+        fun createParam(partnerId: Long, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
                 RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, partnerId)
+            putLong(PARAM_SHOP_IDS, partnerId)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SOURCE, SOURCE_VALUE)
         }

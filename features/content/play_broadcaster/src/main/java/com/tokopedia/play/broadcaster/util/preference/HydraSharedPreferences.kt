@@ -50,11 +50,27 @@ class HydraSharedPreferences @Inject constructor(
                 ).apply()
     }
 
+    fun isFirstInteractive(): Boolean {
+        return mSharedPrefs.getBoolean(
+                String.format(KEY_FIRST_INTERACTIVE, userSession.shopId),
+                true
+        )
+    }
+
+    fun setNotFirstInteractive() {
+        mSharedPrefs.edit()
+                .putBoolean(
+                        String.format(KEY_FIRST_INTERACTIVE, userSession.shopId),
+                        false
+                ).apply()
+    }
+
     companion object {
 
         private const val HYDRA_PREFERENCE_NAME = "hydra_preference"
 
         private const val KEY_FIRST_STREAMING = "first_streaming_%s_%s"
+        private const val KEY_FIRST_INTERACTIVE = "first_interactive_%s"
         private const val KEY_PERMISSION = "permission_%s"
     }
 }

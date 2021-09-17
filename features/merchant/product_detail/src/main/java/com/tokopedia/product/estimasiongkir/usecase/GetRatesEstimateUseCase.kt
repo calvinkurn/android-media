@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.BO_TOKONOW
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope

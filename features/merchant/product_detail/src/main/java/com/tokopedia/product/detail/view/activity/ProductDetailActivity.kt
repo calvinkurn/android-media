@@ -27,6 +27,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import io.embrace.android.embracesdk.Embrace
 
 
 /**
@@ -103,22 +104,27 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P1_TRACE)
     }
 
     fun stopMonitoringP2Data() {
         performanceMonitoringP2Data?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_DATA_TRACE)
     }
 
     fun stopMonitoringP2Other() {
         performanceMonitoringP2Other?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE)
     }
 
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
     }
 
     fun stopMonitoringFull() {
         performanceMonitoringFull?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P3_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -216,7 +222,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
             isFromAffiliate ?: false, trackerAttribution,
-            trackerListName, affiliateString = affiliateString, affiliateUniqueId = affiliateUniqueId, deeplinkUrl, layoutId)
+            trackerListName, affiliateString = affiliateString, affiliateUniqueId = affiliateUniqueId, deeplinkUrl, layoutId, getSource())
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -299,12 +305,20 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P1_TRACE, null, false)
+
         performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_DATA_TRACE, null, false)
+
         performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE, null, false)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
+            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
+
             performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
+            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P3_TRACE, null, false)
         }
     }
 
@@ -315,6 +329,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             ""
         }
     }
+
+    private fun getSource() = intent.data?.query ?: ""
 }
 
 interface ProductDetailActivityInterface {

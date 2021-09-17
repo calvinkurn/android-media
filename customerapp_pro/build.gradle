@@ -280,6 +280,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.oms)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
@@ -345,7 +346,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation projectOrAar(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

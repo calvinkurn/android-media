@@ -20,7 +20,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.raw.EDIT_GROUP_QUERY
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
-import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsInput
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -63,11 +63,11 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
         return tempRequest
     }
 
-    private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManageGroupAdsInput {
+    private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManagePromoGroupProductInput {
         val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
         val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Double
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as String
-        return TopadsManageGroupAdsInput().apply {
+        return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             keywordOperation = null
             groupID = groupId
@@ -77,9 +77,7 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
                     group = GroupEditInput.Group(
                             adOperations = dataProduct,
                             name = null,
-                            type = PRODUCT,
                             dailyBudget = dailyBudgetGroup,
-                            priceBid = priceBidGroup?.toDouble()
                     )
             )
         }

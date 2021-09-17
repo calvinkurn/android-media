@@ -1,5 +1,5 @@
 {
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "eventAction": "view order summary page",
@@ -78,7 +78,7 @@
           "dimension83": "",
           "dimension82": "\\d+",
           "dimension40": ".*",
-          "dimension49": "",
+          "dimension49": ".*",
           "dimension48": "\\d+",
           "dimension16": ".+",
           "dimension12": "\\d+",

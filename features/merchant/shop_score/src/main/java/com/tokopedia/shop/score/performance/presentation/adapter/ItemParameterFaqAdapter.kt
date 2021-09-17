@@ -9,7 +9,8 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.ItemParameterFaqUiModel
 import kotlinx.android.synthetic.main.item_parameter_performance_shop_score.view.*
 
-class ItemParameterFaqAdapter: RecyclerView.Adapter<ItemParameterFaqAdapter.ItemParameterFaqViewHolder>() {
+class ItemParameterFaqAdapter :
+    RecyclerView.Adapter<ItemParameterFaqAdapter.ItemParameterFaqViewHolder>() {
 
     private val itemParameterFaqList = mutableListOf<ItemParameterFaqUiModel>()
 
@@ -21,7 +22,8 @@ class ItemParameterFaqAdapter: RecyclerView.Adapter<ItemParameterFaqAdapter.Item
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemParameterFaqViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_parameter_performance_shop_score, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_parameter_performance_shop_score, parent, false)
         return ItemParameterFaqViewHolder(view)
     }
 
@@ -32,7 +34,7 @@ class ItemParameterFaqAdapter: RecyclerView.Adapter<ItemParameterFaqAdapter.Item
 
     override fun getItemCount(): Int = itemParameterFaqList.size
 
-    inner class ItemParameterFaqViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class ItemParameterFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(data: ItemParameterFaqUiModel) {
             with(itemView) {
                 tv_title_indicator_parameter_performance?.text = data.title

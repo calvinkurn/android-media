@@ -44,14 +44,14 @@ class AutoCompleteBottomSheetViewModelTest {
 
     @Test
     fun `AutoComplete success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         autoCompleteBottomSheetViewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `AutoComplete failed`() {
-        coEvery { repo.getAutoComplete(any()) } throws defaultThrowable
+        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
         autoCompleteBottomSheetViewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Fail }) }
     }

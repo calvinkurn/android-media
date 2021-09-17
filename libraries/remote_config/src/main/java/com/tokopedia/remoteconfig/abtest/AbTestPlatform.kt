@@ -12,7 +12,9 @@ import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey.EXPERIMENT_NAME_TOKOPOINT
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -50,22 +52,27 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?, defaultValue: Double): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?): Long {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?, defaultValue: Long): Long {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -79,6 +86,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
                 NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
+                NAVIGATION_EXP_TOP_NAV2 -> return NAVIGATION_VARIANT_REVAMP2
                 EXPERIMENT_NAME_TOKOPOINT -> return EXPERIMENT_NAME_TOKOPOINT
             }
         }

@@ -9,6 +9,7 @@ import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
+import com.tokopedia.topchat.stub.common.RemoteConfigStub
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -24,6 +25,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
         launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         clickTemplateChatAt(0)
@@ -40,6 +42,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(enable = false)
         launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // Then
 
@@ -56,6 +59,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
         launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         clickTemplateChatAt(0)
@@ -75,21 +79,29 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
         launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         val count = activityTestRule.activity
-                .findViewById<RecyclerView>(R.id.recycler_view)
+                .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
                 .adapter?.itemCount?: 0
         clickTemplateChatAt(0)
         clickSendBtn()
 
         // Then
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         0, R.id.tvMessage
                 ))
                 .check(matches(withText("Test ")))
-        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count+1)))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count+1)))
         assertComposedTextValue("")
+    }
+
+    //Setup remoteconfig for toggle flexmode/not
+    private fun setupRemoteConfigValue(isFlexMode: Boolean) {
+        val remoteConfigStub = RemoteConfigStub()
+        remoteConfigStub.setBooleanResult(isFlexMode)
+        activity.remoteConfig = remoteConfigStub
     }
 }

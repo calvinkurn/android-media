@@ -252,6 +252,7 @@
     <string name="hotel_url_no_indonesian_review">https://ecs7.tokopedia.net/img/android/hotel/noIndonesianReview.png</string>
     <string name="hotel_url_no_match_search_suggestion">https://ecs7.tokopedia.net/img/android/hotel/noMatchSearchSuggestion.png</string>
     <string name="hotel_url_no_review">https://ecs7.tokopedia.net/img/android/hotel/noReview.png</string>
+    <string name="hotel_url_no_promo"> https://images.tokopedia.net/img/android/hotel/ic_payathotel_no_promo.png</string>
 
     <string name="hotel_min_date_label">Check-in</string>
     <string name="hotel_max_date_label">Check-out</string>
@@ -309,4 +310,5 @@
     <string name="hotel_sticky_calendar_content_desc">Hotel calendar</string>
     <string name="hotel_review_booking_logo">Booking.com logo</string>
     <string name="hotel_search_map_max_radius_info">Area terlalu luas, zoom in lagi ya</string>
+    <string name="hotel_error_cancel_promo">Maaf, belum berhasil hapus kupon. Coba lagi, yuk!</string>
 </resources>

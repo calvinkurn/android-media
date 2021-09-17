@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.asUpperCase
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -17,37 +18,41 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
 import timber.log.Timber
+import java.util.*
 
-class ItemDetailPerformanceViewHolder(view: View,
-                                      private val itemShopPerformanceListener: ItemShopPerformanceListener)
-    : AbstractViewHolder<ItemDetailPerformanceUiModel>(view) {
+class ItemDetailPerformanceViewHolder(
+    view: View,
+    private val itemShopPerformanceListener: ItemShopPerformanceListener
+) : AbstractViewHolder<ItemDetailPerformanceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_detail_shop_performance
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
+        const val START_INDEX_HEX_STRING = 2
     }
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             setupItemDetailPerformance(element)
 
-            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
-                getString(R.string.desc_calculation_open_seller_app)
-            } else {
-                if (element?.titleDetailPerformance?.contains(AND_TEXT) == true) {
-                    element.titleDetailPerformance.replace(AND_TEXT, AND_SYMBOL)
+            val titleBottomSheet =
+                if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
+                    getString(R.string.desc_calculation_open_seller_app)
                 } else {
-                    element?.titleDetailPerformance.orEmpty()
+                    if (element?.titleDetailPerformance?.contains(AND_TEXT) == true) {
+                        element.titleDetailPerformance.replace(AND_TEXT, AND_SYMBOL)
+                    } else {
+                        element?.titleDetailPerformance.orEmpty()
+                    }
                 }
-            }
             setOnClickListener {
                 if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                            titleBottomSheet,
-                            element?.identifierDetailPerformance.orEmpty()
+                        titleBottomSheet,
+                        element?.identifierDetailPerformance.orEmpty()
                     )
                 }
             }
@@ -56,8 +61,8 @@ class ItemDetailPerformanceViewHolder(view: View,
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                            titleBottomSheet,
-                            element?.identifierDetailPerformance.orEmpty()
+                        titleBottomSheet,
+                        element?.identifierDetailPerformance.orEmpty()
                     )
                 }
             }
@@ -77,18 +82,23 @@ class ItemDetailPerformanceViewHolder(view: View,
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
             tvPerformanceValue?.text =
-                    if (element?.valueDetailPerformance == MINUS_SIGN) {
-                        element.valueDetailPerformance
-                    } else {
-                        if (element?.parameterValueDetailPerformance == PERCENT)
-                            StringBuilder("${element.valueDetailPerformance}${element.parameterValueDetailPerformance}")
-                        else
-                            StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
-                    }
-            if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
+                if (element?.valueDetailPerformance == MINUS_SIGN) {
+                    element.valueDetailPerformance
+                } else {
+                    if (element?.parameterValueDetailPerformance == PERCENT)
+                        StringBuilder("${element.valueDetailPerformance}${element.parameterValueDetailPerformance}")
+                    else
+                        StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
+                }
+            if (element?.colorValueDetailPerformance?.isNotBlank() == true
+                && element.valueDetailPerformance != MINUS_SIGN
+            ) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
+            tvPerformanceTarget?.text = getString(
+                R.string.item_detail_performance_target,
+                element?.targetDetailPerformance.orEmpty()
+            )
         }
     }
 
@@ -96,7 +106,9 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
+                    cardItemDetailShopPerformance?.setBackgroundColor(
+                        it.getResColor(R.color.shop_score_penalty_dms_container)
+                    )
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -108,7 +120,10 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
+                        context,
+                        R.drawable.corner_rounded_performance_list
+                    )
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -119,14 +134,29 @@ class ItemDetailPerformanceViewHolder(view: View,
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
         try {
             when (colorValueDetailPerformance) {
-                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                getColorHexString(R.color.shop_score_item_parameter_dms_red) -> {
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_R600
+                        )
+                    )
                 }
                 getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700
+                        )
+                    )
                 }
                 getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    )
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -135,7 +165,14 @@ class ItemDetailPerformanceViewHolder(view: View,
     }
 
     private fun Typography.getColorHexString(idColor: Int): String {
-        val colorHexInt = ContextCompat.getColor(context, idColor)
-        return "#${Integer.toHexString(colorHexInt)}"
+        return try {
+            val colorHexInt = ContextCompat.getColor(context, idColor)
+            val colorToHexString = Integer.toHexString(colorHexInt).toUpperCase(Locale.getDefault())
+                .substring(START_INDEX_HEX_STRING)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 }

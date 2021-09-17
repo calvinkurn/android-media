@@ -50,6 +50,7 @@ import com.tokopedia.flight.search.presentation.util.unselect
 import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -124,6 +125,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     renderSearchList(it.data)
                 }
                 is Fail -> {
+                    hidePromoChips()
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
                         for (error in errors) {
@@ -131,8 +133,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                                 showNoRouteFlightEmptyState(error.title)
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
+                            }else{
+                                val flightSearchThrow = Throwable(error.title)
+                                showGetListError(flightSearchThrow)
+                                break
                             }
                         }
+                    }else{
+                        showGetListError(Throwable())
                     }
                 }
             }
@@ -161,6 +169,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     }
                 }
                 is Fail -> {
+                    hidePromoChips()
                     hideTickerView()
                 }
             }
@@ -184,6 +193,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory =
             FlightSearchAdapterTypeFactory(this)
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        adapter.errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
+        adapter.errorNetworkModel.errorMessage = throwable?.message ?: ErrorHandler.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.onRetryListener = this
+        adapter.showErrorNetwork()
+    }
 
     override fun createAdapterInstance(): BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> {
         val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
@@ -719,8 +736,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         }
 
-        Handler().postDelayed({ flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter() },
-                QUICK_FILTER_INDICATOR_DELAY)
+        flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
     }
 
     private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
@@ -812,7 +828,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
-        private const val QUICK_FILTER_INDICATOR_DELAY: Long = 50
 
         private const val QUICK_FILTER_DIRECT_ORDER = 0
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1

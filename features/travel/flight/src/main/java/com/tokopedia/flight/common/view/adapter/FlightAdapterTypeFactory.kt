@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.flight.common.view.model.EmptyResultModel
+import com.tokopedia.flight.databinding.ItemFlightEmptySearchBinding
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
 
 /**
@@ -17,7 +18,10 @@ abstract class FlightAdapterTypeFactory : BaseAdapterTypeFactory(),
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
-                EmptyResultViewHolder.LAYOUT -> EmptyResultViewHolder(parent)
+                EmptyResultViewHolder.LAYOUT -> {
+                    val binding = ItemFlightEmptySearchBinding.bind(parent)
+                    EmptyResultViewHolder(binding)
+                }
                 else -> super.createViewHolder(parent, type)
             }
 
