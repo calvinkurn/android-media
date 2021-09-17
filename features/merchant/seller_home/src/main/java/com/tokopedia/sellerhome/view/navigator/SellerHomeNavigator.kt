@@ -157,7 +157,7 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, "0", "", "")
         otherSettingsFragment =
             if (useRevampedOtherMenu()) {
                 OtherMenuFragment.createInstance()
