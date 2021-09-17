@@ -12,6 +12,6 @@ class LoadMoreViewHolder(view: View) : AbstractViewHolder<LoadMoreDataModel>(vie
     override fun bind(element: LoadMoreDataModel) {}
 
     companion object {
-        val LAYOUT = R.layout.layout_loading_more
+        val LAYOUT = R.layout.layout_recom_loading_more
     }
 }
