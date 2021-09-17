@@ -190,7 +190,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun initListeners() {
-        
+
         // This analytics is here as for now the kardu credit is disabled so tab is also disable
         sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
         paylaterTabLayout.tabLayout.onTabSelected { tab ->

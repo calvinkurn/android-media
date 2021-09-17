@@ -239,7 +239,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             if (data.disableDetail?.status == true) {
                 disableVisibilityGroup.gone()
-                tvTitlePaymentPartner.setTextColor(resources.getColor(R.color.Unify_N700_32))
+                tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 interestText.text = data.disableDetail.description ?: ""
                 simulasiHeading.text = data.disableDetail.header ?: ""
             }
