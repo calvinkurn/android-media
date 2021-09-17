@@ -1,13 +1,14 @@
-/*
-package com.tokopedia.cart.bundle.view.presenter
+package com.tokopedia.cart.bundle.view.presenter.done
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.domain.usecase.GetCartRevampV3UseCase
-import com.tokopedia.cart.old.domain.usecase.*
-import com.tokopedia.cart.old.view.CartListPresenter
-import com.tokopedia.cart.old.view.ICartListView
+import com.tokopedia.cart.bundle.domain.usecase.*
+import com.tokopedia.cart.bundle.view.CartListPresenter
+import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -115,4 +116,4 @@ object CartListPresenterClearPromoTest : Spek({
 
     }
 
-})*/
+})
