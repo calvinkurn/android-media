@@ -3,7 +3,6 @@ package com.tokopedia.home_account.linkaccount.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.webkit.WebView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -46,40 +45,6 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
             }
         }
         super.onLoadFinished()
-    }
-
-    override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
-//        when {
-//            url.contains(GOJEK_OTP_PAGE, ignoreCase = true) -> {
-//                // Check gojek accounts page, show toolbar
-//                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-//                (activity as LinkAccountWebViewActivity).showToolbar()
-//                (activity as LinkAccountWebViewActivity).setToolbarTitle("Verifikasi Akun")
-//            }
-//            url.contains(GOPAY_PIN_PAGE, ignoreCase = true) -> {
-//                // Check gopay input pin page, and hide back btn
-//                (activity as LinkAccountWebViewActivity).showToolbar()
-//                (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
-//                (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
-//                (activity as LinkAccountWebViewActivity).setToolbarTitle("Aktifin GoPay")
-//            }
-//            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
-//                // Finish activity from webview
-//                activity?.finish()
-//            }
-//            url.startsWith(GOJEK_LINK, ignoreCase = true) -> {
-//                // Check for gojek.link url
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-//                startActivity(intent)
-//                activity?.finish()
-//            }
-//            else -> {
-//                // Default is hidden
-//                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-//                (activity as LinkAccountWebViewActivity).hideToolbar()
-//            }
-//        }
-        return super.shouldOverrideUrlLoading(webview, url)
     }
 
     fun showSkipDialog() {
