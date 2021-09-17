@@ -100,7 +100,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): DescriptionWidgetUiModel {
         return DescriptionWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
