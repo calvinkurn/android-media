@@ -13,6 +13,7 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
         tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView

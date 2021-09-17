@@ -33,6 +33,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         val LAYOUT = R.layout.item_mini_cart_product
         const val NOTES_CHANGE_DELAY = 250L
         const val QUANTITY_CHANGE_DELAY = 500L
+        const val QUANTITY_RESET_DELAY = 1000L
         const val ALPHA_FULL = 1.0f
         const val ALPHA_HALF = 0.5f
     }
@@ -396,8 +397,13 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     delayChangeQty?.cancel()
                     delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                        delay(QUANTITY_CHANGE_DELAY)
                         val newValue = s.toString().replace(".", "").toIntOrZero()
+                        if (newValue >= element.productMinOrder) {
+                            delay(QUANTITY_CHANGE_DELAY)
+                        } else {
+                            // Use longer delay for reset qty, to support automation
+                            delay(QUANTITY_RESET_DELAY)
+                        }
                         if (element.productQty != newValue) {
                             validateQty(newValue, element)
                             if (newValue != 0) {

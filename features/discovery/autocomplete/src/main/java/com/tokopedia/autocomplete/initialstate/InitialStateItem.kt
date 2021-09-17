@@ -47,7 +47,10 @@ data class InitialStateItem(
         val discountPercentage: String = "",
 
         @SerializedName("original_price")
-        val originalPrice: String = ""
+        val originalPrice: String = "",
+
+        @SerializedName("campaign_code")
+        val campaignCode: String = ""
 ) {
         fun getObjectDataLayerForRecentView(position: Int): Any {
                 return DataLayer.mapOf(

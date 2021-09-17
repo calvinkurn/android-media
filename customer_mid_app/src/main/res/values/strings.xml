@@ -221,4 +221,5 @@
     <!-- Review   -->
     <string name="review_reading_title">Ulasan Pembeli</string>
     <string name="review_reminder_title">Pengingat Ulasan</string>
+    <string name="review_gallery_title">Foto Pembeli</string>
 </resources>

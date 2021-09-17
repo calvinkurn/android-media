@@ -17,8 +17,8 @@ class GetReviewTemplateListUseCase @Inject constructor(
         private const val SHOP_ID = "shopId"
         const val GET_REVIEW_RESPONSE_CLASS_NAME = "ReviewResponseQuery"
         const val GET_REVIEW_RESPONSE = """
-            query get_review_response_template_list(${'$'}shopId: Int!) {
-                reviewResponseTemplateList(shopId: ${'$'}shopId) {
+            query get_review_response_template_list(${'$'}shopId: String!) {
+                reviewResponseTemplateListV2(shopId: ${'$'}shopId) {
                   autoReply {
                     autoReplyId
                     status
@@ -35,7 +35,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(shopId: Long): Map<String, Any> = mapOf(SHOP_ID to shopId)
+        fun createParams(shopId: String): Map<String, Any> = mapOf(SHOP_ID to shopId)
     }
 
     var params = mapOf<String, Any>()
