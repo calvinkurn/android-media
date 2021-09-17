@@ -35,7 +35,21 @@ object UiModelMapper {
 
     fun getWalletUiModel(walletappGetAccountBalance: WalletappGetAccountBalance): WalletUiModel {
         val subTitle = if (walletappGetAccountBalance.isActive) {
-            "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
+            when (walletappGetAccountBalance.id) {
+                AccountConstants.WALLET.GOPAY -> {
+                    if (walletappGetAccountBalance.subtitle.equals(AccountConstants.WALLET.GOPAY, ignoreCase = true)) {
+                        walletappGetAccountBalance.title
+                    } else {
+                        "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
+                    }
+                }
+                AccountConstants.WALLET.TOKOPOINT -> {
+                    "${walletappGetAccountBalance.title} ${walletappGetAccountBalance.subtitle}"
+                }
+                else -> {
+                    "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
+                }
+            }
         } else {
             walletappGetAccountBalance.subtitle
         }
