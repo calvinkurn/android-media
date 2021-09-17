@@ -337,11 +337,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 loadInitialData()
                 val message = data?.getStringExtra(EXTRA_ADD_BILLS_MESSAGE)
                 val category = data?.getStringExtra(EXTRA_ADD_BILLS_CATEGORY)
-                message?.let { message ->
-                    view?.let {
-                        val errorHandler = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
-                        Toaster.build(it, errorHandler, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                if (message != null) {
+                    view?.let { parentView ->
+                        Toaster.build(
+                            parentView,
+                            message,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                        ).show()
                     }
                 }
                 category?.let {
