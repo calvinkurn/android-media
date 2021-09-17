@@ -723,7 +723,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        applySort(applySortFilterModel)
         filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
         searchParameter.getSearchParameterHashMap().clear()
         searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
