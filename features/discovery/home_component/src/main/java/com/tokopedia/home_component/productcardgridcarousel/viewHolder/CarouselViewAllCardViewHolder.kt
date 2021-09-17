@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelViewAllCard
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.loadImage
@@ -25,11 +26,17 @@ class CarouselViewAllCardViewHolder(
 
     override fun bind(element: CarouselViewAllCardDataModel) {
         val isGradientWhite = getGradientBackgroundViewAllWhite(element.channelViewAllCard.gradientColor)
-        when(element.channelViewAllCard.contentType) {
+        when (element.channelViewAllCard.contentType) {
             CONTENT_TITLE_AS_STRING -> renderTypeTitleAsString(element, isGradientWhite)
             CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isGradientWhite)
             CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isGradientWhite)
-            else -> renderTypeTitleAsString(element, isGradientWhite)
+            else -> renderTypeTitleAsString(
+                CarouselViewAllCardDataModel(
+                    channelViewAllCard = ChannelViewAllCard(),
+                    listener = element.listener
+                ),
+                isGradientWhite
+            )
         }
         //set foreground to selectableItemBackground
         val outValue = TypedValue()
