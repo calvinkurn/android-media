@@ -34,7 +34,7 @@ class HomeAccountFundsAndInvestmentAdapter(
     fun changeItemBySameId(walletUiModel: WalletUiModel) {
         val items = getItems().toMutableList()
         items.forEach {
-            when(it) {
+            when (it) {
                 is WalletUiModel -> {
                     if (it.id == walletUiModel.id) {
                         val position = items.indexOf(it)
@@ -61,7 +61,7 @@ class HomeAccountFundsAndInvestmentAdapter(
     fun changeItemToFailed(id: String) {
         val items = getItems().toMutableList()
         items.forEach {
-            when(it) {
+            when (it) {
                 is WalletUiModel -> {
                     if (it.id == id) {
                         val position = items.indexOf(it)
@@ -74,8 +74,31 @@ class HomeAccountFundsAndInvestmentAdapter(
                     if (it.id == id) {
                         val position = items.indexOf(it)
                         removeItemAt(position)
-                        addItem(position, UiModelMapper.getSaldoUiModel(it))
+                        addItem(position, UiModelMapper.getDefaultAssetConfigUiModel(it))
                         notifyItemChanged(position)
+                    }
+                }
+            }
+        }
+    }
+
+    fun removeById(id: String) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            when (it) {
+                is WalletUiModel -> {
+                    if (it.id == id) {
+                        val position = items.indexOf(it)
+                        removeItemAt(position)
+                        notifyItemRemoved(position)
+                    }
+                }
+
+                is WalletShimmeringUiModel -> {
+                    if (it.id == id) {
+                        val position = items.indexOf(it)
+                        removeItemAt(position)
+                        notifyItemRemoved(position)
                     }
                 }
             }

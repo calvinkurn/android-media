@@ -567,6 +567,11 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         displayBalanceAndPointLocalLoad(false)
         val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
         centralizedUserAssetConfig.assetConfig.forEach {
+            balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
+        }
+        balanceAndPointAdapter?.setupPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
+
+        centralizedUserAssetConfig.assetConfig.forEach {
             when (it.id) {
                 AccountConstants.WALLET.GOPAY -> {
                     tempAssetConfig = it
@@ -574,15 +579,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 }
                 AccountConstants.WALLET.SALDO -> {
                     viewModel.getBalanceAndPoint(it.id, it)
-                    balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
                 }
                 else -> {
                     viewModel.getBalanceAndPoint(it.id)
-                    balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
                 }
             }
         }
-        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
+    }
+
+    override fun onZeroCounter() {
+        adapter?.notifyDataSetChanged()
     }
 
     private fun onFailedGetCentralizedAssetConfig() {
@@ -592,7 +598,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun onSuccessGetBalanceAndPoint(
         balanceAndPoint: WalletappGetAccountBalance
     ) {
-        balanceAndPointAdapter?.changeItemBySameId(
+        balanceAndPointAdapter?.setupBalanceAndPointsWithData(
             UiModelMapper.getBalanceAndPointUiModel(
                 balanceAndPoint
             )
@@ -604,17 +610,32 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
-        if (walletappWalletEligibility.data.isEligible) {
-            tempAssetConfig?.let {
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+        val eligibility = walletappWalletEligibility.data
+        if (eligibility.isNotEmpty()) {
+            if (eligibility[0].isEligible) {
+                tempAssetConfig?.let {
+                    balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
+                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                }
+            } else {
+                removeGopayIfNotEligible()
             }
-        } else {
-            balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
         }
     }
 
-    private fun onFailedGetWalletEligible() {}
+    private fun onFailedGetWalletEligible() {
+        removeGopayIfNotEligible()
+    }
+
+    private fun removeGopayIfNotEligible() {
+        balanceAndPointAdapter?.let{
+            val isSuccessRemove = it.removeById(AccountConstants.WALLET.GOPAY)
+            if(isSuccessRemove) {
+                it.counter--
+                it.checkIfAllWidgetIsFinished()
+            }
+        }
+    }
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
         memberLocalLoad?.hide()

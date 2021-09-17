@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class WalletEligibleDataModel {
-    @SerializedName("walletappWalletEligibility") @Expose
+    @SerializedName("walletappGetWalletEligible") @Expose
     val data: WalletappWalletEligibility = WalletappWalletEligibility()
 }
 
@@ -14,7 +14,7 @@ data class WalletappWalletEligibility(
     @SerializedName("message") @Expose
     val message: String = "",
     @SerializedName("data") @Expose
-    val data: WalletEligibility = WalletEligibility()
+    val data: MutableList<WalletEligibility> = mutableListOf()
 )
 
 data class WalletEligibility(

@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS_AND_INVESTMENT
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
+import com.tokopedia.home_account.data.model.WalletappWalletEligibility
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
@@ -123,6 +125,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 }
             }
         })
+
         viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultBalanceAndPoint.Success -> {
@@ -133,15 +136,38 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 }
             }
         })
+
+        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetWalletEligible(it.data)
+                }
+                is Fail -> {
+                    onFailedGetWalletEligible()
+                }
+            }
+        })
+    }
+
+    private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
+        centralizedUserAssetConfig.assetConfigVertical.forEach {
+            if (it.id == AccountConstants.WALLET.GOPAY) {
+                viewModel.getGopayWalletEligible()
+            } else {
+                viewModel.getBalanceAndPoint(it.id)
+            }
+        }
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         hideLoading()
         addTitleView()
-        centralizedUserAssetConfig.assetConfigVertical.forEach {
-            adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
-            viewModel.getBalanceAndPoint(it.id)
+        if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
+            centralizedUserAssetConfig.assetConfigVertical.forEach {
+                adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
+            }
         }
+
         if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
             addSubtitleView()
             val fundAndInvestmentPlaceholders = mutableListOf<WalletUiModel>()
@@ -150,6 +176,8 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             }
             addWalletView(fundAndInvestmentPlaceholders)
         }
+
+        getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
     private fun onFailedGetCentralizedAssetConfig() {
@@ -167,6 +195,22 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         adapter?.changeItemToFailed(walletId)
+    }
+
+    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
+        val eligibility = walletappWalletEligibility.data
+        if (eligibility.isNotEmpty()) {
+            if (eligibility[0].isEligible) {
+                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
+            } else {
+                adapter?.removeById(AccountConstants.WALLET.GOPAY)
+            }
+        }
+    }
+
+    private fun onFailedGetWalletEligible() {
+        adapter?.changeItemToFailed(AccountConstants.WALLET.GOPAY)
     }
 
     private fun setupAdapter() {

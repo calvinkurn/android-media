@@ -164,48 +164,57 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
         launchCatchError(context=dispatcher.main, block = {
-            val result = when (walletId) {
-                AccountConstants.WALLET.GOPAY -> {
-                    getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
-                }
-                AccountConstants.WALLET.GOPAYLATER -> {
-                    getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
-                }
-                AccountConstants.WALLET.OVO -> {
-                    getBalanceAndPointUseCase(OVO_PARTNER_CODE)
-                }
-                AccountConstants.WALLET.TOKOPOINT -> {
-                    getTokopointsBalanceAndPointUseCase(Unit)
-                }
-                AccountConstants.WALLET.SALDO -> {
-                    BalanceAndPointDataModel().apply {
-                        assetConfig?.let {
-                            this.data.id = assetConfig.id
-                            this.data.title = assetConfig.title
-                            this.data.subtitle = assetConfig.subtitle
-                            this.data.icon = assetConfig.icon
-                            this.data.applink = assetConfig.applink
-                            this.data.weblink = assetConfig.weblink
-                            this.data.isActive = assetConfig.isActive
-                        }
-                    }
-                }
-                AccountConstants.WALLET.CO_BRAND_CC -> {
-                    getCoBrandCCBalanceAndPointUseCase(Unit)
-                }
-                else -> {
-                    BalanceAndPointDataModel()
-                }
-            }
-
-            if (result.data.id.isNotEmpty()) {
-                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
+            if(walletId == AccountConstants.WALLET.TOKOPOINT) {
+                val result = getTokopointsBalanceAndPointUseCase(Unit)
+                setBalanceAndPointValue(result.data, walletId)
             } else {
-                _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
+                getOtherBalanceAndPoint(walletId, assetConfig)
             }
         }, onError = {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
         })
+    }
+
+    private suspend fun getOtherBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
+        val result = when (walletId) {
+            AccountConstants.WALLET.GOPAY -> {
+                getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.GOPAYLATER -> {
+                getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.OVO -> {
+                getBalanceAndPointUseCase(OVO_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.SALDO -> {
+                BalanceAndPointDataModel().apply {
+                    assetConfig?.let {
+                        this.data.id = assetConfig.id
+                        this.data.title = assetConfig.title
+                        this.data.subtitle = assetConfig.subtitle
+                        this.data.icon = assetConfig.icon
+                        this.data.applink = assetConfig.applink
+                        this.data.weblink = assetConfig.weblink
+                        this.data.isActive = assetConfig.isActive
+                    }
+                }
+            }
+            AccountConstants.WALLET.CO_BRAND_CC -> {
+                getCoBrandCCBalanceAndPointUseCase(Unit)
+            }
+            else -> {
+                BalanceAndPointDataModel()
+            }
+        }
+        setBalanceAndPointValue(result.data, walletId)
+    }
+
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
+        if (data.id.isNotEmpty()) {
+            _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
+        } else {
+            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
+        }
     }
 
     fun getGopayWalletEligible() {

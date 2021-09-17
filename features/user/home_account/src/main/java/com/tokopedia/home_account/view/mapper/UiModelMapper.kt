@@ -75,7 +75,7 @@ object UiModelMapper {
         )
     }
 
-    fun getSaldoUiModel(walletShimmeringUiModel: WalletShimmeringUiModel): WalletUiModel {
+    fun getDefaultAssetConfigUiModel(walletShimmeringUiModel: WalletShimmeringUiModel): WalletUiModel {
         return WalletUiModel().apply {
             if (walletShimmeringUiModel.id == AccountConstants.WALLET.SALDO) {
                 title = walletShimmeringUiModel.subtitle
