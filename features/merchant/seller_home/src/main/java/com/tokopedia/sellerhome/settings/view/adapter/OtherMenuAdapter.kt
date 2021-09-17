@@ -16,10 +16,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import java.util.*
 
-class OtherMenuAdapter(private val context: Context?,
-                       private val listener: Listener,
-                       typeFactory: OtherMenuAdapterTypeFactory):
+class OtherMenuAdapter(
+    private val context: Context?,
+    private val listener: Listener,
+    typeFactory: OtherMenuAdapterTypeFactory
+) :
     BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
@@ -31,12 +34,14 @@ class OtherMenuAdapter(private val context: Context?,
         StatisticMenuItemUiModel(
             title = context?.getString(R.string.setting_menu_statistic).orEmpty(),
             clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-            iconUnify = IconUnify.GRAPH),
+            iconUnify = IconUnify.GRAPH
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
             eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-            iconUnify = IconUnify.PROMO_ADS),
+            iconUnify = IconUnify.PROMO_ADS
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_performance).orEmpty(),
             clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
@@ -48,19 +53,26 @@ class OtherMenuAdapter(private val context: Context?,
             title = context?.getString(R.string.setting_menu_discussion).orEmpty(),
             clickApplink = ApplinkConst.TALK,
             eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-            iconUnify = IconUnify.DISCUSSION),
+            iconUnify = IconUnify.DISCUSSION
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_review).orEmpty(),
             clickApplink = ApplinkConst.REPUTATION,
             eventActionSuffix = SettingTrackingConstant.REVIEW,
-            iconUnify = IconUnify.STAR),
+            iconUnify = IconUnify.STAR
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_complaint).orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.COMPLAINT,
             iconUnify = IconUnify.PRODUCT_INFO
         ) {
-            val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
+            val applink = String.format(
+                Locale.getDefault(),
+                APPLINK_FORMAT,
+                ApplinkConst.WEBVIEW,
+                "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}"
+            )
             val intent = RouteManager.getIntent(context, applink)
             context?.startActivity(intent)
         },
@@ -85,7 +97,12 @@ class OtherMenuAdapter(private val context: Context?,
             eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
             iconUnify = IconUnify.SHOP_INFO
         ) {
-            val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
+            val applink = String.format(
+                Locale.getDefault(),
+                APPLINK_FORMAT,
+                ApplinkConst.WEBVIEW,
+                "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}"
+            )
             val intent = RouteManager.getIntent(context, applink)
             context?.startActivity(intent)
         },
@@ -93,13 +110,15 @@ class OtherMenuAdapter(private val context: Context?,
             title = context?.getString(R.string.setting_menu_tokopedia_care).orEmpty(),
             clickApplink = ApplinkConst.CONTACT_US_NATIVE,
             eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-            iconUnify = IconUnify.CALL_CENTER),
+            iconUnify = IconUnify.CALL_CENTER
+        ),
         DividerUiModel(DividerType.THIN_PARTIAL),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_setting).orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SETTINGS,
-            iconUnify = IconUnify.SETTING) {
+            iconUnify = IconUnify.SETTING
+        ) {
             listener.goToSettings()
         }
     )

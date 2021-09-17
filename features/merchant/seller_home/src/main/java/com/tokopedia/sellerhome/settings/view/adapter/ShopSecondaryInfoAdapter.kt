@@ -18,10 +18,13 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.*
 class ShopSecondaryInfoAdapter(
     typeFactory: ShopSecondaryInfoAdapterTypeFactory,
     val context: Context
-) :
-    BaseListAdapter<Visitable<ShopSecondaryInfoAdapterFactory>, ShopSecondaryInfoAdapterTypeFactory>(
+) : BaseListAdapter<Visitable<ShopSecondaryInfoAdapterFactory>, ShopSecondaryInfoAdapterTypeFactory>(
         typeFactory
     ) {
+
+    companion object {
+        private const val START_INDEX = 0
+    }
 
     fun showInitialInfo() {
         clearAllElements()
@@ -53,7 +56,7 @@ class ShopSecondaryInfoAdapter(
 
     fun setReputationBadgeData(state: SettingResponseState<String>) {
         visitables?.indexOfFirst { it is ReputationBadgeWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 visitables[index] = ReputationBadgeWidgetUiModel(state)
                 notifyItemChanged(index)
             }
@@ -62,7 +65,7 @@ class ShopSecondaryInfoAdapter(
 
     fun setShopFollowersData(state: SettingResponseState<String>) {
         visitables?.indexOfFirst { it is ShopFollowersWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 visitables[index] = ShopFollowersWidgetUiModel(state)
                 notifyItemChanged(index)
             }
@@ -82,11 +85,11 @@ class ShopSecondaryInfoAdapter(
         visitables?.run {
             indexOfFirst { it is FreeShippingWidgetUiModel }.let { index ->
                 when {
-                    index >= 0 && isActive -> {
+                    index >= START_INDEX && isActive -> {
                         this[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess(freeShippingUrl))
                         notifyItemChanged(index)
                     }
-                    index >= 0 && !isActive -> {
+                    index >= START_INDEX && !isActive -> {
                         removeAt(index)
                         notifyItemRemoved(index)
                     }
@@ -101,7 +104,7 @@ class ShopSecondaryInfoAdapter(
 
     private fun setFreeShippingError(throwable: Throwable) {
         visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable))
                 notifyItemChanged(index)
             } else {
@@ -113,7 +116,7 @@ class ShopSecondaryInfoAdapter(
 
     private fun setFreeShippingLoading() {
         visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingLoading)
                 notifyItemChanged(index)
             } else {
@@ -126,7 +129,7 @@ class ShopSecondaryInfoAdapter(
     private fun setShopStatusSuccess(shopStatus: ShopStatusUiModel) {
         shopStatus.userShopInfoWrapper.shopType?.let { shopType ->
             visitables?.indexOfFirst { it is ShopStatusWidgetUiModel }?.let { index ->
-                if (index >= 0) {
+                if (index >= START_INDEX) {
                     visitables[index] = ShopStatusWidgetUiModel(
                         SettingResponseState.SettingSuccess(shopType)
                     )
@@ -149,7 +152,7 @@ class ShopSecondaryInfoAdapter(
 
     private fun setShopStatusLoading() {
         visitables?.indexOfFirst { it is ShopStatusWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 val loadingState = SettingResponseState.SettingLoading
                 visitables[index] = ShopStatusWidgetUiModel(loadingState)
                 notifyItemChanged(index)
@@ -160,7 +163,7 @@ class ShopSecondaryInfoAdapter(
 
     private fun setShopStatusError(throwable: Throwable) {
         visitables?.indexOfFirst { it is ShopStatusWidgetUiModel }?.let { index ->
-            if (index >= 0) {
+            if (index >= START_INDEX) {
                 val errorState = SettingResponseState.SettingError(throwable)
                 visitables[index] = ShopStatusWidgetUiModel(errorState)
                 notifyItemChanged(index)
@@ -202,7 +205,7 @@ class ShopSecondaryInfoAdapter(
     private fun removeRmTransactionWidget() {
         visitables?.run {
             indexOfFirst { it is RMTransactionWidgetUiModel }.let { index ->
-                if (index >= 0) {
+                if (index >= START_INDEX) {
                     removeAt(index)
                     notifyItemRemoved(index)
                 }

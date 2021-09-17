@@ -12,6 +12,7 @@ class OtherMenuHeaderAnimator(
     companion object {
         private const val TRANSLATE_START_OFFSET = 80
         private const val TRANSLATE_END_OFFSET = 160
+        private const val INITIAL_TRANSLATION_Y = 0f
     }
 
     private val translateDivisor by lazy {
@@ -27,7 +28,7 @@ class OtherMenuHeaderAnimator(
     private fun translateToolbarView(offset: Int) {
         val translationY =
             when {
-                offset <= TRANSLATE_START_OFFSET -> 0f
+                offset <= TRANSLATE_START_OFFSET -> INITIAL_TRANSLATION_Y
                 offset >= TRANSLATE_END_OFFSET -> headerMaxHeight.toFloat()
                 else -> calculateToolbarTranslation(offset)
             }

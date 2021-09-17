@@ -19,6 +19,7 @@ class TopadsTopupView @JvmOverloads constructor(
         private const val HIDDEN_ALPHA_FLOAT = 0f
         private const val VISIBLE_ALPHA_FLOAT = 1f
         private const val ANIM_DURATION: Long = 200
+        private const val INITIAL_TRANSLATION_Y = 0f
     }
 
     private var valueTextView: Typography? = null
@@ -48,7 +49,7 @@ class TopadsTopupView @JvmOverloads constructor(
             valueTextView?.run {
                 clearAnimation()
                 alpha = VISIBLE_ALPHA_FLOAT
-                translationY = 0f
+                translationY = INITIAL_TRANSLATION_Y
             }
         }
         messageTextView?.run {
@@ -146,7 +147,7 @@ class TopadsTopupView @JvmOverloads constructor(
         if (isHasNextAnimation) {
             startAlpha = VISIBLE_ALPHA_FLOAT
             endAlpha = HIDDEN_ALPHA_FLOAT
-            startTranslationY = 0f
+            startTranslationY = INITIAL_TRANSLATION_Y
             translationYBy = -ANIM_TRANSLATION_Y
         } else {
             startAlpha = HIDDEN_ALPHA_FLOAT

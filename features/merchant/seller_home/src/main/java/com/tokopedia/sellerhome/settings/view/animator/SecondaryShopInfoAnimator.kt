@@ -7,6 +7,7 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
 
     companion object {
         private const val SCROLLING_POSITION = 100
+        private const val ZERO_Y_DELTA = 0
     }
 
     private var isRecyclerViewHasScrolled = false
@@ -36,7 +37,7 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
                 }
                 val offset = recyclerView.computeHorizontalScrollOffset()
                 if (offset >= SCROLLING_POSITION) {
-                    recyclerView.smoothScrollBy(-SCROLLING_POSITION, 0)
+                    recyclerView.smoothScrollBy(-SCROLLING_POSITION, ZERO_Y_DELTA)
                 }
             }
         }
@@ -66,7 +67,7 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
             recyclerView?.run {
                 addOnScrollListener(onAutomaticScrollListener)
                 addOnItemTouchListener(onRecyclerViewTouchedListener)
-                smoothScrollBy(SCROLLING_POSITION, 0)
+                smoothScrollBy(SCROLLING_POSITION, ZERO_Y_DELTA)
             }
         }
     }
