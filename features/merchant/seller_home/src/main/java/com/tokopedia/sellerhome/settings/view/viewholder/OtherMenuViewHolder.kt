@@ -500,7 +500,7 @@ class OtherMenuViewHolder(
         fun onRefreshShopInfo()
         fun onFreeShippingClicked()
         fun onShopOperationalClicked()
-        fun onGoToPowerMerchantSubscribe(tab: String)
+        fun onGoToPowerMerchantSubscribe(tab: String?)
         fun onShopBadgeRefresh()
         fun onShopTotalFollowersRefresh()
         fun onUserInfoRefresh()

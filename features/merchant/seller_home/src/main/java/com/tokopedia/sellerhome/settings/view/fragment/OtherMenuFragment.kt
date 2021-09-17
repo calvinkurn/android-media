@@ -36,10 +36,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
@@ -115,6 +112,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     @Inject
     lateinit var settingPerformanceTracker: SettingPerformanceTracker
+
+    @Inject
+    lateinit var sellerMenuTracker: SellerMenuTracker
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -281,12 +281,15 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
     }
 
-    override fun onGoToPowerMerchantSubscribe(tab: String) {
-        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab =
-            Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
-                .toString()
-        context.let { RouteManager.route(context, appLinkPMTab) }
+    override fun onGoToPowerMerchantSubscribe(tab: String?) {
+        sellerMenuTracker.sendEventClickShopSettingNew()
+        if (tab != null) {
+            val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            val appLinkPMTab =
+                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
+                    .toString()
+            context.let { RouteManager.route(it, appLinkPMTab) }
+        }
     }
 
     override fun onRefreshShopInfo() {

@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
 
 /**
  * Created by Yehezkiel on 06/10/20
@@ -31,11 +30,14 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
 
-    val shadowDrawable: Drawable by lazy {
-        RoundedShadowUtill.generateBackgroundWithShadow(view,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                R.dimen.dp_12,
+    val shadowDrawable: Drawable? by lazy {
+        view.generateBackgroundWithShadow(com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_12,
+                R.dimen.dp_12,
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                R.dimen.dp_2,
                 R.dimen.dp_2,
                 Gravity.TOP)
     }
@@ -76,9 +78,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             return@with
         }
 
-        shop_followers_desc?.maxLines = maxLine
-        shop_followers_title.text = title
-        shop_followers_desc.text = desc
+        followersDesc?.maxLines = maxLine
+        followersTitle?.text = title
+        followersDesc?.text = desc
 
         setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
@@ -123,6 +125,10 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
                 isLoading = true
             }
         }
+    }
+
+    fun getButtonLoadingStatus(): Boolean {
+        return followersBtn?.isLoading ?: false
     }
 
     private fun animateSlideUp() = with(view) {
@@ -171,7 +177,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun setupRoundedTopShadow() = with(view) {
-        background = shadowDrawable
+        if (shadowDrawable != null) {
+            background = shadowDrawable
+        }
     }
 
 }

@@ -24,13 +24,12 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     private var variantContainerAdapter: AtcVariantContainerAdapter? = AtcVariantContainerAdapter(listener)
     private var rvVariant: RecyclerView? = view.findViewById(R.id.rv_variant_viewholder)
     private var txtEmptyStock: Typography? = view.findViewById(R.id.txt_variant_empty_stock)
-    private var txtTokoCabang: Typography? = view.findViewById(R.id.txt_variant_tokocabang)
 
     override fun bind(element: VariantComponentDataModel) {
         element.listOfVariantCategory?.let {
             rvVariant?.adapter = variantContainerAdapter
             rvVariant?.itemAnimator = null
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.setData(it)
         }
     }
@@ -38,17 +37,15 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     override fun bind(element: VariantComponentDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         element.listOfVariantCategory?.let {
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.variantContainerData = it
             variantContainerAdapter?.notifyItemRangeChanged(0, it.size, 1)
         }
     }
 
-    private fun renderTxt(element: VariantComponentDataModel) = with(view) {
-        txtTokoCabang?.showWithCondition(element.isTokoCabang)
-        val textColor = getHexColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
-        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label, textColor)).spannedString
-        txtEmptyStock?.showWithCondition(element.isEmptyStock)
+    private fun renderStockWording(element: VariantComponentDataModel) = with(view) {
+        txtEmptyStock?.text = HtmlLinkHelper(context, element.emptyOrInactiveCopy).spannedString
+        txtEmptyStock?.showWithCondition(element.emptyOrInactiveCopy.isNotEmpty())
     }
 
     private fun getHexColor(resColor: Int): String {

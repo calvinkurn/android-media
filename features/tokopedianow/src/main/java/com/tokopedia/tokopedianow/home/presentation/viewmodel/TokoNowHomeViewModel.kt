@@ -44,10 +44,12 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.findNextIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapEducationalInformationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setQuantityToZero
@@ -168,11 +170,11 @@ class TokoNowHomeViewModel @Inject constructor(
      * Content data requested lazily for each component.
      * @see getLayoutData for loading content data.
      */
-    fun getHomeLayout(localCacheModel: LocalCacheModel?) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel?, hasSharingEducationBeenRemoved: Boolean) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
             val homeLayoutResponse = getHomeLayoutListUseCase.execute(localCacheModel)
-            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved)
+            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved, hasSharingEducationBeenRemoved)
             val data = HomeLayoutListUiModel(
                 items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW,
@@ -380,6 +382,19 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun removeSharingEducationWidget(id: String) {
+        launchCatchError(block = {
+            homeLayoutItemList.removeItem(id)
+
+            val data = HomeLayoutListUiModel(
+                items = homeLayoutItemList,
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {}
+    }
+
     fun getRecentPurchaseProducts(): List<TokoNowProductCardUiModel> {
         val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRecentPurchaseUiModel }
         val recentPurchase = item?.layout as? TokoNowRecentPurchaseUiModel
@@ -414,6 +429,8 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item).await()
             is HomeProductRecomUiModel -> getHomeLayoutDataAsync(item, localCacheModel).await()
+            is HomeEducationalInformationWidgetUiModel -> getEducationalInformationAsync(item).await()
+            is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel?.warehouse_id.orEmpty()).await()
         }
     }
 
@@ -497,6 +514,27 @@ class TokoNowHomeViewModel @Inject constructor(
             val tickerList = getTickerUseCase.execute().ticker.tickerList
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private fun getEducationalInformationAsync(item: HomeEducationalInformationWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            homeLayoutItemList.mapEducationalInformationData(item)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getSharingEducationAsync(item: HomeSharingEducationWidgetUiModel, warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getRecentPurchaseUseCase.execute(warehouseId)
+            if(response.products.isNotEmpty()) {
+                homeLayoutItemList.mapSharingEducationData(item)
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
         }) {
             homeLayoutItemList.removeItem(item.id)
         }

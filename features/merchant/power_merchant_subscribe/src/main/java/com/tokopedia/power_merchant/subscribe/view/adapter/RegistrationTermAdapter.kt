@@ -19,14 +19,14 @@ import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
  */
 
 class RegistrationTermAdapter(
-        private val onTermCtaClicked: ((RegistrationTermUiModel) -> Unit)? = null
+    private val onTermCtaClicked: ((RegistrationTermUiModel) -> Unit)? = null
 ) : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
 
     private var terms: List<RegistrationTermUiModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegistrationTermViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_pm_registration_term, parent, false)
+            .inflate(R.layout.item_pm_registration_term, parent, false)
         return RegistrationTermViewHolder(view)
     }
 
@@ -52,21 +52,30 @@ class RegistrationTermAdapter(
         }
 
         private fun setupTermDescription(term: RegistrationTermUiModel) {
-            if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
-                val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
-                val termDescription = PowerMerchantSpannableUtil.createSpannableString(
+            with(itemView) {
+                if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
+                    val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
                         highlightText = term.clickableText.orEmpty(),
-                        colorId = itemView.context.getResColor(ctaTextColor),
+                        colorId = context.getResColor(ctaTextColor),
                         isBold = true
-                ) {
-                    RouteManager.route(itemView.context, term.appLinkOrUrl)
-                    onTermCtaClicked?.invoke(term)
+                    ) {
+                        RouteManager.route(context, term.appLinkOrUrl)
+                        onTermCtaClicked?.invoke(term)
+                    }
+                    tvPmTermItemDesc.apply {
+                        movementMethod = LinkMovementMethod.getInstance()
+                        text = termDescription
+                    }
+                } else {
+                    tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
                 }
-                itemView.tvPmTermItemDesc.movementMethod = LinkMovementMethod.getInstance()
-                itemView.tvPmTermItemDesc.text = termDescription
-            } else {
-                itemView.tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
+                if (term.isNewSeller && !term.isFirstMondayNewSeller) {
+                    tvPmTermItemDesc.setTextColor(
+                        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    )
+                }
             }
         }
     }

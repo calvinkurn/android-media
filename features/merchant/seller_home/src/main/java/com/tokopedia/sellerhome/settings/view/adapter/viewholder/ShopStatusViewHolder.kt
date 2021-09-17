@@ -20,7 +20,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopS
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopStatusViewHolder(itemView: View?,
-                           private val onGoToPowerMerchant: (String) -> Unit,
+                           private val onGoToPowerMerchant: (String?) -> Unit,
                            private val onErrorClicked: () -> Unit,
                            private val onShopStatusImpression: (ShopType) -> Unit) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
@@ -170,7 +170,9 @@ class ShopStatusViewHolder(itemView: View?,
         hideAllShopStatusSuccessLayouts()
         loadingLayout?.gone()
         errorLayout?.gone()
-        onItemViewClicked = {}
+        onItemViewClicked = {
+            onGoToPowerMerchant(null)
+        }
     }
 
     private fun setTitle(@StringRes titleStringRes: Int) {
