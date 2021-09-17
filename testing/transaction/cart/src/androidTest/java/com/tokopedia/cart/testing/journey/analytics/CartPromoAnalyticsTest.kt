@@ -5,8 +5,13 @@ import android.app.Instrumentation
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.testing.R
 import com.tokopedia.cart.testing.robot.CartPageIntentTestRule
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_MOCK_PROMO_RESPONSE
+import com.tokopedia.cart.testing.robot.CartPageMocks.UPDATE_CART_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE
+import com.tokopedia.cart.testing.robot.CartPageMocks.VALIDATE_USE_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.VALIDATE_USE_MOCK_DEFAULT_RESPONSE
 import com.tokopedia.cart.testing.robot.cartPage
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -36,9 +41,9 @@ class CartPromoAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, GET_CART_LIST_MOCK_PROMO_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, UPDATE_CART_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, VALIDATE_USE_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -64,10 +69,6 @@ class CartPromoAnalyticsTest {
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp"
-        private const val UPDATE_CART_KEY = "update_cart_v2"
-        private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
-
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart_promo.json"
     }
 

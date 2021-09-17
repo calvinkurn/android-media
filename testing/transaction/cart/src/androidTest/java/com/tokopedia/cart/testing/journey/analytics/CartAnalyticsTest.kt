@@ -1,8 +1,11 @@
 package com.tokopedia.cart.testing.journey.analytics
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.testing.R
 import com.tokopedia.cart.testing.robot.CartPageIntentTestRule
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE
+import com.tokopedia.cart.testing.robot.CartPageMocks.UPDATE_CART_KEY
+import com.tokopedia.cart.testing.robot.CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE
 import com.tokopedia.cart.testing.robot.cartPage
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -32,8 +35,8 @@ class CartAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, GET_CART_LIST_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, UPDATE_CART_MOCK_DEFAULT_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -58,9 +61,6 @@ class CartAnalyticsTest {
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp"
-        private const val UPDATE_CART_KEY = "update_cart_v2"
-
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
     }
 

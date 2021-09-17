@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.testing.robot
 
 import android.app.Activity
-import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
@@ -28,7 +25,6 @@ import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.isA
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 
@@ -40,42 +36,8 @@ class CheckoutPageRobot {
         Thread.sleep(2000)
     }
 
-    private fun <T : Activity> scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<T>): Int {
+    private fun scrollRecyclerViewToFirstOrder() {
         onView(withId(R.id.rv_shipment)).perform(RecyclerViewActions.scrollToHolder(isA(ShipmentItemViewHolder::class.java)))
-        return 1
-//        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
-//        val itemCount = recyclerView.adapter?.itemCount ?: 0
-//
-//        var position = RecyclerView.NO_POSITION
-//        for (i in 0 until itemCount) {
-//            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
-//            when (recyclerView.findViewHolderForAdapterPosition(i)) {
-//                is ShipmentItemViewHolder -> {
-//                    position = i
-//                    break
-//                }
-//            }
-//        }
-//
-//        return position
-    }
-
-    private fun <T : Activity> scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<T>): Int {
-        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-        var position = RecyclerView.NO_POSITION
-        for (i in 0 until itemCount) {
-            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
-            when (recyclerView.findViewHolderForAdapterPosition(i)) {
-                is ShipmentButtonPaymentViewHolder -> {
-                    position = i
-                    break
-                }
-            }
-        }
-
-        return position
     }
 
     private fun <T : Activity> scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<T>): Int {
@@ -111,41 +73,26 @@ class CheckoutPageRobot {
         override fun perform(uiController: UiController, view: View) = ViewActions.click().perform(uiController, view.findViewById(viewId))
     }
 
-    fun <T : Activity> clickChooseDuration(activityRule: IntentsTestRule<T>) {
-//        val position = scrollRecyclerViewToFirstOrder(activityRule)
-//        if (position != RecyclerView.NO_POSITION) {
-//            onView(ViewMatchers.withId(R.id.rv_shipment))
-//                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-//                            clickOnViewChild(R.id.layout_state_no_selected_shipping)))
-            onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java),
-                            clickOnViewChild(R.id.layout_state_no_selected_shipping)))
-//        }
+    fun clickChooseDuration() {
+        onView(withId(R.id.rv_shipment))
+                .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java),
+                        clickOnViewChild(R.id.layout_state_no_selected_shipping)))
     }
 
     fun selectFirstShippingDurationOption() {
         onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
     }
 
-    fun <T : Activity> clickPromoButton(activityRule: IntentsTestRule<T>) {
-        val position = scrollRecyclerViewToPromoButton(activityRule)
-        if (position != RecyclerView.NO_POSITION) {
-            onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-                            clickOnViewChild(R.id.promo_checkout_btn_shipment)))
-        }
+    fun clickPromoButton() {
+        onView(withId(R.id.rv_shipment))
+                .perform(RecyclerViewActions.actionOnHolderItem(isA(PromoCheckoutViewHolder::class.java),
+                        clickOnViewChild(R.id.promo_checkout_btn_shipment)))
     }
 
-    fun <T : Activity> clickChoosePaymentButton(activityRule: IntentsTestRule<T>) {
-//        val position = scrollRecyclerViewToChoosePaymentButton(activityRule)
-//        if (position != RecyclerView.NO_POSITION) {
-//            onView(ViewMatchers.withId(R.id.rv_shipment))
-//                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-//                            clickOnViewChild(R.id.btn_select_payment_method)))
-            onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentButtonPaymentViewHolder::class.java),
-                            clickOnViewChild(R.id.btn_select_payment_method)))
-//        }
+    fun clickChoosePaymentButton() {
+        onView(withId(R.id.rv_shipment))
+                .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentButtonPaymentViewHolder::class.java),
+                        clickOnViewChild(R.id.btn_select_payment_method)))
     }
 
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
@@ -161,41 +108,39 @@ class CheckoutPageRobot {
      * @param eta eta message
      * @param message additional promo message if available
      */
-    fun <T : Activity> assertHasSingleShipmentSelected(activityRule: IntentsTestRule<T>, title: String, originalPrice: String? = null,
-                                        discountedPrice: String? = null, eta: String, message: String? = null) {
-        val position = scrollRecyclerViewToFirstOrder(activityRule)
-        if (position != RecyclerView.NO_POSITION) {
-            onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java), object : ViewAction {
-                        override fun getConstraints(): Matcher<View>? = null
+    fun assertHasSingleShipmentSelected(title: String, originalPrice: String? = null,
+                                                       discountedPrice: String? = null, eta: String, message: String? = null) {
+        scrollRecyclerViewToFirstOrder()
+        onView(withId(R.id.rv_shipment))
+                .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java), object : ViewAction {
+                    override fun getConstraints(): Matcher<View>? = null
 
-                        override fun getDescription(): String = "Assert Single Shipment Selected UI"
+                    override fun getDescription(): String = "Assert Single Shipment Selected UI"
 
-                        override fun perform(uiController: UiController?, view: View) {
-                            assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
-                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
-                            if (originalPrice != null) {
-                                assertEquals(originalPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).text)
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                            }
-                            if (discountedPrice != null) {
-                                assertEquals(discountedPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).text)
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).visibility)
-                            }
-                            assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
-                            if (message != null) {
-                                assertEquals(message, view.findViewById<Typography>(R.id.label_single_shipping_message).text.toString())
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
-                            }
+                    override fun perform(uiController: UiController?, view: View) {
+                        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
+                        assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
+                        if (originalPrice != null) {
+                            assertEquals(originalPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).text)
+                            assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
+                        } else {
+                            assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
                         }
-                    }))
-        }
+                        if (discountedPrice != null) {
+                            assertEquals(discountedPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).text)
+                            assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
+                        } else {
+                            assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).visibility)
+                        }
+                        assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
+                        if (message != null) {
+                            assertEquals(message, view.findViewById<Typography>(R.id.label_single_shipping_message).text.toString())
+                            assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                        } else {
+                            assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                        }
+                    }
+                }))
     }
 }
 
@@ -205,12 +150,8 @@ class ResultRobot {
         Thread.sleep(2000)
     }
 
-    fun hasPassedAnalytics(gtmLogDBSource: GtmLogDBSource, context: Context, queryFileName: String) {
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, queryFileName), hasAllSuccess())
-    }
-
-    fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryFileName: String) {
-        assertThat(cassavaTestRule.validate(queryFileName), hasAllSuccess())
+    fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryId: String) {
+        assertThat(cassavaTestRule.validate(queryId), hasAllSuccess())
     }
 
     fun assertGoToPayment() {

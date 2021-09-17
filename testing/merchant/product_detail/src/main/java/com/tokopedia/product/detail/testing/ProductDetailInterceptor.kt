@@ -21,11 +21,11 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
         if (requestString.contains(GET_PDP_P1) && customP1ResponsePath != null) {
             return mockResponse(copy, getJsonFromResource(customP1ResponsePath!!))
         } else if (requestString.contains(GET_PDP_P2_DATA)) {
-            mockResponse(copy, getJsonFromResource(customP2DataResponsePath!!))
+            return mockResponse(copy, getJsonFromResource(customP2DataResponsePath!!))
         } else if (requestString.contains(GET_RECOM_AFTER_ATC) && customRecomWidgetRecomAtcResponsePath != null) {
-            mockResponse(copy, getJsonFromResource(customRecomWidgetRecomAtcResponsePath!!))
+            return mockResponse(copy, getJsonFromResource(customRecomWidgetRecomAtcResponsePath!!))
         } else {
-            mockResponse(copy, "")
+            return mockResponse(copy, "")
         }
 
         return chain.proceed(chain.request())

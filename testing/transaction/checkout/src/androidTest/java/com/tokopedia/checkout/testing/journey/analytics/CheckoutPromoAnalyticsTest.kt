@@ -7,7 +7,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.checkout.testing.R
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY
+import com.tokopedia.checkout.testing.robot.CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_PROMO_RESPONSE
 import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -37,7 +38,7 @@ class CheckoutPromoAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, SHIPMENT_ADDRESS_FORM_PROMO_RESPONSE), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -48,7 +49,7 @@ class CheckoutPromoAnalyticsTest {
 
         checkoutPage {
             waitForData()
-            clickPromoButton(activityRule)
+            clickPromoButton()
         } validateAnalytics  {
             hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -61,8 +62,6 @@ class CheckoutPromoAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
-
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
     }
 

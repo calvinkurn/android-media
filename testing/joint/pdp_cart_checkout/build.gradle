@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+
+    buildFeatures {
+        buildConfig = false
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.testing.atc_common)
+    implementation projectOrAar(rootProject.ext.testing.cart)
+    implementation projectOrAar(rootProject.ext.testing.checkout)
+    implementation projectOrAar(rootProject.ext.testing.productDetail)
+
+    implementation projectOrAar(rootProject.ext.features.productDetail)
+
+    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation rootProject.ext.networkDependencies.okHttp
+
+    implementation rootProject.ext.testDependencies.espressoIntents
+    implementation rootProject.ext.testDependencies.espressoCore
+    implementation rootProject.ext.testDependencies.espressoContrib
+
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
+}
