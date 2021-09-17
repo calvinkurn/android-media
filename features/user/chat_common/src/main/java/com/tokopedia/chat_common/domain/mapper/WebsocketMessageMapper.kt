@@ -84,29 +84,11 @@ open class WebsocketMessageMapper @Inject constructor() {
             AttachInvoiceSentViewModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttribute,
                 InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = invoiceSentPojo.invoiceLink.attributes.title,
-                description = invoiceSentPojo.invoiceLink.attributes.description,
-                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                isSender = !pojo.isOpposite,
-                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
-                status = invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                createTime = invoiceSentPojo.invoiceLink.attributes.createTime,
-                source = pojo.source
-        ).apply {
-            finishLoading()
-        }
+        return AttachInvoiceSentViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .withNeedSync(false)
+            .build()
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

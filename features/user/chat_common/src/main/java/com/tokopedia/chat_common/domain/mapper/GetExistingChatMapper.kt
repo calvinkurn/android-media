@@ -188,28 +188,10 @@ open class GetExistingChatMapper @Inject constructor() {
     private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.senderId.toString(),
-                from = pojo.senderName,
-                fromRole = pojo.role,
-                attachmentId = pojo.attachment?.id ?: "",
-                attachmentType = pojo.attachment?.type.toString(),
-                replyTime = pojo.replyTime,
-                message = invoiceSentPojo.invoiceLink.attributes.title,
-                description = invoiceSentPojo.invoiceLink.attributes.description,
-                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                isSender = !pojo.isOpposite,
-                isRead = pojo.isRead,
-                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
-                status = invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                createTime = invoiceSentPojo.invoiceLink.attributes.createTime,
-                source = pojo.source
-        )
-
+        return AttachInvoiceSentViewModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .build()
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

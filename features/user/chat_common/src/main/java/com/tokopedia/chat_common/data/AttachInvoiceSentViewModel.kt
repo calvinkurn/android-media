@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
@@ -8,13 +9,9 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSentViewModel : SendableViewModel,
-        Visitable<BaseChatTypeFactory>,
-        DeferredAttachment {
-
-    override var isLoading: Boolean = true
-    override var isError: Boolean = false
-    override val id: String get() = attachmentId
+class AttachInvoiceSentViewModel private constructor(
+    builder: Builder
+) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     var imageUrl: String? = null
     var description: String? = null
@@ -25,106 +22,22 @@ class AttachInvoiceSentViewModel : SendableViewModel,
     var invoiceUrl: String? = null
     var createTime: String? = null
 
-    /**
-     * Constructor for WebSocket.
-     *
-     * @param msgId          messageId
-     * @param fromUid        userId of sender
-     * @param from           name of sender
-     * @param fromRole       role of sender
-     * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     * [com.tokopedia.chat_common.data.AttachmentType] types
-     * @param replyTime      replytime in unixtime
-     * @param imageUrl       image url
-     * @param message        message (invoice id)
-     * @param description    invoice description
-     * @param totalAmount    total amount
-     */
-    constructor(
-            msgId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            message: String, description: String, imageUrl: String, totalAmount: String,
-            isSender: Boolean, statusId: Int, status: String, invoiceId: String,
-            invoiceUrl: String, createTime: String, source: String
-    ) : super(
-            msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            false, false, isSender, message,
-            source
-    ) {
-        this.description = description
-        this.imageUrl = imageUrl
-        this.totalAmount = totalAmount
-        this.statusId = statusId
-        this.status = status
-        this.invoiceId = invoiceId
-        this.invoiceUrl = invoiceUrl
-        this.createTime = createTime
-    }
+    override var isLoading: Boolean = true
+    override var isError: Boolean = false
+    override val id: String get() = attachmentId
 
-    /**
-     * Constructor for API.
-     *
-     * @param msgId          messageId
-     * @param fromUid        userId of sender
-     * @param from           name of sender
-     * @param fromRole       role of sender
-     * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     * [com.tokopedia.chat_common.data.AttachmentType] types
-     * @param replyTime      replytime in unixtime
-     * @param imageUrl       image url
-     * @param message        message (invoice id)
-     * @param description    invoice description
-     * @param totalAmount    total amount
-     * !! startTime is not returned from API
-     */
-    constructor(
-            msgId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, message: String,
-            description: String, imageUrl: String, totalAmount: String, isSender: Boolean,
-            isRead: Boolean, statusId: Int, status: String, invoiceId: String,
-            invoiceUrl: String, createTime: String, source: String
-    ) : super(
-            msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, "",
-            isRead, false, isSender, message, source
-    ) {
-        this.description = description
-        this.imageUrl = imageUrl
-        this.totalAmount = totalAmount
-        this.statusId = statusId
-        this.status = status
-        this.invoiceId = invoiceId
-        this.invoiceUrl = invoiceUrl
-        this.createTime = createTime
-    }
-
-    /**
-     * Constructor for Sending Invoice
-     *
-     * @param fromUid     sender user id
-     * @param from        sender name
-     * @param message     invoice number
-     * @param description invoice description
-     * @param imageUrl    image url
-     * @param totalAmount amount
-     * @param startTime   starttime to remove dummy sent message after successful send. Check
-     * [SendableViewModel]
-     */
-    constructor(
-            fromUid: String, from: String, message: String, description: String,
-            imageUrl: String, totalAmount: String, startTime: String
-    ) : super(
-            "", fromUid, from, "",
-            "", AttachmentType.Companion.TYPE_INVOICE_SEND, SendableViewModel.SENDING_TEXT, startTime,
-            false, true, true, message,
-            ""
-    ) {
-        this.description = description
-        this.imageUrl = imageUrl
-        this.totalAmount = totalAmount
+    init {
+        this.description = builder.description
+        this.imageUrl = builder.imageUrl
+        this.totalAmount = builder.totalAmount
+        this.statusId = builder.statusId
+        this.status = builder.status
+        this.invoiceId = builder.invoiceId
+        this.invoiceUrl = builder.invoiceUrl
+        this.createTime = builder.createTime
+        if (!builder.needSync) {
+            finishLoading()
+        }
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
@@ -156,4 +69,78 @@ class AttachInvoiceSentViewModel : SendableViewModel,
         this.isError = false
     }
 
+    class Builder : SendableViewModel.Builder<Builder, AttachInvoiceSentViewModel>() {
+
+        internal var imageUrl: String = ""
+        internal var description: String = ""
+        internal var totalAmount: String = ""
+        internal var statusId: Int = -1
+        internal var status: String = ""
+        internal var invoiceId: String = ""
+        internal var invoiceUrl: String = ""
+        internal var createTime: String = ""
+        internal var needSync: Boolean = true
+
+        fun withInvoiceAttributesResponse(invoice: InvoiceLinkPojo): Builder {
+            withMsg(invoice.attributes.title)
+            withDescription(invoice.attributes.description)
+            withImageUrl(invoice.attributes.imageUrl)
+            withTotalAmount(invoice.attributes.totalAmount)
+            withStatusId(invoice.attributes.statusId)
+            withStatus(invoice.attributes.status)
+            withInvoiceId(invoice.attributes.code)
+            withInvoiceUrl(invoice.attributes.hrefUrl)
+            withCreateTime(invoice.attributes.createTime)
+            return self()
+        }
+
+        fun withImageUrl(imageUrl: String): Builder {
+            this.imageUrl = imageUrl
+            return self()
+        }
+
+        fun withDescription(description: String): Builder {
+            this.description = description
+            return self()
+        }
+
+        fun withTotalAmount(totalAmount: String): Builder {
+            this.totalAmount = totalAmount
+            return self()
+        }
+
+        fun withStatusId(statusId: Int): Builder {
+            this.statusId = statusId
+            return self()
+        }
+
+        fun withStatus(status: String): Builder {
+            this.status = status
+            return self()
+        }
+
+        fun withInvoiceId(invoiceId: String): Builder {
+            this.invoiceId = invoiceId
+            return self()
+        }
+
+        fun withInvoiceUrl(invoiceUrl: String): Builder {
+            this.invoiceUrl = invoiceUrl
+            return self()
+        }
+
+        fun withCreateTime(createTime: String): Builder {
+            this.createTime = createTime
+            return self()
+        }
+
+        fun withNeedSync(needSync: Boolean): Builder {
+            this.needSync = needSync
+            return self()
+        }
+
+        override fun build(): AttachInvoiceSentViewModel {
+            return AttachInvoiceSentViewModel(this)
+        }
+    }
 }
