@@ -246,6 +246,7 @@ class CameraFragment : Fragment() {
                 super.onCameraError(exception)
                 Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
                 showToast("Something went wrong", Toaster.TYPE_ERROR)
+                cameraButton.addTouchListener()
             }
 
             override fun onVideoRecordingStart() {

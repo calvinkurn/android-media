@@ -76,6 +76,10 @@ class CameraButton @JvmOverloads constructor(
     private fun initViews() {
         progressBar = findViewById(R.id.progress_bar_timer)
         imageCapture = findViewById(R.id.image_capture)
+        addTouchListener()
+    }
+
+    fun addTouchListener(){
         imageCapture.setOnTouchListener(cameraButtonTouchListener)
     }
 
