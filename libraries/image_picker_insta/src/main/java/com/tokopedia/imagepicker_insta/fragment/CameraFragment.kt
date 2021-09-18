@@ -29,6 +29,7 @@ import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
 import com.tokopedia.imagepicker_insta.views.CameraButtonListener
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 
@@ -40,6 +41,8 @@ class CameraFragment : Fragment() {
     lateinit var imageFlash: AppCompatImageView
     lateinit var imageCaptureRegion: View
     lateinit var imageSelfieCamera: AppCompatImageView
+    lateinit var loader: LoaderUnify
+
     lateinit var viewModel: CameraViewModel
     var cropVideoPath: String? = null
     val bitmapCallback = BitmapCallback {
@@ -121,6 +124,7 @@ class CameraFragment : Fragment() {
         imageFlash = v.findViewById(R.id.image_flash)
         imageSelfieCamera = v.findViewById(R.id.image_selfie_camera)
         imageCaptureRegion = v.findViewById(R.id.capture_region)
+        loader = v.findViewById(R.id.loader)
 
         imageFlash.visibility = View.GONE
         imageSelfieCamera.visibility = View.GONE
@@ -141,10 +145,11 @@ class CameraFragment : Fragment() {
         viewModel.liveDataCropPhoto.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    showToast("Cropping Photo, don't exit",Toaster.TYPE_NORMAL)
+                    loader.visibility = View.VISIBLE
                 }
 
                 LiveDataResult.STATUS.SUCCESS -> {
+                    loader.visibility = View.GONE
                     if (it.data != null) {
                         (activity as? CameraActivity)?.exitActivityOnSuccess(it.data)
                     } else {
@@ -153,6 +158,7 @@ class CameraFragment : Fragment() {
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                    loader.visibility = View.GONE
                     showToast("Something went wrong in cropping",Toaster.TYPE_ERROR)
                     (activity as? CameraActivity)?.exitActivityOnError()
 
@@ -314,14 +320,15 @@ class CameraFragment : Fragment() {
     }
 
     fun capturePhoto() {
-        cameraView.takePicture()
+//        cameraView.takePicture()
+        cameraView.takePictureSnapshot()
     }
 
 
     private fun cropBitmap(srcBitmap: Bitmap) {
         context?.let {
             val file = CameraUtil.createMediaFile(it)
-            viewModel.cropPhoto(srcBitmap, imageCaptureRegion.y.toInt(), cameraView.width, file)
+            viewModel.cropPhoto(srcBitmap, imageCaptureRegion.y.toInt(), srcBitmap.width, file)
         }
     }
 

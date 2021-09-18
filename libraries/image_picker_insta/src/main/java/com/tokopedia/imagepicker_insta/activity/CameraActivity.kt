@@ -91,7 +91,7 @@ class CameraActivity : PermissionActivity() {
         toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.white))
     }
 
-    fun showPermissionFragment() {
+    private fun showPermissionFragment() {
         supportFragmentManager.beginTransaction()
             .replace(container.id, NoPermissionFragment())
             .commit()
@@ -109,7 +109,7 @@ class CameraActivity : PermissionActivity() {
         setSupportActionBar(toolbar)
         val toolbarNavIcon: AppCompatImageView = findViewById(R.id.toolbar_nav_icon)
         toolbarNavIcon.setOnClickListener {
-            finish()
+            onBackPressed()
         }
     }
 
@@ -144,5 +144,23 @@ class CameraActivity : PermissionActivity() {
                 showFragment()
             }
         }
+    }
+
+    private fun isProcessingMedia(): Boolean {
+        if (supportFragmentManager.fragments.isNotEmpty()) {
+            if (supportFragmentManager.fragments.first() is CameraFragment) {
+                val camFragment = supportFragmentManager.fragments.first() as CameraFragment
+                if (camFragment.loader.visibility == View.VISIBLE) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    override fun onBackPressed() {
+        if (!isProcessingMedia())
+            super.onBackPressed()
+
     }
 }

@@ -65,16 +65,18 @@
         android:layout_marginStart="8dp"
         android:text="@string/imagepicker_insta_akt"
         android:textColor="#212121"
-        app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="@id/image_contaianer"
         app:layout_constraintStart_toEndOf="@id/image_perm"
-        app:layout_constraintTop_toTopOf="@id/image_contaianer" />
+        app:layout_constraintTop_toTopOf="@id/image_contaianer"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_perm"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:text="@string/imagepicker_insta_aktifikan"
         android:textColor="#00AA5B"
         app:layout_constraintBottom_toBottomOf="@id/image_contaianer"
