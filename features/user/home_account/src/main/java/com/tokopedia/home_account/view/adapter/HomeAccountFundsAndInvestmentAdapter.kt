@@ -21,11 +21,7 @@ class HomeAccountFundsAndInvestmentAdapter(
         delegatesManager.addDelegate(FundsAndInvestmentSubtitleDelegate())
     }
 
-    fun addShimmeringItemView(walletShimmeringUiModel: WalletShimmeringUiModel) {
-        addItem(walletShimmeringUiModel)
-    }
-
-    fun changeItemBySameId(walletUiModel: WalletUiModel) {
+    fun changeItemToSuccessBySameId(walletUiModel: WalletUiModel) {
         val items = getItems().toMutableList()
         items.forEach {
             when (it) {
@@ -51,7 +47,7 @@ class HomeAccountFundsAndInvestmentAdapter(
         }
     }
 
-    fun changeItemToFailed(id: String) {
+    fun changeItemToFailedById(id: String) {
         val items = getItems().toMutableList()
         items.forEach {
             when (it) {
@@ -71,6 +67,21 @@ class HomeAccountFundsAndInvestmentAdapter(
                     }
                 }
             }
+        }
+    }
+
+    fun changeItemToShimmer(walletShimmeringUiModel: WalletShimmeringUiModel) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is WalletUiModel) {
+                if (it.id == walletShimmeringUiModel.id) {
+                    val position = items.indexOf(it)
+                    removeItemAt(position)
+                    addItem(position, walletShimmeringUiModel)
+                    notifyItemChanged(position)
+                }
+            }
+
         }
     }
 

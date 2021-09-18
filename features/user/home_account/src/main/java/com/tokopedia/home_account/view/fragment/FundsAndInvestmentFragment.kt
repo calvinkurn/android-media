@@ -88,12 +88,17 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         homeAccountAnalytic.eventViewAssetPage()
     }
 
-    override fun onClickWallet(id: String, applink: String?, isFailed: Boolean, isActive: Boolean) {
-        homeAccountAnalytic.eventClickAssetPage(id, isActive, isFailed)
-        if (isFailed) {
-            viewModel.getBalanceAndPoint(id)
-        } else if (!applink.isNullOrEmpty()) {
-            goToApplink(applink)
+    override fun onClickWallet(walletUiModel: WalletUiModel) {
+        homeAccountAnalytic.eventClickAssetPage(
+            walletUiModel.id,
+            walletUiModel.isActive,
+            walletUiModel.isFailed
+        )
+        if (walletUiModel.isFailed) {
+            adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
+            viewModel.getBalanceAndPoint(walletUiModel.id)
+        } else if (!walletUiModel.applink.isEmpty()) {
+            goToApplink(walletUiModel.applink)
         }
     }
 
@@ -141,7 +146,8 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         centralizedUserAssetConfig.assetConfigVertical.forEach {
             if (it.id != AccountConstants.WALLET.GOPAY &&
                 it.id != AccountConstants.WALLET.GOPAYLATER &&
-                it.id != AccountConstants.WALLET.SALDO) {
+                it.id != AccountConstants.WALLET.SALDO
+            ) {
                 viewModel.getBalanceAndPoint(it.id)
             }
         }
@@ -155,7 +161,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 if (it.id == AccountConstants.WALLET.SALDO) {
                     adapter?.addItem(UiModelMapper.getWalletUiModel(it))
                 } else {
-                    adapter?.addShimmeringItemView(UiModelMapper.getWalletShimmeringUiModel(it))
+                    adapter?.addItem(UiModelMapper.getWalletShimmeringUiModel(it))
                 }
             }
         }
@@ -179,7 +185,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
-        adapter?.changeItemBySameId(
+        adapter?.changeItemToSuccessBySameId(
             UiModelMapper.getWalletUiModel(
                 balanceAndPoint
             ).apply {
@@ -189,7 +195,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
-        adapter?.changeItemToFailed(walletId)
+        adapter?.changeItemToFailedById(walletId)
     }
 
     private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {

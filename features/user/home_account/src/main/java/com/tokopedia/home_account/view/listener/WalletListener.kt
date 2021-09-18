@@ -1,5 +1,7 @@
 package com.tokopedia.home_account.view.listener
 
+import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
+
 interface WalletListener {
-    fun onClickWallet(id: String, applink: String?, isFailed: Boolean, isActive: Boolean)
+    fun onClickWallet(walletUiModel: WalletUiModel)
 }

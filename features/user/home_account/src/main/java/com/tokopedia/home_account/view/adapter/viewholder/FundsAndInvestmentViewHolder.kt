@@ -27,12 +27,12 @@ class FundsAndInvestmentViewHolder(
         setTitleText(item?.title)
         setSubtitleText(item?.subtitle, item?.isFailed.orFalse())
         setAction(item?.isFailed.orFalse(), item?.isActive.orTrue(), item?.isVertical.orFalse())
-        setClickLitener(item?.id,
-            item?.applink,
-            item?.isFailed.orFalse(),
-            item?.isActive.orTrue(),
-            walletListener
-        )
+        item?.let {
+            setClickLitener(
+                it,
+                walletListener
+            )
+        }
     }
 
     private fun setImage(url: String?) {
@@ -60,7 +60,8 @@ class FundsAndInvestmentViewHolder(
             isFailed -> {
                 binding?.imageAction?.visible()
                 binding?.imageAction?.context?.let {
-                    val colorGreen = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    val colorGreen =
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
                 }
             }
@@ -72,21 +73,26 @@ class FundsAndInvestmentViewHolder(
             else -> {
                 binding?.imageAction?.visible()
                 binding?.imageAction?.context?.let {
-                    val colorNeutral = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700)
-                    binding?.imageAction?.setImage(IconUnify.CHEVRON_RIGHT, colorNeutral, colorNeutral)
+                    val colorNeutral = ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Neutral_N700
+                    )
+                    binding?.imageAction?.setImage(
+                        IconUnify.CHEVRON_RIGHT,
+                        colorNeutral,
+                        colorNeutral
+                    )
                 }
             }
         }
     }
 
-    private fun setClickLitener(id: String?,
-                                applink: String?,
-                                isFailed: Boolean,
-                                isActive: Boolean,
-                                listener: WalletListener
+    private fun setClickLitener(
+        walletUiModel: WalletUiModel,
+        listener: WalletListener
     ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickWallet(id, applink, isFailed, isActive) }
+            listener.onClickWallet(walletUiModel)
         }
     }
 
