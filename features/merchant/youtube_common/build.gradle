@@ -39,6 +39,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
