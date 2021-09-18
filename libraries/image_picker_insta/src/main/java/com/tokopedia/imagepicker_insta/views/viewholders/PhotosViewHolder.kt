@@ -1,11 +1,10 @@
-package com.tokopedia.imagepicker_insta.viewholders
+package com.tokopedia.imagepicker_insta.views.viewholders
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.R
-import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.views.ToggleViewGroup
 

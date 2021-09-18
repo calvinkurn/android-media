@@ -1,22 +1,22 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.views.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
+import com.tokopedia.imagepicker_insta.fragment.ImagePickerFragmentContract
 import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoData
-import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
-import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
-import com.tokopedia.imagepicker_insta.viewholders.VideosViewHolder
+import com.tokopedia.imagepicker_insta.views.viewholders.CameraViewHolder
+import com.tokopedia.imagepicker_insta.views.viewholders.PhotosViewHolder
+import com.tokopedia.imagepicker_insta.views.viewholders.VideosViewHolder
 import com.tokopedia.unifycomponents.Toaster
 
 class ImageAdapter(
     val dataList: List<ImageAdapterData>,
     val contentHeight: Int,
-    val mainFragmentContract: MainFragmentContract,
+    val mainFragmentContract: ImagePickerFragmentContract,
     val maxMultiSelectLimit: Int,
     val layoutManager: GridLayoutManager
 ) :

@@ -7,6 +7,10 @@
     <string name="imagepicker_insta_akt">Aktifkan akses ke galeri</string>
     <string name="imagepicker_insta_sup">Supaya kamu bisa upload foto untuk membuat postingan Feed.</string>
     <string name="imagepicker_insta_pilih">Pilih Album</string>
+    <string name="imagepicker_insta_akt_cam">Aktifkan akses kamera</string>
+    <string name="imagepicker_insta_akt_mic">Aktifkan akses mikrofon</string>
+    <string name="imagepicker_insta_akt_kam"><![CDATA[Aktifkan akses kamera & mikrofon]]></string>
+    <string name="imagepicker_insta_akt_sup_kamu">Supaya kamu bisa mengambil foto, video, dan membuat live streaming.></string>
 
 
 </resources>

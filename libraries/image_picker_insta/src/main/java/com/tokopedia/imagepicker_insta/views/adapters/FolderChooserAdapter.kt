@@ -1,8 +1,9 @@
-package com.tokopedia.imagepicker_insta.views
+package com.tokopedia.imagepicker_insta.views.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.models.FolderData
+import com.tokopedia.imagepicker_insta.views.FolderChooserViewHolder
 
 class FolderChooserAdapter(val dataList:List<FolderData>): RecyclerView.Adapter<FolderChooserViewHolder>() {
 

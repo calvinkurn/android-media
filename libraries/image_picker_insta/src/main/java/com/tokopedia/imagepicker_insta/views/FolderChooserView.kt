@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.item_decoration.FolderItemDecoration
 import com.tokopedia.imagepicker_insta.models.FolderData
+import com.tokopedia.imagepicker_insta.views.adapters.FolderChooserAdapter
 import com.tokopedia.unifycomponents.toPx
 
 class FolderChooserView @JvmOverloads constructor(

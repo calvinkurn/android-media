@@ -40,6 +40,7 @@ import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
+import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -47,7 +48,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 
 
-class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
+class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
 
     val EDITOR_REQUEST_CODE = 221
 
@@ -72,7 +73,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDagger()
-        handleCameraPermissionCallback()
         setHasOptionsMenu(true)
     }
 
@@ -133,18 +133,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         startActivityForResult(intent, EDITOR_REQUEST_CODE)
     }
 
-    private fun handleCameraPermissionCallback() {
-        if (activity is ImagePickerInstaActivity) {
-            (activity as ImagePickerInstaActivity).cameraPermissionCallback = { hasAllPermission ->
-                if (hasAllPermission) {
-                    openCamera()
-                } else {
-                    showToast("Please allow Permissions", Toaster.TYPE_NORMAL)
-                }
-            }
-        }
-    }
-
     private fun initDagger() {
         if (context is AppCompatActivity) {
             viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
@@ -173,6 +161,10 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         noPermissionView.visibility = View.VISIBLE
         viewDataContainer.visibility = View.GONE
+    }
+
+    fun isPermissionUiVisible():Boolean{
+        return noPermissionView.visibility == View.VISIBLE
     }
 
     fun showDataUi() {
@@ -327,9 +319,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     }
 
     override fun handleOnCameraIconTap() {
-        if (activity is ImagePickerInstaActivity) {
-            PermissionUtil.requestCameraAndWritePermission(activity as ImagePickerInstaActivity)
-        }
+        openCamera()
     }
 
     override fun showToast(message: String, toasterType: Int) {
@@ -549,11 +539,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                     showDataUi()
                 } else {
                     showPermissionUi()
-                }
-            }
-            PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
-                context?.let {
-                    (activity as? ImagePickerInstaActivity)?.cameraPermissionCallback?.invoke(PermissionUtil.hasAllPermission(it))
                 }
             }
         }

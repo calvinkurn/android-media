@@ -2,20 +2,16 @@ package com.tokopedia.imagepicker_insta.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
-import android.widget.FrameLayout
 import androidx.annotation.IntRange
-import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.models.BundleData
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 
-class ImagePickerInstaActivity : AppCompatActivity() {
+class ImagePickerInstaActivity : PermissionActivity() {
 
     var toolbarTitle = ""
     var toolbarSubTitle = ""
@@ -57,9 +53,6 @@ class ImagePickerInstaActivity : AppCompatActivity() {
         }
     }
 
-    var cameraPermissionCallback: ((Boolean) -> Unit)? = null
-    var canRequestPermissionFromOnResume = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         processIntentData()
@@ -74,8 +67,8 @@ class ImagePickerInstaActivity : AppCompatActivity() {
         }
     }
 
-    fun getAttachedFragment():ImagePickerInstaMainFragment?{
-        if(!supportFragmentManager.fragments.isNullOrEmpty()){
+    fun getAttachedFragment(): ImagePickerInstaMainFragment? {
+        if (!supportFragmentManager.fragments.isNullOrEmpty()) {
             return supportFragmentManager.fragments.first() as? ImagePickerInstaMainFragment
         }
         return null
@@ -83,28 +76,12 @@ class ImagePickerInstaActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (canRequestPermissionFromOnResume && !PermissionUtil.isReadPermissionGranted(this)) {
-            getAttachedFragment()?.showPermissionUi()
-            canRequestPermissionFromOnResume = false
+        if (PermissionUtil.isReadPermissionGranted(this)) {
+            if (getAttachedFragment()?.isPermissionUiVisible() == true) {
+                getAttachedFragment()?.showDataUi()
+            }
         } else {
-            canRequestPermissionFromOnResume = true
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            PermissionUtil.READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                    getAttachedFragment()?.showDataUi()
-                } else {
-                    getAttachedFragment()?.showPermissionUi()
-                }
-            }
-            PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
-                cameraPermissionCallback?.invoke(PermissionUtil.hasAllPermission(this))
-            }
+            getAttachedFragment()?.showPermissionUi()
         }
     }
 

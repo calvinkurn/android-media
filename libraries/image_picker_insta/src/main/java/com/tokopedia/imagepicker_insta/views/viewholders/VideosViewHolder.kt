@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta.viewholders
+package com.tokopedia.imagepicker_insta.views.viewholders
 
 import android.view.LayoutInflater
 import android.view.View
