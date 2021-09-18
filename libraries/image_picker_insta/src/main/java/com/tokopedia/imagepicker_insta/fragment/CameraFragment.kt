@@ -6,6 +6,7 @@ import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.tokopedia.imagepicker_insta.views.CameraButtonListener
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
+import java.io.File
 
 class CameraFragment : Fragment() {
 
@@ -44,7 +46,10 @@ class CameraFragment : Fragment() {
     lateinit var loader: LoaderUnify
 
     lateinit var viewModel: CameraViewModel
+    var sourceVideoFile: File? = null
     var cropVideoPath: String? = null
+    val handler = Handler()
+
     val bitmapCallback = BitmapCallback {
         if (it != null) {
             cropBitmap(it)
@@ -63,26 +68,38 @@ class CameraFragment : Fragment() {
         }
 
         override fun onCompleted() {
+            handler.post {
+                loader.visibility = View.GONE
+            }
+
+            viewModel.deleteFile(sourceVideoFile)
 
             Timber.d("NOOB, onCompleted")
             if (!cropVideoPath.isNullOrEmpty()) {
-                showToast("Cropping Video Finished", Toaster.TYPE_NORMAL)
                 (activity as? CameraActivity)?.exitActivityOnSuccess(Uri.parse(cropVideoPath))
             } else {
-                showToast("Cropping Video Unknown error",Toaster.TYPE_ERROR)
                 (activity as? CameraActivity)?.exitActivityOnError()
             }
 
         }
 
         override fun onCanceled() {
-            showToast("Cropping Video cancelled", Toaster.TYPE_ERROR)
+            handler.post {
+                loader.visibility = View.GONE
+                showToast("Cropping Video cancelled", Toaster.TYPE_ERROR)
+            }
             Timber.d("NOOB, onCanceled")
+            viewModel.deleteFile(sourceVideoFile)
             (activity as? CameraActivity)?.exitActivityOnError()
         }
 
         override fun onFailed(exception: Exception?) {
-            showToast("Cropping Video exception", Toaster.TYPE_ERROR)
+            handler.post {
+                loader.visibility = View.GONE
+                showToast("Cropping Video exception", Toaster.TYPE_ERROR)
+            }
+
+            viewModel.deleteFile(sourceVideoFile)
             (activity as? CameraActivity)?.exitActivityOnError()
             exception?.printStackTrace()
             Timber.e("NOOB, ${exception?.message} ")
@@ -114,7 +131,7 @@ class CameraFragment : Fragment() {
         return v
     }
 
-    fun initData(){
+    fun initData() {
         viewModel = ViewModelProviders.of(this)[CameraViewModel::class.java]
     }
 
@@ -159,7 +176,7 @@ class CameraFragment : Fragment() {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loader.visibility = View.GONE
-                    showToast("Something went wrong in cropping",Toaster.TYPE_ERROR)
+                    showToast("Something went wrong in cropping", Toaster.TYPE_ERROR)
                     (activity as? CameraActivity)?.exitActivityOnError()
 
                 }
@@ -245,12 +262,12 @@ class CameraFragment : Fragment() {
      * TODO Rahul Ensure second recording will only start when mp4Composer is finished
      * */
     private fun cropVideo(result: VideoResult) {
-        context?.let {ctx ->
-            showToast("Cropping Vide, please don't close the screen",Toaster.TYPE_NORMAL)
+        context?.let { ctx ->
+            loader.visibility = View.VISIBLE
+
             val destinationPath = CameraUtil.createMediaFile(ctx, false).absolutePath
             cropVideoPath = destinationPath
             Timber.d("NOOB, Cropped Video : $cropVideoPath")
-
 
             val fillModeCustomItem = FillModeCustomItem(
                 cameraView.scaleX,
@@ -260,6 +277,7 @@ class CameraFragment : Fragment() {
                 result.size.width.toFloat(),
                 result.size.height.toFloat()
             )
+            sourceVideoFile = result.file
 
             mp4Composer = Mp4Composer(Uri.fromFile(result.file), destinationPath, ctx, mp4ComposerLogger)
                 .size(cameraView.width, cameraView.width)
@@ -307,7 +325,7 @@ class CameraFragment : Fragment() {
     fun startRecordingVideo() {
         try {
             context?.let {
-                val file = CameraUtil.createMediaFile(it, false)
+                val file = CameraUtil.createMediaFile(it, false, storeInCache = true)
                 cameraView.takeVideo(file)
             }
         } catch (th: Throwable) {
@@ -320,7 +338,6 @@ class CameraFragment : Fragment() {
     }
 
     fun capturePhoto() {
-//        cameraView.takePicture()
         cameraView.takePictureSnapshot()
     }
 
@@ -335,5 +352,6 @@ class CameraFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mp4Composer?.cancel()
+        cameraButton.stopCountDown()
     }
 }

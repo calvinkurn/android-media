@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatImageView
@@ -14,6 +15,7 @@ import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.unifycomponents.toPx
 import java.util.*
 
+@SuppressLint("ClickableViewAccessibility")
 class CameraButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
@@ -28,6 +30,35 @@ class CameraButton @JvmOverloads constructor(
     var imageCaptureAction = MotionEvent.ACTION_CANCEL
     val ON_CLICK_TIME = 500L
 
+    private val cameraButtonTouchListener = OnTouchListener { v:View, event:MotionEvent ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                imageCaptureAction = event.action
+                longTimeMillis = System.currentTimeMillis()
+                longPressHandler.postDelayed({
+                    if (imageCaptureAction == MotionEvent.ACTION_DOWN){
+                        onLongPressStart()
+                    }
+                }, ON_CLICK_TIME)
+
+                return@OnTouchListener true
+            }
+            MotionEvent.ACTION_UP -> {
+                imageCaptureAction = event.action
+                val currentTime = System.currentTimeMillis()
+                val longTimeForDebugMillis = longTimeMillis
+                if (currentTime - longTimeForDebugMillis < ON_CLICK_TIME) {
+                    onClick()
+                } else {
+                    onLongPressEnd()
+                }
+                imageCapture.setOnTouchListener(null)
+                longTimeMillis = 0L
+                return@OnTouchListener true
+            }
+        }
+        return@OnTouchListener false
+    }
 
     /**
     * These are the values of progress bar sizes taken from design
@@ -45,35 +76,7 @@ class CameraButton @JvmOverloads constructor(
     private fun initViews() {
         progressBar = findViewById(R.id.progress_bar_timer)
         imageCapture = findViewById(R.id.image_capture)
-
-        imageCapture.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    imageCaptureAction = event.action
-                    longTimeMillis = System.currentTimeMillis()
-                    longPressHandler.postDelayed({
-                        if (imageCaptureAction == MotionEvent.ACTION_DOWN){
-                            onLongPressStart()
-                        }
-                    }, ON_CLICK_TIME)
-
-                    return@setOnTouchListener true
-                }
-                MotionEvent.ACTION_UP -> {
-                    imageCaptureAction = event.action
-                    val currentTime = System.currentTimeMillis()
-                    val longTimeForDebugMillis = longTimeMillis
-                    if (currentTime - longTimeForDebugMillis < ON_CLICK_TIME) {
-                        onClick()
-                    } else {
-                        onLongPressEnd()
-                    }
-                    longTimeMillis = 0L
-                    return@setOnTouchListener true
-                }
-            }
-            return@setOnTouchListener false
-        }
+        imageCapture.setOnTouchListener(cameraButtonTouchListener)
     }
 
     private fun onLongPressStart() {
@@ -91,6 +94,7 @@ class CameraButton @JvmOverloads constructor(
 
         cameraButtonListener?.onLongClickStart()
     }
+
 
     private fun onLongPressEnd() {
         val scaleFactor = 1f

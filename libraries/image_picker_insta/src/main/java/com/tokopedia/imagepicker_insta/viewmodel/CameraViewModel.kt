@@ -28,4 +28,10 @@ class CameraViewModel : BaseViewModel(Dispatchers.IO) {
             liveDataCropPhoto.postValue(LiveDataResult.error(it))
         })
     }
+
+    fun deleteFile(file: File?) {
+        launchCatchError(block = {
+            file?.delete()
+        }, onError = {})
+    }
 }

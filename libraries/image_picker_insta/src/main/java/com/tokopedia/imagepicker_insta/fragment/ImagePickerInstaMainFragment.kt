@@ -14,7 +14,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,15 +76,15 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity,hasReadPermission(), menu,) { proceedNextStep() }
+        MenuManager.addCustomMenu(activity, hasReadPermission(), menu) { proceedNextStep() }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    fun onVolumeDown(){
+    fun onVolumeDown() {
         //DO nothing
     }
 
-    fun onVolumeUp(){
+    fun onVolumeUp() {
         selectedMediaView.onVolumeUp()
     }
 
@@ -163,20 +162,22 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         viewDataContainer.visibility = View.GONE
     }
 
-    fun isPermissionUiVisible():Boolean{
+    fun isPermissionUiVisible(): Boolean {
         return noPermissionView.visibility == View.VISIBLE
     }
 
     fun showDataUi() {
-        activity?.invalidateOptionsMenu()
+        if (::noPermissionView.isInitialized) {
+            activity?.invalidateOptionsMenu()
 
-        noPermissionView.visibility = View.GONE
-        viewDataContainer.visibility = View.VISIBLE
+            noPermissionView.visibility = View.GONE
+            viewDataContainer.visibility = View.VISIBLE
 
-        imageAdapter.clearSelectedItems()
-        zoomImageAdapterDataMap.clear()
-        selectedMediaView.removeAsset()
-        getPhotos()
+            imageAdapter.clearSelectedItems()
+            zoomImageAdapterDataMap.clear()
+            selectedMediaView.removeAsset()
+            getPhotos()
+        }
     }
 
     fun showEmptyUi() {
