@@ -185,26 +185,19 @@ class CameraFragment : Fragment() {
         cameraButton.cameraButtonListener = object : CameraButtonListener {
             override fun onClick() {
                 cameraView.mode = Mode.PICTURE
-
                 capturePhoto()
             }
 
             override fun onLongClickStart() {
                 cameraView.mode = Mode.VIDEO
-
                 if (!cameraView.isTakingVideo) {
                     startRecordingVideo()
                 }
             }
 
             override fun onLongClickEnd() {
-
-                if (cameraView.isTakingVideo) {
                     stopRecordingVideo()
-                }
-                cameraView.mode = Mode.PICTURE
             }
-
         }
 
         imageSelfieCamera.setOnClickListener {
@@ -245,7 +238,6 @@ class CameraFragment : Fragment() {
             override fun onCameraError(exception: CameraException) {
                 super.onCameraError(exception)
                 Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
-                showToast("Something went wrong", Toaster.TYPE_ERROR)
                 cameraButton.addTouchListener()
             }
 
