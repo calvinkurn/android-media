@@ -142,17 +142,6 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         })
     }
 
-    private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
-        centralizedUserAssetConfig.assetConfigVertical.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY &&
-                it.id != AccountConstants.WALLET.GOPAYLATER &&
-                it.id != AccountConstants.WALLET.SALDO
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            }
-        }
-    }
-
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         hideLoading()
         addTitleView()
@@ -177,6 +166,17 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
         viewModel.getGopayWalletEligible()
         getBalanceAndPoints(centralizedUserAssetConfig)
+    }
+
+    private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
+        centralizedUserAssetConfig.assetConfigVertical.forEach {
+            if (it.id != AccountConstants.WALLET.GOPAY &&
+                it.id != AccountConstants.WALLET.GOPAYLATER &&
+                it.id != AccountConstants.WALLET.SALDO
+            ) {
+                viewModel.getBalanceAndPoint(it.id)
+            }
+        }
     }
 
     private fun onFailedGetCentralizedAssetConfig() {

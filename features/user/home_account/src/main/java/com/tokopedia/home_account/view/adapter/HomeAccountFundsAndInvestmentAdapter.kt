@@ -36,9 +36,9 @@ class HomeAccountFundsAndInvestmentAdapter(
                 }
                 is WalletShimmeringUiModel -> {
                     if (it.id == walletUiModel.id) {
-                        walletUiModel.title = it.title
                         val position = items.indexOf(it)
                         removeItemAt(position)
+                        walletUiModel.title = it.title
                         addItem(position, walletUiModel)
                         notifyItemChanged(position)
                     }
@@ -70,21 +70,6 @@ class HomeAccountFundsAndInvestmentAdapter(
         }
     }
 
-    fun changeItemToShimmer(walletShimmeringUiModel: WalletShimmeringUiModel) {
-        val items = getItems().toMutableList()
-        items.forEach {
-            if (it is WalletUiModel) {
-                if (it.id == walletShimmeringUiModel.id) {
-                    val position = items.indexOf(it)
-                    removeItemAt(position)
-                    addItem(position, walletShimmeringUiModel)
-                    notifyItemChanged(position)
-                }
-            }
-
-        }
-    }
-
     fun removeById(id: String) {
         val items = getItems().toMutableList()
         items.forEach {
@@ -102,6 +87,20 @@ class HomeAccountFundsAndInvestmentAdapter(
                         removeItemAt(position)
                         notifyItemRemoved(position)
                     }
+                }
+            }
+        }
+    }
+
+    fun changeItemToShimmer(walletShimmeringUiModel: WalletShimmeringUiModel) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is WalletUiModel) {
+                if (it.id == walletShimmeringUiModel.id) {
+                    val position = items.indexOf(it)
+                    removeItemAt(position)
+                    addItem(position, walletShimmeringUiModel)
+                    notifyItemChanged(position)
                 }
             }
         }

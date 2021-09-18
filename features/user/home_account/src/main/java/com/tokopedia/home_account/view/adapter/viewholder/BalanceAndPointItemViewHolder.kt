@@ -24,13 +24,12 @@ class BalanceAndPointItemViewHolder(
         setImage(item?.urlImage)
         setTitleText(item?.isFailed.orFalse(), item?.title)
         setSubtitleText(item)
-        setClickLitener(
-            item?.id,
-            item?.applink,
-            item?.isFailed.orFalse(),
-            item?.isActive.orTrue(),
-            balanceAndPointListener
-        )
+        item?.let {
+            setClickLitener(
+                it,
+                balanceAndPointListener
+            )
+        }
     }
 
     private fun setImage(url: String?) {
@@ -46,7 +45,7 @@ class BalanceAndPointItemViewHolder(
 
         binding?.homeAccountItemBalanceAndPointTitle?.text = title
 
-        if(!checkAnyNumbers(text?: "")) {
+        if (!checkAnyNumbers(text ?: "")) {
             setTitleToGreen()
         }
     }
@@ -67,7 +66,7 @@ class BalanceAndPointItemViewHolder(
     }
 
     private fun setSubtitleText(item: BalanceAndPointUiModel?) {
-        binding?.homeAccountItemBalanceAndPointSubtitle?.text = if(item?.isFailed == true) {
+        binding?.homeAccountItemBalanceAndPointSubtitle?.text = if (item?.isFailed == true) {
             item.title
         } else {
             item?.subtitle
@@ -81,14 +80,11 @@ class BalanceAndPointItemViewHolder(
     }
 
     private fun setClickLitener(
-        id: String?,
-        applink: String?,
-        isFailed: Boolean,
-        isActive: Boolean,
+        balanceAndPointUiModel: BalanceAndPointUiModel,
         listener: BalanceAndPointListener
     ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, isFailed, isActive) }
+            listener.onClickBalanceAndPoint(balanceAndPointUiModel)
         }
     }
 

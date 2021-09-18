@@ -65,6 +65,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
+import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointShimmerUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
@@ -117,16 +118,22 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     @Inject
     lateinit var mapper: DataViewMapper
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var accountPref: AccountPreference
+
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
+
     @Inject
     lateinit var menuGenerator: StaticMenuGenerator
+
     @Inject
     lateinit var permissionChecker: PermissionChecker
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -156,8 +163,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     var memberCardView: CardUnify? = null
     var memberTitle: Typography? = null
     var memberIcon: ImageUnify? = null
-    var tempWallet: WalletappGetAccountBalance? = null
-    var tempAssetConfig: AssetConfig? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -443,17 +448,22 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             this.commonAdapter = commonAdapter
     }
 
-    override fun onClickBalanceAndPoint(
-        id: String,
-        applink: String?,
-        isFailed: Boolean,
-        isActive: Boolean
-    ) {
-        homeAccountAnalytic.eventClickAccountPage(id, isActive, isFailed)
-        if (isFailed) {
-            viewModel.getBalanceAndPoint(id)
-        } else if (!applink.isNullOrEmpty()) {
-            goToApplink(applink)
+    override fun onClickBalanceAndPoint(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        homeAccountAnalytic.eventClickAccountPage(
+            balanceAndPointUiModel.id,
+            balanceAndPointUiModel.isActive,
+            balanceAndPointUiModel.isFailed
+        )
+        if (balanceAndPointUiModel.isFailed) {
+            balanceAndPointAdapter?.changeItemToShimmer(
+                UiModelMapper.getBalanceAndPointShimmerUiModel(
+                    balanceAndPointUiModel
+                )
+            )
+            adapter?.notifyItemChanged(0)
+            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id)
+        } else if (!balanceAndPointUiModel.applink.isEmpty()) {
+            goToApplink(balanceAndPointUiModel.applink)
         }
     }
 
@@ -479,7 +489,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     onSuccessGetBuyerAccount(it.data)
                 }
                 is Fail -> {
-                    onFailGetData()
+                    onFailedGetBuyerAccount()
                 }
             }
         })
@@ -556,83 +566,72 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
-        displayBalanceAndPointLocalLoad(false)
-        val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
-        centralizedUserAssetConfig.assetConfig.forEach {
-            balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
-        }
-        balanceAndPointAdapter?.setupPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
-
-        centralizedUserAssetConfig.assetConfig.forEach {
-            when (it.id) {
-                AccountConstants.WALLET.GOPAY -> {
-                    tempAssetConfig = it
-                    viewModel.getGopayWalletEligible()
-                }
-                AccountConstants.WALLET.SALDO -> {
-                    viewModel.getBalanceAndPoint(it.id, it)
-                }
-                else -> {
-                    viewModel.getBalanceAndPoint(it.id)
+        if (centralizedUserAssetConfig.assetConfig.isNotEmpty()) {
+            centralizedUserAssetConfig.assetConfig.forEach {
+                if (it.id == AccountConstants.WALLET.SALDO) {
+                    balanceAndPointAdapter?.addItemWallet(UiModelMapper.getBalanceAndPointUiModel(it))
+                } else {
+                    balanceAndPointAdapter?.addItemWallet(
+                        UiModelMapper.getBalanceAndPointShimmerUiModel(
+                            it
+                        )
+                    )
                 }
             }
         }
+        adapter?.notifyItemChanged(0)
+        viewModel.getGopayWalletEligible()
+        getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
-    override fun onZeroCounter() {
-        adapter?.notifyDataSetChanged()
+    private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
+        centralizedUserAssetConfig.assetConfig.forEach {
+            if (it.id != AccountConstants.WALLET.GOPAY &&
+                it.id != AccountConstants.WALLET.SALDO
+            ) {
+                viewModel.getBalanceAndPoint(it.id)
+            }
+        }
     }
 
     private fun onFailedGetCentralizedAssetConfig() {
         displayBalanceAndPointLocalLoad(true)
     }
 
-    private fun onSuccessGetBalanceAndPoint(
-        balanceAndPoint: WalletappGetAccountBalance
-    ) {
-        balanceAndPointAdapter?.setupBalanceAndPointsWithData(
+    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        balanceAndPointAdapter?.changeItemToSuccessBySameId(
             UiModelMapper.getBalanceAndPointUiModel(
                 balanceAndPoint
             )
         )
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
-        balanceAndPointAdapter?.changeItemToFailed(walletId)
+        balanceAndPointAdapter?.changeItemToFailedById(walletId)
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
         val eligibility = walletappWalletEligibility.data
         if (eligibility.isNotEmpty()) {
             if (eligibility[0].isEligible) {
-                tempAssetConfig?.let {
-                    balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-                    viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
-                }
+                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             } else {
-                removeGopayIfNotEligible()
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
             }
+            adapter?.notifyItemChanged(0)
         }
     }
 
     private fun onFailedGetWalletEligible() {
-        removeGopayIfNotEligible()
-    }
-
-    private fun removeGopayIfNotEligible() {
-        balanceAndPointAdapter?.let{
-            val isSuccessRemove = it.removeById(AccountConstants.WALLET.GOPAY)
-            if(isSuccessRemove) {
-                it.counter--
-                it.checkIfAllWidgetIsFinished()
-            }
-        }
+        balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
+        adapter?.notifyItemChanged(0)
     }
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
-        memberLocalLoad?.hide()
-        memberCardView?.show()
-
+        displayMemberLocalLoad(false)
         val leftMargin = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             6f,
@@ -658,15 +657,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         viewModel.getShortcutData()
     }
 
-    private fun onBalanceAndPointErrorClicked() {
-        displayBalanceAndPointLocalLoad(false)
-        balanceAndPointAdapter?.displayShimmer()
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
+    private fun onFailedGetBuyerAccount() {
+        displayMemberLocalLoad(true)
+        displayBalanceAndPointLocalLoad(true)
+        onFailGetData()
     }
 
     private fun onFailGetData() {
-        displayMemberLocalLoad(true)
-        displayBalanceAndPointLocalLoad(true)
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
@@ -775,9 +772,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
 
     private fun getProfileData() {
-        balanceAndPointAdapter?.displayShimmer()
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
+        getWallet()
         viewModel.getShortcutData()
+    }
+
+    private fun getWallet() {
+        displayBalanceAndPointLocalLoad(false)
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
     }
 
     private fun showHomeAccountTokopoints(): Boolean {
@@ -794,7 +795,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onRefresh() {
         showLoading()
-        adapter?.clearAllItems()
+        balanceAndPointAdapter?.clearAllItemsAndAnimateChanges()
+        adapter?.clearAllItemsAndAnimateChanges()
     }
 
     private fun showDialogClearCache() {
@@ -1247,7 +1249,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 homeAccountAnalytic.eventClickLocalLoadWalletAccountPage()
                 balanceAndPointLocalLoad?.progressState =
                     !(balanceAndPointLocalLoad?.progressState ?: false)
-                onBalanceAndPointErrorClicked()
+                getWallet()
             }
         }
 
@@ -1430,8 +1432,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     companion object {
-        private const val BALANCE_AND_POINT_LEFT_INDEX = 0
-
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394

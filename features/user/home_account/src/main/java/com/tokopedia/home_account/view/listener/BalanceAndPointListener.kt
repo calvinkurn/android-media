@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view.listener
 
+import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
+
 interface BalanceAndPointListener {
-    fun onClickBalanceAndPoint(id: String, applink: String?, isFailed: Boolean, isActive: Boolean)
-    fun onZeroCounter()
+    fun onClickBalanceAndPoint(balanceAndPointUiModel: BalanceAndPointUiModel)
 }

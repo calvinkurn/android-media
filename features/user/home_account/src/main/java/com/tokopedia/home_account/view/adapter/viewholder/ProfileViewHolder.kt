@@ -23,9 +23,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode

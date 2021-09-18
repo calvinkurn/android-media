@@ -1,11 +1,16 @@
 package com.tokopedia.home_account.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.view.adapter.delegate.HomeAccountBalanceAndPointDelegate
 import com.tokopedia.home_account.view.adapter.delegate.HomeAccountBalanceAndPointShimmerDelegate
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointShimmerUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
+import com.tokopedia.home_account.view.adapter.uimodel.WalletShimmeringUiModel
+import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
+import com.tokopedia.home_account.view.mapper.UiModelMapper
 
 class HomeAccountBalanceAndPointAdapter(
     private val balanceAndPointListener: BalanceAndPointListener,
@@ -16,75 +21,178 @@ class HomeAccountBalanceAndPointAdapter(
         delegatesManager.addDelegate(HomeAccountBalanceAndPointShimmerDelegate())
     }
 
-    private val listBalanceAndPoint: ArrayList<BalanceAndPointUiModel> = arrayListOf()
-    var counter = 0
+    var tempFourthItem: Any? = null
 
-    fun displayShimmer() {
-        val list: MutableList<BalanceAndPointShimmerUiModel> = mutableListOf()
-        for (i in 1..3) {
-            list.add(BalanceAndPointShimmerUiModel(true))
+    fun addItemWallet(item: Any) {
+        if (itemCount < 3) {
+            addItemAndAnimateChanges(item)
+        } else {
+            tempFourthItem = item
         }
-        clearAllItemsAndAnimateChanges()
-        addItemsAndAnimateChanges(list)
     }
 
-    fun setupPlaceholderBalanceAndPoints(items: List<BalanceAndPointUiModel>) {
-        listBalanceAndPoint.clear()
-        listBalanceAndPoint.addAll(items)
-        counter = items.size
-    }
-
-    @Synchronized
-    fun setupBalanceAndPointsWithData(item : BalanceAndPointUiModel) {
-        val position = getPositionBalanceAndPoint(item.id)
-        if(position != null) {
-            listBalanceAndPoint[position] = item
+    fun changeItemToSuccessBySameId(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        if (!changeFourthItemToSuccessBySameId(balanceAndPointUiModel)) {
+            val items = getItems().toMutableList()
+            items.forEach {
+                when (it) {
+                    is BalanceAndPointUiModel -> {
+                        if (it.id == balanceAndPointUiModel.id) {
+                            val position = items.indexOf(it)
+                            removeItemAt(position)
+                            addItem(position, balanceAndPointUiModel)
+                            notifyItemChanged(position)
+                        }
+                    }
+                    is BalanceAndPointShimmerUiModel -> {
+                        if (it.id == balanceAndPointUiModel.id) {
+                            val position = items.indexOf(it)
+                            removeItemAt(position)
+                            addItem(position, balanceAndPointUiModel)
+                            notifyItemChanged(position)
+                        }
+                    }
+                }
+            }
         }
-        counter--
-        checkIfAllWidgetIsFinished()
     }
 
-    @Synchronized
-    fun changeItemToFailed(id: String) {
-        val position = getPositionBalanceAndPoint(id)
-        if(position != null) {
-            listBalanceAndPoint[position].isFailed = true
-        }
-        counter--
-        checkIfAllWidgetIsFinished()
-    }
-
-    @Synchronized
-    fun removeById(id: String): Boolean {
-        val position = getPositionBalanceAndPoint(id)
-        if(position != null) {
-            listBalanceAndPoint.removeAt(position)
-            return true
+    private fun changeFourthItemToSuccessBySameId(balanceAndPointUiModel: BalanceAndPointUiModel): Boolean {
+        when (tempFourthItem) {
+            is BalanceAndPointUiModel -> {
+                (tempFourthItem as BalanceAndPointUiModel).also {
+                    if (it.id == balanceAndPointUiModel.id) {
+                        tempFourthItem = balanceAndPointUiModel
+                        return true
+                    }
+                }
+            }
+            is BalanceAndPointShimmerUiModel -> {
+                (tempFourthItem as BalanceAndPointShimmerUiModel).also {
+                    if (it.id == balanceAndPointUiModel.id) {
+                        tempFourthItem = balanceAndPointUiModel
+                        return true
+                    }
+                }
+            }
         }
         return false
     }
 
-    @Synchronized
-    fun checkIfAllWidgetIsFinished() {
-        if(counter == ZERO_COUNTER) {
-            clearAllItemsAndAnimateChanges()
-            addItemsAndAnimateChanges(listBalanceAndPoint)
-            balanceAndPointListener.onZeroCounter()
-        }
-    }
-
-    @Synchronized
-    private fun getPositionBalanceAndPoint(id: String): Int? {
-        for(i in 0..listBalanceAndPoint.size) {
-            if(i < listBalanceAndPoint.size &&
-                listBalanceAndPoint[i].id == id) {
-                return i
+    fun changeItemToFailedById(id: String) {
+        if (!changeFourthItemToFailedById(id)) {
+            val items = getItems().toMutableList()
+            items.forEach {
+                when (it) {
+                    is BalanceAndPointUiModel -> {
+                        if (it.id == id) {
+                            val position = items.indexOf(it)
+                            it.isFailed = true
+                            notifyItemChanged(position)
+                        }
+                    }
+                    is BalanceAndPointShimmerUiModel -> {
+                        if (it.id == id) {
+                            val position = items.indexOf(it)
+                            removeItemAt(position)
+                            addItem(position, UiModelMapper.getBalanceAndPointUiModel(it, true))
+                            notifyItemChanged(position)
+                        }
+                    }
+                }
             }
         }
-        return null
     }
 
-    companion object {
-        private const val ZERO_COUNTER = 0
+    private fun changeFourthItemToFailedById(id: String): Boolean {
+        when (tempFourthItem) {
+            is BalanceAndPointUiModel -> {
+                (tempFourthItem as BalanceAndPointUiModel).also {
+                    if (it.id == id) {
+                        it.isFailed = true
+                        return true
+                    }
+                }
+            }
+            is BalanceAndPointShimmerUiModel -> {
+                (tempFourthItem as BalanceAndPointShimmerUiModel).also {
+                    if (it.id == id) {
+                        tempFourthItem = UiModelMapper.getBalanceAndPointUiModel(it, true)
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    fun removeById(id: String) {
+        if (!removeFourthItemById(id)) {
+            val items = getItems().toMutableList()
+            items.forEach {
+                when (it) {
+                    is BalanceAndPointUiModel -> {
+                        if (it.id == id) {
+                            val position = items.indexOf(it)
+                            removeItemAt(position)
+                            notifyItemRemoved(position)
+                            tempFourthItem?.let { temp ->
+                                addItemAndAnimateChanges(temp)
+                                tempFourthItem = null
+                            }
+                        }
+                    }
+                    is BalanceAndPointShimmerUiModel -> {
+                        if (it.id == id) {
+                            val position = items.indexOf(it)
+                            removeItemAt(position)
+                            notifyItemRemoved(position)
+                            tempFourthItem?.let { temp ->
+                                addItemAndAnimateChanges(temp)
+                                tempFourthItem = null
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeFourthItemById(id: String): Boolean {
+        when (tempFourthItem) {
+            is BalanceAndPointUiModel -> {
+                (tempFourthItem as BalanceAndPointUiModel).also {
+                    if (it.id == id) {
+                        tempFourthItem = null
+                        return true
+                    }
+                }
+            }
+            is BalanceAndPointShimmerUiModel -> {
+                (tempFourthItem as BalanceAndPointShimmerUiModel).also {
+                    if (it.id == id) {
+                        tempFourthItem = null
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    fun changeItemToShimmer(balanceAndPointShimmerUiModel: BalanceAndPointShimmerUiModel) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            when (it) {
+                is BalanceAndPointUiModel -> {
+                    if (it.id == balanceAndPointShimmerUiModel.id) {
+                        val position = items.indexOf(it)
+                        removeItemAt(position)
+                        addItem(position, balanceAndPointShimmerUiModel)
+                        notifyItemChanged(position)
+                    }
+                }
+            }
+        }
     }
 }
