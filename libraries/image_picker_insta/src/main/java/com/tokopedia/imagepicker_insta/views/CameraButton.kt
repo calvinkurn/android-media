@@ -29,6 +29,10 @@ class CameraButton @JvmOverloads constructor(
     var cameraButtonListener: CameraButtonListener?=null
     var imageCaptureAction = MotionEvent.ACTION_CANCEL
     val ON_CLICK_TIME = 500L
+    companion object{
+        const val MAX_VIDEO_RECORD_DURATION_IN_SECONDS = 59
+    }
+
 
     private val cameraButtonTouchListener = OnTouchListener { v:View, event:MotionEvent ->
         when (event.action) {
@@ -137,8 +141,8 @@ class CameraButton @JvmOverloads constructor(
     /**
      * Start this timer when video recording is started
      * */
-    fun startCountDown() {
-        val totalSecondsMillis = 60 * 1000L
+    private fun startCountDown() {
+        val totalSecondsMillis = MAX_VIDEO_RECORD_DURATION_IN_SECONDS * 1000L
         val interval = 1000L
         countDownTimer = object : CountDownTimer(totalSecondsMillis, interval) {
 

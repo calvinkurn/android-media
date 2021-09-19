@@ -137,8 +137,7 @@ class MediaView @JvmOverloads constructor(
         simpleExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
-                Timber.e(error.message)
-                Timber.e(error.rendererException)
+                Timber.e(error)
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

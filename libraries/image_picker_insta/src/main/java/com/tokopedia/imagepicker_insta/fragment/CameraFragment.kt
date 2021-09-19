@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
@@ -150,7 +149,7 @@ class CameraFragment : Fragment() {
         cameraView.mode = Mode.PICTURE
 
         cameraView.flash = Flash.OFF
-        cameraView.videoMaxDuration = VideoImporter.DURATION_MAX_LIMIT * 1000
+        cameraView.videoMaxDuration = CameraButton.MAX_VIDEO_RECORD_DURATION_IN_SECONDS * 1000
     }
 
     fun showToast(message: String, toasterType: Int) {
@@ -196,7 +195,7 @@ class CameraFragment : Fragment() {
             }
 
             override fun onLongClickEnd() {
-                    stopRecordingVideo()
+                stopRecordingVideo()
             }
         }
 

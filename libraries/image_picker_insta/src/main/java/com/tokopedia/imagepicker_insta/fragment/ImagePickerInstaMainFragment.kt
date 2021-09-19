@@ -166,6 +166,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         return noPermissionView.visibility == View.VISIBLE
     }
 
+
+    fun isUiInitialized(): Boolean {
+        return ::noPermissionView.isInitialized
+    }
+
+    /*
+    * Weird crash is happening.
+    * showDataUi() is getting called but fragment's onCreateView is not called
+    * So ::noPermissionView.isInitialized is added to prevent crash
+    * */
     fun showDataUi() {
         if (::noPermissionView.isInitialized) {
             activity?.invalidateOptionsMenu()
@@ -487,15 +497,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleCameraSuccessResponse(data: Intent?) {
-//        val urlList = data?.extras?.putParcelableArrayList(BundleData.URIS, null)
         val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
             //Update current UI
-            //TODO  Rahul means media is captured
-            activity?.let {
-                Toast.makeText(it, "Pending", Toast.LENGTH_SHORT).show()
+            val uriList = data?.extras?.getParcelableArrayList<Uri>(BundleData.URIS)
+            if (!uriList.isNullOrEmpty()) {
+                viewModel.handleFileAddedEvent(uriList)
             }
-
         } else {
             activity?.setResult(Activity.RESULT_OK, data)
             activity?.finish()

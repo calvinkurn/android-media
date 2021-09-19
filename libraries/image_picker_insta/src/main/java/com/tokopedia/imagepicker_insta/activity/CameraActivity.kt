@@ -33,13 +33,8 @@ class CameraActivity : PermissionActivity() {
     companion object {
 
         val REQUEST_CODE = 213
-        fun getIntent(context: Context, fileUriList: List<Uri>, applinkToNavigateAfterMediaCapture: String?): Intent {
-            val uriList = ArrayList<String>()
-            fileUriList.forEach {
-                uriList.add(it.toString())
-            }
+        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?): Intent {
             val intent = Intent(context, CameraActivity::class.java)
-            intent.putExtra(BundleData.URIS, uriList)
             intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
             return intent
         }

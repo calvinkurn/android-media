@@ -29,11 +29,11 @@ object CameraUtil {
         weakFragment?.get()?.let {
             if (applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
                 it.startActivityForResult(
-                    CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture),
+                    CameraActivity.getIntent(it.requireContext(), applinkToNavigateAfterMediaCapture),
                     CameraActivity.REQUEST_CODE
                 )
             } else {
-                it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture))
+                it.startActivity(CameraActivity.getIntent(it.requireContext(), applinkToNavigateAfterMediaCapture))
             }
         }
         return null
@@ -82,7 +82,7 @@ object CameraUtil {
         return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
     }
 
-    private fun getInternalDir(context: Context): File {
+    fun getInternalDir(context: Context): File {
         val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         file.mkdirs()
         return file

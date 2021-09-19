@@ -24,9 +24,23 @@ data class MediaImporterData(
     }
 }
 
-data class MediaUseCaseData(val mediaImporterData: MediaImporterData, val folderDataList: List<FolderData>, val selectedFolder: String? = null)
+data class MediaUseCaseData(
+    val mediaImporterData: MediaImporterData,
+    val folderDataList: ArrayList<FolderData>,
+    val selectedFolder: String? = null,
+    val uriSet: HashSet<Uri>
+) {
+    fun createMediaUseCaseData(imageAdapterList: ArrayList<ImageAdapterData>, folderSet: Set<String>): MediaUseCaseData {
+        return MediaUseCaseData(
+            MediaImporterData(imageAdapterList, folderSet),
+            folderDataList,
+            selectedFolder,
+            uriSet
+        )
+    }
+}
 
-data class FolderData(val folderTitle: String, val folderSubtitle: String, val thumbnailUri: Uri)
+data class FolderData(val folderTitle: String, val folderSubtitle: String, val thumbnailUri: Uri, val itemCount: Int)
 
 data class ImageAdapterData(
     val asset: Asset,
@@ -64,3 +78,5 @@ object BundleData {
     val APPLINK_FOR_BACK_NAVIGATION = "link_back"
     val URIS = "ip_uris"
 }
+
+data class VideoMetaData(val isSupported: Boolean, val duration: Long)

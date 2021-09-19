@@ -7,10 +7,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.SparseArray
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.ImageAdapterData
-import com.tokopedia.imagepicker_insta.models.MediaImporterData
-import com.tokopedia.imagepicker_insta.models.VideoData
+import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.util.CursorUtil
 import com.tokopedia.imagepicker_insta.util.FileUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -26,25 +23,42 @@ class VideoImporter : MediaImporter {
         val DURATION_MAX_LIMIT = 59
     }
 
-    override fun importMediaFromInternalDir(context: Context): List<Asset> {
-        val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
-        val videoDataList = arrayListOf<VideoData>()
-        if (file.isDirectory) {
-            file.listFiles()?.forEach {
-                val filePath = it.absolutePath
-                val isFileSupported = (filePath.endsWith(".mp4"))
+    fun getViewMetaData(filePath: String, context: Context): VideoMetaData {
+        val isVideoFile = filePath.endsWith(".mp4")
+        if (isVideoFile) {
+            val file = File(filePath)
+            val duration = file.getMediaDuration(context)
+            if (duration != null && duration >= 1) {
+                return VideoMetaData(true, duration)
+            }
+        }
+        return VideoMetaData(false, 0)
+    }
 
-                if (isFileSupported) {
+    @Throws(Exception::class)
+    fun createVideosDataFromInternalFile(file: File, duration: Long): VideoData {
+        if (file.isDirectory) throw Exception("Got folder instead of file")
+        return VideoData(
+            file.absolutePath,
+            StorageUtil.INTERNAL_FOLDER_NAME,
+            Uri.fromFile(file),
+            file.lastModified(),
+            getFormattedDurationText(duration),
+            isVideoWithinLimit(duration)
+        )
+    }
+
+    override fun importMediaFromInternalDir(context: Context): List<Asset> {
+        val directory = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
+        val videoDataList = arrayListOf<VideoData>()
+        if (directory.isDirectory) {
+            directory.listFiles()?.forEach {
+                val videoMetaData = getViewMetaData(it.absolutePath, context)
+
+                if (videoMetaData.isSupported) {
                     val duration = it.getMediaDuration(context)
                     if (duration != null && duration >= 1) {
-                        val videoData = VideoData(
-                            filePath,
-                            StorageUtil.INTERNAL_FOLDER_NAME,
-                            Uri.fromFile(it),
-                            it.lastModified(),
-                            getFormattedDurationText(duration),
-                            isVideoWithinLimit(duration)
-                        )
+                        val videoData = createVideosDataFromInternalFile(it, videoMetaData.duration)
                         videoDataList.add(videoData)
                     }
                 }
@@ -68,12 +82,13 @@ class VideoImporter : MediaImporter {
     fun File.getMediaDuration(context: Context): Long? {
         try {
             if (!exists()) return 0
+            if (length() == 0L) return 0
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(context, Uri.parse(absolutePath))
             val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             retriever.release()
             return duration?.toLong()
-        }catch (th:Throwable){
+        } catch (th: Throwable) {
             Timber.e(th)
             return null
         }

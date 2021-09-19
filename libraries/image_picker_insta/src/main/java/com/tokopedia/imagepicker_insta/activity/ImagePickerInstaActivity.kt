@@ -76,12 +76,14 @@ class ImagePickerInstaActivity : PermissionActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (PermissionUtil.isReadPermissionGranted(this)) {
-            if (getAttachedFragment()?.isPermissionUiVisible() == true) {
-                getAttachedFragment()?.showDataUi()
+        if (getAttachedFragment()?.isUiInitialized() == true) {
+            if (PermissionUtil.isReadPermissionGranted(this)) {
+                if (getAttachedFragment()?.isPermissionUiVisible() == true) {
+                    getAttachedFragment()?.showDataUi()
+                }
+            } else {
+                getAttachedFragment()?.showPermissionUi()
             }
-        } else {
-            getAttachedFragment()?.showPermissionUi()
         }
     }
 

@@ -23,24 +23,33 @@ class PhotoImporter:MediaImporter{
         const val FOLDER_KEY = "nw_st"
     }
 
+    fun isImageFile(filePath:String):Boolean{
+        return (filePath.endsWith(".jpg") ||
+                filePath.endsWith(".jpeg") ||
+                filePath.endsWith(".png") ||
+                filePath.endsWith(".webP"))
+    }
+
+    fun createPhotosDataFromInternalFile(file:File):PhotosData{
+        if(file.isDirectory) throw Exception("Got folder instead of file")
+        return PhotosData(
+            file.absolutePath,
+            StorageUtil.INTERNAL_FOLDER_NAME,
+            Uri.fromFile(file),
+            file.lastModified()
+        )
+    }
+
     override fun importMediaFromInternalDir(context: Context): ArrayList<Asset> {
-        val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
+        val directory = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         val photosDataList = arrayListOf<Asset>()
-        if (file.isDirectory) {
-            file.listFiles()?.forEach {
+        if (directory.isDirectory) {
+            directory.listFiles()?.forEach {
                 val filePath = it.absolutePath
-                val isFileSupported = (filePath.endsWith(".jpg") ||
-                        filePath.endsWith(".jpeg") ||
-                        filePath.endsWith(".png") ||
-                        filePath.endsWith(".webP"))
+                val isFileSupported = isImageFile(filePath)
 
                 if (isFileSupported) {
-                    val photoData = PhotosData(
-                        filePath,
-                        StorageUtil.INTERNAL_FOLDER_NAME,
-                        Uri.fromFile(it),
-                        it.lastModified()
-                    )
+                    val photoData = createPhotosDataFromInternalFile(it)
                     photosDataList.add(photoData)
                 }
             }
