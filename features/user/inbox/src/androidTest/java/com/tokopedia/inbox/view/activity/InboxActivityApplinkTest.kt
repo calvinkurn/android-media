@@ -28,6 +28,7 @@ class InboxActivityApplinkTest {
 
     @Before
     fun setUp() {
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         forceAbNewInbox()
     }
 
