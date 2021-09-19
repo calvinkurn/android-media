@@ -42,6 +42,7 @@ open class DynamicPostNewViewHolder(
         const val PAYLOAD_COMMENT = 99
         const val PAYLOAD_FRAGMENT_VISIBLE = 44
         const val PAYLOAD_FRAGMENT_GONE = 42
+        const val PAYLOAD_POST_VISIBLE = 77
 
 
         @LayoutRes
@@ -60,6 +61,10 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
             PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
             PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
+            PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
+                element.feedXCard.tags,
+                element.feedXCard.media[0]
+            )
         }
     }
 

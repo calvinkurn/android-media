@@ -1,16 +1,21 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -22,6 +27,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -165,12 +171,17 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getHomeLayoutListUseCase.execute(any()) }
     }
 
-    protected fun verifyGetHomeLayoutDataUseCaseCalled() {
-        coVerify { getHomeLayoutDataUseCase.execute(anyString(), any()) }
+    protected fun verifyGetHomeLayoutDataUseCaseCalled(
+        localCacheModel: LocalCacheModel = LocalCacheModel(),
+        times: Int = 1
+    ) {
+        coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), localCacheModel) }
     }
 
-    protected fun verifyGetHomeLayoutDataUseCaseNotCalled() {
-        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(anyString(), any()) }
+    protected fun verifyGetHomeLayoutDataUseCaseNotCalled(
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(any(), localCacheModel) }
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
@@ -189,16 +200,36 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) }
     }
 
-    protected fun verifyGetCategoryListUseCaseCalled(){
-        coVerify { getCategoryListUseCase.execute("1", 1) }
+    protected fun verifyGetCategoryListUseCaseCalled(count: Int = 1){
+        coVerify(exactly = count) { getCategoryListUseCase.execute("1", 1) }
     }
 
     protected fun verifyGetCategoryListUseCaseNotCalled(){
         coVerify(exactly = 0) { getCategoryListUseCase.execute(anyString(), anyInt()) }
     }
 
+    protected fun verifyGetMiniCartUseCaseCalled() {
+        verify { getMiniCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyGetMiniCartUseCaseNotCalled() {
         verify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyGetRecentPurchaseUseCaseCalled() {
+        coVerify { getRecentPurchaseUseCase.execute(any()) }
+    }
+
+    protected fun verifyAddToCartUseCaseCalled() {
+        verify { addToCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyDeleteCartUseCaseCalled() {
+        verify { deleteCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyUpdateCartUseCaseCalled() {
+        verify { updateCartUseCase.execute(any(), any()) }
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
@@ -209,8 +240,11 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { getHomeLayoutListUseCase.execute(any()) } returns layoutResponse
     }
 
-    protected fun onGetHomeLayoutData_thenReturn(layoutResponse: HomeLayoutResponse) {
-        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any()) } returns layoutResponse
+    protected fun onGetHomeLayoutData_thenReturn(
+        layoutResponse: HomeLayoutResponse,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { getHomeLayoutDataUseCase.execute(any(), localCacheModel) } returns layoutResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(error: Throwable) {
@@ -271,5 +305,37 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetIsUserLoggedIn_thenReturn(userLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns userLoggedIn
+    }
+
+    protected fun onGetRecommendation_thenReturn(response: List<RecommendationWidget>) {
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
+    }
+
+    protected fun onAddToCart_thenReturn(response: AddToCartDataModel) {
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(AddToCartDataModel) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onRemoveItemCart_thenReturn(response: RemoveFromCartData) {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onUpdateItemCart_thenReturn(response: UpdateCartV2Data) {
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onGetRecentPurchase_thenReturn(response: RecentPurchaseData) {
+        coEvery { getRecentPurchaseUseCase.execute(any()) } returns response
     }
 }

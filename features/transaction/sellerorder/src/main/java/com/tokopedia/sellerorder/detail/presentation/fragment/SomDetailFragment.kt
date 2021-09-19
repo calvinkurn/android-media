@@ -121,6 +121,7 @@ import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import java.net.SocketTimeoutException
+import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -743,9 +744,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, R.color._dms_secondary_button_stroke_color))
             }
-            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    R.color._dms_secondary_button_icon_color
+                )
+            )
         }
     }
 
@@ -847,9 +853,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse?.orderId?.toString().orEmpty())
+        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse?.orderId.orEmpty())
         val uriBuilder = Uri.Builder()
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
+        val decodedUrl = if (buttonResp.url.startsWith(SomConsts.PREFIX_HTTPS)) {
+            buttonResp.url
+        } else {
+            URLDecoder.decode(buttonResp.url, SomConsts.ENCODING_UTF_8)
+        }
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
         routingAppLink += uriBuilder.toString()
         RouteManager.route(context, routingAppLink)

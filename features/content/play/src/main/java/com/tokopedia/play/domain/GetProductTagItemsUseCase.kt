@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -10,12 +11,13 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
+@GqlQuery(GetProductTagItemsUseCase.QUERY_NAME, GetProductTagItemsUseCase.QUERY)
 class GetProductTagItemsUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ProductTagging.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(GetProductTagItemsUseCaseQuery.GQL_QUERY)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ProductTagging.Response::class.java)
     }
@@ -23,8 +25,8 @@ class GetProductTagItemsUseCase @Inject constructor(
     companion object {
 
         private const val CHANNEL_ID = "channelId"
-
-        private val query = """
+        const val QUERY_NAME = "GetProductTagItemsUseCaseQuery"
+        const val QUERY = """
             query(${'$'}channelId: String){
               playGetTagsItem(req: {channelID:${'$'}channelId}){
                  products{
@@ -67,7 +69,7 @@ class GetProductTagItemsUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
 
         fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(

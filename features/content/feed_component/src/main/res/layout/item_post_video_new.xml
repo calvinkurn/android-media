@@ -110,6 +110,7 @@
         app:layout_constraintStart_toStartOf="@id/layout_main">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lihat_video_parent_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
@@ -133,7 +134,7 @@
                 android:id="@+id/video_tag_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_3"
                 android:paddingEnd="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_5"
                 android:text="@string/feed_post_tag_text"
@@ -141,20 +142,23 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/video_tag_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small"
-                app:typographyWeight="reguler" />
+                app:layout_constraintBottom_toBottomOf="@id/video_tag_button"
+                app:layout_constraintTop_toTopOf="@id/video_tag_button"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:visibility="visible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <com.tokopedia.iconunify.IconUnify
+    <ImageView
         android:id="@+id/volumeIcon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:icon_name="VOLUME_MUTE"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_feed_volume_mute" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

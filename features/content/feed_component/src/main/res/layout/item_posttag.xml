@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_16">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cardTitlePostTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,19 +19,18 @@
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:text="Post Pilihan Tokopedia"
+        tools:text="@string/content_product_bs_title"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPosttag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_producttag_list"
+        tools:listitem="@layout/item_producttag_list_new"
         tools:ignore="RtlSymmetry" />
 </LinearLayout>

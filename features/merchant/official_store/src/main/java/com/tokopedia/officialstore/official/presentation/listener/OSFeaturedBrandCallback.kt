@@ -29,7 +29,7 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
         )
     }
 
-    override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+    override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int, applink: String) {
         tracking?.eventClickFeaturedBrand(
                 categoryName = dcEventHandler.getOSCategory()?.title ?: "",
                 shopPosition = (position + 1),
@@ -43,6 +43,7 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
                 isFromDC = true,
                 attribute = channelGrid.attribution
         )
+        dcEventHandler.goToApplink(applink)
     }
 
     override fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int) {

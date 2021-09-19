@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play_common.websocket.DEFAULT_DELAY
+import com.tokopedia.play_common.websocket.DEFAULT_MAX_RETRIES
+import com.tokopedia.play_common.websocket.DEFAULT_PING
 
 
 /**
@@ -19,12 +22,12 @@ data class GetSocketCredentialResponse(
 
     data class Setting(
             @SerializedName("ping_interval")
-            val pingInterval: Long = 0,
+            val pingInterval: Long = DEFAULT_PING,
             @SerializedName("max_chars")
-            val maxChars: Int = 0,
+            val maxChars: Int = 200,
             @SerializedName("max_retries")
-            val maxRetries: Int = 0,
+            val maxRetries: Int = DEFAULT_MAX_RETRIES,
             @SerializedName("min_reconnect_delay")
-            val minReconnectDelay: Int = 0
+            val minReconnectDelay: Int = DEFAULT_DELAY
     )
 }

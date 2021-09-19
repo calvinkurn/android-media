@@ -173,6 +173,7 @@ class ShopPageShowcaseViewModel @Inject constructor(
                 name = it.name
                 count = it.count
                 imageUrl = it.imageUrl
+                alias = it.alias
                 type = it.type
             }
         }

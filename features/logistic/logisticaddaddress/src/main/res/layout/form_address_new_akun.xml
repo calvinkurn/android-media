@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:text="@string/tv_info_lebih_lanjut"/>
 
         <com.tokopedia.iconunify.IconUnify

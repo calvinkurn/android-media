@@ -54,8 +54,6 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     private val buyerRequestCancelReasonValidation: MutableLiveData<String> = MutableLiveData()
     private val buyerRequestCancelReasonValidationRegex = Regex(ALLOWED_BUYER_REQUEST_CANCEL_REASON_INPUT)
 
-    private val _hasInitialNonBundlingProductLiveData = MutableLiveData(true)
-
     val buyerNormalProductUiModelListLiveData: LiveData<List<BuyerNormalProductUiModel>?> =
             Transformations.switchMap(_cancelReasonResult) { result ->
                 getBundleUiModelFlow(result).asLiveData()
@@ -94,17 +92,11 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     private fun getBundleUiModelFlow(result: Result<BuyerGetCancellationReasonData.Data>): Flow<List<BuyerNormalProductUiModel>?> {
         return flow {
             val normalProductList =
-                    if (result is Success) {
-                        // If we dont have non bundle products passed in the fragment, we should check those from response
-                        val hasInitialNonBundlingProduct = _hasInitialNonBundlingProductLiveData.value == true
+                    if ((result as? Success)?.data?.getCancellationReason?.haveProductBundle == true) {
                         val bundlingProductList = result.data.getCancellationReason.bundleDetail?.bundleList?.flatMap {
                             it.orderDetailList.mapToNormalProductList()
                         }
-                        if (hasInitialNonBundlingProduct) {
-                            bundlingProductList
-                        } else {
-                            bundlingProductList.orEmpty() + result.data.getCancellationReason.bundleDetail?.nonBundleList?.mapToNormalProductList().orEmpty()
-                        }
+                        bundlingProductList.orEmpty() + result.data.getCancellationReason.bundleDetail?.nonBundleList?.mapToNormalProductList().orEmpty()
                     } else {
                         null
                     }
@@ -114,10 +106,10 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         }.flowOn(dispatcher.default)
     }
 
-    private fun List<BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail.Bundle.OrderDetail>.mapToNormalProductList(): List<BuyerNormalProductUiModel> {
+    private fun List<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>.mapToNormalProductList(): List<BuyerNormalProductUiModel> {
         return map { bundleProduct ->
             BuyerNormalProductUiModel(
-                    productId = bundleProduct.productId.toString(),
+                    productId = bundleProduct.productId,
                     productThumbnailUrl = bundleProduct.picture,
                     productName = bundleProduct.productName,
                     productPrice = bundleProduct.productPrice
@@ -145,10 +137,6 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     fun validateBuyerRequestCancelReason(reason: String) {
         buyerRequestCancelReasonValidation.value = reason
-    }
-
-    fun setHasNonBundleProducts(hasNonBundleProduct: Boolean) {
-        _hasInitialNonBundlingProductLiveData.value = hasNonBundleProduct
     }
 
 }

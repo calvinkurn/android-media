@@ -119,5 +119,8 @@ dari Feed.</string>
     <!--Share -->
     <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
     <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
+    <string name="feed_background_image">Feed background image</string>
+    <string name="feed_header_mask">searchbar feed header mask</string>
+    <string name="feed_fab_shop">Feed Fab Shop</string>
 
 </resources>

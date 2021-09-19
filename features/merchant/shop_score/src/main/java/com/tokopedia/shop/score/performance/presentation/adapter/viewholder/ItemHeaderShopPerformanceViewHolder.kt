@@ -13,13 +13,16 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
+import java.lang.NumberFormatException
 
-class ItemHeaderShopPerformanceViewHolder(view: View,
-                                          private val shopPerformanceListener: ShopPerformanceListener
+class ItemHeaderShopPerformanceViewHolder(
+    view: View,
+    private val shopPerformanceListener: ShopPerformanceListener
 ) : AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
+        const val ROUNDED_RADIUS = 16F
     }
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
@@ -33,19 +36,22 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setupShopScoreLevelHeader(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
+            tvPerformanceLevel?.text =
+                getString(R.string.shop_performance_level_header, element?.shopLevel)
 
             tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
-            ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
-                    ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toLongOrZero()))
+            ivLevelBarShopScore?.background = ContextCompat.getDrawable(
+                context,
+                ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toLongOrZero())
+            )
         }
     }
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            val shopScore = element?.shopScore.toIntOrZero()
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+            val shopScore = shopScoreFormatted(element?.shopScore)
+            if (shopScore.isLessThanZero()) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
             } else {
@@ -57,35 +63,56 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         }
     }
 
+    private fun shopScoreFormatted(shopScore: String?): Int {
+        return try {
+            shopScore?.toIntOrNull() ?: ShopScoreConstant.SHOP_SCORE_NULL.toInt()
+        } catch (e: NumberFormatException) {
+            ShopScoreConstant.SHOP_SCORE_NULL.toInt()
+        }
+    }
+
     private fun setupProgressBarScoreColor(shopScore: Int) {
         with(itemView) {
             when (shopScore) {
                 in ShopScoreConstant.SHOP_SCORE_ZERO..ShopScoreConstant.SHOP_SCORE_FIFTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red),
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red)
+                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red),
+                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red)
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SIXTY..ShopScoreConstant.SHOP_SCORE_SIXTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow),
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow)
+                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow),
+                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow)
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SEVENTY..ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_light),
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_light)
+                        ContextCompat.getColor(
+                            context,
+                            R.color.shop_score_progressbar_dms_green_light
+                        ),
+                        ContextCompat.getColor(
+                            context,
+                            R.color.shop_score_progressbar_dms_green_light
+                        )
                     )
                 }
 
                 in ShopScoreConstant.SHOP_SCORE_EIGHTY..ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_dark),
-                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_dark)
+                        ContextCompat.getColor(
+                            context,
+                            R.color.shop_score_progressbar_dms_green_dark
+                        ),
+                        ContextCompat.getColor(
+                            context,
+                            R.color.shop_score_progressbar_dms_green_dark
+                        )
                     )
                 }
-                else -> { }
+                else -> {
+                }
             }
         }
     }
@@ -93,7 +120,9 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
 
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+            val shopScore = shopScoreFormatted(element?.shopScore)
+
+            if (shopScore.isLessThanZero()) {
                 ic_shop_score_performance?.hide()
             } else {
                 ic_shop_score_performance?.show()
@@ -110,11 +139,11 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setBackgroundRadiusHeader() {
         with(itemView) {
-            val roundedRadius = 16F
-            containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
+            containerHeaderShopPerformance.shapeAppearanceModel =
+                containerHeaderShopPerformance.shapeAppearanceModel
                     .toBuilder()
-                    .setTopRightCorner(CornerFamily.ROUNDED, roundedRadius)
-                    .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .setTopRightCorner(CornerFamily.ROUNDED, ROUNDED_RADIUS)
+                    .setTopLeftCorner(CornerFamily.ROUNDED, ROUNDED_RADIUS)
                     .build()
         }
     }
@@ -122,10 +151,16 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
             val isNewSeller = element?.shopAge.orZero() < NEW_SELLER_DAYS
-            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0 && !isNewSeller)
+            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0
+                    && !isNewSeller)
             tickerShopHasPenalty?.apply {
                 if (element?.scorePenalty != null) {
-                    setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))
+                    setHtmlDescription(
+                        getString(
+                            R.string.ticker_deduction_point_penalty,
+                            element.scorePenalty?.toString()
+                        )
+                    )
                 }
                 if (!isNewSeller) {
                     shopPerformanceListener.onTickerImpressionToPenaltyPage()

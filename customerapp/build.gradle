@@ -143,6 +143,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
+        checkDependencies true
     }
 
     signingConfigs {
@@ -217,11 +218,6 @@ android {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
         manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
-        javaCompileOptions {
-            room {
-                schemaLocationDir.set(file("roomSchemas"))
-            }
-        }
     }
 
     dexOptions {
@@ -231,6 +227,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     configurations.all {
@@ -327,7 +327,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation projectOrAar(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -344,7 +343,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
-    implementation rootProject.ext.firebase.appIndexing
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
@@ -356,6 +354,7 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleProcess
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

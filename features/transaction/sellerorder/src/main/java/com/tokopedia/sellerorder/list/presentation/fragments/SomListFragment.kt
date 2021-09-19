@@ -45,6 +45,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -124,7 +125,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
     SomFilterBottomSheet.SomFilterFinishListener,
     SomListOrderEmptyViewHolder.SomListEmptyStateListener,
-    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener {
+    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener,
+    SellerHomeFragmentListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -138,6 +140,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val COACHMARK_ITEM_COUNT_SELLERAPP = 4
         private const val COACHMARK_ITEM_COUNT_MAINAPP = 3
         private const val RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD = 100
+        private const val RV_TOP_POSITION = 0
         private const val KEY_LAST_ACTIVE_FILTER = "lastActiveFilter"
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
@@ -154,7 +157,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
-                    putInt(FILTER_ORDER_TYPE, bundle.getInt(FILTER_ORDER_TYPE))
+                    putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
                 }
             }
         }
@@ -357,7 +360,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
+            filterOrderType = arguments?.getString(FILTER_ORDER_TYPE, "0").toIntOrZero()
         } else if (savedInstanceState != null) {
             skipSearch = true
             tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
@@ -781,6 +784,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onBulkProcessOrderButtonClicked() {
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
+        SomAnalytics.eventClickBulkAcceptOrder(userSession.userId, userSession.shopId, getSelectedOrderIds())
     }
 
     override fun onMenuItemClicked(keyAction: String) {
@@ -803,6 +807,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
+                SomAnalytics.eventClickBulkRequestPickup(
+                    userSession.userId,
+                    userSession.shopId,
+                    getSelectedOrderIds()
+                )
             }
         }
     }
@@ -829,6 +838,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             true
         } else {
             false
+        }
+    }
+
+    override fun onScrollToTop() {
+        rvSomList?.post {
+            rvSomList?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
@@ -2628,16 +2643,24 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 rvSomList?.stopScroll()
                 somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderPosition, 0)
                 rvSomList?.post {
-                    somListLayoutManager?.findViewByPosition(firstNewOrderPosition)?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
+                    somListLayoutManager?.findViewByPosition(firstNewOrderPosition)
+                        ?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
                         if (getVisiblePercent(it) == 0) {
-                            CoachMarkPreference.setShown(it.context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
+                            CoachMarkPreference.setShown(
+                                it.context,
+                                SHARED_PREF_NEW_SOM_LIST_COACH_MARK,
+                                true
+                            )
                             rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
                             rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                             currentNewOrderWithCoachMark = firstNewOrderPosition
                             shouldShowCoachMark = false
                             val coachMarkItems = createCoachMarkItems(it)
                             coachMark?.isDismissed = false
-                            coachMark?.showCoachMark(step = coachMarkItems, index = coachMarkIndexToShow)
+                            coachMark?.showCoachMark(
+                                step = coachMarkItems,
+                                index = coachMarkIndexToShow
+                            )
                         }
                     }
                 }
@@ -2906,6 +2929,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
+                som_list_toolbar?.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 som_list_toolbar?.inflateMenu(R.menu.menu_som_list)
                 som_list_toolbar?.title = getString(R.string.title_som_list)
                 som_list_toolbar?.isShowBackButton = showBackButton()
@@ -2929,8 +2953,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 bottomSheetDismissed = true
             }
         }
-        bottomSheetDismissed = somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
-        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed =
+            somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed =
+            orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somOrderEditAwbBottomSheet?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }

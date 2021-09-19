@@ -44,7 +44,6 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
@@ -288,19 +287,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
-    }
-
-    public Intent getHomeIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.HOME);
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        return MainParentActivity.class;
     }
 
     @Override
@@ -602,12 +591,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
-
-    @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
         if(TextUtils.isEmpty(errorMessage)){
             SessionAnalytics.trackRefreshTokenSuccess();
@@ -618,28 +601,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);

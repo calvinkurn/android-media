@@ -12,9 +12,11 @@ import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiMo
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_penalty_stepper.view.*
 
-class PenaltyDetailStepperAdapter : RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
+class PenaltyDetailStepperAdapter :
+    RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
 
-    private val stepperPenaltyDetailList = mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>()
+    private val stepperPenaltyDetailList =
+        mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>()
 
     fun setStepperPenaltyDetail(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
         if (stepperList.isNullOrEmpty()) return
@@ -23,8 +25,12 @@ class PenaltyDetailStepperAdapter : RecyclerView.Adapter<PenaltyDetailStepperAda
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailPenaltyStepperViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_penalty_stepper, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DetailPenaltyStepperViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_penalty_stepper, parent, false)
         return DetailPenaltyStepperViewHolder(view)
     }
 
@@ -38,23 +44,47 @@ class PenaltyDetailStepperAdapter : RecyclerView.Adapter<PenaltyDetailStepperAda
 
         fun bind(data: ShopPenaltyDetailUiModel.StepperPenaltyDetail) {
             with(itemView) {
-                setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+                )
                 if (data.isDividerShow) {
                     divider_stepper_penalty?.show()
-                    data.colorLineStepper?.let { divider_stepper_penalty?.setBackgroundColor(ContextCompat.getColor(context, it)) }
+                    data.colorLineStepper?.let {
+                        divider_stepper_penalty?.setBackgroundColor(
+                            ContextCompat.getColor(context, it)
+                        )
+                    }
                 } else {
                     divider_stepper_penalty?.hide()
                 }
-                 data.titleStepper?.let { titleStepper ->
-                     tv_title_status_stepper?.text = MethodChecker.fromHtml(context?.getString(titleStepper) ?: "")
+                data.titleStepper?.let { titleStepper ->
+                    tv_title_status_stepper?.text =
+                        MethodChecker.fromHtml(context?.getString(titleStepper) ?: "")
                 }
-                data.colorStatusTitle?.let { tv_title_status_stepper?.setTextColor(ContextCompat.getColor(context, it)) }
+                data.colorStatusTitle?.let {
+                    tv_title_status_stepper?.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            it
+                        )
+                    )
+                }
                 if (data.isBold) {
                     tv_title_status_stepper?.setWeight(Typography.BOLD)
                 } else {
                     tv_title_status_stepper?.setWeight(Typography.REGULAR)
                 }
-                data.colorDotStepper?.let { ic_dot_stepper?.setColorFilter(ContextCompat.getColor(context, it)) }
+                data.colorDotStepper?.let {
+                    ic_dot_stepper?.setColorFilter(
+                        ContextCompat.getColor(
+                            context,
+                            it
+                        )
+                    )
+                }
             }
         }
     }

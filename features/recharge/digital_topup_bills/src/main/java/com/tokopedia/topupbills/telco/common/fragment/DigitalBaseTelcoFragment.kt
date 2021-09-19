@@ -285,9 +285,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
-                            showErrorCartDigital(message)
+                        val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(throwable.message)) {
+                            showErrorCartDigital(ErrorHandler.getErrorMessage(context, throwable))
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -381,10 +381,15 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(activity, error, ErrorHandler.Builder().build())
+
         NetworkErrorHelper.showEmptyState(
             activity,
             pageContainer,
-            ErrorHandler.getErrorMessage(context, error)
+            errMsg,
+            "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            null,
+            DEFAULT_ICON_RES
         ) {
             getMenuDetail(getTelcoMenuId())
         }
@@ -560,6 +565,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
 
+        const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300
     }

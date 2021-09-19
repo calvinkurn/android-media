@@ -39,13 +39,6 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
-    fun providePostFavorite(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
@@ -68,13 +61,6 @@ class GqlRawQueryModule {
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_shipment)
-    }
-
-    @ProductDetailScope
-    @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
 
     @ProductDetailScope

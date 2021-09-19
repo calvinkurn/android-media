@@ -24,6 +24,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -37,6 +38,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

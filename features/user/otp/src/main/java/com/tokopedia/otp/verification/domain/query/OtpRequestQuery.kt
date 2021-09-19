@@ -22,6 +22,10 @@ object OtpRequestQuery {
                 message
                 errorMessage
                 prefixMisscall
+                message_title
+                message_sub_title
+                message_img_link
+                error_code
             }
         }
     """.trimIndent()
@@ -33,6 +37,10 @@ object OtpRequestQuery {
                 message
                 errorMessage
                 prefixMisscall
+                message_title
+                message_sub_title
+                message_img_link
+                error_code
             }
         }
     """.trimIndent()

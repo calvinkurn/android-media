@@ -11,6 +11,9 @@ object SellerHomeErrorHandler {
 
     internal const val WIDGET_TYPE_KEY = "widget_type"
     internal const val LAYOUT_ID_KEY = "layout_id"
+    internal const val SHOP_SHARE_DATA = "seller home shop share data erro"
+    internal const val SHOP_SHARE_TRACKING = "seller home shop share data tracking"
+    internal const val SHOP_LOCATION = "seller home shop location error"
 
     private const val ERROR_TAG = "SELLER_HOME_ERROR"
 

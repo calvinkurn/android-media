@@ -75,6 +75,40 @@ fun hasTotalItemOf(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
 }
 
 /**
+ * match total item count in recyclerview from specific ViewHolder.
+ *
+ * @param expectedCount total expected item in recyclerview.
+ * @param expectedClass total expected ViewHolder in recyclerview.
+ *
+ * Example usage:
+ * onView(withId(R.id.recyclerview)).check(
+ *    matches(withTotalItem(1, MyViewHolder::class.java))
+ * )
+ */
+fun hasTotalItemOf(
+    expectedCount: Int,
+    expectedClass: Class<out RecyclerView.ViewHolder>
+): BoundedMatcher<View, RecyclerView> {
+    return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+        override fun describeTo(description: Description?) {
+            description?.appendText("$expectedCount child-count of $expectedClass")
+        }
+
+        override fun matchesSafely(item: RecyclerView?): Boolean {
+            var viewHolderFound = 0
+            val itemCount = item!!.adapter!!.itemCount
+            for (i in 0 until itemCount) {
+                val vh = item.findViewHolderForAdapterPosition(i)
+                if (expectedClass.isInstance(vh)) {
+                    viewHolderFound++
+                }
+            }
+            return viewHolderFound == expectedCount
+        }
+    }
+}
+
+/**
  * check if the specified viewholder class [expectedClass] is exist in the recyclerview
  *
  * @param expectedClass expected viewholder class in recyclerview

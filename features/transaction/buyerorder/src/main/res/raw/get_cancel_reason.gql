@@ -40,6 +40,14 @@ query GETCANCELREASON($input:CancelReasonRequest!) {
         product_price,
         picture
       }
+    },
+    order_details{
+        product_id,
+        product_name,
+        product_price,
+        picture,
+        bundle_id,
+        bundle_variant_id
     }
   }
 }

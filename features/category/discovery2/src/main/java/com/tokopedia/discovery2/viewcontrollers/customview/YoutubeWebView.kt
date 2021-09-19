@@ -19,6 +19,8 @@ private const val DELAY_TO_MIMIC_CLICK = 1000
 
 class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : WebView(context, attrs, defStyleAttr) {
+    var videoId: String? = null
+    var youtubeJSInterface: YoutubeWebViewInterface? = null
     private var dispatchDownEvent:Boolean = false
     private var userDownEvent:Boolean = false
     private var jsInterface: String = "jsInterface"
@@ -29,6 +31,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         setupTouchListener()
         setUpWebViewClient()
         settings.javaScriptEnabled = true
+        settings.mediaPlaybackRequiresUserGesture = false
     }
 
     private fun setUpWebViewClient() {
@@ -98,15 +101,38 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                             youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
                             youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
                             playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null) {
-        addJavascriptInterface(YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
-                youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued,playerReady), jsInterface)
+        val youtubeJSInterface = YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
+            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued,playerReady)
+        this.youtubeJSInterface = youtubeJSInterface
+        addJavascriptInterface(youtubeJSInterface, jsInterface)
     }
 
     fun loadVideo(videoId: String,width: Int) {
+        this.videoId = videoId
         if (isPlayerReady) {
             loadUrl("javascript:cueVideo('$videoId', 0)")
         } else
             loadData(getYoutubePlayerHtml(videoId, width), MIME_TYPE, ENCODING)
+    }
+
+    fun mute(){
+        if(isPlayerReady)
+            loadUrl("javascript:mute()")
+    }
+
+    fun unMute(){
+        if(isPlayerReady)
+            loadUrl("javascript:unMute()")
+    }
+
+    fun play() {
+        if(isPlayerReady)
+            loadUrl("javascript:playVideo()")
+    }
+
+    fun pause() {
+        if(isPlayerReady)
+            loadUrl("javascript:pauseVideo()")
     }
 
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
@@ -149,6 +175,21 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      function cueVideo(videoId, startSeconds) {\n" +
                 "          player.cueVideoById(videoId, startSeconds);\n" +
                 "      }\n" +
+                "      function loadVideo(videoId, startSeconds) {\n" +
+                "          player.loadVideoById(videoId, startSeconds);\n" +
+                "      }\n" +
+                "      function playVideo() {\n" +
+                "         player.playVideo();\n" +
+                "      }\n"+
+                "      function pauseVideo() {\n" +
+                "         player.pauseVideo();\n" +
+                "      }\n"+
+                "      function mute() {\n" +
+                "         player.mute();\n" +
+                "      }\n" +
+                "      function unMute() {\n" +
+                "         player.unMute();\n" +
+                "      }\n"+
                 "    </script>\n" +
                 "  </body>\n" +
                 "</html>"

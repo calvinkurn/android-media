@@ -106,7 +106,7 @@ class VariantSheetViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         variantSheetUiModel?.let {
             it.mapOfSelectedVariants[variantOptions.variantCategoryKey] = variantOptions.variantId
         }
@@ -145,7 +145,7 @@ class VariantSheetViewComponent(
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
-                        applink = null
+                        applink = variantSheetUiModel?.product?.applink
                 )
                 variantSheetUiModel?.stockWording = stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
