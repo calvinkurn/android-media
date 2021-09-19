@@ -12,10 +12,12 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -34,15 +36,11 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper.mapToRecentPurchaseUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -70,7 +68,9 @@ object HomeLayoutMapper {
         LEGO_6_IMAGE,
         BANNER_CAROUSEL,
         PRODUCT_RECOM,
-        RECENT_PURCHASE
+        RECENT_PURCHASE,
+        EDUCATIONAL_INFORMATION,
+        SHARING_EDUCATION
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -92,7 +92,8 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
-        hasTickerBeenRemoved: Boolean
+        hasTickerBeenRemoved: Boolean,
+        hasSharingEducationBeenRemoved: Boolean
     ) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -103,8 +104,10 @@ object HomeLayoutMapper {
         }
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            mapToHomeUiModel(it)?.let { item ->
-                add(item)
+            if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
+                mapToHomeUiModel(it)?.let { item ->
+                    add(item)
+                }
             }
         }
     }
@@ -149,6 +152,22 @@ object HomeLayoutMapper {
                 val layout = item.copy(categoryList = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapEducationalInformationData(
+        item: HomeEducationalInformationWidgetUiModel
+    ) {
+        updateItemById(item.visitableId) {
+            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED), HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapSharingEducationData(
+        item: HomeSharingEducationWidgetUiModel
+    ) {
+        updateItemById(item.visitableId) {
+            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED), HomeLayoutItemState.LOADED)
         }
     }
 
@@ -375,6 +394,8 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, state)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, state, miniCartData)
             RECENT_PURCHASE -> mapRecentPurchaseUiModel(response, state)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, state)
+            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
             else -> null
         }
     }
