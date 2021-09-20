@@ -37,6 +37,7 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 /**
@@ -269,7 +270,7 @@ class PlayActivity : BaseActivity(),
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     if (isTaskRoot) {
-                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                        val intent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "${TokopediaUrl.getInstance().WEB}$PLAY_CHANNEL_LIST_PATH"))
                         startActivity(intent)
                         finish()
                     } else {
@@ -334,6 +335,7 @@ class PlayActivity : BaseActivity(),
     }
 
     companion object {
+        private const val PLAY_CHANNEL_LIST_PATH = "play/channels?titlebar=false"
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
     }
 }
