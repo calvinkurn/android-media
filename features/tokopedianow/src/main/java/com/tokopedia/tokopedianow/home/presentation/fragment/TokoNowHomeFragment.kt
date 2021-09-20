@@ -39,6 +39,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -55,6 +56,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
@@ -108,7 +110,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
 import java.util.*
 import javax.inject.Inject
 
@@ -179,6 +180,8 @@ class TokoNowHomeFragment: Fragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvHome: RecyclerView? = null
+    private var miniCartWidget: MiniCartWidget? = null
+    private var stickyLoginTokonow: StickyLoginView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
@@ -223,6 +226,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shareHomeTokonow()
+        setupUi()
         setupNavToolbar()
         stickyLoginSetup()
         setupStatusBar()
@@ -538,7 +542,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginSetup(){
-        sticky_login_tokonow?.let {
+        stickyLoginTokonow?.let {
             it.page = StickyLoginConstant.Page.TOKONOW
             it.lifecycleOwner = viewLifecycleOwner
             it.setStickyAction(object : StickyLoginAction {
@@ -560,11 +564,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginLoadContent(){
-        sticky_login_tokonow.loadContent()
+        stickyLoginTokonow?.loadContent()
     }
 
     private fun hideStickyLogin(){
-        sticky_login_tokonow.hide()
+        stickyLoginTokonow?.hide()
     }
 
     private fun loadHeaderBackground() {
@@ -583,7 +587,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupSwipeRefreshLayout() {
         context?.let {
-            swipeLayout = view?.findViewById(R.id.swipe_refresh_layout)
             swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it), spaceZero, spaceZero)
             swipeLayout?.setOnRefreshListener {
                 onRefreshLayout()
@@ -601,9 +604,19 @@ class TokoNowHomeFragment: Fragment(),
         isRefreshed = true
     }
 
+    private fun setupUi() {
+        view?.apply {
+            ivHeaderBackground = findViewById(R.id.view_background_image)
+            navToolbar = findViewById(R.id.navToolbar)
+            statusBarBackground = findViewById(R.id.status_bar_bg)
+            rvHome = findViewById(R.id.rv_home)
+            swipeLayout = findViewById(R.id.swipe_refresh_layout)
+            miniCartWidget = findViewById(R.id.mini_cart_widget)
+            stickyLoginTokonow = findViewById(R.id.sticky_login_tokonow)
+        }
+    }
+
     private fun setupNavToolbar() {
-        ivHeaderBackground = view?.findViewById(R.id.view_background_image)
-        navToolbar = view?.findViewById(R.id.navToolbar)
         setupTopNavigation()
         navAbTestCondition (
                 ifNavRevamp = {
@@ -693,7 +706,6 @@ class TokoNowHomeFragment: Fragment(),
             In that version, status bar can't be forced to dark mode
             We must set background to keep status bar icon visible
         */
-        statusBarBackground = view?.findViewById(R.id.status_bar_bg)
         activity?.let {
             statusBarBackground?.apply {
                 layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
@@ -711,7 +723,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupRecyclerView() {
         context?.let {
-            rvHome = view?.findViewById(R.id.rv_home)
             rvHome?.apply {
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)

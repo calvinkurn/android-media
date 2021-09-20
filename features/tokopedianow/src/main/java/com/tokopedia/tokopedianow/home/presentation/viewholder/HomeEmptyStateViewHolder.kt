@@ -61,7 +61,6 @@ class HomeEmptyStateViewHolder(
         emptyStateFailedToFetchData?.hide()
         emptyStateNoAddressAndLocalCache?.hide()
         emptyStateNoAddress?.show()
-        emptyStateNoAddress?.setDescriptionCityName(itemView.context.getString(R.string.tokopedianow_city_name_empty_state_no_address))
         emptyStateNoAddress?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 showBottomSheetChooseAddress()
