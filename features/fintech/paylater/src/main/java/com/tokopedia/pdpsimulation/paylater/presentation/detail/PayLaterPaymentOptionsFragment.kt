@@ -150,110 +150,169 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     /**
      * This method set values to all view from the api success response
      */
-    @SuppressLint("SetTextI18n")
     private fun setData() {
         responseData?.let { data ->
-            tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""
-            partnerName = data.gateway_detail?.name ?: ""
-            tenure = data.tenure ?: 0
-            if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
-                tvSmallSubTitlePaylaterPartner.visible()
-                tvSmallSubTitlePaylaterPartner.text = data.gateway_detail?.smallSubHeader
-            } else {
-                tvSmallSubTitlePaylaterPartner.gone()
-            }
-            whyText.text =
-                resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
-            if (data.tenure != PAY_LATER_BASE_TENURE)
-                duration.text =
-                    resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
+            updateHeaderPartnerCard(data)
+            updateButtonDetail(data)
+            updateRepaymentDetail(data)
+            updateAdditionalPartnerDetail(data)
+            if (data.disableDetail?.status == true)
+                setUIIfDisable(data)
+        }
+    }
 
-            interestText.text =
-                "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
-            gatewayType =
-                when {
-                    rejectionList.contains(data.activation_status) -> GatewayStatusType.Rejected
-                    processiongList.contains(data.activation_status) -> GatewayStatusType.Processing
-                    else -> GatewayStatusType.Accepted
-                }
+    /**
+     * THis method update the recommended text and why text
+     * @param data this is the partner response
+     */
+    @SuppressLint("SetTextI18n")
+    private fun updateAdditionalPartnerDetail(data: Detail) {
+        whyText.text =
+            resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
+        if (data.is_recommended == true) {
+            recommendationText.visible()
+            recommendationText.text = data.is_recommended_string?:""
+        }
+        else
+        {
+            recommendationText.gone()
+        }
+    }
 
-            updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
+    /**
+     * This method is to show the detail of all repayment detail like interest , service fee etc
+     * for the selected partner
+     * @param data this the the base detail response
+     */
 
-            tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
-            if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
-                serviceFeeInfoText.visible()
-                serviceFeeInfoText.text = data.serviceFeeInfo
-            } else {
-                serviceFeeInfoText.gone()
+    @SuppressLint("SetTextI18n")
+    private fun updateRepaymentDetail(data: Detail)
+    {
+        if (data.tenure != PAY_LATER_BASE_TENURE)
+            duration.text =
+                resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
-            }
-            urlToRedirect = data.cta?.android_url ?: ""
-            data.cta?.cta_type?.let {
-                buttonStatus = when{
-                    buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
-                    buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
-                    else ->RedirectionType.NonClickable
-                }
-            }
-            interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
+        interestText.text =
+            "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
+
+
+
+        interestAmount.text = data.total_interest_ceil?.let { interest_ceil ->
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                interest_ceil, false
+            )
+        }
+        serviceFeeAmount.text =
+            data.total_with_provision_ceil?.let { total_provision_ceil ->
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    interest_ceil, false
+                    total_provision_ceil,
+                    false
                 )
             }
-            serviceFeeAmount.text =
-                data.total_with_provision_ceil?.let { total_provision_ceil ->
+        data.installment_per_month_ceil?.let { montlyInstallment ->
+            if (data.tenure != PAY_LATER_BASE_TENURE) {
+                totalAmount.text = "${
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        total_provision_ceil,
-                        false
-                    )
-                }
-            data.installment_per_month_ceil?.let { montlyInstallment ->
-                if (data.tenure != PAY_LATER_BASE_TENURE) {
-                    totalAmount.text = "${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            montlyInstallment, false
-                        )
-                    }/${resources.getString(R.string.monthText)}"
-                } else {
-                    totalAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         montlyInstallment, false
                     )
-                }
-
-            }
-            if (!data.cta?.name.isNullOrEmpty())
-                btnHowToUse.text = data.cta?.name
-            else
-                btnHowToUse.gone()
-
-            if (data.is_recommended == true) {
-                recommendationText.visible()
-                recommendationText.text = data.is_recommended_string?:""
-            }
-            else
-            {
-                recommendationText.gone()
+                }/${resources.getString(R.string.monthText)}"
+            } else {
+                totalAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    montlyInstallment, false
+                )
             }
 
-            if (data.cta?.button_color.equals("filled", true)) {
+        }
+
+    }
+
+    /**
+     * THis method set the header for the partner brand
+     * @param data this is the partner detail response
+     */
+
+    private fun updateHeaderPartnerCard(data: Detail)
+    {
+        tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""
+        partnerName = data.gateway_detail?.name ?: ""
+        tenure = data.tenure ?: 0
+        if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+            tvSmallSubTitlePaylaterPartner.visible()
+            tvSmallSubTitlePaylaterPartner.text = data.gateway_detail?.smallSubHeader
+        } else {
+            tvSmallSubTitlePaylaterPartner.gone()
+        }
+
+        updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
+        tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
+        if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+            serviceFeeInfoText.visible()
+            serviceFeeInfoText.text = data.serviceFeeInfo
+        } else {
+            serviceFeeInfoText.gone()
+
+        }
+
+        data.gateway_detail?.let { gatewayDetail ->
+            setPartnerImage(gatewayDetail)
+        }
+
+        gatewayType =
+            when {
+                rejectionList.contains(data.activation_status) -> GatewayStatusType.Rejected
+                processiongList.contains(data.activation_status) -> GatewayStatusType.Processing
+                else -> GatewayStatusType.Accepted
+            }
+
+
+    }
+
+
+    /**
+     * This is the method to update the button detail of the partner card
+     * @param data this is the detail partner detail
+     */
+
+    private fun updateButtonDetail(data: Detail) {
+        urlToRedirect = data.cta?.android_url ?: ""
+
+        data.cta?.cta_type?.let {
+            buttonStatus = when{
+                buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
+                buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
+                else ->RedirectionType.NonClickable
+            }
+        }
+        if (!data.cta?.name.isNullOrEmpty())
+            btnHowToUse.text = data.cta?.name
+        else
+            btnHowToUse.gone()
+        if (data.cta?.button_color.equals("filled", true)) {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
             } else {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST
             }
-            data.gateway_detail?.let { gatewayDetail ->
-                setPartnerImage(gatewayDetail)
-            }
-
-            if (data.disableDetail?.status == true) {
-                disableVisibilityGroup.gone()
-                tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                interestText.text = data.disableDetail.description ?: ""
-                simulasiHeading.text = data.disableDetail.header ?: ""
-            }
-
-        }
     }
 
+
+    /**
+     * THis method is to set the UI if disabled is true
+     * @param data this is the base detail response
+     */
+
+    private fun setUIIfDisable(data: Detail)
+    {
+        disableVisibilityGroup.gone()
+        tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        interestText.text = data.disableDetail?.description ?: ""
+        simulasiHeading.text = data.disableDetail?.header ?: ""
+    }
+
+    /**
+     * This method update the subheader of the partner card
+     * @param gatewayType this is the gatewayType ENUM
+     * @param subheader this is the string for displaying the subheader
+     */
     private fun updateSubHeader(gatewayType: GatewayStatusType?, subheader: String) {
         when (gatewayType) {
             GatewayStatusType.Processing -> {
