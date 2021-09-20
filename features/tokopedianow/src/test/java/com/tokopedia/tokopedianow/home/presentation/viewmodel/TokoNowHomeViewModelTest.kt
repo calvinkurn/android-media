@@ -746,7 +746,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(Product(id = productId, maxOrder = "5", minOrder = "3"))
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -820,7 +820,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(Product(id = productId, maxOrder = "5", minOrder = "3"))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -899,7 +899,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(Product(id = productId, maxOrder = "5", minOrder = "3"))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -946,7 +946,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseProduct = Product(
             id = productId,
-            stock = "5",
+            maxOrder = "5",
             minOrder = "3"
         )
         val recentPurchaseResponse = RecentPurchaseData(
@@ -1105,7 +1105,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseProduct = Product(
             id = productId,
-            stock = "5",
+            maxOrder = "5",
             minOrder = "3"
         )
         val recentPurchaseResponse = RecentPurchaseData(
@@ -1248,7 +1248,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseProduct = Product(
             id = productId,
-            stock = "5",
+            maxOrder = "5",
             minOrder = "3"
         )
         val recentPurchaseResponse = RecentPurchaseData(
@@ -1662,12 +1662,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             products = listOf(
                 Product(
                     id = "1",
-                    stock = "5",
+                    maxOrder = "5",
                     minOrder = "3"
                 ),
                 Product(
                     id = "2",
-                    stock = "3",
+                    maxOrder = "3",
                     minOrder = "1"
                 )
             )
@@ -1729,12 +1729,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             products = listOf(
                 Product(
                     id = "1",
-                    stock = "5",
+                    maxOrder = "5",
                     minOrder = "3"
                 ),
                 Product(
                     id = "2",
-                    stock = "3",
+                    maxOrder = "3",
                     minOrder = "1"
                 )
             )
