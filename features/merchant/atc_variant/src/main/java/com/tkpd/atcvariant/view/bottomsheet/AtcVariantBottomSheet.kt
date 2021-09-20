@@ -675,11 +675,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun onSaveButtonClicked() {
-        shouldSetActivityResult = true
-        dismiss()
-    }
-
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
         context?.let {
             val intent = ImagePreviewActivity.getCallingIntent(context = it, imageUris = listOfImage, disableDownloadButton = true)
