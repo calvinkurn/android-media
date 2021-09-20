@@ -129,6 +129,11 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         })
     }
 
+    /**
+     * THis method is called if the api fails
+     * @param throwable contains the error message
+     */
+
     private fun productDetailFail(throwable: Throwable) {
         productInfoShimmer.gone()
         productDetail.gone()
