@@ -5,11 +5,15 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tokopedia.createpost.createpost.R;
+import com.tokopedia.createpost.view.viewmodel.RelatedProductItem;
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging;
+import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.List;
 
 public class TempTagViewProvider {
     static float dX, dY;
@@ -41,15 +45,28 @@ public class TempTagViewProvider {
 
      */
 
-    static View getTagView(Context context) {
+    public static View getTagView(Context context, List<RelatedProductItem> products, int index) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.temp_view_tag, null);
-        TextView tv = (TextView) view.findViewById(R.id.slase_price);
-        tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        Typography tv = (Typography) view.findViewById(R.id.product_tag_slashed_price_text);
+        Typography productViewPrice = (Typography) view.findViewById(R.id.product_tag_price_text);
+        Typography productName = (Typography) view.findViewById(R.id.product_tag_name_text);
+
+        RelatedProductItem productItem = products.get(index);
+        productName.setText(productItem.getName());
+        if (productItem.isDiscount()) {
+            tv.setVisibility(View.VISIBLE);
+            productViewPrice.setText(productItem.getPriceDiscountFmt());
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        } else {
+            tv.setVisibility(View.GONE);
+            productViewPrice.setText(productItem.getPrice());
+        }
         return view;
     }
 
-    static void addViewToParent(View child, ConstraintLayout parent, MotionEvent event) {
+    public static void addViewToParent(View child, ConstraintLayout parent, FeedXMediaTagging feedXMediaTagging) {
         child.setVisibility(View.INVISIBLE);
 
         child.setOnTouchListener(new View.OnTouchListener() {
@@ -57,27 +74,27 @@ public class TempTagViewProvider {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        dX = view.getX() - event.getRawX();
-                        dY = view.getY() - event.getRawY();
+                        dX = view.getX() - feedXMediaTagging.getRawX();
+                        dY = view.getY() - feedXMediaTagging.getRawY();
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         float gotoX;
-                        if ((event.getRawX() + dX) + pxFromDp(child.getContext(), 145) > parent.getRight()) {
+                        if ((feedXMediaTagging.getRawX() + dX) + pxFromDp(child.getContext(), 145) > parent.getRight()) {
 //                            gotoX = (event.getRawX() + dX) - pxFromDp(child.getContext(), 145);
                             gotoX = parent.getRight() - pxFromDp(child.getContext(), 145); /*Blocking right on drag*/
-                        } else if ((event.getRawX() + dX) < 0) {
+                        } else if ((feedXMediaTagging.getRawX() + dX) < 0) {
                             gotoX = 0; /*Blocking left on drag*/
                         } else {
-                            gotoX = event.getRawX() + dX; /*Normal horizontal drag*/
+                            gotoX = feedXMediaTagging.getRawX() + dX; /*Normal horizontal drag*/
                         }
 
                         float gotoY;
-                        if ((event.getY()) - pxFromDp(child.getContext(), 68) < 0) {
+                        if ((feedXMediaTagging.getY()) - pxFromDp(child.getContext(), 68) < 0) {
                             gotoY = 0; /*Blocking top on drag*/
-                        } else if (((event.getRawY() + dX) + pxFromDp(child.getContext(), 68) > parent.getBottom())) {
+                        } else if (((feedXMediaTagging.getRawY() + dX) + pxFromDp(child.getContext(), 68) > parent.getBottom())) {
                             gotoY = parent.getBottom() - pxFromDp(child.getContext(), 68);  /*Blocking bottom on drag*/
                         } else {
-                            gotoY = event.getRawY() + dY; /*Normal vertical drag*/
+                            gotoY = feedXMediaTagging.getRawY() + dY; /*Normal vertical drag*/
                         }
 
 
@@ -102,7 +119,7 @@ public class TempTagViewProvider {
         });
 
         /*Handling for X position*/
-        float xTapped = event.getX() - pxFromDp(child.getContext(), 145) / 2;
+        float xTapped = feedXMediaTagging.getX() - pxFromDp(child.getContext(), 145) / 2;
         float x2Want = xTapped + pxFromDp(child.getContext(), 145);
         float x2Diff = parent.getRight() - x2Want;
         if (x2Diff < 0) {
@@ -111,7 +128,7 @@ public class TempTagViewProvider {
 
 
         /*Handling for Y position*/
-        float yTapped = event.getY();
+        float yTapped = feedXMediaTagging.getY();
         float y2Want = yTapped + pxFromDp(child.getContext(), 68);
         float y2Diff = parent.getBottom() - y2Want;
         if (y2Diff < 0) {

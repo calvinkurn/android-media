@@ -82,6 +82,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         caption.afterTextChanged {
             createPostModel.caption = it
         }
+        caption.isVerticalScrollBarEnabled = true
         caption.canScrollVertically(-1)
         caption.setOnTouchListener { v, event ->
             createPostAnalytics.eventClickOnCaptionBox()

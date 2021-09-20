@@ -3,7 +3,6 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -19,6 +18,9 @@ import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottom
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.plist.ShopPageProduct
 import com.tokopedia.createpost.view.posttag.ProductTaggingView
+import com.tokopedia.createpost.view.util.TagViewProvider
+import com.tokopedia.createpost.view.util.TempTagViewProvider
+import com.tokopedia.createpost.view.util.TempTagViewProvider.addViewToParent
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
@@ -52,6 +54,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
 
     private lateinit var contentProductTagBS: ContentCreationProductTagBottomSheet
+    private lateinit var tempTagViewProvider: TempTagViewProvider
+    private lateinit var lastMotionEvent: MotionEvent
 
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
@@ -96,6 +100,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun initView() {
         val relatedProducts = ArrayList(createPostModel.relatedProducts)
+        tempTagViewProvider = TempTagViewProvider()
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
         createPostModel.maxProduct = 5
@@ -126,7 +131,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
                 FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
             openProductTaggingScreen()
-        }else{
+        } else {
             Toaster.build(requireView(),
                 getString(R.string.feed_content_more_than_5_product_tag),
                 Toaster.LENGTH_LONG,
@@ -187,6 +192,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         findViewById<CardView>(R.id.product_tagging_button_parent).showWithCondition(
                             products.isNotEmpty()
                         )
+                        val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
                         bindImage(feedMedia)
 
 
@@ -196,17 +202,22 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                 override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
 
                                     createPostAnalytics.eventClickOnImageToTag(feedMedia.type)
-
                                     removeExtraTagListElement(feedMedia)
+
                                     val x = e?.x ?: 0L
                                     val y = e?.y ?: 0L
                                     val posX = round((x.toFloat() / imageItem.width) * 10) / 10
                                     val posY = round((y.toFloat() / imageItem.height) * 10) / 10
                                     val tagIndex = createPostModel.completeImageList[index].tags.size
-                                    createPostModel.completeImageList[index].tags.add(FeedXMediaTagging(
-                                        tagIndex = tagIndex,
-                                        posX = posX,
-                                        posY = posY))
+                                    createPostModel.completeImageList[index].tags.add(
+                                        FeedXMediaTagging(
+                                            tagIndex = tagIndex,
+                                            posX = posX,
+                                            posY = posY,
+                                            X = e?.x,
+                                            Y = e?.y,
+                                            rawX = e?.rawX,
+                                            rawY = e?.rawY))
 
                                     if (getLatestTotalProductCount() < 5)
                                         openProductTaggingScreen()
@@ -405,12 +416,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         updateResultIntent()
 
+        if (createPostModel.completeImageList[currentImagePos].products.size == 0 && !isDeletedFromBubble)
             Toaster.build(requireView(),
                 getString(R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
 
-        updateResultIntent()
 
     }
 
@@ -516,6 +527,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun bindImage(media: MediaModel) {
         val products = media.products
         val imageItem = media.imageView
+        val listener = this
 
         removeExtraTagListElement(media)
 
@@ -530,32 +542,39 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             val childCount = layout?.childCount ?: 0
                 for (i in 0 until childCount) {
                     val view = layout.getChildAt(i)
-                    if (view is ProductTaggingView) {
-                        view.hideExpandedView()
                         layout.removeView(view)
-                    }
+
                 }
 
-                media.tags.forEachIndexed { index, feedXMediaTagging ->
-                    val productTagView = ProductTaggingView(context, feedXMediaTagging)
-                    productTagView.bindData(this@CreatePostPreviewFragmentNew,
-                        products,
-                        width,
-                        height,
-                        index)
-                    layout.addView(productTagView)
-                }
+            media.tags.forEachIndexed { index, feedXMediaTagging ->
+                val tagViewProvider = TagViewProvider()
+                val view = tagViewProvider.getTagView(context, products, index, listener, feedXMediaTagging)
+                if (view != null)
+                tagViewProvider.addViewToParent(view, layout, feedXMediaTagging)
+
+            }
         }
     }
+
     private fun bindVideo(mediaModel: MediaModel) {
         mediaModel.videoView?.run {
             content_product_tagging_parent.showWithCondition(mediaModel.products.isNotEmpty())
             content_product_tagging_parent?.setOnClickListener {
                 openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products, MediaType.VIDEO)
             }
-
         }
-
     }
+
+    private fun isProductAlreadyAddedOnImage(product: RelatedProductItem, tagging: FeedXMediaTagging) {
+        val currentImagePos = createPostModel.currentCorouselIndex
+        val tagsAdded = createPostModel.completeImageList[currentImagePos].tags
+        val productsAdded = createPostModel.completeImageList[currentImagePos].products
+        if (productsAdded.size > 0 && productsAdded.contains(product)) {
+            val index = productsAdded.indexOf(product)
+            tagsAdded.removeAt(index)
+            tagsAdded.add(index, tagging)
+        }
+    }
+
 }
 

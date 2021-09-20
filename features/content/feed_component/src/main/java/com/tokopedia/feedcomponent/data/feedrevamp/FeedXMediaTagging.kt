@@ -9,4 +9,8 @@ data class FeedXMediaTagging(
         var posX: Float,
         @SerializedName("posY")
         var posY: Float,
+        var X: Float? = 0f,
+        var Y: Float? = 0f,
+        var rawX: Float? = 0f,
+        var rawY: Float? = 0f
 )
