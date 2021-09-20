@@ -57,6 +57,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
@@ -85,7 +86,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -133,6 +136,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
+
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
@@ -164,6 +170,27 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
+    private fun enableLinkingAccountRollout(): Boolean =
+        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+
+    private fun isEnableLinkAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true) && enableLinkingAccountRollout()
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun getRemoteConfig(): FirebaseRemoteConfigImpl {
+        if(!::firebaseRemoteConfig.isInitialized) {
+            firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireContext())
+        }
+        return firebaseRemoteConfig
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!userSession.isLoggedIn) {
@@ -188,10 +215,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun fetchRemoteConfig() {
         context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
-            isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowHomeAccountTokopoints = getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
+            isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -293,6 +319,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
         })
+
+        viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()) {
+                getData()
+            }
+        })
+
     }
 
     private fun onSuccessGetUserPageAssetConfig(userPageAssetConfig: UserPageAssetConfig) {
@@ -435,7 +468,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -604,7 +637,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupSettingList() {
-        addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
+        val userSettingsMenu = menuGenerator.generateUserSettingMenu()
+        userSettingsMenu.items.forEach {
+            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
+                userSettingsMenu.items.remove(it)
+            }
+        }
+        addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
                 accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
@@ -755,7 +794,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     }
 
-
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_OVO -> {
@@ -880,7 +918,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
                 startActivity(intent)
             }
-
+            AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                homeAccountAnalytic.trackClickSettingLinkAcc()
+                goToApplink(item.applink)
+            }
             else -> {
                 goToApplink(item.applink)
             }
@@ -1072,7 +1113,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
             memberTitle = it
         }
-
         itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
             memberIcon = it
         }
@@ -1142,6 +1182,21 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    override fun onLinkingAccountClicked(isLinked: Boolean) {
+        homeAccountAnalytic.trackClickLinkAccount()
+        if(isLinked) {
+            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        } else {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_LD,
+                    ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+                )
+            }
+            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+        }
+    }
+
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
         homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
         activity?.let {
@@ -1177,22 +1232,26 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+        when (requestCode) {
+            REQUEST_FROM_PDP -> {
+                data?.let {
+                    val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(wishlistStatusFromPdp, position)
+                    val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                    updateWishlist(wishlistStatusFromPdp, position)
+                }
             }
-        }
-
-        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
-            gotoSettingProfile()
-        }
-
-        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
-            getData()
+            REQUEST_CODE_CHANGE_NAME -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    gotoSettingProfile()
+                }
+            }
+            REQUEST_CODE_PROFILE_SETTING -> {
+                getData()
+            }
+            REQUEST_CODE_LINK_ACCOUNT -> {
+                viewModel.refreshPhoneNo()
+            }
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -1276,6 +1335,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    private fun showBottomSheetLinkAccount() {
+        val child = View.inflate(context, R.layout.layout_bottom_sheet_link_account, null)
+        val btnPrimary: UnifyButton = child.findViewById(R.id.bottom_sheet_link_account_btn)
+        val imagePrimary: ImageUnify = child.findViewById(R.id.bottom_sheet_link_account_image)
+
+        BottomSheetUnify().apply {
+//            ImageUtils.loadImage(imagePrimary)
+            btnPrimary.setOnClickListener { }
+            setChild(child)
+            setCloseClickListener { dismiss() }
+        }.show(parentFragmentManager, "linkAccount")
+    }
+
     private fun gotoChangeName(profile: ProfileDataView) {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, profile.name, "")
         startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
@@ -1329,6 +1401,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     companion object {
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
+        private const val REQUEST_CODE_LINK_ACCOUNT = 302
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -1341,6 +1414,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS = "android_user_home_account_tokopoints"
+        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+
+        private const val LINK_STATUS_ROLLOUT = "goto_linking"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

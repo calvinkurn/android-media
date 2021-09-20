@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
@@ -27,19 +30,21 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
+    @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
-        private val accountPref: AccountPreference,
-        private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
-        private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-        private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
-        private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
-        private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
-        private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
-        private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+    private val accountPref: AccountPreference,
+    private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
+    private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
+    private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
+    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
+    private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
+    private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
+    private val getLinkStatusUseCase: GetLinkStatusUseCase,
+    private val getPhoneUseCase: GetUserProfile,
+    private val walletPref: WalletPref,
+    private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
@@ -85,7 +90,23 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopoints: LiveData<Result<PointDataModel>>
         get() = _tokopoints
 
+    private val _phoneNo = MutableLiveData<String>()
+    val phoneNo: LiveData<String> get() = _phoneNo
+
     var internalBuyerData: UserAccountDataModel? = null
+
+    fun refreshPhoneNo() {
+        launchCatchError(block = {
+            val profile = getPhoneUseCase(RequestParams.EMPTY)
+            val phone = profile.profileInfo.phone
+            if (phone.isNotEmpty()) {
+                userSession.phoneNumber = phone
+                _phoneNo.postValue(phone)
+            }
+        }, onError = {
+            _phoneNo.postValue("")
+        })
+    }
 
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
@@ -119,9 +140,17 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
+    private suspend fun getLinkStatus(): LinkStatusResponse {
+        val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
+        return getLinkStatusUseCase(params)
+    }
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+            val linkStatus = getLinkStatus()
+            accountModel.linkStatus = linkStatus.response
+
             withContext(dispatcher) {
                 internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)

@@ -82,6 +82,22 @@ class ProfileViewHolder(
                     listener.onProfileAdapterReady(financialAdapter, memberAdapter)
                 }
             }
+
+            if(profile.isShowLinkStatus) {
+                link_account_profile_btn?.setOnClickListener {
+                    listener.onLinkingAccountClicked(profile.isLinked)
+                }
+                if(profile.isLinked) {
+                    link_account_profile_btn?.hide()
+                    account_user_item_profile_link_status?.show()
+                } else {
+                    account_user_item_profile_link_status?.hide()
+                    link_account_profile_btn.show()
+                }
+            } else {
+                link_account_profile_btn?.hide()
+                account_user_item_profile_link_status?.hide()
+            }
         }
     }
 

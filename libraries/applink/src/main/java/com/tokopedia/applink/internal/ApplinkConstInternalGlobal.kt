@@ -51,6 +51,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
     const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
+    const val PARAM_LD = "redirectionApplink"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -264,6 +265,10 @@ object ApplinkConstInternalGlobal {
     // ChangePasswordActivity
     // tokopedia-android-internal://global/change-password
     const val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
+
+    // LinkAccountActivity
+    // tokopedia-android-internal://global/link-account
+    const val LINK_ACCOUNT = "$INTERNAL_GLOBAL/link-account"
 
     // HasPasswordActivity
     // tokopedia-android-internal://global/has-password
@@ -498,4 +503,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
+
+    // LinkAccountWebViewActivity
+    // tokopedia-android-internal://global/link-account-webview
+    const val LINK_ACCOUNT_WEBVIEW = "$INTERNAL_GLOBAL/link-account-webview"
 }
