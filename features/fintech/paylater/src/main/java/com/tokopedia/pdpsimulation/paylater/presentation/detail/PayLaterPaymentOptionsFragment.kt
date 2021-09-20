@@ -59,15 +59,18 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             val orderedBenefitList: MutableList<Benefit?> = ArrayList()
-            for (i in 0 until (responseData?.gateway_detail?.benefit?.size ?: 0)) {
-                if (responseData?.gateway_detail?.benefit?.get(i)?.is_highlight == true) {
-                    responseData?.gateway_detail?.benefit?.let { benefitList ->
-                        orderedBenefitList.add(benefitList[i])
+            if(!responseData?.gateway_detail?.benefit.isNullOrEmpty()) {
+                for (i in 0 until (responseData?.gateway_detail?.benefit?.size?:0)) {
+                    if (responseData?.gateway_detail?.benefit?.get(i)?.is_highlight == true) {
+                        responseData?.gateway_detail?.benefit?.let { benefitList ->
+                            orderedBenefitList.add(benefitList[i])
+                        }
                     }
                 }
+                adapter = PayLaterOfferDescriptionAdapter(orderedBenefitList)
             }
 
-            adapter = PayLaterOfferDescriptionAdapter(orderedBenefitList)
+
         }
     }
 
