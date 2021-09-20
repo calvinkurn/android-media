@@ -1,8 +1,6 @@
 package com.tokopedia.buyerorder.detail.domain
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
-import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams

@@ -120,6 +120,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
+    fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
+        cartExtension.similarProductClickListener = similarProductClickListener
+    }
+
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
         buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }

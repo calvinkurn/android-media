@@ -3,6 +3,10 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -17,6 +21,8 @@ class RepurchaseProductViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_product_grid_card
+
+        private const val PARAM_CATEGORY_L1 = "category_l1"
     }
 
     private val productCard: ProductCardGridView? by lazy {
@@ -24,42 +30,50 @@ class RepurchaseProductViewHolder(
     }
 
     override fun bind(item: RepurchaseProductUiModel) {
-//        productCard?.setProductModel(
-//            ProductCardModel(
-//                productImageUrl = data.imageUrl300,
-//                productName = data.name,
-//                formattedPrice = data.price,
-//                slashedPrice = data.originalPrice,
-//                discountPercentage = data.discountPercentageString,
-//                countSoldRating = data.ratingAverage,
-//                labelGroupList = data.labelGroupDataViewList,
-//                labelGroupVariantList = data.labelGroupVariantDataViewList,
-//                variant = data.variantATC,
-//                nonVariant = data.nonVariantATC,
-//            )
-//        )
+        productCard?.apply {
+            setProductModel(item.productCard)
 
-        productCard?.setProductModel(item.productCard)
-
-        productCard?.setImageProductViewHintListener(item, object: ViewHintListener {
-            override fun onViewHint() {
-                listener?.onProductImpressed(item)
+            setOnClickListener {
+                goToProductDetail(item)
+                listener?.onClickProduct(item)
             }
-        })
 
-        productCard?.setOnClickListener {
-            listener?.onClickProduct(item)
-        }
-
-        productCard?.setAddVariantClickListener {
-            listener?.onAddToCartVariant(item)
-        }
-
-        productCard?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-            override fun onQuantityChanged(quantity: Int) {
-                listener?.onAddToCartNonVariant(item, quantity)
+            setAddVariantClickListener {
+                listener?.onAddToCartVariant(item)
             }
-        })
+
+            setSimilarProductClickListener {
+                goToCategoryPage(item)
+            }
+
+            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    listener?.onAddToCartNonVariant(item, quantity)
+                }
+            })
+
+            setImageProductViewHintListener(item, object: ViewHintListener {
+                override fun onViewHint() {
+                    listener?.onProductImpressed(item)
+                }
+            })
+        }
+    }
+
+    private fun goToCategoryPage(item: RepurchaseProductUiModel) {
+        val uri = UriUtil.buildUriAppendParam(
+            ApplinkConstInternalTokopediaNow.CATEGORY,
+            mapOf(PARAM_CATEGORY_L1 to item.categoryId)
+        )
+        RouteManager.route(itemView.context, uri)
+    }
+
+    private fun goToProductDetail(item: RepurchaseProductUiModel) {
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.id
+        )
     }
 
     interface RepurchaseProductCardListener {

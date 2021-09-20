@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
-    <string name="tokopedianow_common_empty_state_desc_1">Tokopedia NOW! melayani kebutuhan belanja harianmu hanya dalam 2 jam pengiriman untuk menjamin tetap fresh.</string>
-    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru melayani kota %s. Tunggu Tokopedia NOW! tersedia di kotamu, ya!</string>
+    <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
+    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
+    <string name="tokopedianow_common_empty_state_bullet_symbol">•</string>
 
     <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
     <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>
@@ -40,7 +41,7 @@
     <string name="tokopedianow_empty_product_filter_price_name">Filter Harga</string>
 
     <string name="tokopedianow_global_search_button">Cari di Tokopedia</string>
-    <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW</string>
+    <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW!</string>
     <string name="tokopedianow_city_name_empty_state_no_address">Jakarta Barat</string>
     <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
     <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
@@ -54,6 +55,13 @@
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
+    <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
+    <string name="tokopedianow_repurchase_no_result_description">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+
+    <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
+    <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
+    <string name="tokopedianow_sort_filter_item_last_bought_bottomsheet">Terakhir Kamu Beli</string>
+    <string name="tokopedianow_sort_filter_title_bottomsheet">Urutkan</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -70,9 +78,15 @@
     <string name="tokopedianow_date_filter_item_end_date_bottomshet">Sampai</string>
 
     <string name="tokopedianow_repurchase_sort_chip_title">Paling sering dibeli</string>
-    <string name="tokopedianow_repurchase_category_filter_chip_title">Semua Kategori</string>
+    <string name="tokopedianow_repurchase_all_category_filter_chip_title">Semua Kategori</string>
+    <string name="tokopedianow_repurchase_category_filter_chip_format">%1$d Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
+
+    <string name="tokopedianow_category_filter_title">Pilih Kategori</string>
+    <string name="tokopedianow_text_apply">Terapkan</string>
+    <string name="tokopedianow_text_reset">Reset</string>
+    <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
 </resources>

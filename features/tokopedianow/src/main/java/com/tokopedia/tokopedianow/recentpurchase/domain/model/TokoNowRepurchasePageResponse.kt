@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.network.exception.Header
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 
 data class TokoNowRepurchasePageResponse(
-    @SerializedName("TokonowRepurchasePageResponse")
+    @SerializedName("TokonowRepurchasePage")
     val response: TokonowRepurchasePageDataResponse
 ) {
 
@@ -17,7 +17,18 @@ data class TokoNowRepurchasePageResponse(
     )
 
     data class GetRepurchaseProductListResponse(
+        @SerializedName("meta")
+        val meta: GetRepurchaseProductMetaResponse,
         @SerializedName("listProduct")
-        val productList: List<RepurchaseProduct>
+        val products: List<RepurchaseProduct>
+    )
+
+    data class GetRepurchaseProductMetaResponse(
+        @SerializedName("page")
+        val page: Int,
+        @SerializedName("hasNext")
+        val hasNext: Boolean,
+        @SerializedName("totalScan")
+        val totalScan: Int
     )
 }

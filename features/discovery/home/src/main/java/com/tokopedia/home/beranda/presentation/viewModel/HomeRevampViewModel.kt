@@ -135,7 +135,10 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
-    var isFromLogin = false
+
+    val beautyFestLiveData: LiveData<Int>
+        get() = _beautyFestLiveData
+    private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
 
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
@@ -1188,7 +1191,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getTokopoint(){
-        if(getTokopointJob?.isActive == true) return
+        if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
@@ -1222,7 +1225,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getTokocashBalance() {
-        if(getTokocashJob?.isActive == true) return
+        if(getTokocashJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
             updateHeaderViewModel(
@@ -1241,6 +1244,8 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getBalanceWidgetData() {
+        if (!userSession.get().isLoggedIn) return
+
         if (homeDataModel.homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
@@ -1327,10 +1332,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getWalletBalanceData() {
+        if (getWalletBalanceJob?.isActive == true || !userSession.get().isLoggedIn) return
+
         //set loading to wallet item
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
-        launchCatchError(coroutineContext, block = {
+        getWalletBalanceJob = launchCatchError(coroutineContext, block = {
             walletAppAbTestCondition(
                 isUsingWalletApp = {
                     getHomeBalanceWalletAppData(updateView = true)
@@ -1657,14 +1664,16 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int = withContext(Dispatchers.IO) {
-        //some result string will not qualify if not contains string channelModel
-        if(!Gson().toJson(data).toString().contains("channelModel"))
-            HomeRevampFragment.BEAUTY_FEST_NOT_QUALIFY
-        //beauty fest will contains isChannelBeautyFest true
-        else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
-            HomeRevampFragment.BEAUTY_FEST_TRUE
-        else
-            HomeRevampFragment.BEAUTY_FEST_FALSE
+    fun getBeautyFest(data: List<Visitable<*>>) {
+        //beauty fest event will qualify if contains "isChannelBeautyFest":true
+        launchCatchError(coroutineContext, {
+            if (Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_TRUE)
+            else
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_FALSE)
+        }, {
+            it.printStackTrace()
+            _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
+        })
     }
 }

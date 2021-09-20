@@ -42,13 +42,18 @@ data class RepurchaseProduct(
     @SerializedName("countReview")
     val countReview: String = "",
     @SerializedName("minOrder")
-    val minOrder: String = "",
+    val minOrder: Int = 0,
+    @SerializedName("maxOrder")
+    val maxOrder: Int = 0,
     @Expose
     @SerializedName("stock")
-    val stock: String = "",
+    val stock: Int = 0,
     @Expose
     @SerializedName("category")
     val category: String = "",
+    @Expose
+    @SerializedName("categoryID")
+    val categoryId: String = "",
     @Expose
     @SerializedName("campaignCode")
     val campaignCode: String = "",
@@ -73,6 +78,10 @@ data class RepurchaseProduct(
     fun getDiscount(): String {
         val discount = discountPercentage.toFloatOrZero()
         return if(discount > 0f) "$discountPercentage$PERCENTAGE" else ""
+    }
+
+    fun isStockEmpty(): Boolean {
+        return stock == 0
     }
 
     data class LabelGroup(

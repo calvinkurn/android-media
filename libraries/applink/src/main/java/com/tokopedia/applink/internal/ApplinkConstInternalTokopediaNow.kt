@@ -18,6 +18,9 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
+    //TokoNowSortFilterActivity
+    val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
+
     //TokoNowDateFilterActivity
     val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter?date_label_position={date_label_position}&start_date={start_date}&end_date={end_date}"
 
@@ -32,5 +35,9 @@ object ApplinkConstInternalTokopediaNow {
 
     //TokoNowRecentPurchaseActivity
     @JvmField
-    val RECENT_PURCHASE = "$INTERNAL_TOKOPEDIA_NOW/recent-purchase"
+    val REPURCHASE = "$INTERNAL_TOKOPEDIA_NOW/repurchase-page"
+
+    //TokoNowCategoryFilterActivity
+    @JvmField
+    val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
@@ -36,10 +39,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
-import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
@@ -57,7 +61,16 @@ import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.view.decoration.RepurchaseGridItemDecoration
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
+import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject
 
@@ -68,12 +81,17 @@ class TokoNowRecentPurchaseFragment:
     TokoNowChooseAddressWidgetListener,
     TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
-    TokoNowRecommendationCarouselListener
+    TokoNowRecommendationCarouselListener,
+    RepurchaseEmptyStateNoHistoryListener,
+    SortFilterListener,
+    ServerErrorListener
 {
 
     companion object {
         const val SOURCE = "tokonow"
         const val CATEGORY_LEVEL_DEPTH = 1
+
+        private const val GRID_SPAN_COUNT = 2
 
         fun newInstance(): TokoNowRecentPurchaseFragment {
             return TokoNowRecentPurchaseFragment()
@@ -82,24 +100,28 @@ class TokoNowRecentPurchaseFragment:
 
     @Inject
     lateinit var viewModel: TokoNowRecentPurchaseViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var rvRecentPurchase: RecyclerView? = null
     private var navToolbar: NavToolbar? = null
     private var statusBarBg: View? = null
     private var miniCartWidget: MiniCartWidget? = null
-    private var rvLayoutManager: CustomLinearLayoutManager? = null
     private val carouselScrollPosition = SparseIntArray()
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
-                productCardListener = RepurchaseProductCardListener(requireContext()),
+                productCardListener = createProductCardListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
                 tokoNowEmptyStateNoResultListener = this,
-                tokoNowRecommendationCarouselListener = this
+                tokoNowRecommendationCarouselListener = this,
+                emptyStateNoHistorylistener = this,
+                sortFilterListener = this,
+                serverErrorListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -128,6 +150,16 @@ class TokoNowRecentPurchaseFragment:
         updateCurrentPageLocalCacheModelData()
 
         viewModel.showLoading()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) return
+
+        when (requestCode) {
+            REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET -> onCategoryFilterActivityResult(data)
+            REQUEST_CODE_SORT_FILTER_BOTTOMSHEET -> onSortFilterActivityResult(data)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -178,6 +210,10 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun goToTokopediaNowHome() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onClickEmptyStateNoHistoryBtn() {
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
@@ -235,6 +271,33 @@ class TokoNowRecentPurchaseFragment:
     ) {
         // TO-DO :
     }
+
+    override fun onClickSortFilter() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
+        val selectedFilter = viewModel.getSelectedSortFilter()
+        intent.putExtra(SORT_VALUE, selectedFilter)
+        startActivityForResult(intent, REQUEST_CODE_SORT_FILTER_BOTTOMSHEET)
+    }
+
+    override fun onClickDateFilter() {
+
+    }
+
+    override fun onClickCategoryFilter() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalTokopediaNow.CATEGORY_FILTER,
+            localCacheModel?.warehouse_id.orEmpty()
+        )
+        val selectedFilter = viewModel.getSelectedCategoryFilter()
+        intent.putExtra(EXTRA_SELECTED_CATEGORY_FILTER, selectedFilter)
+        startActivityForResult(intent, REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET)
+    }
+
+    override fun onClearAllFilter() = refreshLayout()
+
+    override fun onClickRetryButton() = refreshLayout()
+
 
     private fun initInjector() {
         DaggerRecentPurchaseComponent.builder()
@@ -334,10 +397,13 @@ class TokoNowRecentPurchaseFragment:
         context?.let {
             rvRecentPurchase?.apply {
                 adapter = this@TokoNowRecentPurchaseFragment.adapter
-                rvLayoutManager = CustomLinearLayoutManager(it)
-                layoutManager = rvLayoutManager
+                layoutManager = object: StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL) {
+                    override fun supportsPredictiveItemAnimations() = false
+                }.apply {
+                    gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+                }
+                addItemDecoration(RepurchaseGridItemDecoration())
             }
-            rvRecentPurchase?.addOnScrollListener(loadMoreListener)
         }
     }
 
@@ -355,9 +421,30 @@ class TokoNowRecentPurchaseFragment:
 
     private fun observeLiveData() {
         observe(viewModel.getLayout) {
+            removeScrollListeners()
+
             if(it is Success) {
                 onSuccessGetLayout(it.data)
             }
+
+            addScrollListeners()
+            resetSwipeLayout()
+        }
+
+        observe(viewModel.loadMore) {
+            removeScrollListeners()
+            if(it is Success) {
+                submitList(it.data)
+            }
+            addScrollListeners()
+        }
+
+        observe(viewModel.atcQuantity) {
+            removeScrollListeners()
+            if(it is Success) {
+                submitList(it.data)
+            }
+            addScrollListeners()
         }
 
         observe(viewModel.miniCart) {
@@ -442,12 +529,32 @@ class TokoNowRecentPurchaseFragment:
         }
     }
 
+    private fun removeScrollListeners() {
+        rvRecentPurchase?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun addScrollListeners() {
+        rvRecentPurchase?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun onCategoryFilterActivityResult(data: Intent?) {
+        val selectedFilter = data
+            ?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
+        viewModel.applyCategoryFilter(selectedFilter)
+    }
+
+    private fun onSortFilterActivityResult(data: Intent?) {
+        val selectedFilter = data?.getIntExtra(SORT_VALUE, FREQUENTLY_BOUGHT).orZero()
+        viewModel.applySortFilter(selectedFilter)
+    }
+
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {
         submitList(data)
 
         when(data.state) {
             TokoNowLayoutState.LOADING -> onLoadingLayout()
-            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
+            TokoNowLayoutState.SHOW -> viewModel.getLayoutData()
+            TokoNowLayoutState.LOADED -> viewModel.getAddToCartQuantity()
         }
     }
 
@@ -478,6 +585,7 @@ class TokoNowRecentPurchaseFragment:
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let {
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            viewModel.setLocalCacheModel(localCacheModel)
         }
     }
 
@@ -534,10 +642,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun showEmptyState(id: String) {
-        viewModel.getEmptyState(
-            id = id,
-            warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        )
+        viewModel.showEmptyState(id)
         miniCartWidget?.hide()
         setupPadding(false)
     }
@@ -559,7 +664,7 @@ class TokoNowRecentPurchaseFragment:
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                loadMoreProduct()
+                onScrollProductList()
             }
         }
     }
@@ -569,12 +674,32 @@ class TokoNowRecentPurchaseFragment:
         viewModel.getLayoutList()
     }
 
-    private fun loadMoreProduct() {
-        // TO-DO: call load more product here
+    private fun onScrollProductList() {
+        val layoutManager = rvRecentPurchase?.layoutManager as? StaggeredGridLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
+        val itemCount = layoutManager?.itemCount.orZero()
+        viewModel.onScrollProductList(index, itemCount)
     }
 
     private fun refreshLayout() {
         carouselScrollPosition.clear()
+        viewModel.clearSelectedFilters()
         viewModel.showLoading()
+    }
+
+    private fun resetSwipeLayout() {
+        swipeRefreshLayout?.apply {
+            isEnabled = true
+            isRefreshing = false
+        }
+    }
+
+    private fun createProductCardListener(): RepurchaseProductCardListener {
+        return RepurchaseProductCardListener(
+            requireContext(),
+            viewModel,
+            userSession,
+            this::startActivityForResult
+        )
     }
 }

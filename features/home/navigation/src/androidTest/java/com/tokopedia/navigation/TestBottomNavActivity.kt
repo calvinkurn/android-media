@@ -52,8 +52,8 @@ class TestBottomNavActivity: AppCompatActivity() {
             BottomMenu(
                 id = 3,
                 title = resources.getString(R.string.uoh),
-                animName = R.raw.bottom_nav_uoh,
-                animToEnabledName = R.raw.bottom_nav_uoh_to_enabled,
+                animName = R.raw.bottom_nav_transaction,
+                animToEnabledName = R.raw.bottom_nav_transaction_to_enabled,
                 imageName = R.drawable.ic_bottom_nav_uoh_active,
                 imageEnabledName = R.drawable.ic_bottom_nav_uoh_enabled,
                 activeButtonColor = com.tokopedia.unifyprinciples.R.color.Unify_G500,

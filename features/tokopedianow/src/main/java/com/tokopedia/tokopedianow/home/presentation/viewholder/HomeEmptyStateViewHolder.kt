@@ -31,29 +31,12 @@ class HomeEmptyStateViewHolder(
     }
 
     private var emptyStateNoAddressAndLocalCache: EmptyStateUnify? = null
-    private var emptyStateFailedToFetchData: GlobalError? = null
-    private var params: ViewGroup.LayoutParams? = null
-    private var layout: RelativeLayout? = null
-    private var divider: View? = null
 
     init {
         emptyStateNoAddressAndLocalCache = itemView.findViewById(R.id.empty_state_no_address_and_local_cache)
-        emptyStateFailedToFetchData = itemView.findViewById(R.id.empty_state_failed_to_fetch_data)
-        divider = itemView.findViewById(R.id.divider)
-        layout = itemView.findViewById(R.id.layout)
-        params = layout?.layoutParams
     }
 
     override fun bind(element: HomeEmptyStateUiModel?) {
-        when(element?.id) {
-            EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE -> showEmptyStateNoAddressAndLocalCache()
-            EMPTY_STATE_FAILED_TO_FETCH_DATA -> showEmptyStateFailedToFetchData()
-        }
-    }
-
-    private fun showEmptyStateNoAddressAndLocalCache() {
-        divider?.hide()
-        emptyStateFailedToFetchData?.hide()
         emptyStateNoAddressAndLocalCache?.show()
         emptyStateNoAddressAndLocalCache?.setImageUrl(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE)
         emptyStateNoAddressAndLocalCache?.setPrimaryCTAClickListener {
@@ -62,29 +45,6 @@ class HomeEmptyStateViewHolder(
         emptyStateNoAddressAndLocalCache?.setSecondaryCTAClickListener {
             (itemView.context as? TokoNowHomeActivity)?.finish()
         }
-        setParamsLayout(
-            width = ViewGroup.LayoutParams.MATCH_PARENT,
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        )
-    }
-
-    private fun showEmptyStateFailedToFetchData() {
-        divider?.hide()
-        emptyStateNoAddressAndLocalCache?.hide()
-        emptyStateFailedToFetchData?.show()
-        emptyStateFailedToFetchData?.setActionClickListener {
-            tokoNowListener?.refreshLayoutPage()
-        }
-        setParamsLayout(
-            width = ViewGroup.LayoutParams.MATCH_PARENT,
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        )
-    }
-
-    private fun setParamsLayout(width: Int, height: Int) {
-        params?.width = width
-        params?.height = height
-        layout?.layoutParams = params
     }
 
     private fun showBottomSheetChooseAddress() {

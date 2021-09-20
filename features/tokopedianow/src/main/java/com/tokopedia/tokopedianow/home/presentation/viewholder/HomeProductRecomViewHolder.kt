@@ -46,8 +46,8 @@ class HomeProductRecomViewHolder(
         )
         if (isOoc) {
             divider.show()
-            val spaceZero = itemView.getDimens(R.dimen.unify_space_0)
-            val spaceSixTeen = itemView.getDimens(R.dimen.unify_space_16)
+            val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             productRecom.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
         }
     }
