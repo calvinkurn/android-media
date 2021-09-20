@@ -2,7 +2,6 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,12 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
+import com.tokopedia.tokopedianow.common.util.DateUtil.getGregorianCalendar
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapter
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapterTypeFactory
-import com.tokopedia.tokopedianow.datefilter.presentation.differ.DateFilterDiffer
+import com.tokopedia.tokopedianow.datefilter.presentation.adapter.differ.DateFilterDiffer
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 import com.tokopedia.tokopedianow.datefilter.presentation.viewholder.DateFilterViewHolder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
@@ -37,7 +38,6 @@ class TokoNowDateFilterBottomSheet :
         const val CUSTOM_DATE_POSITION = 3
         private const val MIN_30_DAYS = -30
         private const val MIN_90_DAYS = -90
-        private const val MIN_KEYWORD_CHARACTER_COUNT = 3
         private const val START_DATE = "start_date"
         private const val END_DATE = "end_date"
 
@@ -102,8 +102,8 @@ class TokoNowDateFilterBottomSheet :
             chosenEndDate = GregorianCalendar()
         }
 
-        tempStartDate = convertCalendarToStringWithSecondFormat(chosenStartDate)
-        tempEndDate = convertCalendarToStringWithSecondFormat(chosenEndDate)
+        tempStartDate = convertCalendarToStringWithFormat(chosenStartDate)
+        tempEndDate = convertCalendarToStringWithFormat(chosenEndDate)
 
         listTitles.clear()
         listTitles.addAll(listOf(
@@ -138,7 +138,7 @@ class TokoNowDateFilterBottomSheet :
         ))
     }
 
-    private fun convertCalendarToStringWithSecondFormat(date: GregorianCalendar?): String {
+    private fun convertCalendarToStringWithFormat(date: GregorianCalendar?): String {
         return date?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
     }
 
@@ -161,17 +161,17 @@ class TokoNowDateFilterBottomSheet :
             val datePicker = DateTimePickerUnify(context, minDate, currDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER).apply {
                 datePickerButton.setOnClickListener {
                     val resultDate = getDate()
+                    tempPosition = CUSTOM_DATE_POSITION
 
                     val item = if (flag.equals(START_DATE, true)) {
                         chosenStartDate = resultDate as GregorianCalendar
-                        tempStartDate = convertCalendarToStringWithSecondFormat(chosenStartDate)
-                        listTitles[CUSTOM_DATE_POSITION].copy(startDate = convertCalendarToStringWithSecondFormat(chosenStartDate))
+                        tempStartDate = convertCalendarToStringWithFormat(chosenStartDate)
+                        listTitles[CUSTOM_DATE_POSITION].copy(startDate = tempStartDate)
                     } else {
                         chosenEndDate = resultDate as GregorianCalendar
-                        tempEndDate = convertCalendarToStringWithSecondFormat(chosenEndDate)
-                        listTitles[CUSTOM_DATE_POSITION].copy(endDate = convertCalendarToStringWithSecondFormat(chosenEndDate))
+                        tempEndDate = convertCalendarToStringWithFormat(chosenEndDate)
+                        listTitles[CUSTOM_DATE_POSITION].copy(endDate = tempEndDate)
                     }
-                    tempPosition = CUSTOM_DATE_POSITION
 
                     val newItemList = mutableListOf<DateFilterUiModel>()
                     newItemList.addAll(listTitles)
@@ -241,25 +241,5 @@ class TokoNowDateFilterBottomSheet :
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
-    }
-
-    private fun getGregorianCalendar(date: String): GregorianCalendar {
-        var returnDate = GregorianCalendar()
-        val splitDefDate = date.split("-")
-        if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
-        }
-        return returnDate
-    }
-
-    private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
-        val split = stringParam.split("-")
-        return if (split.isNotEmpty() && split.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
-        } else GregorianCalendar()
-    }
-
-    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
-        return DateFormat.format(format, dateParam.time)
     }
 } 

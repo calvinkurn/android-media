@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.datefilter.presentation.typefactory
+package com.tokopedia.tokopedianow.datefilter.presentation.adapter
 
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 

@@ -176,7 +176,7 @@ object RepurchaseLayoutMapper {
                 ALL_DATE_TRANSACTION_POSITION -> R.string.tokopedianow_date_filter_item_all_date_transactions_bottomsheet
                 LAST_ONE_MONTH_POSITION -> R.string.tokopedianow_date_filter_item_last_one_month_bottomsheet
                 LAST_THREE_MONTHS_POSITION -> R.string.tokopedianow_date_filter_item_last_three_months_bottomshet
-                else -> R.string.tokopedianow_date_filter_item_custom_date_bottomshet
+                else -> R.string.tokopedianow_date_filter_item_custom_date_chip_title
             }
             val updatedFilter = filter?.copy(
                 title = title,

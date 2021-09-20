@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.datefilter.presentation.differ
+package com.tokopedia.tokopedianow.datefilter.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer

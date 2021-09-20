@@ -68,6 +68,7 @@
     <string name="tokopedianow_date_filter_item_last_one_month_bottomsheet">30 Hari Terakhir</string>
     <string name="tokopedianow_date_filter_item_last_three_months_bottomshet">90 Hari Terakhir</string>
     <string name="tokopedianow_date_filter_item_custom_date_bottomshet">Pilih Tanggal Sendiri</string>
+    <string name="tokopedianow_date_filter_item_custom_date_chip_title">%1$d - %2$d</string>
     <string name="tokopedianow_date_filter_apply_filter_bottomshet">Terapkan</string>
     <string name="tokopedianow_date_filter_item_start_date_bottomshet">Mulai dari</string>
     <string name="tokopedianow_date_filter_item_end_date_bottomshet">Sampai</string>

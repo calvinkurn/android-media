@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.datefilter.presentation.viewholder
 
 import TokoNowDateFilterBottomSheet.Companion.CUSTOM_DATE_POSITION
-import android.text.format.DateFormat
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -11,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
+import com.tokopedia.tokopedianow.common.util.DateUtil.getGregorianCalendar
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -23,7 +24,6 @@ class DateFilterViewHolder(
 ): AbstractViewHolder<DateFilterUiModel>(itemView) {
 
     companion object {
-        private const val MIN_KEYWORD_CHARACTER_COUNT = 3
         private const val START_DATE = "start_date"
         private const val END_DATE = "end_date"
 
@@ -88,27 +88,6 @@ class DateFilterViewHolder(
     private fun convertCalendarToStringWithFormat(date: GregorianCalendar?): String {
         return date?.let { it -> calendarToStringFormat(it, "dd MMM yyyy") }.toString()
     }
-
-    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
-        return DateFormat.format(format, dateParam.time)
-    }
-
-    private fun getGregorianCalendar(date: String): GregorianCalendar {
-        var returnDate = GregorianCalendar()
-        val splitDefDate = date.split("-")
-        if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
-        }
-        return returnDate
-    }
-
-    private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
-        val split = stringParam.split("-")
-        return if (split.isNotEmpty() && split.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
-        } else GregorianCalendar()
-    }
-
 
     interface DateFilterViewHolderListener {
         fun onClickItem(isChecked: Boolean, position: Int, startDate: String, endDate: String)

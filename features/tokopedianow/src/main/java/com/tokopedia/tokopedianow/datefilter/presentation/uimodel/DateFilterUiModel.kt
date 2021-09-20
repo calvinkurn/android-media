@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.datefilter.presentation.uimodel
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.datefilter.presentation.typefactory.DateFilterTypeFactory
+import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterTypeFactory
 
 data class DateFilterUiModel(
     @StringRes var titleRes: Int = -1,
