@@ -150,7 +150,9 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
             longerTextDialog?.arguments = bundle
         }
 
-        if (childFragmentManager.findFragmentByTag(TAG_LONGER_TEXT) == null) {
+        if (childFragmentManager.findFragmentByTag(TAG_LONGER_TEXT) == null &&
+            longerTextDialog?.isAdded == false
+        ) {
             longerTextDialog?.show(childFragmentManager, TAG_LONGER_TEXT)
         }
     }
