@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.credibility.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStat
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -28,6 +29,7 @@ class ReviewCredibilityStatisticBoxWidget : BaseCustomView {
     }
 
     private var title: Typography? = null
+    private var layoutWrapper: ConstraintLayout? = null
     private var statisticWidgets: List<ReviewCredibilityStatisticWidget?> = listOf()
 
     private fun init() {
@@ -37,12 +39,13 @@ class ReviewCredibilityStatisticBoxWidget : BaseCustomView {
 
     private fun bindViews() {
         title = findViewById(R.id.review_credibility_statistic_box_title)
+        layoutWrapper = findViewById(R.id.review_credibility_statistic_box_wrapper)
         statisticWidgets = listOf(
             findViewById(R.id.review_credibility_statistics_1),
             findViewById(R.id.review_credibility_statistics_2),
             findViewById(R.id.review_credibility_statistics_3)
         )
-        setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
+        layoutWrapper?.setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
     }
 
     fun setStatistics(title: String, statistics: List<ReviewerCredibilityStat>) {

@@ -26,6 +26,7 @@ import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -169,7 +170,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
 
     private fun setLearnMoreClickListener(learnMoreText: String) {
         this.learnMore?.apply {
-            text = learnMoreText
+            text = HtmlLinkHelper(context, learnMoreText).spannedString
             movementMethod = object : LinkMovementMethod() {
                 override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
                     val action = event.action
