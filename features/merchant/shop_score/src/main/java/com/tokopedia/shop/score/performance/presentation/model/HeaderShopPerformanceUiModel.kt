@@ -9,7 +9,9 @@ data class HeaderShopPerformanceUiModel(
     var shopAge: Long = 0,
     var titleHeaderShopService: String? = "",
     var descHeaderShopService: String? = "",
-    var showCardNewSeller: Boolean = false
+    var showCardNewSeller: Boolean = false,
+    var shopType: ShopType = ShopType.REGULAR_MERCHANT,
+    var isShowPopupEndTenure: Boolean = false
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

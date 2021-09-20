@@ -1,5 +1,7 @@
 package com.tokopedia.home.explore.domain.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
  * Created by errysuprayogi on 2/8/18.
  */
 public class ShopData {
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shop_id")
     private int shopId;
     @SerializedName("shop_name")
