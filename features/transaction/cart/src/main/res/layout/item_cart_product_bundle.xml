@@ -162,7 +162,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iu_image_product"
             app:typographyType="body_2"
             tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
