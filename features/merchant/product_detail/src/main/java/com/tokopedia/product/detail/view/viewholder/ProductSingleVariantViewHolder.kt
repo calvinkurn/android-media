@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.item_local_load_unify.view.*
  * Created by Yehezkiel on 02/06/21
  */
 class ProductSingleVariantViewHolder(val view: View,
-                                     variantListener: AtcVariantListener,
+                                     val variantListener: AtcVariantListener,
                                      val pdpListener: DynamicProductDetailListener) : AbstractViewHolder<ProductSingleVariantDataModel>(view), AtcVariantListener by variantListener {
 
 
@@ -29,7 +30,7 @@ class ProductSingleVariantViewHolder(val view: View,
     private val txtVariantIdentifierStatic = view.findViewById<Typography>(R.id.txt_choose_variant_label)
     private val variantLocalLoad = view.findViewById<LocalLoad>(R.id.variant_local_load)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-
+    private val emptyVariantData = VariantOptionWithAttribute()
 
     companion object {
         val LAYOUT = R.layout.item_single_variant_view_holder
@@ -55,6 +56,11 @@ class ProductSingleVariantViewHolder(val view: View,
                 rvSingleVariant.itemAnimator = null
                 rvSingleVariant.layoutManager = layoutManager
                 containerAdapter?.setData(it.variantOptions)
+
+                itemView.setOnClickListener {
+                    //pass dummy object since we need to redirect to variant bottomsheet
+                    variantListener.onVariantClicked(emptyVariantData)
+                }
                 hideError()
             }
         }

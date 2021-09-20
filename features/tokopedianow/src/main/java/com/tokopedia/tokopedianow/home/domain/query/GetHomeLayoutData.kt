@@ -68,7 +68,7 @@ internal object GetHomeLayoutData {
                warehouseID
                parentProductID
                minOrder
-               stock
+               maxOrder
                shop {
                  shopID
                }
