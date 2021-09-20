@@ -42,6 +42,8 @@ interface CommonTopupBillsEventTracking {
             const val FAVNUMBER_CLICK_CONFIRM_DELETE_POP_UP = "click hapus on deletion pop up"
             const val FAVNUMBER_VIEW_DELETION_SUCCESS_TOASTER = "view deletion success toaster"
             const val FAVNUMBER_VIEW_DELETION_FAILED_TOASTER = "view deletion failed toaster"
+            const val FAVNUMBER_IMPRESSION_FAV_NUMBER_AND_CONTACT = "impression fav number and contact"
+            const val FAVNUMBER_CLICK_FAV_NUMBER_AND_CONTACT = "click fav number and contact"
         }
     }
 

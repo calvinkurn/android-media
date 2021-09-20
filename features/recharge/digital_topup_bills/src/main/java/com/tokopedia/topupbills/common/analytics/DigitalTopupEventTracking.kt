@@ -37,6 +37,7 @@ interface DigitalTopupEventTracking {
             const val VIEW_ITEM_LIST = "view_item_list"
             const val SELECT_CONTENT = "select_content"
             const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
+            const val DIGITAL_GENERAL_EVENT_IRIS = "digitalGeneralEventIris"
             const val ADD_TO_CART = "add_to_cart"
         }
     }
@@ -79,6 +80,10 @@ interface DigitalTopupEventTracking {
             const val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
             const val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
             const val IMPRESSION_FILTER_CLUSTER = "impression filter cluster"
+            const val VIEW_FAVORITE_NUMBER_CHIP = "view favorite number chip"
+            const val VIEW_FAVORITE_CONTACT_CHIP = "view favorite contact chip"
+            const val CLICK_FAVORITE_NUMBER_CHIP = "click favorite number chip"
+            const val CLICK_FAVORITE_CONTACT_CHIP = "click favorite contact chip"
         }
     }
 

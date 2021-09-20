@@ -33,7 +33,7 @@ class FavoriteNumberViewHolder(
                 commonTopupbillsFavoriteNumberIcon.loadImage(item.favoriteNumber.iconUrl)
             }
             commonTopupbillsFavoriteNumberContainer.setOnClickListener {
-                favoriteNumberListener.onFavoriteNumberClick(item.favoriteNumber)
+                favoriteNumberListener.onFavoriteNumberClick(item.favoriteNumber, adapterPosition+1)
             }
             commonTopupbillsFavoriteNumberMenu.setOnClickListener {
                 favoriteNumberListener.onFavoriteNumberMenuClick(item.favoriteNumber)
@@ -42,7 +42,7 @@ class FavoriteNumberViewHolder(
     }
 
     interface OnFavoriteNumberClickListener {
-        fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem)
+        fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem, position: Int)
         fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem)
     }
 

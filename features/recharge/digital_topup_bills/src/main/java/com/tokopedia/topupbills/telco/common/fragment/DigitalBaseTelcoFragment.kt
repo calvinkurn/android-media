@@ -167,7 +167,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         categoryName: String,
         isSwitchChecked: Boolean
     ) {
-        // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
         val isDeniedOnce = localCacheHandler.getBoolean(TELCO_PERMISSION_CHECKER_IS_DENIED, false)
         if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -333,7 +332,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
                         val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
+                        if (!message.isNullOrEmpty()) {
                             showErrorCartDigital(message)
                         }
                     }
@@ -376,7 +375,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected fun validatePhoneNumber(
         operatorData: TelcoCatalogPrefixSelect,
         clientNumberWidget: DigitalClientNumberWidget,
-        buyWidget: TopupBillsCheckoutWidget
+        buyWidget: TopupBillsCheckoutWidget,
+        isValidTracking: () -> Unit
     ) {
         phoneValidatorJob?.cancel()
         phoneValidatorJob = CoroutineScope(Dispatchers.Main).launch {
@@ -390,6 +390,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     break
                 }
             }
+            isValidTracking.invoke()
             buyWidget.setBuyButtonState(true)
         }
     }

@@ -149,14 +149,21 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
         for (number in favnum.take(5)) {
+            if (number.clientName.isEmpty()) {
+                listener.onShowFilterChip(false)
+            } else {
+                listener.onShowFilterChip(true)
+            }
             val chipText = if (number.clientName.isEmpty())
                 number.clientNumber else number.clientName
             val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
                 if (number.clientName.isEmpty()) {
                     setContactName(context.getString(R.string.digital_client_label))
+                    listener.onClickFilterChip(false)
                 } else {
                     setContactName(number.clientName)
+                    listener.onClickFilterChip(true)
                 }
                 setInputNumber(number.clientNumber)
                 clearFocusAutoComplete()
@@ -341,6 +348,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onNavigateToContact(isSwitchChecked: Boolean)
         fun onRenderOperator()
         fun onClearAutoComplete()
+        fun onShowFilterChip(isLabeled: Boolean)
+        fun onClickFilterChip(isLabeled: Boolean)
     }
 
     companion object {
