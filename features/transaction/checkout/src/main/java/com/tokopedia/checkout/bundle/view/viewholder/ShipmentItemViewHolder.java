@@ -1119,7 +1119,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
         return view -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                mActionListener.onChangeShippingCourier(currentAddress, shipmentCartItemModel, getAdapterPosition());
+                mActionListener.onChangeShippingCourier(currentAddress, shipmentCartItemModel, getAdapterPosition(), null);
             }
         };
     }
