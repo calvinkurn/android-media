@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.data.model.TokopointsDataModel
@@ -19,7 +20,7 @@ class HomeAccountTokopointsUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: Unit): TokopointsDataModel {
-        return request(graphqlRepository, params)
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 
     companion object {

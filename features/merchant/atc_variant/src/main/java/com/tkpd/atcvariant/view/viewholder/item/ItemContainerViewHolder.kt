@@ -94,7 +94,7 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
     private fun setSelectedOptionText(data: VariantCategory) {
         txtVariantCategoryName.text = context.getString(R.string.atc_variant_option_builder_3, data.name).capitalize(Locale.getDefault())
 
-        if (data.getSelectedOption() == null || isTokonow()) {
+        if (data.getSelectedOption() == null || hideVariantName()) {
             txtVariantSelectedOption.text = ""
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName

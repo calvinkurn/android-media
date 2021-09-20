@@ -48,6 +48,7 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
+import com.tokopedia.developer_options.sharedpref.SharedPrefActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
@@ -74,6 +75,7 @@ import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
 public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
+    public static final String SHARED_PREF_FILE = "shared_pref_file";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
@@ -116,6 +118,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
+    private View sharedPrefButton;
     private TextFieldUnify editTextTimberMessage;
 
     private UnifyButton sendFirebaseCrash;
@@ -303,6 +306,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+        sharedPrefButton = findViewById(R.id.btn_shared_pref_editor);
 
         editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
         sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
@@ -578,6 +582,13 @@ public class DeveloperOptionActivity extends BaseActivity {
                                 timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        });
+
+        sharedPrefButton.setOnClickListener(new OneOnClick() {
+            @Override
+            public void oneOnClick(View view) {
+                startActivity(new Intent(DeveloperOptionActivity.this, SharedPrefActivity.class));
             }
         });
 
