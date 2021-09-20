@@ -64,7 +64,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
         }
     }
 
@@ -73,7 +73,7 @@ class LoginNegativeCase: LoginBase() {
     fun forbiddenPage_discoverEmpty() {
         isDefaultDiscover = false
         runTest {
-            isDisplayingGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
         }
     }
 

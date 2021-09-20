@@ -15,13 +15,6 @@
       "eventAction": "click on masuk dengan google",
       "sessionIris": ".*",
       "eventLabel": "click"
-    },
-    {
-      "event": "clickLogin",
-      "eventCategory": "login page",
-      "eventAction": "click on masuk dengan facebook",
-      "sessionIris": ".*",
-      "eventLabel": "click"
     }
   ]
 }

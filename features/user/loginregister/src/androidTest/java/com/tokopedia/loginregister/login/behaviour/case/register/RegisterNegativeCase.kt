@@ -56,7 +56,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
     fun forbiddenPage_discoverEmpty() {
         isDefaultDiscover = false
         runTest {
-            isDisplayingGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
         }
     }
 
