@@ -74,8 +74,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
-    String REVIEW_REMINDER_HOST = "review-reminder";
-    String REVIEW_REMINDER = "tokopedia://review-reminder";
+    String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
     String WEBVIEW_HOST = "webview";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD_HOST = "webviewdownload";
@@ -245,6 +244,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
+    String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
@@ -354,6 +354,7 @@ public interface ApplinkConst {
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
+    String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
 
     String CATEGORY_HOST = "category";
@@ -397,6 +398,9 @@ public interface ApplinkConst {
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
+
+    String SHARING_HOST = "sharing";
+    String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -466,6 +470,7 @@ public interface ApplinkConst {
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
+        String PM_BENEFIT_PACKAGE = "sellerapp://power_merchant/benefit-package";
         String BROWSER = "sellerapp://browser";
         String WEBVIEW = "sellerapp://webview";
         String VOUCHER_LIST = "sellerapp://voucher-list";
@@ -482,6 +487,7 @@ public interface ApplinkConst {
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
+        String REVIEW_REMINDER = "sellerapp://review-reminder";
     }
 
     interface TokopediaNow {

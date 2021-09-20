@@ -52,7 +52,7 @@ internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtur
         `Then verify top ads url hitter for click shop`(topAdsData)
         `Then verify view handle route to shop page`(shopId)
 
-        val name = "/searchproduct - organic ads"
+        val name = "/searchproduct - organic ads - 0"
         val shopName = topAdsData.shop.name
         val shopUrl = topAdsData.shop.uri
         val position = productItemViewModel.position.toString()
@@ -126,7 +126,7 @@ internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtur
         `Then verify top ads url hitter is not called`()
         `Then verify view handle route to shop page`(shopId)
 
-        val name = "/searchproduct - organic"
+        val name = "/searchproduct - organic - 0"
         val shopName = productItem.shop.name
         val shopUrl = productItem.shop.url
         val position = productItemViewModel.position.toString()

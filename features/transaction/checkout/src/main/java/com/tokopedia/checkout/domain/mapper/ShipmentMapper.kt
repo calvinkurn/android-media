@@ -328,6 +328,7 @@ class ShipmentMapper @Inject constructor() {
             cityId = shop.cityId
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
+            isTokoNow = shop.isTokoNow
         }
     }
 

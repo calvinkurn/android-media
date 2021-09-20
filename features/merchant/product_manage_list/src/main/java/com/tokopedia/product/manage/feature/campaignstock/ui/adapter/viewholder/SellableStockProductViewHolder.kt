@@ -104,6 +104,7 @@ class SellableStockProductViewHolder (itemView: View?,
                 toggleQuantityEditorBtn(stock)
             }
             showHideInactiveLabel(element)
+            element.stock = stock.toString()
         }
         editText.addTextChangedListener(stockEditTextWatcher)
 

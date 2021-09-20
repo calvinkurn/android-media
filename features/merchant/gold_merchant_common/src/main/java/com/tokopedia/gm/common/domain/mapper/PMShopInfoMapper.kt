@@ -17,6 +17,7 @@ class PMShopInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: GoldGetPMShopInfoDataModel?): PMShopInfoUiModel {
         return PMShopInfoUiModel(
                 isNewSeller = response?.isNewSeller.orTrue(),
+                is30DaysFirstMonday = response?.is30DaysFirstMonday.orFalse(),
                 isKyc = response?.isKyc.orFalse(),
                 kycStatusId = response?.kycStatusId?.toIntOrNull() ?: KYCStatusId.NOT_VERIFIED,
                 shopScoreThreshold = response?.shopScoreThreshold ?: PMShopInfoUiModel.DEFAULT_PM_SHOP_SCORE_THRESHOLD,

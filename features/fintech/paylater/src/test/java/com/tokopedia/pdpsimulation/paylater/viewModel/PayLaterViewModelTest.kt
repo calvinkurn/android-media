@@ -164,7 +164,7 @@ class PayLaterViewModelTest {
         } just Runs
 
         coEvery {
-            payLaterTenureMapperUseCase.mapTenureToSimulation(mockSimulationData, any(), any())
+            payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any())
         } coAnswers {
             secondArg<(PayLaterSimulationDataStatus) -> Unit>().invoke(StatusSuccess(mockSimulationData.payLaterGetSimulationGateway?.payLaterGatewayList!!))
         }
@@ -222,7 +222,7 @@ class PayLaterViewModelTest {
     fun `Execute getPayLaterOptions on Success`() {
         val mockSimulationData = Gson().fromJson(PayLaterHelper.getJson("simulationtabledata.json"), PayLaterGetSimulationResponse::class.java)
         coEvery {
-            payLaterTenureMapperUseCase.mapTenureToSimulation(mockSimulationData, any(), any())
+            payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any())
         } coAnswers {
             secondArg<(PayLaterSimulationDataStatus) -> Unit>().invoke(StatusSuccess(mockSimulationData.payLaterGetSimulationGateway?.payLaterGatewayList!!))
         }

@@ -20,10 +20,13 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
@@ -34,6 +37,7 @@ import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.file.FileUtil;
@@ -41,7 +45,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -49,6 +53,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_SOURCE_PAGE;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
@@ -109,6 +114,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private ItemSelectionWidget watermarkItemSelection;
+    private Typography titleWatermarkStyle;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -140,10 +146,19 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     //save state if watermark is rendered
     private boolean isSetWatermark = false;
+    private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
+    private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder);
+        return intent;
+    }
+
+    public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder, String sourcePage) {
+        Intent intent = new Intent(context, ImageEditorActivity.class);
+        intent.putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder);
+        intent.putExtra(EXTRA_SOURCE_PAGE, sourcePage);
         return intent;
     }
 
@@ -161,6 +176,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             finish();
             return;
         }
+        if(intent.hasExtra(EXTRA_SOURCE_PAGE)) {
+            pageSource = intent.getStringExtra(EXTRA_SOURCE_PAGE);
+        }
+
         ImageEditorBuilder imageEditorBuilder = intent.getParcelableExtra(EXTRA_IMAGE_EDITOR_BUILDER);
         if (imageEditorBuilder == null) {
             finish();
@@ -240,6 +259,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         watermarkItemSelection = findViewById(R.id.watermark_item_selection);
+        titleWatermarkStyle = findViewById(R.id.txt_title_item);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -309,6 +329,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     isSetWatermark = false;
                     fragment.cancelWatermark();
+                    watermarkType = Constant.TYPE_WATERMARK_TOPED;
+                    titleWatermarkStyle.setVisibility(View.GONE);
                     break;
                 case ACTION_BRIGHTNESS:
                     fragment.cancelBrightness();
@@ -343,27 +365,34 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_ROTATE:
                     if (fragment != null) {
                         fragment.rotateAndSaveImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_ROTATION);
                     }
                     break;
                 case ACTION_CROP:
                 case ACTION_CROP_ROTATE:
                     if (fragment != null) {
                         fragment.cropAndSaveImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_CROP);
                     }
                     break;
                 case ACTION_WATERMARK:
                     if (fragment != null) {
                         fragment.saveWatermarkImage();
+                        titleWatermarkStyle.setVisibility(View.GONE);
+                        trackClickSave(getLabelWatermark());
+                        isSetWatermark = false;
                     }
                     break;
                 case ACTION_BRIGHTNESS:
                     if (fragment != null) {
                         fragment.saveBrightnessImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_BRIGHTNESS);
                     }
                     break;
                 case ACTION_CONTRAST:
                     if (fragment != null) {
                         fragment.saveContrastImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_CONTRAST);
                     }
                     break;
             }
@@ -532,13 +561,15 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     break;
                 case ACTION_WATERMARK:
                     if (fragment != null && !isSetWatermark) {
+                        hideAllControls();
+                        watermarkItemSelection.clearData();
+                        setLastStateWatermarkImage();
+                        watermarkType = Constant.TYPE_WATERMARK_TOPED;
                         isSetWatermark = true;
                         fragment.setWatermark();
                     }
-
-                    hideAllControls();
-                    setLastStateWatermarkImage();
                     layoutWatermark.setVisibility(View.VISIBLE);
+
                     tvActionTitle.setText(getString(R.string.watermark));
                     break;
                 case ACTION_CROP_ROTATE:
@@ -710,10 +741,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     /**
      * getCurrentBitmap is a method to get bitmap pooling active on gestureImageView from
      * [ImageEditPreviewFragment], this is for saving last state of bitmap temporarily on memory.
-     * @param bitmap
+     * @param bitmaps
      */
     @Override
-    public void itemSelectionWidgetPreview(Bitmap bitmap) {
+    public void itemSelectionWidgetPreview(Bitmap[] bitmaps) {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment == null) return;
@@ -721,14 +752,17 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
 
         watermarkItemSelection.setData(
-                ItemSelection.createWithPlaceholderBitmap(
+                ItemSelection.createWithListPlaceholderBitmap(
                         getString(R.string.editor_watermark_item),
                         preview,
-                        bitmap, // placeholder preview
-                        Constant.TYPE_WATERMARK_TOPED,
-                        true
-                )
+                        Arrays.asList(bitmaps), // placeholder preview
+                        Arrays.asList(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
+                ), (bitmap, type) -> {
+                    imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
+                    watermarkType = type;
+                }
         );
+        titleWatermarkStyle.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -743,6 +777,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (currentStep > 0) {
             currentEditStepIndexList.set(imageIndex, currentStep - 1);
             refreshPage(imageIndex);
+            watermarkItemSelection.clearData();
             imageEditThumbnailListWidget.notifyDataSetChanged();
         }
     }
@@ -812,6 +847,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public void onThumbnailItemClicked(String imagePath, int position) {
         if (viewPager.getCurrentItem() != position) {
             viewPager.setCurrentItem(position);
+            watermarkItemSelection.clearData();
         }
     }
 
@@ -1148,4 +1184,28 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
     }
 
+    private void trackClickSave(String label) {
+        ImageEditorTracking.onSaveEditImage(label, ImageEditorTracking.suffixPage(pageSource), userSession.getUserId());
+    }
+
+    private String getLabelWatermark() {
+        String label = "";
+        switch (watermarkType) {
+            case Constant.TYPE_WATERMARK_TOPED:
+                return ImageEditorTrackingConstant.LABEL_WATERMARK_DESIGN_ONE;
+            case Constant.TYPE_WATERMARK_CENTER_TOPED:
+                return ImageEditorTrackingConstant.LABEL_WATERMARK_DESGIN_TWO;
+            default:
+                break;
+        }
+        return label;
+    }
+
+    private void setWatermarkDataFromAdapter() {
+        Bitmap[] bitmapWatermark = new Bitmap[watermarkItemSelection.getData().size()];
+        for (int i = 0; i < watermarkItemSelection.getData().size(); i++) {
+            bitmapWatermark[i] = watermarkItemSelection.getData().get(i).getPlaceholderBitmap();
+        }
+        getCurrentFragment().onSuccessGetWatermarkImage(bitmapWatermark);
+    }
 }

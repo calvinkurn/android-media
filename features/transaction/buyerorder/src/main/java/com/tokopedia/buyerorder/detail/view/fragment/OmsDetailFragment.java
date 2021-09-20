@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +34,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -43,33 +41,28 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
-import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
+import com.tokopedia.buyerorder.detail.data.ConditionalInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
-import com.tokopedia.buyerorder.detail.data.Discount;
-import com.tokopedia.buyerorder.detail.data.DriverDetails;
-import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.EntityPessenger;
 import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Header;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
-import com.tokopedia.buyerorder.detail.data.OrderToken;
 import com.tokopedia.buyerorder.detail.data.PassengerForm;
 import com.tokopedia.buyerorder.detail.data.PassengerInformation;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
+import com.tokopedia.buyerorder.detail.data.PaymentData;
 import com.tokopedia.buyerorder.detail.data.Pricing;
-import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
-import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
@@ -78,18 +71,15 @@ import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.kotlin.util.DownloadHelper;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
 
 import org.jetbrains.annotations.NotNull;
@@ -104,8 +94,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-
-import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 
 /**
  * Created by baghira on 09/05/18.
@@ -137,7 +125,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Inject
     OrderListAnalytics orderListAnalytics;
 
-    OrderDetailsComponent orderListComponent;
     private LinearLayout mainView;
     private TextView statusLabel;
     private TextView statusValue;
@@ -245,14 +232,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString("from_payment"), (String) getArguments().get(KEY_UPSTREAM), "", "");
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), (String) getArguments().get(KEY_UPSTREAM));
     }
 
     @Override
     public void setDetailsData(OrderDetails details) {
         hideProgressBar();
         setStatus(details.status());
-        clearDynamicViews();
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             setConditionalInfo(details.conditionalInfo());
         }
@@ -260,15 +246,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             setTitle(title);
         }
         setInvoice(details.invoice());
-        setOrderToken(details.orderToken());
         for (int i = 0; i < details.detail().size(); i++) {
             setDetail(details.detail().get(i));
         }
 
-        setBoughtDate(details.getBoughtDate());
-        if (details.getShopInfo() != null) {
-            setShopInfo(details.getShopInfo());
-        }
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
@@ -283,37 +264,18 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             setAdditionalInfo(additionalInfo);
         }
 
-        if (details.getAdditionalTickerInfos() != null
-                && details.getAdditionalTickerInfos().size() > 0) {
-            String url = null;
-            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
-                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
-                    String formattedTitle = formatTitleHtml(
-                            tickerInfo.getNotes(),
-                            tickerInfo.getUrlDetail(),
-                            tickerInfo.getUrlText()
-                    );
-                    tickerInfo.setNotes(formattedTitle);
-                    url = tickerInfo.getUrlDetail();
-                }
-            }
-            setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
-        }
-
-        if (details.getTickerInfo() != null) {
-            setTickerInfo(details.getTickerInfo());
-        }
+        Boolean isCategoryEvent = (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT));
 
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
-                setPayMethodInfo(payMethod);
+                setPayMethodInfo(payMethod, isCategoryEvent);
         }
 
         for (Pricing pricing : details.pricing()) {
-            setPricing(pricing);
+            setPricing(pricing, isCategoryEvent);
         }
 
-        setPaymentData(details.paymentData());
+        setPaymentData(details.paymentData(), isCategoryEvent);
         setContactUs(details.contactUs(), details.getHelpLink());
 
         if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
@@ -402,17 +364,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setOrderToken(OrderToken orderToken) {
-        // no-op
-    }
-
-    @Override
     public void setDetail(Detail detail) {
-        // no-op
-    }
-
-    @Override
-    public void setIsRequestedCancel(Boolean isRequestedCancel) {
         // no-op
     }
 
@@ -427,40 +379,28 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
-        // no-op
-    }
-
-    @Override
-    public void setTickerInfo(TickerInfo tickerInfo) {
-        // no-op
-    }
-
-    @Override
-    public void setPricing(Pricing pricing) {
+    public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
-        doubleTextView.setBottomText(pricing.value());
+        String value = pricing.value();
+        if (pricing.value().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
     }
 
     @Override
-    public void setDiscount(Discount discount) {
-        // no-op
-    }
-
-    @Override
-    public void setDiscountVisibility(int visibility) {
-        // no-op
-    }
-
-    @Override
-    public void setPaymentData(PaymentData paymentData) {
+    public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setBottomText(paymentData.value());
+        String value = paymentData.value();
+        if (paymentData.value().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         if (!paymentData.textColor().equals("")) {
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         }
@@ -590,10 +530,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setPayMethodInfo(PayMethod payMethod) {
+    public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
-        doubleTextView.setBottomText(payMethod.getValue());
+        ///change value from Rp0 to Gratis
+        String value = payMethod.getValue();
+        if (payMethod.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
+            value = getResources().getString(R.string.free_rupiah);
+        }
+        doubleTextView.setBottomText(value);
         doubleTextView.setBottomGravity(Gravity.END);
         paymentMethodInfo.addView(doubleTextView);
     }
@@ -607,16 +552,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setButtonMargin() {
         isSingleButton = true;
-    }
-
-    @Override
-    public void showDropshipperInfo(DropShipper dropShipper) {
-
-    }
-
-    @Override
-    public void showDriverInfo(DriverDetails driverDetails) {
-
     }
 
     @Override
@@ -648,47 +583,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setShopInfo(ShopInfo shopInfo) {
-
-    }
-
-    @Override
-    public void setBoughtDate(String boughtDate) {
-
-    }
-
-    @Override
-    public void showReplacementView(List<String> reasons) {
-
-    }
-
-    @Override
-    public void finishOrderDetail() {
-
-    }
-
-    @Override
-    public void showSuccessMessage(String message) {
-        if (getView() != null) {
-            Toaster.build(getView(), message, Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
-        }
-    }
-
-    @Override
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
             Toaster.build(getView(), message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
         }
-    }
-
-    @Override
-    public void showErrorMessage(String message) {
-
-    }
-
-    @Override
-    public void clearDynamicViews() {
-
     }
 
     @Override
@@ -755,16 +653,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setRecommendation(Object rechargeWidgetResponse) {
-
-    }
-
-    @Override
-    public JsonArray generateInputQueryBuyAgain(List<Items> items) {
-        return null;
-    }
-
-    @Override
-    public void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess) {
 
     }
 

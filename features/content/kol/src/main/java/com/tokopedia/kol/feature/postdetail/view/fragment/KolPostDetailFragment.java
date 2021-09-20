@@ -855,7 +855,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
+    public void onGridItemClick(int positionInFeed, int activityId, String productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
 
         onGoToLink(redirectLink);
     }
@@ -1066,6 +1066,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoStopTrack(@NotNull FeedXCard feedXCard, long duration) {
+
+    }
+
+    @Override
+    public void onPostTagBubbleClick(int positionInFeed, @NonNull String redirectUrl, @NonNull FeedXProduct postTagItem) {
 
     }
 }

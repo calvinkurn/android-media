@@ -34,7 +34,7 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
 
     override fun getNewFragment(): Fragment =
         HotelRoomDetailFragment.getInstance(
-                intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID),
+                intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID) ?: "",
                 intent.getIntExtra(EXTRA_ROOM_INDEX, 0)
         )
 

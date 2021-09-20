@@ -1,5 +1,6 @@
 package com.tokopedia.troubleshooter.notification.data.domain
 
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
@@ -16,7 +17,7 @@ open class GetTroubleshootStatusUseCase constructor(
     }
 
     override suspend fun execute(params: Unit): NotificationTroubleshoot {
-        return request(repository, params)
+        return repository.request(graphqlQuery(), params)
     }
 
 }

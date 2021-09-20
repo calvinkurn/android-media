@@ -28,7 +28,9 @@ data class CheckoutRequest(
         var promoCodes: ArrayList<String>? = null,
         @SerializedName("leasing_id")
         @SuppressLint("Invalid Data Type")
-        var leasingId: Int = 0
+        var leasingId: Int = 0,
+        @SerializedName("feature_type")
+        var featureType: Int = 0
 ) : Parcelable {
 
     val protectionAnalyticsData: ArrayList<String>
