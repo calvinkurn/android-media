@@ -20,13 +20,14 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopPenaltyViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getShopPenaltySummaryTypesUseCase: GetShopPenaltySummaryTypesUseCase,
-    private val getShopPenaltyDetailUseCase: GetShopPenaltyDetailUseCase,
+    private val getShopPenaltySummaryTypesUseCase: Lazy<GetShopPenaltySummaryTypesUseCase>,
+    private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,
     private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -105,18 +106,18 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getDataPenalty() {
         launchCatchError(block = {
             val penaltySummaryTypeResponse = asyncCatchError(block = {
-                getShopPenaltySummaryTypesUseCase.requestParams =
+                getShopPenaltySummaryTypesUseCase.get().requestParams =
                     GetShopPenaltySummaryTypesUseCase.createParams(
                         startDateSummary, endDateSummary
                     )
-                getShopPenaltySummaryTypesUseCase.executeOnBackground()
+                getShopPenaltySummaryTypesUseCase.get().executeOnBackground()
             }, onError = {
-                _penaltyPageData.postValue(Fail(it))
+                _penaltyPageData.value = Fail(it)
                 null
             })
 
             val penaltyDetailResponse = asyncCatchError(block = {
-                getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
+                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCase.crateParams(
                     ShopScorePenaltyDetailParam(
                         startDate = startDate,
                         endDate = endDate,
@@ -124,9 +125,9 @@ class ShopPenaltyViewModel @Inject constructor(
                         sort = sortBy
                     )
                 )
-                getShopPenaltyDetailUseCase.executeOnBackground()
+                getShopPenaltyDetailUseCase.get().executeOnBackground()
             }, onError = {
-                _penaltyPageData.postValue(Fail(it))
+                _penaltyPageData.value = Fail(it)
                 null
             })
 
@@ -148,7 +149,7 @@ class ShopPenaltyViewModel @Inject constructor(
                     itemSortFilterWrapperList =
                         penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
                             .toMutableList()
-                    _penaltyPageData.postValue(Success(penaltyMapperData))
+                    _penaltyPageData.value =  Success(penaltyMapperData)
                 }
             }
         }, onError = {})
@@ -176,7 +177,7 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyDetailListNext(page: Int = 1) {
         launchCatchError(block = {
             val penaltyDetail = withContext(dispatchers.io) {
-                getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
+                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCase.crateParams(
                     ShopScorePenaltyDetailParam(
                         page = page,
                         startDate = startDate,
@@ -185,20 +186,22 @@ class ShopPenaltyViewModel @Inject constructor(
                         sort = sortBy
                     )
                 )
-                penaltyMapper.mapToItemPenaltyList(getShopPenaltyDetailUseCase.executeOnBackground())
+                penaltyMapper.mapToItemPenaltyList(
+                    getShopPenaltyDetailUseCase.get().executeOnBackground()
+                )
             }
-            shopPenaltyDetailMediator.postValue(Success(penaltyDetail))
+            shopPenaltyDetailMediator.value = Success(penaltyDetail)
         }, onError = {
-            shopPenaltyDetailMediator.postValue(Fail(it))
+            shopPenaltyDetailMediator.value = Fail(it)
         })
     }
 
     fun getFilterPenalty(filterPenaltyList: List<PenaltyFilterUiModel>) {
         launchCatchError(block = {
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
-            _filterPenaltyData.postValue(Success(penaltyFilterUiModel))
+            _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }, onError = {
-            _filterPenaltyData.postValue(Fail(it))
+            _filterPenaltyData.value = Fail(it)
         })
     }
 
