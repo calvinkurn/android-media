@@ -127,11 +127,7 @@ class CardViewHolder(
     private fun showCardState(data: CardDataUiModel?) {
         with(itemView.imgShcCardState) {
             when (data?.state) {
-                CardDataUiModel.State.DANGER -> {
-                    visible()
-                    loadImage(R.drawable.bg_shc_card_stata_danger)
-                }
-                CardDataUiModel.State.WARNING -> {
+                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
                     visible()
                     loadImage(R.drawable.bg_shc_card_stata_warning)
                 }

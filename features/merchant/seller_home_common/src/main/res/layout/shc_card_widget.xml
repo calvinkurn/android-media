@@ -19,9 +19,11 @@
             android:layout_width="42dp"
             android:layout_height="40dp"
             android:scaleType="fitXY"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/bg_shc_card_stata_warning" />
+            tools:src="@drawable/bg_shc_card_stata_warning"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glShcCardStart"
