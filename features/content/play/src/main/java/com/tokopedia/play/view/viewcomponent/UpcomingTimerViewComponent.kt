@@ -26,11 +26,11 @@ class UpcomingTimerViewComponent(
         targetCalendar?.let { target ->
             if(target.timeInMillis > Calendar.getInstance().timeInMillis)
                 timerUpcoming.targetDate = target
-        } ?: invisible()
+        } ?: hide()
     }
 
     fun stopTimer() {
         timerUpcoming.pause()
-        invisible()
+        hide()
     }
 }
