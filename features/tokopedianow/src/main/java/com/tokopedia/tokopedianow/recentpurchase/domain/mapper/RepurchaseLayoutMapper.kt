@@ -1,5 +1,8 @@
 package com.tokopedia.tokopedianow.recentpurchase.domain.mapper
 
+import TokoNowDateFilterBottomSheet.Companion.ALL_DATE_TRANSACTION_POSITION
+import TokoNowDateFilterBottomSheet.Companion.LAST_ONE_MONTH_POSITION
+import TokoNowDateFilterBottomSheet.Companion.LAST_THREE_MONTHS_POSITION
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -22,6 +25,7 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
+import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
@@ -149,6 +153,35 @@ object RepurchaseLayoutMapper {
             val updatedFilter = filter?.copy(
                 sort = sort,
                 title = title
+            )
+            updatedFilter?.let {
+                sortFilterList[filterIndex] = it
+                set(sortFilterIndex, sortFilter.copy(
+                    sortFilterList = sortFilterList
+                ))
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.setDateFilter(selectedFilter: SelectedDateFilter?) {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
+            val sortFilterIndex = indexOf(item)
+            val sortFilter = (item as RepurchaseSortFilterUiModel)
+            val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
+            val filter = sortFilterList.firstOrNull { it.type == DATE_FILTER }
+            val filterIndex = sortFilterList.indexOf(filter)
+
+            val title = when (selectedFilter?.position) {
+                ALL_DATE_TRANSACTION_POSITION -> R.string.tokopedianow_date_filter_item_all_date_transactions_bottomsheet
+                LAST_ONE_MONTH_POSITION -> R.string.tokopedianow_date_filter_item_last_one_month_bottomsheet
+                LAST_THREE_MONTHS_POSITION -> R.string.tokopedianow_date_filter_item_last_three_months_bottomshet
+                else -> R.string.tokopedianow_date_filter_item_custom_date_bottomshet
+            }
+            val updatedFilter = filter?.copy(
+                title = title,
+                selectedDateFilter = selectedFilter,
+                chipType = ChipsUnify.TYPE_SELECTED
             )
             updatedFilter?.let {
                 sortFilterList[filterIndex] = it

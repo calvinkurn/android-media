@@ -53,6 +53,7 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeEmptyStateNoHistory
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setCategoryFilter
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.updateDeletedATCQuantity
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.updateProductATCQuantity
@@ -116,6 +117,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
     private var selectedCategoryFilter: SelectedSortFilter? = null
+    private var selectedDateFilter: SelectedDateFilter? = null
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
@@ -269,6 +271,22 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
+    fun applyDateFilter(selectedFilter: SelectedDateFilter?) {
+        launchCatchError(block = {
+            setDateFilter(selectedFilter)
+            val productList = getProductList()
+            layoutList.removeLoading()
+
+            if(productList.isEmpty()) {
+                showEmptyState(EMPTY_STATE_NO_HISTORY_FILTER)
+            } else {
+                showProductList(productList)
+            }
+        }) {
+
+        }
+    }
+
     fun getAddToCartQuantity() {
         val shopId = localCacheModel?.shop_id.orEmpty()
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
@@ -296,9 +314,12 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     fun getSelectedSortFilter() = selectedSortFilter
 
+    fun getSelectedDateFilter() = selectedDateFilter
+
     fun clearSelectedFilters() {
         selectedSortFilter = FREQUENTLY_BOUGHT
         selectedCategoryFilter = null
+        selectedDateFilter = null
     }
 
     private fun getMiniCartItem(productId: String): MiniCartItem? {
@@ -333,6 +354,21 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         )
 
         selectedSortFilter = sort
+        _getLayout.postValue(Success(layout))
+    }
+
+    private fun setDateFilter(selectedFilter: SelectedDateFilter?) {
+        layoutList.setDateFilter(selectedFilter)
+        layoutList.removeEmptyStateNoHistory()
+        layoutList.removeAllProduct()
+        layoutList.addLoading()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        selectedDateFilter = selectedFilter
         _getLayout.postValue(Success(layout))
     }
 
@@ -501,6 +537,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
+        val dateStart = selectedDateFilter?.startDate
+        val dateEnd = selectedDateFilter?.endDate
 
         return GetRepurchaseProductListParam(
             warehouseID = warehouseID,
@@ -508,6 +546,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             totalScan = totalScan,
             page = page,
             catIds = categoryIds,
+            dateStart = dateStart,
+            dateEnd = dateEnd
         )
     }
 

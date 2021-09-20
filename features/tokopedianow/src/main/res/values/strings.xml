@@ -63,11 +63,6 @@
     <string name="tokopedianow_sort_filter_item_last_bought_bottomsheet">Terakhir Kamu Beli</string>
     <string name="tokopedianow_sort_filter_title_bottomsheet">Urutkan</string>
 
-    <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
-    <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
-    <string name="tokopedianow_sort_filter_item_last_bought_bottomsheet">Terakhir Kamu Beli</string>
-    <string name="tokopedianow_sort_filter_title_bottomsheet">Urutkan</string>
-
     <string name="tokopedianow_date_filter_title_bottomsheet">Pilih Tanggal</string>
     <string name="tokopedianow_date_filter_item_all_date_transactions_bottomsheet">Semua Tanggal Transaksi</string>
     <string name="tokopedianow_date_filter_item_last_one_month_bottomsheet">30 Hari Terakhir</string>

@@ -21,6 +21,7 @@ data class RepurchaseSortFilterUiModel(
         @StringRes val title: Int,
         @StringRes val qtyFormat: Int? = null,
         val selectedItem: SelectedSortFilter? = null,
+        val selectedDateFilter: SelectedDateFilter? = null,
         val chipType: String = ChipsUnify.TYPE_NORMAL,
         val sort: Int = FREQUENTLY_BOUGHT,
         val type: RepurchaseSortFilterType
@@ -30,6 +31,13 @@ data class RepurchaseSortFilterUiModel(
     data class SelectedSortFilter(
         val id: List<String> = emptyList(),
         val title: List<String> = emptyList()
+    ) : Parcelable
+
+    @Parcelize
+    data class SelectedDateFilter(
+        var position: Int = 0,
+        var startDate: String = "",
+        var endDate: String = "",
     ) : Parcelable
 
     enum class RepurchaseSortFilterType {

@@ -16,14 +16,13 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.DATE_LABEL_POSITION
-import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.END_DATE
-import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.START_DATE
+import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapter
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapterTypeFactory
 import com.tokopedia.tokopedianow.datefilter.presentation.differ.DateFilterDiffer
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 import com.tokopedia.tokopedianow.datefilter.presentation.viewholder.DateFilterViewHolder.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottomsheet_tokopedianow_date_filter.*
@@ -35,13 +34,16 @@ class TokoNowDateFilterBottomSheet :
 
     companion object {
         private val TAG = TokoNowDateFilterBottomSheet::class.simpleName
+        const val ALL_DATE_TRANSACTION_POSITION = 0
+        const val LAST_ONE_MONTH_POSITION = 1
+        const val LAST_THREE_MONTHS_POSITION = 2
+        const val CUSTOM_DATE_POSITION = 3
+
         private const val MIN_30_DAYS = -30
         private const val MIN_90_DAYS = -90
-        private const val ALL_DATE_TRANSACTION_POSITION = 0
-        private const val LAST_ONE_MONTH_POSITION = 1
-        private const val LAST_THREE_MONTHS_POSITION = 2
-        private const val CUSTOM_DATE_POSITION = 3
         private const val MIN_KEYWORD_CHARACTER_COUNT = 3
+        private const val START_DATE = "start_date"
+        private const val END_DATE = "end_date"
 
         fun newInstance(): TokoNowDateFilterBottomSheet {
             return TokoNowDateFilterBottomSheet()
@@ -55,7 +57,8 @@ class TokoNowDateFilterBottomSheet :
     private var clChooseDate: ConstraintLayout? = null
     private var tempStartDate: String = ""
     private var tempEndDate: String = ""
-    private var dateLabelPosition: Int = 0
+    private var tempPosition: Int = 0
+    private var selectedFilter: RepurchaseSortFilterUiModel.SelectedDateFilter? = null
     private var listTitles: List<DateFilterUiModel> = listOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,9 +80,9 @@ class TokoNowDateFilterBottomSheet :
         }
         adapter.submitList(newItemList)
 
-        tempEndDate = startDate
+        tempStartDate = startDate
         tempEndDate = endDate
-        dateLabelPosition = position
+        tempPosition = position
 
         if (position == CUSTOM_DATE_POSITION) {
             clChooseDate?.show()
@@ -93,34 +96,34 @@ class TokoNowDateFilterBottomSheet :
         activity?.finish()
     }
 
-    fun show(fm: FragmentManager, dateLabelPosition: Int, startDate: String, endDate: String) {
+    fun show(fm: FragmentManager, selectedFilter: RepurchaseSortFilterUiModel.SelectedDateFilter?) {
         show(fm, TAG)
-        this.dateLabelPosition = dateLabelPosition
+        this.selectedFilter = selectedFilter
         listTitles = listOf(
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_item_all_date_transactions_bottomsheet,
-                isChecked = dateLabelPosition == ALL_DATE_TRANSACTION_POSITION,
+                isChecked = selectedFilter?.position == ALL_DATE_TRANSACTION_POSITION,
                 isLastItem = false,
                 startDate = "",
                 endDate = ""
             ),
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_item_last_one_month_bottomsheet,
-                isChecked = dateLabelPosition == LAST_ONE_MONTH_POSITION,
+                isChecked = selectedFilter?.position == LAST_ONE_MONTH_POSITION,
                 isLastItem = false,
                 startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS).toString(),
                 endDate = Date().toFormattedString("yyyy-MM-dd")
             ),
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_item_last_three_months_bottomshet,
-                isChecked = dateLabelPosition == LAST_THREE_MONTHS_POSITION,
+                isChecked = selectedFilter?.position == LAST_THREE_MONTHS_POSITION,
                 isLastItem = false,
                 startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_90_DAYS).toString(),
                 endDate = Date().toFormattedString("yyyy-MM-dd")
             ),
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_item_custom_date_bottomshet,
-                isChecked = dateLabelPosition == CUSTOM_DATE_POSITION,
+                isChecked = selectedFilter?.position == CUSTOM_DATE_POSITION,
                 isLastItem = true,
                 startDate = "",
                 endDate = ""
@@ -240,6 +243,7 @@ class TokoNowDateFilterBottomSheet :
         showCloseIcon = true
         isDragable = false
         isHideable = false
+        selectedFilter = RepurchaseSortFilterUiModel.SelectedDateFilter()
         setupItemView(inflater, container)
         setTitle(getString(R.string.tokopedianow_sort_filter_title_bottomsheet))
     }
@@ -263,8 +267,14 @@ class TokoNowDateFilterBottomSheet :
 
     private fun setupBtnFilter() {
         btnApplyFilter?.setOnClickListener {
+            selectedFilter?.apply {
+                startDate = tempStartDate
+                endDate = tempEndDate
+                position = tempPosition
+            }
+
             val intent = Intent()
-            intent.putExtra(DATE_LABEL_POSITION, dateLabelPosition)
+            intent.putExtra(EXTRA_SELECTED_DATE_FILTER, selectedFilter)
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
