@@ -719,7 +719,8 @@ open class TopChatRoomPresenter @Inject constructor(
         startTime: String
     ) {
         val previewSticker = StickerUiModel.generatePreviewMessage(
-            roomMetaData, userSession, sticker)
+            roomMetaData, sticker
+        )
         val stickerContract = sticker.generateWebSocketPayload(
             messageId, opponentId, startTime, attachmentsPreview, previewSticker.localId
         )

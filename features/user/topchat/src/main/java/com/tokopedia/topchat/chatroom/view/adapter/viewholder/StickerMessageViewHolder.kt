@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -26,6 +25,18 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
 
     override fun alwaysShowTime(): Boolean = true
 
+    override fun bind(message: StickerUiModel?, payloads: List<Any>) {
+        if (payloads.isEmpty() || message == null) return
+        when (payloads.first()) {
+            Payload.REBIND -> bind(message)
+            PAYLOAD_EVENT_READ -> {
+                if (message.isSender) {
+                    bindChatReadStatus(message)
+                }
+            }
+        }
+    }
+
     override fun bind(message: StickerUiModel?) {
         if (message == null) return
         super.bind(message)
@@ -33,20 +44,6 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
         bindStickerImage(message.sticker)
         alignLayout(message)
         bindChatReadStatus(message)
-    }
-
-    override fun bind(message: StickerUiModel?, payloads: List<Any>) {
-        if (payloads.isEmpty() || message == null) return
-        when (payloads.first()) {
-            Payload.REBIND -> {
-                Log.d("REBIND_CHECK", "rebinded")
-            }
-            PAYLOAD_EVENT_READ -> {
-                if (message.isSender) {
-                    bindChatReadStatus(message)
-                }
-            }
-        }
     }
 
     private fun initLoader() {
@@ -61,6 +58,10 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
             })
             loader?.start()
         }
+    }
+
+    override fun onViewRecycled() {
+        loader?.clearAnimationCallbacks()
     }
 
     private fun bindStickerImage(sticker: StickerProfile) {

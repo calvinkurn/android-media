@@ -62,24 +62,13 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     }
 
     private fun convertToSticker(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val stickerAttributes = GsonBuilder().create().fromJson<StickerAttributesResponse>(jsonAttributes,
-                StickerAttributesResponse::class.java)
-        return StickerUiModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment?.id.toString(),
-                attachmentType = pojo.attachment?.type.toString(),
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                isRead = false,
-                isDummy = false,
-                isSender = !pojo.isOpposite,
-                sticker = stickerAttributes.stickerProfile,
-                source = pojo.source
+        val stickerAttributes = GsonBuilder().create().fromJson(
+            jsonAttributes, StickerAttributesResponse::class.java
         )
+        return StickerUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withStickerProfile(stickerAttributes.stickerProfile)
+            .build()
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {

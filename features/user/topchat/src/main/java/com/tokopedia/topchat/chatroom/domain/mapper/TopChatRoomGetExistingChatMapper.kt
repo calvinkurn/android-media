@@ -307,21 +307,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             message.attachment?.attributes,
             StickerAttributesResponse::class.java
         )
-        return StickerUiModel(
-            messageId = message.msgId.toString(),
-            fromUid = message.senderId.toString(),
-            from = message.senderName,
-            fromRole = message.role,
-            attachmentId = message.attachment.id,
-            attachmentType = message.attachment.type.toString(),
-            replyTime = message.replyTime,
-            message = message.msg,
-            isRead = message.isRead,
-            isDummy = false,
-            isSender = !message.isOpposite,
-            sticker = stickerAttributes.stickerProfile,
-            source = message.source
-        )
+        return StickerUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withStickerProfile(stickerAttributes.stickerProfile)
+            .build()
     }
 
     private fun convertToReviewReminder(message: Reply): Visitable<*> {
