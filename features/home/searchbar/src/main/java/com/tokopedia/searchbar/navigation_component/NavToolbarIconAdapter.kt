@@ -72,7 +72,8 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
 
     override fun onBindViewHolder(holder: IconHolder, position: Int) {
         val icon = iconConfig.iconList[position]
-        holder.bind(icon, themeState)
+        val isLastPosition = position == iconConfig.iconList.size - 1
+        holder.bind(icon, themeState, isLastPosition, position)
     }
 
     override fun getItemCount(): Int {
@@ -148,7 +149,7 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
+    abstract fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int)
 }
 
 internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
@@ -164,7 +165,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.85f
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
         iconImage.tag = iconToolbar.name
 
         if (iconToolbar.imageRes != null) {
@@ -206,6 +207,20 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
+        val padding3 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_3)
+        val padding4 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_6)
+
+        if (isLastPosition) {
+            iconImage.setPadding(padding3, 0, 0, 0)
+        } else {
+            if(position == 0) {
+                iconImage.setPadding(padding4, 0, padding3, 0)
+            }
+            else {
+                iconImage.setPadding(padding3, 0, padding3, 0)
+            }
+        }
+
         iconImageContainer.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
@@ -232,6 +247,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         when {
             iconToolbar.badgeCounter.isZero() -> {
                 iconImage.notificationRef.gone()
+                iconImage.gone()
             }
             iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
                 iconImage.setNotifXY(ICON_NONE_COUNTER_PERCENTAGE_X_POSITION, ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION)
@@ -271,7 +287,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         private const val PADDING_ZERO = 0
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
         iconImage.tag = iconToolbar.name
         iconImage.cancelAnimation()
         iconImage.progress = INITIAL_LOTTIE_PROGRESS
@@ -321,7 +337,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
         private const val PADDING_ZERO = 0
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
         iconAnimatedImage.tag = iconToolbar.id.toString()
 
         if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
