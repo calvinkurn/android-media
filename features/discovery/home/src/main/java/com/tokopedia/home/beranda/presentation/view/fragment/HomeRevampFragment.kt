@@ -933,7 +933,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
             } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
-                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
             }
         }
     }
@@ -944,8 +944,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         //if eligible
-        if (isEligibleGopay == null) return
-        if (isEligibleGopay == false || !containsNewGopayAndTokopoints) return
+        if (isEligibleGopay == null || isEligibleGopay == false || !containsNewGopayAndTokopoints || !userVisibleHint) return
 
         context?.let {
             val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -955,7 +954,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.setOnDismissListener {
-                            showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+                            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
                             setNewWalletAppCoachmarkShown(it)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
@@ -970,7 +969,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
+    private fun showTokopointsEligibleCoachmark(
+        containsNewGopayAndTokopoints: Boolean,
+        tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
+        //if eligible
+        if (isEligibleGopay == null || isEligibleGopay == false || !containsNewGopayAndTokopoints || !userVisibleHint) return
+
         context?.let {
             tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
