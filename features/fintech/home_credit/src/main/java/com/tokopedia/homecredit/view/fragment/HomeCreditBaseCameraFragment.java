@@ -61,7 +61,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private List<Flash> supportedFlashList;
     public FrameLayout cameraLayout;
     public IconUnify flashControl;
-    public ImageView buttonCancel;
+    public IconUnify buttonCancel;
 
     private Size mCaptureNativeSize;
     public ImageView imageCaptured;
