@@ -3,6 +3,7 @@ package com.tokopedia.flight.detail.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.flight.databinding.ItemFlightDetailFacilityBinding
 import com.tokopedia.flight.detail.view.adapter.viewholder.FlightDetailFacilityViewHolder
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 
@@ -17,7 +18,8 @@ class FlightDetailFacilityAdapterTypeFactory : BaseAdapterTypeFactory(), FlightD
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == FlightDetailFacilityViewHolder.LAYOUT) {
-            FlightDetailFacilityViewHolder(parent)
+            val binding = ItemFlightDetailFacilityBinding.bind(parent)
+            FlightDetailFacilityViewHolder(binding)
         } else {
             super.createViewHolder(parent, type)
         }

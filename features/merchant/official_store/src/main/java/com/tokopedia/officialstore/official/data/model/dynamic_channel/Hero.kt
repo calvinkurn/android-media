@@ -1,12 +1,13 @@
 package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Hero(
-        @Expose @SerializedName("id") val id: Long,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("id") val id: Long,
         @Expose @SerializedName("name") val name: String,
         @Expose @SerializedName("url") val url: String,
         @Expose @SerializedName("applink") val applink: String,

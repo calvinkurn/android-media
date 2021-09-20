@@ -224,11 +224,6 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         setHasOptionsMenu(true)
     }
 
-    override fun onResume() {
-        super.onResume()
-        launchAutoRefresh()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailWebCheckinBinding
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailSimpleAdapter
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
@@ -14,53 +15,52 @@ import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
-import kotlinx.android.synthetic.main.item_flight_order_detail_web_checkin.view.*
 
 /**
  * @author by furqan on 13/11/2020
  */
-class FlightOrderDetailWebCheckInViewHolder(view: View,
+class FlightOrderDetailWebCheckInViewHolder(val binding: ItemFlightOrderDetailWebCheckinBinding,
                                             private val listener: Listener)
-    : RecyclerView.ViewHolder(view) {
+    : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: FlightOrderDetailJourneyModel,
              passengers: List<FlightOrderDetailPassengerModel>,
              isDeparture: Boolean) {
-        with(itemView) {
+        with(binding) {
             renderCheckInStatus(element)
 
-            tgFlightOrderWebCheckInPassengerDetail.text = context.getString(R.string.flight_order_detail_passenger_detail_title).toUpperCase()
+            tgFlightOrderWebCheckInPassengerDetail.text = itemView.context.getString(R.string.flight_order_detail_passenger_detail_title).toUpperCase()
 
             if (isDeparture) {
-                tgFlightOrderWebCheckInTitle.text = context.getString(R.string.flight_order_detail_departure_ticket_title)
+                tgFlightOrderWebCheckInTitle.text = itemView.context.getString(R.string.flight_order_detail_departure_ticket_title)
             } else {
-                tgFlightOrderWebCheckInTitle.text = context.getString(R.string.flight_order_detail_return_ticket_title)
+                tgFlightOrderWebCheckInTitle.text = itemView.context.getString(R.string.flight_order_detail_return_ticket_title)
             }
 
             if (element.airlineLogo != null) {
                 ivFlightOrderDepartureAirlineLogo.loadImage(element.airlineLogo!!)
             } else {
-                ivFlightOrderDepartureAirlineLogo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.flight_ic_multi_airlines))
+                ivFlightOrderDepartureAirlineLogo.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.flight_ic_multi_airlines))
             }
 
             tgFlightOrderDepartureAirlineName.text = element.airlineName
 
-            tgFlightOrderDepartureJourneyTrip.text = context.getString(R.string.flight_order_detail_trip_city,
+            tgFlightOrderDepartureJourneyTrip.text = itemView.context.getString(R.string.flight_order_detail_trip_city,
                     element.departureCityName, element.departureId,
                     element.arrivalCityName, element.arrivalId)
 
             if (element.routes.isNotEmpty() && element.routes[0].departureTerminal.isNotEmpty()) {
-                tgFlightOrderDepartureAirport.text = context.getString(R.string.flight_order_detail_airport_with_terminal,
+                tgFlightOrderDepartureAirport.text = itemView.context.getString(R.string.flight_order_detail_airport_with_terminal,
                         element.departureAirportName, element.routes[0].departureTerminal)
             } else {
                 tgFlightOrderDepartureAirport.text = element.departureAirportName
             }
 
             if (element.totalTransit > 0) {
-                tgFlightOrderDepartureDetail.text = context.getString(R.string.flight_order_detail_airport_journey_with_transit,
+                tgFlightOrderDepartureDetail.text = itemView.context.getString(R.string.flight_order_detail_airport_journey_with_transit,
                         element.departureDateAndTime.first, element.departureDateAndTime.second, element.totalTransit)
             } else {
-                tgFlightOrderDepartureDetail.text = context.getString(R.string.flight_order_detail_airport_journey_without_transit,
+                tgFlightOrderDepartureDetail.text = itemView.context.getString(R.string.flight_order_detail_airport_journey_without_transit,
                         element.departureDateAndTime.first, element.departureDateAndTime.second)
             }
 
@@ -102,15 +102,15 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
         }
 
         val adapter = FlightOrderDetailSimpleAdapter(passengerList)
-        with(itemView) {
-            rvFlightOrderWebCheckInPassengerDetail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        with(binding) {
+            rvFlightOrderWebCheckInPassengerDetail.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
             rvFlightOrderWebCheckInPassengerDetail.setHasFixedSize(true)
             rvFlightOrderWebCheckInPassengerDetail.adapter = adapter
         }
     }
 
     private fun renderCheckInStatus(element: FlightOrderDetailJourneyModel) {
-        with(itemView) {
+        with(binding) {
             if (element.webCheckIn.webUrl.isNotEmpty()) {
                 val checkInOpenDate = element.webCheckIn.startTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                 val checkInCloseDate = element.webCheckIn.endTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
@@ -118,23 +118,23 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
 
                 when {
                     currentTime.before(checkInOpenDate) -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_not_open)
+                        tgFlightOrderWebCheckInStatus.text = itemView.context.getString(R.string.flight_order_detail_web_checkin_not_open)
                         setupCheckInStatusGrey()
                         viewDisabled()
                     }
                     currentTime.after(checkInCloseDate) -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_closed)
+                        tgFlightOrderWebCheckInStatus.text = itemView.context.getString(R.string.flight_order_detail_web_checkin_closed)
                         setupCheckInStatusGrey()
                         viewDisabled()
                     }
                     else -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_available)
+                        tgFlightOrderWebCheckInStatus.text = itemView.context.getString(R.string.flight_order_detail_web_checkin_available)
                         setupCheckInStatusBlue()
                         viewEnabled()
                     }
                 }
             } else {
-                tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_not_available)
+                tgFlightOrderWebCheckInStatus.text = itemView.context.getString(R.string.flight_order_detail_web_checkin_not_available)
                 setupCheckInStatusGrey()
                 viewDisabled()
             }
@@ -142,21 +142,21 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
     }
 
     private fun setupCheckInStatusBlue() {
-        with(itemView) {
-            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
-            OrderDetailUtils.changeShapeColor(context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_B100)
+        with(binding) {
+            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
+            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_B100)
         }
     }
 
     private fun setupCheckInStatusGrey() {
-        with(itemView) {
-            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            OrderDetailUtils.changeShapeColor(context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        with(binding) {
+            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         }
     }
 
     private fun viewEnabled() {
-        with(itemView) {
+        with(binding) {
             cardContainerTicketDetails.isEnabled = true
             ticketTopView.isEnabled = true
             titleFlightOrderDepartureTicket.isEnabled = true
@@ -177,7 +177,7 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
     }
 
     private fun viewDisabled() {
-        with(itemView) {
+        with(binding) {
             cardContainerTicketDetails.isEnabled = false
             ticketTopView.isEnabled = false
             titleFlightOrderDepartureTicket.isEnabled = false
