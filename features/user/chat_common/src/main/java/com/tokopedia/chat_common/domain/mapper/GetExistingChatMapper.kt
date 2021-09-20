@@ -144,23 +144,15 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
-                ImageUploadAttributes::class.java)
-        return ImageUploadViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                imageUrl = pojoAttribute.imageUrl,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                isRead = chatItemPojoByDateByTime.isRead,
-                message = chatItemPojoByDateByTime.msg,
-                source = chatItemPojoByDateByTime.source
+        val pojoAttribute = gson.fromJson(
+            chatItemPojoByDateByTime.attachment?.attributes,
+            ImageUploadAttributes::class.java
         )
+        return ImageUploadViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .build()
     }
 
     open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {

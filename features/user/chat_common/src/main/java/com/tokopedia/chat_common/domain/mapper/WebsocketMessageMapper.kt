@@ -46,24 +46,14 @@ open class WebsocketMessageMapper @Inject constructor() {
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
             ImageUploadViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(jsonAttribute,
-                ImageUploadAttributes::class.java)
-
-        return ImageUploadViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                isSender = !pojo.isOpposite,
-                imageUrl = pojoAttribute.imageUrl,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                source = pojo.source
+        val pojoAttribute = GsonBuilder().create().fromJson(
+            jsonAttribute, ImageUploadAttributes::class.java
         )
+        return ImageUploadViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .build()
     }
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:

@@ -42,6 +42,7 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
@@ -1398,13 +1399,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel(
-            messageId,
-            opponentId,
-            (System.currentTimeMillis() / SECOND_DIVIDER).toString(),
-            imageUrl,
-            SendableViewModel.generateStartTime()
-        )
+        return ImageUploadViewModel.Builder()
+            .withRoomMetaData(presenter.roomMetaData)
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsDummy(true)
+            .withImageUrl(imageUrl)
+            .build()
     }
 
     private fun showDialogConfirmToAbortUpload() {

@@ -227,9 +227,16 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image using service`() {
         //Given
-        val image = ImageUploadViewModel(
-            "123", "123", "123", "test", "123"
-        )
+        val image = ImageUploadViewModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
         setFinalStatic(Build::class.java.getField("MODEL"), "samsung")
         every {
             UploadImageChatService.enqueueWork(
@@ -588,10 +595,16 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `should have dummy image when upload image by service`() {
         // Given
-        val imageViewModel = ImageUploadViewModel(
-            exMessageId, "fromUid", "attachmentId",
-            "fileLoc", "startTime"
-        )
+        val imageViewModel = ImageUploadViewModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
         setFinalStatic(Build::class.java.getField("MODEL"), "samsung")
         every {
             UploadImageChatService.enqueueWork(any(), any(), any())

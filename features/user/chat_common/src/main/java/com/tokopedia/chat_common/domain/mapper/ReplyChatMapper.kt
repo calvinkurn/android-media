@@ -47,23 +47,15 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
     }
 
     private fun generateImageMessage(temp: ChatItemPojo): ImageUploadViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>( temp.attachment?.attributes,
-                ImageUploadAttributes::class.java)
-        var viewModel = ImageUploadViewModel(
-                messageId = temp.msgId.toString(),
-                fromUid = temp.senderId,
-                from = temp.senderName,
-                fromRole = temp.role,
-                attachmentId = temp.attachmentId.toString(),
-                attachmentType = temp.attachment?.type.toString(),
-                replyTime = System.currentTimeMillis().toString(),
-                isSender = !temp.isOpposite,
-                imageUrl = pojoAttribute.imageUrl,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                isRead = temp.messageIsRead,
-                message = temp.msg,
-                source = temp.source.orEmpty()
+        val pojoAttribute = GsonBuilder().create().fromJson(
+            temp.attachment?.attributes, ImageUploadAttributes::class.java
         )
-        return viewModel
+        return ImageUploadViewModel.Builder()
+            .withResponseFromAPI(temp)
+            .withIsSender(!temp.isOpposite)
+            .withIsRead(temp.messageIsRead)
+            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .build()
     }
 }
