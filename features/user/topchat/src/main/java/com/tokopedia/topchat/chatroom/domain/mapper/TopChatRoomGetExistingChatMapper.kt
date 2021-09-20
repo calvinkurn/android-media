@@ -318,7 +318,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             message.attachment.attributes,
             ReviewReminderAttribute::class.java
         )
-        return ReviewUiModel(message, review.reviewCard)
+        return ReviewUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withReply(message)
+            .withReviewCard(review.reviewCard)
+            .build()
     }
 
     fun generateRoomMetaData(
