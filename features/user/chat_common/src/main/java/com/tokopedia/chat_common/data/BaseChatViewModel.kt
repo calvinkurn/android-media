@@ -180,7 +180,7 @@ open class BaseChatViewModel constructor(
             withFromUid(roomMetaData.sender.uid)
             withFrom(roomMetaData.sender.name)
             withFromRole(roomMetaData.sender.name)
-            withReplyTime(TimeHelper.getNowTimeStamp().toString())
+            withReplyTime(generateCurrentReplyTime())
             return self()
         }
 

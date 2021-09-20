@@ -207,6 +207,12 @@ class TopChatRoomAdapter constructor(
         this.bottomMostHeaderDate = HeaderDateUiModel(latestHeaderDate)
     }
 
+    fun addHeaderDateIfDifferent(preview: SendableViewModel) {
+        if (preview is Visitable<*>) {
+            addHeaderDateIfDifferent(preview as Visitable<*>)
+        }
+    }
+
     fun addHeaderDateIfDifferent(visitable: Visitable<*>) {
         if (visitable is BaseChatViewModel) {
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
