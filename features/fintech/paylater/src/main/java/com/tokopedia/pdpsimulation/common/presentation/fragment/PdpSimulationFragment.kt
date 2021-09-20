@@ -135,11 +135,23 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         productDetail.gone()
     }
 
+    /**
+     * THis method called on product detail api success
+     */
     private fun productDetailSuccess(data: GetProductV3) {
         productInfoShimmer.gone()
         if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
             productDetail.gone()
-        else {
+        else
+            setProductDetailView(data)
+
+    }
+
+    /**
+     * This method called to set view for the product image,price and variant
+     */
+    private fun setProductDetailView(data:GetProductV3)
+    {
             data.pictures?.get(0)?.let { pictures ->
                 pictures.urlThumbnail?.let { urlThumbnail ->
                     productDetail.productImage.loadImage(
@@ -155,25 +167,30 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
             }
 
-            if(data.variant.products.isNotEmpty() && data.variant.selections.isNotEmpty())
-            {
-                var combination = -1
-               for(i in data.variant.products.indices)
-               {
-                   if(productId == data.variant.products[i].productID){
-                       combination = data.variant.products[i].combination[0]?:-1
-                   }
-               }
-                if(combination != -1)
-                    productDetail.productVariant.text = data.variant.selections[0].options[combination]?.value?:""
-            }
-            else
-            {
-                productDetail.productVariant.gone()
-            }
-        }
+            showProductVariant(data)
+
     }
 
+
+    /**
+     * THis method set data for the product variant
+     * @param data  is the product detail data
+     */
+    private fun showProductVariant(data: GetProductV3) {
+        if (data.variant.products.isNotEmpty() && data.variant.selections.isNotEmpty()) {
+            var combination = -1
+            for (i in data.variant.products.indices) {
+                if (productId == data.variant.products[i].productID) {
+                    combination = data.variant.products[i].combination[0] ?: -1
+                }
+            }
+            if (combination != -1)
+                productDetail.productVariant.text =
+                    data.variant.selections[0].options[combination]?.value ?: ""
+        } else {
+            productDetail.productVariant.gone()
+        }
+    }
 
 
     private fun isPayLaterSimulationPage(): Boolean {
