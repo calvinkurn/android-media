@@ -75,16 +75,8 @@ class SubmitPostServiceNew : JobIntentService() {
         ) ?: return
 
         postUpdateProgressManager = getProgressManager(viewModel)
+        postUpdateProgressManager!!.setCreatePostData(viewModel)
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
-
-        val tagList:ArrayList<FeedXMediaTagging> = ArrayList()
-        val products: ArrayList<RelatedProductItem> = ArrayList()
-
-        viewModel.fileImageList.forEach {
-            it.type = getFileType(contentResolver.getType(Uri.parse(it.path))?:"")
-            tagList.addAll(it.tags)
-            products.addAll(it.products)
-        }
 
         submitPostUseCase.execute(
             SubmitPostUseCaseNew.createRequestParams(
@@ -94,11 +86,20 @@ class SubmitPostServiceNew : JobIntentService() {
             if (isTypeAffiliate(viewModel.authorType)) userSession.userId
             else userSession.shopId,
             viewModel.caption,
-            (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
-            else viewModel.fileImageList).map { it.path to it.type },
+//            (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
+
+             viewModel.completeImageList.map {
+                 getFileAbsolutePath(it.path)!! to it.type },
             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-            else viewModel.productIdList, tagList,products
+            else viewModel.productIdList, viewModel.completeImageList
         ), getSubscriber())
+    }
+
+    private fun getFileAbsolutePath(path: String): String? {
+        return if (path.contains("content://") || path.startsWith("file://"))
+            Uri.parse(path).path
+        else
+            path
     }
 
     private fun initInjector() {
@@ -108,17 +109,13 @@ class SubmitPostServiceNew : JobIntentService() {
             .inject(this)
     }
 
-    private fun getFileType(mimeType:String):String{
-        val slashIndex = mimeType.indexOf("/")
-        return mimeType.substring(0,slashIndex)
-    }
-
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
-    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager{
-        val firstImage = FileUtil.createFilePathFromUri(applicationContext,Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
-        val maxCount = viewModel.fileImageList.size
-        return object: PostUpdateProgressManager(maxCount,firstImage,applicationContext){
+    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
+        val firstImage = FileUtil.createFilePathFromUri(applicationContext,
+            Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+        val maxCount = viewModel.completeImageList.size
+        return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
     }
 

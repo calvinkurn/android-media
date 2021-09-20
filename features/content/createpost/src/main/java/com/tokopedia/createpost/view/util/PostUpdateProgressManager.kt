@@ -4,11 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.*
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.DRAFT_ID
+import com.tokopedia.createpost.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import java.util.concurrent.TimeUnit
 
 abstract class PostUpdateProgressManager(
     private val maxCount: Int,
     private val firstImage: String,
-    protected val context: Context
+    protected val context: Context,
+    private var mCreatePostViewModel: CreatePostViewModel? = null
 ) {
 
     companion object {
@@ -25,6 +31,10 @@ abstract class PostUpdateProgressManager(
     fun onSubmitPost() {
     }
 
+    fun setCreatePostData(createPostViewModel: CreatePostViewModel) {
+        mCreatePostViewModel = createPostViewModel
+    }
+
     fun setFirstIcon(url: String) {
         imgUrl = url
     }
@@ -39,11 +49,17 @@ abstract class PostUpdateProgressManager(
         val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
         intent.putExtra(SUBMIT_POST_SUCCESS_NEW, false)
         intent.putExtra(UPLOAD_ERROR_MESSAGE, errorMessage)
+        val cacheManager = SaveInstanceCacheManager(this.context, true)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            mCreatePostViewModel, TimeUnit.DAYS.toMillis(7)
+        )
+        cacheManager.id?.let { it1 -> intent.putExtra(DRAFT_ID, it1) }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
 
     }
 
-    private fun sendBroadcast(currentProgress: Int,imageUrl:String) {
+    private fun sendBroadcast(currentProgress: Int, imageUrl: String) {
         val intent = Intent(UPLOAD_POST_NEW)
         intent.putExtra(UPLOAD_POST_SUCCESS_NEW, true)
         intent.putExtra(UPLOAD_POST_PROGRESS, currentProgress)

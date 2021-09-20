@@ -9,12 +9,13 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_8"
+        app:unify_image_corner_radius="0"
         android:layout_marginStart="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_name"
+        android:id="@+id/progress_bar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
@@ -50,8 +51,8 @@
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_12"
         app:unify_progress_bar_height="6"
         app:unify_progress_bar_color_type="color_green"

@@ -294,7 +294,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()

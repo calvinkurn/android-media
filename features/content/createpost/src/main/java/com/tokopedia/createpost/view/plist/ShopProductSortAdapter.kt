@@ -3,7 +3,6 @@ package com.tokopedia.createpost.view.plist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
@@ -11,7 +10,8 @@ import com.tokopedia.createpost.createpost.R
 
 class ShopProductSortAdapter(
     private val dataSet: List<ShopPagePListSortItem>,
-    val vm: ShopPageProductListViewModel
+    private val vm: ShopPageProductListViewModel,
+    val listener: ShopPageListener
 ) :
     RecyclerView.Adapter<ShopProductSortAdapter.ViewHolder>() {
 
@@ -37,6 +37,7 @@ class ShopProductSortAdapter(
 
 
         viewHolder.rbSort.setOnClickListener {
+            listener.sortProductCriteriaClicked(dataSet[position].name)
             for (item in dataSet) {
                 item.isSelected = false
             }

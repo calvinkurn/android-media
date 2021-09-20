@@ -9,15 +9,15 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import android.view.LayoutInflater as LayoutInflater1
 
-class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel) : BottomSheetUnify() {
+class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: ShopPageListener) : BottomSheetUnify() {
 
     private var rvSort: RecyclerView? = null
     private var adapter : ShopProductSortAdapter? = null
 
     companion object {
         @JvmStatic
-        fun newInstance(vm: ShopPageProductListViewModel): ShopPListSortFilterBs {
-            return ShopPListSortFilterBs(vm)
+        fun newInstance(vm: ShopPageProductListViewModel, listener: ShopPageListener): ShopPListSortFilterBs {
+            return ShopPListSortFilterBs(vm, listener)
         }
     }
 
@@ -34,10 +34,13 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel) : BottomSheetU
                 is Loading -> {
                 }
                 is Success -> {
-                    adapter = ShopProductSortAdapter(it.data.sortData.result, vm)
+                    adapter = ShopProductSortAdapter(it.data.sortData.result, vm, listener)
                     rvSort?.adapter = adapter
                 }
                 is ErrorMessage -> {
+
+                }
+                else -> {
 
                 }
             }
@@ -46,7 +49,7 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel) : BottomSheetU
 
     private fun initLayout() {
         setTitle("Urutkan")
-        isDragable = true
+        isDragable = false
         isHideable = true
         isKeyboardOverlap = false
         showCloseIcon = false

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,6 +38,7 @@ import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
+import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -57,6 +59,8 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     lateinit var tvSelectedFolder: AppCompatTextView
     lateinit var imageFitCenter: AppCompatImageView
     lateinit var imageMultiSelect: ToggleImageView
+    lateinit var viewDataContainer: ConstraintLayout
+    lateinit var noPermissionView: NoPermissionsView
 
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
@@ -73,8 +77,16 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity, menu) { proceedNextStep() }
+        MenuManager.addCustomMenu(activity,hasReadPermission(), menu,) { proceedNextStep() }
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    fun onVolumeDown(){
+        //DO nothing
+    }
+
+    fun onVolumeUp(){
+        selectedMediaView.onVolumeUp()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -101,7 +113,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
 
         if (!selectedUris.isNullOrEmpty()) {
             viewModel.getUriOfSelectedMedia(selectedMediaView.width, zoomImageAdapterDataMap)
-        }else{
+        } else {
             showToast("Select any media first", Toaster.TYPE_NORMAL)
         }
     }
@@ -146,21 +158,40 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         initViews(v)
         setObservers()
         setClicks()
-        if (hasPermission()) {
-            getPhotos()
-        } else {
-            v.visibility = View.GONE
-        }
-
         return v
     }
 
-    private fun hasPermission(): Boolean {
+    private fun hasReadPermission(): Boolean {
         if (context != null) {
             return PermissionUtil.isReadPermissionGranted(requireContext())
         }
         return false
+    }
 
+    fun showPermissionUi() {
+        activity?.invalidateOptionsMenu()
+
+        noPermissionView.visibility = View.VISIBLE
+        viewDataContainer.visibility = View.GONE
+    }
+
+    fun showDataUi() {
+        activity?.invalidateOptionsMenu()
+
+        noPermissionView.visibility = View.GONE
+        viewDataContainer.visibility = View.VISIBLE
+
+        imageAdapter.clearSelectedItems()
+        zoomImageAdapterDataMap.clear()
+        selectedMediaView.removeAsset()
+        getPhotos()
+    }
+
+    fun showEmptyUi() {
+        activity?.invalidateOptionsMenu()
+
+        noPermissionView.visibility = View.GONE
+        viewDataContainer.visibility = View.GONE
     }
 
     private fun initViews(v: View) {
@@ -170,6 +201,9 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
         imageFitCenter = v.findViewById(R.id.image_fit_center)
         imageMultiSelect = v.findViewById(R.id.multi_select_toggle)
+        viewDataContainer = v.findViewById(R.id.data_container)
+        noPermissionView = v.findViewById(R.id.no_permission_view)
+        showEmptyUi()
 
         setupToolbar(v)
 
@@ -206,7 +240,6 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         } else {
             imageView.visibility = View.GONE
         }
-
     }
 
     private fun setClicks() {
@@ -251,14 +284,16 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
                     imageAdapter.notifyItemChanged(it)
                 }
 
-
                 val zoomInfo = zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!]
                 zoomImageAdapterDataMap.clear()
                 if (zoomInfo != null) {
                     zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!] = zoomInfo
                 }
-
             }
+        }
+
+        noPermissionView.btnPermission.setOnClickListener {
+            PermissionUtil.requestReadPermission(this)
         }
     }
 
@@ -368,20 +403,20 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
             }
         })
 
-        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                LiveDataResult.STATUS.LOADING->{
+        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
                     //Do nothing
                 }
-                LiveDataResult.STATUS.SUCCESS->{
-                    if(it.data!=null) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data != null) {
                         handleSuccessSelectedUri(it.data)
-                    }else{
-                        showToast("Something went wrong",Toaster.TYPE_ERROR)
+                    } else {
+                        showToast("Something went wrong", Toaster.TYPE_ERROR)
                     }
                 }
-                LiveDataResult.STATUS.ERROR->{
-                    showToast("Something went wrong",Toaster.TYPE_ERROR)
+                LiveDataResult.STATUS.ERROR -> {
+                    showToast("Something went wrong", Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -411,7 +446,7 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    private fun handleSuccessSelectedUri(uris:List<Uri>){
+    private fun handleSuccessSelectedUri(uris: List<Uri>) {
         if (!uris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
@@ -502,17 +537,30 @@ class ImagePickerInstaMainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    private fun reset() {
-        if (selectedMediaView.imageAdapterData != null) {
-            selectedMediaView.removeAsset()
+    private fun stopMedia() {
+        selectedMediaView.stopVideo()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PermissionUtil.READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+                    showDataUi()
+                } else {
+                    showPermissionUi()
+                }
+            }
+            PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
+                context?.let {
+                    (activity as? ImagePickerInstaActivity)?.cameraPermissionCallback?.invoke(PermissionUtil.hasAllPermission(it))
+                }
+            }
         }
-        imageAdapter.clearSelectedItems()
-        //Todo Rahul can avoid this - Later
-        imageAdapter.notifyDataSetChanged()
     }
 
     override fun onStop() {
         super.onStop()
-        reset()
+        stopMedia()
     }
 }

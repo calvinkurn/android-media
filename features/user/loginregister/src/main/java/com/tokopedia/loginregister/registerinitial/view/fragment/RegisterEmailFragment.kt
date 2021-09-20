@@ -194,7 +194,7 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initTermPrivacyView() {
         context?.run {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
             termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
             termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)

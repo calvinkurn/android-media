@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.content_caption_page_preview.*
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
     private val adapter: CaptionPagePreviewImageAdapter by lazy {
-        CaptionPagePreviewImageAdapter()
+        CaptionPagePreviewImageAdapter(listener = activityListener)
     }
 
 
@@ -81,7 +82,9 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         caption.afterTextChanged {
             createPostModel.caption = it
         }
+        caption.canScrollVertically(-1)
         caption.setOnTouchListener { v, event ->
+            createPostAnalytics.eventClickOnCaptionBox()
             if (v.id == R.id.caption) {
                 showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
@@ -96,6 +99,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     override fun onPause() {
         if (caption.isFocused)
             caption.clearFocus()
+        hideKeyboard()
         super.onPause()
     }
 
@@ -104,6 +108,9 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
             (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(
                 InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
+    }
+    private fun hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(requireActivity())
     }
     override fun onDestroy() {
         presenter.detachView()

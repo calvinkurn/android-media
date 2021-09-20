@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 object PermissionUtil {
     val READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 12
@@ -50,7 +51,15 @@ object PermissionUtil {
         }
     }
 
-    fun isReadPermissionGranted(context: Context): Boolean {
+    fun requestReadPermission(fragment: Fragment){
+        if(!isReadPermissionGranted(fragment.context)){
+            fragment.requestPermissions(arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    fun isReadPermissionGranted(context: Context?): Boolean {
+        if(context == null) return false
         return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 

@@ -7,15 +7,15 @@ import android.content.IntentFilter
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
-import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -31,12 +31,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private var retryText: Typography? = null
     private var progressBar: ProgressBarUnify? = null
     private var mCreatePostViewModel: CreatePostViewModel? = null
-    private var mPostUpdateSwipe:PostUpdateSwipe?=null
+    private var mPostUpdateSwipe: PostUpdateSwipe? = null
 
     init {
         View.inflate(this.context, R.layout.feed_upload_post_progress_view, this)
         postIcon = findViewById(R.id.product_img)
-        processingText = findViewById(R.id.product_name)
+        processingText = findViewById(R.id.progress_bar_title)
         retryText = findViewById(R.id.retry_text)
         progressBar = findViewById(R.id.progress_bar)
     }
@@ -50,7 +50,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
-
         progressBar?.setValue((progress / maxCount) * 100, true)
     }
 
@@ -58,18 +57,35 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mPostUpdateSwipe = postUpdateSwipe
     }
 
-    fun handleFailedState() {
+    fun handleFailedState(draftId: String) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
         retryText?.show()
+        processingText?.text = context.getString(R.string.feed_content_progress_bar_failed_text)
+        processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
-            val cacheManager = SaveInstanceCacheManager(this.context, true)
-            cacheManager.put(
-                CreatePostViewModel.TAG,
-                mCreatePostViewModel, TimeUnit.DAYS.toMillis(7)
-            )
-            cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
+            retryPostingOnFeed(draftId)
         }
+    }
+
+    private fun retryPostingOnFeed(draftId: String){
+        processingText?.text = context.getString(R.string.feed_content_progress_bar_text)
+        processingText?.setTextColor(ContextCompat.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+
+        val cacheManager = SaveInstanceCacheManager(this.context, draftId)
+        val viewModel: CreatePostViewModel = cacheManager.get(
+            CreatePostViewModel.TAG,
+            CreatePostViewModel::class.java
+        ) ?: CreatePostViewModel()
+        setCreatePostData(viewModel)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            viewModel, TimeUnit.DAYS.toMillis(7)
+        )
+        cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
+        retryText?.gone()
+
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {
@@ -85,7 +101,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 } else if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == false
                 ) {
-                    handleFailedState()
+                    intent.extras?.getString(DRAFT_ID,"")?.let { handleFailedState(it) }
                 }
             }
         }
@@ -100,16 +116,17 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == true
                 ) {
-                    val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS,0)
-                    val maxCount=  intent.getIntExtra(MAX_FILE_UPLOAD,0)
+                    val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
+                    val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
-
-                    setFirstIcon(firstIcon)
-                    setProgressUpdate(progress,maxCount)
+                    progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                    if (firstIcon != null)
+                        setFirstIcon(firstIcon)
+                    setProgressUpdate(progress, maxCount)
                 } else if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
                 ) {
-                    handleFailedState()
+                    intent.extras?.getString(DRAFT_ID,"")?.let { handleFailedState(it) }
                 }
             }
         }

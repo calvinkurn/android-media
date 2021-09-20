@@ -17,6 +17,7 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -703,13 +704,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
                                 products.isNotEmpty()
                             )
+                            findViewById<CardView>(R.id.video_tagging_parent).showWithCondition(
+                                products.isNotEmpty()
+                            )
 
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+                            layoutLihatProdukParent.showWithCondition(products.isNotEmpty())
                             layoutLihatProdukParent.layoutTransition.apply {
-//                                enableTransitionType(LayoutTransition.CHANGING)
                                 setDuration(LayoutTransition.CHANGING,300)
                             }
 
@@ -1194,11 +1198,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         fromSlide: Boolean = false, model: DynamicPostUiModel? = null
     ) {
         if (handlerAnim != null) {
-            handlerAnim?.removeCallbacks(null)
             handlerAnim = null
         }
         if (handlerHide != null) {
-            handlerHide?.removeCallbacks(null)
             handlerHide = null
         }
         if (!fromSlide) {
@@ -1247,13 +1249,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindImage(products: List<FeedXProduct>, media: FeedXMedia) {
-        var isInflatedBubbleShowing = false
         val imageItem = media.imageView
         imageItem?.run {
+            findViewById<CardView>(R.id.video_tagging_parent).showWithCondition(
+                products.isNotEmpty())
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+            layoutLihatProdukParent.showWithCondition(products.isNotEmpty())
             layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
 

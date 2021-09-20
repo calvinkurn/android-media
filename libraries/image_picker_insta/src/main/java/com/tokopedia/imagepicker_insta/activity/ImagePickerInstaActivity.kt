@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
@@ -13,7 +14,6 @@ import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.models.BundleData
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
-import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 
 class ImagePickerInstaActivity : AppCompatActivity() {
 
@@ -26,9 +26,6 @@ class ImagePickerInstaActivity : AppCompatActivity() {
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
-
-    lateinit var noPermissionView: NoPermissionsView
-    lateinit var fmRoot: FrameLayout
 
     companion object {
 
@@ -65,26 +62,29 @@ class ImagePickerInstaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        processIntentData()
         setContentView(R.layout.imagepicker_insta_activity_main)
-        noPermissionView = findViewById(R.id.no_permission_view)
-        fmRoot = findViewById(R.id.fm_root)
-
-        noPermissionView.btnPermission.setOnClickListener {
-            PermissionUtil.requestReadPermission(this)
-        }
 
         if (PermissionUtil.isReadPermissionGranted(this)) {
-            renderUi()
+            getAttachedFragment()?.showDataUi()
         } else {
-            PermissionUtil.requestReadPermission(this)
+            getAttachedFragment()?.let {
+                PermissionUtil.requestReadPermission(it)
+            }
         }
+    }
+
+    fun getAttachedFragment():ImagePickerInstaMainFragment?{
+        if(!supportFragmentManager.fragments.isNullOrEmpty()){
+            return supportFragmentManager.fragments.first() as? ImagePickerInstaMainFragment
+        }
+        return null
     }
 
     override fun onResume() {
         super.onResume()
         if (canRequestPermissionFromOnResume && !PermissionUtil.isReadPermissionGranted(this)) {
-            noPermissionView.visibility = View.VISIBLE
-            removeExistingFragment()
+            getAttachedFragment()?.showPermissionUi()
             canRequestPermissionFromOnResume = false
         } else {
             canRequestPermissionFromOnResume = true
@@ -97,44 +97,15 @@ class ImagePickerInstaActivity : AppCompatActivity() {
         when (requestCode) {
             PermissionUtil.READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                    renderUi()
+                    getAttachedFragment()?.showDataUi()
                 } else {
-                    renderPermissionUi()
+                    getAttachedFragment()?.showPermissionUi()
                 }
             }
             PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
                 cameraPermissionCallback?.invoke(PermissionUtil.hasAllPermission(this))
             }
         }
-    }
-
-    private fun renderUi() {
-        removeExistingFragment()
-        noPermissionView.visibility = View.GONE
-
-        supportFragmentManager
-            .beginTransaction()
-            .add(fmRoot.id, ImagePickerInstaMainFragment())
-            .commit()
-
-        processIntentData()
-    }
-
-    private fun removeExistingFragment() {
-        if (!supportFragmentManager.fragments.isNullOrEmpty()) {
-            val fragment = supportFragmentManager.fragments.first()
-            if (fragment != null) {
-                supportFragmentManager
-                    .beginTransaction()
-                    .remove(fragment)
-                    .commit()
-            }
-        }
-    }
-
-    private fun renderPermissionUi() {
-        removeExistingFragment()
-        noPermissionView.visibility = View.VISIBLE
     }
 
     private fun processIntentData() {
@@ -154,5 +125,17 @@ class ImagePickerInstaActivity : AppCompatActivity() {
         if (!applinkForBackNavigation.isNullOrEmpty()) {
             RouteManager.route(this, applinkForBackNavigation)
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+//        when(keyCode){
+//            KeyEvent.KEYCODE_VOLUME_DOWN->{
+//                getAttachedFragment()?.onVolumeDown()
+//            }
+//            KeyEvent.KEYCODE_VOLUME_UP->{
+//                getAttachedFragment()?.onVolumeUp()
+//            }
+//        }
+        return super.onKeyDown(keyCode, event)
     }
 }

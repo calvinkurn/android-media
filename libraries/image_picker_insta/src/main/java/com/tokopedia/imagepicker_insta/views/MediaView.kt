@@ -14,6 +14,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -34,6 +35,7 @@ class MediaView @JvmOverloads constructor(
     private lateinit var dataFactory: DefaultDataSourceFactory
 
     fun getLayout() = R.layout.imagepicker_insta_media_view
+    var lastVolume = -10f
 
     @MediaScaleType
     var mediaScaleType: Int = MediaScaleType.MEDIA_CENTER_CROP
@@ -122,8 +124,15 @@ class MediaView @JvmOverloads constructor(
             .build()
             .also {
                 playerView.player = it
+                lastVolume = playerView.player?.audioComponent?.volume ?: 0f
                 playerView.player?.audioComponent?.volume = 0f
             }
+
+        simpleExoPlayer?.addAudioListener(object :AudioListener{
+            override fun onVolumeChanged(volume: Float) {
+                super.onVolumeChanged(volume)
+            }
+        })
 
         simpleExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerError(error: ExoPlaybackException) {
@@ -143,7 +152,13 @@ class MediaView @JvmOverloads constructor(
         mediaScaleType = MediaScaleType.MEDIA_CENTER_CROP
     }
 
-    fun loadAsset(imageAdapterData: ImageAdapterData, zoomInfo:ZoomInfo) {
+    fun onVolumeUp() {
+        if (simpleExoPlayer?.volume == 0f && lastVolume != -10f) {
+            simpleExoPlayer?.volume = lastVolume
+        }
+    }
+
+    fun loadAsset(imageAdapterData: ImageAdapterData, zoomInfo: ZoomInfo) {
         this.imageAdapterData = imageAdapterData
         val asset = imageAdapterData.asset
         stopPlayer()
@@ -155,7 +170,7 @@ class MediaView @JvmOverloads constructor(
         } else if (asset is PhotosData) {
             assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
-            createPhotoItem(asset,zoomInfo)
+            createPhotoItem(asset, zoomInfo)
         }
     }
 
@@ -167,6 +182,10 @@ class MediaView @JvmOverloads constructor(
         }
     }
 
+    fun stopVideo() {
+        stopPlayer()
+    }
+
     fun removeAsset() {
         this.imageAdapterData = null
         playerView.visibility = View.GONE
@@ -174,7 +193,7 @@ class MediaView @JvmOverloads constructor(
         assetView.removeAsset()
     }
 
-    fun createPhotoItem(asset: PhotosData,zoomInfo:ZoomInfo) {
+    fun createPhotoItem(asset: PhotosData, zoomInfo: ZoomInfo) {
         assetView.loadAsset(asset, zoomInfo)
     }
 
@@ -190,6 +209,7 @@ class MediaView @JvmOverloads constructor(
     }
 
     private fun stopPlayer() {
+        playPauseIcon.visibility = View.VISIBLE
         simpleExoPlayer?.stop()
     }
 

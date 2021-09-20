@@ -99,12 +99,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
         createPostModel.maxProduct = 5
-        image_position_text?.text = context?.let {
-            String.format(
-                it.getString(R.string.feed_content_position_text,
-                    "(0/${createPostModel.maxProduct})")
-            )
-        }
+        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
+        image_position_text.text = String.format(
+            requireContext().getString(R.string.feed_content_position_text),
+            pos
+        )
+
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         product_tag_button.setOnClickListener {
             setProductTagListener(mediaModel)
@@ -114,8 +114,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
 
         updateCarouselView()
+        feed_content_carousel?.activeIndex = createPostModel.currentCorouselIndex
     }
     private fun setProductTagListener(mediaModel: MediaModel){
+
+        createPostAnalytics.eventClickTagProductIcon(mediaModel.type)
+
         if (getLatestTotalProductCount() < 5) {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
@@ -131,8 +135,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
-    private fun removeExtraTagListElement(mediaModel: MediaModel){
-        if (mediaModel.tags.size > mediaModel.products.size){
+    private fun removeExtraTagListElement(mediaModel: MediaModel) {
+        if (mediaModel.tags.size > mediaModel.products.size) {
             val tagListSize = mediaModel.tags.size
             val extraSize = tagListSize - mediaModel.products.size
             for (i in 0 until extraSize) {
@@ -151,7 +155,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
-        createPostModel.currentCorouselIndex = 0
 
         feed_content_carousel.apply {
             stage.removeAllViews()
@@ -192,6 +195,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                             object : GestureDetector.SimpleOnGestureListener() {
                                 override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
 
+                                    createPostAnalytics.eventClickOnImageToTag(feedMedia.type)
+
                                     removeExtraTagListElement(feedMedia)
                                     val x = e?.x ?: 0L
                                     val y = e?.y ?: 0L
@@ -203,7 +208,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                         posX = posX,
                                         posY = posY))
 
-                                    openProductTaggingScreen()
+                                    if (getLatestTotalProductCount() < 5)
+                                        openProductTaggingScreen()
                                     return true
                                 }
 
@@ -308,7 +314,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
                 }
                 content_product_tagging_parent?.setOnClickListener {
-                    openBottomSheet(createPostModel.completeImageList[index].products)
+                    openBottomSheet(createPostModel.completeImageList[index].products, MediaType.VIDEO)
                 }
 
                 videoPlayer?.start(mediaModel.path, isMute)
@@ -341,16 +347,28 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         videoPlayer?.toggleVideoVolume(isMute)
     }
 
-    private fun openBottomSheet(productList: List<RelatedProductItem>) {
+    private fun openBottomSheet(productList: List<RelatedProductItem>, mediaType: String) {
+        createPostAnalytics.eventOpenProductTagBottomSheet(mediaType)
         contentProductTagBS = ContentCreationProductTagBottomSheet()
         contentProductTagBS.show(Bundle.EMPTY,
             childFragmentManager,
             productList,
-            this)
+            this,
+            mediaType = mediaType)
 
     }
 
-    override fun deleteItemFromProductTagList(position: Int) {
+    override fun deleteItemFromProductTagList(
+        position: Int,
+        productId: String,
+        isDeletedFromBubble: Boolean,
+        mediaType: String
+    ) {
+
+        if(isDeletedFromBubble)
+            createPostAnalytics.eventDeleteProductTagPost(mediaType, productId)
+        else
+            createPostAnalytics.eventDeleteProductTagBottomSheet(mediaType, productId)
 
         val currentImagePos = createPostModel.currentCorouselIndex
         removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
@@ -387,10 +405,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         updateResultIntent()
 
-        Toaster.build(requireView(),
-            getString(R.string.feed_content_delete_toaster_text),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL).show()
+        if (!isDeletedFromBubble)
+            Toaster.build(requireView(),
+                getString(R.string.feed_content_delete_toaster_text),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL).show()
 
     }
 
@@ -402,6 +421,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         TODO("Not yet implemented")
     }
 
+    override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
+        createPostAnalytics.eventClickProductTagBubble(mediaType, productId)
+    }
 
 
     private fun openProductTaggingScreen() {
@@ -414,7 +440,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 val intent = RouteManager.getIntent(context, "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
                 startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
             }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -424,7 +449,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
-
     }
 
     private fun getAttachProductResult(data: Intent?) {
@@ -503,7 +527,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
             lihatProductTagView.setOnClickListener {
-                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products)
+                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products, MediaType.IMAGE)
             }
             val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
             val childCount = layout?.childCount ?: 0
@@ -530,7 +554,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         mediaModel.videoView?.run {
             content_product_tagging_parent.showWithCondition(mediaModel.products.isNotEmpty())
             content_product_tagging_parent?.setOnClickListener {
-                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products)
+                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products, MediaType.VIDEO)
             }
 
         }

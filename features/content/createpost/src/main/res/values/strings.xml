@@ -72,5 +72,9 @@
     <string name="feed_content_delete_toaster_text">Tag produk telah dihapus.</string>
     <string name="feed_content_more_than_5_product_tag">Oops, maksimal upload 5 media. Hapus salah satu media jika ingin menggantinya.</string>
     <string name="feed_content_progress_bar_text">Memproses...</string>
+    <string name="feed_content_progress_bar_failed_text">Gagal Diproses</string>
     <string name="feed_content_coba_lagi_text">Coba Lagi</string>
+    <string name="feed_content_no_product_sheet_header">Kamu belum punya produk</string>
+    <string name="feed_content_no_product_sheet_body">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
+    <string name="feed_content_product_list_page_error">Gagal memuat produk. Silakan ulangi.</string>
 </resources>

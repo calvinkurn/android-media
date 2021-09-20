@@ -62,3 +62,4 @@ internal val FIRE_HEIGHT = R.dimen.dp_13
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 
 internal const val MAX_VARIANT_QUANTITY = 99
+internal const val MIN_QUANTITY_NON_VARIANT = 1

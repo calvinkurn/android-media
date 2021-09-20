@@ -3,29 +3,35 @@ package com.tokopedia.createpost.view.plist
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.createpost.createpost.R
-import com.tokopedia.library.baseadapter.AdapterCallback
-import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.createpost.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.di.CreatePostModule
+import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.library.baseadapter.BaseItem
+import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.recycler_view
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
+import kotlinx.android.synthetic.main.layout_parent_product_list.*
+import javax.inject.Inject
 
-class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
+class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageListener {
 
+    @Inject
+    lateinit var createPostAnalytics: CreatePostAnalytics
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
     var getImeiBS: ShopPListSortFilterBs? = null
     private val mAdapter: ShopProductListBaseAdapter by lazy {
         ShopProductListBaseAdapter(
             presenter,
+            this,
             this
         )
     }
@@ -35,9 +41,15 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_shop_plist_page, container, false)
+        val view = inflater.inflate(R.layout.layout_parent_product_list, container, false)
         initViews(view)
         return view
+    }
+    override fun initInjector() {
+        DaggerCreatePostComponent.builder()
+            .createPostModule(CreatePostModule(requireContext().applicationContext))
+            .build()
+            .inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,12 +71,16 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
 
         view.cu_sort_chip.setChevronClickListener {
-            getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
+            createPostAnalytics.eventClickOnSortButton()
+            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this)
             fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
         }
 
         view.sb_shop_product.searchBarTextField.afterTextChanged {
             mAdapter.filter.filter(it)
+        }
+        view.sb_shop_product.searchBarTextField.setOnClickListener {
+            createPostAnalytics.eventClickOnSearchBar()
         }
 
     }
@@ -134,32 +150,49 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
     }
 
     override fun onEmptyList(rawObject: Any) {
+        container?.displayedChild = CONTAINER_EMPTY
 
     }
 
     override fun onStartFirstPageLoad() {
-        //  showLoader()
+        showLoader()
     }
 
     override fun onFinishFirstPageLoad(count: Int, rawObject: Any?) {
-        //view!!.postDelayed({ hideLoader() }, 250)
+        hideLoader()
     }
 
-    override fun onStartPageLoad(pageNumber: Int) {}
+    override fun onStartPageLoad(pageNumber: Int) {
+
+    }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+
     }
 
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-//            container.displayedChild = CONTAINER_ERROR
-//            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
+            container.displayedChild = CONTAINER_ERROR
         }
-//        swipe_refresh_layout.isRefreshing = false
+        Toaster.build(
+            requireView(),
+            getString(R.string.feed_content_product_list_page_error),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(R.string.feed_content_coba_lagi_text),
+            View.OnClickListener {
+             onRetryPageLoad(1)
+            }).show()
+    }
+    private fun showLoader() {
+        container?.displayedChild = CONTAINER_LOADER
+    }
+
+    private fun hideLoader() {
+        container?.displayedChild = CONTAINER_DATA
     }
 
     override fun onDestroyView() {
-        //mAdapter.onDestroyView()
         super.onDestroyView()
     }
 
@@ -168,15 +201,11 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         return ""
     }
 
-    override fun initInjector() {
-
-    }
-
     companion object {
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
-        private val CONTAINER_ERROR = 2
-        private val CONTAINER_EMPTY = 3
+        private val CONTAINER_EMPTY = 2
+        private val CONTAINER_ERROR = 3
 
         fun newInstance(shopId: String, source: String): ShopProductListFragment {
             val bundle = Bundle()
@@ -186,5 +215,20 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun shopProductImpressed(position: Int, product: ShopPageProduct) {
+        createPostAnalytics.eventProductPageProductItemViewed(
+            product,
+            position)
+    }
+
+    override fun shopProductClicked(position: Int, product: ShopPageProduct) {
+        createPostAnalytics.eventProductPageProductItemClicked(
+            product,
+            position)
+    }
+    override fun sortProductCriteriaClicked(criteria: String) {
+        createPostAnalytics.eventClickOnSortCriteria(criteria)
     }
 }

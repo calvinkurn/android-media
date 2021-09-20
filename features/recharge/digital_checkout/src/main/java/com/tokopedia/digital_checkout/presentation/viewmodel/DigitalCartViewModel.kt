@@ -108,7 +108,8 @@ class DigitalCartViewModel @Inject constructor(
     private val paymentSummary = PaymentSummary(mutableListOf())
 
     fun getCart(categoryId: String,
-                errorNotLoginMessage: String = "") {
+                errorNotLoginMessage: String = "",
+                isSpecialProduct: Boolean) {
         if (!userSession.isLoggedIn) {
             _errorThrowable.postValue(Fail(MessageErrorException(errorNotLoginMessage)))
         } else {
@@ -116,7 +117,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(categoryId),
+                    onSuccessGetCart(categoryId, isSpecialProduct),
                     onErrorGetCart()
             )
         }
@@ -124,7 +125,8 @@ class DigitalCartViewModel @Inject constructor(
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
                             digitalCheckoutPassData: DigitalCheckoutPassData,
-                            errorNotLoginMessage: String = "") {
+                            errorNotLoginMessage: String = "",
+                            isSpecialProduct: Boolean) {
         launchCatchError(block = {
             val otpResponse = withContext(dispatcher) {
                 val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
@@ -140,7 +142,8 @@ class DigitalCartViewModel @Inject constructor(
             val responsePatchOtpSuccess = data.data as ResponsePatchOtpSuccess
 
             if (responsePatchOtpSuccess.success) {
-                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage)
+                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage,
+                        isSpecialProduct)
             }
 
         }) {
@@ -151,9 +154,10 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String, isSpecialProduct: Boolean)
+            : (RechargeGetCart.Response) -> Unit {
         return {
-            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
+            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it, isSpecialProduct)
             mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
@@ -174,10 +178,10 @@ class DigitalCartViewModel @Inject constructor(
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
 
+            //set up price and also payment summary based on response from BE
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(calculateTotalPrice(pricePlain, mappedCartData.attributes.adminFee,
                     mappedCartData.attributes.isOpenAmount))
-
             paymentSummary.summaries.clear()
             paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
 
@@ -186,14 +190,17 @@ class DigitalCartViewModel @Inject constructor(
             }
             _payment.postValue(paymentSummary)
 
+            //render checkout page
             requestCheckoutParam.transactionAmount = pricePlain
-
             _cartDigitalInfoData.postValue(mappedCartData)
 
-            val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
-            promoData?.let {
-                _promoData.postValue(it)
+            //render promo
+            val promo = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
+            promo?.let {
+                _promoData.postValue(promo)
             }
+
+            //show checkout page
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
         }
@@ -233,9 +240,15 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onReceivedPromoCode() {
         resetCheckoutSummaryPromoAndTotalPrice()
-        val promoDataValue = promoData.value?.amount ?: 0
-        if (promoDataValue > 0) {
-            paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+
+        val promoDataValue = promoData.value ?: PromoData()
+        if (promoDataValue.amount > 0) {
+            if (promoDataValue.isActive()) {
+                paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.amount.toDouble()))))
+            } else {
+                //if it is inactive and have promo amount
+                paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(promoDataValue.description, String.format("-%s", getStringIdrFormat(promoDataValue.amount.toDouble()))))
+            }
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
@@ -370,7 +383,7 @@ class DigitalCartViewModel @Inject constructor(
     fun applyPromoData(promoData: PromoData) {
         if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
             resetCheckoutSummaryPromoAndTotalPrice()
-        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE || promoData.state == TickerCheckoutView.State.INACTIVE) {
             onReceivedPromoCode()
         }
     }

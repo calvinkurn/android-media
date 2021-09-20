@@ -494,4 +494,9 @@ object ApplinkConstInternalGlobal {
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking
     const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+
+    // GlobalSharingActivity
+    // tokopedia-android-internal://global/global-sharing
+    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
+
 }

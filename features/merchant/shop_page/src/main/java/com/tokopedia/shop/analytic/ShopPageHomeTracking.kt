@@ -20,6 +20,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ATC_RECOMMENDA
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DEACTIVATE_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING
@@ -66,6 +67,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TOASTER_NOTIFY_ME
@@ -99,6 +101,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -128,6 +131,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -575,6 +579,64 @@ class ShopPageHomeTracking(
                                 shopName,
                                 horizontalPosition,
                                 actionFieldList
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun onImpressionShowcaseListWidgetItem(
+            showcaseItem: ShopHomeShowcaseListItemUiModel,
+            showcasePosition: Int,
+            customDimensionShopPage: CustomDimensionShopPage,
+            userId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to PROMO_VIEW,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to IMPRESSION_ETALASE_NAVIGATION_BANNER,
+                EVENT_LABEL to showcaseItem.viewType,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
+                        PROMOTIONS to mutableListOf(mutableMapOf(
+                                CREATIVE to showcaseItem.viewType,
+                                ID to showcaseItem.id,
+                                NAME to ETALASE_NAVIGATION_BANNER,
+                                POSITION to showcasePosition
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun clickShowcaseListWidgetItem(
+            showcaseItem: ShopHomeShowcaseListItemUiModel,
+            showcasePosition: Int,
+            customDimensionShopPage: CustomDimensionShopPage,
+            userId: String,
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to PROMO_CLICK,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to CLICK_ETALASE_NAVIGATION_BANNER,
+                EVENT_LABEL to showcaseItem.viewType,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_CLICK to mutableMapOf(
+                        PROMOTIONS to mutableListOf(mutableMapOf(
+                                CREATIVE to showcaseItem.viewType,
+                                ID to showcaseItem.id,
+                                NAME to ETALASE_NAVIGATION_BANNER,
+                                POSITION to showcasePosition
                         ))
                 )
         )
