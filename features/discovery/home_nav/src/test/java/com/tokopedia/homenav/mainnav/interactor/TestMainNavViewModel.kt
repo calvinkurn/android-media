@@ -15,6 +15,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
@@ -66,6 +67,7 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel
@@ -86,11 +88,74 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
 
         Assert.assertNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from uoh page then do notshow back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+
+        Assert.assertNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from wishlist page then do notshow back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+
+        Assert.assertNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from homepage then do show back to home icon with default pagesource`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource()
+        Assert.assertEquals("Default", viewModel.getPageSource())
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+
+        Assert.assertNotNull(backToHomeMenu)
     }
 
     //user menu section
@@ -141,6 +206,63 @@ class TestMainNavViewModel {
         val complainVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuDataModel
 
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
+    }
+
+    //test user profile cache
+    @Test
+    fun `test when set profile from cache`() {
+        val mainNavProfileCacheMock = mockk<MainNavProfileCache>()
+        val profileName = "Joko"
+        val profilePicUrl = "http"
+        val memberStatusIconUrl = "kucing"
+        every { mainNavProfileCacheMock.profileName } returns profileName
+        every { mainNavProfileCacheMock.profilePicUrl } returns profilePicUrl
+        every { mainNavProfileCacheMock.memberStatusIconUrl } returns memberStatusIconUrl
+
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = profileName,
+                userImage = profilePicUrl
+            ),
+            profileOvoDataModel = ProfileOvoDataModel(
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = memberStatusIconUrl
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                shopId = "1234"
+            )
+        )
+
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setProfileCache(mainNavProfileCacheMock)
+        viewModel.getMainNavData(true)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(visitableList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
+                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
+                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo.isNotEmpty()
+                && accountHeaderViewModel.profileOvoDataModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
+                && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
+                && accountHeaderViewModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl
+                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo == "Rp 100"
+                && accountHeaderViewModel.profileOvoDataModel.ovoPoint == "Rp 100"
+                && accountHeaderViewModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
+                && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
+                && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
     }
 
     //user menu section
@@ -277,6 +399,17 @@ class TestMainNavViewModel {
     @Test
     fun `test when first load init viewmodel data then check data not null`() {
         viewModel = createViewModel()
+        viewModel.setInitialState()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        Assert.assertNotNull(visitableList)
+    }
+
+    @Test
+    fun `test when not login first load init viewmodel data then check data not null`() {
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns false
+        viewModel = createViewModel(userSession = userSession)
         viewModel.setInitialState()
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
