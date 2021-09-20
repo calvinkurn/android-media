@@ -9,12 +9,16 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
+import android.text.Html
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -302,6 +306,31 @@ class Utils {
             val displayMetrics = DisplayMetrics()
             (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics
+        }
+
+        fun nextPageAvailable(component: ComponentsItem, productPerPage: Int): Boolean {
+            return component.nextPageKey?.isNotEmpty()
+                ?: (component.getComponentsItem()?.size.isMoreThanZero()
+                        && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
+        }
+        fun getUserId(context: Context?): String {
+            return context?.let { UserSession(it).userId } ?: ""
+        }
+
+        fun extractFromHtml(couponName: String?):String? {
+             return try {
+               if(couponName?.isNotEmpty() == true) {
+                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                       Html.fromHtml(couponName, Html.FROM_HTML_MODE_LEGACY).toString()
+                   } else {
+                       Html.fromHtml(couponName).toString()
+                   }
+               } else {
+                    couponName
+                }
+            }catch (e:Exception){
+             couponName
+            }
         }
 
     }

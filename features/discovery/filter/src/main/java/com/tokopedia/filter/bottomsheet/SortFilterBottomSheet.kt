@@ -92,17 +92,20 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private val priceFilterListener = object: PriceFilterViewListener {
         override fun onMinPriceEditedFromTextInput(priceFilterViewModel: PriceFilterViewModel, minValue: Int) {
-            hideKeyboard()
             sortFilterBottomSheetViewModel?.onMinPriceFilterEdited(priceFilterViewModel, minValue)
         }
 
         override fun onMaxPriceEditedFromTextInput(priceFilterViewModel: PriceFilterViewModel, maxValue: Int) {
-            hideKeyboard()
             sortFilterBottomSheetViewModel?.onMaxPriceFilterEdited(priceFilterViewModel, maxValue)
         }
 
         override fun onPriceRangeClicked(priceFilterViewModel: PriceFilterViewModel, priceRangeOption: PriceOptionViewModel) {
             sortFilterBottomSheetViewModel?.onPriceRangeOptionClick(priceFilterViewModel, priceRangeOption)
+        }
+
+        override fun onPriceTextOutOfFocus() {
+            hideKeyboard()
+            sortFilterBottomSheetViewModel?.onPriceTextOutOfFocus()
         }
     }
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(

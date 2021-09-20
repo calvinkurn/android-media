@@ -107,11 +107,13 @@ object FeedScrollListenerNew {
                 if (!item.canPlay) isStateChanged = true
                 item.canPlay = true
             } else {
-                //  if (item.canPlay) isStateChanged = true
+                if(percentVideo <= 0)
+                    item.isImageImpressedFirst = true
                 item.canPlay = false
             }
 
-            if (isStateChanged) {
+            if (isStateChanged && item.isImageImpressedFirst) {
+                item.isImageImpressedFirst = false
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
             }

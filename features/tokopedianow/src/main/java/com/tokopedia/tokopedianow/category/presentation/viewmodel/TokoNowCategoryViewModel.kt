@@ -264,19 +264,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun getPageSourceForGeneralSearchTracking() =
-        TOKOPEDIA_NOW +
-            ".$TOKONOW_CATEGORY" +
-            ".$LOCAL_SEARCH" +
-            ".${getCategoryIdForGeneralSearchTracking()}"
-
-    private fun getCategoryIdForGeneralSearchTracking(): String {
-        val categoryIdFilter = queryParam[SearchApiConst.SC] ?: ""
-        return when {
-            categoryIdFilter.isNotEmpty() -> categoryIdFilter
-            categoryL2.isNotEmpty() -> categoryL2
-            else -> categoryL1
-        }
-    }
+        "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(

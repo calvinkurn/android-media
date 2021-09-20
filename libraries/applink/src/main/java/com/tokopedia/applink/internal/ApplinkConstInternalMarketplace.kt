@@ -92,8 +92,11 @@ object ApplinkConstInternalMarketplace {
 
     const val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
-    // ImageReviewGalleryActivity
+    // ReviewGalleryActivity
     const val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
+
+    // ImageReviewGalleryActivity
+    const val IMAGE_REVIEW_GALLERY_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery-old"
 
     //ShopOpenRoutingActivity
     const val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
@@ -190,6 +193,9 @@ object ApplinkConstInternalMarketplace {
 
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    // BenefitPackageActivity
+    const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
