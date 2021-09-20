@@ -44,14 +44,14 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     }
 
     private fun setShopScoreValue(value: Float) {
-        binding?.apply {
+        binding?.run {
             descriptionShopScoreValue.text = value.formatShopScore()
             progressBarShopScoreDetail.progress = value
         }
     }
 
     private fun setShopScoreMaxValue(maxValue: Float) {
-        binding?.apply {
+        binding?.run {
             val maxScore = context.getString(R.string.description_shop_score_percent,
                 maxValue.formatShopScore())
             descriptionShopScoreValue.text = maxScore
@@ -60,7 +60,7 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     }
 
     private fun setShopScoreDescription(description: String?) {
-        binding?.apply {
+        binding?.run {
             if (description != null) {
                 val sequence: CharSequence = MethodChecker.fromHtml(description)
                 val strBuilder = SpannableStringBuilder(sequence)

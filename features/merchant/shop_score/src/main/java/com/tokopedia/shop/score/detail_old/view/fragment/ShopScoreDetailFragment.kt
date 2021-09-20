@@ -93,7 +93,7 @@ class ShopScoreDetailFragment : Fragment() {
     }
 
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        binding?.tickerInfoShopScore?.apply {
+        binding?.tickerInfoShopScore?.run {
             showWithCondition(shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD)
             if (isVisible) {
                 ShopScoreDetailTracking.impressHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
@@ -132,7 +132,7 @@ class ShopScoreDetailFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ShopScoreDetailAdapter()
 
-        binding?.recyclerViewShopScoreDetail?.apply {
+        binding?.recyclerViewShopScoreDetail?.run {
             adapter = this@ShopScoreDetailFragment.adapter
             layoutManager = LinearLayoutManager(context)
             isNestedScrollingEnabled = false
