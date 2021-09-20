@@ -182,7 +182,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                                             orderDetail.productId,
                                             orderDetail.productName,
                                             orderDetail.childCatId,
-                                            orderDetail.productPrice.toString(),
+                                            orderDetail.productPrice,
                                             userId
                                         )
                                     }

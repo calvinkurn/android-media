@@ -91,17 +91,17 @@ object SnapshotAnalytics {
         productId: String,
         productName: String,
         productCategory: String,
-        productPrice: String
+        productPrice: Double
     ): Bundle {
         val productsPayload = Bundle().apply {
             putString(KEY_CUSTOM_DIMENSION_40, MARKER_ORDER_LIST_DETAIL_MARKETPLACE)
-            putString(KEY_INDEX, "0")
+            putInt(KEY_INDEX, 0)
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, productCategory)
             putString(KEY_ITEM_ID, productId)
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, "")
-            putString(KEY_PRICE, productPrice)
+            putDouble(KEY_PRICE, productPrice)
         }
         putParcelableArrayList(KEY_ITEMS, arrayListOf(productsPayload))
         return this
@@ -112,7 +112,7 @@ object SnapshotAnalytics {
         productId: String,
         productName: String,
         productCategory: String,
-        productPrice: String,
+        productPrice: Double,
         userId: String
     ) {
         Bundle().appendGeneralEventData(
