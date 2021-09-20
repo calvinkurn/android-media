@@ -648,9 +648,21 @@ open class TopChatRoomPresenter @Inject constructor(
             intention = intention,
             userLocationInfo = userLocationInfo
         )
-        processPreviewMessage(previewMsg)
-        sendMessageWebSocket(requestParams)
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+        sendWs(requestParams, previewMsg)
+    }
+
+    private fun sendWs(
+        request: String,
+        preview: SendableViewModel
+    ) {
+        processPreviewMessage(preview)
+        sendMessageWebSocket(request)
+        sendWsStopTyping()
+    }
+
+    private fun sendWsStopTyping() {
+        val request = TopChatWebSocketParam.generateParamStopTyping(roomMetaData.msgId)
+        sendMessageWebSocket(request)
     }
 
     private fun processPreviewMessage(previewMsg: SendableViewModel) {
@@ -697,20 +709,7 @@ open class TopChatRoomPresenter @Inject constructor(
         onSendingMessage: () -> Unit
     ) {
         onSendingMessage()
-        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
         sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
-    }
-
-    private fun mapToDummySticker(
-        messageId: String, sticker: Sticker, startTime: String
-    ): Visitable<*> {
-        return StickerUiModel(
-            messageId,
-            userSession.userId,
-            userSession.name,
-            startTime,
-            sticker.generateStickerProfile()
-        )
     }
 
     private fun sendStickerWithWebSocket(
@@ -719,10 +718,13 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String,
         startTime: String
     ) {
-        val stickerContract =
-            sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
-        val stringContract = CommonUtil.toJson(stickerContract)
-        sendMessageWebSocket(stringContract)
+        val previewSticker = StickerUiModel.generatePreviewMessage(
+            roomMetaData, userSession, sticker)
+        val stickerContract = sticker.generateWebSocketPayload(
+            messageId, opponentId, startTime, attachmentsPreview, previewSticker.localId
+        )
+        val request = CommonUtil.toJson(stickerContract)
+        sendWs(request, previewSticker)
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {

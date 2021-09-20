@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import com.tokopedia.chat_common.data.SendableViewModel.Companion.PAYLOAD_EVENT_
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 
 class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiModel>(itemView) {
@@ -35,9 +37,15 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
 
     override fun bind(message: StickerUiModel?, payloads: List<Any>) {
         if (payloads.isEmpty() || message == null) return
-        val payload = payloads[0]
-        if (payload === PAYLOAD_EVENT_READ && message.isSender) {
-            bindChatReadStatus(message)
+        when (payloads.first()) {
+            Payload.REBIND -> {
+                Log.d("REBIND_CHECK", "rebinded")
+            }
+            PAYLOAD_EVENT_READ -> {
+                if (message.isSender) {
+                    bindChatReadStatus(message)
+                }
+            }
         }
     }
 
