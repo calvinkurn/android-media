@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.home_account.linkaccount.data.LinkStatusPojo
 import com.tokopedia.navigation_common.model.DebitInstantModel
 import com.tokopedia.navigation_common.model.ProfileModel
-import com.tokopedia.navigation_common.model.WalletModel
 
 /**
  * Created by Yoris Prayogo on 20/10/20.
@@ -13,10 +12,6 @@ import com.tokopedia.navigation_common.model.WalletModel
  */
 
 data class UserAccountDataModel(
-
-        @SerializedName("wallet")
-        @Expose
-        var wallet: WalletModel = WalletModel(),
 
         @SerializedName("profile")
         @Expose

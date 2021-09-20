@@ -79,4 +79,7 @@ object RollenceKey {
 
     //TAPCASH
     const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
+
+    //Home account
+    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
 }

@@ -8,8 +8,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home_account.domain.usecase.HomeAccountTokopointsUseCase
-import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
@@ -29,29 +27,6 @@ class HomeAccountUserUsecaseModules {
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
-
-    @Provides
-    fun provideGetWalletBalanceUseCase(
-            @HomeAccountUserContext context: Context,
-            graphqlUseCase: GraphqlUseCase,
-                                        remoteConfig: RemoteConfig,
-                                        userSession: UserSessionInterface): GetWalletBalanceUseCase {
-        return GetWalletBalanceUseCase(context, graphqlUseCase, remoteConfig, userSession)
-    }
-
-
-    @Provides
-    fun provideGetPendingCasbackUseCase(@HomeAccountUserContext context: Context,
-                                        graphqlUseCase: GraphqlUseCase): GetPendingCasbackUseCase {
-        return GetPendingCasbackUseCase(context, graphqlUseCase)
-    }
-
-    @Provides
-    fun provideBuyerWalletBalance(getWalletBalanceUseCase: GetWalletBalanceUseCase,
-                                  getPendingCasbackUseCase: GetPendingCasbackUseCase): HomeAccountWalletBalanceUseCase {
-        return HomeAccountWalletBalanceUseCase(getWalletBalanceUseCase, getPendingCasbackUseCase)
-    }
-
     @Provides
     fun provideSafeSettingUseCase(@HomeAccountUserContext context: Context,
                                   graphqlRepository: GraphqlRepository): SafeSettingProfileUseCase {
@@ -61,11 +36,6 @@ class HomeAccountUserUsecaseModules {
     @Provides
     fun provideGetLinkStatusUseCase(repository: GraphqlRepository): GetLinkStatusUseCase {
         return GetLinkStatusUseCase(repository)
-    }
-
-    @Provides
-    fun provideTokopointUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): HomeAccountTokopointsUseCase {
-        return HomeAccountTokopointsUseCase(graphqlRepository, dispatchers)
     }
 
     @Provides

@@ -63,7 +63,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.LocalLoad
-        android:id="@+id/home_account_local_load"
+        android:id="@+id/home_account_member_local_load"
         android:layout_width="match_parent"
         android:layout_height="@dimen/home_account_dp_90"
         android:layout_marginStart="@dimen/card_view_padding_normalizer"
