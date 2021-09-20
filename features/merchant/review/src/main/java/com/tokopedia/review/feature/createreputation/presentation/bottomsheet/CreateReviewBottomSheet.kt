@@ -348,7 +348,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeGetForm() {
-        createReviewViewModel.getReputationDataForm.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.getReputationDataForm.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetReviewForm(it.data)
                 is Fail -> onErrorGetReviewForm(it.throwable)
@@ -357,7 +357,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeIncentive() {
-        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.incentiveOvo.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
@@ -367,7 +367,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeTemplates() {
-        createReviewViewModel.reviewTemplates.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.reviewTemplates.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
@@ -376,7 +376,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeSubmitReview() {
-        createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.submitReviewResult.observe(this, Observer {
             when (it) {
                 is com.tokopedia.review.common.data.Success -> {
                     onSuccessSubmitReview()
@@ -392,13 +392,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeButtonState() {
-        createReviewViewModel.submitButtonState.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.submitButtonState.observe(this, Observer {
             submitButton?.isEnabled = it
         })
     }
 
     private fun observeProgressBarState() {
-        createReviewViewModel.progressBarState.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.progressBarState.observe(this, Observer {
             progressBar?.setProgressBarValue(it)
         })
     }
