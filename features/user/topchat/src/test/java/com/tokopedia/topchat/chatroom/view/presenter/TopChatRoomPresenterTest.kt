@@ -58,13 +58,10 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `on success send sticker through websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val stickerContract = CommonUtil.toJson(
-            exSticker.generateWebSocketPayload(
-                exMessageId, exOpponentId, exStartTime, emptyList(), "123"
-            )
-        )
+        val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { RxWebSocket.send(capture(stickerReq), listInterceptor) } just Runs
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -73,8 +70,8 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         )
 
         // Then
+        verify { RxWebSocket.send(stickerReq.captured, listInterceptor) }
         verify(exactly = 1) { mockOnSendingMessage.invoke() }
-        verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
