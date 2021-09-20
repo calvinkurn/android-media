@@ -51,10 +51,10 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-        x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View?
-    ): View? {
+        x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View
+    ): View {
         val view =  super.inflate_tmp(inflater, container, savedInstanceState, x)
-        binding = FragmentDealsBrandBinding.bind(view!!)
+        binding = FragmentDealsBrandBinding.bind(view)
         return view
     }
     @Inject
