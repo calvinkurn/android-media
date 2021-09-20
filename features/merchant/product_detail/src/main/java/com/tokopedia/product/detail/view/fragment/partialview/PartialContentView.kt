@@ -74,20 +74,19 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
     }
 
-    fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding) {
-        if (!shouldShowWishlist) {
-            fabDetailPdp.hide()
-        } else {
+    fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
+        if (!shouldShowWishlist) { hide() }
+        else {
             if (wishlisted) {
-                fabDetailPdp.hide()
-                fabDetailPdp.isActivated = true
-                fabDetailPdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_filled))
-                fabDetailPdp.show()
+                hide()
+                isActivated = true
+                setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_filled))
+                show()
             } else {
-                fabDetailPdp.hide()
-                fabDetailPdp.isActivated = false
-                fabDetailPdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_unfilled))
-                fabDetailPdp.show()
+                hide()
+                isActivated = false
+                setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_unfilled))
+                show()
             }
         }
     }

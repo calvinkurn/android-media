@@ -97,7 +97,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             swipeToRefresh?.let {
                 it.isEnabled = false
             }
-            binding?.partialLayoutButtonAction?.baseBtnAction?.gone()
+            binding.partialLayoutButtonAction.baseBtnAction.gone()
         }
     }
 

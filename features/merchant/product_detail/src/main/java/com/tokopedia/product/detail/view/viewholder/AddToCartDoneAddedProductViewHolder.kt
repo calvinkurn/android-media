@@ -34,7 +34,7 @@ class AddToCartDoneAddedProductViewHolder(
             element.bebasOngkirUrl?.let {
                 if(it.isNotEmpty()) {
                     freeOngkirImage.show()
-                    freeOngkirImage?.loadImage(it)
+                    freeOngkirImage.loadImage(it)
                 }
             }
         }

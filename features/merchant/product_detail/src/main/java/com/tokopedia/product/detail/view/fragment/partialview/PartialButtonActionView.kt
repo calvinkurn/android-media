@@ -125,11 +125,11 @@ class PartialButtonActionView private constructor(val view: View,
         }
     }
 
-    private fun showTokoNowButton() = with(view) {
-        binding.btnEmptyStock.hide()
-        binding.sellerButtonContainer.hide()
-        binding.btnBuyNow.hide()
-        binding.btnAddToCart.hide()
+    private fun showTokoNowButton() = with(binding) {
+        btnEmptyStock.hide()
+        sellerButtonContainer.hide()
+        btnBuyNow.hide()
+        btnAddToCart.hide()
 
         if (tokonowButtonData?.isVariant == true) {
             showViewTokoNowVar()
