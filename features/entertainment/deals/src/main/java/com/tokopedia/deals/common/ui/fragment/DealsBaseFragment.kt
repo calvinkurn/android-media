@@ -47,7 +47,7 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
         }
     }
 
-    open fun inflate_tmp(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, x : (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)->View?): View?{
+    open fun inflate_tmp(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, x : (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)->View): View{
         return x.invoke(inflater, container, savedInstanceState)
     }
 
