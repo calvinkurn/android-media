@@ -3,7 +3,7 @@ package com.tokopedia.gopay_kyc.domain.data
 import com.google.gson.annotations.SerializedName
 
 data class CheckKycStatusGqlResponse(
-    @SerializedName("walletappCheckStatusKYCResponse")
+    @SerializedName("walletappCheckStatusKYC")
     val kycStatusResponse: KycStatusResponse
 )
 
@@ -17,6 +17,6 @@ data class KycStatusResponse(
 data class KycStatusData(
     @SerializedName("is_eligible_kyc")
     val isEligible: Boolean,
-    @SerializedName("wallet_level_str")
-    val walletLevelString: String
+    @SerializedName("message")
+    val kycStatusMessage: String?
 )

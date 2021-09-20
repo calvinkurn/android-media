@@ -33,7 +33,7 @@
 
         <activity android:name=".presentation.activity.GoPayCameraKtpActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopoints3"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
     </application>
 </manifest>

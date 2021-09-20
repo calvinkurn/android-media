@@ -69,11 +69,11 @@
                 android:id="@+id/retryKtpIcon"
                 android:layout_width="@dimen/unify_space_16"
                 android:layout_height="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/go_pay_kyc_dp_10"
                 app:icon_color_light_enable="@color/Unify_G500"
                 app:icon_name="RELOAD"
                 app:layout_constraintStart_toStartOf="@+id/goPayKycKtpTitle"
-                app:layout_constraintTop_toBottomOf="@+id/ktpImage" />
+                app:layout_constraintTop_toTopOf="@+id/retryKtpText"
+                app:layout_constraintBottom_toBottomOf="@+id/retryKtpText"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/retryKtpText"
@@ -137,11 +137,11 @@
                 android:id="@+id/retryKtpSelfieIcon"
                 android:layout_width="@dimen/unify_space_16"
                 android:layout_height="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/go_pay_kyc_dp_10"
                 app:icon_color_light_enable="@color/Unify_G500"
                 app:icon_name="RELOAD"
                 app:layout_constraintStart_toStartOf="@+id/goPayKtpSelfieTitle"
-                app:layout_constraintTop_toBottomOf="@+id/ktpSelfieImage" />
+                app:layout_constraintTop_toTopOf="@+id/retryKtpSelfieText"
+                app:layout_constraintBottom_toBottomOf="@+id/retryKtpSelfieText"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/retryKtpSelfieText"

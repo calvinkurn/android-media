@@ -15,7 +15,7 @@ class SubmitKycUseCase @Inject constructor(
     fun submitKyc(
         onSuccess: (String) -> Unit,
         onError: (Throwable) -> Unit,
-        kycRequestId: Int
+        kycRequestId: String
     ) {
         this.setTypeClass(SubmitKycGqlResponse::class.java)
         this.setRequestParams(getRequestParams(kycRequestId))
@@ -26,14 +26,14 @@ class SubmitKycUseCase @Inject constructor(
         )
     }
 
-    private fun getRequestParams(kycRequestId: Int) = mapOf(
+    private fun getRequestParams(kycRequestId: String) = mapOf(
         KYC_REQUEST_ID to kycRequestId,
         PARTNER_CODE_KEY to PARTNER_CODE_PEMUDA
     )
 
     companion object {
         const val PARTNER_CODE_KEY = "partnerCode"
-        const val KYC_REQUEST_ID = "kycRequestId"
+        const val KYC_REQUEST_ID = "kycRequestID"
         const val PARTNER_CODE_PEMUDA = "PEMUDA"
     }
 }

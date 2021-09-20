@@ -14,38 +14,38 @@
     <string name="gopay_kyc_friends_benefit_description_text">Bisa juga minta GoPay dan patungan buat jajan rame-rame.</string>
     <string name="gopay_kyc_payback_benefit_title_text">Jaminan saldo GoPay kembali</string>
     <string name="gopay_kyc_payback_benefit_description_text">Perlingungan ekstra buat saldomu</string>
-    <string name="gopay_kyc_take_ktp_text">Ambil Foto KTP</string>
-    <string name="gopay_kyc_ktp_text">KTP</string>
+    <string name="gopay_kyc_take_ktp_text">Ambil Foto e-KTP</string>
+    <string name="gopay_kyc_ktp_text">e-KTP</string>
     <string name="gopay_kyc_ktp_description_text">Khusus warga negara Indonesia</string>
     <string name="gopay_kyc_ktp_change_text">Ubah</string>
     <string name="gopay_kyc_ktp_upload_header_text">Upload foto identitas</string>
-    <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan KTP</string>
+    <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan e-KTP</string>
     <string name="gopay_kyc_ktp_right_text">Benar</string>
     <string name="gopay_kyc_ktp_wrong">Salah</string>
 
 
-    <string name="gopay_ktp_instruction_1">Gunakan KTP asli bukan hasil fotokopi.</string>
-    <string name="gopay_ktp_instruction_2">Pastikan foto KTP berada dalam bingkai.</string>
-    <string name="gopay_ktp_instruction_3">Pastikan foto KTP terlihat terang dan jelas.</string>
+    <string name="gopay_ktp_instruction_1">Gunakan e-KTP asli bukan hasil fotokopi.</string>
+    <string name="gopay_ktp_instruction_2">Pastikan foto e-KTP berada dalam bingkai.</string>
+    <string name="gopay_ktp_instruction_3">Pastikan foto e-KTP terlihat terang dan jelas.</string>
     <string name="gopay_selfie_ktp_instruction_1">Cari pencahayaan yang cukup</string>
-    <string name="gopay_selfie_ktp_instruction_2">Ambil selfie dengan posisikan KTP di bawah dagu. </string>
-    <string name="gopay_selfie_ktp_instruction_3">Pastikan seluruh bagian wajah &amp; KTP kamu terlihat jelas dan tidak terpotong.</string>
+    <string name="gopay_selfie_ktp_instruction_2">Ambil selfie dengan posisikan e-KTP di bawah dagu. </string>
+    <string name="gopay_selfie_ktp_instruction_3">Pastikan seluruh bagian wajah &amp; e-KTP kamu terlihat jelas dan tidak terpotong.</string>
     <string name="gopay_kyc_step_1">1.</string>
 
     <string name="gopay_kyc_step_2">2.</string>
-    <string name="gopay_kyc_selfie_plus_ktp_text">Selfie + KTP</string>
+    <string name="gopay_kyc_selfie_plus_ktp_text">Selfie + e-KTP</string>
     <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan KTP</string>
-    <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan KTP</string>
-    <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan KTP, ya</string>
+    <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan e-KTP</string>
+    <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan e-KTP, ya</string>
     <string name="gopay_kyc_selfie_ktp_description_text">Digunakan untuk verifikasi identitas diri</string>
-    <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang KTP</string>
+    <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang e-KTP</string>
     <string name="gopay_kyc_reset_image_text">Foto Ulang</string>
     <string name="gopay_kyc_use_photo_button_text">Pakai Foto Ini</string>
 
-    <string name="gopay_kyc_ktp_capture_instruction_text">Posisikan KTP di dalam bingkai. Tap layarnya agar informasi di foto bisa terbaca jelas.</string>
-    <string name="gopay_kyc_ktp_capture_verification_text">Pastikan KTP kamu di dalam bingkai dan informasi di foto bisa terbaca jelas</string>
-    <string name="gopay_kyc_selfie_ktp_capture_instruction_text">Posisikan wajah dan KTP di dalam bingkai</string>
-    <string name="gopay_kyc_selfie_ktp_capture_verification_text">Pastikan muka dan KTP kamu berada dalam bingkai dan terlihat jelas</string>
+    <string name="gopay_kyc_ktp_capture_instruction_text">Posisikan e-KTP di dalam bingkai. Tap layarnya agar informasi di foto bisa terbaca jelas.</string>
+    <string name="gopay_kyc_ktp_capture_verification_text">Pastikan e-KTP kamu di dalam bingkai dan informasi di foto bisa terbaca jelas</string>
+    <string name="gopay_kyc_selfie_ktp_capture_instruction_text">Posisikan wajah dan e-KTP di dalam bingkai</string>
+    <string name="gopay_kyc_selfie_ktp_capture_verification_text">Pastikan muka dan e-KTP kamu berada dalam bingkai dan terlihat jelas</string>
     <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
     <string name="gopay_kyc_privacy_bank_text">Diawasi oleh Bank Indonesia</string>
     <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak Gojek untuk verifikasi.</string>

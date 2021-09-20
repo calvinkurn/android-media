@@ -1,18 +1,25 @@
 package com.tokopedia.gopay_kyc.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycAnalytics
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.GoPayPlusBenefit
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayPlusBenefitItemViewHolder
+import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
 import com.tokopedia.gopay_kyc.viewmodel.GoPayKycViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_gopay_benefits_layout.*
 import javax.inject.Inject
 
@@ -20,16 +27,70 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    @Inject
+    lateinit var goPayKycAnalytics: GoPayKycAnalytics
 
     private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(GoPayKycViewModel::class.java)
     }
     private val benefitList = ArrayList<GoPayPlusBenefit>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // @Todo send click back kyc page
+            goPayKycAnalytics.sendOpenScreenEvents()
+        }
+    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         populateBenefits()
+        return inflater.inflate(R.layout.fragment_gopay_benefits_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpOnBackPressed()
+        observeViewModel()
+        upgradeNowButton.setOnClickListener {
+            // @Todo click upgrade kyc page
+            goPayKycAnalytics.sendOpenScreenEvents()
+            // @Todo remove this code after testing
+            //context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
+            viewModel.checkKycStatus()
+        }
+        context?.let { setInstructionListView(it) }
+    }
+
+    private fun setUpOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
+    }
+
+    private fun setInstructionListView(context: Context) {
+        val layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        for (goPayPlusBenefit in benefitList) {
+            goPayBenefitLL.addView(
+                GoPayPlusBenefitItemViewHolder(context, layoutParams).bindData(goPayPlusBenefit)
+            )
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.isUpgradeLoading.observe(viewLifecycleOwner, { isLoading ->
+            upgradeNowButton.isLoading = isLoading
+        })
+        viewModel.kycEligibilityStatus.observe(viewLifecycleOwner, { kycStatus ->
+            if (kycStatus.isEligible)
+                context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
+            else showToastMessage(kycStatus.kycStatusMessage?: "")
+        })
+    }
+
+    private fun showToastMessage(message: String) {
+        if (message.isNotEmpty())
+        Toaster.build(upgradeNowButton, message, Toaster.TYPE_NORMAL, Toaster.LENGTH_LONG).show()
     }
 
     private fun populateBenefits() {
@@ -70,41 +131,6 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
                 )
             )
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_gopay_benefits_layout, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.checkKycStatus()
-        upgradeNowButton.setOnClickListener {
-            checkForKycUpgrade()
-        }
-        val layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        context?.let {
-            for (goPayPlusBenefit in benefitList) {
-                goPayBenefitLL.addView(
-                    GoPayPlusBenefitItemViewHolder(
-                        it,
-                        layoutParams
-                    ).bindData(goPayPlusBenefit)
-                )
-            }
-        }
-    }
-
-    private fun checkForKycUpgrade() {
-        if (viewModel.kycEligibilityStatus)
-            context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
     }
 
     override fun getScreenName() = null

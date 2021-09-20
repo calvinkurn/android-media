@@ -1,6 +1,6 @@
 package com.tokopedia.gopay_kyc.presentation.listener
 
-interface GoPayKycOpenCameraListener {
+interface GoPayKycNavigationListener {
 
     fun openKtpCameraScreen()
     fun openSelfieKtpCameraScreen()

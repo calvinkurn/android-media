@@ -9,7 +9,7 @@ import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.domain.data.GoPayPlusBenefit
 import kotlinx.android.synthetic.main.gopay_kyc_general_item_layout.view.*
 
-class GoPayPlusBenefitItemViewHolder(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
+class GoPayPlusBenefitItemViewHolder(val context: Context, private val layoutParams: ViewGroup.LayoutParams) {
 
     private fun getLayout() = R.layout.gopay_kyc_general_item_layout
 

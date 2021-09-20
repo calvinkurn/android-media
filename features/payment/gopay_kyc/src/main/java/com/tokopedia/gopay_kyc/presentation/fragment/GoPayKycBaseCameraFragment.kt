@@ -106,6 +106,10 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             hideCameraProp()
             resetCapture()
         })
+        viewModel.captureErrorLiveData.observe(viewLifecycleOwner, {
+            hideCameraProp()
+            resetCapture()
+        })
     }
 
     protected fun getCapturedImagePath() = viewModel.getCapturedImagePath()
@@ -133,15 +137,15 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun generateImage(data: ByteArray) {
+    private fun generateImage(data: ByteArray?) {
         if (mCaptureNativeSize == null)
             mCaptureNativeSize = cameraView?.pictureSize
-        viewModel.processAndSaveImage(
-            data,
-            mCaptureNativeSize?.width ?: -1,
-            mCaptureNativeSize?.height ?: -1,
-            cameraView?.facing?.ordinal ?: 1
-        )
+            viewModel.processAndSaveImage(
+                data,
+                mCaptureNativeSize?.width ?: -1,
+                mCaptureNativeSize?.height ?: -1,
+                cameraView?.facing?.ordinal ?: 1
+            )
     }
 
     private fun reInitCamera() {
@@ -183,7 +187,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         cameraView?.toggleFacing()
     }
 
-
     protected open fun showLoading() {
         context?.let {
             loader = LoaderDialog(it)
@@ -215,9 +218,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             ) {
                 startCamera()
             }
-
         }
-
     }
 
     private fun startCamera() {

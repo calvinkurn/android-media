@@ -9,10 +9,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
-import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
-import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 
 class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
@@ -23,7 +22,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
             activity?.let {
                 ReviewCancelDialog.showReviewDialog(it,
                     { openSelfieKtpCamera() },
-                    { (it as GoPayKycOpenCameraListener).exitKycFlow() }
+                    { (it as GoPayKycNavigationListener).exitKycFlow() }
                 )
             }
         }
@@ -72,7 +71,6 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
             goPayKycTypeDescription.text =
                 it.getString(R.string.gopay_kyc_selfie_ktp_description_text)
             goPayPhotoTitle.text = it.getString(R.string.gopay_kyc_selfie_ktp_photo_front_text)
-            goPayKycChange.gone()
             takePhotoButton.text = it.getString(R.string.gopay_kyc_selfie_take_ktp_text)
 
             goPayIdImage.setImageDrawable(
@@ -101,7 +99,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
     }
 
     private fun openSelfieKtpCamera() {
-        activity?.let { (it as GoPayKycOpenCameraListener).openSelfieKtpCameraScreen() }
+        activity?.let { (it as GoPayKycNavigationListener).openSelfieKtpCameraScreen() }
     }
 
     override fun getScreenName() = null

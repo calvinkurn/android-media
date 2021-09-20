@@ -3,7 +3,7 @@ package com.tokopedia.gopay_kyc.domain.data
 import com.google.gson.annotations.SerializedName
 
 data class InitiateKycGqlResponse(
-    @SerializedName("walletappInitiateKYCResponse!")
+    @SerializedName("walletappInitiateKYC")
     val initiateKycResponse: InitiateKycResponse
 )
 
@@ -16,7 +16,7 @@ data class InitiateKycResponse(
 
 data class InitiateKycData(
     @SerializedName("kyc_request_id")
-    val kycRequestId: Long,
+    val kycRequestId: String,
     @SerializedName("docs")
     val kycDocuments: ArrayList<KycDocument>
 )

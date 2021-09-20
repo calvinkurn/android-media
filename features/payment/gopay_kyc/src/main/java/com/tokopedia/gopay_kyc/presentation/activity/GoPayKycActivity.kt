@@ -26,11 +26,13 @@ class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
         supportActionBar?.hide()
     }
 
+    /*
+    * This helps in redirecting to entry point activity if user wants to exit the kyc flow
+    * */
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.hasExtra(IS_EXIT_KYC) == true)
             finish()
-
     }
     override fun getNewFragment() = GoPayPlusKycBenefitFragment.newInstance()
     override fun getScreenName() = null

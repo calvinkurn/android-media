@@ -5,9 +5,9 @@ import com.otaliastudios.cameraview.CameraUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gopay_kyc.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
+import com.tokopedia.gopay_kyc.domain.data.KycStatusData
 import com.tokopedia.gopay_kyc.domain.data.KycStatusResponse
 import com.tokopedia.gopay_kyc.domain.usecase.CheckKycStatusUseCase
-import com.tokopedia.gopay_kyc.domain.usecase.InitiateKycUseCase
 import com.tokopedia.gopay_kyc.domain.usecase.SaveCaptureImageUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -23,33 +23,38 @@ class GoPayKycViewModel @Inject constructor(
     var mCapturingPicture = false
 
     val cameraImageResultLiveData = MutableLiveData<CameraImageResult>()
-    var kycEligibilityStatus = false
+    val captureErrorLiveData = MutableLiveData<Throwable>()
+    val kycEligibilityStatus = MutableLiveData<KycStatusData>()
+    val isUpgradeLoading = MutableLiveData<Boolean>()
+
     fun getCapturedImagePath() = cameraImageResultLiveData.value?.finalCameraResultPath ?: ""
 
     fun processAndSaveImage(
-        imageByte: ByteArray,
+        imageByte: ByteArray?,
         captureWidth: Int,
         captureHeight: Int,
         ordinal: Int
     ) {
-        try {
-            CameraUtils.decodeBitmap(imageByte, captureWidth, captureHeight) { bitmap ->
-                if (bitmap != null) {
-                    saveCaptureImageUseCase.parseAndSaveCapture(
-                        ::onSaveSuccess,
-                        ::onSaveError,
-                        imageByte, ordinal
-                    )
-                }
+        imageByte?.let {
+            try {
+                CameraUtils.decodeBitmap(imageByte, captureWidth, captureHeight) { bitmap ->
+                    if (bitmap != null) {
+                        saveCaptureImageUseCase.parseAndSaveCapture(
+                            ::onSaveSuccess,
+                            ::onSaveError,
+                            imageByte, ordinal
+                        )
+                    }
 
+                }
+            } catch (e: Throwable) {
+                saveCaptureImageUseCase.parseAndSaveCapture(
+                    ::onSaveSuccess,
+                    ::onSaveError,
+                    imageByte, ordinal
+                )
             }
-        } catch (e: Throwable) {
-            saveCaptureImageUseCase.parseAndSaveCapture(
-                ::onSaveSuccess,
-                ::onSaveError,
-                imageByte, ordinal
-            )
-        }
+        } ?: kotlin.run {  onSaveError(NullPointerException("Empty Data byte")) }
 
     }
 
@@ -58,10 +63,11 @@ class GoPayKycViewModel @Inject constructor(
     }
 
     private fun onSaveError(throwable: Throwable) {
-        // do nothing
+        captureErrorLiveData.postValue(throwable)
     }
 
     fun checkKycStatus() {
+        isUpgradeLoading.postValue(true)
         checkKycStatusUseCase.cancelJobs()
         checkKycStatusUseCase.checkKycStatus(
             ::onKycStatusSuccess,
@@ -70,17 +76,19 @@ class GoPayKycViewModel @Inject constructor(
     }
 
     private fun onKycStatusSuccess(kycStatusResponse: KycStatusResponse) {
+        isUpgradeLoading.postValue(false)
         if (kycStatusResponse.code == CODE_SUCCESS)
-            kycEligibilityStatus = kycStatusResponse.kycStatusData.isEligible
+            kycEligibilityStatus.postValue(kycStatusResponse.kycStatusData)
     }
 
     private fun onKycStatusFail(throwable: Throwable) {
-
+        isUpgradeLoading.postValue(false)
     }
 
     override fun onCleared() {
         super.onCleared()
-
+        checkKycStatusUseCase.cancelJobs()
+        saveCaptureImageUseCase.cancelJobs()
     }
 
     companion object {

@@ -16,7 +16,7 @@ import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity.Companion.KTP_PATH
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity.Companion.SELFIE_KTP_PATH
-import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycOpenCameraListener
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycReviewListener
 import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
 import com.tokopedia.gopay_kyc.viewmodel.GoPayKycImageUploadViewModel
@@ -25,9 +25,6 @@ import java.io.File
 import javax.inject.Inject
 
 class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
-
-    private var ktpImagePath = ""
-    private var ktpSelfieImagePath = ""
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -41,26 +38,40 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
         override fun handleOnBackPressed() {
             ReviewCancelDialog.showReviewDialog(requireContext(), { uploadPhotoForKyc() }, {
                 activity?.let {
-                    (it as GoPayKycOpenCameraListener).exitKycFlow()
+                    (it as GoPayKycNavigationListener).exitKycFlow()
                 }
             })
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_gopay_review_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setImagePath()
+        setImagePathInViewModel()
         initViews()
         initListeners()
         observeViewModel()
+    }
+
+    private fun initViews() {
+        setImageFromFile(viewModel.ktpPath, ktpImage)
+        setImageFromFile(viewModel.selfieKtpPath, ktpSelfieImage)
+    }
+
+    private fun setImageFromFile(filePath: String, imageview: ImageView) {
+        context?.let { Glide.with(it).load(File(filePath)).fitCenter().into(imageview) }
+    }
+
+    private fun setImagePathInViewModel() {
+        arguments?.let {
+            //viewModel.ktpPath = "/data/user/0/com.tokopedia.tkpd/app_extras/1631785641023.jpg"
+            //viewModel.selfieKtpPath = "/data/user/0/com.tokopedia.tkpd/app_extras/1631785646153.jpg"
+            viewModel.ktpPath = it.getString(KTP_PATH, "")
+            viewModel.selfieKtpPath = it.getString(SELFIE_KTP_PATH, "")
+        }
     }
 
     private fun observeViewModel() {
@@ -90,13 +101,13 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
     private fun uploadPhotoForKyc() = viewModel.initiateGoPayKyc()
 
     private fun openKtpCameraScreen() =
-        activity?.let { (it as GoPayKycOpenCameraListener).openKtpCameraScreen() }
+        activity?.let { (it as GoPayKycNavigationListener).openKtpCameraScreen() }
 
     private fun openSelfieKtpCameraScreen() =
-        activity?.let { (it as GoPayKycOpenCameraListener).openSelfieKtpCameraScreen() }
+        activity?.let { (it as GoPayKycNavigationListener).openSelfieKtpCameraScreen() }
 
     private fun showKycErrorBottomSheet()  =
-        activity?.let { (it as GoPayKycReviewListener).showKycFailedBottomSheet() }
+        activity?.let { (it as GoPayKycReviewListener).showKycFailedBottomSheet(viewModel.ktpPath, viewModel.selfieKtpPath) }
 
     private fun showKycSuccessScreen() =
         activity?.let { (it as GoPayKycReviewListener).showKycSuccessScreen() }
@@ -106,34 +117,18 @@ class GoPayReviewAndUploadFragment : BaseDaggerFragment() {
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
-    private fun initViews() {
-        setImageFromFile(ktpImagePath, ktpImage)
-        setImageFromFile(ktpSelfieImagePath, ktpSelfieImage)
+    fun updateKtpImage(ktpPath: String) {
+        viewModel.ktpPath = ktpPath
+        setImageFromFile(ktpPath, ktpImage)
     }
 
-    private fun setImageFromFile(filePath: String, imageview: ImageView) {
-        context?.let { Glide.with(it).load(File(filePath)).fitCenter().into(imageview) }
-    }
-
-    private fun setImagePath() {
-        arguments?.let {
-            ktpImagePath = it.getString(KTP_PATH, "")
-            ktpSelfieImagePath = it.getString(SELFIE_KTP_PATH, "")
-        }
+    fun updateSelfieKtpImage(selfieKtpPath: String) {
+        viewModel.selfieKtpPath = selfieKtpPath
+        setImageFromFile(selfieKtpPath, ktpSelfieImage)
     }
 
     override fun getScreenName() = null
     override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
-
-    fun updateKtpImage(ktpPath: String) {
-        ktpImagePath = ktpPath
-        setImageFromFile(ktpImagePath, ktpImage)
-    }
-
-    fun updateSelfieKtpImage(selfieKtpPath: String) {
-        ktpSelfieImagePath = selfieKtpPath
-        setImageFromFile(ktpSelfieImagePath, ktpSelfieImage)
-    }
 
     companion object {
         const val GOPAY_HELP_URL = "http://www.go-pay.co.id/appterms"
