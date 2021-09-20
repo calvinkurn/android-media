@@ -14,7 +14,7 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
 
     companion object {
         private const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!, \$extraInfo:ExtraInfoV3!, \$warehouseID: String) {\n" +
-                "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo, warehouseID: ${'$'}warehouseID %1s) {\n" +
+                "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {\n" +
                 "    pictures {\n" +
                 "      urlThumbnail\n" +
                 "    }\n" +
@@ -24,19 +24,22 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
                 "    }"+
                 "  }\n" +
                 "}"
-        private const val BUNDLE_EXTRA_INFO_QUERY = ",extraInfo:{bundle:true}"
 
         private const val PRODUCT_ID_KEY = "productID"
         private const val OPTIONS_KEY = "options"
         private const val EXTRA_INFO_KEY = "extraInfo"
         private const val EVENT_KEY = "event"
+        private const val BUNDLE_KEY = "bundle"
         private const val WAREHOUSE_ID_KEY = "warehouseID"
 
         @JvmStatic
-        fun createRequestParams(productId: String, warehouseId: String? = null): RequestParams =
+        fun createRequestParams(productId: String,
+                                warehouseId: String? = null,
+                                isBundling: Boolean = false): RequestParams =
                 RequestParams.create().apply {
                     val extraInfoParam = RequestParams().apply {
                         putBoolean(EVENT_KEY, true)
+                        putBoolean(BUNDLE_KEY, isBundling)
                     }.parameters
 
                     putString(PRODUCT_ID_KEY, productId)
@@ -47,16 +50,9 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
     }
 
     var params: RequestParams = RequestParams.EMPTY
-    var isBundling = false
 
     override suspend fun executeOnBackground(): OtherCampaignStockData {
-        val query =
-            if (isBundling) {
-                String.format(QUERY, BUNDLE_EXTRA_INFO_QUERY)
-            } else {
-                String.format(QUERY, "")
-            }
-        val gqlRequest = GraphqlRequest(query, OtherCampaignStockResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, OtherCampaignStockResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors = gqlResponse.getError(OtherCampaignStockResponse::class.java)
         if (errors.isNullOrEmpty()) {
