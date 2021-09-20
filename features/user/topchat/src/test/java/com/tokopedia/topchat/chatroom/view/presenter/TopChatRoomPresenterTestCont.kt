@@ -316,7 +316,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         val roomMetaDataSlot = slot<(RoomMetaData) -> Unit>()
         every {
             getChatUseCase.getFirstPageChat(any(), any(), any(), capture(roomMetaDataSlot))
-        }
+        } just Runs
 
         // When
         presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
