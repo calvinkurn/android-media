@@ -76,7 +76,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun generateSortFilter(paylaterProduct: PayLaterGetSimulation) {
         val filterData = ArrayList<SortFilterItem>()
         paylaterProduct.productList?.let {
-            setFilterItem(it,filterData)
+            setFilterItem(it, filterData)
         }
         sortFilter.addItem(filterData)
 
@@ -97,8 +97,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
      * @param list this is the list of data
      */
 
-    private fun setFilterItem(list: List<PayLaterAllData>, filterData: ArrayList<SortFilterItem>)
-    {
+    private fun setFilterItem(list: List<PayLaterAllData>, filterData: ArrayList<SortFilterItem>) {
         for (i in list.indices) {
             list[i].text?.let { name ->
                 if (i == 0) {
@@ -142,7 +141,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                 pagerAdapter.setPaymentData(detailList)
             }
 
-            payLaterProductList[position].detail?.get(0)?.let { detail->
+            payLaterProductList[position].detail?.get(0)?.let { detail ->
                 onPageSelectedByUser(detail)
             }
 

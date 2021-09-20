@@ -59,8 +59,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             val orderedBenefitList: MutableList<Benefit?> = ArrayList()
-            if(!responseData?.gateway_detail?.benefit.isNullOrEmpty()) {
-                for (i in 0 until (responseData?.gateway_detail?.benefit?.size?:0)) {
+            if (!responseData?.gateway_detail?.benefit.isNullOrEmpty()) {
+                for (i in 0 until (responseData?.gateway_detail?.benefit?.size ?: 0)) {
                     if (responseData?.gateway_detail?.benefit?.get(i)?.is_highlight == true) {
                         responseData?.gateway_detail?.benefit?.let { benefitList ->
                             orderedBenefitList.add(benefitList[i])
@@ -171,10 +171,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
         if (data.is_recommended == true) {
             recommendationText.visible()
-            recommendationText.text = data.is_recommended_string?:""
-        }
-        else
-        {
+            recommendationText.text = data.is_recommended_string ?: ""
+        } else {
             recommendationText.gone()
         }
     }
@@ -186,8 +184,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
      */
 
     @SuppressLint("SetTextI18n")
-    private fun updateRepaymentDetail(data: Detail)
-    {
+    private fun updateRepaymentDetail(data: Detail) {
         if (data.tenure != PAY_LATER_BASE_TENURE)
             duration.text =
                 resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
@@ -231,8 +228,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
      * @param data this is the partner detail response
      */
 
-    private fun updateHeaderPartnerCard(data: Detail)
-    {
+    private fun updateHeaderPartnerCard(data: Detail) {
         tvTitlePaymentPartner.text = data.gateway_detail?.name ?: ""
         partnerName = data.gateway_detail?.name ?: ""
         tenure = data.tenure ?: 0
@@ -277,10 +273,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         urlToRedirect = data.cta?.android_url ?: ""
 
         data.cta?.cta_type?.let {
-            buttonStatus = when{
+            buttonStatus = when {
                 buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
                 buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
-                else ->RedirectionType.NonClickable
+                else -> RedirectionType.NonClickable
             }
         }
         if (!data.cta?.name.isNullOrEmpty())
@@ -288,10 +284,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else
             btnHowToUse.gone()
         if (data.cta?.button_color.equals("filled", true)) {
-                btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
-            } else {
-                btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST
-            }
+            btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
+        } else {
+            btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST
+        }
     }
 
 
@@ -300,8 +296,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
      * @param data this is the base detail response
      */
 
-    private fun setUIIfDisable(data: Detail)
-    {
+    private fun setUIIfDisable(data: Detail) {
         disableVisibilityGroup.gone()
         tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         interestText.text = data.disableDetail?.description ?: ""
@@ -362,10 +357,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_BASE_TENURE = 1
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
-         val rejectionList = listOf(2,10,9)
+        val rejectionList = listOf(2, 10, 9)
         val processiongList = listOf(1)
-        val buttonRedirectionWeb = listOf(1,2)
-        val buttonRedirectionBottomSheet = listOf(3,4)
+        val buttonRedirectionWeb = listOf(1, 2)
+        val buttonRedirectionBottomSheet = listOf(3, 4)
 
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
             return PayLaterPaymentOptionsFragment().apply {
