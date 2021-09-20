@@ -25,7 +25,7 @@ class ItemRMPotentialPMProViewHolder(
 
     override fun bind(element: SectionRMPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        binding?.apply {
+        binding?.run {
             tvSeeAllBenefitPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoPMProPage()
             }
@@ -37,8 +37,8 @@ class ItemRMPotentialPMProViewHolder(
     }
 
     private fun setPotentialPMProBenefitAdapter(element: SectionRMPotentialPMProUiModel?) {
-        binding?.apply {
-            rvShopPmProPotentialBenefit.apply {
+        binding?.run {
+            rvShopPmProPotentialBenefit.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPMProBenefitAdapter
             }

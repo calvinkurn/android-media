@@ -124,7 +124,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
 
     private fun setShopScore(shopScore: String) {
         val shopScoreNumber = shopScore.getNumberFormat(ShopScoreConstant.NULL_NUMBER)
-        tvShopScoreValue?.apply {
+        tvShopScoreValue?.run {
             text = shopScore
             if (shopScoreNumber < ShopScoreConstant.SHOP_AGE_SIXTY) {
                 setTextColor(
@@ -145,7 +145,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     }
 
     private fun setupLevelBarNewSeller(shopLevel: String) {
-        ivLevelBarNewSeller?.apply {
+        ivLevelBarNewSeller?.run {
             when (shopLevel.getNumberFormat(ShopScoreConstant.NULL_NUMBER)) {
                 ShopScoreConstant.SHOP_SCORE_LEVEL_ONE ->
                     setImageResource(R.drawable.ic_one_level_green)

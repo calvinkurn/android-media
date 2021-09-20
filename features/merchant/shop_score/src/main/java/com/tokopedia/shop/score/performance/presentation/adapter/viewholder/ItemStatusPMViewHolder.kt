@@ -30,13 +30,13 @@ class ItemStatusPMViewHolder(
     }
 
     private fun setupBackgroundColor() {
-        binding?.apply {
+        binding?.run {
             bgContainerPmStatus.showWithCondition(!root.context.isDarkMode())
         }
     }
 
     private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
-        binding?.apply {
+        binding?.run {
             tvPmReputationValue.text = getString(R.string.title_pm_value)
             element?.descPM?.let {
                 tvDescContentPmSection.setTextMakeHyperlink(it) {
@@ -47,7 +47,7 @@ class ItemStatusPMViewHolder(
     }
 
     private fun setupIconClickListener() {
-        binding?.apply {
+        binding?.run {
             icPmReputationRight.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }

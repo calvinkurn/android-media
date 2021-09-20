@@ -34,7 +34,7 @@ class ItemDetailPerformanceViewHolder(
     private val binding: ItemDetailShopPerformanceBinding? by viewBinding()
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             setupItemDetailPerformance(element)
             val shopScore = element?.shopScore ?: SHOP_SCORE_NULL
             val titleBottomSheet =
@@ -71,7 +71,7 @@ class ItemDetailPerformanceViewHolder(
     }
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             setContainerBackground()
             separatorItemDetail.showWithCondition(element?.isDividerHide == false)
 
@@ -115,7 +115,7 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setContainerBackground() {
         try {
-            binding?.apply {
+            binding?.run {
                 root.context?.let {
                     binding?.cardItemDetailShopPerformance?.setBackgroundColor(
                         it.getResColor(R.color.shop_score_penalty_dms_container)
@@ -129,7 +129,7 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setCardItemDetailPerformanceBackground() {
         try {
-            binding?.apply {
+            binding?.run {
                 root.context?.let {
                     binding?.cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
                         root.context,

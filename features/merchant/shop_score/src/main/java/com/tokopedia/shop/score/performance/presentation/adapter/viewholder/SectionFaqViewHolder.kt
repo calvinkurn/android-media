@@ -25,13 +25,13 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
     private val binding: SectionFaqShopScoreBinding? by viewBinding()
 
     override fun bind(element: SectionFaqUiModel?) {
-        binding?.apply {
+        binding?.run {
             itemFaqAdapter = ItemFaqAdapter(this@SectionFaqViewHolder)
 
             tvLabelHelpCenter.text =
                 MethodChecker.fromHtml(getString(R.string.title_help_center_tokopedia))
 
-            rvFaqShopScore.apply {
+            rvFaqShopScore.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemFaqAdapter
                 isNestedScrollingEnabled = false

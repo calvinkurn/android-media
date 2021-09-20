@@ -23,7 +23,7 @@ class ItemShopPerformanceErrorViewHolder(
     private val binding: ItemShopPerformanceErrorBinding? by viewBinding()
 
     override fun bind(element: ItemShopPerformanceErrorUiModel?) {
-        binding?.apply {
+        binding?.run {
             root.setBackgroundColor(
                 ContextCompat.getColor(
                     root.context,

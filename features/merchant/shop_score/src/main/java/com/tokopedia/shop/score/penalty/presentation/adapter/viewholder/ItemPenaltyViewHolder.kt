@@ -25,7 +25,7 @@ class ItemPenaltyViewHolder(
     override fun bind(element: ItemPenaltyUiModel?) {
         if (element == null) return
 
-        binding?.apply {
+        binding?.run {
             element.colorPenalty?.let {
                 penaltyIndicator.background = getColoredIndicator(root.context, it)
                 tvTitleStatusPenalty.setTextColor(ContextCompat.getColor(root.context, it))

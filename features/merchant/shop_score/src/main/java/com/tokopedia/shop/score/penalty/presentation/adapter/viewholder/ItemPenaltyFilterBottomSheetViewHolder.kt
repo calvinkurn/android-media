@@ -32,7 +32,7 @@ class ItemPenaltyFilterBottomSheetViewHolder(
     override fun bind(element: PenaltyFilterUiModel) {
         itemChipsFilterPenaltyAdapter =
             ItemChipsFilterPenaltyAdapter(penaltyBottomSheetListener, element.title)
-        binding?.apply {
+        binding?.run {
             tvTitleHeaderPenaltyFilter.text = element.title
             dividerSomFilter.showWithCondition(element.isDividerVisible)
         }
@@ -48,12 +48,12 @@ class ItemPenaltyFilterBottomSheetViewHolder(
     }
 
     private fun setupChipsAdapter(data: PenaltyFilterUiModel) {
-        binding?.apply {
+        binding?.run {
             val layoutManagerChips = ChipsLayoutManager.newBuilder(root.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-            rvPenaltyFilter.also {
+            rvPenaltyFilter.let {
                 if (it.itemDecorationCount.isZero()) {
                     it.addItemDecoration(PenaltyFilterItemDecoration())
                 }

@@ -27,7 +27,7 @@ class ItemHeaderCardPenaltyViewHolder(
     private val binding: CardShopScoreTotalPenaltyBinding? by viewBinding()
 
     override fun bind(element: ItemCardShopPenaltyUiModel?) {
-        binding?.apply {
+        binding?.run {
             itemHeaderCardPenaltyListener.impressLearnMorePenaltyPage()
 
             separatorMultipleDots.setBackgroundResource(R.drawable.ic_line_separator)

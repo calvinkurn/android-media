@@ -17,7 +17,7 @@ class ItemPenaltyEmptyViewHolder(view: View) : AbstractViewHolder<EmptyModel>(vi
     private val binding: ItemEmptyStatePenaltyBinding? by viewBinding()
 
     override fun bind(element: EmptyModel?) {
-        binding?.apply {
+        binding?.run {
             emptyStatePenalty.setImageUrl(EMPTY_STATE_PENALTY_URL)
         }
     }

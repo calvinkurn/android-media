@@ -21,7 +21,7 @@ class PeriodDetailPerformanceViewHolder(view: View) :
     private val binding: ItemSectionDetailPerformanceBinding? by viewBinding()
 
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             setContainerBackground()
             tvPerformanceDetailLabel.text =
                 getString(R.string.title_detail_performa, element?.period.orEmpty())
@@ -48,7 +48,7 @@ class PeriodDetailPerformanceViewHolder(view: View) :
 
     private fun setContainerBackground() {
         try {
-            binding?.apply {
+            binding?.run {
                 root.context?.let {
                     containerSectionDetailPerformance.setBackgroundColor(
                         it.getResColor(R.color.shop_score_penalty_dms_container)

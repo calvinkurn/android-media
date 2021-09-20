@@ -60,7 +60,7 @@ class ItemFeatureRecommendationAdapter(
         private val binding: ItemPromoCreationShopPerformanceBinding? by viewBinding()
 
         fun bind(data: SectionShopRecommendationUiModel.ItemShopRecommendationUiModel) {
-            binding?.apply {
+            binding?.run {
                 tvItemRecommendedTitle.text = data.titleRecommendation
                 tvItemRecommendedDescription.text = data.descRecommendation
 

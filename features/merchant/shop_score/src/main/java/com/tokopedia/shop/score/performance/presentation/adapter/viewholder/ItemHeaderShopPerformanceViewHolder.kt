@@ -38,7 +38,7 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupShopScoreLevelHeader(element: HeaderShopPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             tvPerformanceLevel.text =
                 getString(R.string.shop_performance_level_header, element?.shopLevel)
 
@@ -52,11 +52,11 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             val shopScore = shopScoreFormatted(element?.shopScore)
             if (shopScore.isLessThanZero()) {
-                progressBarNewSeller?.show()
-                progressBarScorePerformance?.hide()
+                progressBarNewSeller.show()
+                progressBarScorePerformance.hide()
             } else {
                 progressBarNewSeller.hide()
                 progressBarScorePerformance.show()
@@ -75,7 +75,7 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupProgressBarScoreColor(shopScore: Int) {
-        binding?.apply {
+        binding?.run {
             when (shopScore) {
                 in ShopScoreConstant.SHOP_SCORE_ZERO..ShopScoreConstant.SHOP_SCORE_FIFTY_NINE -> {
                     progressBarScorePerformance.progressBarColor = intArrayOf(
@@ -130,12 +130,12 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
 
             val shopScore = shopScoreFormatted(element?.shopScore)
 
             if (shopScore.isLessThanZero()) {
-                ic_shop_score_performance?.hide()
+                icShopScorePerformance.hide()
             } else {
                 icShopScorePerformance.show()
             }
@@ -150,7 +150,7 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setBackgroundRadiusHeader() {
-        binding?.apply {
+        binding?.run {
             containerHeaderShopPerformance.shapeAppearanceModel =
                 containerHeaderShopPerformance.shapeAppearanceModel
                     .toBuilder()
@@ -161,13 +161,13 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             val isNewSeller = element?.shopAge.orZero() < NEW_SELLER_DAYS
             tickerShopHasPenalty.showWithCondition(
                 element?.scorePenalty.orZero() < 0
                         && !isNewSeller
             )
-            tickerShopHasPenalty.apply {
+            tickerShopHasPenalty.run {
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(
                         getString(
@@ -191,7 +191,7 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupDescHeaderShopPerformance(element: HeaderShopPerformanceUiModel?) {
-        binding?.apply {
+        binding?.run {
             if (element?.showCardNewSeller == true) {
                 tvHeaderShopService.hide()
                 tvDescShopService.hide()

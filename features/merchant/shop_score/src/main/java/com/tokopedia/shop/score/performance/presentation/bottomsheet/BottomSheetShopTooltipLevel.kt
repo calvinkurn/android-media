@@ -96,7 +96,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     }
 
     private fun setRecyclerView() {
-        rvLevelCard?.apply {
+        rvLevelCard?.run {
             if (itemDecorationCount.isZero()) {
                 addItemDecoration(TooltipLevelItemDecoration())
             }

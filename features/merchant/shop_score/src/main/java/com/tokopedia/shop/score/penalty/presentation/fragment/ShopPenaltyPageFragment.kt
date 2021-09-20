@@ -135,7 +135,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.isSelected }?.value
                 ?: 0
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -163,7 +163,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
         val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: 0
         viewModelShopPenalty.setTypeFilterData(typeId)
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -185,7 +185,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             "${startDate.second} - ${endDate.second}"
         }
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -284,7 +284,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
             setSupportActionBar(binding?.penaltyPageToolbar)
-            supportActionBar?.apply {
+            supportActionBar?.run {
                 title = getString(R.string.title_penalty_shop_score)
             }
         }

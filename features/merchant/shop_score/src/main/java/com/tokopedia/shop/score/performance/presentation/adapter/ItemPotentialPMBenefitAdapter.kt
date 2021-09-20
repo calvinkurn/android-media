@@ -49,7 +49,7 @@ class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: Ite
         private val binding: ItemPotentialPmBenefitBinding? by viewBinding()
 
         fun bind(data: SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
-            binding?.apply {
+            binding?.run {
                 ivPotentialPmBenefit.loadImage(data.iconPotentialPMUrl)
                 tvPotentialPmBenefit.text =
                     MethodChecker.fromHtml(data.titlePotentialPM?.let {

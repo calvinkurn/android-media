@@ -39,7 +39,7 @@ class ItemPMProBenefitAdapter :
     class ItemPMProBenefitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding: ItemPmProBenefitBinding? by viewBinding()
         fun bind(data: ItemParentBenefitUiModel) {
-            binding?.apply {
+            binding?.run {
                 ivPotentialPmProBenefit.loadImage(data.iconUrl)
                 tvPotentialPmProBenefit.text =
                     MethodChecker.fromHtml(data.titleResources?.let { root.context.getString(it) })

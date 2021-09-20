@@ -43,7 +43,7 @@ class CardTooltipLevelAdapter :
         private val binding : ItemCardLevelInformationBinding? by viewBinding()
 
         fun bind(data: CardTooltipLevelUiModel) {
-            binding?.apply {
+            binding?.run {
                 tvTitleLevelCard.text = data.title?.let { root.context.getString(it) }
                 tvDescriptionLevelCard.text =
                     MethodChecker.fromHtml(data.desc?.let { root.context.getString(it) })

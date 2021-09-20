@@ -47,7 +47,7 @@ class PenaltyDetailStepperAdapter :
         private val binding: ItemPenaltyStepperBinding? by viewBinding()
 
         fun bind(data: ShopPenaltyDetailUiModel.StepperPenaltyDetail) {
-            binding?.apply {
+            binding?.run {
                 root.setBackgroundColor(
                     ContextCompat.getColor(
                         root.context,

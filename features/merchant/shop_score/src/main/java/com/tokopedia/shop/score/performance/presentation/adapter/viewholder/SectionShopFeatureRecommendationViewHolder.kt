@@ -29,8 +29,8 @@ class SectionShopFeatureRecommendationViewHolder(
     override fun bind(element: SectionShopRecommendationUiModel?) {
         itemFeatureRecommendationAdapter =
             ItemFeatureRecommendationAdapter(itemRecommendationFeatureListener)
-        binding?.apply {
-            rvShopScoreCreation.apply {
+        binding?.run {
+            rvShopScoreCreation.run {
                 if (itemDecorationCount.isZero()) {
                     addItemDecoration(ShopScoreItemDecoration())
                 }

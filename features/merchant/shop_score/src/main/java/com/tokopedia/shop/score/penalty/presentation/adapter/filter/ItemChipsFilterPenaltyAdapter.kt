@@ -17,7 +17,7 @@ class ItemChipsFilterPenaltyAdapter(
     private val nameFilter: String
 ) : RecyclerView.Adapter<ItemChipsFilterPenaltyAdapter.ItemChipsFilterPenaltyViewHolder>() {
 
-    private var itemChipsFilterPenaltyList =
+    private val itemChipsFilterPenaltyList =
         mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>()
 
     fun setItemChipsFilterPenaltyList(data: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>) {
@@ -49,8 +49,8 @@ class ItemChipsFilterPenaltyAdapter(
         private val binding: ItemChipsPenaltyFilterBinding? by viewBinding()
 
         fun bind(data: PenaltyFilterUiModel.ChipsFilterPenaltyUiModel) {
-            binding?.apply {
-                chipsItemPenalty.apply {
+            binding?.run {
+                chipsItemPenalty.run {
                     centerText = true
                     chipText = data.title
                     chipSize = ChipsUnify.SIZE_MEDIUM

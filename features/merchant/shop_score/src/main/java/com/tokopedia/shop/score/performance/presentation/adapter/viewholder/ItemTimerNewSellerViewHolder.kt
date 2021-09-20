@@ -29,7 +29,7 @@ class ItemTimerNewSellerViewHolder(
     private val binding: TimerNewSellerBeforeTransitionBinding? by viewBinding()
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
-        binding?.apply {
+        binding?.run {
             containerTimerNewSeller.loadImage(
                 if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller.targetDate = element?.effectiveDate
@@ -45,7 +45,7 @@ class ItemTimerNewSellerViewHolder(
     }
 
     private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
-        binding?.apply {
+        binding?.run {
             btnShopPerformanceLearn.let { btn ->
                 itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
@@ -62,7 +62,7 @@ class ItemTimerNewSellerViewHolder(
     }
 
     private fun setIconVideoClickListener() {
-        binding?.apply {
+        binding?.run {
             tvWatchVideo.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }

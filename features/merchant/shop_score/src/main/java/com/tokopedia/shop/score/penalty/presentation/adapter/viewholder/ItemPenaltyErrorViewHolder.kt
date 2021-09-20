@@ -23,7 +23,7 @@ class ItemPenaltyErrorViewHolder(
     private val binding: ItemShopPenaltyErrorStateBinding? by viewBinding()
 
     override fun bind(element: ItemPenaltyErrorUiModel?) {
-        binding?.apply {
+        binding?.run {
             root.setBackgroundColor(
                 ContextCompat.getColor(
                     root.context,

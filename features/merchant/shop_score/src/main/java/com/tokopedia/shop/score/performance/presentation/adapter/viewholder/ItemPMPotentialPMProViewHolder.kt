@@ -24,7 +24,7 @@ class ItemPMPotentialPMProViewHolder(
 
     override fun bind(element: SectionPMPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        binding?.apply {
+        binding?.run {
             tvPmReputationValue.text = getString(R.string.title_pm_value)
             potentialPowerMerchantWidget.setOnClickListener {
                 itemStatusPMProListener.onPMToPMProPage()
@@ -40,8 +40,8 @@ class ItemPMPotentialPMProViewHolder(
     }
 
     private fun setPotentialPMProBenefitAdapter(element: SectionPMPotentialPMProUiModel?) {
-        binding?.apply {
-            rvPmToPmProPotentialBenefit.apply {
+        binding?.run {
+            rvPmToPmProPotentialBenefit.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPMProBenefitAdapter
             }

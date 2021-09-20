@@ -38,7 +38,7 @@ class ItemParameterFaqAdapter :
     inner class ItemParameterFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding: ItemParameterPerformanceShopScoreBinding? by viewBinding()
         fun bind(data: ItemParameterFaqUiModel) {
-            binding?.apply {
+            binding?.run {
                 tvTitleIndicatorParameterPerformance.text = data.title
                 tvDescIndicatorParameterPerformance.text = MethodChecker.fromHtml(data.desc)
                 tvScoreParameterValue.text = data.score

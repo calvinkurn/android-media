@@ -163,7 +163,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
             setSupportActionBar(binding?.penaltyDetailToolbar)
-            supportActionBar?.apply {
+            supportActionBar?.run {
                 title = getString(R.string.title_penalty_detail_shop_score)
             }
         }

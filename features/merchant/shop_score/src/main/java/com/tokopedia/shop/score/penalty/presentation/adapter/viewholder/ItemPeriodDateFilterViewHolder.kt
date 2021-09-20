@@ -21,7 +21,7 @@ class ItemPeriodDateFilterViewHolder(
     private val binding: ItemDetailPenaltyPeriodDateFilterBinding? by viewBinding()
 
     override fun bind(element: ItemPeriodDetailPenaltyUiModel?) {
-        binding?.apply {
+        binding?.run {
             tvPeriodDetailPenalty.text =
                 getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
 
@@ -38,7 +38,7 @@ class ItemPeriodDateFilterViewHolder(
 
         when (payloads.getOrNull(0) as Int) {
             PAYLOAD_DATE_FILTER -> {
-                binding?.apply {
+                binding?.run {
                     if (element.periodDetail.isNotBlank()) {
                         tvPeriodDetailPenalty.text = element.periodDetail
                     }

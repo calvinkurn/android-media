@@ -26,7 +26,7 @@ class CardPotentialPMBenefitViewHolder(
 
     override fun bind(element: SectionRMPotentialPMBenefitUiModel?) {
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter(itemRegularMerchantListener)
-        binding?.apply {
+        binding?.run {
             setPotentialPMBenefitAdapter(element)
             root.setOnClickListener {
                 itemRegularMerchantListener.onRMSectionToPMPage()
@@ -35,8 +35,8 @@ class CardPotentialPMBenefitViewHolder(
     }
 
     private fun setPotentialPMBenefitAdapter(element: SectionRMPotentialPMBenefitUiModel?) {
-        binding?.apply {
-            rvShopPmPotentialBenefit.apply {
+        binding?.run {
+            rvShopPmPotentialBenefit.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPotentialPMBenefitAdapter
             }

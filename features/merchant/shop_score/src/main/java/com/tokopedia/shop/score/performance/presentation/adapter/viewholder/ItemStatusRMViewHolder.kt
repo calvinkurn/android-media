@@ -32,7 +32,7 @@ class ItemStatusRMViewHolder(
     }
 
     private fun setItemRegularMerchant(element: ItemStatusRMUiModel) {
-        binding?.apply {
+        binding?.run {
             tvTitleEligiblePowerMerchant.text = element.titleRMEligible
             tvDescEligiblePowerMerchant.text = element.descRMEligible
 
@@ -48,7 +48,7 @@ class ItemStatusRMViewHolder(
     }
 
     private fun setupBackgroundColor() {
-        binding?.apply {
+        binding?.run {
             containerEligiblePowerMerchant.setBackgroundColor(
                 ContextCompat.getColor(
                     root.context,

@@ -200,7 +200,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     }
 
     private fun setupRecyclerView() {
-        rvPenaltyFilter?.apply {
+        rvPenaltyFilter?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = filterPenaltyAdapter
         }

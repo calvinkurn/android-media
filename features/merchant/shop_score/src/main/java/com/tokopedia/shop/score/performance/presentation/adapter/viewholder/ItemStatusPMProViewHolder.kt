@@ -28,7 +28,7 @@ class ItemStatusPMProViewHolder(
     }
 
     private fun setupItemPowerMerchantPro() {
-        binding?.apply {
+        binding?.run {
             icPmProBadgeCurrentStatus.loadImage(PMProURL.ICON_URL)
             tvPmProReputationValue.text = getString(R.string.title_pm_pro_value)
             tvDescContentPmProSection.text = getString(R.string.desc_content_pm_pro_section)
@@ -36,7 +36,7 @@ class ItemStatusPMProViewHolder(
     }
 
     private fun setupIconClickListener() {
-        binding?.apply {
+        binding?.run {
             icPmProReputationRight.setOnClickListener {
                 itemStatusPowerMerchantProListener.onItemClickedGoToPMProActivation()
             }

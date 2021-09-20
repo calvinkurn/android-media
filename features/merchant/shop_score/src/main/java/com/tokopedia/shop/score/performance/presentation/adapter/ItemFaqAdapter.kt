@@ -74,7 +74,7 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         private var itemParameterFaqAdapter: ItemParameterFaqAdapter? = null
 
         fun bind(data: ItemFaqUiModel) {
-            binding?.apply {
+            binding?.run {
                 tvTitleFaqShopScore.text = data.title
                 tvDescFaqShopScore.showWithCondition(data.isShow)
                 tvDescFaqShopScore.text = MethodChecker.fromHtml(data.desc_first)
@@ -109,7 +109,7 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         fun bindPayload(data: ItemFaqUiModel) {
-            binding?.apply {
+            binding?.run {
                 tvDescFaqShopScore.showWithCondition(data.isShow)
 
                 cardShopScoreParameterFaq.showWithCondition(data.isShow && data.isCalculationScore)
@@ -126,9 +126,9 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         private fun initAdapterCardLevel(data: ItemFaqUiModel) {
-            binding?.apply {
+            binding?.run {
                 cardTooltipLevelAdapter = CardTooltipLevelAdapter()
-                rvCardLevelFaq?.apply {
+                rvCardLevelFaq.run {
                     if (itemDecorationCount.isZero()) {
                         addItemDecoration(TooltipLevelItemDecoration())
                     }
@@ -144,9 +144,9 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         private fun initAdapterParameterFaq(data: ItemFaqUiModel) {
-            binding?.apply {
+            binding?.run {
                 itemParameterFaqAdapter = ItemParameterFaqAdapter()
-                rvShopScoreParameterFaq.apply {
+                rvShopScoreParameterFaq.run {
                     layoutManager = LinearLayoutManager(context)
                     adapter = itemParameterFaqAdapter
                     isNestedScrollingEnabled = false

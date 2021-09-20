@@ -692,7 +692,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun setupAdapter() {
-        binding?.rvShopPerformance?.apply {
+        binding?.rvShopPerformance?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = shopPerformanceAdapter
         }
@@ -796,7 +796,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
             setSupportActionBar(binding?.shopPerformanceToolbar)
-            supportActionBar?.apply {
+            supportActionBar?.run {
                 title = getString(R.string.title_shop_performance)
             }
         }
