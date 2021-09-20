@@ -92,34 +92,20 @@ open class BaseChatViewModel constructor(
             out UI : BaseChatViewModel
             > {
 
-        var messageId: String = ""
-            private set
-        var fromUid: String = ""
-            private set
-        var from: String = ""
-            private set
-        var fromRole: String = ""
-            private set
-        var attachmentId: String = DEFAULT_ATTACHMENT_ID
-            private set
-        var attachmentType: String = DEFAULT_ATTACHMENT_TYPE
-            private set
-        var replyTime: String = ""
-            private set
-        var message: String = ""
-            private set
-        var source: String = ""
-            private set
-        var replyId: String = ""
-            private set
-        var localId: String = ""
-            private set
-        var blastId: Long = 0
-            private set
-        var fraudStatus: Int = 0
-            private set
-        var label: String = ""
-            private set
+        internal var messageId: String = ""
+        internal var fromUid: String = ""
+        internal var from: String = ""
+        internal var fromRole: String = ""
+        internal var attachmentId: String = DEFAULT_ATTACHMENT_ID
+        internal var attachmentType: String = DEFAULT_ATTACHMENT_TYPE
+        internal var replyTime: String = ""
+        internal var message: String = ""
+        internal var source: String = ""
+        internal var replyId: String = ""
+        internal var localId: String = ""
+        internal var blastId: Long = 0
+        internal var fraudStatus: Int = 0
+        internal var label: String = ""
 
         open fun withResponseFromGQL(
             reply: Reply

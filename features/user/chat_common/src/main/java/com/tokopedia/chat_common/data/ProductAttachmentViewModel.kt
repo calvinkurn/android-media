@@ -281,54 +281,30 @@ open class ProductAttachmentViewModel protected constructor(
 
     open class Builder : SendableViewModel.Builder<Builder, ProductAttachmentViewModel>() {
 
-        var productId: String = "0"
-            private set
-        var productName: String = ""
-            private set
-        var productPrice: String = ""
-            private set
-        var dateTimeInMilis: Long = 0
-            private set
-        var productUrl: String = ""
-            private set
-        var productImage: String = ""
-            private set
-        var canShowFooter: Boolean = false
-            private set
-        var priceInt: Long = 0
-            private set
-        var category: String = ""
-            private set
-        var dropPercentage: String = ""
-            private set
-        var priceBefore: String = ""
-            private set
-        var shopId: Long = 0
-            private set
-        var freeShipping: FreeShipping = FreeShipping()
-            private set
-        var categoryId: Long = 0
-            private set
-        var playStoreData: PlayStoreData = PlayStoreData()
-            private set
-        var minOrder: Int = 1
-            private set
-        var remainingStock: Int = 1
-            private set
-        var status: Int = 0
-            private set
-        var rating: TopchatProductRating = TopchatProductRating()
-            private set
-        var variants: List<AttachmentVariant> = emptyList()
-            private set
-        var wishList: Boolean = false
-            private set
-        var isPreOrder: Boolean = false
-            private set
-        var images: List<String> = emptyList()
-            private set
-        var needSync: Boolean = true
-            private set
+        internal var productId: String = "0"
+        internal var productName: String = ""
+        internal var productPrice: String = ""
+        internal var dateTimeInMilis: Long = 0
+        internal var productUrl: String = ""
+        internal var productImage: String = ""
+        internal var canShowFooter: Boolean = false
+        internal var priceInt: Long = 0
+        internal var category: String = ""
+        internal var dropPercentage: String = ""
+        internal var priceBefore: String = ""
+        internal var shopId: Long = 0
+        internal var freeShipping: FreeShipping = FreeShipping()
+        internal var categoryId: Long = 0
+        internal var playStoreData: PlayStoreData = PlayStoreData()
+        internal var minOrder: Int = 1
+        internal var remainingStock: Int = 1
+        internal var status: Int = 0
+        internal var rating: TopchatProductRating = TopchatProductRating()
+        internal var variants: List<AttachmentVariant> = emptyList()
+        internal var wishList: Boolean = false
+        internal var isPreOrder: Boolean = false
+        internal var images: List<String> = emptyList()
+        internal var needSync: Boolean = true
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)

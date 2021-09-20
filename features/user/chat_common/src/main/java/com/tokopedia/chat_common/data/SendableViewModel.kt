@@ -57,13 +57,9 @@ open class SendableViewModel constructor(
             > : BaseChatViewModel.Builder<B, UI>() {
 
         internal var startTime: String = ""
-            private set
         internal var isRead: Boolean = false
-            private set
         internal var isDummy: Boolean = false
-            private set
         internal var isSender: Boolean = true
-            private set
 
         override fun withResponseFromGQL(reply: Reply): B {
             return super.withResponseFromGQL(reply).also {

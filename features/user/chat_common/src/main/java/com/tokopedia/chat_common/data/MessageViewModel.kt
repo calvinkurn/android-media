@@ -44,8 +44,7 @@ open class MessageViewModel protected constructor(
 
     open class Builder : SendableViewModel.Builder<Builder, MessageViewModel>() {
 
-        var attachment: Any? = null
-            private set
+        internal var attachment: Any? = null
 
         fun withAttachment(attachment: Any): Builder {
             this.attachment = attachment
