@@ -15,7 +15,7 @@ class GetLinkStatusUseCase(private val repository: GraphqlRepository)
     : CoroutineUseCase<RequestParams, LinkStatusResponse>(Dispatchers.IO) {
 
     override suspend fun execute(params: RequestParams): LinkStatusResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params.parameters)
     }
 
     fun createParams(linkingType: String): RequestParams {
