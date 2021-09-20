@@ -6,15 +6,12 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapter
@@ -38,7 +35,6 @@ class TokoNowDateFilterBottomSheet :
         const val LAST_ONE_MONTH_POSITION = 1
         const val LAST_THREE_MONTHS_POSITION = 2
         const val CUSTOM_DATE_POSITION = 3
-
         private const val MIN_30_DAYS = -30
         private const val MIN_90_DAYS = -90
         private const val MIN_KEYWORD_CHARACTER_COUNT = 3
@@ -54,16 +50,14 @@ class TokoNowDateFilterBottomSheet :
     private var chosenEndDate: GregorianCalendar? = null
     private var rvDate: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
-    private var clChooseDate: ConstraintLayout? = null
     private var tempStartDate: String = ""
     private var tempEndDate: String = ""
     private var tempPosition: Int = 0
     private var selectedFilter: RepurchaseSortFilterUiModel.SelectedDateFilter? = null
-    private var listTitles: List<DateFilterUiModel> = listOf()
+    private var listTitles: MutableList<DateFilterUiModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView(inflater, container)
-        setDefaultDatesForDatePicker()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -78,17 +72,17 @@ class TokoNowDateFilterBottomSheet :
         listTitles.forEachIndexed { index, model ->
             newItemList.add(model.copy(isChecked = index == position))
         }
-        adapter.submitList(newItemList)
+        listTitles.clear()
+        listTitles.addAll(newItemList)
+        adapter.submitList(listTitles)
 
         tempStartDate = startDate
         tempEndDate = endDate
         tempPosition = position
+    }
 
-        if (position == CUSTOM_DATE_POSITION) {
-            clChooseDate?.show()
-        } else {
-            clChooseDate?.hide()
-        }
+    override fun onOpenBottomSheet(flag: String) {
+        showDatePicker(flag)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -98,8 +92,21 @@ class TokoNowDateFilterBottomSheet :
 
     fun show(fm: FragmentManager, selectedFilter: RepurchaseSortFilterUiModel.SelectedDateFilter?) {
         show(fm, TAG)
+
         this.selectedFilter = selectedFilter
-        listTitles = listOf(
+        if (selectedFilter?.position == CUSTOM_DATE_POSITION) {
+            chosenStartDate = getGregorianCalendar(selectedFilter.startDate)
+            chosenEndDate = getGregorianCalendar(selectedFilter.endDate)
+        } else {
+            chosenStartDate = getGregorianCalendar("2018-09-01")
+            chosenEndDate = GregorianCalendar()
+        }
+
+        tempStartDate = convertCalendarToStringWithSecondFormat(chosenStartDate)
+        tempEndDate = convertCalendarToStringWithSecondFormat(chosenEndDate)
+
+        listTitles.clear()
+        listTitles.addAll(listOf(
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_item_all_date_transactions_bottomsheet,
                 isChecked = selectedFilter?.position == ALL_DATE_TRANSACTION_POSITION,
@@ -125,32 +132,14 @@ class TokoNowDateFilterBottomSheet :
                 titleRes = R.string.tokopedianow_date_filter_item_custom_date_bottomshet,
                 isChecked = selectedFilter?.position == CUSTOM_DATE_POSITION,
                 isLastItem = true,
-                startDate = "",
-                endDate = ""
-            ),
-        )
+                startDate = tempStartDate,
+                endDate = tempEndDate
+            )
+        ))
     }
 
-    private fun setup() {
-        tf_start_date?.textFieldInput?.setText(chosenStartDate?.let { it ->
-            calendarToStringFormat(
-                it, "dd MMM yyyy")
-        })
-        tf_start_date?.textFieldInput?.isFocusable = false
-        tf_start_date?.textFieldInput?.isClickable = true
-        tf_start_date?.textFieldInput?.setOnClickListener {
-            showDatePicker(START_DATE)
-        }
-
-        tf_end_date?.textFieldInput?.setText(chosenEndDate?.let { it ->
-            calendarToStringFormat(
-                it, "dd MMM yyyy")
-        })
-        tf_end_date?.textFieldInput?.isFocusable = false
-        tf_end_date?.textFieldInput?.isClickable = true
-        tf_end_date?.textFieldInput?.setOnClickListener {
-            showDatePicker(END_DATE)
-        }
+    private fun convertCalendarToStringWithSecondFormat(date: GregorianCalendar?): String {
+        return date?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
     }
 
     private fun showDatePicker(flag: String) {
@@ -162,7 +151,7 @@ class TokoNowDateFilterBottomSheet :
             if (flag.equals(START_DATE, true)) {
                 chosenEndDate?.let { maxDate = it }
                 chosenStartDate?.let { currDate = it }
-                minDate = getLimitDate()
+                minDate = getGregorianCalendar("2018-09-01")
 
             } else if (flag.equals(END_DATE, true)) {
                 chosenStartDate?.let { minDate = it }
@@ -172,25 +161,26 @@ class TokoNowDateFilterBottomSheet :
             val datePicker = DateTimePickerUnify(context, minDate, currDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER).apply {
                 datePickerButton.setOnClickListener {
                     val resultDate = getDate()
-                    val monthInt = resultDate.get(Calendar.MONTH) + 1
-                    var monthStr = monthInt.toString()
-                    if (monthStr.length == 1) monthStr = "0$monthStr"
 
-                    var dateStr = resultDate.get(Calendar.DATE).toString()
-                    if (dateStr.length == 1) dateStr = "0$dateStr"
-
-                    if (flag.equals(START_DATE, true)) {
+                    val item = if (flag.equals(START_DATE, true)) {
                         chosenStartDate = resultDate as GregorianCalendar
-                        tf_start_date?.textFieldInput?.setText("${calendarToStringFormat(
-                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
-                        tempStartDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
-
+                        tempStartDate = convertCalendarToStringWithSecondFormat(chosenStartDate)
+                        listTitles[CUSTOM_DATE_POSITION].copy(startDate = convertCalendarToStringWithSecondFormat(chosenStartDate))
                     } else {
                         chosenEndDate = resultDate as GregorianCalendar
-                        tf_end_date?.textFieldInput?.setText("${calendarToStringFormat(
-                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
-                        tempEndDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
+                        tempEndDate = convertCalendarToStringWithSecondFormat(chosenEndDate)
+                        listTitles[CUSTOM_DATE_POSITION].copy(endDate = convertCalendarToStringWithSecondFormat(chosenEndDate))
                     }
+                    tempPosition = CUSTOM_DATE_POSITION
+
+                    val newItemList = mutableListOf<DateFilterUiModel>()
+                    newItemList.addAll(listTitles)
+                    newItemList[CUSTOM_DATE_POSITION] = item
+
+                    listTitles.clear()
+                    listTitles.addAll(newItemList)
+                    adapter.submitList(listTitles)
+
                     dismiss()
                 }
 
@@ -203,32 +193,6 @@ class TokoNowDateFilterBottomSheet :
             }
             datePicker.show(parentFragmentManager, "")
         }
-    }
-
-    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
-        return DateFormat.format(format, dateParam.time)
-    }
-
-    private fun getLimitDate(): GregorianCalendar {
-        var returnDate = GregorianCalendar()
-        val defDate = "2018-09-01"
-        val splitDefDate = defDate.split("-")
-        if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
-        }
-        return returnDate
-    }
-
-    private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
-        val split = stringParam.split("-")
-        return if (split.isNotEmpty() && split.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
-        } else GregorianCalendar()
-    }
-
-    private fun setDefaultDatesForDatePicker() {
-        chosenStartDate = getLimitDate()
-        chosenEndDate = GregorianCalendar()
     }
 
     private val adapter by lazy {
@@ -252,7 +216,6 @@ class TokoNowDateFilterBottomSheet :
         val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_date_filter, container)
         rvDate = itemView.findViewById(R.id.rv_date_filter)
         btnApplyFilter = itemView.findViewById(R.id.btn_apply_filter)
-        clChooseDate = itemView.findViewById(R.id.cl_choose_date)
         setChild(itemView)
     }
 
@@ -278,5 +241,25 @@ class TokoNowDateFilterBottomSheet :
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
+    }
+
+    private fun getGregorianCalendar(date: String): GregorianCalendar {
+        var returnDate = GregorianCalendar()
+        val splitDefDate = date.split("-")
+        if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
+            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
+        }
+        return returnDate
+    }
+
+    private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
+        val split = stringParam.split("-")
+        return if (split.isNotEmpty() && split.size == MIN_KEYWORD_CHARACTER_COUNT) {
+            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
+        } else GregorianCalendar()
+    }
+
+    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
+        return DateFormat.format(format, dateParam.time)
     }
 } 
