@@ -223,10 +223,14 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             else
                 btnHowToUse.gone()
 
-            if (data.is_recommended == true)
-                recommendedImg.visible()
+            if (data.is_recommended == true) {
+                recommendationText.visible()
+                recommendationText.text = data.is_recommended_string?:""
+            }
             else
-                recommendedImg.gone()
+            {
+                recommendationText.gone()
+            }
 
             if (data.cta?.button_color.equals("filled", true)) {
                 btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
