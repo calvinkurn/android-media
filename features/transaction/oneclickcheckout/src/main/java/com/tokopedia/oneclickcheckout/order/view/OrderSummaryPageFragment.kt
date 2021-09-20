@@ -120,6 +120,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private var orderProfile: OrderProfile? = null
+    private var creditCardTenorListData: CreditCardTenorListData? = null
 
     private lateinit var adapter: OrderSummaryPageAdapter
 
@@ -644,6 +645,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.UpdateLocalCacheAddress -> {
                     updateLocalCacheAddressData(it.addressModel)
+                }
+                is OccGlobalEvent.AdjustAdminFeeError ->  {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
+                    viewModel.resetFlagGetTenorList()
+                }
+                is OccGlobalEvent.AdjustAdminFeeSuccess -> {
+                    progressDialog?.dismiss()
+                    creditCardTenorListData = it.ccData
+                    viewModel.resetFlagGetTenorList()
                 }
             }
         }
@@ -1251,11 +1264,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                    override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                        viewModel.chooseInstallment(installment)
-                    }
-                })
+                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
+                    object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                            viewModel.chooseInstallment(installment)
+                        }
+                    })
             }
         }
 
