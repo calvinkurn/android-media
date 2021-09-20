@@ -1185,7 +1185,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onLinkingAccountClicked(isLinked: Boolean) {
         homeAccountAnalytic.trackClickLinkAccount()
         if(isLinked) {
-            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(

@@ -164,7 +164,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onViewAccountClicked() {
         homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
     }
 
     private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
