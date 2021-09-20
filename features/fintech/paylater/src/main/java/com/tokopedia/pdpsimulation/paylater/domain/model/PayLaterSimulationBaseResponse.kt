@@ -60,6 +60,7 @@ data class Detail(
     @SerializedName("total_with_provision") val total_with_provision: Int?,
     @SerializedName("total_with_provision_ceil") val total_with_provision_ceil: Int?,
     @SerializedName("is_recommended") val is_recommended: Boolean?,
+    @SerializedName("is_recommended_string") val is_recommended_string:String?,
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("activation_status") val activation_status: Int?,
     @SerializedName("account_status") val account_status: Int?,

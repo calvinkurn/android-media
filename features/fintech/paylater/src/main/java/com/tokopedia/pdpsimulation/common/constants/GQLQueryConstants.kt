@@ -133,6 +133,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         total_with_provision
         total_with_provision_ceil
         is_recommended
+        is_recommended_string
         tenure
         activation_status
         account_status
