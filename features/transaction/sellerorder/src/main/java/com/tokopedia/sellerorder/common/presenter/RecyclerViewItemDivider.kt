@@ -28,6 +28,7 @@ class RecyclerViewItemDivider(
         if (!isLastItem || applyMarginAfterLastItem) {
             layoutParams.bottomMargin = bottomMargin
         }
+        view.layoutParams = layoutParams
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

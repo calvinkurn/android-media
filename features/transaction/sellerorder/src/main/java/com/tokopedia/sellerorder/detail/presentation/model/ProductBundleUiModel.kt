@@ -11,7 +11,6 @@ data class ProductBundleUiModel(
         val bundleId: String = "",
         val bundleName: String = "",
         val bundlePrice: String = "",
-        val quantity: Int = 0,
         val bundleSubTotal: String = "",
         val orderDetail: List<SomDetailOrder.Data.GetSomDetail.Products>,
 ) : BaseProductUiModel {

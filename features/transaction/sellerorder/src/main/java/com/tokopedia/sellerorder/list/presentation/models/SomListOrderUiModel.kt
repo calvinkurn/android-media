@@ -16,6 +16,7 @@ data class SomListOrderUiModel(
         val deadlineText: String = "",
         val orderId: String = "",
         val orderProduct: List<OrderProduct> = listOf(),
+        val productCount: Int = 0,
         val orderResi: String = "",
         val orderStatusId: Int = 0,
         val status: String = "",
@@ -36,8 +37,6 @@ data class SomListOrderUiModel(
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
-
-    fun getTotalProduct() = orderProduct.distinctBy { it.productId }.size
 
     data class OrderProduct(
             val productId: String = "",

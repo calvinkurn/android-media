@@ -10,7 +10,6 @@
         android:layout_width="@dimen/som_list_product_image_size"
         android:layout_height="@dimen/som_list_product_image_size"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
