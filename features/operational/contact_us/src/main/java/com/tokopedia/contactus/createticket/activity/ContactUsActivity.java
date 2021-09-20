@@ -154,18 +154,10 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     @Override
     public void onFinishCreateTicket() {
         Toast.makeText(this, getString(R.string.title_contact_finish), Toast.LENGTH_LONG).show();
-        UserSessionInterface userSession = new UserSession(this);
-        if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
-            Intent intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        } else {
-            Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override

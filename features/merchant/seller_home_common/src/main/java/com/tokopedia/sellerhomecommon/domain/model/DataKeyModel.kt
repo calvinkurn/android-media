@@ -13,7 +13,7 @@ data class DataKeyModel(
     val key: String,
     @Expose
     @SerializedName("parameters")
-    val jsonParams: String,
+    val jsonParams: String = "{}",
 
     @Transient
     val maxDisplay: Int = 0
