@@ -395,6 +395,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         if (shouldShowCredibility()) {
                             showCredibilityEmptyState(it.data.emptyState.imageURL, it.data.emptyState.labelTitle, it.data.emptyState.labelSubtitle)
+                            showList()
                         } else {
                             showEmptyState()
                         }
