@@ -1,7 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
@@ -43,23 +42,7 @@ class ItemStatusPMViewHolder(
                 tvDescContentPmSection.setTextMakeHyperlink(it) {
                     itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
                 }
-                if (element.isNewSellerProjection) {
-                    tvDescContentPmSection.setTextColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                        )
-                    )
-                } else {
-                    tvDescContentPmSection.setTextColor(
-                        ContextCompat.getColor(
-                            root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        )
-                    )
-                }
             }
-            tvTitleContentPmSection.showWithCondition(element?.isNewSellerProjection == false)
         }
     }
 

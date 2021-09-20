@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -27,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -77,8 +74,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIKIRIM
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIPROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.E_TIKET
@@ -131,10 +126,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
-import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
-import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
 import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
@@ -166,7 +159,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -187,6 +179,7 @@ import javax.inject.Inject
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -251,6 +244,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var searchQuery = ""
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
+    private lateinit var trackingQueue: TrackingQueue
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -336,16 +330,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
-        if (userSession.isLoggedIn) {
-            initialLoad()
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        launchAutoRefresh()
+        checkLogin()
+        initTrackingQueue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -365,6 +351,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun checkLogin() {
+        if (userSession.isLoggedIn) {
+            initialLoad()
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun initTrackingQueue() {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
@@ -685,7 +685,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun observingOrderHistory() {
         if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter.showLoader()
-        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -710,7 +710,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 }
                             }
                         }
-                        userSession.isLoggedIn.let { it1 -> userSession.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
+                        userSession.isLoggedIn.let { isLoggedIn ->
+                            userSession.userId?.let { userId ->
+                                UohAnalytics.viewOrderListPage(trackingQueue, isLoggedIn, userId) } }
                     } else {
                         if (currPage == 1) {
                             loadRecommendationList()
@@ -1836,25 +1838,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
             jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
-        val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
-        order.metadata.products.forEachIndexed { index, product ->
-            var eeProductId = ""
-            var eeProductPrice = ""
-            if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(index)?.asJsonObject
-                eeProductId = objProduct?.get(EE_PRODUCT_ID).toString()
-                eeProductPrice = objProduct?.get(EE_PRODUCT_PRICE).toString()
-            }
-
-            arrayListProducts.add(ECommerceImpressions.Impressions(
-                    name = product.title,
-                    id = eeProductId,
-                    price = eeProductPrice,
-                    list = "/order list - ${order.verticalCategory}",
-                    position = index.toString()
-            ))
+        userSession.userId?.let { userId ->
+            UohAnalytics.viewOrderCard(trackingQueue, order, userId, jsonArray, index.toString())
         }
-        UohAnalytics.viewOrderCard(order.verticalCategory, order.userID, arrayListProducts)
     }
 
     override fun onMulaiBelanjaBtnClicked() {
@@ -1875,15 +1861,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession.userId?.let {
-            UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
-                    name = productName,
-                    id = recommendationItem.productId.toString(),
-                    price = recommendationItem.priceInt.toString(),
-                    category = recommendationItem.categoryBreadcrumbs,
-                    position = index.toString(),
-                    list = list
-            ), topAds)
+        userSession.userId?.let { userId ->
+            UohAnalytics.productViewRecommendation(trackingQueue, userId, recommendationItem, topAds, index.toString())
         }
     }
 
@@ -1916,7 +1895,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
         val atcParam = AddToCartRequestParams(
-                productId = recommendationItem.productId.toLong(),
+                productId = recommendationItem.productId,
                 productName = recommendationItem.name,
                 price = recommendationItem.priceInt.toString(),
                 quantity = recommendationItem.quantity,
@@ -2022,5 +2001,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }

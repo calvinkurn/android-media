@@ -27,12 +27,13 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.view.customview.ImageLabelView
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
-import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
@@ -63,6 +64,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private var isClosedNow: Boolean = false
     private var selectedStartCloseUnixTimeMs: Long = DEFAULT_TIME
     private var selectedEndCloseUnixTimeMs: Long = DEFAULT_TIME
+    private var labelStartClose: ImageLabelView? = null
+    private var labelEndClose: ImageLabelView? = null
+    private var tfShopCloseNote: TextFieldUnify? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,21 +152,21 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
         setUIShopSchedule(shopBasicDataModel)
 
-        labelStartClose.setOnClickListener {
+        labelStartClose?.setOnClickListener {
             val minDate = tomorrowDate
             val selectedDate = unixToDate(selectedStartCloseUnixTimeMs)
             showStartDatePickerDialog(selectedDate, minDate)
         }
 
-        labelEndClose.setOnClickListener {
+        labelEndClose?.setOnClickListener {
             val minDate = unixToDate(selectedStartCloseUnixTimeMs)
             val selectedDate = unixToDate(selectedEndCloseUnixTimeMs)
             showEndDatePickerDialog(selectedDate, minDate)
         }
 
-        tfShopCloseNote.textFieldInput.afterTextChanged {
-            tfShopCloseNote.setError(false)
-            tfShopCloseNote.setMessage("")
+        tfShopCloseNote?.textFieldInput?.afterTextChanged {
+            tfShopCloseNote?.setError(false)
+            tfShopCloseNote?.setMessage("")
         }
     }
 
@@ -173,6 +178,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             setSupportActionBar(this)
             title = getString(R.string.shop_settings_shop_status)
         }
+        labelStartClose = findViewById(R.id.labelStartClose)
+        labelEndClose =  findViewById(R.id.labelEndClose)
+        tfShopCloseNote =  findViewById(R.id.tfShopCloseNote)
+
 
         header?.actionTextView?.apply {
             setOnClickListener { onSaveButtonClicked() }
@@ -252,7 +261,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     private fun setStartCloseDate(date: Date) {
         selectedStartCloseUnixTimeMs = date.time
-        labelStartClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelStartClose?.setContent(toReadableString(FORMAT_DAY_DATE, date))
         // move end date to start date, if the end < start
         if (selectedEndCloseUnixTimeMs > DEFAULT_TIME && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
             setEndCloseDate(Date(selectedStartCloseUnixTimeMs))
@@ -261,15 +270,15 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     private fun setEndCloseDate(date: Date) {
         selectedEndCloseUnixTimeMs = date.time
-        labelEndClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelEndClose?.setContent(toReadableString(FORMAT_DAY_DATE, date))
     }
 
     private fun onSaveButtonClicked() {
         hideKeyboard()
-        val closeNote = tfShopCloseNote.textFieldInput.text.toString()
+        val closeNote = tfShopCloseNote?.textFieldInput?.text?.toString().orEmpty()
         if (closeNote.isEmpty()) {
-            tfShopCloseNote.setError(true)
-            tfShopCloseNote.setMessage(getString(R.string.note_must_be_filled))
+            tfShopCloseNote?.setError(true)
+            tfShopCloseNote?.setMessage(getString(R.string.note_must_be_filled))
             return
         }
 
@@ -309,16 +318,16 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun setUIShopSchedule(shopBasicDataModel: ShopBasicDataModel?) {
         //set close schedule
         if (isClosedNow || shopBasicDataModel?.isClosed == true) {
-            labelStartClose.isEnabled = false
+            labelStartClose?.isEnabled = false
             setStartCloseDate(currentDate)
         } else {
-            labelStartClose.isEnabled = true
+            labelStartClose?.isEnabled = true
             setStartCloseDate(Date(selectedStartCloseUnixTimeMs))
         }
 
         //set open schedule.
         setEndCloseDate(Date(selectedEndCloseUnixTimeMs))
-        tfShopCloseNote.textFieldInput.setText(shopBasicDataModel?.closeNote)
+        tfShopCloseNote?.textFieldInput?.setText(shopBasicDataModel?.closeNote)
 
     }
 

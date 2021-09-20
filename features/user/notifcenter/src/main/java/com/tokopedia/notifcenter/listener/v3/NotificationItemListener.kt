@@ -10,7 +10,6 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
  */
 interface NotificationItemListener {
     fun showLongerContent(element: NotificationUiModel)
-    fun showProductBottomSheet(element: NotificationUiModel)
     fun buyProduct(notification: NotificationUiModel, product: ProductData)
     fun addProductToCart(notification: NotificationUiModel, product: ProductData)
     fun markNotificationAsRead(element: NotificationUiModel)

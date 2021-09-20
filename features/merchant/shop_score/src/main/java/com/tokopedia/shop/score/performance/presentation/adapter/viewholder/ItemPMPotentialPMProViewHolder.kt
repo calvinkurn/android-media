@@ -13,7 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ItemPMPotentialPMProViewHolder(
     view: View,
     private val itemStatusPMProListener: ItemPMPotentialPMProListener
-): AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
+) : AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_pm_to_pm_pro
@@ -26,6 +26,9 @@ class ItemPMPotentialPMProViewHolder(
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
         binding?.apply {
             tvPmReputationValue.text = getString(R.string.title_pm_value)
+            potentialPowerMerchantWidget.setOnClickListener {
+                itemStatusPMProListener.onPMToPMProPage()
+            }
             tvSeeAllBenefitPmToPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
             }

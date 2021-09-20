@@ -24,7 +24,7 @@ class ItemSortFilterPenaltyViewHolder(
 
     override fun bind(element: ItemSortFilterPenaltyUiModel?) {
         binding?.apply {
-            sortFilterDetailPenalty?.apply {
+            sortFilterDetailPenalty.apply {
                 sortFilterItems.removeAllViews()
                 indicatorCounter = 0
                 setupSortFilter(element?.itemSortFilterWrapperList)
