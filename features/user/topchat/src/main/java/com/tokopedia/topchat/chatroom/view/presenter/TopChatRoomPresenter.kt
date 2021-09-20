@@ -162,6 +162,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
+        roomMetaData.updateMessageId(messageId)
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +

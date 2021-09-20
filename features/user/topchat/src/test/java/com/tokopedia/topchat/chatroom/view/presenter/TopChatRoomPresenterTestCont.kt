@@ -672,42 +672,26 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `on success send attachment and message through Websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel.Builder()
-            .withMsgId(exMessageId)
-            .withFromUid(userSession.userId)
-            .withFrom(userSession.name)
-            .withReplyTime(BaseChatViewModel.SENDING_TEXT)
-            .withStartTime(exStartTime)
-            .withMsg(exSendMessage)
-            .withLocalId(IdentifierUtil.generateLocalId())
-            .withIsDummy(true)
-            .withIsSender(true)
-            .withIsRead(false)
-            .build()
         val paramSendMessage = "paramSendMessage"
+        val paramSendAttachment = "paramSendAttachment"
         val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {
-            topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns dummyMessage
-        every {
             TopChatWebSocketParam.generateParamSendMessage(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+                any(), any(), any(), any(),
+                any(), any(), any()
             )
         } returns paramSendMessage
+        every {
+            sendAbleProductPreview.generateMsgObj(
+                any(), any(), any(),
+                any(), any(), any()
+            )
+        } returns paramSendAttachment
 
         // When
+        presenter.connectWebSocket(exMessageId)
         presenter.connectWebSocket(exMessageId)
         presenter.addAttachmentPreview(sendAbleProductPreview)
         presenter.sendAttachmentsAndMessage(
@@ -718,19 +702,9 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         )
 
         // Then
-        verify(exactly = 1) {
-            sendAbleProductPreview.generateMsgObj(
-                exMessageId,
-                exOpponentId,
-                exSendMessage,
-                listInterceptor,
-                LocalCacheModel(),
-                dummyMessage.localId
-            )
-        }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
-        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
         verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
+        verify(exactly = 1) { RxWebSocket.send(paramSendAttachment, listInterceptor) }
         verify(exactly = 1) { RxWebSocket.send(paramStopTyping, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
