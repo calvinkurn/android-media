@@ -114,9 +114,10 @@ class TopChatRoomAdapter constructor(
 
     fun addNewMessage(item: SendableViewModel) {
         if (item is Visitable<*> && item.localId.isNotEmpty()) {
+            val indexToAdd = getOffsetSafely()
             replyMap[item.localId] = item
-            visitables.add(0, item)
-            notifyItemInserted(0)
+            visitables.add(indexToAdd, item)
+            notifyItemInserted(indexToAdd)
         }
     }
 
