@@ -142,7 +142,7 @@ class OfficialHomeMapper (
                         }
                         DynamicChannelIdentifiers.LAYOUT_BEST_SELLING -> {
                             val channel = officialStore.channel
-                            views.add(BestSellerDataModel(id = channel.id, widgetParam = channel.widgetParam))
+                            views.add(BestSellerDataModel(id = channel.id, widgetParam = channel.widgetParam, pageName = channel.pageName))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
                     }
@@ -283,6 +283,7 @@ class OfficialHomeMapper (
         listOfficialStore.run {
             val index = indexOfFirst { it is BestSellerDataModel }
 
+            removeAll{ it is BestSellerDataModel }
             if(index == -1) add(RECOM_WIDGET_POSITION, data)
             else set(index, data)
 

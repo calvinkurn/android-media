@@ -109,12 +109,14 @@ public class TopAdsGtmTracker {
             String dimension90,
             String keyword,
             String userId,
-            String irisSessionId
+            String irisSessionId,
+            int topadsTag
     ) {
         List<Object> impressionList = createSearchResultProductImpressionDataLayer(
                 item,
                 position,
-                dimension90
+                dimension90,
+                topadsTag
         );
 
         Map<String, Object> map = DataLayer.mapOf(
@@ -143,10 +145,15 @@ public class TopAdsGtmTracker {
     private List<Object> createSearchResultProductImpressionDataLayer(
             Product item,
             int position,
-            String dimension90
+            String dimension90,
+            int topadsTag
     ) {
         List<Object> impressionList = new ArrayList<>();
 
+        String list = String.format(
+                TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
+                String.valueOf(topadsTag)
+        );
         Object impression = DataLayer.mapOf(
                 TopAdsGtmTrackerConstant.Product.NAME, item.getName(),
                 TopAdsGtmTrackerConstant.Product.ID, item.getId(),
@@ -154,7 +161,7 @@ public class TopAdsGtmTracker {
                 TopAdsGtmTrackerConstant.Product.BRAND, TopAdsGtmTrackerConstant.NONE_OTHER,
                 TopAdsGtmTrackerConstant.Product.VARIANT, TopAdsGtmTrackerConstant.NONE_OTHER,
                 TopAdsGtmTrackerConstant.Product.CATEGORY, getCategoryBreadcrumb(item),
-                TopAdsGtmTrackerConstant.Product.LIST, TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
+                TopAdsGtmTrackerConstant.Product.LIST, list,
                 TopAdsGtmTrackerConstant.Product.POSITION, position,
                 TopAdsGtmTrackerConstant.DIMENSION83, setFreeOngkirDataLayer(item),
                 TopAdsGtmTrackerConstant.DIMENSION90, dimension90
@@ -312,9 +319,21 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String userId, String dimension90) {
+    public static void eventSearchResultProductClick(
+            Context context,
+            String keyword,
+            Product item,
+            int position,
+            String userId,
+            String dimension90,
+            int topadsTag
+    ) {
         Analytics tracker = getTracker();
         if (tracker != null) {
+            String list = String.format(
+                    TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
+                    String.valueOf(topadsTag)
+            );
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "search result",
@@ -324,7 +343,7 @@ public class TopAdsGtmTracker {
                     "businessUnit", "Ads Solution",
                     "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
-                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
+                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", list),
                                     "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", item.getName(),
                                             "id", item.getId(),

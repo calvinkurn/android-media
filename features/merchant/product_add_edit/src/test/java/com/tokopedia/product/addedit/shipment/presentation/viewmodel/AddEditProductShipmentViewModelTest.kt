@@ -1,14 +1,20 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
+import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -24,13 +30,23 @@ class AddEditProductShipmentViewModelTest {
     @RelaxedMockK
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
+    @RelaxedMockK
+    lateinit var customProductLogisticRepository: CustomProductLogisticRepository
+
+    private val customProductLogisticMapper: CustomProductLogisticMapper = mockk()
+
+    private val cplListObserver: Observer<Result<CustomProductLogisticModel>> =
+        mockk(relaxed = true)
+
     private val viewModel: AddEditProductShipmentViewModel by lazy {
-        AddEditProductShipmentViewModel(saveProductDraftUseCase, CoroutineTestDispatchersProvider)
+        AddEditProductShipmentViewModel(saveProductDraftUseCase, customProductLogisticRepository,
+            customProductLogisticMapper, CoroutineTestDispatchersProvider)
     }
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        viewModel.cplList.observeForever(cplListObserver)
     }
 
     @Test
@@ -93,5 +109,32 @@ class AddEditProductShipmentViewModelTest {
         Assert.assertTrue(viewModel.isDraftMode)
         Assert.assertTrue(viewModel.isFirstMoved)
         Assert.assertTrue(viewModel.shipmentInputModel == shipmentInputModel)
+    }
+
+    @Test
+    fun `Get CPL List success`() {
+        val testData = CustomProductLogisticModel()
+
+        coEvery {
+            customProductLogisticRepository.getCPLList(any(), any())
+        } returns OngkirGetCPLQGLResponse()
+        every {
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data)
+        } returns testData
+        viewModel.getCPLList(1234, "9876")
+        verify { cplListObserver.onChanged(Success(testData)) }
+    }
+
+    @Test
+    fun `Get CPL List failed`() {
+        val testError = Throwable("test error")
+        coEvery {
+            customProductLogisticRepository.getCPLList(any(), any())
+        } throws testError
+        viewModel.getCPLList(1234, "9876")
+        verify {
+            cplListObserver.onChanged(Fail(testError))
+            customProductLogisticMapper wasNot Called
+        }
     }
 }

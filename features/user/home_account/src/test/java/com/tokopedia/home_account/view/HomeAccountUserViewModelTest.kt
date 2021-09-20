@@ -9,7 +9,7 @@ import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -152,8 +152,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation first page`() {
         val expectedResult = mockk<RecommendationWidget>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
         } returns listOf(expectedResult)
 
         viewModel.getFirstRecommendation()
@@ -166,8 +166,8 @@ class HomeAccountUserViewModelTest {
     fun `Successfully get recommendation load more`() {
         val testPage = 2
         val expectedResult = mockk<RecommendationWidget>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
         } returns listOf(expectedResult)
 
         viewModel.getRecommendation(testPage)
@@ -179,8 +179,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Failed to get first recommendation`() {
         val expectedResult = mockk<Throwable>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
         } throws expectedResult
 
         viewModel.getFirstRecommendation()
@@ -193,8 +193,8 @@ class HomeAccountUserViewModelTest {
     fun `Failed to get more recommendation`() {
         val testPage = 2
         val expectedResult = mockk<Throwable>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)

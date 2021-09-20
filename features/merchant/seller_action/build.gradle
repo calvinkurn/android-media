@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -14,7 +15,6 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -22,14 +22,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.miscDependencies.slice
     implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.slice
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)

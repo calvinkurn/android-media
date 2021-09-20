@@ -167,7 +167,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, ((TkpdCoreRouter) getApplication()).getHomeClass());
+                Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
                 this.startActivity(intent);
                 this.finish();
             }

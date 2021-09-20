@@ -19,9 +19,9 @@ import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 
 class ShopOpenRevampFinishFragment : Fragment() {
 
@@ -30,6 +30,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private lateinit var loading: LoaderUnify
+    private var txtGreeting: Typography? = null
 
 
     private val userSession: UserSessionInterface by lazy {
@@ -56,6 +57,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_finish, container, false)
         lottieAnimationView = view.findViewById(R.id.lottie_success_create_shop)
         loading = view.findViewById(R.id.loading)
+        txtGreeting = view.findViewById(R.id.txt_greeting)
         return view
     }
 
@@ -70,7 +72,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         setupAnimation(view, shopId)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_CONGRATULATION)
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
-        txt_greeting.text = greetingText
+        txtGreeting?.text = greetingText
     }
 
     private fun setupAnimation(view: View, shopId: String) {

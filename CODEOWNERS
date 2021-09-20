@@ -1,5 +1,3 @@
-/features/content/affiliate/            				@tokopedia/android-miniondave-dev
-/features/content/affiliate_common/     				@tokopedia/android-miniondave-dev
 /features/content/createpost/           				@tokopedia/android-minionskywalker-dev
 /features/content/explore/              				@tokopedia/android-minionskywalker-dev
 /features/content/feed/                 				@tokopedia/android-minionskywalker-dev
@@ -8,8 +6,7 @@
 /features/content/kol_common/           				@tokopedia/android-minionskywalker-dev
 /features/content/profile/              				@tokopedia/android-minionskywalker-dev
 /features/content/feed_component/       				@tokopedia/android-minionskywalker-dev
-/features/category/       				                @tokopedia/android-minionsolo-dev
-/features/discovery2/       				            @tokopedia/android-minionsolo-dev
+/features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
@@ -30,10 +27,6 @@
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
-/features/content/play/                                 @tokopedia/android-miniondave-dev
-/features/content/play_common/                          @tokopedia/android-miniondave-dev
-/features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
-/features/content/play_widget/                          @tokopedia/android-miniondave-dev
 /features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
@@ -112,6 +105,12 @@
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
+/features/content/affiliate/            				@tokopedia/android-minionmark-dev
+/features/content/affiliate_common/     				@tokopedia/android-minionmark-dev
+/features/content/play/                                 @tokopedia/android-minionmark-dev
+/features/content/play_common/                          @tokopedia/android-minionmark-dev
+/features/content/play_broadcaster/                     @tokopedia/android-minionmark-dev
+/features/content/play_widget/                          @tokopedia/android-minionmark-dev
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/common_topup_bills                   @tokopedia/android-minionmark-dev
