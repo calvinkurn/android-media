@@ -1,17 +1,15 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.data.MessageViewModel.Builder
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
-open class MessageViewModel
 /**
  * Primary constructor, use [Builder] class to create this instance.
  */
-protected constructor(builder: Builder) : SendableViewModel(builder),
-    Visitable<BaseChatTypeFactory> {
+open class MessageViewModel protected constructor(
+    builder: Builder
+) : SendableViewModel(builder), Visitable<BaseChatTypeFactory> {
 
     var attachment: Any? = builder.attachment
         private set

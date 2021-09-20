@@ -7,61 +7,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 open class SendableViewModel constructor(
-    messageId: String,
-    fromUid: String,
-    from: String,
-    fromRole: String,
-    attachmentId: String,
-    attachmentType: String,
-    replyTime: String,
-    var startTime: String,
-    var isRead: Boolean,
-    var isDummy: Boolean,
-    val isSender: Boolean,
-    message: String,
-    source: String,
-    replyId: String = "",
-    localId: String = "",
-    blastId: Long = 0,
-    fraudStatus: Int = 0,
-    label: String = ""
-) : BaseChatViewModel(
-    messageId = messageId,
-    fromUid = fromUid,
-    from = from,
-    fromRole = fromRole,
-    attachmentId = attachmentId,
-    attachmentType = attachmentType,
-    replyTime = replyTime,
-    message = message,
-    source = source,
-    replyId = replyId,
-    localId = localId,
-    blastId = blastId,
-    fraudStatus = fraudStatus,
-    label = label
-) {
+    builder: Builder<*, *>
+) : BaseChatViewModel(builder) {
 
-    constructor(builder: Builder<*, *>) : this(
-        messageId = builder.messageId,
-        fromUid = builder.fromUid,
-        from = builder.from,
-        fromRole = builder.fromRole,
-        attachmentId = builder.attachmentId,
-        attachmentType = builder.attachmentType,
-        replyTime = builder.replyTime,
-        message = builder.message,
-        source = builder.source,
-        replyId = builder.replyId,
-        localId = builder.localId,
-        blastId = builder.blastId,
-        fraudStatus = builder.fraudStatus,
-        label = builder.label,
-        startTime = builder.startTime,
-        isRead = builder.isRead,
-        isDummy = builder.isDummy,
-        isSender = builder.isSender,
-    )
+    var startTime: String = builder.startTime
+    var isRead: Boolean = builder.isRead
+    var isDummy: Boolean = builder.isDummy
+    val isSender: Boolean = builder.isSender
 
     var isShowRole = true
 
@@ -104,13 +56,13 @@ open class SendableViewModel constructor(
             out UI : SendableViewModel
             > : BaseChatViewModel.Builder<B, UI>() {
 
-        var startTime: String = ""
+        internal var startTime: String = ""
             private set
-        var isRead: Boolean = false
+        internal var isRead: Boolean = false
             private set
-        var isDummy: Boolean = false
+        internal var isDummy: Boolean = false
             private set
-        var isSender: Boolean = true
+        internal var isSender: Boolean = true
             private set
 
         override fun withResponseFromGQL(reply: Reply): B {
