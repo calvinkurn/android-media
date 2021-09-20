@@ -1,11 +1,10 @@
 package com.tokopedia.flight.cancellationdetail.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.flight.databinding.ItemFlightCancellationRefundDetailMiddleBinding
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
 
@@ -16,9 +15,8 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: List<OrderDetailCan
     : RecyclerView.Adapter<FlightCancellationRefundDetailMiddleAdapter.CancellationRefundDetailMiddleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CancellationRefundDetailMiddleViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_refund_detail_middle, parent, false)
-
-        return CancellationRefundDetailMiddleViewHolder(view)
+        val binding = ItemFlightCancellationRefundDetailMiddleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CancellationRefundDetailMiddleViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CancellationRefundDetailMiddleViewHolder, position: Int) {
@@ -29,18 +27,17 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: List<OrderDetailCan
         return items.size
     }
 
-    class CancellationRefundDetailMiddleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val title: TextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title)
-        private val rvItems: RecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.rv_item)
-
+    class CancellationRefundDetailMiddleViewHolder(val binding: ItemFlightCancellationRefundDetailMiddleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindData(info: OrderDetailCancellation.OrderDetailRefundTitleContent) {
-            title.text = info.title
+            with(binding){
+                tvTitle.text = info.title
 
-            val refundMiddleAdapter = FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL)
-            refundMiddleAdapter.addData(generateSimpleViewModel(info.content))
-            rvItems.layoutManager = LinearLayoutManager(itemView.context)
-            rvItems.adapter = refundMiddleAdapter
+                val refundMiddleAdapter =
+                    FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL)
+                refundMiddleAdapter.addData(generateSimpleViewModel(info.content))
+                rvItem.layoutManager = LinearLayoutManager(itemView.context)
+                rvItem.adapter = refundMiddleAdapter
+            }
         }
 
         private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): List<SimpleModel> {

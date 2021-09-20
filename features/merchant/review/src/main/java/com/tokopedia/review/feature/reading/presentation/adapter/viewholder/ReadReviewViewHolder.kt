@@ -184,6 +184,8 @@ class ReadReviewViewHolder(view: View,
                     }
                     setCollapsableReview(message, feedbackId, productId)
                 }
+            } else {
+                setOnClickListener {  }
             }
             show()
         }

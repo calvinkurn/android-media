@@ -68,6 +68,8 @@ data class AttributesDigitalData(
 
             var discountAmount: Double = 0.0,
 
+            var discountAmountLabel: String = "",
+
             var title: String = "",
 
             var messageSuccess: String = "",

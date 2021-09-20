@@ -109,17 +109,24 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private val _recomWidget = MutableLiveData<Result<BestSellerDataModel>>()
-    val recomWidget : LiveData<Result<BestSellerDataModel>>
+    val recomWidget: LiveData<Result<BestSellerDataModel>>
         get() = _recomWidget
 
-    fun loadFirstData(category: Category?, location: String = "") {
+    fun loadFirstData(category: Category?, location: String = "",
+                      onBannerCacheStartLoad: () -> Unit = {},
+                      onBannerCacheStopLoad: () -> Unit = {},
+                      onBannerCloudStartLoad: () -> Unit = {},
+                      onBannerCloudStopLoad: () -> Unit = {}) {
         launchCatchError(block = {
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
             currentSlugDC = category?.slug ?: ""
-
+            onBannerCacheStartLoad.invoke()
+            onBannerCloudStartLoad.invoke()
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
+            onBannerCacheStopLoad.invoke()
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
+            onBannerCloudStopLoad.invoke()
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 

@@ -1,9 +1,10 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.utils.GoldMerchantUtil.setTypeGlobalError
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.setTypeGlobalError
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import kotlinx.android.synthetic.main.item_shop_penalty_error_state.view.*
@@ -19,6 +20,12 @@ class ItemPenaltyErrorViewHolder(
 
     override fun bind(element: ItemPenaltyErrorUiModel?) {
         with(itemView) {
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
             globalErrorPenalty?.setTypeGlobalError(element?.throwable)
             globalErrorPenalty?.errorAction?.setOnClickListener {
                 itemPenaltyErrorListener.onRetryRefreshError()
