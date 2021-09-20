@@ -1,9 +1,14 @@
 package com.tokopedia.review.feature.credibility.presentation.fragment
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -70,6 +75,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        setDismissBehavior()
         showLoading()
         observeReviewerCredibility()
         getReviewerCredibility()
@@ -153,12 +159,54 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun setButtonText(buttonText: String) {
-        mainButton?.text = buttonText
+        mainButton?.apply {
+            text = buttonText
+            setOnClickListener {
+                dismiss()
+            }
+        }
     }
 
-    private fun setLearnMoreClickListener(url: String) {
-        this.learnMore?.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+    private fun setLearnMoreClickListener(learnMoreText: String) {
+        this.learnMore?.apply {
+            text = learnMoreText
+            movementMethod = object : LinkMovementMethod() {
+                override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
+                    val action = event.action
+
+                    if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                        var x = event.x
+                        var y = event.y.toInt()
+
+                        x -= widget.totalPaddingLeft
+                        y -= widget.totalPaddingTop
+
+                        x += widget.scrollX
+                        y += widget.scrollY
+
+                        val layout = widget.layout
+                        val line = layout.getLineForVertical(y)
+                        val off = layout.getOffsetForHorizontal(line, x)
+
+                        val link = buffer.getSpans(off, off, URLSpan::class.java)
+                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                            return routeToWebView(link.first().url.toString())
+                        }
+                    }
+                    return super.onTouchEvent(widget, buffer, event);
+                }
+            }
+        }
+    }
+
+    private fun routeToWebView(url: String): Boolean {
+        dismiss()
+        return RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+    }
+
+    private fun setDismissBehavior() {
+        setOnDismissListener {
+            activity?.finish()
         }
     }
 
