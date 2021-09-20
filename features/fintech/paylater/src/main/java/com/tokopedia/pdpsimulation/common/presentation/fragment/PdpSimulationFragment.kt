@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
@@ -150,24 +149,23 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     /**
      * This method called to set view for the product image,price and variant
      */
-    private fun setProductDetailView(data:GetProductV3)
-    {
-            data.pictures?.get(0)?.let { pictures ->
-                pictures.urlThumbnail?.let { urlThumbnail ->
-                    productDetail.productImage.loadImage(
-                        urlThumbnail
-                    )
-                }
+    private fun setProductDetailView(data: GetProductV3) {
+        data.pictures?.get(0)?.let { pictures ->
+            pictures.urlThumbnail?.let { urlThumbnail ->
+                productDetail.productImage.loadImage(
+                    urlThumbnail
+                )
             }
-            data.productName.let {
-                productDetail.productName.text = it
-            }
-            data.price?.let {
-                productDetail.productPrice.text =
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
-            }
+        }
+        data.productName.let {
+            productDetail.productName.text = it
+        }
+        data.price?.let {
+            productDetail.productPrice.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
+        }
 
-            showProductVariant(data)
+        showProductVariant(data)
 
     }
 
@@ -213,8 +211,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
             if (paymentMode == PayLater) {
                 sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(tab.getCustomText()))
-            }
-            else sendAnalytics(PdpSimulationEvent.CreditCard.TabChangeEvent(tab.getCustomText()))
+            } else sendAnalytics(PdpSimulationEvent.CreditCard.TabChangeEvent(tab.getCustomText()))
             handleRegisterWidgetVisibility(tab.position)
         }
         payLaterViewPager.onPageSelected { position ->
@@ -281,8 +278,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
 
-
-
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
@@ -317,7 +312,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
 
     fun reloadProductDetail() {
-        if(!productDetail.isVisible) {
+        if (!productDetail.isVisible) {
             productInfoShimmer.visible()
             productDetail.visible()
             payLaterViewModel.getProductDetail(productId = productId)
