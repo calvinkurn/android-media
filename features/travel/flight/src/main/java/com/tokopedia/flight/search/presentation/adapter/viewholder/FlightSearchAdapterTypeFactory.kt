@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory
+import com.tokopedia.flight.databinding.ItemFlightSearchNewBinding
+import com.tokopedia.flight.databinding.ItemFlightSearchOtherJourneysBinding
+import com.tokopedia.flight.databinding.ItemFlightSearchShimmeringBinding
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel
 
@@ -17,10 +20,19 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            FlightSearchViewHolder.LAYOUT -> FlightSearchViewHolder(parent, onFlightSearchListener)
+            FlightSearchViewHolder.LAYOUT -> {
+                val binding = ItemFlightSearchNewBinding.bind(parent)
+                FlightSearchViewHolder(binding, onFlightSearchListener)
+            }
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
-            FlightSearchShimmeringViewHolder.LAYOUT -> FlightSearchShimmeringViewHolder(parent)
-            FlightSearchSeeAllViewHolder.LAYOUT -> FlightSearchSeeAllViewHolder(parent, onFlightSearchListener)
+            FlightSearchShimmeringViewHolder.LAYOUT -> {
+                val binding = ItemFlightSearchShimmeringBinding.bind(parent)
+                FlightSearchShimmeringViewHolder(binding)
+            }
+            FlightSearchSeeAllViewHolder.LAYOUT -> {
+                val binding = ItemFlightSearchOtherJourneysBinding.bind(parent)
+                FlightSearchSeeAllViewHolder(binding, onFlightSearchListener)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }

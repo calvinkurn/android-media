@@ -187,8 +187,7 @@ class HotelSearchMapActivityTest {
 
         Thread.sleep(2000)
         if (getPropertyResultCount() > 0) {
-            Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<SearchPropertyViewHolder>(3, ViewActions.scrollTo()))
+            Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(ViewActions.swipeLeft())
         }
 
         Thread.sleep(2000)
