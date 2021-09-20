@@ -44,6 +44,7 @@ import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
@@ -392,7 +393,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         }
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
-                        showEmptyState()
+                        if (shouldShowCredibility()) {
+                            showCredibilityEmptyState(it.data.emptyState.imageURL, it.data.emptyState.labelTitle, it.data.emptyState.labelSubtitle)
+                        } else {
+                            showEmptyState()
+                        }
                     } else {
                         renderReviewData(ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
                                 it.data.list
@@ -497,4 +502,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         reviewPendingPreference = ReviewPendingPreference(context)
     }
 
+    private fun shouldShowCredibility(): Boolean {
+        // AB TEST
+        return true
+    }
+
+    private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {
+        (adapter as? ReviewPendingAdapter)?.insertEmptyModel(ReviewPendingEmptyUiModel(imageUrl, title, subtitle))
+    }
 }

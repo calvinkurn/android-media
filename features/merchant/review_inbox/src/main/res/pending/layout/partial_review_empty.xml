@@ -51,6 +51,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:text="@string/review_pending_shop_button"
+        android:visibility="gone"
         app:unifyButtonVariant="filled"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"
