@@ -33,6 +33,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.OVO_WALLET_TYPE
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.navigation_common.model.wallet.WalletStatus
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.junit.Rule
@@ -49,6 +51,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
     private val getHomeTokopointsListDataUseCase = mockk<GetHomeTokopointsListDataUseCase>(relaxed = true)
+    private val getWalletEligibilityUseCase = mockk<GetWalletEligibilityUseCase>(relaxed = true)
 
     private lateinit var homeViewModel: HomeRevampViewModel
 
@@ -58,6 +61,106 @@ class HomeViewModelBalanceWidgetUnitTest{
     private val headerDataModel = HomeHeaderOvoDataModel()
 
     private val WALLET_CODE_PEMUDA = "PEMUDA"
+
+    @Test
+    fun `When get eligibility returns false on refresh then balance widget contains 4 item`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
+            TokopointsDrawerList(
+                "false",
+                listOf(
+                    TokopointsDrawer(type = "TokoPoints"),
+                    TokopointsDrawer(type = "Coupon"),
+                    TokopointsDrawer(type = "BBO")
+                )
+            )
+        )
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
+            )
+        )
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+            getWalletEligibilityUseCase = getWalletEligibilityUseCase
+        )
+        homeViewModel.setWalletAppRollence(true)
+
+        //On refresh
+        homeViewModel.refresh(true)
+
+        assertWalletBalanceModelState(STATE_SUCCESS)
+
+        assertBalanceTypeExist(TYPE_WALLET_APP_LINKED)
+        assertBalanceTypeExist(TYPE_TOKOPOINT)
+        assertBalanceTypeExist(TYPE_FREE_ONGKIR)
+        assertBalanceTypeExist(TYPE_COUPON)
+    }
+
+    @Test
+    fun `When get eligibility returns true on refresh then balance widget contains 2 item`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = true
+        )
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
+            TokopointsDrawerList(
+                "false",
+                listOf(
+                    TokopointsDrawer(type = "TokoPoints"),
+                    TokopointsDrawer(type = "Coupon"),
+                    TokopointsDrawer(type = "BBO")
+                )
+            )
+        )
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
+            )
+        )
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+            getWalletEligibilityUseCase = getWalletEligibilityUseCase
+        )
+        //On refresh
+        homeViewModel.refresh(true)
+
+        assert1x2WalletBalanceModelState(STATE_SUCCESS)
+        assert1x2TokopointBalanceModelState(STATE_SUCCESS)
+    }
 
     @Test
     fun `When get walletapp and getTokopoint success on refresh then show walletapp and tokopoint success state`(){
@@ -625,6 +728,24 @@ class HomeViewModelBalanceWidgetUnitTest{
         )
     }
 
+    private fun assert1x2WalletBalanceModelState(state: Int) {
+        assert(
+            homeViewModel.homeLiveData.value!!.check1x2HomeBalanceModelState(
+                isWalletBalanceModelCheck = true,
+                state = state
+            )
+        )
+    }
+
+    private fun assert1x2TokopointBalanceModelState(state: Int) {
+        assert(
+            homeViewModel.homeLiveData.value!!.check1x2HomeBalanceModelState(
+                isTokopointBalanceModelCheck = true,
+                state = state
+            )
+        )
+    }
+
     private fun HomeRevampUseCase.buildBalanceHomeData(balanceType: Int) {
         val walletTypeFlag = HomeFlag()
         walletTypeFlag.addFlag(
@@ -697,5 +818,40 @@ class HomeViewModelBalanceWidgetUnitTest{
             }
         }
         return false
+    }
+
+    private fun HomeDataModel.check1x2HomeBalanceModelState(
+        isWalletBalanceModelCheck: Boolean = false,
+        isTokopointBalanceModelCheck: Boolean = false,
+        state: Int,
+        firstTokopointDrawerType: Int = TYPE_TOKOPOINT
+    ): Boolean {
+        val homeHeaderDataModel = this.list.filterIsInstance<HomeHeaderOvoDataModel>()[0]
+        val homeBalanceModel = homeHeaderDataModel.headerDataModel!!.homeBalanceModel
+
+        var walletAssert = true
+        var tokopointAssert = true
+
+        if (isWalletBalanceModelCheck) {
+            homeBalanceModel.balanceDrawerItemModels.forEach { i, balanceDrawerItemModel ->
+                when (balanceDrawerItemModel.drawerItemType) {
+                    TYPE_WALLET_OVO,
+                    TYPE_WALLET_OTHER,
+                    TYPE_WALLET_PENDING_CASHBACK,
+                    TYPE_WALLET_WITH_TOPUP -> {
+                        walletAssert = balanceDrawerItemModel.state == state
+                    }
+                }
+            }
+            walletAssert =
+                (homeBalanceModel.balanceDrawerItemModels[0]!!.drawerItemType == TYPE_WALLET_APP_LINKED) ||
+                        homeBalanceModel.balanceDrawerItemModels[0]!!.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+        }
+
+        if (isTokopointBalanceModelCheck) {
+            tokopointAssert =
+                (homeBalanceModel.balanceDrawerItemModels[1]!!.drawerItemType == firstTokopointDrawerType)
+        }
+        return walletAssert && tokopointAssert
     }
 }
