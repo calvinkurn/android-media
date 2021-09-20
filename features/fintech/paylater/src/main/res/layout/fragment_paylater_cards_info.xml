@@ -10,7 +10,8 @@
         android:layout_width="@dimen/unify_space_96"
         android:layout_height="@dimen/unify_space_24"
         android:elevation="@dimen/dp_1"
-        android:src="@drawable/ic_recom_label"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_paylater_recommendation_label"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
