@@ -6,23 +6,6 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Constructor for WebSocketResponse / API Response
- * [ChatWebSocketListenerImpl]
- * [GetReplyListUseCase]
- *
- * @param messageId      messageId
- * @param fromUid        userId of sender
- * @param from           name of sender
- * @param fromRole       role of sender
- * @param attachmentId   attachment id
- * @param attachmentType attachment type.
- * @param replyTime      replytime in unixtime
- * @param startTime      date time when sending / uploading data. Used to validate temporary
- * sending messages
- * @see AttachmentType for attachment types.
- */
-
 open class SendableViewModel constructor(
     messageId: String,
     fromUid: String,

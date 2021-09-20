@@ -286,20 +286,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 message.attachment?.attributes,
                 QuotationAttributes::class.java
             )
-        return QuotationUiModel(
-            quotationPojo = quotationAttributes.quotation,
-            messageId = message.msgId.toString(),
-            fromUid = message.senderId.toString(),
-            from = message.senderName,
-            fromRole = message.role,
-            attachmentId = message.attachment?.id ?: "",
-            attachmentType = message.attachment?.type.toString(),
-            replyTime = message.replyTime,
-            isSender = !message.isOpposite,
-            message = message.msg,
-            isRead = message.isRead,
-            source = message.source
-        )
+        return QuotationUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withQuotationPojo(quotationAttributes.quotation)
+            .build()
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {

@@ -102,24 +102,16 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             .build()
     }
 
-    private fun convertToQuotation(payload: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+    private fun convertToQuotation(
+        payload: ChatSocketPojo, jsonAttributes: JsonObject
+    ): Visitable<*> {
         val quotationAttributes = GsonBuilder()
                 .create()
-                .fromJson<QuotationAttributes>(jsonAttributes, QuotationAttributes::class.java)
-        return QuotationUiModel(
-                quotationPojo = quotationAttributes.quotation,
-                messageId = payload.msgId.toString(),
-                fromUid = payload.fromUid,
-                from = payload.from,
-                fromRole = payload.fromRole,
-                attachmentId = payload.attachment?.id ?: "",
-                attachmentType = payload.attachment?.type.toString(),
-                replyTime = payload.message.timeStampUnixNano,
-                isSender = !payload.isOpposite,
-                message = payload.message.censoredReply,
-                startTime = payload.startTime,
-                source = payload.source
-        )
+                .fromJson(jsonAttributes, QuotationAttributes::class.java)
+        return QuotationUiModel.Builder()
+            .withResponseFromWs(payload)
+            .withQuotationPojo(quotationAttributes.quotation)
+            .build()
     }
 
     fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
