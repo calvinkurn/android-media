@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class TopAdsDashboardDepositUseCaseTest {
@@ -50,7 +50,7 @@ class TopAdsDashboardDepositUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
@@ -70,7 +70,7 @@ class TopAdsDashboardDepositUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {

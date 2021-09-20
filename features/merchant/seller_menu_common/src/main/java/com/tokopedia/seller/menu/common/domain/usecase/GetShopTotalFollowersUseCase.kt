@@ -30,7 +30,7 @@ class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository
 
         private const val SHOP_ID_KEY = "shopID"
 
-        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
+        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
             put(SHOP_ID_KEY, shopId)
         }
     }

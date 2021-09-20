@@ -18,7 +18,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
 
         private const val SHOP_ID_KEY = "shopIds"
 
-        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
+        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
             put(SHOP_ID_KEY, listOf(shopId))
         }
     }

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.usecase.RequestParams
@@ -32,7 +32,7 @@ class GetShopLocationUseCase @Inject constructor(
         """
 
         fun getRequestParams(shopId: String): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId.toIntOrZero())
+            putLong(SHOP_ID, shopId.toLongOrZero())
         }
     }
 
