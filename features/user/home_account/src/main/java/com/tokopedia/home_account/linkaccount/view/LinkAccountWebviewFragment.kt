@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -62,7 +63,13 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    webView?.loadUrl(LinkAccountWebViewActivity.getSuccessUrl(requireContext()))
+                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrlFix(
+                        ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+                    if(baseUrl != null) {
+                        webView?.loadUrl(
+                            LinkAccountWebViewActivity.getSuccessUrl(baseUrl).toString()
+                        )
+                    }
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
