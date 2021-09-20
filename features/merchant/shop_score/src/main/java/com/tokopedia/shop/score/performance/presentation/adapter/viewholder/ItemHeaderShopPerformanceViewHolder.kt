@@ -22,7 +22,6 @@ class ItemHeaderShopPerformanceViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
-        const val SHOP_SCORE_NULL = -1
         const val ROUNDED_RADIUS = 16F
     }
 
@@ -52,7 +51,7 @@ class ItemHeaderShopPerformanceViewHolder(
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
             val shopScore = shopScoreFormatted(element?.shopScore)
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY || shopScore < 0) {
+            if (shopScore.isLessThanZero()) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
             } else {
@@ -66,9 +65,9 @@ class ItemHeaderShopPerformanceViewHolder(
 
     private fun shopScoreFormatted(shopScore: String?): Int {
         return try {
-            shopScore?.toInt() ?: SHOP_SCORE_NULL
+            shopScore?.toIntOrNull() ?: ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         } catch (e: NumberFormatException) {
-            SHOP_SCORE_NULL
+            ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         }
     }
 
@@ -121,7 +120,9 @@ class ItemHeaderShopPerformanceViewHolder(
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
 
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+            val shopScore = shopScoreFormatted(element?.shopScore)
+
+            if (shopScore.isLessThanZero()) {
                 ic_shop_score_performance?.hide()
             } else {
                 ic_shop_score_performance?.show()

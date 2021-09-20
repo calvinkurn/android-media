@@ -807,6 +807,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopProductEmptySearchListener = null,
                 shopProductChangeGridSectionListener = this,
                 shopShowcaseEmptySearchListener = null,
+                shopProductSearchSuggestionListener = null,
                 isGridSquareLayout = true,
                 deviceWidth = deviceWidth,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,

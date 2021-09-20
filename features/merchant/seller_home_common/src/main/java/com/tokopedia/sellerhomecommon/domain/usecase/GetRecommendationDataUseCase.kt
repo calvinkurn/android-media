@@ -32,7 +32,7 @@ class GetRecommendationDataUseCase(
             }
             throw NullPointerException("recommendation data can not be null")
         } else {
-            throw RuntimeException(gqlErrors.joinToString(" - ") { it.message })
+            throw RuntimeException(gqlErrors.firstOrNull()?.message.orEmpty())
         }
     }
 
