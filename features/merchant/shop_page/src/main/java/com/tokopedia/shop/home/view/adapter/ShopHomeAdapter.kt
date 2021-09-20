@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.os.Handler
+import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -213,7 +213,7 @@ class ShopHomeAdapter(
 
     override fun onStickyHide() {
         val newList = getNewVisitableItems()
-        submitList(newList, shopProductEtalaseListPosition)
+        submitList(newList)
     }
 
     override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
@@ -506,12 +506,16 @@ class ShopHomeAdapter(
 
     private fun getNewVisitableItems() = visitables.toMutableList()
 
-    private fun submitList(newList: List<Visitable<*>>, indexToRefresh: Int = -1) {
-        val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList, indexToRefresh)
+    private fun submitList(newList: List<Visitable<*>>) {
+        val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
+        val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+        currentRecyclerViewState?.let{
+            recyclerView?.layoutManager?.onRestoreInstanceState(it)
+        }
     }
 
     fun isCampaignFollower(campaignId: String): Boolean {

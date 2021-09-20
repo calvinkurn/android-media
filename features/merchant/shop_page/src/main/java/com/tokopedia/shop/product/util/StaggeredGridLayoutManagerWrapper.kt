@@ -30,8 +30,4 @@ class StaggeredGridLayoutManagerWrapper(spanCount: Int, orientation: Int) : Stag
             0
         }
     }
-
-//    override fun supportsPredictiveItemAnimations(): Boolean {
-//        return false
-//    }
 }

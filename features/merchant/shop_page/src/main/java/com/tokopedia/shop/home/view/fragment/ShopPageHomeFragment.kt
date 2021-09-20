@@ -426,12 +426,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, BaseShopHomeWidgetUiModel?>) {
         shopHomeAdapter.updateShopHomeWidgetContentData(mapWidgetContentData)
-        if(isNeedScrollToTopAfterGetData){
-            getRecyclerView(view)?.post {
-                getRecyclerView(view)?.layoutManager?.scrollToPosition(0)
-                isNeedScrollToTopAfterGetData = false
-            }
-        }
         checkProductWidgetWishListStatus(mapWidgetContentData.values.toList())
         checkCampaignNplWidgetRemindMeStatus(mapWidgetContentData.values.toList())
     }

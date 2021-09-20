@@ -2,24 +2,35 @@ package com.tokopedia.shop.home.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 
-class ShopPageHomeDiffUtilCallback (
+class ShopPageHomeDiffUtilCallback(
         private val oldItems: List<Visitable<*>>,
-        private val newItems: List<Visitable<*>>,
-        private var indexToRefresh: Int
-): DiffUtil.Callback() {
+        private val newItems: List<Visitable<*>>
+) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return if (isRefreshItemAtPosition(newItemPosition))
-            false
-        else {
-            val oldItem = oldItems.getOrNull(oldItemPosition)
-            val newItem = newItems.getOrNull(newItemPosition)
-            return oldItem == newItem
+        val oldItem = oldItems.getOrNull(oldItemPosition)
+        val newItem = newItems.getOrNull(newItemPosition)
+        if (isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)) {
+            return false
         }
+        if (isItemMatchWithUiModel<ShopHomeProductChangeGridSectionUiModel>(oldItem, newItem)) {
+            return false
+        }
+        if (isItemMatchWithUiModel<ShopProductSortFilterUiModel>(oldItem, newItem)) {
+            return false
+        }
+        return oldItem == newItem
     }
 
-    private fun isRefreshItemAtPosition(newItemPosition: Int): Boolean {
-        return newItemPosition == indexToRefresh && indexToRefresh >= 0
+    private inline fun <reified T> isItemMatchWithUiModel(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
+        return oldItem is T && newItem is T
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
     }
 
     override fun getOldListSize(): Int {
@@ -30,7 +41,4 @@ class ShopPageHomeDiffUtilCallback (
         return newItems.size
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
-    }
 }
