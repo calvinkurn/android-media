@@ -60,7 +60,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val stickerContract = CommonUtil.toJson(
             exSticker.generateWebSocketPayload(
-                exMessageId, exOpponentId, exStartTime, emptyList()
+                exMessageId, exOpponentId, exStartTime, emptyList(), "123"
             )
         )
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer

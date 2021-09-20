@@ -35,7 +35,6 @@ import io.mockk.*
 import junit.framework.Assert
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Observable
 import rx.Subscriber
@@ -314,7 +313,10 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         // Given
         val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
         val mockOnError: (Throwable) -> Unit = mockk()
-        val mockRoomMetaData: (RoomMetaData) -> Unit = mockk()
+        val roomMetaDataSlot = slot<(RoomMetaData) -> Unit>()
+        every {
+            getChatUseCase.getFirstPageChat(any(), any(), any(), capture(roomMetaDataSlot))
+        }
 
         // When
         presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
@@ -325,7 +327,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 exMessageId,
                 mockOnSuccess,
                 mockOnError,
-                mockRoomMetaData
+                roomMetaDataSlot.captured
             )
         }
     }
