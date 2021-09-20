@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.linkaccount.domain
 
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -14,7 +15,7 @@ class GetLinkStatusUseCase(private val repository: GraphqlRepository)
     : CoroutineUseCase<RequestParams, LinkStatusResponse>(Dispatchers.IO) {
 
     override suspend fun execute(params: RequestParams): LinkStatusResponse {
-        return request(repository, params.parameters)
+        return repository.request(graphqlQuery(), params)
     }
 
     fun createParams(linkingType: String): RequestParams {

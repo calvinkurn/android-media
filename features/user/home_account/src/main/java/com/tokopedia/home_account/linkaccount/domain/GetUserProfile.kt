@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.linkaccount.domain
 
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -14,7 +15,7 @@ class GetUserProfile (private val repository: GraphqlRepository)
     : CoroutineUseCase<RequestParams, ProfilePojo>(Dispatchers.IO) {
 
     override suspend fun execute(params: RequestParams): ProfilePojo {
-        return request(repository, params.parameters)
+        return repository.request(graphqlQuery(), params.parameters)
     }
 
     override fun graphqlQuery(): String = query
