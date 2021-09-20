@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class GetShopBadgeUseCaseTest {
@@ -50,7 +50,7 @@ class GetShopBadgeUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyLong())
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
@@ -70,7 +70,7 @@ class GetShopBadgeUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyLong())
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
