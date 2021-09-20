@@ -257,19 +257,6 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    /**
-     * Ticker is used for show general message like : corona, shipping delay,  etc
-     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
-     * LAYOUT_FLOATING should be sticky login
-     * *
-     * update : now it's not used class from sticky login module anymore
-     */
-    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
-        return tickerData.response.tickerDataModels.filter {
-            it.layout != LAYOUT_FLOATING
-        }
-    }
-
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val result = mutableListOf<ImageReviewItem>()
 
