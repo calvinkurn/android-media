@@ -1,46 +1,17 @@
-package com.tokopedia.common_tradein.model;
+package com.tokopedia.common_tradein.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-public class DeviceDiagParams {
+class DeviceDiagParams {
     @SerializedName("ProductId")
-    private long productId;
+    var productId: Long = 0
+
     @SerializedName("DeviceId")
-    private String deviceId;
+    var deviceId: String? = null
+
     @SerializedName("NewPrice")
-    private int newPrice;
+    var newPrice = 0
+
     @SerializedName("TradeInType")
-    private int tradeInType;
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public int getNewPrice() {
-        return newPrice;
-    }
-
-    public void setNewPrice(int newPrice) {
-        this.newPrice = newPrice;
-    }
-
-    public int getTradeInType() {
-        return tradeInType;
-    }
-
-    public void setTradeInType(int tradeInType) {
-        this.tradeInType = tradeInType;
-    }
+    var tradeInType = 0
 }
