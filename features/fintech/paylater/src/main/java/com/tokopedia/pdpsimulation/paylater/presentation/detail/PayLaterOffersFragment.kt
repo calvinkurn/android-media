@@ -76,40 +76,52 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun generateSortFilter(paylaterProduct: PayLaterGetSimulation) {
         val filterData = ArrayList<SortFilterItem>()
         paylaterProduct.productList?.let {
-            for (i in it.indices) {
-                it[i].text?.let { name ->
-                    if (i == 0) {
-                        filterData.add(
-                            SortFilterItem(
-                                name,
-                                ChipsUnify.TYPE_SELECTED,
-                                ChipsUnify.SIZE_SMALL
-                            ) {
-                                selectOtherTenure(i, name)
-                            })
-                        // This analytics is to track the default selected one
-                        pdpSimulationCallback?.sendAnalytics(
-                            PdpSimulationEvent.PayLater.TenureSortFilterClicker(
-                                name
-                            )
-                        )
-                    } else {
-                        filterData.add(SortFilterItem(name) {
-                            selectOtherTenure(i, name)
-                        })
-                    }
-                }
-            }
+            setFilterItem(it,filterData)
         }
         sortFilter.addItem(filterData)
 
-        // THis analytics is for the sort filter impression
+        // This analytics is for the sort filter impression
         if (paylaterProduct.productList?.size ?: 0 > 0) {
             pdpSimulationCallback?.sendAnalytics(
                 PdpSimulationEvent.PayLater.TenureListImpression(
                     paylaterProduct.productList?.get(0)?.text ?: ""
                 )
             )
+        }
+    }
+
+
+    /**
+     * This method set the filter item for the sort
+     * @param filterData this is the filter data variable where we will add thew sort filter
+     * @param list this is the list of data
+     */
+
+    private fun setFilterItem(list: List<PayLaterAllData>, filterData: ArrayList<SortFilterItem>)
+    {
+        for (i in list.indices) {
+            list[i].text?.let { name ->
+                if (i == 0) {
+                    filterData.add(
+                        SortFilterItem(
+                            name,
+                            ChipsUnify.TYPE_SELECTED,
+                            ChipsUnify.SIZE_SMALL
+                        ) {
+                            selectOtherTenure(i, name)
+                        })
+                    // This analytics is to track the default selected one
+                    pdpSimulationCallback?.sendAnalytics(
+                        PdpSimulationEvent.PayLater.TenureSortFilterClicker(
+                            name
+                        )
+                    )
+                } else {
+                    filterData.add(SortFilterItem(name) {
+                        selectOtherTenure(i, name)
+                    })
+                }
+            }
         }
     }
 
