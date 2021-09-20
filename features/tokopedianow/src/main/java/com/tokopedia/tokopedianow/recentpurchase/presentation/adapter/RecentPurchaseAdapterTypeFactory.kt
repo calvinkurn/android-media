@@ -27,7 +27,8 @@ class RecentPurchaseAdapterTypeFactory(
     private val emptyStateNoHistorylistener: RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener? = null,
     private val tokoNowRecommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener? = null,
     private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener
+    private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener,
+    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
 ) : BaseAdapterTypeFactory(), RecentPurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -37,6 +38,7 @@ class RecentPurchaseAdapterTypeFactory(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
     // endregion
 
     // region Repurchase Component
@@ -54,6 +56,7 @@ class RecentPurchaseAdapterTypeFactory(
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, tokoNowRecommendationCarouselListener)
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(view, tokoNowEmptyStateNoResultListener)
+            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             // endregion
 
             // region Repurchase Component

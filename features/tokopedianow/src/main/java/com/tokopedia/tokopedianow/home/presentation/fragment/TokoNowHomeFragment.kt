@@ -89,6 +89,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -119,7 +120,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeProductRecomViewHolder.HomeProductRecomListener,
         TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        ServerErrorListener
 {
 
     companion object {
@@ -159,7 +161,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
-                tokoNowProductCardListener = this
+                tokoNowProductCardListener = this,
+                serverErrorListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -234,6 +237,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = onRefreshLayout()
+
+    override fun onClickRetryButton() = onRefreshLayout()
 
     override fun onAttach(context: Context) {
         initInjector()

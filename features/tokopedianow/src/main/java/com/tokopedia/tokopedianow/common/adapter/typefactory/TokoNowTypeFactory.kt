@@ -9,4 +9,5 @@ interface TokoNowTypeFactory {
     fun type(uiModel: TokoNowEmptyStateOocUiModel): Int
     fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int
     fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int
+    fun type(uiModel: TokoNowServerErrorUiModel): Int
 }

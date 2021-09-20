@@ -81,6 +81,7 @@ object HomeLayoutMapper {
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         when (id) {
             EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id), HomeLayoutItemState.LOADED))
+            EMPTY_STATE_FAILED_TO_FETCH_DATA -> add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
             else -> add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id = id), HomeLayoutItemState.LOADED))
         }
     }

@@ -41,7 +41,7 @@
     <string name="tokopedianow_empty_product_filter_price_name">Filter Harga</string>
 
     <string name="tokopedianow_global_search_button">Cari di Tokopedia</string>
-    <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW</string>
+    <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW!</string>
     <string name="tokopedianow_city_name_empty_state_no_address">Jakarta Barat</string>
     <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
     <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
@@ -55,6 +55,8 @@
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
+    <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
+    <string name="tokopedianow_repurchase_no_result_description">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -72,4 +74,5 @@
     <string name="tokopedianow_category_filter_title">Pilih Kategori</string>
     <string name="tokopedianow_text_apply">Terapkan</string>
     <string name="tokopedianow_text_reset">Reset</string>
+    <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
 </resources>

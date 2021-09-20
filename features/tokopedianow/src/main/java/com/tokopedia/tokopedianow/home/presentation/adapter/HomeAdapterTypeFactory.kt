@@ -23,7 +23,8 @@ class HomeAdapterTypeFactory(
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null,
-    private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null
+    private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null,
+    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -33,6 +34,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
     // endregion
 
     // region TokoNow Home Component
@@ -65,6 +67,7 @@ class HomeAdapterTypeFactory(
             TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
+            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             // endregion
 
             // region TokoNow Home Component

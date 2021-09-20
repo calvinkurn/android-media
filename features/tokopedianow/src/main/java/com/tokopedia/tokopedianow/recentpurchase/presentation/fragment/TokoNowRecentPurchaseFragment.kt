@@ -61,6 +61,7 @@ import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.view.decoration.RepurchaseGridItemDecoration
@@ -82,7 +83,8 @@ class TokoNowRecentPurchaseFragment:
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
-    SortFilterListener
+    SortFilterListener,
+    ServerErrorListener
 {
 
     companion object {
@@ -119,6 +121,7 @@ class TokoNowRecentPurchaseFragment:
                 tokoNowRecommendationCarouselListener = this,
                 emptyStateNoHistorylistener = this,
                 sortFilterListener = this,
+                serverErrorListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -291,10 +294,10 @@ class TokoNowRecentPurchaseFragment:
         startActivityForResult(intent, REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET)
     }
 
-    override fun onClearAllFilter() {
-        clearFilters()
-        refreshLayout()
-    }
+    override fun onClearAllFilter() = refreshLayout()
+
+    override fun onClickRetryButton() = refreshLayout()
+
 
     private fun initInjector() {
         DaggerRecentPurchaseComponent.builder()
@@ -680,6 +683,7 @@ class TokoNowRecentPurchaseFragment:
 
     private fun refreshLayout() {
         carouselScrollPosition.clear()
+        viewModel.clearSelectedFilters()
         viewModel.showLoading()
     }
 
@@ -688,10 +692,6 @@ class TokoNowRecentPurchaseFragment:
             isEnabled = true
             isRefreshing = false
         }
-    }
-
-    private fun clearFilters() {
-        viewModel.clearSelectedFilters()
     }
 
     private fun createProductCardListener(): RepurchaseProductCardListener {
