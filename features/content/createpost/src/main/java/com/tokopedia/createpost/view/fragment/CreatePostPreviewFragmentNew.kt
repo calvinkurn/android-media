@@ -405,19 +405,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         updateResultIntent()
 
-        if (!isDeletedFromBubble)
             Toaster.build(requireView(),
                 getString(R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
 
+        updateResultIntent()
+
     }
 
     override fun updateHeader(header: HeaderViewModel) {
-        TODO("Not yet implemented")
-    }
-
-    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
         TODO("Not yet implemented")
     }
 

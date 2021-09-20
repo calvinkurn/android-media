@@ -3,10 +3,9 @@ package com.tokopedia.createpost.view.plist
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -21,7 +20,8 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     private val gql = MultiRequestGraphqlUseCase()
     private val gqlSort = MultiRequestGraphqlUseCase()
     private var shopId: String? = "-1"
-    private var sort: String? = null
+    private var sort: Int? = 0
+    private var sortPosition: Int? = 0
     private var soruce: String? = "shop_product"
 
     fun getPageData(shopId: String?, source: String?, sort: String = "") {
@@ -31,9 +31,11 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         getList(1)
     }
 
-    fun setNewSortValue(value: ShopPagePListSortItem) {
+    fun setNewSortValue(value: ShopPagePListSortItem, position: Int) {
         newSortValeLiveData.value = value
+        sort = value.value
         showBs.value = true
+        sortPosition = position
     }
 
 
@@ -48,7 +50,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
             variablesMain["page"] = pageNumber
             variablesMain["perPage"] = 10
 
-            if (sort?.isNotEmpty() == true) {
+            if (!sort.isZero()) {
                 variablesMain["sort"] = sort!!.toInt()
             }
 
@@ -66,6 +68,9 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         }) {
             productList.value = ErrorMessage(it.toString())
         }
+    }
+    fun getSortPosition() :Int?{
+        return sortPosition
     }
 
     fun getSortData() {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="172dp"
     android:layout_height="60dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true">
 
     <View
@@ -35,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dot" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -54,7 +55,7 @@ Rp2.950.000"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:layout_constraintWidth_default="spread" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/slase_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +68,7 @@ Rp2.950.000"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,15 +86,31 @@ Rp2.950.000"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintWidth_default="spread" />
 
-    <ImageButton
+<!--    <com.tokopedia.unifycomponents.UnifyImageButton-->
+<!--        android:id="@+id/btn"-->
+<!--        android:layout_width="12dp"-->
+<!--        android:layout_height="12dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:background="@drawable/iconunify_clear"-->
+<!--        android:backgroundTint="@color/white"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/dot"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/dot"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/title"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/dot" />-->
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/clear"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_name="CLEAR"
         app:layout_constraintBottom_toBottomOf="@+id/dot"
         app:layout_constraintEnd_toEndOf="@+id/dot"
         app:layout_constraintStart_toEndOf="@+id/title"
-        app:layout_constraintTop_toTopOf="@+id/dot" />
+        app:layout_constraintTop_toTopOf="@+id/dot"
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
