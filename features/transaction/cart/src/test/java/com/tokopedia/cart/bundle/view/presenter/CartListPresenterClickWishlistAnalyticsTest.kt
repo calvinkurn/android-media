@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.bundle.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -26,7 +26,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClickRecentViewAnalyticsTest : Spek({
+object CartListPresenterClickWishlistAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +52,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate recent view data click analytics") {
+    Feature("generate wishlist data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -75,8 +75,8 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
 
             lateinit var result: Map<String, Any>
 
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+            When("generate wishlist data click analytics") {
+                result = cartListPresenter.generateWishlistProductClickDataLayer(CartWishlistItemHolderData(), 0)
             }
 
             Then("should be containing 1 product") {
@@ -88,7 +88,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
             Then("key `list` value should be `cart`") {
                 val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
                 val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
             }
 
         }
@@ -97,8 +97,8 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
 
             lateinit var result: Map<String, Any>
 
-            When("generate recent view data click analytics") {
-                result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+            When("generate wishlist data click analytics") {
+                result = cartListPresenter.generateWishlistProductClickEmptyCartDataLayer(CartWishlistItemHolderData(), 0)
             }
 
             Then("should be containing 1 product") {
@@ -110,7 +110,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
             Then("key `list` value should be `empty cart`") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
             }
 
         }

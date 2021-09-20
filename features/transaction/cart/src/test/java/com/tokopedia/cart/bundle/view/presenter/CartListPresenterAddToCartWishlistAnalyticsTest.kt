@@ -1,17 +1,21 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
-import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,15 +24,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verifyOrder
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterAddToCartExternalTest : Spek({
+object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -54,7 +56,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("add to cart") {
+    Feature("generate add to cart data analytics on wishlist") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -73,60 +75,48 @@ object CartListPresenterAddToCartExternalTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success add to cart") {
+        Scenario("1 item selected on non empty cart") {
 
-            val addToCartExternalModel = AddToCartExternalModel().apply {
-                success = 1
-                message = arrayListOf<String>().apply {
-                    add("Success message")
-                }
+            lateinit var result: Map<String, Any>
+
+            When("generate add to cart wishlist data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), false)
             }
 
-            Given("add to cart data") {
-                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
-            Given("mock userId") {
-                every { userSessionInterface.userId } returns "123"
+            Then("key `list` value should be `cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
             }
 
-            When("process to add to cart") {
-                cartListPresenter.processAddToCartExternal(1)
-            }
-
-            Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageGreen(addToCartExternalModel.message[0])
-                    view.refreshCartWithSwipeToRefresh()
-                }
-            }
         }
 
-        Scenario("failed add to cart") {
+        Scenario("1 item selected on empty cart") {
 
-            val errorMessage = "Error message"
-            val exception = MessageErrorException(errorMessage)
+            lateinit var result: Map<String, Any>
 
-            Given("add to cart data") {
-                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
+            When("generate add to cart wishlist data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), true)
             }
 
-            Given("mock userId") {
-                every { userSessionInterface.userId } returns "123"
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processAddToCartExternal(1)
+            Then("key `list` value should be `empty cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
             }
 
-            Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(exception)
-                    view.refreshCartWithSwipeToRefresh()
-                }
-            }
         }
 
     }

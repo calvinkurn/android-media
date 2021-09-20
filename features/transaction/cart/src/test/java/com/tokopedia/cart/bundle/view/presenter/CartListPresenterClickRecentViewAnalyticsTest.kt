@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -6,30 +6,27 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import com.tokopedia.wishlist.common.response.GetWishlistResponse
-import com.tokopedia.wishlist.common.response.WishlistDataResponse
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterWishlistTest : Spek({
+object CartListPresenterClickRecentViewAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +52,7 @@ object CartListPresenterWishlistTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get wishlist test") {
+    Feature("generate recent view data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,85 +71,46 @@ object CartListPresenterWishlistTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get wishlist success") {
+        Scenario("1 item selected and cart is not empty") {
 
-            val response = GetWishlistResponse().apply {
-                gqlWishList = WishlistDataResponse().apply {
-                    wishlistDataList = mutableListOf<Wishlist>().apply {
-                        add(Wishlist())
-                    }
-                }
+            lateinit var result: Map<String, Any>
+
+            When("generate recent view data click analytics") {
+                result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
             }
 
-            Given("success response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
-            }
-
-            Then("should render wishlist") {
-                verify {
-                    view.renderWishlist(response.gqlWishList?.wishlistDataList, true)
-                }
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadWishList()
-                    view.stopAllCartPerformanceTrace()
-                }
+            Then("key `list` value should be `cart`") {
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
             }
 
         }
 
-        Scenario("get wishlist empty") {
+        Scenario("1 item selected and cart is empty") {
 
-            val response = GetWishlistResponse().apply {
-                gqlWishList = WishlistDataResponse().apply {
-                    wishlistDataList = mutableListOf()
-                }
+            lateinit var result: Map<String, Any>
+
+            When("generate recent view data click analytics") {
+                result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
             }
 
-            Given("success response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+            Then("should be containing 1 product") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
-            }
-
-            Then("should not render wishlist") {
-                verify(inverse = true) {
-                    view.renderWishlist(response.gqlWishList?.wishlistDataList, false)
-                }
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadWishList()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get wishlist error") {
-
-            Given("error response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadWishList()
-                    view.stopAllCartPerformanceTrace()
-                }
+            Then("key `list` value should be `empty cart`") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
             }
 
         }

@@ -22,7 +22,7 @@ object DataProvider {
     }
 
     fun provideShipmentAddressFormResponse(): ShipmentAddressFormGqlResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/saf_with_all_feature.json"), ShipmentAddressFormGqlResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/bundling_saf_with_all_feature.json"), ShipmentAddressFormGqlResponse::class.java)
     }
 
     fun provideRatesV3Response(): RatesGqlResponse {

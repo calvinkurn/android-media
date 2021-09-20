@@ -1,14 +1,12 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.domain.usecase.*
-import com.tokopedia.cart.bundle.utils.DataProvider
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -18,6 +16,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -25,9 +26,10 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterUpdateCartForPromoTest : Spek({
+object CartListPresenterFollowShopTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +55,7 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list for promo action") {
+    Feature("follow shop") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -72,90 +74,61 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update cart") {
+        Scenario("success follow shop") {
 
-            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-                add(CartItemHolderData().apply {
-                    isCod = true
-                    productPrice = 1000
-                    quantity = 10
-                })
-            }
-
-            Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
-            }
-
-            Given("update cart data") {
-                val mockResponse = DataProvider.provideUpdateCartSuccess()
-                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
-                coEvery { updateCartUseCase.execute(any(), any()) } answers {
-                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+            val dataFollowShop = DataFollowShop().apply {
+                followShop = FollowShop().apply {
+                    isSuccess = true
+                    message = "Success"
                 }
             }
 
-            When("process to update cart data") {
-                cartListPresenter.doUpdateCartForPromo()
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
+                }
+            }
+
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.navigateToPromoRecommendation()
+                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
                 }
             }
         }
 
-        Scenario("failed update cart with exception") {
+        Scenario("failed follow shop") {
 
-            val exception = ResponseErrorException("error message")
+            val exception = ResponseErrorException("Failed")
 
-            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-                add(CartItemHolderData().apply {
-                    isCod = true
-                    productPrice = 1000
-                    quantity = 10
-                })
-            }
-
-            Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
-            }
-
-            Given("update cart data") {
-                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
-                coEvery { updateCartUseCase.execute(any(), any()) } answers {
-                    secondArg<(Throwable) -> Unit>().invoke(exception)
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+                    firstArg<(CartData) -> Unit>().invoke(CartData())
                 }
             }
 
-            When("process to update cart data") {
-                cartListPresenter.doUpdateCartForPromo()
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
-            Then("should render error") {
-                verify {
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
                     view.showToastMessageRed(exception)
                 }
             }
         }
 
-        Scenario("failed update cart because data is empty") {
-
-            Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { emptyList() }
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.doUpdateCartForPromo()
-            }
-
-            Then("should hide progress loading") {
-                verify {
-                    view.hideProgressLoading()
-                }
-            }
-        }
     }
 
 })

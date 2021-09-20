@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -6,12 +6,12 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,13 +20,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.mockk
-import org.junit.Assert
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClickWishlistAnalyticsTest : Spek({
+object CartListPresenterClearPromoTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +52,7 @@ object CartListPresenterClickWishlistAnalyticsTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate wishlist data click analytics") {
+    Feature("clear promo action") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,48 +71,47 @@ object CartListPresenterClickWishlistAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected and cart is not empty") {
+        Scenario("success clear promo") {
 
-            lateinit var result: Map<String, Any>
+            val clearPromoModel = ClearPromoUiModel()
 
-            When("generate wishlist data click analytics") {
-                result = cartListPresenter.generateWishlistProductClickDataLayer(CartWishlistItemHolderData(), 0)
+            Given("clear promo data") {
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process clear promo") {
+                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
             }
 
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
+            Then("should navigate to checkout page") {
+                verify {
+                    view.hideProgressLoading()
+                    view.onSuccessClearRedPromosThenGoToCheckout()
+                }
             }
 
         }
 
-        Scenario("1 item selected and cart is empty") {
+        Scenario("failed validate use promo") {
 
-            lateinit var result: Map<String, Any>
+            val exception = CartResponseErrorException("error message")
 
-            When("generate wishlist data click analytics") {
-                result = cartListPresenter.generateWishlistProductClickEmptyCartDataLayer(CartWishlistItemHolderData(), 0)
+            Given("clear promo data") {
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process clear promo") {
+                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
+            Then("should navigate to checkout page") {
+                verify {
+                    view.hideProgressLoading()
+                    view.onSuccessClearRedPromosThenGoToCheckout()
+                }
             }
-
         }
 
     }

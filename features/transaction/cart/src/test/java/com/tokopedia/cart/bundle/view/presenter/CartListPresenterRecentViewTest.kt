@@ -1,21 +1,22 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -28,7 +29,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterAddCartToWishlistTest : Spek({
+object CartListPresenterRecentViewTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,10 +53,9 @@ object CartListPresenterAddCartToWishlistTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
-
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("add cart item to wishlist") {
+    Feature("get recent view test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,98 +74,113 @@ object CartListPresenterAddCartToWishlistTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success add cart item to wishlist") {
-
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
-
-            val addToCartWishlistData = AddCartToWishlistData().apply {
-                isSuccess = true
-                message = "success"
+        Scenario("get recent view success") {
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList":
+                    [
+                        {
+                            "productId":0
+                        }
+                    ]
+                }
+            """.trimIndent()
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
 
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
+            Given("success response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            Given("request params") {
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
-            Then("should render success") {
+            Then("should render recent view") {
                 verify {
-                    view.onAddCartToWishlistSuccess(addToCartWishlistData.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                    view.renderRecentView(response[0])
                 }
             }
-        }
 
-        Scenario("failed add cart item to wishlist") {
-
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
-
-            val addToCartWishlistData = AddCartToWishlistData().apply {
-                isSuccess = false
-                message = "failed"
-            }
-
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
-            }
-
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-            }
-
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
-            }
-
-            Then("should render failed") {
+            Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.showToastMessageRed(addToCartWishlistData.message)
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
+
         }
 
-        Scenario("failed add cart item to wishlist with exception") {
+        Scenario("get recent view empty") {
 
-            val productId = "1"
-            val cartId = "2"
-            val isLastItem = false
-            val source = "source"
-            val forceExpandCollapsedUnavailableItems = false
-
-            val exception = ResponseErrorException("Error")
-
-            Given("mock add cart item to wishlist response") {
-                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(exception)
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList":
+                    [
+                    ]
+                }
+            """.trimIndent()
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
 
-            Given("mock update cart counter response") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            Given("success response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process add cart item to wishlist") {
-                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+            Given("request params") {
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            Then("should render failed") {
-                verify {
-                    view.showToastMessageRed(exception)
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
+            }
+
+            Then("should not render recent view") {
+                verify(inverse = true) {
+                    view.renderRecentView(response[0])
                 }
             }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
+
+        Scenario("get recent view error") {
+
+            Given("error response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+            }
+
+            Given("request params") {
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+            }
+
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData(emptyList())
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
+        }
+
     }
 
 })

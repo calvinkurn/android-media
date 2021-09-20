@@ -1,5 +1,6 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
+import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -9,9 +10,8 @@ import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -20,13 +20,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterClearPromoTest : Spek({
+object CartListPresenterAddToCartExternalTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +54,7 @@ object CartListPresenterClearPromoTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("clear promo action") {
+    Feature("add to cart") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,45 +73,58 @@ object CartListPresenterClearPromoTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success clear promo") {
+        Scenario("success add to cart") {
 
-            val clearPromoModel = ClearPromoUiModel()
-
-            Given("clear promo data") {
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
-            }
-
-            When("process clear promo") {
-                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
-            }
-
-            Then("should navigate to checkout page") {
-                verify {
-                    view.hideProgressLoading()
-                    view.onSuccessClearRedPromosThenGoToCheckout()
+            val addToCartExternalModel = AddToCartExternalModel().apply {
+                success = 1
+                message = arrayListOf<String>().apply {
+                    add("Success message")
                 }
             }
 
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
+            When("process to add to cart") {
+                cartListPresenter.processAddToCartExternal(1)
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(addToCartExternalModel.message[0])
+                    view.refreshCartWithSwipeToRefresh()
+                }
+            }
         }
 
-        Scenario("failed validate use promo") {
+        Scenario("failed add to cart") {
 
-            val exception = CartResponseErrorException("error message")
+            val errorMessage = "Error message"
+            val exception = MessageErrorException(errorMessage)
 
-            Given("clear promo data") {
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("add to cart data") {
+                every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            When("process clear promo") {
-                cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
-            Then("should navigate to checkout page") {
-                verify {
+            When("process to update cart data") {
+                cartListPresenter.processAddToCartExternal(1)
+            }
+
+            Then("should show error") {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onSuccessClearRedPromosThenGoToCheckout()
+                    view.showToastMessageRed(exception)
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }

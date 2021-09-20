@@ -1,8 +1,9 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
@@ -22,11 +23,12 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterCalculateWeightTest : Spek({
+object CartListPresenterCalculateSubTotalTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -75,7 +77,6 @@ object CartListPresenterCalculateWeightTest : Spek({
                 productId = "1"
                 productCashBack = "10%"
                 quantity = 1
-                productWeight = 1
             }
         }
         //endregion
@@ -87,7 +88,6 @@ object CartListPresenterCalculateWeightTest : Spek({
                 parentId = "0"
                 productId = "2"
                 quantity = 2
-                productWeight = 2
             }
         }
         //endregion
@@ -99,7 +99,6 @@ object CartListPresenterCalculateWeightTest : Spek({
                 parentId = "0"
                 productId = "3"
                 quantity = 3
-                productWeight = 3
             }
         }
         //endregion
@@ -111,7 +110,6 @@ object CartListPresenterCalculateWeightTest : Spek({
                 parentId = "0"
                 productId = "4"
                 quantity = 4
-                productWeight = 4
             }
         }
         //endregion
@@ -131,7 +129,7 @@ object CartListPresenterCalculateWeightTest : Spek({
             }
         }
         //endregion
-        
+
         val cartShops by memoized { arrayListOf(firstShop, secondShop) }
 
         beforeEachTest {
@@ -152,9 +150,11 @@ object CartListPresenterCalculateWeightTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
-            Then("should have no total weight") {
-                assert(cartShops[0].totalWeight == 0.0)
-                assert(cartShops[1].totalWeight == 0.0)
+            Then("should have no subtotal and no cashback") {
+                verify {
+                    view.updateCashback(0.0)
+                    view.renderDetailInfoSubTotal("0", 0.0, false)
+                }
             }
         }
 
@@ -180,9 +180,11 @@ object CartListPresenterCalculateWeightTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
-            Then("should have 1 gram weight in first shop and 16 gram weight in second shop") {
-                assert(cartShops[0].totalWeight == 1.0)
-                assert(cartShops[1].totalWeight == 16.0)
+            Then("should have 1004 subtotal and 100 cashback") {
+                verify {
+                    view.updateCashback(100.0)
+                    view.renderDetailInfoSubTotal("5", 1004.0, false)
+                }
             }
         }
 
@@ -210,10 +212,176 @@ object CartListPresenterCalculateWeightTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
-            Then("should have 10 gram in first shop and 20 gram in second shop") {
-                assert(cartShops[0].totalWeight == 10.0)
-                assert(cartShops[1].totalWeight == 20.0)
+            Then("should have 1684 subtotal and 100 cashback") {
+                verify {
+                    view.updateCashback(100.0)
+                    view.renderDetailInfoSubTotal("10", 1684.0, false)
+                }
             }
         }
+
+        Scenario("all item selected with wholesale price") {
+
+            Given("check all items") {
+                firstProductFirstShop.isSelected = true
+                secondProductFirstShop.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstProductSecondShop.isSelected = true
+                secondProductSecondShop.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("wholesale price") {
+                val wholesalePriceData = WholesalePrice(qtyMin = 5, prdPrc = 100)
+                firstProductFirstShop.wholesalePriceData = arrayListOf(wholesalePriceData)
+                firstProductFirstShop.quantity = 10
+            }
+
+            Given("cart data list") {
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.productUiModelList
+                    }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops)
+            }
+
+            Then("should have 1684 subtotal from 19 items and 100 cashback") {
+                verify {
+                    view.updateCashback(100.0)
+                    view.renderDetailInfoSubTotal("19", 1684.0, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with invalid wholesale price") {
+
+            Given("check all items") {
+                firstProductFirstShop.isSelected = true
+                secondProductFirstShop.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstProductSecondShop.isSelected = true
+                secondProductSecondShop.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("wholesale price") {
+                val wholesalePriceData = WholesalePrice(qtyMin = 10, prdPrc = 100)
+                firstProductFirstShop.wholesalePriceData = arrayListOf(wholesalePriceData)
+            }
+
+            Given("cart data list") {
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.productUiModelList
+                    }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops)
+            }
+
+            Then("should have 1684 subtotal and 100 cashback") {
+                verify {
+                    view.updateCashback(100.0)
+                    view.renderDetailInfoSubTotal("10", 1684.0, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with product variant") {
+
+            Given("check all items") {
+                firstProductFirstShop.isSelected = true
+                secondProductFirstShop.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstProductSecondShop.isSelected = true
+                secondProductSecondShop.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("product variant") {
+                firstProductFirstShop.parentId = "9"
+                secondProductFirstShop.parentId = "9"
+                secondProductFirstShop.productCashBack = firstProductFirstShop.productCashBack
+            }
+
+            Given("cart data list") {
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.productUiModelList
+                    }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops)
+            }
+
+            Then("should have 1684 subtotal and 160 cashback") {
+                verify {
+                    view.updateCashback(160.0)
+                    view.renderDetailInfoSubTotal("10", 1684.0, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with same priced product variant") {
+
+            Given("check all items") {
+                firstProductFirstShop.isSelected = true
+                secondProductFirstShop.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstProductSecondShop.isSelected = true
+                secondProductSecondShop.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("product variant with same price") {
+                firstProductSecondShop.quantity = 1
+                firstProductSecondShop.productPrice = 100
+                secondProductSecondShop.quantity = 1
+                secondProductSecondShop.productPrice = 200
+
+                firstProductFirstShop.parentId = "9"
+                firstProductFirstShop.productPrice = 1000
+                firstProductFirstShop.productCashBack = "10%"
+                firstProductFirstShop.quantity = 2
+
+                secondProductFirstShop.parentId = "9"
+                secondProductFirstShop.productPrice = 1000
+                secondProductFirstShop.productCashBack = "10%"
+                secondProductFirstShop.quantity = 2
+            }
+
+            Given("cart data list") {
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.productUiModelList
+                    }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops)
+            }
+
+            Then("should have 4084 subtotal and 400 cashback") {
+                verify {
+                    view.updateCashback(400.0)
+                    view.renderDetailInfoSubTotal("6", 4300.0, false)
+                }
+            }
+        }
+
     }
+
 })

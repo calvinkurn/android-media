@@ -1,35 +1,32 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
-import com.google.gson.Gson
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cartcommon.data.response.undodeletecart.Data
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterRecentViewTest : Spek({
+object CartListPresenterUndoDeleteCartTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +52,7 @@ object CartListPresenterRecentViewTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recent view test") {
+    Feature("undo delete cart test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,108 +71,51 @@ object CartListPresenterRecentViewTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recent view success") {
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                        {
-                            "productId":0
-                        }
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
-            }
+        Scenario("undo delete cart success") {
+
+            val response = UndoDeleteCartDataResponse(
+                    status = "OK",
+                    data = Data(success = 1, message = listOf("success message"))
+            )
 
             Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should render recent view") {
-                verify {
-                    view.renderRecentView(response[0])
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
                 }
             }
 
-            Then("should try to stop firebase performance tracker") {
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            }
+
+            Then("should render success") {
                 verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
+                    view.onUndoDeleteCartDataSuccess()
                 }
             }
 
         }
 
-        Scenario("get recent view empty") {
+        Scenario("undo delete cart failed with exception") {
 
-            val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList":
-                    [
-                    ]
-                }
-            """.trimIndent()
-            val response = mutableListOf<RecommendationWidget>().apply {
-                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-                add(recommendationWidget)
-            }
-
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should not render recent view") {
-                verify(inverse = true) {
-                    view.renderRecentView(response[0])
-                }
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get recent view error") {
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
 
             Given("error response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
             }
 
-            Given("request params") {
-                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+            When("process undo delete") {
+                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
             }
 
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData(emptyList())
-            }
-
-            Then("should try to stop firebase performance tracker") {
+            Then("should render error") {
                 verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
+                    view.showToastMessageRed(throwable)
                 }
             }
 

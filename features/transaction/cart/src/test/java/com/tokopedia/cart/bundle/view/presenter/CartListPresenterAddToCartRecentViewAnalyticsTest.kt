@@ -1,16 +1,21 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -19,15 +24,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verifyOrder
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterSeamlessLoginTest : Spek({
+object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +56,7 @@ object CartListPresenterSeamlessLoginTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("seamless login") {
+    Feature("generate add to cart data analytics on recent view") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -72,96 +75,48 @@ object CartListPresenterSeamlessLoginTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success redirect to lite") {
+        Scenario("1 item selected on non empty cart") {
 
-            val url = "http://"
+            lateinit var result: Map<String, Any>
 
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onUrlGenerated(url)
-                }
-                val adsId = "123"
-                every { view.getAdsId() } returns adsId
+            When("generate add to cart recent view data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
             }
 
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
-            Then("should navigate to lite") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.goToLite(url)
-                }
+            Then("key `list` value should be `cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
             }
+
         }
 
-        Scenario("failed redirect to lite") {
+        Scenario("1 item selected on empty cart") {
 
-            val url = "http://"
-            val errorMessage = "error"
+            lateinit var result: Map<String, Any>
 
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onError(errorMessage)
-                }
-                val adsId = "123"
-                every { view.getAdsId() } returns adsId
+            When("generate add to cart recent view data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
             }
 
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
-            Then("should navigate show error") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
-                }
-            }
-        }
-
-        Scenario("failed redirect to lite with error param") {
-
-            val url = "http://"
-            val errorMessage = "error"
-
-            Given("redirect to lite data") {
-                val slot = slot<CartSeamlessLoginSubscriber>()
-                every {
-                    seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
-                } answers {
-                    val captured = slot.captured
-                    captured.onError(errorMessage)
-                }
-                val adsId = null
-                every { view.getAdsId() } returns adsId
+            Then("key `list` value should be `empty cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
             }
 
-            When("process redirect to lite") {
-                cartListPresenter.redirectToLite(url)
-            }
-
-            Then("should navigate show error") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    view.getAdsId()
-                    view.hideProgressLoading()
-                    view.showToastMessageRed()
-                }
-            }
         }
 
     }

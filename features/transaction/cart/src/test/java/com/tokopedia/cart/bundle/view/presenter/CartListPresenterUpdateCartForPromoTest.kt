@@ -1,17 +1,18 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
+import com.tokopedia.cart.bundle.utils.DataProvider
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cartcommon.data.response.undodeletecart.Data
-import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -26,7 +27,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterUndoDeleteCartTest : Spek({
+object CartListPresenterUpdateCartForPromoTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +53,7 @@ object CartListPresenterUndoDeleteCartTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("undo delete cart test") {
+    Feature("update cart list for promo action") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,56 +72,90 @@ object CartListPresenterUndoDeleteCartTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("undo delete cart success") {
+        Scenario("success update cart") {
 
-            val response = UndoDeleteCartDataResponse(
-                    status = "OK",
-                    data = Data(success = 1, message = listOf("success message"))
-            )
+            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+                add(CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000
+                    quantity = 10
+                })
+            }
 
-            Given("success response") {
-                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
-                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
-                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+            }
+
+            Given("update cart data") {
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
                 }
             }
 
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            When("process to update cart data") {
+                cartListPresenter.doUpdateCartForPromo()
             }
 
             Then("should render success") {
                 verify {
-                    view.onUndoDeleteCartDataSuccess()
+                    view.hideProgressLoading()
+                    view.navigateToPromoRecommendation()
                 }
             }
-
         }
 
-        Scenario("undo delete cart failed with exception") {
+        Scenario("failed update cart with exception") {
 
-            val errorMessage = "Error Message"
-            val throwable = ResponseErrorException(errorMessage)
+            val exception = ResponseErrorException("error message")
 
-            Given("error response") {
-                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
-                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
-                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+                add(CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000
+                    quantity = 10
+                })
+            }
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+            }
+
+            Given("update cart data") {
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(exception)
                 }
             }
 
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            When("process to update cart data") {
+                cartListPresenter.doUpdateCartForPromo()
             }
 
             Then("should render error") {
                 verify {
-                    view.showToastMessageRed(throwable)
+                    view.showToastMessageRed(exception)
                 }
             }
-
         }
 
+        Scenario("failed update cart because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.doUpdateCartForPromo()
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
     }
 
 })

@@ -1,35 +1,33 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
-import com.tokopedia.cartcommon.data.response.deletecart.Data
-import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterDeleteCartTest : Spek({
+object CartListPresenterSaveCheckboxStateTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -53,9 +51,10 @@ object CartListPresenterDeleteCartTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
+
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("delete cart item") {
+    Feature("add cart item to wishlist") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,92 +73,31 @@ object CartListPresenterDeleteCartTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("remove all cart data") {
+        Scenario("success save checkbox state") {
 
-            Given("success delete") {
-                coEvery { deleteCartUseCase.setParams(any()) } just Runs
-                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-                    firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
-                }
+            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
+                add(
+                        CartItemHolderData(
+                                isSelected = true,
+                                cartId = "123"
+                        )
+                )
             }
 
-            Given("empty cart list data") {
-                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
-                }
+            Given("mock save checkbox state response") {
+                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(true)
             }
 
-            Given("update cart counter success") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+            Given("mock params") {
+                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
             }
 
-            When("process delete cart item") {
-                val cartItemData = CartItemHolderData(cartId = "0")
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+            When("process save checkbox state") {
+                cartListPresenter.saveCheckboxState(cartItemDataList)
             }
 
-            Then("should render success") {
-                verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
-                }
-            }
-        }
-
-        Scenario("remove some cart data") {
-
-            val firstCartItemData = CartItemHolderData()
-            val secondCartItemData = CartItemHolderData().apply {
-                cartId = "1"
-            }
-
-            Given("success delete") {
-                coEvery { deleteCartUseCase.setParams(any()) } just Runs
-                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-                    firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
-                }
-            }
-
-            Given("update cart counter success") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-            }
-
-            When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                        arrayListOf(secondCartItemData), false, false)
-            }
-
-            Then("should success delete") {
-                verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("1"), false, false, false, false, false)
-                }
-            }
-        }
-
-        Scenario("fail remove cart data") {
-
-            val throwable = ResponseErrorException("fail testing delete")
-            val cartItemData = CartItemHolderData()
-
-            Given("fail delete") {
-                coEvery { deleteCartUseCase.setParams(any()) } just Runs
-                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-                    secondArg<(Throwable) -> Unit>().invoke(throwable)
-                }
-            }
-
-            Given("update cart counter success") {
-                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-            }
-
-            When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
-            }
-
-            Then("should show error message") {
-                verify {
-                    view.showToastMessageRed(throwable)
-                }
+            Then("should success") {
+                assert(true)
             }
         }
 

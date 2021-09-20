@@ -1,19 +1,20 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
+import com.tokopedia.cartcommon.data.response.deletecart.Data
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -28,7 +29,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterUpdateAndReloadCartTest : Spek({
+object CartListPresenterDeleteCartTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -54,7 +55,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update and reload cart list") {
+    Feature("delete cart item") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -73,83 +74,91 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update and reload empty cart") {
+        Scenario("remove all cart data") {
 
-            val emptyCartListData = UpdateAndReloadCartListData()
-
-            Given("empty data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-            }
-
-            When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData("0")
-            }
-
-            Then("should hide loading") {
-                verify {
-                    view.hideProgressLoading()
+            Given("success delete") {
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
                 }
             }
-        }
 
-        Scenario("success update and reload cart") {
-
-            val cartItemData = CartItemHolderData().apply {
-                notes = ""
-            }
-            val updateAndReloadCartListData = UpdateAndReloadCartListData()
-
-            Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(updateAndReloadCartListData)
-            }
-
-            Given("all available cart data") {
-                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
+            Given("empty cart list data") {
                 coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
                 coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
                     firstArg<(CartData) -> Unit>().invoke(CartData())
                 }
             }
 
-            When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData("0")
+            Given("update cart counter success") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
             }
 
-            Then("should hide loading") {
-                verifyOrder {
-                    view.hideProgressLoading()
+            When("process delete cart item") {
+                val cartItemData = CartItemHolderData(cartId = "0")
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+            }
+
+            Then("should render success") {
+                verify {
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
                 }
             }
         }
 
-        Scenario("failed update and reload cart with exception") {
+        Scenario("remove some cart data") {
 
-            val exception = CartResponseErrorException("error message")
-            val cartItemData = CartItemHolderData().apply {
-                notes = ""
+            val firstCartItemData = CartItemHolderData()
+            val secondCartItemData = CartItemHolderData().apply {
+                cartId = "1"
             }
 
-            Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            Given("all available cart data") {
-                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-            }
-
-            When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData("0")
-            }
-
-            Then("should hide loading") {
-                verifyOrder {
-                    view.hideProgressLoading()
+            Given("success delete") {
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
                 }
             }
 
-            Then("should render error") {
+            Given("update cart counter success") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+            }
+
+            When("process delete cart item") {
+                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
+                        arrayListOf(secondCartItemData), false, false)
+            }
+
+            Then("should success delete") {
                 verify {
-                    view.showToastMessageRed(exception)
+                    view.onDeleteCartDataSuccess(arrayListOf("1"), false, false, false, false, false)
+                }
+            }
+        }
+
+        Scenario("fail remove cart data") {
+
+            val throwable = ResponseErrorException("fail testing delete")
+            val cartItemData = CartItemHolderData()
+
+            Given("fail delete") {
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
+            }
+
+            Given("update cart counter success") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+            }
+
+            When("process delete cart item") {
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
+            }
+
+            Then("should show error message") {
+                verify {
+                    view.showToastMessageRed(throwable)
                 }
             }
         }

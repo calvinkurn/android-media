@@ -1,35 +1,39 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
+import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
-import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterFollowShopTest : Spek({
+object CartListPresenterUpdateCartAndValidateUseTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -43,7 +47,7 @@ object CartListPresenterFollowShopTest : Spek({
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk(relaxed = true)
     val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
@@ -55,7 +59,7 @@ object CartListPresenterFollowShopTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("follow shop") {
+    Feature("update cart and validate use for promo action") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,57 +78,90 @@ object CartListPresenterFollowShopTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success follow shop") {
+        Scenario("success update and validate use") {
 
-            val dataFollowShop = DataFollowShop().apply {
-                followShop = FollowShop().apply {
+            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
+                add(CartItemHolderData(isError = false))
+            }
+
+            val updateAndValidateUseData = UpdateAndValidateUseData().apply {
+                updateCartData = UpdateCartData().apply {
                     isSuccess = true
-                    message = "Success"
                 }
+                promoUiModel = PromoUiModel()
             }
 
-            Given("follow shop data") {
-                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
-                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
-                }
+            Given("update and validate use data") {
+                every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.just(updateAndValidateUseData)
             }
 
-            When("process follow shop") {
-                cartListPresenter.followShop("1")
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
-            Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should render promo button") {
+                verify {
+                    view.updatePromoCheckoutStickyButton(updateAndValidateUseData.promoUiModel!!)
                 }
             }
         }
 
-        Scenario("failed follow shop") {
+        Scenario("failed update and validate use with exception") {
 
-            val exception = ResponseErrorException("Failed")
+            val exception = CartResponseErrorException("error message")
 
-            Given("follow shop data") {
-                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
-                coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-                coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-                    firstArg<(CartData) -> Unit>().invoke(CartData())
+            Given("update and validate use data") {
+                every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should render promo button state active default") {
+                verify {
+                    view.renderPromoCheckoutButtonActiveDefault(emptyList())
                 }
             }
+        }
 
-            When("process follow shop") {
-                cartListPresenter.followShop("1")
+        Scenario("failed update and validate use with akamai exception") {
+
+            val exception = AkamaiErrorException("error message")
+
+            Given("update and validate use data") {
+                every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should clear auto apply and show red toast message") {
+                verify {
+                    clearCacheAutoApplyStackUseCase.createObservable(any())
                     view.showToastMessageRed(exception)
+                }
+            }
+        }
+
+        Scenario("failed update cart because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
                 }
             }
         }

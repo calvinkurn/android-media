@@ -1,13 +1,11 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -30,7 +28,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
+object CartListPresenterClickRecommendationAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -56,7 +54,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate add to cart data analytics on recommendation") {
+    Feature("generate recommendation data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -75,124 +73,126 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected on non empty cart") {
+        Scenario("1 item selected and cart is not empty") {
 
             lateinit var result: Map<String, Any>
 
-            When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), false)
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), false, 0)
             }
 
             Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
             Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
             }
 
         }
 
-        Scenario("1 item selected on non empty cart with eligible BO") {
+        Scenario("1 item selected and cart is not empty and item has category breadcrumb") {
+
+            lateinit var result: Map<String, Any>
+            val categoryBreadcrumb = "cat1/cat2/cat3"
+
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(categoryBreadcrumbs = categoryBreadcrumb), false, 0)
+            }
+
+            Then("key `category` should be $categoryBreadcrumb") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val category = products[0][EnhancedECommerceRecomProductCartMapData.KEY_CAT]
+                Assert.assertTrue(category == categoryBreadcrumb)
+            }
+
+        }
+
+        Scenario("1 item selected and cart is not empty and eligible for BO") {
 
             lateinit var result: Map<String, Any>
 
-            When("generate add to cart recommendation data analytics") {
+            When("generate recommendation data click analytics") {
                 val recommendationItem = RecommendationItem(
                         isFreeOngkirActive = true,
                         labelGroupList = listOf(RecommendationLabel())
                 )
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
             Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR}") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
             }
 
         }
 
-        Scenario("1 item selected on non empty cart with eligible BOE") {
+        Scenario("1 item selected and cart is not empty and eligible for BOE") {
 
             lateinit var result: Map<String, Any>
 
-            When("generate add to cart recommendation data analytics") {
+            When("generate recommendation data click analytics") {
                 val recommendationItem = RecommendationItem(
                         isFreeOngkirActive = true,
                         labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
                 )
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
-            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
             }
 
         }
 
-        Scenario("1 item selected on non empty cart with not eligible BO & BOE") {
+        Scenario("1 item selected and cart is not empty and not eligible for BO & BOE") {
 
             lateinit var result: Map<String, Any>
 
-            When("generate add to cart recommendation data analytics") {
+            When("generate recommendation data click analytics") {
                 val recommendationItem = RecommendationItem(
                         isFreeOngkirActive = false
                 )
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
             Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER}") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             }
 
         }
 
-        Scenario("1 item selected on non empty cart and item is top ads") {
+        Scenario("1 item selected and cart is empty") {
 
             lateinit var result: Map<String, Any>
 
-            When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem(isTopAds = true)), AddToCartDataModel(), false)
-            }
-
-            Then("key `list` value should contain ${EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE}") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String).contains(EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE))
-            }
-
-        }
-
-        Scenario("1 item selected on empty cart") {
-
-            lateinit var result: Map<String, Any>
-
-            When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), true)
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), true, 0)
             }
 
             Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
             Then("key `list` value should be `empty cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
             }
 
         }

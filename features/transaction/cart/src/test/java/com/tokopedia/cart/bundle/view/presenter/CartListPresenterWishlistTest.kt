@@ -1,6 +1,5 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -11,15 +10,14 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
+import com.tokopedia.wishlist.common.response.GetWishlistResponse
+import com.tokopedia.wishlist.common.response.WishlistDataResponse
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -31,7 +29,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterValidateUseTest : Spek({
+object CartListPresenterWishlistTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -57,7 +55,7 @@ object CartListPresenterValidateUseTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("validate use action") {
+    Feature("get wishlist test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -76,65 +74,87 @@ object CartListPresenterValidateUseTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success validate use") {
+        Scenario("get wishlist success") {
 
-            val validateUseModel = ValidateUsePromoRevampUiModel().apply {
-                promoUiModel = PromoUiModel()
+            val response = GetWishlistResponse().apply {
+                gqlWishList = WishlistDataResponse().apply {
+                    wishlistDataList = mutableListOf<Wishlist>().apply {
+                        add(Wishlist())
+                    }
+                }
             }
 
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+            Given("success response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
             }
 
-            Then("should update promo state") {
+            Then("should render wishlist") {
                 verify {
-                    view.updatePromoCheckoutStickyButton(validateUseModel.promoUiModel)
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, true)
+                }
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("failed validate use promo") {
+        Scenario("get wishlist empty") {
 
-            val exception = CartResponseErrorException("error message")
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
-            }
-
-            Then("should set promo button inactive") {
-                verify {
-                    view.showPromoCheckoutStickyButtonInactive()
+            val response = GetWishlistResponse().apply {
+                gqlWishList = WishlistDataResponse().apply {
+                    wishlistDataList = mutableListOf()
                 }
             }
+
+            Given("success response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+            }
+
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
+            }
+
+            Then("should not render wishlist") {
+                verify(inverse = true) {
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, false)
+                }
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
-        Scenario("failed validate use promo with akamai exception") {
+        Scenario("get wishlist error") {
 
-            val exception = AkamaiErrorException("error message")
-
-            Given("validate use promo data") {
-                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("error response") {
+                every { getWishlistUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            When("process validate use promo data") {
-                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            When("process get wishlist") {
+                cartListPresenter.processGetWishlistData()
             }
 
-            Then("should show red toast and set promo button inactive") {
+            Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.showToastMessageRed(exception)
-                    view.showPromoCheckoutStickyButtonInactive()
+                    view.setHasTriedToLoadWishList()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
+
         }
 
     }

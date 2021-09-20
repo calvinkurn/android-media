@@ -1,33 +1,34 @@
-package com.tokopedia.cart.bundle.view.presenter.done
+package com.tokopedia.cart.bundle.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
-import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterSaveCheckboxStateTest : Spek({
+object CartListPresenterAddCartToWishlistTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -73,34 +74,98 @@ object CartListPresenterSaveCheckboxStateTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success save checkbox state") {
+        Scenario("success add cart item to wishlist") {
 
-            val cartItemDataList = ArrayList<CartItemHolderData>().apply {
-                add(
-                        CartItemHolderData(
-                                isSelected = true,
-                                cartId = "123"
-                        )
-                )
+            val productId = "1"
+            val cartId = "2"
+            val isLastItem = false
+            val source = "source"
+            val forceExpandCollapsedUnavailableItems = false
+
+            val addToCartWishlistData = AddCartToWishlistData().apply {
+                isSuccess = true
+                message = "success"
             }
 
-            Given("mock save checkbox state response") {
-                every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(true)
+            Given("mock add cart item to wishlist response") {
+                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
             }
 
-            Given("mock params") {
-                every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
+            Given("mock update cart counter response") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
-            When("process save checkbox state") {
-                cartListPresenter.saveCheckboxState(cartItemDataList)
+            When("process add cart item to wishlist") {
+                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
             }
 
-            Then("should success") {
-                assert(true)
+            Then("should render success") {
+                verify {
+                    view.onAddCartToWishlistSuccess(addToCartWishlistData.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                }
             }
         }
 
+        Scenario("failed add cart item to wishlist") {
+
+            val productId = "1"
+            val cartId = "2"
+            val isLastItem = false
+            val source = "source"
+            val forceExpandCollapsedUnavailableItems = false
+
+            val addToCartWishlistData = AddCartToWishlistData().apply {
+                isSuccess = false
+                message = "failed"
+            }
+
+            Given("mock add cart item to wishlist response") {
+                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(addToCartWishlistData)
+            }
+
+            Given("mock update cart counter response") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            }
+
+            When("process add cart item to wishlist") {
+                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+            }
+
+            Then("should render failed") {
+                verify {
+                    view.showToastMessageRed(addToCartWishlistData.message)
+                }
+            }
+        }
+
+        Scenario("failed add cart item to wishlist with exception") {
+
+            val productId = "1"
+            val cartId = "2"
+            val isLastItem = false
+            val source = "source"
+            val forceExpandCollapsedUnavailableItems = false
+
+            val exception = ResponseErrorException("Error")
+
+            Given("mock add cart item to wishlist response") {
+                every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            Given("mock update cart counter response") {
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+            }
+
+            When("process add cart item to wishlist") {
+                cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+            }
+
+            Then("should render failed") {
+                verify {
+                    view.showToastMessageRed(exception)
+                }
+            }
+        }
     }
 
 })
