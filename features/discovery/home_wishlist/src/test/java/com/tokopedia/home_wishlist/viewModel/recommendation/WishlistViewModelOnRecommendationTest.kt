@@ -9,6 +9,7 @@ import com.tokopedia.home_wishlist.viewModel.givenGetImageData
 import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase

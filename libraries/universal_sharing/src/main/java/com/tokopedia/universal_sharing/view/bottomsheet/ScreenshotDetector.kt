@@ -33,11 +33,11 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
 
     private var contentObserver: ContentObserver? = null
     private val pendingRegex = ".pending"
-    private val screenShotRegex = "screenshot"
     private val actionPermissionDialog = "click - access photo media and files"
     private val labelAllow = "allow"
     private val labelDeny = "deny"
     private val readingDelayTime = 1100L
+    private val screenShotDelayTime = 500L;
     private var ssUriPath = ""
 
     fun start() {
@@ -79,9 +79,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                         if (!ssUriPath.equals(path)) {
                             ssUriPath = path
                             if (!path.contains(pendingRegex)) {
-                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                                UniversalShareBottomSheet.setScreenShotImagePath(path)
-                                screenShotListener?.screenShotTaken()
+                                notifyScreenShotTaken(path)
                             }
                         }
                     }
@@ -119,9 +117,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                         if (!ssUriPath.equals(relativePath)) {
                             ssUriPath = relativePath
                             if (!relativePath.contains(pendingRegex)) {
-                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                                UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                                screenShotListener?.screenShotTaken()
+                                notifyScreenShotTaken(relativePath)
                             }
                         }
                     }
@@ -130,6 +126,14 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }catch (exception:Exception){
             logError(exception.localizedMessage)
         }
+    }
+
+    private fun notifyScreenShotTaken(path:String){
+        Handler(Looper.getMainLooper()).postDelayed({
+            UniversalShareBottomSheet.setImageOnlySharingOption(true)
+            UniversalShareBottomSheet.setScreenShotImagePath(path)
+            screenShotListener?.screenShotTaken()
+        }, screenShotDelayTime)
     }
 
     private fun ContentResolver.registerObserver(): ContentObserver {
@@ -185,6 +189,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             DialogUnify.WITH_ILLUSTRATION).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
             setPrimaryCTAClickListener {
+                this.setOnDismissListener {  }
                 display?.invoke()
                 requestPermission(fragment)
                 dismiss()
@@ -192,9 +197,10 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
+                this.setOnDismissListener {  }
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     display?.invoke()
                 }, readingDelayTime)
                 permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
@@ -202,7 +208,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             setOnDismissListener {
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     display?.invoke()
                 }, readingDelayTime)
                 permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
@@ -274,6 +280,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
 
     companion object {
         //permission request code
+        const val screenShotRegex = "screenshot"
         const val READ_EXTERNAL_STORAGE_REQUEST = 500
         const val TAG_SS_ERR = "SCREENSHOT_ERROR"
         const val LABEL_TYPE = "type"

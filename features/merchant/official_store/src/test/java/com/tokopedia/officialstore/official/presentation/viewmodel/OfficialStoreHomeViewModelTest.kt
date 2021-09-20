@@ -26,6 +26,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCa
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -79,6 +80,12 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
 
+    @RelaxedMockK
+    lateinit var getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var bestSellerMapper: BestSellerMapper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -99,6 +106,8 @@ class OfficialStoreHomeViewModelTest {
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
                 getDisplayHeadlineAds,
+                getRecommendationUseCaseCoroutine,
+                bestSellerMapper,
                 CoroutineTestDispatchersProvider
         )
     }

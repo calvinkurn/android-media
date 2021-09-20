@@ -26,9 +26,9 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
     }
 
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        return if(productComponentName  == ComponentNames.CategoryBestSeller.componentName){
+        val list =  if(productComponentName  == ComponentNames.CategoryBestSeller.componentName){
             val recommendationData =
                     recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), true))
             mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
@@ -37,6 +37,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
                     recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
             mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
         }
+        return Pair(list,null)
     }
 
     private fun getRecommendationRequestParam(page: String, componentId: String, isBestSeller : Boolean, queryParam : String = ""): GetRecommendationRequestParam {

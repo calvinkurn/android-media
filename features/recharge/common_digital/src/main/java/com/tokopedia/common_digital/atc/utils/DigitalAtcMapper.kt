@@ -21,8 +21,8 @@ object DigitalAtcMapper {
                 pricePlain = responseCartData.attributes?.pricePlain ?: 0.0,
                 isInstantCheckout = responseCartData.attributes?.isInstantCheckout ?: false,
                 source = digitalCheckoutPassData.source,
-                userId = userId
-
+                userId = userId,
+                isSpecialProduct = digitalCheckoutPassData.isSpecialProduct
         )
     }
 }

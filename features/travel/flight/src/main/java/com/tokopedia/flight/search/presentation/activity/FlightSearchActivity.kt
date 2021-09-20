@@ -90,7 +90,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                         }
                         FlightFlowConstant.CHANGE_SEARCH_PARAM.value -> {
                             if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
+                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as? FlightSearchPassDataModel ?: FlightSearchPassDataModel()))
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
@@ -176,7 +176,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun initializeDataFromExtras() {
-        flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA)
+        flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA) ?: FlightSearchPassDataModel()
         isSearchFromWidget = intent.getBooleanExtra(EXTRA_SEARCH_FROM_WIDGET, false)
         initializeToolbarData()
     }

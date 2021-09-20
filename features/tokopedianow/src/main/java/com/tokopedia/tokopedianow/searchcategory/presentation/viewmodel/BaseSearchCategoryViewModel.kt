@@ -613,7 +613,7 @@ abstract class BaseSearchCategoryViewModel(
             if (product.childs.isEmpty())
                 NonVariantATCDataView(
                         minQuantity = product.minOrder,
-                        maxQuantity = product.stock,
+                        maxQuantity = product.maxOrder,
                         quantity = getProductNonVariantQuantity(product.id)
                 )
             else null
@@ -882,9 +882,10 @@ abstract class BaseSearchCategoryViewModel(
     open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
 
-        viewModelScope.launch {
-            updateMiniCartInBackground(miniCartSimplifiedData)
-        }
+        viewModelScope.launchCatchError(
+            block = { updateMiniCartInBackground(miniCartSimplifiedData) },
+            onError = { }
+        )
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {

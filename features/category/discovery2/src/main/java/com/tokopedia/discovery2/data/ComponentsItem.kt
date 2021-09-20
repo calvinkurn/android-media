@@ -89,6 +89,7 @@ data class ComponentsItem(
         var autoPlayController: AutoPlayController? = null,
         var verticalProductFailState: Boolean = false,
         var userAddressData: LocalCacheModel? = null,
+        var nextPageKey:String? = "",
         var horizontalProductFailState: Boolean = false,) {
 
     private var componentsItem: List<ComponentsItem>? = null
