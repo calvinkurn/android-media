@@ -97,6 +97,10 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
             
                     }
                   }
+                  bundle_id
+                  bundle_variant_name
+                  product_bundling_icon
+                  is_have_bundle_product
                 }
             }
         """.trimIndent()

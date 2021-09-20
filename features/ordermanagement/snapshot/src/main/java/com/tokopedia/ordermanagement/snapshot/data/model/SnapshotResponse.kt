@@ -15,11 +15,16 @@ data class Data(
 
 data class GetOrderSnapshot(
 	@field:SerializedName("bundle_id")
-	@field:SuppressLint("Invalid Data Type")
-	val bundleId: Long = 0,
+	val bundleId: String = "",
 
-	@field:SerializedName("bundle_name")
+	@field:SerializedName("bundle_variant_name")
 	val bundleName: String = "",
+
+	@field:SerializedName("product_bundling_icon")
+	val bundleIcon: String = "",
+
+	@field:SerializedName("is_have_bundle_product")
+	val isBundleProduct: Boolean = false,
 
 	@field:SerializedName("product_price_formatted")
 	val productPriceFormatted: String = "",
