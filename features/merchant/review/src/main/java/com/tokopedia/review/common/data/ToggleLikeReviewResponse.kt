@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ToggleLikeReviewResponse(
-        @SerializedName("toggleProductReviewLike")
+        @SerializedName("toggleProductReviewLikeV2")
         @Expose
         val toggleProductReviewLike: ToggleProductReviewLike = ToggleProductReviewLike()
 )

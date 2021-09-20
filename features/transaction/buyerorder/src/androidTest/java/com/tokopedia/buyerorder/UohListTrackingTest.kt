@@ -2,8 +2,8 @@ package com.tokopedia.buyerorder
 
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
@@ -28,7 +28,7 @@ class UohListTrackingTest {
     }
 
     @get:Rule
-    var activityRule = ActivityTestRule(UohListActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(UohListActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -63,6 +63,7 @@ class UohListTrackingTest {
 
         runBot {
             loading()
+            hideKeyboard()
             clickPrimaryButton()
             clickThreeDotsMenu()
             clickBeliLagi()

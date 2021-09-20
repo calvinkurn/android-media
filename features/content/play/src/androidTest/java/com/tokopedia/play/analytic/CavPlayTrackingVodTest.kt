@@ -36,7 +36,7 @@ class CavPlayTrackingVodTest {
             setup(intentsTestRule)
             setMockModel(PlayVodMockModelConfig())
             launch("1")
-            setJsonAbsolutePath("tracker/content/play/play_vod_analytic.json")
+            setJsonAbsolutePath("play_vod_analytic.json")
         } test {
             fakeLogin()
             fakeLaunch()

@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.google.firebase.appindexing.AndroidAppUri;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
@@ -37,31 +36,31 @@ public class DeeplinkUTMUtils {
 
     public static Uri simplifyUrl(String url) {
         Uri afUri = Uri.parse(url);
-        String newUri = afUri.getQueryParameter("af_dp");
+        StringBuilder newUri = new StringBuilder(afUri.getQueryParameter("af_dp"));
         Map<String, String> maps = splitQuery(afUri);
         for (Map.Entry<String, String> imap : maps.entrySet()) {
             switch (imap.getKey()) {
                 case AppEventTracking.GTM.UTM_SOURCE:
-                    newUri += AppEventTracking.GTM.UTM_SOURCE_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_SOURCE_APPEND).append(imap.getValue());
                     break;
                 case AppEventTracking.GTM.UTM_MEDIUM:
-                    newUri += AppEventTracking.GTM.UTM_MEDIUM_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_MEDIUM_APPEND).append(imap.getValue());
                     break;
                 case AppEventTracking.GTM.UTM_TERM:
-                    newUri += AppEventTracking.GTM.UTM_TERM_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_TERM_APPEND).append(imap.getValue());
                     break;
                 case AppEventTracking.GTM.UTM_CONTENT:
-                    newUri += AppEventTracking.GTM.UTM_CONTENT_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_CONTENT_APPEND).append(imap.getValue());
                     break;
                 case AppEventTracking.GTM.UTM_CAMPAIGN:
-                    newUri += AppEventTracking.GTM.UTM_CAMPAIGN_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_CAMPAIGN_APPEND).append(imap.getValue());
                     break;
                 case AppEventTracking.GTM.UTM_GCLID:
-                    newUri += AppEventTracking.GTM.UTM_GCLID_APPEND + imap.getValue();
+                    newUri.append(AppEventTracking.GTM.UTM_GCLID_APPEND).append(imap.getValue());
                     break;
             }
         }
-        return Uri.parse(newUri);
+        return Uri.parse(newUri.toString());
     }
 
 
@@ -189,8 +188,7 @@ public class DeeplinkUTMUtils {
             } else if (referrerUri != null && referrerUri.getScheme() != null && referrerUri.getScheme().equals("android-app")) {
                 // App was opened from another app
 
-                AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(referrerUri);
-                String referrerPackage = appUri.getPackageName();
+                String referrerPackage = referrerUri.getAuthority();
                 String tokopediaPackage = "";
                 if (activity != null) {
                     tokopediaPackage = activity.getPackageName();

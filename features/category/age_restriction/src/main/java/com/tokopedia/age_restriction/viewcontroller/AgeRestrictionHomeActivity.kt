@@ -31,7 +31,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     lateinit var viewModelProvider:  ViewModelProvider.Factory
 
 
-    override fun getVMFactory(): ViewModelProvider.Factory? {
+    override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider
     }
 
