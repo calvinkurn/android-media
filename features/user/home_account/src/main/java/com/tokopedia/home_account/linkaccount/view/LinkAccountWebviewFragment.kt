@@ -63,7 +63,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrlFix(
+                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl(
                         ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
                     if(baseUrl != null) {
                         webView?.loadUrl(

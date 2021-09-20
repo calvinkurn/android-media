@@ -11,6 +11,8 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.R
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
@@ -43,7 +45,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
         fun gotoSuccessPage(activity: FragmentActivity?, redirectionApplink: String) {
             activity?.run {
                 try {
-                    val baseUrl = getLinkAccountUrlFix(redirectionApplink)
+                    val baseUrl = getLinkAccountUrl(redirectionApplink)
                     if(baseUrl != null) {
                         val i = newInstance(this, getSuccessUrl(baseUrl).toString())
                         startActivityForResult(i, LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST)
@@ -54,7 +56,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
             }
         }
 
-        fun getLinkAccountUrlFix(redirectionApplink: String): Uri? {
+        fun getLinkAccountUrl(redirectionApplink: String): Uri? {
             try {
                 val uri = Uri.parse(BASE_URL)
                 val clientID = TrackApp.getInstance().gtm.cachedClientIDString
@@ -119,8 +121,11 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        val url = intent.getStringExtra(KEY_URL) ?: ""
+        var url = intent.getStringExtra(KEY_URL) ?: ""
+        if(url.isEmpty()) {
+            val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
+            url = getLinkAccountUrl(redirection).toString()
+        }
         return LinkAccountWebviewFragment.newInstance(url)
     }
-
 }
