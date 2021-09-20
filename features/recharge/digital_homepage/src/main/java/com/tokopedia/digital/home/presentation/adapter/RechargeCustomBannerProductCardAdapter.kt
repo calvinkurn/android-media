@@ -3,17 +3,17 @@ package com.tokopedia.digital.home.presentation.adapter
 import android.graphics.Paint
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomBannerItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner_item.view.*
 
 class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSections.Item>,
                                              val listener: RechargeHomepageItemListener)
@@ -24,37 +24,42 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(PRODUCT_CARD_LAYOUT, parent, false)
+        val view =ViewRechargeHomeProductCardCustomBannerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = items.size
 
-    class ViewHolder(itemView: View, val listener: RechargeHomepageItemListener)
-        : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(val binding: ViewRechargeHomeProductCardCustomBannerItemBinding, val listener: RechargeHomepageItemListener)
+        : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item) {
-            with(itemView) {
-                tv_recharge_product_title.text = element.title
-                tv_recharge_product_content.text = MethodChecker.fromHtml(element.subtitle)
+            with(binding) {
 
-                tv_recharge_product_ori_price.text = MethodChecker.fromHtml(element.label1)
-                tv_recharge_product_ori_price.paintFlags = tv_recharge_product_discount_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                tvRechargeProductTitle.text = element.title
+                tvRechargeProductContent.text = MethodChecker.fromHtml(element.subtitle)
 
-                tv_recharge_product_discount_price.text = MethodChecker.fromHtml(element.label2)
+                
+                tvRechargeProductOriPrice.text = MethodChecker.fromHtml(element.label1)
+                tvRechargeProductOriPrice.paintFlags = tvRechargeProductDiscountPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-                iv_recharge_product_image.loadImageRounded(element.mediaUrl)
+                
+                tvRechargeProductDiscountPrice.text = MethodChecker.fromHtml(element.label2)
+
+                
+                ivRechargeProductImage.loadImageRounded(element.mediaUrl)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    iv_recharge_product_image.clipToOutline = true
+                    ivRechargeProductImage.clipToOutline = true
                 }
 
+                
                 if (element.label3.isNotEmpty()) {
-                    tv_recharge_product_tag.text = element.label3
-                    tv_recharge_product_tag.show()
+                    tvRechargeProductTag.text = element.label3
+                    tvRechargeProductTag.show()
                 } else {
-                    tv_recharge_product_tag.hide()
+                    tvRechargeProductTag.hide()
                 }
 
-                setOnClickListener {
+                root.setOnClickListener {
                     listener.onRechargeSectionItemClicked(element)
                 }
             }
