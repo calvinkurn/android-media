@@ -70,6 +70,7 @@
     <string name="feed_content_text_lanjut">Lanjut</string>
     <string name="feed_content_text_post">Post</string>
     <string name="feed_content_delete_toaster_text">Tag produk telah dihapus.</string>
+    <string name="feed_content_post_successful_toaster">Post Kamu Selesai di Unggah</string>
     <string name="feed_content_more_than_5_product_tag">Oops, maksimal upload 5 media. Hapus salah satu media jika ingin menggantinya.</string>
     <string name="feed_content_progress_bar_text">Memproses...</string>
     <string name="feed_content_progress_bar_failed_text">Gagal Diproses</string>

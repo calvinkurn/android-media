@@ -464,10 +464,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             PARAM_PRODUCT) as ShopPageProduct
 
         product.let {
-            createPostModel.productIdList.add(it.pId!!)
             val relatedProductItem = mapResultToRelatedProductItem(it)
-            createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
-                relatedProductItem)
+            if(!isProductAlreadyAddedOnImage(relatedProductItem)) {
+                createPostModel.productIdList.add(it.pId!!)
+                createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
+                    relatedProductItem)
+            }
         }
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
@@ -565,15 +567,26 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
     }
 
-    private fun isProductAlreadyAddedOnImage(product: RelatedProductItem, tagging: FeedXMediaTagging) {
+    private fun isProductAlreadyAddedOnImage(product: RelatedProductItem):Boolean {
         val currentImagePos = createPostModel.currentCorouselIndex
-        val tagsAdded = createPostModel.completeImageList[currentImagePos].tags
+        val tagsAlreadyAdded = createPostModel.completeImageList[currentImagePos].tags
         val productsAdded = createPostModel.completeImageList[currentImagePos].products
-        if (productsAdded.size > 0 && productsAdded.contains(product)) {
-            val index = productsAdded.indexOf(product)
-            tagsAdded.removeAt(index)
-            tagsAdded.add(index, tagging)
+        var isAdded = false
+        val tagToBeAdded = tagsAlreadyAdded[tagsAlreadyAdded.size-1]
+        if (productsAdded.size > 0){
+            productsAdded.forEachIndexed { index, relatedProductItem ->
+                if (relatedProductItem.id == product.id) {
+                    isAdded = true
+                    tagsAlreadyAdded[index] = tagToBeAdded
+                    tagsAlreadyAdded[index].tagIndex = index
+                }
+            }
         }
+        if (isAdded) {
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags = tagsAlreadyAdded
+            removeExtraTagListElement(createPostModel.completeImageList[createPostModel.currentCorouselIndex])
+        }
+        return isAdded
     }
 
 }
