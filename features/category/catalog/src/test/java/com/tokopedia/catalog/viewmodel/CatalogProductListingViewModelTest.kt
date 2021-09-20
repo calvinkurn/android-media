@@ -39,7 +39,6 @@ class CatalogProductListingViewModelTest {
     private var productListObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
     private var quickFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
     private var dynamicFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
-    private var sortFilterItemsObserver = mockk<Observer<List<SortFilterItem>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -47,7 +46,6 @@ class CatalogProductListingViewModelTest {
         viewModel.mProductList.observeForever(productListObserver)
         viewModel.mQuickFilterModel.observeForever(quickFilterObserver)
         viewModel.mDynamicFilterModel.observeForever(dynamicFilterObserver)
-        viewModel.sortFilterItems.observeForever(sortFilterItemsObserver)
     }
 
     @Test
