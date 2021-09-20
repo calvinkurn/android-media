@@ -150,6 +150,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
+        observeLiveDatas()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -850,7 +851,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 ?.setOnClickListener {
                     handleDismiss()
                 }
-            observeLiveDatas()
             getData()
         }
         setCloseClickListener {
