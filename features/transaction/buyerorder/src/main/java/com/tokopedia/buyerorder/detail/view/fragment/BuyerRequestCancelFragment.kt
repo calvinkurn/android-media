@@ -123,8 +123,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 arguments = Bundle().apply {
                     putString(BuyerConsts.PARAM_SHOP_NAME, bundle.getString(BuyerConsts.PARAM_SHOP_NAME))
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
-                    putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT))
-                    putString(BuyerConsts.PARAM_JSON_LIST_PRODUCT, bundle.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                     putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
