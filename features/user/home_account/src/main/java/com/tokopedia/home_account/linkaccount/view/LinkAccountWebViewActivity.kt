@@ -15,7 +15,6 @@ import com.tokopedia.home_account.R
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import com.tokopedia.webview.WebViewHelper
 
 /**
  * Created by Yoris on 10/08/21.
@@ -67,16 +66,6 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
                 ex.printStackTrace()
             }
             return null
-        }
-
-        fun getLinkAccountUrl(context: Context, redirectionApplink: String): String {
-            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(BASE_URL, context)
-            if (finalUrl != null) {
-                finalUrl += "&ld=${redirectionApplink.encodeToUtf8()}"
-            } else {
-                finalUrl = "${BASE_URL}?ld=${redirectionApplink.encodeToUtf8()}"
-            }
-            return finalUrl
         }
     }
 
