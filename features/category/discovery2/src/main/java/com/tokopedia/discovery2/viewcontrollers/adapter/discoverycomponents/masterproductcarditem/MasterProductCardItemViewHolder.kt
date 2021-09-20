@@ -231,15 +231,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onQuantityChanged(quantity: Int) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
-        masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-            if (!productItem.productId.isNullOrEmpty())
-                (fragment as DiscoveryFragment).addOrUpdateItemCart(
-                    masterProductCardItemViewModel.getParentPositionForCarousel(),
-                    masterProductCardItemViewModel.position,
-                    productItem.productId!!,
-                    quantity
-                )
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
+            masterProductCardItemViewModel.components,
+            masterProductCardItemViewModel.getUserID()
+        )
+        if (masterProductCardItemViewModel.isUserLoggedIn()) {
+            masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
+                if (!productItem.productId.isNullOrEmpty())
+                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                        masterProductCardItemViewModel.getParentPositionForCarousel(),
+                        masterProductCardItemViewModel.position,
+                        productItem.productId!!,
+                        quantity
+                    )
+            }
+        } else {
+            masterProductCardItemViewModel.handleATCFailed()
+            (fragment as DiscoveryFragment).openLoginScreen()
         }
     }
 }

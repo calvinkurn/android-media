@@ -1308,12 +1308,14 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(parentPosition:Int, position:Int, productId: String, quantity: Int) {
-        if (UserSession(context).isLoggedIn) {
-            discoveryViewModel.addProductToCart(parentPosition, position, productId, quantity, userAddressData?.shop_id?:"")
-        } else {
-            openLoginScreen()
-        }
+    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int) {
+        discoveryViewModel.addProductToCart(
+            parentPosition,
+            position,
+            productId,
+            quantity,
+            userAddressData?.shop_id ?: ""
+        )
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {

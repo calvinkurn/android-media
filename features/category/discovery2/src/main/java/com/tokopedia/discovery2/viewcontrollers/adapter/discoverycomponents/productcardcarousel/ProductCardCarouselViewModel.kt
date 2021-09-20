@@ -229,4 +229,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun handleAtcFailed(position: Int){
         _atcFailed.value = position
     }
+
+    fun containsTokoNowProducts():Boolean{
+        return (components.properties?.tokonowATCActive == true)
+    }
 }
