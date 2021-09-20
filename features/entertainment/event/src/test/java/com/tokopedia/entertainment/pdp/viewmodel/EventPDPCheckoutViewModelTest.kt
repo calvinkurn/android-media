@@ -7,6 +7,7 @@ import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.*
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -94,7 +95,7 @@ class EventPDPCheckoutViewModelTest {
         //then
         Assert.assertNotNull(eventCheckoutViewModel.isError.value)
         Assert.assertNull(eventCheckoutViewModel.eventProductDetail.value)
-        Assert.assertEquals(eventCheckoutViewModel.isError.value?.message, error.message)
+        Assert.assertEquals((eventCheckoutViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
     @Test

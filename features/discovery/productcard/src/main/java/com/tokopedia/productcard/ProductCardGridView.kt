@@ -4,16 +4,31 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.expandTouchArea
+import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.glideClear
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.renderLabelCampaign
+import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.renderLabelBestSeller
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
+
+    private val cartExtension = ProductCardCartExtension(this)
 
     constructor(context: Context): super(context) {
         init()
@@ -43,7 +58,25 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         )
 
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
+        renderLabelBestSeller(
+            isShowBestSeller,
+            labelBestSeller,
+            productCardModel
+        )
+
+        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
+        renderLabelBestSellerCategorySide(
+            isShowCategorySide,
+            textCategorySide,
+            productCardModel
+        )
+
+        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
+        renderLabelBestSellerCategoryBottom(
+            isShowCategoryBottom,
+            textCategoryBottom,
+            productCardModel
+        )
 
         renderOutOfStockView(productCardModel)
 
@@ -57,8 +90,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+        cartExtension.setProductModel(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -81,7 +113,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        cartExtension.addToCartClickListener = addToCartClickListener
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
@@ -106,6 +146,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        cartExtension.clear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {

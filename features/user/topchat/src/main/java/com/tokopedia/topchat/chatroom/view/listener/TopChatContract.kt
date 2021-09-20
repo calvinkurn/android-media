@@ -13,6 +13,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -138,14 +139,6 @@ interface TopChatContract {
             onSuccessGetShopFollowingStatus: (Boolean) -> Unit
         )
 
-        fun copyVoucherCode(
-            fromUid: String?,
-            replyId: String,
-            blastId: String,
-            attachmentId: String,
-            replyTime: String?
-        )
-
         fun followUnfollowShop(
             shopId: String,
             onError: (Throwable) -> Unit,
@@ -261,5 +254,7 @@ interface TopChatContract {
             products: List<SendablePreview>, opponentId: String,
             onSendingMessage: () -> Unit
         )
+        fun adjustInterlocutorWarehouseId(msgId: String)
+        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment, opponentId: String)
     }
 }

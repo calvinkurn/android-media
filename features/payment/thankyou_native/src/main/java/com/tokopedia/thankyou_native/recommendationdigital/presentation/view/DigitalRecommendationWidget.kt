@@ -70,6 +70,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         } else {
             thanks_dg_rec_client_number.show()
             thanks_dg_rec_client_number.text = element.label1.trim()
+            thanks_dg_rec_product_name.maxLines = 1
         }
     }
 

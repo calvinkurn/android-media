@@ -49,7 +49,7 @@ open class NotifOrderListUseCase @Inject constructor(
         return cacheManager.saveCache(cacheKey, response)
     }
 
-    private fun getCacheKey(userType: Int): String {
+    protected fun getCacheKey(userType: Int): String {
         return "notif_order_list_$userType-${userSession.userId}"
     }
 

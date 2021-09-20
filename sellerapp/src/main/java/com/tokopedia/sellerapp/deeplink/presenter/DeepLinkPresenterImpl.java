@@ -1,5 +1,8 @@
 package com.tokopedia.sellerapp.deeplink.presenter;
 
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,8 +10,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.network.CoreNetworkApplication;
@@ -29,9 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 
 /**
@@ -62,7 +60,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void processDeepLinkAction(Uri uriData) {
+    public void processDeepLinkAction(Activity activity, Uri uriData) {
 
         String screenName;
         int type = getDeepLinkType(uriData);
@@ -84,7 +82,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 screenName = AppScreen.SCREEN_DEEP_LINK;
                 break;
         }
-        sendCampaignGTM(uriData.toString(), screenName);
+        sendCampaignGTM(activity, uriData.toString(), screenName);
     }
 
 
@@ -129,14 +127,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendCampaignGTM(String campaignUri, String screenName) {
-        if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
-            return;
-        }
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
-        campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(context, campaign);
-        UnifyTracking.eventCampaign(context, campaignUri);
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
+        TrackApp.getInstance().getGTM().sendCampaign(activity, campaignUri, screenName, false);
     }
 
     private void sendScreen(String campaignUri, String screenName, Campaign campaign) {

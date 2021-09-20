@@ -1,0 +1,65 @@
+{
+  "OTPModeList": {
+    "success": true,
+    "message": "OTP Mode Found",
+    "errorMessage": "",
+    "otpDigit": 6,
+    "linkType": 1,
+    "enableTicker": false,
+    "tickerTrouble": "",
+    "modeLists": [
+      {
+        "modeCode": 1,
+        "modeText": "sms",
+        "otpListText": "\u003cb\u003eSMS ke\u003c/b\u003e \u003cbr\u003e****-****-123",
+        "afterOtpListText": "Kode verifikasi telah dikirim melalui SMS ke ****-****-123.",
+        "afterOtpListTextHtml": "Kode verifikasi telah dikirim melalui SMS ke ****-****-123.",
+        "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_SMS_NEW.png",
+        "usingPopUp": false,
+        "popUpHeader": "",
+        "popUpBody": "",
+        "countdown": true,
+        "otpDigit": 6
+      },
+      {
+        "modeCode": 5,
+        "modeText": "whatsapp",
+        "otpListText": "\u003cb\u003eWhatsApp ke\u003c/b\u003e \u003cbr\u003e****-****-123",
+        "afterOtpListText": "Kode verifikasi telah dikirim melalui WhatsApp ke ****-****-123.",
+        "afterOtpListTextHtml": "Kode verifikasi telah dikirim melalui WhatsApp ke ****-****-123.",
+        "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_WHATSAPP_NEW.png",
+        "usingPopUp": false,
+        "popUpHeader": "",
+        "popUpBody": "",
+        "countdown": true,
+        "otpDigit": 6
+      },
+      {
+        "modeCode": 6,
+        "modeText": "email",
+        "otpListText": "\u003cb\u003eE-mail ke\u003c/b\u003e \u003cbr\u003etest@tokopedia.com",
+        "afterOtpListText": "Kode verifikasi telah dikirim melalui e-mail ke test@tokopedia.com.",
+        "afterOtpListTextHtml": "Kode verifikasi telah dikirim melalui e-mail ke test@tokopedia.com.",
+        "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_EMAIL_NEW.png",
+        "usingPopUp": false,
+        "popUpHeader": "",
+        "popUpBody": "",
+        "countdown": true,
+        "otpDigit": 6
+      },
+      {
+        "modeCode": 7,
+        "modeText": "google_authenticator",
+        "otpListText": "\u003cb\u003eGoogle Authenticator\u003c/b\u003e \u003cbr\u003et***@t********.com",
+        "afterOtpListText": "Masukkan kode dari aplikasi Google Authenticator yang terhubung dengan t***@t********.com.",
+        "afterOtpListTextHtml": "Masukkan kode dari aplikasi Google Authenticator yang terhubung dengan t***@t********.com.",
+        "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_GA_NEW.png",
+        "usingPopUp": false,
+        "popUpHeader": "",
+        "popUpBody": "",
+        "countdown": false,
+        "otpDigit": 6
+      }
+    ]
+  }
+}

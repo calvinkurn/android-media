@@ -19,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_stats_info_height"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="@id/live_badge"
         app:layout_constraintStart_toEndOf="@id/live_badge"
         app:layout_constraintTop_toTopOf="@id/live_badge"
@@ -29,7 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_stats_info_height"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:background="@drawable/bg_play_stats_info_view_badge"
         app:layout_constraintBottom_toBottomOf="@id/total_view_badge"
         app:layout_constraintStart_toEndOf="@id/total_view_badge"
@@ -40,7 +38,6 @@
             android:layout_width="@dimen/spacing_lvl4"
             android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,19 +50,14 @@
             android:id="@+id/tv_total_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:layout_marginRight="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_margin="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintStart_toEndOf="@id/iv_total_like"
-            app:layout_constraintTop_toTopOf="@id/iv_total_like"
             app:layout_constraintBottom_toBottomOf="@id/iv_total_like"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_total_like"
+            app:layout_constraintTop_toTopOf="@id/iv_total_like"
             app:typographyType="body_3"
-            tools:text="320"/>
+            tools:text="320" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

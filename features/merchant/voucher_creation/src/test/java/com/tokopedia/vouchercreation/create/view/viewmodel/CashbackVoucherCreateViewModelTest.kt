@@ -721,6 +721,20 @@ class CashbackVoucherCreateViewModelTest {
         assert(expectedData == actualData)
     }
 
+    @Test
+    fun `check whether isRupiahInputError value is not the same if the value is changed`() {
+        val currentValue = mViewModel.isRupiahInputError
+        mViewModel.isRupiahInputError = true
+        assert(mViewModel.isRupiahInputError != currentValue)
+    }
+
+    @Test
+    fun `check whether isPercentageInputError value is not the same if the value is changed`() {
+        val currentValue = mViewModel.isPercentageInputError
+        mViewModel.isPercentageInputError = true
+        assert(mViewModel.isPercentageInputError != currentValue)
+    }
+
     // helper functions
 
     private fun getPrivateField(owner: Any, name: String): Any? {

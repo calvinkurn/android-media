@@ -1,7 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
@@ -11,7 +10,12 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetWalletAppBalanceUseCase
 import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.domain.model.walletapp.Balance
+import com.tokopedia.home.beranda.domain.model.walletapp.Balances
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletappGetBalance
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
@@ -19,6 +23,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
@@ -47,12 +53,137 @@ class HomeViewModelBalanceWidgetUnitTest{
     private lateinit var homeViewModel: HomeRevampViewModel
 
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
+    private val getWalletAppBalanceUseCase = mockk<GetWalletAppBalanceUseCase>(relaxed = true)
     private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase>(relaxed = true)
     private val headerDataModel = HomeHeaderOvoDataModel()
 
+    private val WALLET_CODE_PEMUDA = "PEMUDA"
+
     @Test
-    fun `When getWallet and getTokopoint success on refresh then show wallet and tokopoint success state`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+    fun `When get walletapp and getTokopoint success on refresh then show walletapp and tokopoint success state`(){
+        every { userSessionInterface.isLoggedIn } returns true
+
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
+            TokopointsDrawerList(
+                "false",
+                listOf(
+                    TokopointsDrawer(type = "TokoPoints"),
+                    TokopointsDrawer(type = "Coupon"),
+                    TokopointsDrawer(type = "BBO")
+                )
+            )
+        )
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
+            )
+        )
+
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+        )
+        homeViewModel.setWalletAppRollence(true)
+
+        //On refresh
+        homeViewModel.refresh(true)
+
+        assertTokopointBalanceModelState(STATE_SUCCESS)
+        assertWalletBalanceModelState(STATE_SUCCESS)
+
+        assertBalanceTypeExist(TYPE_WALLET_APP_LINKED)
+        assertBalanceTypeExist(TYPE_TOKOPOINT)
+        assertBalanceTypeExist(TYPE_FREE_ONGKIR)
+        assertBalanceTypeExist(TYPE_COUPON)
+    }
+
+    @Test
+    fun `When get walletapp returns code PEMUDA on refresh then show walletapp success state`(){
+        every { userSessionInterface.isLoggedIn } returns true
+
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = "PEMUDA"
+                        ))
+                    )
+                )
+            )
+        )
+
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+        )
+        homeViewModel.setWalletAppRollence(true)
+
+        //On refresh
+        homeViewModel.refresh(true)
+
+        assertWalletBalanceModelState(STATE_SUCCESS)
+        assertBalanceTypeExist(TYPE_WALLET_APP_LINKED)
+    }
+
+    @Test
+    fun `When get walletapp returns code not PEMUDA on refresh then show walletapp error state`(){
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = "OTHER"
+                        ))
+                    )
+                )
+            )
+        )
+
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+        )
+        homeViewModel.setWalletAppRollence(true)
+
+        //On refresh
+        homeViewModel.refresh(true)
+
+        assertWalletBalanceModelState(STATE_ERROR)
+    }
+
+    @Test
+    fun `When get old wallet and getTokopoint success on refresh then show wallet and tokopoint success state`(){
         every { userSessionInterface.isLoggedIn } returns true
 
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
@@ -77,9 +208,10 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
         )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.setWalletAppRollence(false)
 
         //On refresh
         homeViewModel.refresh(true)
@@ -94,7 +226,75 @@ class HomeViewModelBalanceWidgetUnitTest{
     }
 
     @Test
-    fun `When getWallet success and type is OVO on refresh then show OVO Wallet Type section`(){
+    fun `When get walletapp success and type is linked show Wallet App Linked Type section`(){
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
+            )
+        )
+
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+        )
+
+        homeViewModel.setWalletAppRollence(true)
+        homeViewModel.refresh(true)
+
+        assertWalletBalanceModelState(STATE_SUCCESS)
+        assertBalanceTypeExist(TYPE_WALLET_APP_LINKED)
+    }
+
+    @Test
+    fun `When get walletapp success and type is not linked show Wallet App Not Linked Type section`(){
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
+        coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
+            WalletappGetBalance(
+                listOf(
+                    Balances(
+                        isLinked = false,
+                        balance = listOf(Balance(amountFmt = "ahayy"))
+                    )
+                )
+            )
+        )
+
+        getHomeUseCase.buildBalanceHomeData(balanceType = 2)
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
+            getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+        )
+
+        homeViewModel.setWalletAppRollence(true)
+        homeViewModel.refresh(true)
+
+        assertWalletBalanceModelState(STATE_SUCCESS)
+        assertBalanceTypeExist(TYPE_WALLET_APP_NOT_LINKED)
+    }
+
+    @Test
+    fun `When get old wallet success and type is OVO on refresh then show OVO Wallet Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
 
@@ -113,6 +313,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
 
+        homeViewModel.setWalletAppRollence(false)
         homeViewModel.refresh(true)
 
         assertWalletBalanceModelState(STATE_SUCCESS)
@@ -120,7 +321,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     }
 
     @Test
-    fun `When getWallet success and type is OVO and need to show topup on refresh then show OVO Wallet With Topup Type section`(){
+    fun `When get old wallet success and type is OVO and need to show topup on refresh then show OVO Wallet With Topup Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
 
@@ -140,6 +341,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
 
+        homeViewModel.setWalletAppRollence(false)
         homeViewModel.refresh(true)
 
         assertWalletBalanceModelState(STATE_SUCCESS)
@@ -147,7 +349,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     }
 
     @Test
-    fun `When getWallet success and type is OTHER on refresh then show Other Wallet Type section`(){
+    fun `When get old wallet success and type is OTHER on refresh then show Other Wallet Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
 
@@ -166,6 +368,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
 
+        homeViewModel.setWalletAppRollence(false)
         homeViewModel.refresh(true)
 
         assertWalletBalanceModelState(STATE_SUCCESS)
@@ -173,7 +376,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     }
 
     @Test
-    fun `When getWallet data success is not linked on refresh then show pending cashback section`(){
+    fun `When get old wallet data success is not linked on refresh then show pending cashback section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
 
@@ -194,6 +397,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
 
+        homeViewModel.setWalletAppRollence(false)
         homeViewModel.refresh(true)
 
         assertWalletBalanceModelState(STATE_SUCCESS)

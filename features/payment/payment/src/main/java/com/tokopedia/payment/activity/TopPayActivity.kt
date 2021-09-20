@@ -27,10 +27,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.authentication.*
 import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
@@ -40,6 +40,7 @@ import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
@@ -51,6 +52,7 @@ import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.Constant
 import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
 import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
+import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -108,6 +110,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
 
+    private var isPaymentPageLoadingTimeout: Boolean = false
+
+    private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
@@ -140,7 +146,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun setSecureWindowFlag() {
-        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
             runOnUiThread {
                 window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
@@ -170,6 +176,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         progressDialog = ProgressDialog(this)
         progressDialog?.setMessage(getString(R.string.title_loading))
         tvTitle?.text = getString(R.string.toppay_title)
+        val currentTransactionId = paymentPassData?.transactionId ?: ""
+        tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
     }
 
     private fun initVar() {
@@ -214,7 +222,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
-            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
+            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
     }
 
@@ -427,7 +435,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private fun encodeToBase64(imagePath: String?): String {
         val bm = BitmapFactory.decodeFile(imagePath)
         val baos = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+        bm.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos)
         val b = baos.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
@@ -448,7 +456,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 if (url.isNotEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_LIVE_HELP_URL) || url.contains(Constant.TempRedirectPayment.TOP_PAY_STAGING_HELP_URL))) {
-                    val deepLinkUrl = (ApplinkConst.WEBVIEW_PARENT_HOME + "?url=" + URLEncoder.encode(url))
+                    val deepLinkUrl = (ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME + "?url=" + url)
                     RouteManager.route(this@TopPayActivity, deepLinkUrl)
                     return true
                 }
@@ -550,6 +558,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            logPaymentPageSuccessAfterTimeOut(url)
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
@@ -564,11 +573,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+            if(isMainPaymentPageTimeOut(request?.url,
+                error?.errorCode?:0)){
+                handleMainPaymentPageTimeOut(request, error)
+            } else {
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
                     mapOf("type" to request?.url.toString(),
                             "error_code" to error?.errorCode.toString(),
                             "desc" to error?.description?.toString().orEmpty()
                     ))
+            }
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -601,6 +615,47 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             view.stopLoading()
             showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun handleMainPaymentPageTimeOut(request: WebResourceRequest?, error: WebResourceError?) {
+        isPaymentPageLoadingTimeout = true
+        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(request?.url.toString(),
+            error?.errorCode.toString(),
+            error?.description?.toString().orEmpty())
+        closePaymentPageOnTimeOut()
+    }
+
+    private fun closePaymentPageOnTimeOut() {
+        hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
+        val intent = Intent()
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
+        intent.putExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, true)
+        setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
+        finish()
+    }
+
+    private fun logPaymentPageSuccessAfterTimeOut(url: String?) {
+        url?.let {
+            if (!isPaymentPageLoadingTimeout
+                    && url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")) {
+                paymentPageTimeOutLogging.logPaymentPageSuccessAfterTimeOut(url)
+            }
+        }
+    }
+
+    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode: Int): Boolean {
+        if (errorCode == WebViewClient.ERROR_TIMEOUT) {
+            url?.let {
+                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+            }
+        }
+        return false
     }
 
     private fun getBaseUrlDomainPayment(): String {
@@ -686,6 +741,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         const val HCI_CAMERA_REQUEST_CODE = 978
         const val FORCE_TIMEOUT = 90000L
+
+        private const val IMAGE_COMPRESS_QUALITY = 60
 
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"

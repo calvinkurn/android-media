@@ -180,7 +180,6 @@ class UserSessionStub: UserSessionInterface {
     }
 
     override fun setToken(accessToken: String?, tokenType: String?) {
-        TODO("Not yet implemented")
     }
 
     override fun setToken(accessToken: String?, tokenType: String?, refreshToken: String?) {

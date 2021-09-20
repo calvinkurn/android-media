@@ -11,6 +11,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
@@ -42,11 +43,6 @@ class SomBottomSheetSetDelivered(
     override fun show() {
         reset()
         super.show()
-    }
-
-    override fun dismiss() {
-        dismissKeyboard()
-        super.dismiss()
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -113,12 +109,6 @@ class SomBottomSheetSetDelivered(
         }
     }
 
-    private fun dismissKeyboard() {
-        getSetDeliveredReceiverNameInputText()?.rootView?.windowToken?.run {
-            CommonUtils.hideKeyboard(context, getSetDeliveredReceiverNameInputText()?.rootView)
-        }
-    }
-
     private fun setupInputFieldReceiverName() {
         getSetDeliveredReceiverNameInputText()?.apply {
             textFieldInput.addTextChangedListener(this@SomBottomSheetSetDelivered)
@@ -134,7 +124,7 @@ class SomBottomSheetSetDelivered(
                     getSetDeliveredContainer()?.let {
                         it.setPadding(0, 0, 0, it.paddingBottom - getKeyboardHeightEstimation())
                     }
-                    dismissKeyboard()
+                    childViews.hideKeyboard()
                 }
             }
         }

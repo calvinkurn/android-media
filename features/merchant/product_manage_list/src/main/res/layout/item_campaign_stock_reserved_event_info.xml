@@ -34,10 +34,13 @@
             android:layout_marginStart="@dimen/product_manage_campaign_stock_event_name_margin"
             android:layout_marginTop="@dimen/dp_1"
             android:textColor="@color/Unify_N700"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:typographyType="heading_6"
+            app:layout_constraintEnd_toStartOf="@id/tv_campaign_stock_event_count"
             app:layout_constraintTop_toTopOf="@id/label_campaign_stock_event_info"
             app:layout_constraintStart_toEndOf="@id/label_campaign_stock_event_info"
-            tools:text="40% | Rp 150.000"/>
+            tools:text="40% | Rp 150.000 Very Long Campaign Stock Event Name"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_campaign_stock_event_count"

@@ -12,8 +12,6 @@ import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
-import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
-import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
@@ -34,6 +32,7 @@ import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -43,6 +42,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -63,11 +63,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun providePushStatusGQLRepository(@ApplicationContext context: Context): PushStatusRepository {
         return PushStatusGQLRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
-        return CpmTopAdsGQLRepository()
     }
 
     @Provides
@@ -109,6 +104,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
         return repoProvider.provideProductCardsRepository()
+    }
+
+    @Provides
+    fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
+        return repoProvider.provideTopAdsHeadlineRepository()
     }
 
     @Provides
@@ -172,8 +172,16 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          connectionUtil: PlayWidgetConnectionUtil
+    ): PlayWidgetTools {
+        return PlayWidgetTools(
+            playWidgetUseCase,
+            playWidgetReminderUseCase,
+            playWidgetUpdateChannelUseCase,
+            mapperProviders,
+            connectionUtil
+        )
     }
 
 }

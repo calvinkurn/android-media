@@ -28,6 +28,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class RecommendationHeaderView: FrameLayout {
+
     private var itemView: View?
 
     private var listener: RecommendationHeaderListener? = null
@@ -47,9 +48,13 @@ class RecommendationHeaderView: FrameLayout {
         this.itemView = view
     }
 
-    fun bindData(data: RecommendationWidget, listener: RecommendationHeaderListener) {
+    fun bindData(data: RecommendationWidget, listener: RecommendationHeaderListener?) {
         this.listener = listener
         handleHeaderComponent(data)
+    }
+
+    fun bindTemporaryHeaderName(tempData : RecommendationWidget) {
+        handleHeaderComponent(tempData)
     }
 
     private fun handleHeaderComponent(data: RecommendationWidget) {

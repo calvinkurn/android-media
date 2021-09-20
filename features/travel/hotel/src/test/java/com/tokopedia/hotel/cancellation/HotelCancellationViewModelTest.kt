@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.cancellation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -11,6 +10,7 @@ import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitResponse
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations

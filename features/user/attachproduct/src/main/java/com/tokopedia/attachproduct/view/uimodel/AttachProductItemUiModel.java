@@ -18,10 +18,15 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
     protected String productImage;
     protected String productPrice;
     protected String shopName;
+    protected String originalPrice;
+    protected String discountPercentage;
 
-    public AttachProductItemUiModel(String productUrl, String productName, String productId,
-                                    String productImageFull, String productImage,
-                                    String productPrice, String shopName) {
+    public AttachProductItemUiModel(
+            String productUrl, String productName, String productId,
+            String productImageFull, String productImage,
+            String productPrice, String shopName, String originalPrice,
+            String discountPercentage
+    ) {
         this.productUrl = productUrl;
         this.productName = productName;
         this.productId = productId;
@@ -29,6 +34,16 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         this.productImage = productImage;
         this.productPrice = productPrice;
         this.shopName = shopName;
+        this.originalPrice = originalPrice;
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public String getDiscountPercentage() {
+        return discountPercentage;
     }
 
     public String getProductUrl() {
@@ -76,6 +91,8 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         dest.writeString(this.productImage);
         dest.writeString(this.productPrice);
         dest.writeString(this.shopName);
+        dest.writeString(this.originalPrice);
+        dest.writeString(this.discountPercentage);
     }
 
     protected AttachProductItemUiModel(Parcel in) {
@@ -86,6 +103,8 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         this.productImage = in.readString();
         this.productPrice = in.readString();
         this.shopName = in.readString();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readString();
     }
 
     public static final Creator<AttachProductItemUiModel> CREATOR = new

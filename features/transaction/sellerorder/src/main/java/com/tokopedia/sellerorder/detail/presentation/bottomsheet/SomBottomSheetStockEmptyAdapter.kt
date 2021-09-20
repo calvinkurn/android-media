@@ -45,6 +45,9 @@ class SomBottomSheetStockEmptyAdapter(
                 }
                 listener.onProductCheckChanged()
             }
+            holder.itemView.setOnClickListener {
+                holder.itemView.cb_product.isChecked = !holder.itemView.cb_product.isChecked
+            }
         }
     }
 

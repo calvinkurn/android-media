@@ -101,6 +101,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
             } else {
                 clientNumber.show()
                 clientNumber.text = element.label1.trim()
+                productName.maxLines = 1
             }
         }
     }

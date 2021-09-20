@@ -18,13 +18,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -35,6 +33,7 @@ import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
+import com.tokopedia.hotel.databinding.FragmentHotelHomepageBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
@@ -48,8 +47,7 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -65,7 +63,11 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -82,6 +84,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
+    private var binding by autoClearedNullable<FragmentHotelHomepageBinding>()
+
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -129,14 +133,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
 
             if (hotelHomepageModel.checkInDate.isNotBlank()) {
-                hotelHomepageModel.checkInDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+                hotelHomepageModel.checkInDateFmt =  hotelHomepageModel.checkInDate
+                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             if (hotelHomepageModel.checkOutDate.isNotBlank()) {
-                hotelHomepageModel.checkOutDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+                hotelHomepageModel.checkOutDateFmt = hotelHomepageModel.checkOutDate
+                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank())
                 hotelHomepageModel.nightCounter = countRoomDuration()
@@ -146,8 +148,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
         measureBannerWidth()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_homepage, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelHomepageBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -307,16 +311,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun hideTickerView() {
-        hotelHomepageTicker.hide()
+        binding?.hotelHomepageTicker?.hide()
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        if (travelTickerModel.title.isNotEmpty()) hotelHomepageTicker.tickerTitle = travelTickerModel.title
+        if (travelTickerModel.title.isNotEmpty()) binding?.hotelHomepageTicker?.tickerTitle = travelTickerModel.title
         var message = travelTickerModel.message
         if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
-        hotelHomepageTicker.setHtmlDescription(message)
-        hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
-        hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+        binding?.hotelHomepageTicker?.setHtmlDescription(message)
+        binding?.hotelHomepageTicker?.tickerType = Ticker.TYPE_WARNING
+        binding?.hotelHomepageTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl.isNotEmpty()) {
                     RouteManager.route(context, linkUrl.toString())
@@ -327,12 +331,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         })
         if (travelTickerModel.url.isNotEmpty()) {
-            hotelHomepageTicker.setOnClickListener {
+            binding?.hotelHomepageTicker?.setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
 
-        hotelHomepageTicker.show()
+        binding?.hotelHomepageTicker?.show()
     }
 
     private fun renderHotelParam(hotelPropertyDefaultHome: HotelPropertyDefaultHome) {
@@ -348,7 +352,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun measureBannerWidth() {
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels / 1.1).toInt()
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_WIDTH_DIVIDER).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
     }
 
@@ -364,64 +368,68 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun initView() {
-        iv_hotel_homepage_background.loadImage(HOMEPAGE_BG_IMAGE_URL)
-        checkCheckInAndCheckOutDate()
+        binding?.let {
+            it.ivHotelHomepageBackground.loadImage(HOMEPAGE_BG_IMAGE_URL)
+            checkCheckInAndCheckOutDate()
 
-        tv_hotel_homepage_destination.textFieldInput.tag = R.id.tv_hotel_homepage_destination.toString()
-        tv_hotel_homepage_destination.textFieldInput.isClickable = true
-        tv_hotel_homepage_destination.textFieldInput.isFocusable = false
-        tv_hotel_homepage_destination.textFieldWrapper.isHelperTextEnabled = false
-        tv_hotel_homepage_destination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
-        tv_hotel_homepage_destination.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            it.tvHotelHomepageDestination.textFieldInput.tag = R.id.tv_hotel_homepage_destination.toString()
+            it.tvHotelHomepageDestination.textFieldInput.isClickable = true
+            it.tvHotelHomepageDestination.textFieldInput.isFocusable = false
+            it.tvHotelHomepageDestination.textFieldWrapper.isHelperTextEnabled = false
+            it.tvHotelHomepageDestination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
+            it.tvHotelHomepageDestination.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        tv_hotel_homepage_checkin_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkin_date.toString()
-        tv_hotel_homepage_checkin_date.textFieldInput.isClickable = true
-        tv_hotel_homepage_checkin_date.textFieldInput.isFocusable = false
-        tv_hotel_homepage_checkin_date.textFieldWrapper.isHelperTextEnabled = false
-        tv_hotel_homepage_checkin_date.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
-        tv_hotel_homepage_checkin_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            it.tvHotelHomepageCheckinDate.textFieldInput.tag = R.id.tv_hotel_homepage_checkin_date.toString()
+            it.tvHotelHomepageCheckinDate.textFieldInput.isClickable = true
+            it.tvHotelHomepageCheckinDate.textFieldInput.isFocusable = false
+            it.tvHotelHomepageCheckinDate.textFieldWrapper.isHelperTextEnabled = false
+            it.tvHotelHomepageCheckinDate.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
+            it.tvHotelHomepageCheckinDate.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        tv_hotel_homepage_checkout_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkout_date.toString()
-        tv_hotel_homepage_checkout_date.textFieldInput.isClickable = true
-        tv_hotel_homepage_checkout_date.textFieldInput.isFocusable = false
-        tv_hotel_homepage_checkout_date.textFieldWrapper.isHelperTextEnabled = false
-        tv_hotel_homepage_checkout_date.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
-        tv_hotel_homepage_checkout_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            it.tvHotelHomepageCheckoutDate.textFieldInput.tag = R.id.tv_hotel_homepage_checkout_date.toString()
+            it.tvHotelHomepageCheckoutDate.textFieldInput.isClickable = true
+            it.tvHotelHomepageCheckoutDate.textFieldInput.isFocusable = false
+            it.tvHotelHomepageCheckoutDate.textFieldWrapper.isHelperTextEnabled = false
+            it.tvHotelHomepageCheckoutDate.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
+            it.tvHotelHomepageCheckoutDate.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        tv_hotel_homepage_guest_info.textFieldInput.tag = R.id.tv_hotel_homepage_guest_info.toString()
-        tv_hotel_homepage_guest_info.textFieldInput.isClickable = true
-        tv_hotel_homepage_guest_info.textFieldInput.isFocusable = false
-        tv_hotel_homepage_guest_info.textFieldWrapper.isHelperTextEnabled = false
-        tv_hotel_homepage_guest_info.textFieldInput.setOnClickListener { onGuestInfoClicked() }
-        tv_hotel_homepage_guest_info.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            it.tvHotelHomepageGuestInfo.textFieldInput.tag = R.id.tv_hotel_homepage_guest_info.toString()
+            it.tvHotelHomepageGuestInfo.textFieldInput.isClickable = true
+            it.tvHotelHomepageGuestInfo.textFieldInput.isFocusable = false
+            it.tvHotelHomepageGuestInfo.textFieldWrapper.isHelperTextEnabled = false
+            it.tvHotelHomepageGuestInfo.textFieldInput.setOnClickListener { onGuestInfoClicked() }
+            it.tvHotelHomepageGuestInfo.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
-        tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST) }
+            it.btnHotelHomepageSearch.setOnClickListener { onSearchButtonClicked() }
+            it.tvHotelHomepageAllPromo.setOnClickListener { RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST) }
+        }
     }
 
     private fun checkCheckInAndCheckOutDate() {
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         hotelHomepageModel.checkInDate = updatedCheckInCheckOutDate.first
         hotelHomepageModel.checkOutDate = updatedCheckInCheckOutDate.second
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+        hotelHomepageModel.checkInDateFmt = hotelHomepageModel.checkInDate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+        hotelHomepageModel.checkOutDateFmt = hotelHomepageModel.checkOutDate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
         hotelHomepageModel.nightCounter = countRoomDuration()
     }
 
     private fun renderView() {
-        btn_hotel_homepage_search.isEnabled = hotelHomepageModel.locName.isNotEmpty()
-        tv_hotel_homepage_destination.textFieldInput.setText(hotelHomepageModel.locName)
-        tv_hotel_homepage_checkin_date.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
-        tv_hotel_homepage_checkout_date.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
-        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter), hotelHomepageModel.nightCounter)
-        tv_hotel_homepage_guest_info.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+        binding?.let {
+            it.btnHotelHomepageSearch.isEnabled = hotelHomepageModel.locName.isNotEmpty()
+            it.tvHotelHomepageDestination.textFieldInput.setText(hotelHomepageModel.locName)
+            it.tvHotelHomepageCheckinDate.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
+            it.tvHotelHomepageCheckoutDate.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
+            it.tvHotelHomepageNightCount.text = String.format(getString(R.string.hotel_homepage_night_counter), hotelHomepageModel.nightCounter)
+            it.tvHotelHomepageGuestInfo.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
+        }
     }
 
     private fun renderPopularCities(popularCities: List<PopularSearch>) {
         if (popularCities.isNotEmpty()) {
-            widget_hotel_homepage_popular_cities.setActionListener(this)
-            widget_hotel_homepage_popular_cities.addPopularCities(popularCities)
+            binding?.widgetHotelHomepagePopularCities?.setActionListener(this)
+            binding?.widgetHotelHomepagePopularCities?.addPopularCities(popularCities)
             showPopularCitiesWidget(true)
         } else {
             showPopularCitiesWidget(false)
@@ -430,20 +438,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun renderVideoBanner(videoBannerModel: TravelCollectiveBannerModel) {
         showHotelHomepageVideoBanner(true)
-        hotel_homepage_video_banner.listener = this
-        hotel_homepage_video_banner.setData(videoBannerModel)
-        hotel_homepage_video_banner.build()
-        trackingHotelUtil.hotelVideoBannerImpression(context, hotel_homepage_video_banner.getData(), HOMEPAGE_SCREEN_NAME)
+        binding?.hotelHomepageVideoBanner?.listener = this
+        binding?.hotelHomepageVideoBanner?.setData(videoBannerModel)
+        binding?.hotelHomepageVideoBanner?.build()
+        trackingHotelUtil.hotelVideoBannerImpression(context, binding?.hotelHomepageVideoBanner?.getData() ?: TravelVideoBannerModel(), HOMEPAGE_SCREEN_NAME)
     }
 
     private fun showPopularCitiesWidget(show: Boolean) {
-        if (show) widget_hotel_homepage_popular_cities.show()
-        else widget_hotel_homepage_popular_cities.hide()
+        if (show) binding?.widgetHotelHomepagePopularCities?.show()
+        else binding?.widgetHotelHomepagePopularCities?.hide()
     }
 
     private fun showHotelHomepageVideoBanner(show: Boolean) {
-        if (show) hotel_homepage_video_banner.show()
-        else hotel_homepage_video_banner.hide()
+        if (show) binding?.hotelHomepageVideoBanner?.show()
+        else binding?.hotelHomepageVideoBanner?.hide()
     }
 
     private fun onDestinationChangeClicked() {
@@ -475,18 +483,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        hotelHomepageModel.checkInDate = newCheckInDate.toString(DateUtil.YYYY_MM_DD)
+        hotelHomepageModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)) {
-            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
-                    Calendar.DATE, 1)
-            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        if (newCheckInDate >= hotelHomepageModel.checkOutDate.toDate(DateUtil.YYYY_MM_DD)) {
+            val tomorrow = newCheckInDate.addTimeToSpesificDate(Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            hotelHomepageModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }
         hotelHomepageModel.nightCounter = countRoomDuration()
 
@@ -494,10 +497,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelHomepageModel.checkOutDate = newCheckOutDate.toString(DateUtil.YYYY_MM_DD)
+        hotelHomepageModel.checkOutDateFmt = newCheckOutDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         hotelHomepageModel.nightCounter = countRoomDuration()
 
         trackRoomDates()
@@ -505,7 +506,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun trackRoomDates() {
-        val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        val dateRange = DateUtil.getDayDiff(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         trackingHotelUtil.hotelSelectStayDate(context, hotelHomepageModel.checkInDate, dateRange.toInt(), HOMEPAGE_SCREEN_NAME)
     }
 
@@ -590,17 +591,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    if (DeeplinkMapperTravel.isHotelSrpShowMap(this) && DeeplinkMapperTravel.isABTestHotelShowMap()) {
-                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    } else {
-                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    }
+                    startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
         }
     }
 
-    private fun countRoomDuration(): Long = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+    private fun countRoomDuration(): Long = DateUtil.getDayDiff(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo()
@@ -625,7 +622,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         bannerImpressionIndex.add(0)
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
-        banner_hotel_homepage_promo.apply {
+        binding?.bannerHotelHomepagePromo?.apply {
             freeMode = false
             centerMode = true
             slideToScroll = 1
@@ -637,7 +634,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 slideToShow = 1.0f
                 setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
             } else {
-                slideToShow = 1.1f
+                slideToShow = SLIDE_TO_SHOW
                 autoplay = true
                 infinite = true
             }
@@ -681,12 +678,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         showHotelLastSearchContainer()
 
-        tv_hotel_last_search_title.text = data.title
-        tv_hotel_homepage_delete_last_search.setOnClickListener {
+        binding?.tvHotelLastSearchTitle?.text = data.title
+        binding?.tvHotelHomepageDeleteLastSearch?.setOnClickListener {
             homepageViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH)
         }
-        rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items, this)
+        binding?.rvHotelHomepageLastSearch?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding?.rvHotelHomepageLastSearch?.adapter = HotelLastSearchAdapter(data.items, this)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
@@ -712,11 +709,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun showPromoContainer() {
-        hotel_container_promo.visibility = View.VISIBLE
+        binding?.hotelContainerPromo?.visibility = View.VISIBLE
     }
 
     private fun hidePromoContainer() {
-        hotel_container_promo.visibility = View.GONE
+        binding?.hotelContainerPromo?.visibility = View.GONE
     }
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
@@ -741,11 +738,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun showHotelLastSearchContainer() {
-        hotel_container_last_search.visibility = View.VISIBLE
+        binding?.hotelContainerLastSearch?.visibility = View.VISIBLE
     }
 
     private fun hideHotelLastSearchContainer() {
-        hotel_container_last_search.visibility = View.GONE
+        binding?.hotelContainerLastSearch?.visibility = View.GONE
     }
 
     companion object {
@@ -757,6 +754,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         // banner height ratio 414:139
         const val BANNER_HEIGHT_RATIO = 0.336f
+        const val BANNER_WIDTH_DIVIDER = 1.1
+
+        const val SLIDE_TO_SHOW = 1.1f
 
         const val EXTRA_PARAM_SEARCH_ID = "param_search_id"
         const val EXTRA_PARAM_SEARCH_TYPE = "param_search_type"

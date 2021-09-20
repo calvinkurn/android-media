@@ -136,6 +136,11 @@ object ApplinkConstInternalGlobal {
 
     const val PARAM_CALL_BACK = "callBack"
 
+    // UserIdentificationInfoSimpleActivity
+    // tokopedia-android-internal://global/user-identification-only
+    @JvmField
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
+
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
     const val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"
@@ -234,6 +239,14 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
+    // FingerprintSettingActivity
+    // tokopedia-android-internal://global/biometric-setting
+    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
+
+    // VerifyFingerprintActivity
+    // tokopedia-android-internal://global/verify-fingerprint
+    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
+
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
     @JvmField
@@ -263,7 +276,13 @@ object ApplinkConstInternalGlobal {
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
+    const val WEBVIEW_BASE = "$INTERNAL_GLOBAL/webview"
+    const val BROWSER = "$INTERNAL_GLOBAL/browser"
+
     const val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
+    const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
 
@@ -445,6 +464,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/new-home-account
     const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
+    // ChooseAccountFingerprintActivity
+    // tokopedia-android-internal://global/choose-account-fingerprint
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
+
     //SeamlessActivity
     const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 
@@ -466,4 +489,13 @@ object ApplinkConstInternalGlobal {
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init
     const val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
+
+    // TelephonyActivity
+    // tokopedia-android-internal://global/telephony-masking
+    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+
+    // GlobalSharingActivity
+    // tokopedia-android-internal://global/global-sharing
+    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
+
 }

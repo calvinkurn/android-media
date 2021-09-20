@@ -114,7 +114,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
 
             Given("all available cart data") {
                 every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             When("process to update and reload cart data") {
@@ -145,7 +145,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
 
             Given("all available cart data") {
                 every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             When("process to update and reload cart data") {

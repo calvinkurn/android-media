@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="8"
-        tools:background="@color/colorGray"
+        tools:background="@color/Unify_N100"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -39,7 +39,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="8"
-        tools:background="@color/colorGray"
+        tools:background="@color/Unify_N100"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton

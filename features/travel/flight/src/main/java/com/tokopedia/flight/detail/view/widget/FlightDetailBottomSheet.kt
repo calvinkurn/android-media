@@ -8,7 +8,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment
 import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment
@@ -48,7 +47,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
             }
         }
 
-        flightAnalytics = FlightAnalytics(FlightDateUtil())
+        flightAnalytics = FlightAnalytics()
 
         initBottomSheet()
     }

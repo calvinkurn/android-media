@@ -11,15 +11,18 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
+                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         val QUERY = """
@@ -28,6 +31,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  isTokoNow
                   shopName
                   productID
                   shopID
@@ -42,6 +46,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   catalogID
                   isLeasing
                   isBlacklisted
+                  totalStockFmt
                   menu {
                     id
                     name
@@ -198,6 +203,18 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         text
                       }
                     }
+                    ... on pdpDataCategoryCarousel {
+                        titleCarousel
+                        linkText
+                        applink
+                        list {
+                          categoryID
+                          icon
+                          title
+                          isApplink
+                          applink
+                        }
+                    }
                      ... on pdpDataCustomInfo {
                        icon
                        title
@@ -233,9 +250,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         isCOD
+                        isWishlist
                         picture {
                           url
                           url200
@@ -246,6 +265,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWording
                           stockWordingHTML
                           minimumOrder
+                          maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isWishlist
                         campaignInfo {
@@ -276,6 +298,16 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                    },
+                     ... on pdpDataOneLiner {
+                       productID
+                       oneLinerContent
+                       linkText
+                       color
+                       applink
+                       separator
+                       icon
+                       isVisible
                     }
                   }
                 }
@@ -298,6 +330,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
+        val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
+            requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
+        }
+
         gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 

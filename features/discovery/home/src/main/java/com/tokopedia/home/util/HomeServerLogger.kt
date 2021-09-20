@@ -17,6 +17,7 @@ object HomeServerLogger {
     const val TYPE_REVAMP_ERROR_REFRESH = "revamp_error_refresh"
     const val TYPE_REVAMP_EMPTY_UPDATE = "revamp_empty_update"
 
+    const val TYPE_WALLET_APP_ERROR = "wallet_app_error"
     fun logWarning(
         type: String?,
         throwable: Throwable?,

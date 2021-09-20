@@ -1,0 +1,36 @@
+[
+  {
+    "data": {
+      "discussionMostHelpful": {
+        "productID": "1994427767",
+        "question": [
+          {
+            "answer": {
+              "answerID": "609746814",
+              "attachedProductCount": 0,
+              "content": "ready",
+              "createTime": "2021-07-12T12:13:37Z",
+              "createTimeFormatted": "12 Jul",
+              "isSeller": true,
+              "userID": "132674703",
+              "userName": "qa-zxccv01",
+              "userThumbnail": "https://images.tokopedia.net/img/seller_no_logo_0.png",
+              "userThumbnail2": "https://images.tokopedia.net/img/seller_no_logo_0.png"
+            },
+            "content": "MOCK MOCK MOCK",
+            "createTime": "2021-07-12T12:13:12Z",
+            "createTimeFormatted": "12 Jul",
+            "questionID": "310838370",
+            "totalAnswer": 1,
+            "userID": "144354868",
+            "userName": "MOCK MOCK MOCK",
+            "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/144354868/user_thumbnail/desktop"
+          }
+        ],
+        "shopID": "10241240",
+        "shopURL": "https://www.tokopedia.com/qa-zxccv01",
+        "totalQuestion": 1
+      }
+    }
+  }
+]

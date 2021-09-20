@@ -40,7 +40,8 @@ data class RecommendationProgressUiModel(
 
     data class ProgressBar(
             val value: Int,
-            val maxValue: Int
+            val maxValue: Int,
+            val valueToDisplay: String
     )
 }
 

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -16,7 +15,9 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
+import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
@@ -24,27 +25,28 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Ca
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignMainStockViewModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
+class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(isVariant: Boolean,
-                           sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                           isActive: Boolean,
-                           stock: Int,
-                           isCampaign: Boolean,
-                           access: ProductManageAccess,
-                           source: String,
-                           campaignStockListener: CampaignStockListener,): CampaignMainStockFragment {
+        fun createInstance(
+                isVariant: Boolean,
+                sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+                isActive: Boolean,
+                stock: Int,
+                access: ProductManageAccess,
+                source: String,
+                campaignStockListener: CampaignStockListener,
+        ): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
                     putBoolean(EXTRA_IS_ACTIVE, isActive)
-                    putBoolean(EXTRA_IS_CAMPAIGN, isCampaign)
                     putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                     putParcelable(EXTRA_PRODUCT_MANAGE_ACCESS, access)
@@ -57,7 +59,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         private const val EXTRA_STOCK = "extra_stock"
         private const val EXTRA_IS_VARIANT = "extra_is_variant"
         private const val EXTRA_IS_ACTIVE = "extra_is_active"
-        private const val EXTRA_IS_CAMPAIGN = "extra_is_campaign"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
         private const val EXTRA_PRODUCT_MANAGE_ACCESS = "extra_product_manage_access"
 
@@ -86,10 +87,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         arguments?.getInt(EXTRA_STOCK)
     }
 
-    private val isCampaign by lazy {
-        arguments?.getBoolean(EXTRA_IS_CAMPAIGN)
-    }
-
     private val sellableProductList by lazy {
         arguments?.getParcelableArrayList<SellableStockProductUIModel>(EXTRA_SELLABLE_PRODUCT_LIST)?.toList().orEmpty()
     }
@@ -97,6 +94,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_PRODUCT_MANAGE_ACCESS) }
 
     private val source by lazy { arguments?.getString(EXTRA_SOURCE) }
+
+    private val shopId by lazy {
+        activity?.intent?.getStringExtra(CampaignStockActivity.SHOP_ID)
+    }
 
     private var campaignStockListener: CampaignStockListener? = null
 
@@ -120,7 +121,9 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             onActiveStockChanged = ::onActiveStockChanged,
             onVariantStockChanged = ::onVariantStockChanged,
             onVariantStatusChanged = ::onVariantStatusChanged,
-            source = source?: CampaignStockFragment.DEFAULT_SOURCE
+            onOngoingPromotionClicked = ::onOngoingPromotionClicked,
+            source = source ?: CampaignStockFragment.DEFAULT_SOURCE,
+            shopId = shopId ?: ""
     )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
@@ -162,7 +165,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 addAll(listOf(
                     ActiveProductSwitchUiModel(isActive, access),
-                    TotalStockEditorUiModel(stockCount.orZero(), isCampaign, access)
+                    TotalStockEditorUiModel(stockCount.orZero(), access, sellableProductList.firstOrNull()?.campaignTypeList)
                 ))
             }
         }
@@ -184,46 +187,37 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun observeVariantStock() {
-        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer { isAllStockEmpty ->
-            val shouldShowWarning = isAllStockEmpty && isVariant
-            showVariantWarningTickerWithCondition(shouldShowWarning)
-        })
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner,
+            { isAllStockEmpty ->
+                val shouldShowWarning = isAllStockEmpty && isVariant
+                showVariantWarningTickerWithCondition(shouldShowWarning)
+            })
     }
 
     private fun observeStockInfo() {
-        mViewModel.showStockInfo.observe(viewLifecycleOwner, Observer { showStockInfo ->
+        mViewModel.showStockInfo.observe(viewLifecycleOwner, { showStockInfo ->
             showHideStockInfo(showStockInfo)
         })
     }
 
     private fun showHideStockInfo(showStockInfo: Boolean) {
         adapter.apply {
-            data.filterIsInstance<SellableStockProductUIModel>().forEach {
-                val index = data.indexOf(it)
-                data[index] = if (showStockInfo) {
-                    it.copy(isAllStockEmpty = false)
-                } else {
-                    it.copy(isAllStockEmpty = true)
+            getRecyclerView(view)?.post {
+                data.filterIsInstance<SellableStockProductUIModel>().forEach {
+                    val index = data.indexOf(it)
+                    data[index] = if (showStockInfo) {
+                        it.copy(isAllStockEmpty = false)
+                    } else {
+                        it.copy(isAllStockEmpty = true)
+                    }
                 }
+                notifyDataSetChanged()
             }
-            notifyDataSetChanged()
         }
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
-        updateStockEditorItem(totalStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
-    }
-
-    private fun updateStockEditorItem(totalStock: Int) {
-        adapter.apply {
-            data.firstOrNull { it is TotalStockEditorUiModel }?.let {
-                val item = TotalStockEditorUiModel(totalStock, isCampaign, access)
-                val index = data.indexOf(it)
-                data[index] = item
-                notifyItemChanged(index)
-            }
-        }
     }
 
     private fun onActiveStockChanged(isActive: Boolean) {
@@ -239,19 +233,34 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         campaignStockListener?.onVariantStatusChanged(productId, status)
     }
 
+    private fun onOngoingPromotionClicked(campaignTypeList: List<ProductCampaignType>)  {
+        showOngoingPromotionBottomSheet(campaignTypeList)
+    }
+
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
         with(adapter) {
-            val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
-            val tickerUiModel = createTickerUiModel(shouldShowWarning)
+            getRecyclerView(view)?.post {
+                val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
+                val tickerUiModel = createTickerUiModel(shouldShowWarning)
 
-            if(ticker == null) {
-                data.add(ITEM_TICKER_POSITION, tickerUiModel)
-                notifyItemInserted(ITEM_TICKER_POSITION)
-            } else {
-                val index = data.indexOf(ticker)
-                data[index] = tickerUiModel
-                notifyItemChanged(index)
+                if(tickerUiModel.tickerList.isNotEmpty()) {
+                    if (ticker == null) {
+                        data.add(ITEM_TICKER_POSITION, tickerUiModel)
+                        notifyItemInserted(ITEM_TICKER_POSITION)
+
+                    } else {
+                        val index = data.indexOf(ticker)
+                        data[index] = tickerUiModel
+                        notifyItemChanged(index)
+                    }
+                }
             }
+        }
+    }
+
+    private fun showOngoingPromotionBottomSheet(campaignTypeList: List<ProductCampaignType>) {
+        context?.let {
+            OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
         }
     }
 

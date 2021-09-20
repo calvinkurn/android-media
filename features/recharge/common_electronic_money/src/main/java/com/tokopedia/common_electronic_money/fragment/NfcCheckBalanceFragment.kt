@@ -29,11 +29,12 @@ import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import okhttp3.Route
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -94,6 +95,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                     action = EmoneyAnalytics.Action.FAILED_CLICK_CLOSE_PAGE
                     screenName = EmoneyAnalytics.Screen.FAILED_NFC
                 }
+                NOT_SUPPORT_CLOSE_BTN -> {
+                    action = EmoneyAnalytics.Action.FAILED_CLICK_CLOSE_PAGE_NFC_NOT_SUPPORTED
+                    screenName = EmoneyAnalytics.Screen.FAILED_NFC
+                }
             }
             emoneyAnalytics.clickBtnCloseCheckSaldoNFC(action, screenName, ETOLL_CATEGORY_ID,
                     operatorName, userSession.userId, irisSessionId)
@@ -109,8 +114,12 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.clickTopupEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId)
                 onProcessTopupNow(getPassData(operatorId, issuerId))
+            }
+
+            override fun onClickTickerTapcash() {
+                emoneyAnalytics.onShowErrorTapcashClickContactCS(irisSessionId)
             }
         })
 
@@ -121,6 +130,11 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
             override fun goToHome() {
                 RouteManager.route(context, ApplinkConst.HOME)
+            }
+
+            override fun goToHelpTapcash() {
+                emoneyAnalytics.onShowErrorTapcashClickUpdateBalanceCardFailed(irisSessionId)
+                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${HELP_TAPCASH}")
             }
         })
 
@@ -183,14 +197,11 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             imageUrl: String = "",
                             isButtonShow: Boolean = true,
                             isGlobalErrorShow: Boolean = false,
-                            mandiriGetSocketTimeout: Boolean = false
+                            mandiriGetSocketTimeout: Boolean = false,
+                            tapCashWriteFailed: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
-
-        val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
-            getString(R.string.emoney_nfc_grpc_label_error)
-        } else errorMessage
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.hide()
@@ -199,19 +210,23 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         tapETollCardView.visibility = View.VISIBLE
 
         if(isGlobalErrorShow){
-            tapETollCardView.showGlobalError(updatedErrorMessage, errorMessageLabel)
+            tapETollCardView.showGlobalError(errorMessage, errorMessageLabel)
         } else {
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
-                    imageUrl, isButtonShow, mandiriGetSocketTimeout)
+            tapETollCardView.showErrorState(errorMessage, errorMessageLabel,
+                    imageUrl, isButtonShow, mandiriGetSocketTimeout, tapCashWriteFailed)
+        }
+
+        if(tapCashWriteFailed){
+            emoneyAnalytics.onShowErrorTapcashImpressionUpdateBalanceCardFailed(irisSessionId)
         }
 
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
 
     protected fun showErrorDeviceUnsupported(errorMessage: String) {
-        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
-        statusCloseBtn = FAILED_CLOSE_BTN
+        emoneyAnalytics.onShowErrorTrackingNFCNotSupproted(userSession.userId, irisSessionId)
+        statusCloseBtn = NOT_SUPPORT_CLOSE_BTN
         tapETollCardView.visibility = View.VISIBLE
         tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
@@ -316,6 +331,16 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         tapETollCardView.showInitialState()
     }
 
+    protected fun goToNewTapcash(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL, ""
+            ) == RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
 
@@ -330,6 +355,9 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         private const val INITIAL_CLOSE_BTN = "initial"
         private const val SUCCESS_CLOSE_BTN = "success"
         private const val FAILED_CLOSE_BTN = "failed"
+        private const val NOT_SUPPORT_CLOSE_BTN = "not support"
+
+        private const val HELP_TAPCASH = "https://www.tokopedia.com/help"
 
     }
 }

@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -21,14 +20,13 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.note.NoteUtil
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent
 import com.tokopedia.shop.note.di.module.ShopNoteModule
 import com.tokopedia.shop.note.view.presenter.ShopNoteDetailViewModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_shop_note_detail.*
 import javax.inject.Inject
 
 class ShopNoteDetailFragment: BaseDaggerFragment() {
@@ -38,6 +36,11 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
     private var shopId: String = ""
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private var viewErrorState: View? = null
+    private var mainContainer: View? = null
+    private var viewLoadingState: View? = null
+    private var textViewDate: Typography? = null
+    private var textViewDesc: Typography? = null
 
     companion object {
         private const val VIEW_CONTENT = 1
@@ -64,8 +67,17 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initView()
         getShopDetail()
         observeLiveData()
+    }
+
+    private fun initView() {
+        viewErrorState = view?.findViewById(R.id.view_error_state)
+        mainContainer = view?.findViewById(R.id.main_container)
+        viewLoadingState = view?.findViewById(R.id.view_loading_state)
+        textViewDate = view?.findViewById(R.id.textViewDate)
+        textViewDesc = view?.findViewById(R.id.textViewDesc)
     }
 
     private fun observeLiveData() {
@@ -108,21 +120,21 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
     }
 
     private fun showLoadingView() {
-        view_error_state?.hide()
-        main_container?.hide()
-        view_loading_state?.show()
+        viewErrorState?.hide()
+        mainContainer?.hide()
+        viewLoadingState?.show()
     }
 
     private fun showContentView() {
-        view_loading_state?.hide()
-        view_error_state?.hide()
-        main_container?.show()
+        viewLoadingState?.hide()
+        viewErrorState?.hide()
+        mainContainer?.show()
     }
 
     private fun showErrorView() {
-        view_loading_state?.hide()
-        main_container?.hide()
-        view_error_state?.show()
+        viewLoadingState?.hide()
+        mainContainer?.hide()
+        viewErrorState?.show()
     }
 
     override fun initInjector() {
@@ -138,10 +150,10 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
 
     private fun onErrorGetShopNoteList(e: Throwable?) {
         setViewState(VIEW_ERROR)
-        val textRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
-        val buttonRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
-        textRetryError.text = ErrorHandler.getErrorMessage(activity, e)
-        buttonRetryError.setOnClickListener { getShopDetail() }
+        val textRetryError = viewErrorState?.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
+        val buttonRetryError = viewErrorState?.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
+        textRetryError?.text = ErrorHandler.getErrorMessage(activity, e)
+        buttonRetryError?.setOnClickListener { getShopDetail() }
     }
 
     private fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteModel?) {
@@ -149,12 +161,12 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
             val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
-            textViewDate.text = getString(
+            textViewDate?.text = getString(
                     R.string.shop_note_detail_date_format,
                     NoteUtil.convertUnixToFormattedDate(latestUpdate),
                     NoteUtil.convertUnixToFormattedTime(latestUpdate)
             )
-            textViewDesc.text = TextHtmlUtils.getTextFromHtml(shopNoteDetail.content)
+            textViewDesc?.text = TextHtmlUtils.getTextFromHtml(shopNoteDetail.content)
         }
     }
 }

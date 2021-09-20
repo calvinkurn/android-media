@@ -30,6 +30,8 @@ data class ThanksPageData(
         val amount: Long,
         @SerializedName("amount_str")
         val amountStr: String,
+        @SerializedName("combine_amount")
+        val combinedAmount: Double,
         @SerializedName("order_list")
         val shopOrder: ArrayList<ShopOrder>,
         @SerializedName("additional_info")
@@ -54,6 +56,8 @@ data class ThanksPageData(
         val paymentDetails: ArrayList<PaymentDetail>?,
         @SerializedName("order_amount_str")
         val orderAmountStr: String,
+        @SerializedName("order_amount")
+        val orderAmount: Double,
         @SerializedName("current_site")
         val currentSite: String,
         @SerializedName("business_unit")
@@ -111,21 +115,29 @@ data class PaymentDetail(
         @SerializedName("gateway_name")
         val gatewayName: String,
         @SerializedName("amount")
-        val amount: Float,
+        val amount: Double,
         @SerializedName("amount_str")
-        val amountStr: String
+        val amountStr: String,
+        @SerializedName("amount_combine")
+        val amountCombine: Double,
+        @SerializedName("amount_combine_str")
+        val amountCombineStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "")
+            parcel.readDouble(),
+            parcel.readString() ?: "",
+            parcel.readDouble(),
+        parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(gatewayCode)
         parcel.writeString(gatewayName)
-        parcel.writeFloat(amount)
+        parcel.writeDouble(amount)
         parcel.writeString(amountStr)
+        parcel.writeDouble(amountCombine)
+        parcel.writeString(amountCombineStr)
     }
 
     override fun describeContents(): Int {
@@ -419,5 +431,23 @@ data class ThankPageTopTickerData(
         @SerializedName("ticker_text")
         val tickerDescription : String?,
         @SerializedName("ticker_type")
-        val ticketType : String?
-)
+        val ticketType : String?,
+        @SerializedName("ticker_cta_url")
+        val tickerCTAUrl : String?,
+        @SerializedName("ticker_cta_title")
+        val tickerCTATitle: String?,
+        @SerializedName("ticker_cta_applink")
+        val tickerCTAApplink: String?
+) {
+    fun getURL(): String? {
+        return if (!tickerCTAApplink.isNullOrEmpty()) {
+            tickerCTAApplink
+        } else {
+            tickerCTAUrl
+        }
+    }
+
+    fun isAppLink() : Boolean{
+        return !tickerCTAApplink.isNullOrEmpty()
+    }
+}

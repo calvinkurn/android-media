@@ -6,9 +6,10 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -19,7 +20,7 @@ object VariantMapper {
             intent: Intent?,
             productId: String?,
             productInfo: DynamicProductInfoP1?,
-            variantResp: ProductVariantCommon?,
+            variantResp: ProductVariant?,
             freeOngkirImgUrl: String
     ) {
         if (intent == null || productId == null) return
@@ -27,9 +28,9 @@ object VariantMapper {
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
-        val priceBefore = if (priceBeforeInt > 0) {
-            priceBeforeInt.getCurrencyFormatted()
+        val priceBeforeDouble = productInfo?.priceBeforeDouble ?: 0.0
+        val priceBefore = if (priceBeforeDouble > 0) {
+            priceBeforeDouble.getCurrencyFormatted()
         } else {
             ""
         }
@@ -56,7 +57,7 @@ object VariantMapper {
             productFsIsActive = productFsIsActive,
             productFsImageUrl = freeOngkirImgUrl,
             priceBefore = priceBefore,
-            priceBeforeInt = priceBeforeInt,
+            priceBeforeInt = priceBeforeDouble,
             dropPercentage = dropPercentage,
             isActive = isActive,
             remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
@@ -66,7 +67,7 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
+    fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChild?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
@@ -85,8 +86,8 @@ object VariantMapper {
                 campaignType = newData?.campaign?.campaignType.toString(),
                 campaignTypeName = newData?.campaign?.campaignTypeName ?: "",
                 isActive = newData?.campaign?.isActive ?: false,
-                originalPrice = newData?.campaign?.originalPrice?.toInt() ?: 0,
-                discountedPrice = newData?.campaign?.discountedPrice?.toInt() ?: 0,
+                originalPrice = newData?.campaign?.originalPrice ?: 0.0,
+                discountedPrice = newData?.campaign?.discountedPrice ?: 0.0,
                 startDate = newData?.campaign?.startDate ?: "",
                 endDate = newData?.campaign?.endDateUnix toDate "yyyy-MM-dd HH:mm:ss",
                 endDateUnix = newData?.campaign?.endDateUnix ?: "",
@@ -125,7 +126,7 @@ object VariantMapper {
         }
 
         val newPrice = oldData.data.price.copy(
-                value = newData?.price?.toInt() ?: 0
+                value = newData?.price ?: 0.0
         )
 
         val newStock = oldData.data.stock.copy(
@@ -134,7 +135,6 @@ object VariantMapper {
         )
 
         val data = oldData.data.copy(
-                isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
                 thematicCampaign = newThematicCampaign,
                 price = newPrice,
@@ -144,7 +144,13 @@ object VariantMapper {
                 isCod = newData?.isCod ?: false
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        return DynamicProductInfoP1(
+            basic = basic,
+            data = data,
+            bestSellerContent = oldData.bestSellerContent,
+            layoutName = oldData.layoutName,
+            pdpSession = oldData.pdpSession
+        )
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
@@ -152,13 +158,16 @@ object VariantMapper {
         val data = oldData?.data?.copy(
                 media = media
         )
-        return DynamicProductInfoP1(basic ?: BasicInfo(), data
-                ?: ComponentData(), oldData?.layoutName ?: "")
+        return DynamicProductInfoP1(
+            basic = basic ?: BasicInfo(),
+            data = data ?: ComponentData(),
+            bestSellerContent = oldData?.bestSellerContent,
+            layoutName = oldData?.layoutName ?: "")
     }
 
-    fun generateVariantString(variantData:ProductVariantCommon?): String {
+    fun generateVariantString(variantData: ProductVariant?): String {
         return try {
-            variantData?.variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+            variantData?.variants?.map { it.name }?.joinToString(separator = ", ") ?: ""
         } catch (e: Throwable) {
             ""
         }

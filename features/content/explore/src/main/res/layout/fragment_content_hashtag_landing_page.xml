@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
@@ -8,16 +8,30 @@
     android:paddingStart="@dimen/dp_12"
     android:paddingEnd="@dimen/dp_12">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
-        android:clipToPadding="false"
-        tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        tools:spanCount="2"
-        tools:itemCount="20"
-        tools:listitem="@layout/item_explore_hashtag_landing_item"/>
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            tools:itemCount="20"
+            tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            tools:listitem="@layout/item_explore_hashtag_landing_item"
+            tools:spanCount="2" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/error_hashtag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            app:globalerrors_type="NO_CONNECTION" />
+    </LinearLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

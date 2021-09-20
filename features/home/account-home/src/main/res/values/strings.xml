@@ -218,6 +218,7 @@
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
+    <string name="title_app_advanced_screen_recorder">Perekam Layar</string>
 
     <string name="account_home_clear_cache_warning">Peringatan</string>
     <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>

@@ -36,6 +36,28 @@ class SharedTelcoViewModelTest {
     }
 
     @Test
+    fun setPromoImpression(){
+        // given
+
+        // when
+        telcoViewModel.setPromoImpression()
+
+        // then
+        assert(telcoViewModel.promoImpression.value is Unit)
+    }
+
+    @Test
+    fun setRecentsImpression(){
+        // given
+
+        // when
+        telcoViewModel.setRecentsImpression()
+
+        // then
+        assert(telcoViewModel.recentsImpression.value is Unit)
+    }
+
+    @Test
     fun setRecommendationTelco_dataValid() {
         //given
         val listRecommendation = ArrayList<TopupBillsRecommendation>()

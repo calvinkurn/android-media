@@ -75,22 +75,35 @@ data class RecommendationEntity (
         val recommendationType: String = ""
         @SerializedName("stock")
         val stock: Int = 0
+
         @SerializedName("isTopads")
         val isIsTopads: Boolean = false
+
         @SerializedName("isWishlist")
         val isWishlist: Boolean = false
+
         @SerializedName("labelgroup")
         val labelGroups: List<LabelGroup> = listOf()
+
         @SerializedName("badges")
         val badges: List<Badges> = listOf()
+
         @SerializedName("minOrder")
         val minOrder: Int = 0
+
+        @SerializedName("maxOrder")
+        val maxOrder: Int = 0
+
         @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf()
+
+        @SerializedName("parentID")
+        val parentID: Long = 0L
 
         class SpecificationsLabels {
             @SerializedName("key")
             val key: String = ""
+
             @SerializedName("value")
             val value: String = ""
         }
@@ -168,13 +181,15 @@ data class RecommendationEntity (
         @SerializedName("landingPageLink")
         val landingPageLink: String = ""
         @SerializedName("assets")
-        val assets: Assets = Assets()
+        val assets: Assets? = Assets()
         @SerializedName("foreignTitle")
         val foreignTitle: String = ""
+        @SerializedName("thematicID")
+        val thematicID: Long = 0L
 
         class Assets {
             @SerializedName("banner")
-            val banner: Banner = Banner()
+            val banner: Banner? = Banner()
         }
 
         class Banner {

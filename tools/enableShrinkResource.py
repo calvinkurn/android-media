@@ -55,10 +55,10 @@ def findProjectDependency(path):
     with open(build_path) as f:
         contents = f.read()
         pattern = re.compile(
-            r"implementation \(?project\(rootProject\.ext\.features\.(\w+)\)\)?")
+            r"implementation \(?projectOrAar\(rootProject\.ext\.features\.(\w+)\)\)?")
         result = re.finditer(pattern, contents)
         for r in result:
-            d.append( "implementation project(rootProject.ext.features." + r.group(1) + ")")
+            d.append( "implementation projectOrAar(rootProject.ext.features." + r.group(1) + ")")
     return d
 
 

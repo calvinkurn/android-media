@@ -26,6 +26,13 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
 
     init {
         topadsHeadlineView.setTopAdsBannerClickListener(this)
+        topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
+            override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
+                product?.let {
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsProductItemListener(position, it, cpmData, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
+                }
+            }
+        })
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -63,7 +70,7 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         data?.let {
             RouteManager.route(fragment.context, applink)
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
         }
     }
 }

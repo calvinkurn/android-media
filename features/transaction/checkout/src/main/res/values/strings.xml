@@ -11,7 +11,8 @@
     <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
-    <string name="label_hide_other_item_new">Sembunyikan list</string>
+    <string name="label_hide_other_item_new">Tampilkan Lebih Sedikit</string>
+    <string name="label_show_other_item_new">Tampilkan Semua</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
@@ -124,4 +125,12 @@
     <string name="label_drop_off_cta">Cari Indomaret</string>
     <string name="checkout_label_per_insurance_price">per barang</string>
     <string name="label_ticker_trade_in">Tukar Tambah</string>
+    <string name="checkout_label_payment_try_again">Oops, sedang terjadi kendala. Coba lagi atau kembali dalam beberapa saat.</string>
+    <string name="checkout_label_reload_shipping">Refresh</string>
+    <string name="checkout_shipping">Pengiriman</string>
+    <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
+    <string name="checkout_label_see_error_product">Lihat</string>
+    <string name="checkout_label_set_pinpoint_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="checkout_label_set_pinpoint_action">Atur</string>
 </resources>

@@ -2,6 +2,8 @@ package com.tokopedia.tokopoints.view.util
 
 import android.content.Context
 import android.content.res.Configuration
+import android.text.method.LinkMovementMethod
+import android.text.method.MovementMethod
 import android.util.DisplayMetrics
 import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import java.util.*
@@ -53,5 +55,7 @@ fun isEventTriggered(context: Context, adInfo: AdInfo): Boolean {
     check = setData?.contains(adInfo?.AdID)
     return check!!
 }
+
+fun getMovementMethod(): MovementMethod = LinkMovementMethod.getInstance()
 
 

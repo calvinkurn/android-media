@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_lvl2"
-    app:cardCornerRadius="@dimen/spacing_lvl3">
+    android:layout_marginBottom="@dimen/spacing_lvl2">
 
     <LinearLayout
         android:id="@+id/promo_container"
@@ -34,16 +33,17 @@
             android:layout_height="wrap_content"
             android:visibility="visible">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/img_voucher"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
+                app:icon_color_light_enable="@color/Unify_N200"
+                app:icon_color_night_enable="@color/Unify_N200"
                 android:layout_alignTop="@+id/btn_copy_promo"
                 android:layout_alignBottom="@id/btn_copy_promo"
-                android:layout_marginLeft="@dimen/unify_space_12"
-                android:gravity="center_vertical"
-                app:srcCompat="@drawable/common_topup_ic_voucher"
-                android:contentDescription="null" />
+                app:icon_name="PROMO" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_promo_code"
@@ -96,6 +96,6 @@
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>
 
 

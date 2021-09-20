@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,7 +19,7 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFr
 import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
 import kotlinx.android.synthetic.main.fragment_som_container.*
 
-class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
+class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle): SomContainerFragment {
@@ -30,7 +31,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
                     putString(SomConsts.TAB_STATUS, bundle.getString(SomConsts.TAB_STATUS))
                     putString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH, bundle.getString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH))
                     putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, bundle.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID))
-                    putInt(SomConsts.FILTER_ORDER_TYPE, bundle.getInt(SomConsts.FILTER_ORDER_TYPE))
+                    putString(SomConsts.FILTER_ORDER_TYPE, bundle.getString(SomConsts.FILTER_ORDER_TYPE))
                 }
             }
         }
@@ -40,6 +41,8 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     private var somListFragment: SomListFragment? = null
     private var somDetailFragment: SomDetailFragment? = null
+
+    override fun getScreenName(): String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_som_container, container, false)
@@ -54,6 +57,13 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         somListFragment?.onActivityResult(requestCode, resultCode, data)
         somDetailFragment?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        var handled = false
+        somListFragment?.let { handled = it.onFragmentBackPressed() }
+        somDetailFragment?.let { handled = handled || it.onFragmentBackPressed() }
+        return handled
     }
 
     override fun onOrderClicked(orderId: String) {

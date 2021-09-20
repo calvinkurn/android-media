@@ -12,6 +12,8 @@ data class GetDefaultChosenAddressResponse(
         var data: DefaultChosenAddressData = DefaultChosenAddressData(),
         @SerializedName("kero_addr_error")
         var error: ErrorDefaultAddress = ErrorDefaultAddress(),
+        @SerializedName("tokonow")
+        var tokonow: Tokonow = Tokonow(),
         @SerializedName("status")
         var status: String = "",
         @SerializedName("server_process_time")
@@ -49,12 +51,13 @@ data class DefaultChosenAddressData(
         var districtName: String = "",
         @SerializedName("status")
         var status: Int = 0,
-        @SerializedName("coountry")
+        @SerializedName("country")
         var country: String = "",
         @SerializedName("latitude")
         var latitude: String = "",
         @SerializedName("longitude")
-        var longitude: String = ""
+        var longitude: String = "",
+
 )
 
 data class ErrorDefaultAddress(

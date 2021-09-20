@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -63,6 +64,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -131,6 +133,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         AddEditProductPerformanceMonitoringListener {
 
     companion object {
+        const val AMOUNT_CATEGORY_RECOM_DEFAULT = 3
         private fun getDurationUnit(type: Int) =
                 when (type) {
                     UNIT_DAY -> com.tokopedia.product.addedit.R.string.label_day
@@ -318,7 +321,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        setupProductNameValidationBottomsheet()
+        if (RollenceUtil.getProductTitleRollence()) {
+            viewModel.usingNewProductTitleRequest = true
+            setupProductNameValidationBottomsheet()
+        }
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -534,6 +540,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
         } else {
             productPriceEditIcon?.hide()
+        }
+
+        // Set max length to 9 digits price
+        productPriceField?.let {
+            it.textFieldInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PRICE))
         }
 
         productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -830,16 +841,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product photo validation
         productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
-
-        // product name validation
-        val productNameInput = productNameField?.getEditableValue().toString()
-        viewModel.validateProductNameInput(productNameInput)
-        viewModel.isProductNameInputError.value?.run {
-            if (this && !requestedFocus) {
-                productNameField?.requestFocus()
-                requestedFocus = true
-            }
-        }
 
         // product price validation
         val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")
@@ -1443,11 +1444,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
                     productSpecificationTextView?.show()
+                    addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
                 }
                 is Fail -> {
+                    productSpecificationLayout?.show()
                     productSpecificationTextView?.hide()
+                    addProductSpecificationButton?.hide()
                     productSpecificationReloadLayout?.show()
                 }
             }
@@ -1617,6 +1621,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setOnSuggestedPriceSelected { suggestedPrice ->
                 productPriceField.setText(suggestedPrice)
                 if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickPriceRecommendation()
                     displaySuggestedPriceSelected()
                 }
             }
@@ -1630,14 +1635,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun getAnnotationCategory() {
-        val productId = viewModel.productInputModel.productId
-
-        productSpecificationLayout?.gone()
-        viewModel.getAnnotationCategory(productCategoryId, if (productId > 0) {
-            productId.toString()
+        val productId = if (viewModel.productInputModel.productId > 0) {
+            viewModel.productInputModel.productId.toString()
         } else {
             ""
-        })
+        }
+
+        productSpecificationLayout?.gone()
+        if (productCategoryId.isNotEmpty()) {
+            viewModel.getAnnotationCategory(productCategoryId, productId)
+        }
     }
 
     private fun showSpecificationPicker(){
@@ -1912,7 +1919,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
-        val items = ArrayList(result.data.take(3))
+        val items = ArrayList(result.data.take(AMOUNT_CATEGORY_RECOM_DEFAULT))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)

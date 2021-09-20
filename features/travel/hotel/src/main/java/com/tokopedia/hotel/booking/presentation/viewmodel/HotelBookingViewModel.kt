@@ -3,11 +3,11 @@ package com.tokopedia.hotel.booking.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,6 +17,7 @@ import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -24,7 +25,6 @@ import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -127,11 +127,17 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     fun onCancelAppliedVoucher(rawQuery: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCancelVoucher>()
+            }.getSuccessData<FlightCancelVoucher.Response>()
+            if(data.response.attributes.success){
+                mutablePromoData.postValue(PromoData(state = TickerCheckoutView.State.ACTIVE))
+            }else{
+                mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))
+            }
         }) {
+            mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))
             it.printStackTrace()
         }
     }

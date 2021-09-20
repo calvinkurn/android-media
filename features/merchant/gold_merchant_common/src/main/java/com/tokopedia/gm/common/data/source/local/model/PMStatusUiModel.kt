@@ -3,17 +3,19 @@ package com.tokopedia.gm.common.data.source.local.model
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
 
 /**
  * Created By @ilhamsuaib on 16/03/21
  */
 
 data class PMStatusUiModel(
-        val status: String = "",
-        val pmTier: Int = PMConstant.PMTierType.NA,
-        val expiredTime: String = "",
-        val isOfficialStore: Boolean = false,
-        val autoExtendEnabled: Boolean = true
+    val shopId: String = "",
+    val status: String = PMStatusConst.INACTIVE,
+    val pmTier: Int = PMConstant.PMTierType.NA,
+    val expiredTime: String = "",
+    val isOfficialStore: Boolean = false,
+    val autoExtendEnabled: Boolean = true
 ) {
     companion object {
         const val PM_AUTO_EXTEND_OFF = "off"
@@ -28,5 +30,8 @@ data class PMStatusUiModel(
         }
     }
 
-    fun isPmActive(): Boolean = status == PMStatusConst.ACTIVE
+    fun isRegularMerchant(): Boolean =
+        status == PMStatusConst.INACTIVE && pmTier == PMTier.REGULAR
+
+    fun isPowerMerchant(): Boolean = status == PMStatusConst.ACTIVE || status == PMStatusConst.IDLE
 }

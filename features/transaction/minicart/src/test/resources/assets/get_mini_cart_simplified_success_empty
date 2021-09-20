@@ -1,0 +1,15 @@
+{
+  "status": "OK",
+  "mini_cart": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "total_product_count": 0,
+      "total_product_error": 0,
+      "total_product_price": 0,
+      "available_section": { },
+      "unavailable_section": [ ]
+    }
+  }
+}

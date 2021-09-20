@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +25,12 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
@@ -60,7 +65,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
         checkUrlMapToApplink();
         sendCampaignTrack(uriData, isOriginalUrlAmp);
-
+        initBranchIO(this);
 
         isAllowFetchDepartmentView = true;
 
@@ -79,6 +84,23 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         } else {
             initDeepLink();
         }
+    }
+
+    private void initBranchIO(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY)) {
+            LinkerManager.getInstance().initSession(this, uriHaveCampaignData());
+        }
+    }
+
+    private boolean uriHaveCampaignData(){
+        boolean uriHaveCampaignData = false;
+        if (getIntent() != null && getIntent().getData()!= null) {
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
+            uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
+        }
+        return uriHaveCampaignData;
     }
 
     private void sendCampaignTrack(Uri uriData, boolean isOriginalUrlAmp) {
@@ -145,7 +167,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, ((TkpdCoreRouter) getApplication()).getHomeClass());
+                Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
                 this.startActivity(intent);
                 this.finish();
             }

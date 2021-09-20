@@ -33,6 +33,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -208,7 +209,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
-        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)?: BaseNotificationModel()
         startActivity(context, baseNotificationModel.appLink, intent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -228,7 +229,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             notificationId: Int,
             element: BaseNotificationModel?
     ) {
-        val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
+        val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)?: ProductInfo()
 
         element?.let {
             if (it.type == PRODUCT_NOTIIFICATION) {
@@ -285,7 +286,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-        val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA)
+        val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA) ?: Grid()
         sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
                 baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION, grid.element_id)
         startActivity(context, grid.appLink, intent)
@@ -302,7 +303,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handlePersistentClick(context: Context, intent: Intent, baseNotificationModel: BaseNotificationModel) {
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
-            val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)
+            val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA) ?: PersistentButton()
             if (persistentButton.isAppLogo) {
                 CMEvents.postGAEvent(PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
                         PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.appLink ?: "")
@@ -434,13 +435,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
-        var (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
+        val (appLink) = intent.getParcelableExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM) ?: Carousel()
         val carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         startActivity(context, appLink, intent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
 
-        sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, carousel.element_id)
+        sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, carousel?.element_id ?: "")
 
         launchCatchError(block = {
             CarouselUtilities.deleteCarouselImageDirectory(context)
@@ -469,9 +470,39 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
                         dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
                 }
+                //to support video push and extra params
+                appLinkIntent.putExtras(getCustomDataBundle(dataIntent))
             }
         }catch (e : Exception){}
 
+    }
+
+    private fun getCustomDataBundle(dataIntent: Intent): Bundle {
+        val baseNotificationModel: BaseNotificationModel?
+                = dataIntent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        var bundle = Bundle()
+        if(baseNotificationModel!= null) {
+            baseNotificationModel.videoPushModel?.let {
+                bundle = jsonToBundle(bundle, JSONObject(it))
+            }
+            baseNotificationModel.customValues?.let {
+                if (it.isNotEmpty())
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+            }
+        }
+        return bundle
+    }
+
+    private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
+        jsonObject?.let {
+            val iterator = it.keys()
+            while (iterator.hasNext()) {
+                val key = iterator.next() as String
+                val value = it.getString(key)
+                bundle.putString(key, value)
+            }
+        }
+        return bundle
     }
 
     private fun getAppLinkIntent(context: Context, appLink: String?) : Intent{

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -87,6 +88,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         getIntentData()
         super.onCreate(savedInstanceState)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun getNewFragment() = ShopSearchProductFragment.createInstance(

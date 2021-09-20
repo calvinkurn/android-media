@@ -31,6 +31,10 @@ object PMConstant {
         const val PM_POTENTIAL_BENEFIT_02 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
         const val PM_POTENTIAL_BENEFIT_03 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_performance.png"
         const val PM_MODERATED_SHOP = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_moderated_shop.png"
+        const val IMG_TOPED_NEW_SELLER_PM_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_active.png"
+        const val IMG_TOPED_NEW_SELLER_PM_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_inactive.png"
+        const val IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_pro_active.png"
+        const val IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_pro_inactive.png"
     }
 
     object Urls {
@@ -56,5 +60,13 @@ object PMConstant {
         const val POWER_MERCHANT = 1
         const val OFFICIAL_STORE = 2
         const val POWER_MERCHANT_PRO = 3
+    }
+
+    object ShopLevel {
+        const val NO_LEVEL = 0
+        const val ONE = 1
+        const val TWO = 2
+        const val THREE = 3
+        const val FOUR = 4
     }
 }

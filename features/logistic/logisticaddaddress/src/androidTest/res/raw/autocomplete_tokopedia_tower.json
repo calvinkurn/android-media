@@ -1,0 +1,264 @@
+[
+  {
+    "data": {
+      "kero_maps_autocomplete": {
+        "error_code": 0,
+        "data": {
+          "predictions": [
+            {
+              "description": "Tokopedia Tower, Jalan Professor Doktor Satrio, RT.3/RW.3, Karet Semanggi, South Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJJ1IDsBDzaS4RK1Z7ks8L-SQ",
+              "types": [
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 9,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Tokopedia Tower",
+                  "offset": 0
+                },
+                {
+                  "value": "Jalan Professor Doktor Satrio",
+                  "offset": 17
+                },
+                {
+                  "value": "RT.3",
+                  "offset": 48
+                },
+                {
+                  "value": "RW.3",
+                  "offset": 53
+                },
+                {
+                  "value": "Karet Semanggi",
+                  "offset": 59
+                },
+                {
+                  "value": "South Jakarta City",
+                  "offset": 75
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 95
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 104
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Tokopedia Tower",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 9,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Jalan Professor Doktor Satrio, Karet Semanggi, South Jakarta City, Jakarta"
+              }
+            },
+            {
+              "description": "Tokopedia Care, RT.14, Rawa Buaya, West Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJmaeOAR73aS4RcYDuaV7Oehw",
+              "types": [
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 9,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Tokopedia Care",
+                  "offset": 0
+                },
+                {
+                  "value": "RT.14",
+                  "offset": 16
+                },
+                {
+                  "value": "Rawa Buaya",
+                  "offset": 23
+                },
+                {
+                  "value": "West Jakarta City",
+                  "offset": 35
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 54
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 63
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Tokopedia Care",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 9,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Rawa Buaya, West Jakarta City, Jakarta"
+              }
+            },
+            {
+              "description": "Tokopedia Care Semarang, Gemah, Semarang City, Central Java, Indonesia",
+              "place_id": "ChIJ6xKjjy2NcC4RoH_JLFdf1IY",
+              "types": [
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 9,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Tokopedia Care Semarang",
+                  "offset": 0
+                },
+                {
+                  "value": "Gemah",
+                  "offset": 25
+                },
+                {
+                  "value": "Semarang City",
+                  "offset": 32
+                },
+                {
+                  "value": "Central Java",
+                  "offset": 47
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 61
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Tokopedia Care Semarang",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 9,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Gemah, Semarang City, Central Java"
+              }
+            },
+            {
+              "description": "Tokopedia Center Bandung, Jalan Jendral Ahmad Yani, Kebon Pisang, Bandung City, West Java, Indonesia",
+              "place_id": "ChIJmaZy8WznaC4Ru82OtcrYQmE",
+              "types": [
+                "point_of_interest",
+                "store",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 9,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Tokopedia Center Bandung",
+                  "offset": 0
+                },
+                {
+                  "value": "Jalan Jendral Ahmad Yani",
+                  "offset": 26
+                },
+                {
+                  "value": "Kebon Pisang",
+                  "offset": 52
+                },
+                {
+                  "value": "Bandung City",
+                  "offset": 66
+                },
+                {
+                  "value": "West Java",
+                  "offset": 80
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 91
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Tokopedia Center Bandung",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 9,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Jalan Jendral Ahmad Yani, Kebon Pisang, Bandung City, West Java"
+              }
+            },
+            {
+              "description": "Tokopedia Centre, Penanggungan, Malang City, East Java, Indonesia",
+              "place_id": "ChIJKT0DaT6DeC4Ry3jLR50QoLE",
+              "types": [
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 9,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Tokopedia Centre",
+                  "offset": 0
+                },
+                {
+                  "value": "Penanggungan",
+                  "offset": 18
+                },
+                {
+                  "value": "Malang City",
+                  "offset": 32
+                },
+                {
+                  "value": "East Java",
+                  "offset": 45
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 56
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Tokopedia Centre",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 9,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Penanggungan, Malang City, East Java"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

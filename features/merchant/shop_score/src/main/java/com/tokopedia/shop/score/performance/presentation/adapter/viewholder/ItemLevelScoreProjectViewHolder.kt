@@ -5,7 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.ItemLevelScoreProjectUiModel
 
-class ItemLevelScoreProjectViewHolder(view: View): AbstractViewHolder<ItemLevelScoreProjectUiModel>(view) {
+class ItemLevelScoreProjectViewHolder(view: View) :
+    AbstractViewHolder<ItemLevelScoreProjectUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_level_skor_projection

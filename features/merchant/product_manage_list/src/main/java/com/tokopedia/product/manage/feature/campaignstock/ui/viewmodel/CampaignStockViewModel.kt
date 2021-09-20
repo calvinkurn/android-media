@@ -49,8 +49,10 @@ class CampaignStockViewModel @Inject constructor(
     private var campaignProductName: String = ""
     private var campaignReservedStock: Int = 0
 
-    private var shopId: String = ""
-    private var productId: String = ""
+    var shopId: String = ""
+        private set
+    var productId: String = ""
+        private set
     private var warehouseId: String = ""
 
     private var nonVariantStock: Int = 0

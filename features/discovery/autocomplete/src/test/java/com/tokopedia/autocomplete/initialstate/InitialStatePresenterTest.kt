@@ -1,11 +1,18 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.complete
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.autocomplete.shouldNotContain
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
@@ -24,6 +31,44 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     private val expectedLocalDimension90 =
             "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+
+    private val requestParamsSlot = slot<RequestParams>()
+
+    @Test
+    fun `Test initial state presenter has set parameter`() {
+        val warehouseId = "2216"
+        val dummyChooseAddressData = LocalCacheModel(
+                address_id = "123",
+                city_id = "45",
+                district_id = "123",
+                lat = "10.2131",
+                long = "12.01324",
+                postal_code = "12345",
+                warehouse_id = warehouseId
+        )
+        `Given chosen address data`(dummyChooseAddressData)
+        `Given getInitialStateUseCase will be successful`(initialStateCommonData)
+
+        `When presenter get initial state data`()
+
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+        every { initialStateView.chooseAddressData } returns chooseAddressModel
+    }
+
+    private fun `Given getInitialStateUseCase will be successful`(list: List<InitialStateData>) {
+        every { getInitialStateUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().complete(list)
+        }
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
 
     private fun `Test Initial State Data`(list: List<InitialStateData>) {
         `Given initial state use case capture request params`(list)
@@ -88,6 +133,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify PopularSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
         `Then verify DynamicInitialStateSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
         `Then verify InitialStateProductListDataView`(visitableList, expectedData, expectedDefaultDimension90)
+        `Then verify InitialStateChipWidgetDataView`(visitableList, expectedData, expectedDefaultDimension90)
+
 
         `Then verify RecentSearchDataView only have n items`(3, visitableList[4] as RecentSearchDataView)
     }
@@ -118,7 +165,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Given initial state API will return error`()
         `When presenter get initial state data`()
         `Then verify initial state API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify view interaction for load data failed with exception`()
     }
 
     private fun `Given initial state API will return error`() {
@@ -126,5 +173,21 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
             secondArg<Subscriber<List<InitialStateData>>>().onStart()
             secondArg<Subscriber<List<InitialStateData>>>().onError(testException)
         }
+    }
+
+    @Test
+    fun `Test initial state presenter has set parameter and no warehouseId`() {
+        `Given chosen address data`(LocalCacheModel())
+        `Given getInitialStateUseCase will be successful`(initialStateCommonData)
+
+        `When presenter get initial state data`()
+
+        `Then verify search parameter has no warehouseId`()
+    }
+
+    private fun `Then verify search parameter has no warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

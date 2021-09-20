@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:lineSpacingExtra="6sp"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@id/discovery_horizontal_rv_background"
         app:layout_constraintTop_toTopOf="@id/discovery_horizontal_rv_background"

@@ -189,6 +189,10 @@ class PlayActivity : BaseActivity(),
         }
     }
 
+    override fun onPageSelected(position: Int) {
+        activeFragment?.setFragmentActive(position)
+    }
+
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
     }
@@ -294,7 +298,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun canNavigateNextPage(): Boolean {
-        return swipeContainerView.hasNextPage()
+        return swipeContainerView.hasNextPage() && orientation.isPortrait
     }
 
     fun getViewModelFactory(): ViewModelProvider.Factory {

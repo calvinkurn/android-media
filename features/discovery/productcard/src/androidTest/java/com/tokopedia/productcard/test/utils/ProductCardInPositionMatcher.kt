@@ -49,11 +49,18 @@ private class ProductCardInPositionMatcher(
     }
 
     private fun Matcher<View?>.matchProductCardComponent(view: View): Boolean {
-        currentViewComponentName = view.resources.getResourceEntryName(view.id)
+        currentViewComponentName = getResourceEntryName(view)
         currentMatcher = this
 
         return this.matches(view)
     }
+
+    private fun getResourceEntryName(view: View) =
+            try {
+                view.resources.getResourceEntryName(view.id)
+            } catch (throwable: Throwable) {
+                ""
+            }
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {
         return this.getChildren().filter { productCardComponent ->

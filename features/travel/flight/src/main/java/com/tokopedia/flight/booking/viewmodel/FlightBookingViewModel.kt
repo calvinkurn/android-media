@@ -11,7 +11,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
@@ -37,6 +36,9 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -97,6 +99,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val flightAmenityPriceData: LiveData<List<FlightCart.PriceDetail>>
         get() = _flightAmenityPriceData
 
+    private val _errorCancelVoucher = MutableLiveData<Int>()
+    val errorCancelVoucher: LiveData<Int>
+        get() = _errorCancelVoucher
+
     //route for flightDetail
     var flightDetailModels: List<FlightDetailModel> = listOf()
 
@@ -136,7 +142,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
                     isStillLoading = true
                 } else {
-                    flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
+                    flightBookingParam.departureDate = data.cartData.flight.journeys[0].departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
                     flightDetailModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
@@ -259,11 +265,18 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun onCancelAppliedVoucher(rawQuery: String) {
         launchCatchError(block = {
-            withContext(dispatcherProvider.main) {
+            val data = withContext(dispatcherProvider.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCancelVoucher>()
-        }) { }
+            }.getSuccessData<FlightCancelVoucher.Response>()
+            if(data.response.attributes.success){
+                _errorCancelVoucher.postValue(0)
+            }else{
+                _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
+            }
+        }) {
+            _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
+        }
     }
 
     private fun convertVerifyParamToString(bookingVerifyParam: FlightVerifyParam): String {
@@ -295,10 +308,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         } else if (contactPhone.isNotEmpty() && !isNumericOnly(contactPhone)) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_invalid_error
-        } else if (contactPhone.length > 13) {
+        } else if (contactPhone.length > PHONE_CONTACT_MAX_CHAR) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_max_length_error
-        } else if (contactPhone.length < 9) {
+        } else if (contactPhone.length < PHONE_CONTACT_MIN_CHAR) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_min_length_error
         } else {
@@ -350,7 +363,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val flightVerifyParam = FlightVerifyParam()
         try {
             val cartItem = FlightVerifyParam.CartItem()
-            cartItem.productId = 27
+            cartItem.productId = CART_PRODUCT_ID
             cartItem.quantity = 1
             cartItem.configuration.price = totalPrice
             cartItem.metaData.cartId = cartId
@@ -367,7 +380,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightVerifyPassenger.title = passenger.passengerTitleId
                 flightVerifyPassenger.firstName = passenger.passengerFirstName
                 flightVerifyPassenger.lastName = passenger.passengerLastName
-                if (passenger.passengerBirthdate.isNotEmpty()) flightVerifyPassenger.dob = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passengerBirthdate))
+                if (passenger.passengerBirthdate.isNotEmpty()) flightVerifyPassenger.dob = passenger.passengerBirthdate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                 if (!flightIsDomestic()) {
                     flightVerifyPassenger.nationality = passenger.passportNationality?.countryId
                             ?: ""
@@ -375,7 +388,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId
                             ?: ""
                     flightVerifyPassenger.passportExpire = passenger.passportExpiredDate?.let {
-                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it))
+                        it.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                     } ?: ""
                 }
 
@@ -456,7 +469,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         passenger.flightBookingMealMetaViewModels = arrayListOf()
         passenger.headerTitle = userName
         passenger.passengerFirstName = userName
-        if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+        if (getMandatoryDOB()) passenger.passengerBirthdate = userProfile.birthday.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
         return passenger
     }
 
@@ -676,7 +689,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addToCartParam.flight.infant = flightBookingParam.searchParam.flightPassengerModel.infant
         addToCartParam.flight.flightClass = flightBookingParam.searchParam.flightClass.id
         addToCartParam.idempotencyKey = idempotencyKey
-        addToCartParam.did = 4
+        addToCartParam.did = CART_PARAM_DID
         addToCartParam.requestId = flightBookingParam.searchParam.searchRequestId
         addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
         addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
@@ -707,13 +720,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     private fun createCheckoutParam(cartId: String, price: Int): FlightCheckoutParam {
         val checkoutParam = FlightCheckoutParam()
         val cartItem = FlightCheckoutParam.CartItem()
-        cartItem.productId = 27
+        cartItem.productId = CART_PRODUCT_ID
         cartItem.quantity = 1
         cartItem.metaData = FlightCheckoutParam.MetaData(cartId,
                 (flightVerifyResult.value as Success<FlightVerify.FlightVerifyMetaAndData>).data.data.cartItems[0].metaData.invoiceId,
                 FlightRequestUtil.getLocalIpAddress(),
                 FlightRequestUtil.getUserAgentForApiCall(),
-                4)
+                CART_PARAM_DID)
         cartItem.configuration.price = price
 
         checkoutParam.cartItems.add(cartItem)
@@ -727,7 +740,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                                       contactPhone: String, contactCountry: String) {
         val passengerViewModels = flightPassengersData.value!!
         for (passenger in passengerViewModels) {
-            passenger.flightBookingLuggageMetaViewModels = listOf()
+            passenger.flightBookingLuggageMetaViewModels = mutableListOf()
         }
         _flightPassengersData.value = passengerViewModels
 
@@ -811,5 +824,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         const val PARAM_VERIFY_CART = "data"
         const val PARAM_ATC = "param"
         const val PARAM_VOUCHER_CODE = "voucherCode"
+        const val PHONE_CONTACT_MAX_CHAR = 13
+        const val PHONE_CONTACT_MIN_CHAR = 9
+        const val CART_PRODUCT_ID = 27
+        const val CART_PARAM_DID = 4
     }
 }

@@ -43,7 +43,7 @@ object CatalogUtil {
         return isNotFilterAndSortKey() || isPriceFilterWithZeroValue()
     }
 
-    private  val NON_FILTER_PREFIX = "srp_"
+    private const val NON_FILTER_PREFIX = "srp_"
 
     private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
         return nonFilterParameterKeyList.contains(key) || key.startsWith(NON_FILTER_PREFIX)
@@ -54,7 +54,7 @@ object CatalogUtil {
                 || (key == CatalogSearchApiConst.PMAX && value.toString() == "0")
     }
 
-    internal val nonFilterParameterKeyList = setOf(
+    private val nonFilterParameterKeyList = setOf(
             CatalogSearchApiConst.Q,
             CatalogSearchApiConst.RF,
             CatalogSearchApiConst.ACTIVE_TAB,
@@ -85,7 +85,7 @@ object CatalogUtil {
         return false
     }
 
-    fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
+    private fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
         val sortValue = this[CatalogSearchApiConst.OB]
 
         return sortValue == CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT

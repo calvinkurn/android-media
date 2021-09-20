@@ -29,6 +29,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_toolbar.view.*
 
@@ -59,6 +60,17 @@ class TokoPointToolbar : Toolbar {
 
         //  setCouponCount(0, "");
         setNavIcon(context)
+        if (context.isDarkMode()) {
+            setDarkmode(context)
+        }
+    }
+
+    private fun setDarkmode(context: Context){
+        navigationIcon?.setColorFilter(
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        tvToolbarTitle?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     }
 
     private fun setNavIcon(context: Context) {
@@ -89,15 +101,22 @@ class TokoPointToolbar : Toolbar {
 
     fun switchToDarkMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_DARK) return
-        currentToolbarState = ToolbarState.TOOLBAR_DARK
-        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
-        toggleNavigationIconColor(whiteColor, greyColor)
-        val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
-                whiteColor, greyColor)
-        colorAnim.duration = 200
-        colorAnim.setEvaluator(ArgbEvaluator())
-        colorAnim.start()
+        else if (context.isDarkMode()) { setDarkmode(context) }
+        else {
+            currentToolbarState = ToolbarState.TOOLBAR_DARK
+            val whiteColor =
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            val greyColor =
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
+            toggleNavigationIconColor(whiteColor, greyColor)
+            val colorAnim = ObjectAnimator.ofInt(
+                tvToolbarTitle, "textColor",
+                whiteColor, greyColor
+            )
+            colorAnim.duration = 200
+            colorAnim.setEvaluator(ArgbEvaluator())
+            colorAnim.start()
+        }
     }
 
     private fun toggleNavigationIconColor(startColor: Int, endColor: Int) {
@@ -111,14 +130,19 @@ class TokoPointToolbar : Toolbar {
 
     fun switchToTransparentMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_TRANSPARENT) return
-        currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
-        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
-        toggleNavigationIconColor(greyColor, whiteColor)
-        val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
-        colorAnim.duration = 200
-        colorAnim.setEvaluator(ArgbEvaluator())
-        colorAnim.start()
+        else if (context.isDarkMode()) { setDarkmode(context) }
+        else {
+            currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
+            val whiteColor =
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            val greyColor =
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
+            toggleNavigationIconColor(greyColor, whiteColor)
+            val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
+            colorAnim.duration = 200
+            colorAnim.setEvaluator(ArgbEvaluator())
+            colorAnim.start()
+        }
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {

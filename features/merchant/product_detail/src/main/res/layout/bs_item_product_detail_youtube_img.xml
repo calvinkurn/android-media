@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingEnd="@dimen/dp_5">
 
-    <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
+    <com.tokopedia.product.detail.common.data.views.ProductRoundedImageView
         android:id="@+id/img_youtube_item"
         android:layout_width="@dimen/dp_180"
         android:layout_height="@dimen/dp_90"

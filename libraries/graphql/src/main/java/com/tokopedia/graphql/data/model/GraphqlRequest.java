@@ -33,6 +33,8 @@ public class GraphqlRequest {
 
     private transient boolean doQueryHash = false;
 
+    private transient String url;
+
     /*transient by nature hence it will not be part of request body*/
     private transient boolean shouldThrow = true; /*Optional parameter*/
 
@@ -68,6 +70,14 @@ public class GraphqlRequest {
 
     public void setQueryHashRetryCount(int queryHashRetryCount) {
         this.queryHashRetryCount = queryHashRetryCount;
+    }
+
+    public void setUrlPath(String urlPath) {
+        this.url = urlPath;
+    }
+
+    public String getUrl(){
+        return url;
     }
 
     public GraphqlRequest(String query, Type typeOfT) {

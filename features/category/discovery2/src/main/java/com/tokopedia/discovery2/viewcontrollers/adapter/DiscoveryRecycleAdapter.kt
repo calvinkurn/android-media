@@ -131,6 +131,6 @@ class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
     }
 
     override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-        return newItem == oldItem
+        return newItem == oldItem && oldItem.shouldRefreshComponent?.equals(false)?:true
     }
 }

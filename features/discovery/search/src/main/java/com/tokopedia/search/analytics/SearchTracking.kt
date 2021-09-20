@@ -6,6 +6,10 @@ import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
@@ -15,12 +19,13 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by henrypriyono on 1/5/18.
  */
 object SearchTracking {
-    private const val ACTION_FIELD = "/searchproduct - %s"
+    const val ACTION_FIELD = "/searchproduct - %s - %s"
     private const val ORGANIC = "organic"
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
@@ -56,7 +61,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>) {
+    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>, allProdIds: ArrayList<String?>?) {
         val listViewEvent: MutableMap<String, Any> = HashMap()
         listViewEvent["af_content_id"] = prodIds
         listViewEvent["af_currency"] = "IDR"
@@ -68,6 +73,16 @@ object SearchTracking {
             listViewEvent["af_success"] = "fail"
         }
         TrackApp.getInstance().appsFlyer.sendTrackEvent("af_search", listViewEvent)
+
+        //add branch search event
+        allProdIds?.let {
+            LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(
+                    LinkerConstants.EVENT_SEARCH,
+                    it
+                )
+            )
+        }
     }
 
     @JvmStatic
@@ -163,6 +178,7 @@ object SearchTracking {
     fun trackEventClickSearchResultProduct(
         item: Any?,
         isOrganicAds: Boolean,
+        topadsTag: Int,
         eventLabel: String?,
         filterSortParams: String?,
         userId: String?
@@ -177,7 +193,7 @@ object SearchTracking {
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                         ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", getActionFieldString(isOrganicAds)),
+                                DataLayer.mapOf("list", getActionFieldString(isOrganicAds, topadsTag)),
                                 "products", DataLayer.listOf(item)
                         )
                 ),
@@ -186,9 +202,12 @@ object SearchTracking {
         )
     }
 
-    private fun getActionFieldString(isOrganicAds: Boolean): String {
+    fun getActionFieldString(
+        isOrganicAds: Boolean,
+        topadsTag: Int,
+    ): String {
         val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
-        return String.format(ACTION_FIELD, organicStatus)
+        return String.format(ACTION_FIELD, organicStatus, topadsTag.toString())
     }
 
     @JvmStatic
@@ -416,12 +435,18 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventClickSearchBar(keyword: String?) {
+    fun trackEventClickSearchBar(keyword: String?, pageSource: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.CLICK_TOP_NAV,
-                SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
-                SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                keyword)
+                DataLayer.mapOf(
+                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SEARCH_BOX,
+                        SearchTrackingConstant.EVENT_LABEL, keyword,
+                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
+                )
+        )
     }
 
     @JvmStatic
@@ -489,7 +514,7 @@ object SearchTracking {
     @JvmStatic
     fun trackGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
         val value = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchTrackingConstant.EVENT_CATEGORY, generalSearchTrackingModel.eventCategory,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingModel.eventLabel,
@@ -841,7 +866,7 @@ object SearchTracking {
                             CURRENCY_CODE, IDR,
                             SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
                                 SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
-                                    "list", getActionFieldString(isOrganicAds)
+                                    "list", getActionFieldString(isOrganicAds, 0)
                                 ),
                                 SearchEventTracking.ECommerce.PRODUCTS, DataLayer.listOf(productItem)
                             )
@@ -938,5 +963,21 @@ object SearchTracking {
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
                 )
         )
+    }
+
+    @JvmStatic
+    fun trackEventGeneralSearchShop(generalSearchTrackingShop: GeneralSearchTrackingShop) {
+        val generalSearchShopDataLayer = DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH_SHOP,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingShop.eventLabel,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingShop.pageSource,
+                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingShop.relatedKeyword,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
     }
 }

@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -36,18 +37,17 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -58,8 +58,12 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.data.Status
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
+import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -73,6 +77,8 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
@@ -80,6 +86,7 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.ceil
 
 /**
  * @author : Steven 11/12/18
@@ -95,7 +102,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-    private var deleteMessageListUseCase: DeleteMessageListUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
@@ -111,6 +117,8 @@ open class TopChatRoomPresenter @Inject constructor(
     private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
     private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
+    private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -119,9 +127,13 @@ open class TopChatRoomPresenter @Inject constructor(
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
+        private set
     var thisMessageId: String = ""
+        private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
+    var attachProductWarehouseId = "0"
+        private set
     private var userLocationInfo = LocalCacheModel()
 
     private lateinit var webSocketUrl: String
@@ -198,6 +210,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
         this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
     }
 
     override fun getProductIdPreview(): List<String> {
@@ -207,6 +220,26 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getAttachmentsPreview(): List<SendablePreview> {
         return attachmentsPreview
+    }
+
+    override fun adjustInterlocutorWarehouseId(msgId: String) {
+        attachProductWarehouseId = "0"
+        launchCatchError(
+            block = {
+                tokoNowWHUsecase.getWarehouseId(msgId)
+                    .flowOn(dispatchers.io)
+                    .collect {
+                        if (it.status == Status.SUCCESS) {
+                            attachProductWarehouseId = it.data
+                                ?.chatTokoNowWarehouse
+                                ?.warehouseId ?: "0"
+                        }
+                    }
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -399,9 +432,13 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     protected open fun addDummyToService(image: ImageUploadViewModel) {
+        val dummyPosition = UploadImageChatService.findDummy(image)
+        if (dummyPosition == null) {
+            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+            UploadImageChatService.dummyMap.add(uploadImageDummy)
+        }
         view?.addDummyMessage(image)
-        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-        UploadImageChatService.dummyMap.add(uploadImageDummy)
+
     }
 
     protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
@@ -535,9 +572,27 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String,
         onSendingMessage: () -> Unit
     ) {
+        onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
         sendMessage(messageId, question.content, startTime, opponentId, question.intent)
         view?.clearAttachmentPreviews()
+    }
+
+    override fun sendSrwFrom(
+        attachment: HeaderCtaButtonAttachment,
+        opponentId: String
+    ) {
+        val startTime = SendableViewModel.generateStartTime()
+        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
+        val ctaButton = attachment.ctaButton
+        val productName = ctaButton.productName
+        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
+        val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
+        val products = ctaButton.generateSendableProductPreview()
+        topchatSendMessageWithWebsocket(
+            thisMessageId, question.content, startTime,
+            opponentId, question.intent, products
+        )
     }
 
     /**
@@ -549,7 +604,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessage: String,
         startTime: String,
         opponentId: String,
-        intention: String? = null
+        intention: String?
     ) {
         if (networkMode == MODE_WEBSOCKET) {
             topchatSendMessageWithWebsocket(
@@ -584,8 +639,12 @@ open class TopChatRoomPresenter @Inject constructor(
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
             TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime,
-                attachmentsPreview, intention, userLocationInfo
+                thisMessageId = messageId,
+                messageText = sendMessage,
+                startTime = startTime,
+                attachments = attachmentsPreview,
+                intention = intention,
+                userLocationInfo = userLocationInfo
             )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
@@ -599,7 +658,12 @@ open class TopChatRoomPresenter @Inject constructor(
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
             TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime, products, intention
+                thisMessageId = messageId,
+                messageText = sendMessage,
+                startTime = startTime,
+                attachments = products,
+                intention = intention,
+                userLocationInfo = userLocationInfo
             )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
@@ -695,10 +759,21 @@ open class TopChatRoomPresenter @Inject constructor(
         onError: (Throwable) -> Unit,
         onSuccessDeleteConversation: () -> Unit
     ) {
-        deleteMessageListUseCase.execute(
-            DeleteMessageListUseCase.generateParam(messageId),
-            DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation)
-        )
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if (result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        onSuccessDeleteConversation()
+                    } else {
+                        onError(Throwable(deletedChat.detailResponse))
+                    }
+                }
+            } catch (throwable: Throwable) {
+                onError(throwable)
+            }
+        }
     }
 
     override fun getShopFollowingStatus(
@@ -714,7 +789,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
@@ -729,25 +803,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun stopTyping() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
-    }
-
-    override fun copyVoucherCode(
-        fromUid: String?,
-        replyId: String,
-        blastId: String,
-        attachmentId: String,
-        replyTime: String?
-    ) {
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamCopyVoucherCode(
-                thisMessageId,
-                replyId,
-                blastId,
-                attachmentId,
-                replyTime,
-                fromUid
-            )
-        )
     }
 
     override fun followUnfollowShop(
@@ -786,10 +841,12 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun initAttachmentPreview() {
         if (attachmentsPreview.isEmpty()) return
-        view?.showAttachmentPreview(attachmentsPreview)
-        view?.updateSrwPreviewState()
-        if (view?.hasProductPreviewShown() == false) {
-            view?.focusOnReply()
+        view?.let {
+            it.showAttachmentPreview(attachmentsPreview)
+            it.updateSrwPreviewState()
+            if (!it.hasProductPreviewShown()) {
+                it.focusOnReply()
+            }
         }
     }
 
@@ -805,7 +862,13 @@ open class TopChatRoomPresenter @Inject constructor(
                 imageUrl = resultProduct.productImageThumbnail,
                 name = resultProduct.name,
                 price = resultProduct.price,
-                url = resultProduct.productUrl
+                url = resultProduct.productUrl,
+                priceBefore = resultProduct.priceBefore,
+                dropPercentage = resultProduct.dropPercentage,
+                productFsIsActive = resultProduct.isFreeOngkirActive,
+                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+                remainingStock = resultProduct.stock
+
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
@@ -857,16 +920,14 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
             messageId,
-            ::onSuccessGetOrderProgress,
-            ::onErrorGetOrderProgress
-        )
+            ::onSuccessGetOrderProgress
+        ) {}
     }
 
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
         groupStickerUseCase.getStickerGroup(
             chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
-            ::onErrorGetStickerGroup
-        )
+        ) {}
     }
 
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
@@ -928,8 +989,8 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
-            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
-        )
+            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
+        ) {}
     }
 
     override fun addProductToCart(
@@ -993,10 +1054,6 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun onErrorLoadBackground(throwable: Throwable) {
-        throwable.printStackTrace()
-    }
-
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
@@ -1029,17 +1086,18 @@ open class TopChatRoomPresenter @Inject constructor(
 
     protected open fun isEnableUploadImageService(): Boolean {
         return try {
-            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false) && !isProblematicDevice()
         } catch (ex: Exception) {
             false
         }
     }
 
-    private fun onErrorGetOrderProgress(throwable: Throwable) {}
-
-    private fun onErrorGetStickerGroup(throwable: Throwable) {}
+    private fun isProblematicDevice(): Boolean {
+        return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
+    }
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
+        private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }
 }

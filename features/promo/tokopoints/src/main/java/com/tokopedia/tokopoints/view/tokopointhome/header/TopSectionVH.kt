@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -30,6 +31,7 @@ import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
 import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.NotificationUnify
 
 
@@ -99,6 +101,11 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
             }
+        }
+
+        if (isDarkMode(itemView.context)){
+            mTextMembershipLabel?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
         ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.profilePicture)

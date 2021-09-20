@@ -22,7 +22,7 @@ object ImagePickerAddEditNavigation {
         val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
-
+        intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         setUpTrackingForImagePicker(context, isAdding)
         return intent
     }
@@ -48,6 +48,7 @@ object ImagePickerAddEditNavigation {
                             placeholderImagePathResList = ArrayList(listPlaceholderImage)
                     )
                 }
+                .withWatermarkEditor()
     }
 
     private fun setUpTrackingForImagePicker(ctx: Context, isAdding: Boolean) {

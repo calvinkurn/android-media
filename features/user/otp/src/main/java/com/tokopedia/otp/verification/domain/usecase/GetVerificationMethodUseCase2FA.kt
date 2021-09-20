@@ -20,7 +20,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 01/06/20.
  */
 
-class GetVerificationMethodUseCase2FA @Inject constructor(
+open class GetVerificationMethodUseCase2FA @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpModeListPojo>(dispatcher) {

@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
 import com.tokopedia.kotlin.extensions.view.loadImage

@@ -22,6 +22,11 @@
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_webview"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_webview_back_home"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -29,7 +34,19 @@
             android:configChanges="uiMode"
             android:label="@string/tokopedia"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_webview_download"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".download.BaseDownloadHtmlActivity"
             android:label="@string/tokopedia"
@@ -44,6 +61,24 @@
                 <data
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_webview_download_html"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".BrowserRedirectActivity"
+            android:label="@string/tokopedia"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_browser"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

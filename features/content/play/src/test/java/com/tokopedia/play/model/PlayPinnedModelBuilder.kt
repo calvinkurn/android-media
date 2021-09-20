@@ -1,7 +1,8 @@
 package com.tokopedia.play.model
 
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.recom.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 
 /**
@@ -12,8 +13,8 @@ class PlayPinnedModelBuilder {
     private val productTagsBuilder = PlayProductTagsModelBuilder()
 
     fun buildInfo(
-            pinnedMessage: PlayPinnedUiModel.PinnedMessage = buildPinnedMessage(),
-            pinnedProduct: PlayPinnedUiModel.PinnedProduct = buildPinnedProduct()
+            pinnedMessage: PinnedMessageUiModel = buildPinnedMessage(),
+            pinnedProduct: PinnedProductUiModel = buildPinnedProduct()
     ) = PlayPinnedInfoUiModel(
             pinnedMessage = pinnedMessage,
             pinnedProduct = pinnedProduct
@@ -24,7 +25,7 @@ class PlayPinnedModelBuilder {
             applink: String = "https://www.tokopedia.com",
             partnerName: String = "haha stag",
             title: String = "Ayo jelajahi"
-    ) = PlayPinnedUiModel.PinnedMessage(
+    ) = PinnedMessageUiModel(
             id = id,
             applink = applink,
             partnerName = partnerName,
@@ -37,7 +38,7 @@ class PlayPinnedModelBuilder {
             hasPromo: Boolean = true,
             shouldShow: Boolean = true,
             productTags: PlayProductTagsUiModel = productTagsBuilder.buildCompleteData()
-    ) = PlayPinnedUiModel.PinnedProduct(
+    ) = PinnedProductUiModel(
             partnerName = partnerName,
             title = title,
             hasPromo = hasPromo,

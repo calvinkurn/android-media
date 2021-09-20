@@ -1,19 +1,27 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactoryImpl
@@ -49,6 +57,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private lateinit var adapter: RecommendationCarouselAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private var adapterPosition: Int = 0
+    private var isInitialized = false
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_widget_recommendation_carousel, this)
@@ -57,14 +66,40 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         this.itemContext = view.context
     }
 
-    fun bind(carouselData: RecommendationCarouselData, adapterPosition: Int = 0, widgetListener: RecommendationCarouselWidgetListener?) {
+    companion object {
+        const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
+    }
+
+    fun bind(
+            carouselData: RecommendationCarouselData,
+            adapterPosition: Int = 0,
+            widgetListener: RecommendationCarouselWidgetListener?,
+            scrollToPosition: Int = 0,
+    ) {
         this.carouselData = carouselData
         this.widgetListener = widgetListener
         this.adapterPosition = adapterPosition
         initVar()
-        impressChannel(carouselData)
-        setHeaderComponent(carouselData)
-        setData(carouselData)
+        doActionBasedOnRecomState(carouselData.state,
+            onLoad = {
+                itemView.loadingRecom.visible()
+            },
+            onReady = {
+                itemView.loadingRecom.gone()
+                impressChannel(carouselData)
+                setHeaderComponent(carouselData)
+                setData(carouselData)
+                scrollCarousel(scrollToPosition)
+            },
+            onFailed = {
+                itemView.loadingRecom.gone()
+            }
+        )
+    }
+
+    fun bindTemporaryHeader(tempHeaderName: String) {
+        itemView.recommendation_header_view.bindData(RecommendationWidget(title = tempHeaderName), null)
+        itemView.loadingRecom.visible()
     }
 
     override fun onProductCardImpressed(data: RecommendationWidget, recomItem: RecommendationItem, position: Int) {
@@ -75,6 +110,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetListener?.onRecomProductCardClicked(data = carouselData, recomItem = recomItem, applink = applink, itemPosition = position, adapterPosition = adapterPosition)
     }
 
+    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+        widgetListener?.onRecomProductCardAddToCartNonVariant(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition, quantity = quantity)
+    }
+
+    override fun onRecomProductCardAddVariantClick(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int) {
+        widgetListener?.onRecomProductCardAddVariantClick(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition)
+    }
+
     override fun onSeeMoreCardClicked(data: RecommendationWidget, applink: String) {
         widgetListener?.onSeeAllBannerClicked(data = carouselData, applink = applink)
     }
@@ -83,14 +126,44 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetListener?.onRecomBannerClicked(data = carouselData, applink = applink, adapterPosition = adapterPosition)
     }
 
-    override fun onBannerCardImpressed(data: RecommendationWidget, applink: String) {
+    override fun onBannerCardImpressed(data: RecommendationWidget) {
         widgetListener?.onRecomBannerImpressed(data = carouselData, adapterPosition = adapterPosition)
     }
 
     private fun initVar() {
+        if (isInitialized) return
+
         typeFactory = CommonRecomCarouselCardTypeFactoryImpl(carouselData.recommendationData)
+        adapter = RecommendationCarouselAdapter(typeFactory)
+        layoutManager = createLayoutManager()
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        isInitialized = true
     }
 
+    private fun createLayoutManager(): LinearLayoutManager {
+        return object: LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+            override fun requestChildRectangleOnScreen(
+                    parent: RecyclerView,
+                    child: View,
+                    rect: Rect,
+                    immediate: Boolean,
+                    focusedChildVisible: Boolean
+            ): Boolean {
+                return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                    false
+                } else super.requestChildRectangleOnScreen(
+                        parent,
+                        child,
+                        rect,
+                        immediate,
+                        focusedChildVisible
+                )
+            }
+        }
+    }
 
     private fun impressChannel(carouselData: RecommendationCarouselData) {
         itemView.addOnImpressionListener(carouselData) {
@@ -100,29 +173,34 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private fun setData(carouselData: RecommendationCarouselData) {
         val cardList = mutableListOf<Visitable<*>>()
+        val layoutName = carouselData.recommendationData.layoutType
         carouselData.recommendationData.recommendationBanner?.let {
-            cardList.add(RecomCarouselBannerDataModel(
-                    applink = it.applink,
-                    bannerBackgorundColor = it.backgroudColor,
-                    bannerImage = it.imageUrl,
-                    listener = this))
+            if (it.imageUrl.isNotEmpty() && layoutName == NAME_CAMPAIGN_WIDGET) {
+                cardList.add(RecomCarouselBannerDataModel(
+                        applink = it.applink,
+                        bannerBackgorundColor = it.backgroudColor,
+                        bannerImage = it.imageUrl,
+                        listener = this))
+            }
         }
         val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
         cardList.addAll(productDataList)
-        cardList.add(RecomCarouselSeeMoreDataModel())
-        adapter = RecommendationCarouselAdapter(cardList, typeFactory)
-
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-
-        launch {
-            try {
-                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+        if (cardList.size != 0) {
+            if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
+                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
             }
-            catch (throwable: Throwable) {
-                throwable.printStackTrace()
+
+            adapter.submitList(cardList)
+
+            launch {
+                try {
+                    recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+                } catch (throwable: Throwable) {
+                    throwable.printStackTrace()
+                }
             }
+        } else {
+            widgetListener?.onChannelWidgetEmpty()
         }
     }
 
@@ -136,7 +214,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -153,4 +231,34 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         })
     }
 
+    private fun scrollCarousel(scrollToPosition: Int) {
+        if (!::layoutManager.isInitialized) return
+
+        itemView.post {
+            layoutManager.scrollToPositionWithOffset(
+                    scrollToPosition,
+                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            )
+        }
+    }
+
+    fun getCurrentPosition(): Int {
+        return if (::layoutManager.isInitialized)
+            layoutManager.findFirstCompletelyVisibleItemPosition()
+        else 0
+    }
+
+    private fun doActionBasedOnRecomState(state: Int, onLoad: () -> Unit?, onReady: () -> Unit?, onFailed: () -> Unit?) {
+        when (carouselData.state) {
+            STATE_LOADING -> {
+                onLoad.invoke()
+            }
+            STATE_READY -> {
+                onReady.invoke()
+            }
+            STATE_FAILED -> {
+                onFailed.invoke()
+            }
+        }
+    }
 }

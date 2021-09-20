@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.login.behaviour.di.modules
 
 import android.content.res.Resources
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
@@ -14,8 +13,6 @@ import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
 import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
-import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
@@ -150,18 +147,6 @@ class LoginUseCaseModuleStub {
 
     @Provides
     @LoginScope
-    fun provideStatusPinUseCase(
-            stub: StatusPinUseCaseStub
-    ): StatusPinUseCase = stub
-
-    @LoginScope
-    @Provides
-    fun provideStatusPinUseCaseStub(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): StatusPinUseCaseStub {
-        return StatusPinUseCaseStub(rawQueries, graphqlRepository)
-    }
-
-    @Provides
-    @LoginScope
     fun provideGetProfileUseCase(
             stub: GetProfileUseCaseStub
     ): GetProfileUseCase = stub
@@ -191,8 +176,4 @@ class LoginUseCaseModuleStub {
 
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
-    @Provides
-    fun provideStatusFingerprintGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<StatusFingerprintpojo> = GraphqlUseCase(graphqlRepository)
 }

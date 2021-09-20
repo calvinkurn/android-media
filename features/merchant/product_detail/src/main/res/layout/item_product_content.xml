@@ -56,7 +56,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
-        app:typographyType="heading_2"
+        app:typographyType="heading_1"
         app:typographyWeight="bold"
         tools:text="Rp.500000000000000000000000" />
 

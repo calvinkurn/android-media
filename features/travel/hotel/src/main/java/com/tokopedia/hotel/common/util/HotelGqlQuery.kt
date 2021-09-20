@@ -26,114 +26,114 @@ object HotelGqlQuery {
     """.trimIndent()
 
     val PROPERTY_SEARCH = """
-        query PropertySearch(${'$'}data:PropertySearchRequest!){
-            propertySearch(input:${'$'}data){
-              propertyList {
-                id
-                name
-                type
-                address
-                roomPrice{
-                  price
-                  priceAmount
-                  totalPrice
-                  totalPriceAmount
-                  extraCharges{
+        query PropertySearch(${'$'}data:PropertySearchRequest!) {
+        propertySearch(input: ${'$'}data){
+        propertyList {
+            id
+            name
+            type
+            address
+            roomPrice {
+                price
+                priceAmount
+                totalPrice
+                totalPriceAmount
+                extraCharges {
                     netPrice
                     netPriceAmount
-                    extraChargeInfo{
-                      name
-                      excluded
-                      type
-                      price
-                      priceAmount
+                    extraChargeInfo {
+                        name
+                        excluded
+                        type
+                        price
+                        priceAmount
                     }
-                  }
-                  deals {
+                }
+                deals {
                     tagging
                     price
                     priceAmount
-                  }
                 }
-                roomAvailability
-                image {
-                  isLogoPhoto
-                  urlSquare60
-                  mainPhoto
-                  urlOriginal
-                  urlMax300
+            }
+            roomAvailability
+            image {
+                isLogoPhoto
+                urlSquare60
+                mainPhoto
+                urlOriginal
+                urlMax300
+            }
+            star
+            features
+            review {
+                reviewScore
+                reviewDescription
+            }
+            location {
+                cityName
+                description
+                latitude
+                longitude
+            }
+            isDirectPayment
+            safetyBadge {
+                show
+                title
+                content
+                icon {
+                    dark
+                    light
                 }
-                star
-                features
-                review {
-                  reviewScore
-                  reviewDescription
-                }
-                location {
-                  cityName
-                  description
-                  latitude
-                  longitude
-                }
-                isDirectPayment
-                safetyBadge {
-                    show
-                    title
-                    content
-                    icon {
-                      dark
-                      light
-                    }
-                  }
-              }
-              propertyDisplayInfo{
-                filter{
-                  filterPrice {
+            }
+        }
+        propertyDisplayInfo {
+            filter {
+                filterPrice {
                     minPrice
                     maxPrice
-                  }
-                  filterAccomodation {
+                }
+                filterAccomodation {
                     ID
                     name
                     displayName
-                  }
-                  filterPreferences {
+                }
+                filterPreferences {
                     ID
                     name
                     displayName
                     type
-                  }
-                  filterStar{
+                }
+                filterStar {
                     stars
-                  }
-                  filterReview {
+                }
+                filterReview {
                     minReview
                     maxReview
-                  }
                 }
-                sort {
-                  name
-                  displayName
-                }
-              }
-              filters {
-                      type
-                      name
-                      displayName
-                      options
-                      image {
-                          light
-                          dark
-                      }
-                  }
-              quickFilter {
-                   name
-                   displayName
-                   values
-                   selected
-               }
+            }
+            sort {
+                name
+                displayName
             }
         }
+        filters {
+            type
+            name
+            displayName
+            options
+            image {
+                light
+                dark
+            }
+        }
+        quickFilter {
+            name
+            displayName
+            values
+            selected
+        }
+    }
+    }
     """.trimIndent()
 
     val DESTINATION_SEARCH = """
@@ -669,6 +669,50 @@ object HotelGqlQuery {
             sumCouponStr
             sumCouponUnitOpt
           }
+        }
+    """.trimIndent()
+
+    val GET_POPULAR_PROPERTY_QUERY = """
+        query {
+          propertyPopular {
+            name
+            destinationID
+            type
+            subLocation
+            image
+            metaDescription
+            searchID
+          }
+        }
+    """.trimIndent()
+
+    val GET_HOTEL_RECENT_SEARCH_QUERY = """
+        query propertyRecentSearch(${'$'}id: Int!){
+         status
+         travelRecentSearch(dataType:HOTEL, userID:${'$'}id){
+           UUID
+           property {
+             type
+             value
+             ID
+             location{
+               district
+               region
+               city
+               country
+             }
+           }
+           startTime
+           endTime
+           lastSearch
+           customer {
+             adult
+             child
+             class
+             infant
+             room
+           }
+         }
         }
     """.trimIndent()
 }

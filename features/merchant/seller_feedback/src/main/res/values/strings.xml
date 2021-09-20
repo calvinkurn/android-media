@@ -27,6 +27,10 @@
     <string name="feedback_form_toaster_fail_submit">Oops, feedback gagal di kirim</string>
     <string name="feedback_form_toaster_fail_network">Cek dan pastikan internetmu lancar, mohon cek berkala</string>
 
+    <string name="feedback_form_ticker_description">Form ini hanya untuk memberi masukan. Jika butuh bantuan langsung, hubungi  &lt;a href="#"&gt;Tokopedia Care&lt;/a&gt;</string>
+    <string name="screenshot_seller_feedback_toaster_text">Screenshot terambil. Sekarang kamu bisa beri feedback tentang halaman ini.</string>
+    <string name="screenshot_seller_feedback_toaster_cta_text">Beri</string>
+
     <string-array name="feedback_pages">
         <item>Home</item>
         <item>Chat</item>

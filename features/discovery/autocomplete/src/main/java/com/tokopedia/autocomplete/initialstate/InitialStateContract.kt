@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -39,13 +40,23 @@ interface InitialStateContract {
 
         fun refreshViewWithPosition(position: Int)
 
-        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
+        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String)
 
-        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
+        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String)
 
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
 
         fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String)
+
+        val chooseAddressData: LocalCacheModel?
+
+        fun onRefreshPopularSearch()
+
+        fun onRefreshTokoNowPopularSearch()
+
+        fun trackEventClickTokoNowDynamicSectionItem(label: String)
+
+        fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -72,5 +83,7 @@ interface InitialStateContract {
         fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 
         fun onProductLineClicked(item: BaseItemInitialStateSearch)
+
+        fun onChipClicked(item: BaseItemInitialStateSearch)
     }
 }

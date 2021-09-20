@@ -1,11 +1,15 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -248,10 +252,12 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): ShipmentInfoUiModel.DropShipperInfoUiModel {
-        return ShipmentInfoUiModel.DropShipperInfoUiModel(
-                name = dropship.name,
-                phoneNumber = dropship.phoneNumber
+    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
+        return CopyableKeyValueUiModel(
+                copyableText = formatDropshipperValue(dropship),
+                copyLabel = "",
+                copyMessage = "",
+                label = resourceProvider.getDropshipLabel()
         )
     }
 
@@ -275,23 +281,62 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapAwbInfoUiModel(shippingRefNum: String, orderStatusId: String, orderId: String): ShipmentInfoUiModel.AwbInfoUiModel {
         return ShipmentInfoUiModel.AwbInfoUiModel(
-                awbNumber = shippingRefNum,
                 orderId = orderId,
-                orderStatusId = orderStatusId
+                orderStatusId = orderStatusId,
+                copyableText = SpannableString(shippingRefNum),
+                copyLabel = resourceProvider.getCopyLabelAwb(),
+                copyMessage = resourceProvider.getCopyMessageAwb(),
+                label = resourceProvider.getAwbLabel(),
         )
     }
 
-    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): ShipmentInfoUiModel.ReceiverAddressInfoUiModel {
-        return ShipmentInfoUiModel.ReceiverAddressInfoUiModel(
-                receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal),
-                receiverName = receiver.name,
-                receiverPhoneNumber = receiver.phone
+    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): CopyableKeyValueUiModel {
+        val receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal)
+        return CopyableKeyValueUiModel(
+                copyableText = formatReceiverAddressValue(receiver, receiverAddress),
+                copyLabel = resourceProvider.getCopyLabelReceiverAddress(),
+                copyMessage = resourceProvider.getCopyMessageReceiverAddress(),
+                label = resourceProvider.getReceiverAddressLabel()
         )
     }
 
-    private fun composeReceiverAddress(street: String, district: String, city: String, province: String, postal: String): String {
-        return StringBuilder().append(street).append(", ").append(district).append(", ").append(city)
-                .append(", ").append(province).append(" ").append(postal).toString()
+    private fun formatReceiverAddressValue(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver, receiverAddress: String): Spannable {
+        return SpannableStringBuilder().apply {
+            if (receiver.name.isNotBlank()) append(createBoldText(receiver.name))
+            if (receiver.phone.isNotBlank()) {
+                if (isNotBlank()) appendLine()
+                append(receiver.phone)
+            }
+            if (receiverAddress.isNotBlank()) {
+                if (isNotBlank()) appendLine()
+                append(receiverAddress)
+            }
+        }
+    }
+
+    private fun formatDropshipperValue(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): Spannable {
+        return SpannableStringBuilder().apply {
+            if (dropship.name.isNotBlank()) append(createBoldText(dropship.name))
+            if (dropship.phoneNumber.isNotBlank()) {
+                if (isNotBlank()) appendLine()
+                append(dropship.phoneNumber)
+            }
+        }
+    }
+
+    private fun composeReceiverAddress(vararg chunks: String): String {
+        return StringBuilder().apply {
+            chunks.forEach {
+                if (isNotBlank()) append(", ")
+                if (it.isNotBlank()) append(it)
+            }
+        }.toString()
+    }
+
+    private fun createBoldText(text: String): Spannable {
+        return SpannableString(text).apply {
+            setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
     }
 
     private fun composeETA(eta: String): String {

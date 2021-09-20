@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.lang.Exception
 import javax.inject.Inject
 
 @FlowPreview
@@ -76,19 +77,20 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun validateShopName(shopName: String) {
-        if(shopName == currentShop?.name) return
         shopNameValidation.value = shopName
-        currentShopName = shopName
     }
 
     fun validateShopDomain(shopDomain: String) {
-        if(shopDomain == currentShop?.domain) return
         shopDomainValidation.value = shopDomain
     }
 
     fun setCurrentShopData(data: ShopBasicDataModel) {
         currentShop = data
         currentShopName = data.name
+    }
+
+    fun setShopName(shopName: String) {
+        currentShopName = shopName
     }
 
     fun uploadShopImage(
@@ -170,9 +172,15 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     validateDomainShopNameUseCase.executeOnBackground()
                 }
                 .flowOn(dispatchers.io)
-                .catch {
-                    _validateShopName.value = Fail(it)
-                }.collectLatest {
+                .retryWhen { cause, _ ->
+                    if (cause is Exception) {
+                        _validateShopName.value = Fail(cause)
+                        true
+                    } else {
+                        false
+                    }
+                }
+                .collectLatest {
                     _validateShopName.value = Success(it)
                 }
     }
@@ -186,8 +194,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     validateDomainShopNameUseCase.executeOnBackground()
                 }
                 .flowOn(dispatchers.io)
-                .catch {
-                    _validateShopDomain.value = Fail(it)
+                .retryWhen { cause, _ ->
+                    if (cause is Exception) {
+                        _validateShopDomain.value = Fail(cause)
+                        true
+                    } else {
+                        false
+                    }
                 }.collectLatest {
                     if(!it.validateDomainShopName.isValid) {
                         currentShopName?.let { shopName ->

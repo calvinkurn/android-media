@@ -47,11 +47,12 @@ class ManageAddressTest {
     }
 
     @Test
-    fun fromLocalizationWhenSelectingAddressThenHavingExpectedResultIntent() {
+    fun fromLocalizationWhenSelectingAddress_ClickSearch_ThenHavingExpectedResultIntent() {
         val i = Intent().apply { putExtra(EXTRA_IS_LOCALIZATION, true) }
         manageAddress {
             launchWithParam(mActivityTestRule, i)
-            selectItemAt(2)
+            onClickSearch(KEYWORD)
+            selectItemAt(0)
             selectAddress()
         } submit {
             hasResultIntent(mActivityTestRule, RESULT_OK, EXTRA_SELECTED_ADDRESS_DATA)
@@ -59,11 +60,12 @@ class ManageAddressTest {
     }
 
     @Test
-    fun fromCheckoutWhenSelectingAddressThenHavingExpectedResultIntent() {
+    fun fromCheckoutWhenSelectingAddress_ClickSearch_ThenHavingExpectedResultIntent() {
         val i = Intent().apply { putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true) }
         manageAddress {
             launchWithParam(mActivityTestRule, i)
-            selectItemAt(2)
+            onClickSearch(KEYWORD)
+            selectItemAt(0)
             selectAddress()
         } submit {
             hasResultIntent(mActivityTestRule, RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, EXTRA_SELECTED_ADDRESS_DATA)
@@ -104,5 +106,9 @@ class ManageAddressTest {
                 pressBack()
             }
         }
+    }
+
+    companion object {
+        const val KEYWORD = "Hefdy"
     }
 }

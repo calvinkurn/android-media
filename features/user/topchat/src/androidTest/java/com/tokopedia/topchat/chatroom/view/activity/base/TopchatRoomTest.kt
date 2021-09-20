@@ -49,7 +49,6 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
-import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -127,10 +126,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
-        "ChatRoom-Keyboard"
-    )
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
     protected var firstPageChatAsSeller = GetExistingChatPojo()
@@ -145,33 +140,32 @@ abstract class TopchatRoomTest {
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
 
-    protected lateinit var chatComponentStub: ChatComponentStub
-
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
         const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
     }
 
+    companion object {
+        const val MSG_ID = "66961"
+        var chatComponentStub: ChatComponentStub? = null
+        var keyboardStateIdling: CountingIdlingResource? = null
+    }
+
     @Before
     open fun before() {
         setupResponse()
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatComponentStub = DaggerChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatRoomContextModule(ChatRoomContextModule(context))
-            .build()
-        chatComponentStub.inject(this)
+        setupDaggerComponent()
         setupDefaultResponseWhenFirstOpenChatRoom()
-        UploadImageChatService.dummyMap.clear()
-        IdlingRegistry.getInstance().register(keyboardStateIdling)
+        setupDummyImageChatService()
+        setupKeyboardIdlingResource()
     }
 
     @After
     open fun tearDown() {
         IdlingRegistry.getInstance().unregister(keyboardStateIdling)
+        chatComponentStub = null
+        keyboardStateIdling = null
     }
 
     protected open fun setupResponse() {
@@ -209,6 +203,17 @@ abstract class TopchatRoomTest {
         )
     }
 
+    private fun setupDaggerComponent() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .build()
+        chatComponentStub = DaggerChatComponentStub.builder()
+            .fakeBaseAppComponent(baseComponent)
+            .chatRoomContextModule(ChatRoomContextModule(context))
+            .build()
+        chatComponentStub!!.inject(this)
+    }
+
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
@@ -222,11 +227,23 @@ abstract class TopchatRoomTest {
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
     }
 
-    protected fun setupChatRoomActivity(
+    private fun setupDummyImageChatService() {
+        UploadImageChatService.dummyMap.clear()
+    }
+
+    private fun setupKeyboardIdlingResource() {
+        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
+    }
+
+    protected fun launchChatRoomActivity(
         sourcePage: String? = null,
         isSellerApp: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
+        if (isSellerApp) {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        }
         val intent = Intent().apply {
             putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
@@ -236,25 +253,6 @@ abstract class TopchatRoomTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        fragmentTransactionIdling = FragmentTransactionIdle(
-            activity.supportFragmentManager,
-            TopChatRoomActivityStub.TAG
-        )
-        if (isSellerApp) {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        }
-    }
-
-    protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.recycler_view))
-            .check(matches(isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun inflateTestFragment() {
-        activity.setupTestFragment(chatComponentStub, keyboardStateIdling)
-        waitForFragmentResumed()
     }
 
     protected fun changeResponseStartTime(
@@ -337,7 +335,7 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwBubbleExpandCollapse(position: Int) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tp_srw_container_partial
             )
         ).perform(click())
@@ -422,7 +420,7 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.rv_srw_content_container
             )
         ).check(matches(visibilityMatcher))
@@ -458,7 +456,7 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.ll_srw_partial
             )
         ).check(matches(visibilityMatcher))
@@ -480,12 +478,15 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.lu_srw_partial
             )
         ).check(matches(visibilityMatcher))
     }
 
+    /**
+     * assert unify snackbar/toaster
+     */
     protected fun assertSnackbarText(msg: String) {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
@@ -498,7 +499,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertSrwBubbleDoesNotExist() {
-        onView(withId(R.id.recycler_view)).check(matches(not(hasSrwBubble())))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(not(hasSrwBubble())))
     }
 
     protected fun assertSrwBubbleContentIsVisibleAt(
@@ -534,7 +535,7 @@ abstract class TopchatRoomTest {
         position: Int, visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tvRole
             )
         ).check(matches(visibilityMatcher))
@@ -542,7 +543,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tvRole
             )
         ).check(matches(withText(msg)))
@@ -552,7 +553,7 @@ abstract class TopchatRoomTest {
         position: Int, visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.img_sr_blue_dot
             )
         ).check(matches(visibilityMatcher))
@@ -586,6 +587,140 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.ll_sticker_container)).check(
             matches(visibilityMatcher)
         )
+    }
+
+    protected fun assertComposedTextValue(msg: String) {
+        onView(withId(R.id.new_comment)).check(
+            matches(withText(msg))
+        )
+    }
+
+    protected fun assertChatRoomList(matcher: Matcher<in View>) {
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
+    }
+
+    protected fun finishActivity() {
+        activityTestRule.finishActivity()
+    }
+
+    protected fun assertMsgHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.ll_msg_header
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertDividerHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.v_header_divider
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_title
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).perform(click())
+    }
+
+    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tvMessage
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertChatRecyclerview(matcher: Matcher<in View>) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.broadcast_campaign_label
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelDescAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tp_broadcast_campaign_status
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelCountdownAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tu_bc_countdown
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateIconAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateTextAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
     }
 
     protected fun isKeyboardOpened(): Boolean {
@@ -637,7 +772,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun scrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view)).perform(
+        onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
@@ -695,10 +830,6 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
-    }
-
-    companion object {
-        const val MSG_ID = "66961"
     }
 }
 

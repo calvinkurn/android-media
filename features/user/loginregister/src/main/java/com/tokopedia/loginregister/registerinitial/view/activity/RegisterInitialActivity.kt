@@ -9,14 +9,17 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment.Companion.createInstance
 
 /**
  * @author by nisie on 10/2/18.
  */
-open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+
+    private var registerInitialComponent: RegisterInitialComponent? = null
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -26,8 +29,20 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<LoginReg
         return createInstance(bundle)
     }
 
-    override fun getComponent(): LoginRegisterComponent {
-        return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): RegisterInitialComponent {
+        return registerInitialComponent ?: initializeRegisterInitialComponent()
+    }
+
+    protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
+        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+        return DaggerRegisterInitialComponent
+            .builder()
+            .loginRegisterComponent(loginRegisterComponent)
+            .build().also {
+                registerInitialComponent = it
+            }
     }
 
     override fun onBackPressed() {

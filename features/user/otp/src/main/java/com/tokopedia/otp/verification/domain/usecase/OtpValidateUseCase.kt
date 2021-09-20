@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 01/06/20.
  */
 
-class OtpValidateUseCase @Inject constructor(
+open class OtpValidateUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpValidatePojo>(dispatcher) {

@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
+import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -105,8 +105,6 @@ class HotelSearchMapViewModelTest {
         assert(hotelSearchMapViewModel.hotelSearchModel.checkOut == checkOut)
         assert(hotelSearchMapViewModel.hotelSearchModel.room == totalRoom)
         assert(hotelSearchMapViewModel.hotelSearchModel.adult == totalAdult)
-        assert(hotelSearchMapViewModel.searchParam.location.cityID == destinationId)
-        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
         assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
@@ -134,8 +132,6 @@ class HotelSearchMapViewModelTest {
                 type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
-        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchMapViewModel.searchParam.location.districtID == destinationId)
         assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
@@ -164,9 +160,6 @@ class HotelSearchMapViewModelTest {
                 , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
-        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
-        assert(hotelSearchMapViewModel.searchParam.location.regionID == destinationId.toLong())
         assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
@@ -195,9 +188,6 @@ class HotelSearchMapViewModelTest {
                 "", totalRoom, totalAdult, latitude, longitude, radius, searchType, ""))
 
         //then
-        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
-        assert(hotelSearchMapViewModel.searchParam.location.regionID == 0.toLong())
         assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)

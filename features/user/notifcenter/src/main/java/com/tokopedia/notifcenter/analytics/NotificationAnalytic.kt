@@ -10,7 +10,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.track.TrackApp
@@ -57,6 +57,7 @@ class NotificationAnalytic @Inject constructor(
             const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
             const val EVENT_ACTION_CLICK_NOTIF_LIST = "click on notif list"
             const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
+            const val SCROL_TO_BOTTOM = "scroll to bottom"
         }
     }
 
@@ -80,9 +81,9 @@ class NotificationAnalytic @Inject constructor(
 
     private class OtherAttr private constructor() {
         companion object {
-            const val ATTR_USER_ID = "userId"
-            const val ATTR_PRODUCT_ID = "productId"
-            const val ATTR_SHOP_ID = "shopId"
+            const val USER_ID = "userId"
+            const val PRODUCT_ID = "productId"
+            const val SHOP_ID = "shopId"
         }
     }
 
@@ -371,7 +372,7 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
-    fun trackClickOrderListItem(role: Int?, order: Card) {
+    fun trackClickOrderListItem(role: Int?, order: OrderWidgetUiModel) {
         if (role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 InboxAnalyticCommon.createGeneralEvent(
@@ -401,9 +402,9 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to element.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
             )
         )
@@ -423,9 +424,9 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to element.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
             )
         )
@@ -446,10 +447,23 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to notification.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to notification.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to notification.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to notification.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
+            )
+        )
+    }
+
+    fun trackScrollToBottom(notificationSise: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.SCROL_TO_BOTTOM,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = notificationSise,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE
             )
         )
     }
@@ -460,7 +474,7 @@ class NotificationAnalytic @Inject constructor(
         return "$templateKey - $notificationId"
     }
 
-    private fun getEventLabelNotifOrderListItem(role: Int, order: Card): String {
+    private fun getEventLabelNotifOrderListItem(role: Int, order: OrderWidgetUiModel): String {
         val roleStr = getRoleString(role)
         return "$roleStr - ${order.text} - ${order.counter}"
     }

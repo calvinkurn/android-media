@@ -45,21 +45,20 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     @Test
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_user() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
         intending(anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
-        inflateTestFragment()
 
         // When
-        performClickOnProductCard(R.id.recycler_view)
-        performClickAtcButton(R.id.recycler_view)
-        performClickBuyButton(R.id.recycler_view)
+        performClickOnProductCard(R.id.recycler_view_chatroom)
+        performClickAtcButton(R.id.recycler_view_chatroom)
+        performClickBuyButton(R.id.recycler_view_chatroom)
 
         // Then
-        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        verifyRecyclerViewDisplayed(R.id.recycler_view_chatroom)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaProduct),
                 hasAllSuccess()
@@ -69,13 +68,12 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     @Test
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_broadcast() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatBroadcastAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
         intending(anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
-        inflateTestFragment()
 
         // When
         performClickOnProductCard(R.id.rv_product_carousel)
@@ -93,23 +91,22 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     @Test
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_chat_search() {
         // Given
-        setupChatRoomActivity(
-                sourcePage = ApplinkConst.Chat.SOURCE_CHAT_SEARCH
-        )
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        intending(anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        launchChatRoomActivity(
+            sourcePage = ApplinkConst.Chat.SOURCE_CHAT_SEARCH
         )
-        inflateTestFragment()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
 
         // When
-        performClickOnProductCard(R.id.recycler_view)
-        performClickAtcButton(R.id.recycler_view)
-        performClickBuyButton(R.id.recycler_view)
+        performClickOnProductCard(R.id.recycler_view_chatroom)
+        performClickAtcButton(R.id.recycler_view_chatroom)
+        performClickBuyButton(R.id.recycler_view_chatroom)
 
         // Then
-        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        verifyRecyclerViewDisplayed(R.id.recycler_view_chatroom)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaSearchProduct),
                 hasAllSuccess()

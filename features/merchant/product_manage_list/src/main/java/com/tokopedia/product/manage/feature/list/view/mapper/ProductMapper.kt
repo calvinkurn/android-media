@@ -54,7 +54,8 @@ object ProductMapper {
                 hasStockReserved = it.hasStockReserved,
                 topAdsInfo = topAdsInfo,
                 access = access,
-                isCampaign = it.isCampaign
+                isCampaign = it.isCampaign,
+                campaignTypeList = it.campaignTypeList
             )
         } ?: emptyList()
     }

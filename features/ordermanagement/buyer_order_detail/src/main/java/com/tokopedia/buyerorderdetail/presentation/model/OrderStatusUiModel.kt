@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 
@@ -15,7 +14,7 @@ data class OrderStatusUiModel(
             val orderStatus: String,
             val orderStatusId: String,
             val preOrder: PreOrderUiModel
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
+    ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
@@ -25,6 +24,10 @@ data class OrderStatusUiModel(
                 val label: String,
                 val value: String
         )
+
+        override fun shouldShow(): Boolean {
+            return orderStatus.isNotBlank()
+        }
     }
 
     data class OrderStatusInfoUiModel(
@@ -33,7 +36,7 @@ data class OrderStatusUiModel(
             val orderId: String,
             val orderStatusId: String,
             val purchaseDate: String
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
+    ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
@@ -48,5 +51,9 @@ data class OrderStatusUiModel(
                 val label: String,
                 val value: String
         )
+
+        override fun shouldShow(): Boolean {
+            return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank()) || purchaseDate.isNotBlank()
+        }
     }
 }

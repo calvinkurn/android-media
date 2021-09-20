@@ -2,6 +2,9 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleDataView
+import com.tokopedia.autocomplete.initialstate.chips.convertToInitialStateChipWidgetDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.convertToCuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
@@ -18,9 +21,10 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataVie
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
-import com.tokopedia.autocomplete.util.getValueString
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.utils.Dimension90Utils
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -60,12 +64,20 @@ class InitialStatePresenter @Inject constructor(
         return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
+    private fun isTokoNow(): Boolean {
+        return UrlParamUtils.isTokoNow(searchParameter)
+    }
+
+    private fun getNavSource() = searchParameter[NAVSOURCE] ?: ""
+
     override fun getInitialStateData() {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getInitialStateSubscriber()
         )
@@ -189,6 +201,11 @@ class InitialStatePresenter @Inject constructor(
                             initialStateData.convertToListInitialStateProductListDataView(getDimension90()).insertProductListTitle(initialStateData.header)
                     )
                 }
+                InitialStateData.INITIAL_STATE_LIST_CHIPS -> {
+                    data.addAll(
+                            initialStateData.convertToInitialStateChipWidgetDataView(getDimension90()).insertChipWidgetTitle(initialStateData.header)
+                    )
+                }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
@@ -213,9 +230,17 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onImpressCuratedCampaignCard(curatedCampaignDataView: CuratedCampaignDataView) {
-        val label = "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
-        view?.onCuratedCampaignCardImpressed(getUserId(), label, curatedCampaignDataView.type)
+        val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
+        view?.onCuratedCampaignCardImpressed(
+            getUserId(),
+            label,
+            curatedCampaignDataView.type,
+            curatedCampaignDataView.campaignCode
+        )
     }
+
+    private fun getCuratedCampaignEventLabel(curatedCampaignDataView: CuratedCampaignDataView) =
+        "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
 
     private fun addRecentSearchData(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
@@ -284,17 +309,29 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
+    private fun MutableList<Visitable<*>>.insertChipWidgetTitle(title: String): List<Visitable<*>> {
+        val titleSearch = InitialStateChipWidgetTitleDataView(title)
+        this.add(0, titleSearch)
+        return this
+    }
+
     private fun createRecentSearchSeeMoreButton(): RecentSearchSeeMoreDataView {
         return RecentSearchSeeMoreDataView()
     }
 
     override fun refreshPopularSearch(featureId: String) {
+        if (isTokoNow()) view?.onRefreshTokoNowPopularSearch()
+        else view?.onRefreshPopularSearch()
+
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getPopularSearchSubscriber(featureId)
         )
@@ -335,12 +372,15 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshDynamicSection(featureId: String) {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getRefreshDynamicSectionSubscriber(featureId)
         )
@@ -373,9 +413,10 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteRecentSearchItem(item: BaseItemInitialStateSearch) {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId,
-                item
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            item = item,
+            navSource = getNavSource()
         )
         deleteRecentSearchUseCase.execute(
                 params,
@@ -447,8 +488,9 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteAllRecentSearch() {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            navSource = getNavSource()
         )
         deleteRecentSearchUseCase.execute(
                 params,
@@ -527,16 +569,31 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
-        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
-        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId, item.dimension90)
+        if (isTokoNow()) trackEventClickTokoNowDynamicSectionItem(item)
+        else trackEventClickDynamicSectionItem(item)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
     }
 
+    private fun trackEventClickTokoNowDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
+        view?.trackEventClickTokoNowDynamicSectionItem(label)
+    }
+
+    private fun trackEventClickDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId, item.dimension90)
+    }
+
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
-        val label = "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
-        view?.trackEventClickCuratedCampaignCard(getUserId(), label, curatedCampaignDataView.type)
+        val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
+        view?.trackEventClickCuratedCampaignCard(
+            getUserId(),
+            label,
+            curatedCampaignDataView.type,
+            curatedCampaignDataView.campaignCode
+        )
 
         view?.route(curatedCampaignDataView.applink, searchParameter)
         view?.finish()
@@ -553,6 +610,14 @@ class InitialStatePresenter @Inject constructor(
     override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
         val label = "po: ${item.position} - applink: ${item.applink}"
         view?.trackEventClickProductLine(item, getUserId(), label)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickChip(getUserId(), label, item.featureId, item.dimension90)
 
         view?.route(item.applink, searchParameter)
         view?.finish()

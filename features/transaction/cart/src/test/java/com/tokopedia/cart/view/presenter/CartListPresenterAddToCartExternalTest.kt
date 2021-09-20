@@ -99,7 +99,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
                 verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageGreen(addToCartExternalModel.message[0])
-                    view.refreshCart()
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }
@@ -125,7 +125,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
                 verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
-                    view.refreshCart()
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }

@@ -4,7 +4,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.search.data.FlightRouteDao
 import com.tokopedia.flight.search.data.cache.db.FlightJourneyTable
@@ -18,6 +17,8 @@ import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -196,16 +197,14 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                                                      departureArrivalTimeString: String)
             : List<JourneyAndRoutes> {
 
-        val departureArrivalTime = FlightDateUtil.stringToDate(
-                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, departureArrivalTimeString)
+        val departureArrivalTime = departureArrivalTimeString.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
 
         return filteredJourney.filter {
             var shouldCount = false
 
             if (it.routes.isNotEmpty()) {
                 val firstReturnRoute = it.routes[0]
-                val returnDepartureTime = FlightDateUtil.stringToDate(
-                        FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.departureTimestamp)
+                val returnDepartureTime = firstReturnRoute.departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                 val different = returnDepartureTime.time - departureArrivalTime.time
 
                 shouldCount = if (different >= 0) {

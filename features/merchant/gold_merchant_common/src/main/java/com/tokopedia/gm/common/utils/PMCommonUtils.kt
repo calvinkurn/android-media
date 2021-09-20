@@ -20,4 +20,15 @@ object PMCommonUtils {
             "#$hexColor"
         }
     }
+
+    fun getShopScoreFmt(shopScore: Int): String {
+        return when {
+            shopScore <= -1 -> "-"
+            else -> shopScore.toString()
+        }
+    }
+
+    fun getShopLevelFmt(shopLevel: Int): String {
+        return getShopScoreFmt(shopLevel)
+    }
 }

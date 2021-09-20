@@ -44,6 +44,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.internal_review.common.InternalReviewUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
 import kotlinx.android.synthetic.main.setting_logout.view.*
 import kotlinx.android.synthetic.main.setting_tc.view.*
@@ -116,7 +118,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
-        return MenuSettingAdapter(context, this, adapterTypeFactory)
+        var isShowScreenRecorder = false
+        context?.let {
+            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+        }
+        return MenuSettingAdapter(context, this, isShowScreenRecorder, adapterTypeFactory)
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}

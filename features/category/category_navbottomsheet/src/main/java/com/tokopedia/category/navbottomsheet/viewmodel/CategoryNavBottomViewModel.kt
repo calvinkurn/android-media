@@ -25,11 +25,11 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         return categoryListLiveData
     }
 
-    fun getCategoriesFromServer(categoryID: String) {
+    fun getCategoriesFromServer(categoryID: String, source : String) {
 
         viewModelScope.launchCatchError(
                 block = {
-                    val response = repository.getCategoryListWithCategoryDetail(categoryID)
+                    val response = repository.getCategoryListWithCategoryDetail(categoryID, source)
                     val item: CategoryAllList? =
                             response?.getData<CategoryAllListResponse>(CategoryAllListResponse::class.java)?.categoryAllList
                     response?.getData<CategoryDetailResponse>(CategoryDetailResponse::class.java)?.categoryDetailQuery?.data?.let {

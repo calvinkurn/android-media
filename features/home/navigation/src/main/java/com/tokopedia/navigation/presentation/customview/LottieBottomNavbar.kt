@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -18,6 +19,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.R
+import com.tokopedia.unifyprinciples.Typography
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
@@ -43,7 +45,6 @@ class LottieBottomNavbar : LinearLayout {
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
-    private var isThreeItemBottomNav: Boolean = false
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -99,7 +100,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun adjustBadgePosition() {
         if (menu.isEmpty()) return
         val itemWidthSize = containerWidth/menu.size
-        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize/2.7).toInt() else itemWidthSize/4
+        val badgeRightMargin = itemWidthSize/menu.size
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -117,7 +118,7 @@ class LottieBottomNavbar : LinearLayout {
         emptyBadgeLayoutParam?.setMargins(
                 resources.getDimensionPixelOffset(R.dimen.dp_0),
                 resources.getDimensionPixelOffset(R.dimen.dp_1),
-                badgeRightMargin,
+                badgeRightMargin+resources.getDimensionPixelOffset(R.dimen.dp_12),
                 resources.getDimensionPixelOffset(R.dimen.dp_1)
         )
 
@@ -312,7 +313,9 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.addView(imageContainer)
 
             // add text view to show title
-            val title = TextView(context)
+            val title = Typography(context)
+            title.maxLines = 1
+            title.ellipsize = TextUtils.TruncateAt.END;
             title.layoutParams = txtLayoutParam
             title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
             title.text = bottomMenu.title
@@ -425,10 +428,9 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
-    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
+    fun setMenu(menu: List<BottomMenu>) {
         this.menu.clear()
         this.menu.addAll(menu)
-        this.isThreeItemBottomNav = isThreeItemBottomNav
         itemCount = this.menu.size
         resizeContainer()
 
@@ -448,13 +450,8 @@ class LottieBottomNavbar : LinearLayout {
     fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
 
     fun getAnimationScale(context: Context): Float {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Settings.Global.getFloat(context.contentResolver,
-                    Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-        } else {
-            Settings.System.getFloat(context.contentResolver,
-                    Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
-        }
+        return Settings.System.getFloat(context.contentResolver,
+            Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
     }
 }
 

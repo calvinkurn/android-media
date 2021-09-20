@@ -8,7 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
  */
 class LandscapeChatListHeightManager : ChatListHeightManager {
 
-    override suspend fun invalidateHeightNonChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel) {
+    override suspend fun invalidateHeightNonChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel, forceInvalidate: Boolean, hasProductFeatured: Boolean, hasPinnedVoucher: Boolean) {
 
     }
 

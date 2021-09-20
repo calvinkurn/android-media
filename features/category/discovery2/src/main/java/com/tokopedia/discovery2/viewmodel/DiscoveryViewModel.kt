@@ -50,6 +50,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 private const val IS_ADULT = 1
+private const val SCROLL_DEPTH = 100
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val userSession: UserSessionInterface,
@@ -60,7 +61,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
-    private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
@@ -92,12 +92,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         setDiscoveryLiveState(it.pageInfo)
+                        setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
                             findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
-                        setPageInfo(it)
                     }
                 },
                 onError = {
@@ -269,5 +269,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoveryPageInfo.value = Fail(it)
                 }
         )
+    }
+
+    fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
+        return if(range > 0) SCROLL_DEPTH * (offset + extent) / range else 0
+    }
+
+    fun getShareUTM(data:PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > 11){
+            campaignCode = data.campaignCode.substring(0,11)
+        }
+        return "${data.identifier}-${campaignCode}"
     }
 }

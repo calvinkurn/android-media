@@ -15,6 +15,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -51,7 +53,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -73,6 +75,7 @@ import javax.inject.Inject
  */
 
 private const val FEED_PAGE = "feed"
+private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
@@ -185,8 +188,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && !showOldToolbar
     }
 
     private fun getInboxIcon(): Int {
@@ -353,7 +356,37 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
+        setViewPager()
+        onNotificationChanged(
+            badgeNumberNotification,
+            badgeNumberInbox,
+            badgeNumberCart
+        ) // notify badge after toolbar created
+    }
+
+    private fun setViewPager() {
+        view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                    if (position == 1) {
+                        context?.let {
+                            val intent = Intent(BROADCAST_VISIBLITY)
+                            LocalBroadcastManager.getInstance(it.applicationContext)
+                                .sendBroadcast(intent)
+                        }
+                    }
+                }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
     }
 
     private fun requestFeedTab() {

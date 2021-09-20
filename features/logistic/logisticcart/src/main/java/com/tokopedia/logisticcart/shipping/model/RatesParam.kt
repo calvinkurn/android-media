@@ -13,6 +13,7 @@ data class RatesParam(
         val origin: String,
         val destination: String,
         val weight: String,
+        val actualWeight: String?,
         var token: String = "",
         var ut: String = "",
         val type: String = VALUE_ANDROID,
@@ -41,7 +42,8 @@ data class RatesParam(
         var occ: String = "0",
         var po_time: Int = 0,
         var is_fulfillment: Boolean = false,
-        var mvc: String = ""
+        var mvc: String = "",
+        var bo_metadata: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -49,6 +51,7 @@ data class RatesParam(
             origin = builder.origin,
             destination = builder.destination,
             weight = builder.weight,
+            actualWeight = builder.weightActual,
             trade_in = builder.trade_in,
             is_corner = builder.is_corner,
             shop_id = builder.shop_id,
@@ -69,15 +72,17 @@ data class RatesParam(
             unique_id = builder.unique_id,
             is_fulfillment = builder.is_fulfillment,
             po_time = builder.po_time,
-            mvc = builder.mvc)
+            mvc = builder.mvc,
+            bo_metadata = builder.bo_metadata)
 
-    fun toMap(): Map<String, Any> = mapOf(
+    fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,
             "shop_id" to shop_id,
             "shop_tier" to shop_tier,
             "origin" to origin,
             "destination" to destination,
             "weight" to weight,
+            "actual_weight" to actualWeight,
             "token" to token,
             "ut" to ut,
             "type" to type,
@@ -100,7 +105,8 @@ data class RatesParam(
             "occ" to occ,
             "mvc" to mvc,
             "po_time" to po_time,
-            "is_fulfillment" to is_fulfillment
+            "is_fulfillment" to is_fulfillment,
+            "bo_metadata" to bo_metadata
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -113,17 +119,19 @@ data class RatesParam(
             private set
         var weight: String = shipping.weightInKilograms.toString()
             private set
+        var weightActual: String = shipping.weightActualInKilograms.toString()
+            private set
         var trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
             private set
         var is_corner = 0
             private set
-        var shop_id: String = shipping.shopId
+        var shop_id: String = shipping.shopId ?: ""
             private set
         var shop_tier: Int = shipping.shopTier
             private set
-        var token: String = shipping.token
+        var token: String = shipping.token ?: ""
             private set
-        var ut: String = shipping.ut
+        var ut: String = shipping.ut ?: ""
             private set
         var insurance: String = shipping.insurance.toString()
             private set
@@ -131,7 +139,7 @@ data class RatesParam(
             private set
         var order_value: String = shipping.orderValue.toString()
             private set
-        var cat_id: String = shipping.categoryIds
+        var cat_id: String = shipping.categoryIds ?: ""
             private set
         var user_history: Int = -1
             private set
@@ -147,13 +155,15 @@ data class RatesParam(
             private set
         var products: String = RatesParamHelper.generateProducts(shipping)
             private set
-        var unique_id: String = shipping.uniqueId
+        var unique_id: String = shipping.uniqueId ?: ""
             private set
         var is_fulfillment: Boolean = shipping.isFulfillment
             private set
         var po_time: Int = shipping.preOrderDuration
             private set
         var mvc: String = ""
+        var bo_metadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
+            private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 

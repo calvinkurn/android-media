@@ -149,9 +149,9 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     private fun onSuccessBudgetInfo(response: ResponseBidInfo.Result) {
         response.topadsBidInfo.data.firstOrNull()?.let { data ->
             var budget = data.minDailyBudget
-            val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
+            val status = requireArguments().getInt(KEY_AUTOADS_STATUS, 0)
             if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+                budget = requireArguments().getInt(KEY_DAILY_BUDGET, 0)
             }
             rangeStart.text = data.minDailyBudgetFmt
             rangeEnd.text = data.maxDailyBudgetFmt
@@ -210,7 +210,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     open fun setListener() {
         priceEditText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
-                val imm = activity!!
+                val imm = requireActivity()
                         .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }

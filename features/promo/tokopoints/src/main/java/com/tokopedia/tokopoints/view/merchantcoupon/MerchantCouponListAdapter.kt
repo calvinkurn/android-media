@@ -137,7 +137,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
         if (isDarkMode(vh.itemView.context)) {
             vh.parentContainer.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(vh.parentContainer.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
+                    com.tokopedia.unifyprinciples.R.color.dark_N75), PorterDuff.Mode.SRC_IN)
         }
 
         vh.tvShopName.setOnClickListener {

@@ -80,9 +80,7 @@ class SellerMenuViewModel @Inject constructor(
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false, shopAge: Long) {
         if (isToasterRetry) {
-            launch(coroutineContext) {
-                checkDelayErrorResponseTrigger()
-            }
+            checkDelayErrorResponseTrigger()
         }
         getAllShopInfoData(shopAge)
     }
@@ -148,12 +146,14 @@ class SellerMenuViewModel @Inject constructor(
         })
     }
 
-    private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-            if (isToasterAlreadyShown == false) {
-                _isToasterAlreadyShown.value = true
-                delay(DELAY_TIME)
-                _isToasterAlreadyShown.value = false
+    private fun checkDelayErrorResponseTrigger() {
+        launch(coroutineContext) {
+            _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+                if (!isToasterAlreadyShown) {
+                    _isToasterAlreadyShown.value = true
+                    delay(DELAY_TIME)
+                    _isToasterAlreadyShown.value = false
+                }
             }
         }
     }

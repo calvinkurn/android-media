@@ -65,9 +65,10 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
         cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
-        cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
+        cartListData.outOfServiceData = cartDataListResponse.outOfService
         cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
         cartListData.popUpMessage = cartDataListResponse.popUpMessage
+        cartListData.popupErrorMessage = cartDataListResponse.popupErrorMessage
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
@@ -99,7 +100,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 buyerStoreCode = data.buyerStoreCode,
                 type = data.type,
                 state = data.state,
-                stateDetail = data.stateDetail
+                stateDetail = data.stateDetail,
+                shopId = data.tokoNow.shopId,
+                warehouseId = data.tokoNow.warehouseId
         )
     }
 
@@ -115,32 +118,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             )
         }
         return actionDatas
-    }
-
-    private fun mapOutOfServiceData(outOfService: OutOfService): OutOfServiceData {
-        return OutOfServiceData().apply {
-            id = outOfService.id
-            image = outOfService.image
-            title = outOfService.title
-            description = outOfService.description
-            buttons = mapButtonListData(outOfService.buttons)
-        }
-    }
-
-    private fun mapButtonListData(buttons: List<Button>): List<ButtonData> {
-        val buttonListData = ArrayList<ButtonData>()
-        buttons.forEach {
-            buttonListData.add(
-                    ButtonData().apply {
-                        id = it.id
-                        code = it.code
-                        message = it.message
-                        color = it.color
-                    }
-            )
-        }
-
-        return buttonListData
     }
 
     private fun mapShoppingSummaryData(shoppingSummary: ShoppingSummary): ShoppingSummaryData {
@@ -186,31 +163,35 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupAvailableData(availableGroup: AvailableGroup,
                                           cartDataListResponse: CartDataListResponse,
                                           actionsData: List<ActionData>): ShopGroupAvailableData {
-        return ShopGroupAvailableData().let {
-            it.isChecked = availableGroup.checkboxState
-            it.isError = false
-            it.errorTitle = ""
-            it.shopName = availableGroup.shop.shopName
-            it.shopId = availableGroup.shop.shopId
-            it.shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
-            it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
-            it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
-            it.isHasPromoList = availableGroup.hasPromoList
-            it.cartString = availableGroup.cartString
-            it.promoCodes = availableGroup.promoCodes
-            it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
+        return ShopGroupAvailableData().apply {
+            isChecked = availableGroup.checkboxState
+            errorTitle = ""
+            shopName = availableGroup.shop.shopName
+            shopId = availableGroup.shop.shopId
+            shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
+            isFulfillment = availableGroup.isFulFillment
+            fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+            fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
+            isHasPromoList = availableGroup.hasPromoList
+            cartString = availableGroup.cartString
+            promoCodes = availableGroup.promoCodes
+            maximumWeightWording = availableGroup.shop.maximumWeightWording
+            maximumShippingWeight = availableGroup.shop.maximumShippingWeight
+            cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, this, cartDataListResponse, false, actionsData, 0, "")
 
-            it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
-            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
-            it.freeShippingBadgeUrl = when {
+            preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
+            freeShippingBadgeUrl = when {
                 availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
                 availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
                 else -> ""
             }
-            it.incidentInfo = availableGroup.shop.shopAlertMessage
-            it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
-            it
+            incidentInfo = availableGroup.shop.shopAlertMessage
+            estimatedTimeArrival = availableGroup.shipmentInformation.estimation
+            shopTicker = availableGroup.shop.shopTicker
+            isTokoNow = availableGroup.shop.isTokoNow
+            isShowPin = availableGroup.pinned.isPinned
+            pinCoachmarkMessage = availableGroup.pinned.coachmarkMessage
         }
     }
 
@@ -268,11 +249,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct, selectedUnavailableActionId)
             val cartItemHolderData = CartItemHolderData(
                     cartItemData = cartItemData,
-                    errorFormItemValidationType = 0,
-                    errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
-                    isSelected = cartItemData.originData?.isCheckboxState ?: true,
+                    isSelected = cartItemData.originData.isCheckboxState,
                     actionsData = actionsData,
                     errorType = errorType
             )
@@ -309,7 +288,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isDisableAllProducts = isDisabledAllProduct
             when (shopGroupData) {
                 is ShopGroupAvailableData -> {
-                    it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
+                    it.isParentHasErrorOrWarning = shopGroupData.isWarning
+                    it.shouldValidateWeight = shopGroupData.shouldValidateWeight
                 }
                 is ShopGroupWithErrorData -> {
                     it.selectedUnavailableActionId = selectedUnavailableActionId
@@ -324,13 +304,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
-            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder
-                        ?: 0
+            cartItemHolderData.cartItemData.updatedData.quantity > cartItemHolderData.cartItemData.originData.maxOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.maxOrder
             }
-            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder
-                        ?: 0
+            cartItemHolderData.cartItemData.updatedData.quantity < cartItemHolderData.cartItemData.originData.minOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.minOrder
             }
         }
     }
@@ -416,6 +394,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
+            it.isTokoNow = availableGroup.shop.isTokoNow
         }
     }
 
@@ -427,6 +406,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
         }
     }
 
@@ -457,12 +437,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             for (trackingDetail in lastApplyPromoData.trackingDetails) {
                 for (shopGroupAvailableData in shopGroupAvailableDataList) {
                     val cartItemDataList = shopGroupAvailableData.cartItemDataList
-                    cartItemDataList?.let {
+                    cartItemDataList.let {
                         for (cartItemHolderData in cartItemDataList) {
-                            val originData = cartItemHolderData.cartItemData?.originData
-                            if (originData?.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
-                                originData?.promoCodes = trackingDetail.promoCodesTracking
-                                originData?.promoDetails = trackingDetail.promoDetailsTracking
+                            val originData = cartItemHolderData.cartItemData.originData
+                            if (originData.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
+                                originData.promoCodes = trackingDetail.promoCodesTracking
+                                originData.promoDetails = trackingDetail.promoDetailsTracking
                             }
                         }
                     }
@@ -559,6 +539,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
 
             var isDisableAllProducts = true
             isDisableAllProducts = mapShopError(it, unavailableGroup, isDisableAllProducts)

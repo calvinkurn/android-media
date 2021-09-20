@@ -1,5 +1,5 @@
-mutation removeWishlist($productID: Int!, $userID: Int!) {
-    wishlist_remove(productID: $productID, userID: $userID) {
+mutation removeWishlist($productID: SuperInteger!, $userID: SuperInteger!) {
+    wishlist_remove_v2(productID: $productID, userID: $userID) {
         id
         success
         __typename

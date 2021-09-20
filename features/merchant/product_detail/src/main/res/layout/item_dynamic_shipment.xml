@@ -17,7 +17,10 @@
         android:id="@+id/pdp_shipment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
         android:visibility="gone"
         tools:visibility="visible">
 

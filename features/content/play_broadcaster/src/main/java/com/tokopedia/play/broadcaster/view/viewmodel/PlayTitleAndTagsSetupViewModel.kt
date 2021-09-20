@@ -28,6 +28,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     val addedTags: Set<String>
         get() = _observableAddedTags.value.orEmpty()
+    val channelId: String
+        get() = hydraConfigStore.getChannelId()
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel
@@ -77,7 +79,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     }
 
     fun toggleTag(tag: String) {
-        if(!isTagValid(tag)) return
+//        if(!isTagValid(tag)) return
 
         val oldAddedTags = addedTags
         val newAddedTags = if (!oldAddedTags.contains(tag)) oldAddedTags + tag

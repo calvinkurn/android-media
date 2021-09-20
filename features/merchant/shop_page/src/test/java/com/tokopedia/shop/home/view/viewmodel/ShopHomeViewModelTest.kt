@@ -5,13 +5,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.mvcwidget.ResultStatus
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.*
@@ -79,7 +81,7 @@ class ShopHomeViewModelTest {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
     @RelaxedMockK
-    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
     @RelaxedMockK
@@ -269,7 +271,7 @@ class ShopHomeViewModelTest {
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
-        } returns TokopointsCatalogMVCSummaryResponse(null)
+        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
         viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -379,9 +381,10 @@ class ShopHomeViewModelTest {
         val mockProductName = "product mock"
         val mockDisplayedPrice = "Rp. 1000"
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
-        every { addToCartOccUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_OK,
                 data = DataModel(success = 1)
-        ))
+        )
         viewModel.addProductToCartOcc(
                 ShopHomeProductUiModel().apply {
                     id = mockProductId
@@ -398,7 +401,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether onErrorAddToCart is called when call addProductToCartOcc error`() {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
-        every { addToCartOccUseCase.createObservable(any()) } throws Throwable()
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } throws Throwable()
         viewModel.addProductToCartOcc(
                 ShopHomeProductUiModel(),
                 mockShopId,
@@ -753,7 +756,9 @@ class ShopHomeViewModelTest {
                                 true,
                                 PlayWidgetPromoType.Default(""),
                                 PlayWidgetVideoUiModel("", false, "", ""),
-                                PlayWidgetChannelType.Upcoming
+                                PlayWidgetChannelType.Upcoming,
+                                false,
+                                ""
                         )
                 )
         )

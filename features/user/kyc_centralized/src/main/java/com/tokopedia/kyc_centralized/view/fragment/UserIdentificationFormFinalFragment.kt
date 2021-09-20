@@ -56,7 +56,6 @@ import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 import com.tokopedia.utils.file.FileUtil
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -121,7 +120,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         initView(view)
         encryptImage()
         setContentView()
-        if (projectId == 4) //TradeIn project Id
+        if (projectId == TRADE_IN_PROJECT_ID) //TradeIn project Id
             uploadButton?.setText(R.string.upload_button_tradein)
         return view
     }
@@ -564,6 +563,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     companion object {
         private var projectId = 0
+        private const val TRADE_IN_PROJECT_ID = 4
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
         private const val RETAKE_FACE = 2

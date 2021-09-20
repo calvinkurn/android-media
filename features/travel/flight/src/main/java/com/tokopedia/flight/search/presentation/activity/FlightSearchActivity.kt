@@ -18,8 +18,7 @@ import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
-import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
@@ -31,6 +30,7 @@ import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSear
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.activity_flight_search.*
 
 /**
@@ -60,7 +60,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbarText()
     }
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
+    override fun getScreenName(): String = FlightAnalyticsScreenName.SEARCH
 
     override fun getLayoutRes(): Int = R.layout.activity_flight_search
 
@@ -90,7 +90,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                         }
                         FlightFlowConstant.CHANGE_SEARCH_PARAM.value -> {
                             if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
+                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as? FlightSearchPassDataModel ?: FlightSearchPassDataModel()))
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
@@ -144,9 +144,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     open fun initializeToolbarData() {
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
+        dateString = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD,
+                DateUtil.EEE_DD_MMM_YY,
                 flightSearchPassDataModel.departureDate
         )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
@@ -176,7 +176,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun initializeDataFromExtras() {
-        flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA)
+        flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA) ?: FlightSearchPassDataModel()
         isSearchFromWidget = intent.getBooleanExtra(EXTRA_SEARCH_FROM_WIDGET, false)
         initializeToolbarData()
     }

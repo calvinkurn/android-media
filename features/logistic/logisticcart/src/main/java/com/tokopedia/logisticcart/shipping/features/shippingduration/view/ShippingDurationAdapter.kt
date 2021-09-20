@@ -24,7 +24,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.mData = shippingDurationUiModels.toMutableList()
         if (preOrderModel?.display == true)  {
-            preOrderModel?.let { this.mData.add(0, it) }
+            preOrderModel.let { this.mData.add(0, it) }
             promoUiModel?.let { this.mData.add(1, it) }
         } else {
             promoUiModel?.let { this.mData.add(0, it) }
@@ -65,7 +65,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         notifyItemChanged(position)
     }
 
-    override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
+    override fun getItemViewType(position: Int): Int = when (mData[position]) {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
@@ -84,9 +84,9 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PreOrderViewHolder -> holder.bindData(mData.get(position) as PreOrderModel)
-            is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
-            is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoUiModel, shippingDurationAdapterListener!!)
+            is PreOrderViewHolder -> holder.bindData(mData[position] as PreOrderModel)
+            is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
+            is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
         }
     }
 

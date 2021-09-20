@@ -34,7 +34,9 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int, design: String = ""): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
+                                   parentComponentName: String?,
+                                   position: Int, design: String = "", compId : String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
@@ -43,6 +45,7 @@ class DiscoveryDataMapper {
                 componentsItem.name = subComponentName
                 componentsItem.id = id
                 componentsItem.design = design
+                componentsItem.parentComponentId = compId
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -184,14 +187,14 @@ class DiscoveryDataMapper {
                 || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
                 || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
-            slashedPrice = setSlashPrice(dataItem)
-            formattedPrice = setFormattedPrice(dataItem)
+            slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
+            formattedPrice = setFormattedPrice(dataItem.discountedPrice, dataItem.price)
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
-            slashedPrice = dataItem.discountedPrice ?: ""
-            formattedPrice = dataItem.price ?: ""
+            slashedPrice = setSlashPrice(dataItem.price, dataItem.discountedPrice)
+            formattedPrice = setFormattedPrice(dataItem.price, dataItem.discountedPrice)
             isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
@@ -224,25 +227,25 @@ class DiscoveryDataMapper {
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton = dataItem.hasNotifyMe,
+                hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
     }
 
-    private fun setSlashPrice(dataItem: DataItem): String {
-        if(dataItem.discountedPrice.isNullOrEmpty()){
+    private fun setSlashPrice(discountedPrice: String?, price: String?): String {
+        if(discountedPrice.isNullOrEmpty()){
             return ""
-        }else if(dataItem.discountedPrice == dataItem.price){
+        }else if(discountedPrice == price){
             return ""
         }
-        return dataItem.price ?: ""
+        return price ?: ""
     }
 
-    private fun setFormattedPrice(dataItem: DataItem): String {
-        if (dataItem.discountedPrice.isNullOrEmpty()) {
-            return dataItem.price ?: ""
+    private fun setFormattedPrice(discountedPrice: String?, price: String?): String {
+        if (discountedPrice.isNullOrEmpty()) {
+            return price ?: ""
         }
-        return dataItem.discountedPrice ?: ""
+        return discountedPrice ?: ""
     }
 
     private fun getPDPViewCount(pdpView: String): String {

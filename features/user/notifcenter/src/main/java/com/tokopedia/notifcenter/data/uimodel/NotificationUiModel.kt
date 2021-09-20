@@ -200,6 +200,10 @@ data class NotificationUiModel(
         return trackHistory.isNotEmpty()
     }
 
+    fun hasWidgetMsg(): Boolean {
+        return widget.message.isNotEmpty()
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2

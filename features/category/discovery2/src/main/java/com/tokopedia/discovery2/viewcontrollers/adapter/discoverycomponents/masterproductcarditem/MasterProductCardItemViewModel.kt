@@ -29,7 +29,6 @@ import kotlin.coroutines.CoroutineContext
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val SOURCE = "discovery"
-private const val DEFAULT_COLOR = "#1e31353b"
 
 class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -180,7 +179,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getStockWord(dataItem: DataItem): StockWording {
         val stockWordData = StockWording(title = "")
-        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
         var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
@@ -199,7 +198,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                             customStock <= threshold -> {
                                 stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
+                                stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                             }
                             else -> {
                                 stockWordTitle = getStockText(R.string.terjual)
@@ -221,8 +220,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
-            exception.printStackTrace()
-            return DEFAULT_COLOR
+            application.resources.getString(R.string.discovery_product_stock_color)
         }
     }
 

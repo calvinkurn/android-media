@@ -17,13 +17,15 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:id="@+id/rv_event_checkout_additional_item_filled"
         app:layout_constraintTop_toTopOf="@+id/view_event_additional_item_line"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tg_event_additional_fill_data"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         />

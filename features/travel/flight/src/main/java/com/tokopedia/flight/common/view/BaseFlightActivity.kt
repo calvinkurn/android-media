@@ -31,6 +31,8 @@ abstract class BaseFlightActivity : BaseSimpleActivity(),
 
     private var component: FlightComponent? = null
 
+    override fun getScreenName(): String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()

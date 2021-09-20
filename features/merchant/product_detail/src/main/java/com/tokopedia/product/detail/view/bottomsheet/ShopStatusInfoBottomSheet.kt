@@ -9,9 +9,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.util.ShopStatusLinkMovementMethod
 import com.tokopedia.product.detail.view.util.goToWebView
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -44,17 +44,17 @@ class ShopStatusInfoBottomSheet : BottomSheetUnify() {
         btnRequestOpen = parentView?.findViewById(R.id.btn_request_open_shop)
 
         when (statusInfo?.shopStatus) {
-            ProductShopStatusTypeDef.CLOSED -> {
+            ShopStatusDef.CLOSED -> {
                 btnRequestOpen?.hide()
                 messageCloseNote?.show()
                 setTitle(context?.getString(R.string.bs_title_shop_closed) ?: "")
             }
-            ProductShopStatusTypeDef.MODERATED -> {
+            ShopStatusDef.MODERATED -> {
                 showBtnRequest()
                 messageCloseNote?.hide()
                 setTitle(context?.getString(R.string.bs_title_shop_moderated) ?: "")
             }
-            ProductShopStatusTypeDef.MODERATED_PERMANENTLY -> {
+            ShopStatusDef.MODERATED_PERMANENTLY -> {
                 showBtnRequest()
                 messageCloseNote?.hide()
                 setTitle(context?.getString(R.string.bs_title_shop_moderated_permanent) ?: "")

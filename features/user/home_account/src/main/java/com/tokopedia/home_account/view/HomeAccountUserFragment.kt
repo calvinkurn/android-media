@@ -142,6 +142,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private var widgetTitle: String = ""
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
+    private var isShowScreenRecorder = false
 
     var adapter: HomeAccountUserAdapter? = null
     var financialAdapter: HomeAccountFinancialAdapter? = null
@@ -190,6 +191,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -270,13 +272,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, Observer {
+        viewModel.tokopoints.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetTokopointsDrawerList(it.data)
+                    onSuccessGetTokopoints(it.data)
                 }
                 is Fail -> {
-                    onFailedGetTokopointsDrawerList()
+                    onFailedGetTokopoints()
                 }
             }
         })
@@ -328,14 +330,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter?.notifyDataSetChanged()
     }
 
-    private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
+    private fun onSuccessGetTokopoints(pointDataModel: PointDataModel) {
         financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
-        val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+        val mappedData = mapper.mapTokopoints(pointDataModel)
         financialAdapter?.addSingleItem(mappedData)
         adapter?.notifyDataSetChanged()
     }
 
-    private fun onFailedGetTokopointsDrawerList() {
+    private fun onFailedGetTokopoints() {
         context?.let {
             financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
             val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
@@ -604,7 +606,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun setupSettingList() {
         addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
-                accountPref, permissionChecker, isShowDarkModeToggle),
+                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -783,11 +785,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
                 homeAccountAnalytic.eventClickAccountSettingBankAccount()
-                if (userSession.hasPassword()) {
-                    goToApplink(item.applink)
-                } else {
-                    showNoPasswordDialog()
-                }
+                goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantPayment()
@@ -866,6 +864,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
                 showDialogClearCache()
+            }
+            AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD -> {
+                context?.let {
+                    homeAccountAnalytic.eventClickAppSettingScreenRecord()
+                    RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+                }
             }
             AccountConstants.SettingCode.SETTING_SECURITY -> {
                 homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
@@ -988,31 +992,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
                         Uri.parse(AccountConstants.Url.PLAYSTORE_URL + it.application.packageName)))
             }
-        }
-    }
-
-    private fun showNoPasswordDialog() {
-        activity?.run {
-            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.error_bank_no_password_title))
-            dialog.setDescription(getString(R.string.error_bank_no_password_content))
-            dialog.setPrimaryCTAText(getString(R.string.error_no_password_yes))
-            dialog.setPrimaryCTAClickListener {
-                intentToAddPassword()
-                dialog.dismiss()
-            }
-            dialog.setSecondaryCTAText(getString(R.string.error_no_password_no))
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-        }
-    }
-
-    private fun intentToAddPassword() {
-        if (activity != null) {
-            startActivityForResult(RouteManager.getIntent(activity,
-                    ApplinkConstInternalGlobal.ADD_PASSWORD), AccountConstants.REQUEST.REQUEST_ADD_PASSWORD)
         }
     }
 

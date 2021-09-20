@@ -297,21 +297,13 @@ class CatalogDetailPageFragment : Fragment(),
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.name = getString(R.string.catalog_message_share_catalog)
-        linkerData.uri = "${CatalogConstant.CATALOG_URL}$catalogId"
+        if(!catalogUrl.contains("www."))
+            linkerData.uri = catalogUrl.replace("https://","https://www.")
+        else
+            linkerData.uri = catalogUrl
         linkerData.description = getString(R.string.catalog_message_share_catalog)
         linkerData.isThrowOnError = true
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                CatalogUtil.linkerDataMapper(linkerData), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if(linkerShareData.url != null) {
-                    CatalogUtil.shareData(requireActivity(), linkerData.description, linkerShareData.url)
-                }
-            }
-            override fun onError(linkerError: LinkerError) {
-                CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
-            }
-        }))
+        CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
     }
 
     private fun showImage(currentItem: Int) {

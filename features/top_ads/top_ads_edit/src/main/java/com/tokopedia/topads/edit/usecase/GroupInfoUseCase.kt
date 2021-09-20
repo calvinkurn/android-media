@@ -23,6 +23,7 @@ class GroupInfoUseCase @Inject constructor(@ActivityContext val context: Context
     fun setParams(groupId: String) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.GROUP_ID] = groupId
+        queryMap[ParamObject.SOURCE] = ParamObject.EDIT_PAGE
         setRequestParams(queryMap)
     }
 

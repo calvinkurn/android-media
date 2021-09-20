@@ -24,6 +24,9 @@ import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -43,6 +46,7 @@ import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
@@ -117,7 +121,7 @@ class OfficialHomeContainerFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
-        startOfficialStorePerformanceMonitoring()
+        startOfficialStorePerformanceMonitoring(savedInstanceState)
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
@@ -140,6 +144,9 @@ class OfficialHomeContainerFragment
         init(view)
         observeOfficialCategoriesData()
         fetchOSCategory()
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
 
     override fun onDestroy() {
@@ -240,7 +247,19 @@ class OfficialHomeContainerFragment
     }
 
     private fun fetchOSCategory() {
-        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false),
+                onCacheStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCacheStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCloudStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                },
+                onCloudStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                })
     }
 
     private fun observeOfficialCategoriesData() {
@@ -330,8 +349,8 @@ class OfficialHomeContainerFragment
 
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun getInboxIcon(): Int {
@@ -450,9 +469,11 @@ class OfficialHomeContainerFragment
         } else null
     }
 
-    private fun startOfficialStorePerformanceMonitoring(){
-        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
-        officialStorePerformanceMonitoringListener = null
+    private fun startOfficialStorePerformanceMonitoring(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
 
     private fun chooseAddressAbTestCondition(

@@ -92,13 +92,13 @@ class ChatbotImageUploadViewHolder(itemView: View?,
                         .load(url)
                         .fitCenter()
                         .dontAnimate()
-                        .placeholder(R.drawable.chatbot_image_placeloader)
+                        .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader)
                         .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                         .into(imageview)
             }
         } catch (e: Exception) {
             if (imageview.context != null) {
-                imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, R.drawable.chatbot_image_placeloader))
+                imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
             }
         }
     }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="category_filter_chip_states">
+        <attr name="category_filter_chip_on" format="boolean" />
+        <attr name="category_filter_chip_off" format="boolean" />
+    </declare-styleable>
+</resources>

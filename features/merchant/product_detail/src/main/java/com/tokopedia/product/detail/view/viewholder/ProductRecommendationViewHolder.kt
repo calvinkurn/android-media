@@ -80,20 +80,29 @@ class ProductRecommendationViewHolder(
                 }
 
                 view.seeMoreRecom.setOnClickListener {
-                    listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
-                            ?: ""), getComponentTrackData(element))
+                    element.recomWidgetData?.let {
+                        listener.onSeeAllRecomClicked(it, pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
+                                ?: ""), getComponentTrackData(element))
+                    }
                 }
             }
         }
     }
 
     override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
-        if ((payloads.firstOrNull() as? Int) == ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM) {
-            element?.recomWidgetData?.let {
-                initAdapter(element, it, element.cardModel, getComponentTrackData(element))
-                annotationChipAdapter?.submitList(element.filterData ?: listOf())
-                view.loadingRecom.gone()
-                view.rvProductRecom.show()
+        when ((payloads.firstOrNull() as? Int)) {
+            ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM -> {
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                    annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                    view.loadingRecom.gone()
+                    view.rvProductRecom.show()
+                }
+            }
+            ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW -> {
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                }
             }
         }
     }
@@ -142,7 +151,9 @@ class ProductRecommendationViewHolder(
                 },
                 carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
                     override fun onSeeMoreClick() {
-                        listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
+                        element.recomWidgetData?.let {
+                            listener.onSeeAllRecomClicked(it, product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
+                        }
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf(),
@@ -150,6 +161,30 @@ class ProductRecommendationViewHolder(
                     override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener {
+                    override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        productRecommendation.onCardQuantityChanged(quantity)
+                        listener.onRecomAddToCartNonVariantQuantityChangedClick(
+                                recomItem = productRecommendation,
+                                quantity = quantity,
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
+                    override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onRecomAddVariantClick(
+                                recomItem = productRecommendation,
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
                     }
                 },
                 finishCalculate = {

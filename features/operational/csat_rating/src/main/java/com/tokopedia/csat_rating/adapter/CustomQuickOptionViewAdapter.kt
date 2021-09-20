@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 
 import com.tokopedia.csat_rating.R
-import com.tokopedia.design.quickfilter.ItemFilterViewHolder
-import com.tokopedia.design.quickfilter.QuickSingleFilterAdapter
-import com.tokopedia.design.quickfilter.QuickSingleFilterListener
+import com.tokopedia.csat_rating.quickfilter.ItemFilterViewHolder
+import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterAdapter
+import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
 
 class CustomQuickOptionViewAdapter(actionListener: QuickSingleFilterListener) : QuickSingleFilterAdapter(actionListener) {
 

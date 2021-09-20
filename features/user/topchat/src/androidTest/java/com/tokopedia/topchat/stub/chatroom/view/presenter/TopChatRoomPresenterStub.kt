@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.stub.chatroom.view.presenter
 
 import android.content.SharedPreferences
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -11,11 +12,9 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
-import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.usecase.*
-import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +33,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     replyChatUseCase: ReplyChatUseCase,
     getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-    deleteMessageListUseCase: DeleteMessageListUseCase,
     getShopFollowingUseCase: GetShopFollowingUseCase,
     toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     addToCartUseCase: AddToCartUseCase,
@@ -50,6 +48,8 @@ class TopChatRoomPresenterStub @Inject constructor(
     chatToggleBlockChat: ChatToggleBlockChatUseCase,
     chatBackgroundUseCase: ChatBackgroundUseCase,
     chatSrwUseCase: SmartReplyQuestionUseCase,
+    tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+    moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     sharedPref: SharedPreferences,
     dispatchers: CoroutineDispatchers,
     remoteConfig: RemoteConfig
@@ -63,7 +63,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     getTemplateChatRoomUseCase,
     replyChatUseCase,
     getExistingMessageIdUseCase,
-    deleteMessageListUseCase,
     getShopFollowingUseCase,
     toggleFavouriteShopUseCase,
     addToCartUseCase,
@@ -79,6 +78,8 @@ class TopChatRoomPresenterStub @Inject constructor(
     chatToggleBlockChat,
     chatBackgroundUseCase,
     chatSrwUseCase,
+    tokoNowWHUsecase,
+    moveChatToTrashUseCase,
     sharedPref,
     dispatchers,
     remoteConfig
@@ -108,15 +109,9 @@ class TopChatRoomPresenterStub @Inject constructor(
         return true
     }
 
-    override fun addDummyToService(image: ImageUploadViewModel) {
-        view?.addDummyMessage(image)
-        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-        UploadImageChatService.dummyMap.add(uploadImageDummy)
-    }
-
     override fun startUploadImageWithService(image: ImageUploadViewModel) {
         UploadImageChatServiceStub.enqueueWork(
-            view.context,
+            InstrumentationRegistry.getInstrumentation().context,
             ImageUploadMapper.mapToImageUploadServer(image),
             thisMessageId
         )

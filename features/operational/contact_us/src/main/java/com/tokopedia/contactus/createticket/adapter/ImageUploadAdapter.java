@@ -38,7 +38,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image_upload);
-            deleteButton = itemView.findViewById(com.tokopedia.design.R.id.delete_button);
+            deleteButton = itemView.findViewById(R.id.delete_but);
         }
     }
 
@@ -111,7 +111,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.green_500));
+            holder.image.setBackgroundColor(context.getResources().getColor(R.color.contact_us_green_500));
         } else {
             holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }

@@ -30,13 +30,7 @@ class RefreshInitialStateUseCase(
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
 
-        fun getParams(query: String, registrationId: String, userId: String): RequestParams {
-            val searchParameter = HashMap<String, Any>()
-            searchParameter[SearchApiConst.Q] = query
-            return getParams(searchParameter, registrationId, userId)
-        }
-
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, warehouseId: String): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)

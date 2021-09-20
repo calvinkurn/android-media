@@ -84,8 +84,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             return fragment
         }
 
-        private const val HEADER_HAS_ELEVATION = 16.0f
-        private const val HEADER_NO_ELEVATION = 0.0f
         private const val DEFAULT_SHOWCASE_PAGE = 1
         private const val DEFAULT_SHOWCASE_NAME = "etalase"
         private const val DEFAULT_SHOWCASE_SORT = 1
@@ -104,10 +102,10 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    headerLayout?.cardElevation = HEADER_NO_ELEVATION
+                    headerLayout?.cardElevation = CARD_HEADER_NO_ELEVATION
                 }
                 else {
-                    headerLayout?.cardElevation = HEADER_HAS_ELEVATION
+                    headerLayout?.cardElevation = CARD_HEADER_ELEVATION
                 }
             }
         }

@@ -20,11 +20,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
-import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.mock.ShopOpenMockResponseConfig

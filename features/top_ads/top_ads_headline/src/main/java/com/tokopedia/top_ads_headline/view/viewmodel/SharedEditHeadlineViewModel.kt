@@ -42,8 +42,8 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun getBidInfoDetail(headlineAdStepperModel: HeadlineAdStepperModel) {
         viewModelScope.launch {
-            val selectedProductIds: List<Long>? = editHeadlineAdLiveData.value?.selectedProductIds?.map {
-                it.toLong()
+            val selectedProductIds: List<String>? = editHeadlineAdLiveData.value?.selectedProductIds?.map {
+                it
             }
             val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
             bidInfoUseCase.setParams(listOf(suggestions), HEADLINE, EDIT_HEADLINE_PAGE)

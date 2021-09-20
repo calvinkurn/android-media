@@ -1,15 +1,15 @@
 package com.tokopedia.feedcomponent.view.adapter.posttag
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.CtaPostTagViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.ProductPostTagViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.ProductPostTagViewHolderNew
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 
 /**
  * @author by yoasfs on 2019-07-18
@@ -21,19 +21,28 @@ class PostTagTypeFactoryImpl(val listener: DynamicPostViewHolder.DynamicPostList
         return ProductPostTagViewHolder.LAYOUT
     }
 
+    override fun type(productPostTagViewModelNew: ProductPostTagViewModelNew): Int {
+        return ProductPostTagViewHolderNew.LAYOUT
+    }
+
     override fun type(ctaPostTagViewModel: CtaPostTagViewModel): Int {
         return CtaPostTagViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-        if (type == ProductPostTagViewHolder.LAYOUT) {
-            viewHolder = ProductPostTagViewHolder(parent, listener, screenWidth)
-        } else if (type == CtaPostTagViewHolder.LAYOUT) {
-            viewHolder = CtaPostTagViewHolder(parent, listener)
-        } else {
-            viewHolder = super.createViewHolder(parent, type)
+        return when (type) {
+            ProductPostTagViewHolder.LAYOUT -> {
+                ProductPostTagViewHolder(parent, listener, screenWidth)
+            }
+            CtaPostTagViewHolder.LAYOUT -> {
+                CtaPostTagViewHolder(parent, listener)
+            }
+            ProductPostTagViewHolderNew.LAYOUT -> {
+                ProductPostTagViewHolderNew(parent, listener)
+            }
+            else -> {
+                super.createViewHolder(parent, type)
+            }
         }
-        return viewHolder
     }
 }

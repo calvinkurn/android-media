@@ -4,6 +4,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
@@ -38,6 +39,7 @@ class RechargeItemProductCardsAdapter(val items: List<RechargeHomepageSections.I
                 if (isProductCard1x1) {
                     (iv_recharge_home_product_cards_item.layoutParams as ConstraintLayout.LayoutParams)
                             .dimensionRatio = SQUARE_DIMEN_RATIO
+                    iv_recharge_home_product_cards_item.scaleType = ImageView.ScaleType.FIT_CENTER
                 }
                 iv_recharge_home_product_cards_item.loadImage(element.mediaUrl)
                 tv_recharge_home_product_cards_item_category.text = element.title
