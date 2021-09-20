@@ -71,6 +71,26 @@
       "eventAction": "view deletion success toaster",
       "sessionIris": ".+",
       "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "impression fav number and contact",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".+",
+      "eventAction": "click fav number and contact",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+ - .+"
     }
   ]
 }

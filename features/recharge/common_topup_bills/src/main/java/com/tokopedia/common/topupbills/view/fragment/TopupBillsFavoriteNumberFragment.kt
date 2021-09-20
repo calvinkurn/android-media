@@ -54,8 +54,6 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UPDATE
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -223,6 +221,13 @@ class TopupBillsFavoriteNumberFragment:
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
         clientNumbers = newClientNumbers
+        val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
+        commonTopupBillsAnalytics.eventImpressionTotalFavoriteNumber(
+            totalNamedFavNumber = namedFavNumber,
+            totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            userId = userSession.userId
+        )
+
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
@@ -231,14 +236,13 @@ class TopupBillsFavoriteNumberFragment:
             commonTopupBillsAnalytics.eventImpressionFavoriteNumberEmptyState(
                     currentCategoryName, userSession.userId)
         }
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (numberListAdapter.visitables.isNotEmpty() &&
-                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
-            ) {
-                show()
-            } else {
-                hide()
-            }
+
+        if (numberListAdapter.visitables.isNotEmpty() &&
+            numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
+        ) {
+            savedNumberViewModel.setClueVisibility(true)
+        } else {
+            savedNumberViewModel.setClueVisibility(false)
         }
 
         if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -267,7 +271,7 @@ class TopupBillsFavoriteNumberFragment:
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
-                binding?.commonTopupbillsFavoriteNumberClue?.hide()
+                savedNumberViewModel.setClueVisibility(false)
             }
         }
     }
@@ -302,7 +306,7 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            binding?.commonTopupbillsFavoriteNumberClue?.show()
+            savedNumberViewModel.setClueVisibility(true)
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -311,20 +315,24 @@ class TopupBillsFavoriteNumberFragment:
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
             }
-            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+            savedNumberViewModel.setClueVisibility(false)
         }
     }
 
-    override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
+    override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem, position: Int) {
+        val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
+        commonTopupBillsAnalytics.eventClickTotalFavoriteNumber(
+            totalNamedFavNumber = namedFavNumber,
+            totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            clickPosition = position,
+            userId = userSession.userId
+        )
         navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE, clientNumber)
     }
 
-    // TODO: [Misael] Ini trackingnya sepertinya bakal di remove?
     override fun onContinueClicked() {
-//        val clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
-//        commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
-//                currentCategoryName, getOperatorNameByPrefix(clientNumber), userSession.userId
-//        )
+        commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
+                currentCategoryName, userSession.userId)
         navigateToPDP()
     }
 

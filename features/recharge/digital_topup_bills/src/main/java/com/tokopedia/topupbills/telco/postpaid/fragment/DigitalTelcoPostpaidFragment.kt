@@ -305,13 +305,28 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
-            // TODO: [Misael] check ini, dan trackingnya
             override fun onClearAutoComplete() {
                 renderPromoAndRecommendation()
                 topupAnalytics.eventClearInputNumber()
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 buyWidget.setVisibilityLayout(false)
+            }
+
+            override fun onShowFilterChip(isLabeled: Boolean) {
+                if (isLabeled) {
+                    topupAnalytics.impressionFavoriteNumberChips(categoryId, userSession.userId)
+                } else {
+                    topupAnalytics.impressionFavoriteContactChips(categoryId, userSession.userId)
+                }
+            }
+
+            override fun onClickFilterChip(isLabeled: Boolean) {
+                if (isLabeled) {
+                    topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
+                } else {
+                    topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
+                }
             }
         })
 
@@ -414,24 +429,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     operatorName = operator.attributes.name
                     productName = operatorName
 
-                    // TODO: [Misael] check tracking ini lagi nanti
-//                    when (inputNumberActionType) {
-//                        InputNumberActionType.MANUAL -> {
-//                            topupAnalytics.eventInputNumberManual(categoryId, operatorName)
-//                        }
-//                        InputNumberActionType.CONTACT -> {
-//                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-//                        }
-//                        InputNumberActionType.FAVORITE -> {
-//                            topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-//                        }
-//                        InputNumberActionType.CONTACT_HOMEPAGE -> {
-//                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-//                        }
-//                        else -> {
-//
-//                        }
-//                    }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
                     if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
@@ -439,13 +436,34 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
-                    validatePhoneNumber(operatorData, postpaidClientNumberWidget)
+                    validatePhoneNumber(operatorData, postpaidClientNumberWidget, buyWidget) {
+                        hitTrackingForInputNumber(this)
+                    }
                 }
             }
         } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
                 getString(R.string.telco_number_error_prefix_not_found)
             )
+            buyWidget.setBuyButtonState(false)
+        }
+    }
+
+    private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
+        operatorName = selectedOperator.operator.attributes.name
+        when (inputNumberActionType) {
+            InputNumberActionType.MANUAL -> {
+                topupAnalytics.eventInputNumberManual(categoryId, operatorName)
+            }
+            InputNumberActionType.CONTACT -> {
+                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+            }
+            InputNumberActionType.FAVORITE -> {
+                topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+            }
+            InputNumberActionType.CONTACT_HOMEPAGE -> {
+                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+            }
         }
     }
 

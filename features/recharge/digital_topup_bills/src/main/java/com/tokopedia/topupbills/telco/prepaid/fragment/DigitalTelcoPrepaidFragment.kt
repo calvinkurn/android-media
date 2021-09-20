@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.HandlerCompat.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +20,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
@@ -402,21 +400,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
-                validatePhoneNumber(operatorData, telcoClientNumberWidget)
-
-                // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
-//                hitTrackingForInputNumber(selectedOperator)
-                if (operatorId != selectedOperator.operator.id) {
-                    operatorId = selectedOperator.operator.id
-                    productId = 0
-                    sharedModelPrepaid.setVisibilityTotalPrice(false)
-                    telcoClientNumberWidget.run {
-                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
-                        clearErrorState()
-                    }
-                    renderProductViewPager()
-                    getProductListData()
+                validatePhoneNumber(operatorData, telcoClientNumberWidget, buyWidget) {
+                    hitTrackingForInputNumber(selectedOperator)
                 }
+
+                operatorId = selectedOperator.operator.id
+                productId = 0
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
+                telcoClientNumberWidget.run {
+                    setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    clearErrorState()
+                }
+                renderProductViewPager()
+                getProductListData()
             }
         } catch (exception: NoSuchElementException) {
             operatorId = ""
@@ -425,6 +421,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 getString(R.string.telco_number_error_prefix_not_found),
                 true
             )
+            buyWidget.setBuyButtonState(false)
         }
     }
 
@@ -493,6 +490,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             productId = 0
             operatorId = ""
             sharedModelPrepaid.setVisibilityTotalPrice(false)
+        }
+
+        override fun onShowFilterChip(isLabeled: Boolean) {
+            if (isLabeled) {
+                topupAnalytics.impressionFavoriteNumberChips(categoryId, userSession.userId)
+            } else {
+                topupAnalytics.impressionFavoriteContactChips(categoryId, userSession.userId)
+            }
+        }
+
+        override fun onClickFilterChip(isLabeled: Boolean) {
+            if (isLabeled) {
+                topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
+            } else {
+                topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
+            }
         }
     }
 
@@ -728,7 +741,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             Handler().run {
                 postDelayed({
                     val coachMarks = ArrayList<CoachMark2Item>()
-                    val sortFilterItems: LinearLayout? = telcoClientNumberWidget.findViewById(R.id.sort_filter_items)
+                    val sortFilterItems: LinearLayout? =
+                        telcoClientNumberWidget.findViewById(com.tokopedia.sortfilter.R.id.sort_filter_items)
                     val firstChip = sortFilterItems?.getChildAt(0)
 
                     if (firstChip != null) {

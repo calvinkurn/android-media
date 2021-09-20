@@ -15,6 +15,8 @@ import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsSavedNumTabAdapter
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -28,6 +30,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private var number: String = ""
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
+    private var isSwitchChecked: Boolean = false
 
     private var binding: FragmentSavedNumberBinding? = null
     private var pagerAdapter: TopupBillsSavedNumTabAdapter? = null
@@ -53,8 +56,8 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
+            isSwitchChecked = arguments.getBoolean(ARG_PARAM_IS_SWITCH_CHECKED, false)
         }
-
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
     }
 
@@ -84,6 +87,16 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewPager()
         initListener()
+        observeData()
+    }
+
+    private fun observeData() {
+        savedNumberViewModel.clueVisibility.observe(viewLifecycleOwner, { isVisible ->
+            if (isVisible)
+                binding?.commonTopupBillsFavoriteNumberClue?.show()
+            else
+                binding?.commonTopupBillsFavoriteNumberClue?.hide()
+        })
     }
 
     override fun onDestroyView() {
@@ -101,11 +114,19 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
             adapter = pagerAdapter
             registerOnPageChangeCallback(viewPagerCallback)
         }
+        if (isSwitchChecked) {
+            binding?.run {
+                commonTopupBillsSavedNumViewpager.currentItem =
+                    TopupBillsSavedNumTabAdapter.POSITION_FAVORITE_NUMBER
+                commonTopupBillsSavedNumSwitcher.isChecked = isSwitchChecked
+            }
+        }
     }
 
     private fun initListener() {
         binding?.run {
             commonTopupBillsSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
+                isSwitchChecked = isChecked
                 if (isChecked) {
                     commonTopupBillsSavedNumViewpager.setCurrentItem(
                         POSITION_FAVORITE_NUMBER, true

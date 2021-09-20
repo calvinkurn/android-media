@@ -14,7 +14,15 @@ class TopupBillsSavedNumberViewModel @Inject constructor(
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
 
+    private val _clueVisibility = MutableLiveData<Boolean>()
+    val clueVisibility: LiveData<Boolean>
+        get() = _clueVisibility
+
     fun setSearchKeyword(keyword: String) {
         _searchKeyword.postValue(keyword)
+    }
+
+    fun setClueVisibility(isVisible: Boolean) {
+        _clueVisibility.postValue(isVisible)
     }
 }
