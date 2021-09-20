@@ -75,6 +75,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var finalUpdateJob: Job? = null
 
     private var hasSentViewOspEe = false
+    private var hasGetTenorList = false
 
     fun getShopId(): String {
         return orderCart.shop.shopId.toString()
@@ -258,7 +259,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
@@ -643,6 +644,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                     validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            adjustAdminFee()
         }
     }
 
@@ -741,6 +743,32 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             globalEvent.value = newGlobalEvent
         }
+    }
+
+    fun adjustAdminFee() {
+        if (orderPayment.value.creditCard.isAfpb && !hasGetTenorList) {
+            hasGetTenorList = true
+            val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
+                userSession.userId, orderTotal.value, orderCart)
+            launch(executorDispatchers.immediate) {
+                val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
+                if (!isSuccess) {
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+
+                    val newOrderPayment = orderPayment.value
+                    val selectedTerm = newOrderPayment.creditCard.selectedTerm
+                    if (selectedTerm != null) {
+                        selectedTerm.isError = true
+                        orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
+                    }
+                }
+                globalEvent.value = newGlobalEvent
+            }
+        }
+    }
+
+    fun resetFlagGetTenorList() {
+        this.hasGetTenorList = false
     }
 
     override fun onCleared() {
