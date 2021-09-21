@@ -334,13 +334,11 @@ class TokoNowHomeFragment: Fragment(),
         channelId: String,
         headerName: String,
         position: String,
-        isOoc: Boolean
+        isOoc: Boolean,
+        applink: String
     ) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            recomItem.productId.toString()
-        )
+        RouteManager.route(context, applink)
+
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
