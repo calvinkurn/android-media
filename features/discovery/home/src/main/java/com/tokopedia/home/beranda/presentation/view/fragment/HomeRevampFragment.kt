@@ -747,6 +747,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 onboardingView.onboarding_button.setOnClickListener {
                     bottomSheet.dismiss()
                     adapter?.currentList?.let {
+                        saveFirstViewNavigationFalse()
                         showCoachmarkWithDataValidation(it)
                     }
                 }
