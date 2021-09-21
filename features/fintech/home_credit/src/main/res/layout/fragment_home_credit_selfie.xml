@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Static_Black"
     tools:context=".view.activity.HomeCreditRegisterActivity">
 
     <ImageView
@@ -27,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/unify_space_24"
-        android:background="@color/Unify_Static_Black_68">
+        android:visibility="visible">
 
 
         <com.tokopedia.iconunify.IconUnify
@@ -89,7 +90,6 @@
                 android:layout_height="match_parent" />
 
         </FrameLayout>
-
 
     </RelativeLayout>
 
