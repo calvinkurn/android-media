@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel
 
+import TokoNowDateFilterBottomSheet.Companion.ALL_DATE_TRANSACTION_POSITION
 import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,7 +20,7 @@ data class RepurchaseSortFilterUiModel(
 
     data class RepurchaseSortFilter(
         @StringRes val title: Int,
-        @StringRes val qtyFormat: Int? = null,
+        @StringRes val titleFormat: Int? = null,
         val selectedItem: SelectedSortFilter? = null,
         val selectedDateFilter: SelectedDateFilter? = null,
         val chipType: String = ChipsUnify.TYPE_NORMAL,
@@ -35,7 +36,7 @@ data class RepurchaseSortFilterUiModel(
 
     @Parcelize
     data class SelectedDateFilter(
-        var position: Int = 0,
+        var position: Int = ALL_DATE_TRANSACTION_POSITION,
         var startDate: String = "",
         var endDate: String = "",
     ) : Parcelable

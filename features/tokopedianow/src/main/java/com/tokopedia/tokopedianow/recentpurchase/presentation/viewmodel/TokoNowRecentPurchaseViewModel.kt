@@ -116,10 +116,10 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
-    private var selectedCategoryFilter: SelectedSortFilter? = null
-    private var selectedDateFilter: SelectedDateFilter? = null
-    private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+    private var selectedCategoryFilter: SelectedSortFilter? = null
+    private var selectedDateFilter: SelectedDateFilter? = SelectedDateFilter()
+    private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
     fun showLoading() {
@@ -318,8 +318,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     fun clearSelectedFilters() {
         selectedSortFilter = FREQUENTLY_BOUGHT
+        selectedDateFilter = SelectedDateFilter()
         selectedCategoryFilter = null
-        selectedDateFilter = null
     }
 
     private fun getMiniCartItem(productId: String): MiniCartItem? {

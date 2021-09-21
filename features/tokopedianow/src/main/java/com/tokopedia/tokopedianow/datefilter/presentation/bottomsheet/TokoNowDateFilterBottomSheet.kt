@@ -108,28 +108,28 @@ class TokoNowDateFilterBottomSheet :
         listTitles.clear()
         listTitles.addAll(listOf(
             DateFilterUiModel(
-                titleRes = R.string.tokopedianow_date_filter_item_all_date_transactions_bottomsheet,
+                titleRes = R.string.tokopedianow_date_filter_all_date_transactions_chip_and_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == ALL_DATE_TRANSACTION_POSITION,
                 isLastItem = false,
                 startDate = "",
                 endDate = ""
             ),
             DateFilterUiModel(
-                titleRes = R.string.tokopedianow_date_filter_item_last_one_month_bottomsheet,
+                titleRes = R.string.tokopedianow_date_filter_last_one_month_chip_and_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == LAST_ONE_MONTH_POSITION,
                 isLastItem = false,
                 startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS).toString(),
                 endDate = Date().toFormattedString("yyyy-MM-dd")
             ),
             DateFilterUiModel(
-                titleRes = R.string.tokopedianow_date_filter_item_last_three_months_bottomshet,
+                titleRes = R.string.tokopedianow_date_filter_last_three_months_chip_and_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == LAST_THREE_MONTHS_POSITION,
                 isLastItem = false,
                 startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_90_DAYS).toString(),
                 endDate = Date().toFormattedString("yyyy-MM-dd")
             ),
             DateFilterUiModel(
-                titleRes = R.string.tokopedianow_date_filter_item_custom_date_bottomshet,
+                titleRes = R.string.tokopedianow_date_filter_custom_date_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == CUSTOM_DATE_POSITION,
                 isLastItem = true,
                 startDate = tempStartDate,
