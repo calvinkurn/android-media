@@ -91,11 +91,6 @@ class TelcoPostpaidLoginInstrumentTest {
     fun validate_postpaid_login() {
         Thread.sleep(3000)
 
-        clientNumberWidget_clickClearBtn()
-        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
-
-        Thread.sleep(3000)
-
         validate_pdp_client_number_widget_interaction()
         validate_filter_chip()
         enquiry_phone_number()
@@ -110,7 +105,6 @@ class TelcoPostpaidLoginInstrumentTest {
 
 
     fun validate_pdp_client_number_widget_interaction() {
-        clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
