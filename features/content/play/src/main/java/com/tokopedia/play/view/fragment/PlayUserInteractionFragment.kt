@@ -133,7 +133,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
-    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_spam_like, multipleLikesIconCacheStorage) }
+    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
 
     /**
      * Interactive
@@ -1141,9 +1141,10 @@ class PlayUserInteractionFragment @Inject constructor(
             message: String,
     ) {
         if (toasterBottomMargin == 0) {
-//            val likeClickAreaView = likeView.getClickAreaView() ?: return
-//            val likeAreaBottomMargin = (likeClickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
-//            toasterBottomMargin = likeClickAreaView.height + likeAreaBottomMargin
+            val likeAreaView = likeView.rootView
+            val likeAreaBottomMargin = (likeAreaView.layoutParams as? ViewGroup.MarginLayoutParams)
+                ?.bottomMargin ?: 0
+            toasterBottomMargin = likeAreaView.height + likeAreaBottomMargin
         }
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(

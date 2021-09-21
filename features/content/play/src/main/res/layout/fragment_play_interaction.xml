@@ -77,7 +77,7 @@
         />
 
     <include
-        android:id="@+id/view_spam_like"
+        android:id="@+id/view_like_bubble"
         layout="@layout/view_like_bubble"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl9"

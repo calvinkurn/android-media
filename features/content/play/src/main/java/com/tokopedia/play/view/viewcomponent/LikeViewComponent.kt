@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
 import android.view.HapticFeedbackConstants
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
@@ -112,6 +113,10 @@ class LikeViewComponent(
         animationLike.removeAllAnimatorListeners()
         animationLike.addAnimatorListener(reminderLikeAnimatorListener)
         animationLike.playAnimation()
+    }
+
+    fun getClickAreaView(): View {
+        return animationLike
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

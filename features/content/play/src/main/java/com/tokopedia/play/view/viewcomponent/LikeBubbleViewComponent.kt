@@ -32,7 +32,7 @@ class LikeBubbleViewComponent(
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private val spamLike = findViewById<PlayLikeBubbleView>(R.id.spam_like_animation)
+    private val bubbleLikeView = findViewById<PlayLikeBubbleView>(R.id.bubble_like_view)
 
     private val preferredIconSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
 
@@ -53,7 +53,7 @@ class LikeBubbleViewComponent(
     }
 
     init {
-        spamLike.setParentView(container)
+        bubbleLikeView.setParentView(container)
     }
 
     fun preloadIcons(iconUrls: Set<String>) {
@@ -78,7 +78,7 @@ class LikeBubbleViewComponent(
         reduceOpacity: Boolean,
         config: PlayLikeBubbleConfig,
     ) {
-        spamLike.shot(
+        bubbleLikeView.shot(
             likeAmount = amount,
             shotPerBatch = SHOT_PER_BATCH,
             delayInMs = SPAMMING_LIKE_DELAY,
@@ -92,7 +92,7 @@ class LikeBubbleViewComponent(
         reduceOpacity: Boolean,
         config: PlayLikeBubbleConfig,
     ) {
-        spamLike.shot(
+        bubbleLikeView.shot(
             likeAmount = amount,
             shotPerBatch = SHOT_PER_BATCH,
             reduceOpacity = reduceOpacity,
@@ -140,14 +140,14 @@ class LikeBubbleViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        spamLike.clear(true)
+        bubbleLikeView.stop()
         job.cancelChildren()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         job.cancelChildren()
-        spamLike.clear(false)
+        bubbleLikeView.release()
     }
 
     private companion object {

@@ -323,10 +323,17 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         }
     }
 
-    fun clear(isOnPause: Boolean) {
-        if(isOnPause) job.cancelChildren()
-        else job.cancel()
+    fun stop() {
+        job.cancelChildren()
+        cleanUp()
+    }
 
+    fun release() {
+        job.cancel()
+        cleanUp()
+    }
+
+    private fun cleanUp() {
         imageList.forEach {
             parentView?.removeView(it)
         }
