@@ -38,9 +38,6 @@ import javax.inject.Inject
 class InfiniteRecomViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-        private val addWishListUseCase: Lazy<AddWishListUseCase>,
-        private val removeWishListUseCase: Lazy<RemoveWishListUseCase>,
-        private val topAdsWishlishedUseCase: Lazy<TopAdsWishlishedUseCase>,
         private val addToCartUseCase: Lazy<AddToCartUseCase>,
         private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
         private val updateCartUseCase: Lazy<UpdateCartUseCase>,
