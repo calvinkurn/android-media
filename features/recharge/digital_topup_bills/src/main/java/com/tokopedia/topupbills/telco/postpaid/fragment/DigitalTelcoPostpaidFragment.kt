@@ -429,7 +429,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     operatorName = operator.attributes.name
                     productName = operatorName
 
-                    postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
+                    postpaidClientNumberWidget.run {
+                        setIconOperator(operator.attributes.imageUrl)
+                        clearErrorState()
+                    }
                     if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
@@ -545,7 +548,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
         postpaidClientNumberWidget.setFilterChipShimmer(false)
-        postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
+        postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
     }
 
