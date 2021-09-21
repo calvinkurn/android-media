@@ -20,13 +20,21 @@
             android:drawablePadding="@dimen/layout_lvl1"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/notifTagBarChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toTopOf="@id/tvShcBarChartTitle"
+            app:layout_constraintBottom_toBottomOf="@id/tvShcBarChartTitle"
+            app:layout_constraintStart_toEndOf="@id/tvShcBarChartTitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcBarChartValue"
