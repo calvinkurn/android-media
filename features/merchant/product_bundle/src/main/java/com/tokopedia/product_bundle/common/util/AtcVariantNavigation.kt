@@ -17,7 +17,7 @@ object AtcVariantNavigation {
 
     fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant) {
         val saveButtonText = fragment.getString(R.string.action_save)
-        val cartRedirections = AtcVariantHelper.generateSaveCartRedirection(productVariant, saveButtonText)
+        val cartRedirections = AtcVariantHelper.generateSimpanCartRedirection(productVariant, saveButtonText)
             ?: emptyMap()
 
         AtcVariantHelper.pdpToAtcVariant(
@@ -34,6 +34,7 @@ object AtcVariantNavigation {
             alternateCopy = emptyList(),
             boData = null,
             rates = null,
+            restrictionData = null,
             pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE
         ) { intent, resultCode ->
             when (resultCode) {
