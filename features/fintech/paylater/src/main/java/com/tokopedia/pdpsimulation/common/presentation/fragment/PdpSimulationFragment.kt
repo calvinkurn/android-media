@@ -180,6 +180,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             for (i in data.variant.products.indices) {
                 if (productId == data.variant.products[i].productID) {
                     combination = data.variant.products[i].combination[0] ?: -1
+                    break
                 }
             }
             if (combination != -1)
