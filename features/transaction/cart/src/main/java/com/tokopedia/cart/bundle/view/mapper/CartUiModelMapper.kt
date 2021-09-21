@@ -11,7 +11,6 @@ import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
@@ -19,7 +18,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.min
 
@@ -158,10 +156,12 @@ object CartUiModelMapper {
                     loop@ for (unavailableGroup in unavailableSection.unavailableGroups) {
                         if (unavailableGroup.cartDetails.size > 1) {
                             showAccordion = true
+                            break@loop
                         } else {
                             innerLoop@ for (cartDetail in unavailableGroup.cartDetails) {
                                 if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") && cartDetail.products.size > 1) {
                                     showAccordion = true
+                                    break@loop
                                 }
                             }
                         }
@@ -251,7 +251,7 @@ object CartUiModelMapper {
         }
     }
 
-    fun mapDisabledAccordionUiModel(context: Context?, cartData: CartData): DisabledAccordionHolderData {
+    private fun mapDisabledAccordionUiModel(context: Context?, cartData: CartData): DisabledAccordionHolderData {
         return DisabledAccordionHolderData(
                 isCollapsed = true,
                 showLessWording = cartData.unavailableSectionAction.find {

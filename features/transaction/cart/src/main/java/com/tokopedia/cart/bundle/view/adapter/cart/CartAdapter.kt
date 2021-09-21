@@ -1099,24 +1099,32 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     private fun getNonCollapsibleUnavailableProduct(shop: CartShopHolderData): List<CartItemHolderData> {
-        val tmpProducts = mutableListOf<CartItemHolderData>()
+        val nonCollapsibleProducts = mutableListOf<CartItemHolderData>()
+        var previousBundlingId = ""
+        var previousBundlingGroupId = ""
         loop@ for (product in shop.productUiModelList) {
             if (product.isBundlingItem) {
-                if (tmpProducts.isNotEmpty() && tmpProducts.firstOrNull()?.isBundlingItem == false) {
+                if (nonCollapsibleProducts.isNotEmpty() && nonCollapsibleProducts.firstOrNull()?.isBundlingItem == false) {
                     break@loop
                 } else {
-                    tmpProducts.add(product)
+                    if (previousBundlingId.isBlank() && previousBundlingGroupId.isBlank()) {
+                        previousBundlingId = product.bundleId
+                        previousBundlingGroupId = product.bundleGroupId
+                    }
+                    if (product.bundleId == previousBundlingId && product.bundleGroupId == previousBundlingGroupId) {
+                        nonCollapsibleProducts.add(product)
+                    }
                 }
             } else {
-                if (tmpProducts.isEmpty()) {
-                    tmpProducts.add(product)
+                if (nonCollapsibleProducts.isEmpty()) {
+                    nonCollapsibleProducts.add(product)
                 } else {
                     break@loop
                 }
             }
         }
 
-        return tmpProducts
+        return nonCollapsibleProducts
     }
 
     fun collapseDisabledItems() {
