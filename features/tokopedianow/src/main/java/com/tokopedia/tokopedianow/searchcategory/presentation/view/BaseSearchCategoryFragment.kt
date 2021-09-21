@@ -917,7 +917,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
-
+        getViewModel().onViewATCRepurchaseWidget(data, quantity)
     }
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
