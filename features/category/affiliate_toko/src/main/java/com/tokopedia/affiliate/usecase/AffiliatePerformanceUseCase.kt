@@ -8,23 +8,23 @@ import javax.inject.Inject
 class AffiliatePerformanceUseCase @Inject constructor(
         private val repository: AffiliateRepository) {
 
-    private fun createRequestParams(userId: String): HashMap<String, Any> {
+    private fun createRequestParams(page: Int, limit: Int): HashMap<String, Any> {
         val request = HashMap<String, Any>()
-        request[PARAM_USER_ID] = userId
+        request[PARAM_PAGE] = page
+        request[PARAM_LIMIT] = limit
         return request
     }
 
-    suspend fun affiliatePerformance(userId: String): AffiliatePerformanceData {
+    suspend fun affiliatePerformance(page: Int, limit : Int): AffiliatePerformanceData {
         return repository.getGQLData(
                 GQL_Affiliate_Performance,
                 AffiliatePerformanceData::class.java,
-                createRequestParams(userId)
+                createRequestParams(page,limit)
         )
     }
 
     companion object {
-        private const val PARAM_USER_ID = "userID"
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_LIMIT = "limit"
     }
-
-
 }

@@ -30,7 +30,8 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             visibility = View.VISIBLE
             text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
-                promotionClickInterface?.onPromotionClick(element?.promotionItem?.title ?: "",
+                promotionClickInterface?.onPromotionClick(element?.promotionItem?.id ?: "",
+                        element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.android ?:"","",
                         "")
             }

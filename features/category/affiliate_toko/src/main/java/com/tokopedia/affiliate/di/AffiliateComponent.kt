@@ -16,7 +16,7 @@ interface AffiliateComponent {
     @get:ApplicationContext
     val context: Context
 
-    fun inject(affiliateHomeFragment: AffiliateHomeFragment)
+    fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 

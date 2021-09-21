@@ -1,7 +1,8 @@
 package com.tokopedia.affiliate.interfaces
 
+import com.tokopedia.affiliate.model.AffiliateSearchData
+
 interface PromotionClickInterface {
-    fun onPromotionClick(productName: String, productImage: String, productUrl: String, productIdentifier: String)
-    fun onViewMoreClick()
-    fun onChangeLinkClick()
+    fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String)
+    fun onButtonClick(errorCta  : AffiliateSearchData.Error.ErrorCta?)
 }

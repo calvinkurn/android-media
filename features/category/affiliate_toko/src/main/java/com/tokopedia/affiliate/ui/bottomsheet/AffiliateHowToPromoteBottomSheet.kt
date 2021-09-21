@@ -77,5 +77,4 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         }
         setChild(contentView)
     }
-
 }

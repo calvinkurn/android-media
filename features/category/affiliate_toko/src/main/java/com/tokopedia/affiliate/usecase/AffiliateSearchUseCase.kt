@@ -53,7 +53,7 @@ class AffiliateSearchUseCase @Inject constructor(
 
         fun getItem(): AffiliateSearchData.Cards.Items {
             val imageUrl = "https://imagerouter.tokopedia.com/img/300/attachment/2019/9/13/43737554/43737554_b3d583de-47a7-45b0-8ca4-d1bd7719431e.jpg"
-            val item = AffiliateSearchData.Cards.Items(
+            val item = AffiliateSearchData.Cards.Items("1",
                     "OEM Speaker Harman Kardon Onyx Mini Black",
                     AffiliateSearchData.Cards.Items.Image(imageUrl, imageUrl, imageUrl, imageUrl),
                     getAddtionalInfo(),

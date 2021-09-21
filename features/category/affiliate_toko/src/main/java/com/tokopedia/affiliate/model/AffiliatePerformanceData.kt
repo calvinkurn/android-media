@@ -6,60 +6,76 @@ import androidx.annotation.Keep
 
 @Keep
 data class AffiliatePerformanceData(
-        @SerializedName("affiliatePerformance")
-        var affiliatePerformance: AffiliatePerformance
+        @SerializedName("getAffiliateItemsPerformanceList")
+        var getAffiliateItemsPerformanceList: GetAffiliateItemsPerformanceList
 ) {
     @Keep
-    data class AffiliatePerformance(
-            @SerializedName("data")
-            var `data`: Data
+    data class GetAffiliateItemsPerformanceList(
+            @SerializedName("Data")
+            var `data`: Data?
     ) {
         @Keep
         data class Data(
-                @SerializedName("error")
+                @SerializedName("Error")
                 var error: Error? = null,
-                @SerializedName("filters")
-                var filters: Filters? = null,
-                @SerializedName("links")
-                var links: Links? = null,
-                @SerializedName("performanceSummary")
-                var performanceSummary: PerformanceSummary? = null,
-                @SerializedName("status")
-                var status: Boolean
+                @SerializedName("SectionData")
+                var sectionData: SectionData? = null,
+                @SerializedName("Status")
+                var status: Boolean?
         ) {
-            @Keep
-            class Error
+            data class Error (
+                    @SerializedName("ErrorType") var errorType : Int?,
+                    @SerializedName("CtaText") var ctaText : String?,
+                    @SerializedName("Message") var message : String?,
+                    @SerializedName("ctaLink") val ctaLink : CtaLink?
+            ){
+                data class CtaLink (
+                        @SerializedName("DesktopURL") val desktopUrl : String?,
+                        @SerializedName("MobileURL") val mobileUrl : String?,
+                        @SerializedName("AndroidURL") val iosUrl : String?,
+                        @SerializedName("IosURL") val androidUrl : String?
+                )
+            }
 
             @Keep
-            class Filters
-
-            @Keep
-            data class Links(
-                    @SerializedName("has_more")
-                    var hasMore: Boolean,
-                    @SerializedName("items")
-                    var items: List<Item>,
-                    @SerializedName("sectionID")
-                    var sectionID: Int,
-                    @SerializedName("sectionTitle")
-                    var sectionTitle: String ?= null,
-                    @SerializedName("totalCount")
-                    var totalCount: Int
+            data class SectionData(
+                    @SerializedName("AffiliateID")
+                    var affiliateID: String?,
+                    @SerializedName("SectionTitle")
+                    var sectionTitle: String?,
+                    @SerializedName("ItemTotalCount")
+                    var itemTotalCount: Int?,
+                    @SerializedName("ItemTotalCountFmt")
+                    var itemTotalCountFmt: String?,
+                    @SerializedName("StartTime")
+                    var startTime: String?,
+                    @SerializedName("EndTime")
+                    var endTime: String?,
+                    @SerializedName("DayRange")
+                    var dayRange: Int?,
+                    @SerializedName("Utems")
+                    var items: List<Item>?
             ) {
                 @Keep
                 data class Item(
-                        @SerializedName("footer")
-                        var footer: List<Footer>,
-                        @SerializedName("id")
-                        var id: String,
-                        @SerializedName("image")
-                        var image: Image ?=null,
-                        @SerializedName("performanceSummary")
-                        var performanceSummary: PerformanceSummary?=null,
-                        @SerializedName("status")
-                        var status: Int?=null,
+                        @SerializedName("LinkID")
+                        var linkID: String,
+                        @SerializedName("ItemID")
+                        var itemID: String,
+                        @SerializedName("ItemType")
+                        var itemType: Int?,
+                        @SerializedName("ItemTitle")
+                        var itemTitle: String?,
+                        @SerializedName("DefaultLinkURL")
+                        var defaultLinkURL: String?,
+                        @SerializedName("Status")
+                        var Status: Int?,
+                        @SerializedName("Image")
+                        var image : Image?,
                         @SerializedName("title")
-                        var title: String
+                        var title: String,
+                        @SerializedName("footer")
+                        var footer: List<Footer>?
                 ) {
                     @Keep
                     data class Footer(
@@ -71,57 +87,17 @@ data class AffiliatePerformanceData(
 
                     @Keep
                     data class Image(
-                            @SerializedName("android")
-                            var android: String,
-                            @SerializedName("desktop")
-                            var desktop: String,
-                            @SerializedName("ios")
-                            var ios: String,
-                            @SerializedName("mobile")
-                            var mobile: String
-                    )
-
-                    @Keep
-                    data class PerformanceSummary(
-                            @SerializedName("click")
-                            var click: Int,
-                            @SerializedName("commission")
-                            var commission: Int,
-                            @SerializedName("compareClick")
-                            var compareClick: Int,
-                            @SerializedName("compareCommissionPercentage")
-                            var compareCommissionPercentage: Int,
-                            @SerializedName("compareSold")
-                            var compareSold: Int,
-                            @SerializedName("conversionPercentage")
-                            var conversionPercentage: Double,
-                            @SerializedName("formattedCommission")
-                            var formattedCommission: String,
-                            @SerializedName("sold")
-                            var sold: Int
+                            @SerializedName("AndroidURL")
+                            var android: String?,
+                            @SerializedName("DesktopURL")
+                            var desktop: String?,
+                            @SerializedName("IosURL")
+                            var ios: String?,
+                            @SerializedName("MobileURL")
+                            var mobile: String?
                     )
                 }
             }
-
-            @Keep
-            data class PerformanceSummary(
-                    @SerializedName("click")
-                    var click: Int,
-                    @SerializedName("commission")
-                    var commission: Int,
-                    @SerializedName("compareClick")
-                    var compareClick: Int,
-                    @SerializedName("compareCommissionPercentage")
-                    var compareCommissionPercentage: Int,
-                    @SerializedName("compareSold")
-                    var compareSold: Int,
-                    @SerializedName("conversionPercentage")
-                    var conversionPercentage: Double,
-                    @SerializedName("formattedCommission")
-                    var formattedCommission: String,
-                    @SerializedName("sold")
-                    var sold: Int
-            )
         }
     }
 }

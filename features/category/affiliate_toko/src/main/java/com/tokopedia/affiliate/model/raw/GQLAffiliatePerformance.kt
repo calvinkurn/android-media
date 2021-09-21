@@ -1,64 +1,54 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Performance: String = """query getAffiliatePerformance(${"$"}userID: String!){
-  getAffiliatePerformance(userID: ${"$"}userID) {
-    data {
-      status
-      error {
-        message
-        cta_text
-        cta_link {
-          desktop
-          mobile
-          android
-          ios
+const val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerformanceList(${"$"}page: Int,${"$"}limit: Int){
+  getAffiliateItemsPerformanceList(page: ${"$"}page,limit: ${"$"}limit) {
+    Data {
+      Status
+      Error {
+        ErrorType
+        Message
+        CtaText
+        CtaLink {
+          DesktopURL
+          MobileURL
+          AndroidURL
+          IosURL
         }
       }
-      performanceSummary {
-        formattedCommission
-        commission
-        conversionPercentage
-        compareCommissionPercentage
-        click
-        compareClick
-        sold
-        compareSold
-      }
-      links {
-        sectionID
-        has_more
-        sectionTitle
-        totalCount
-        items{
-          id
-          title
-          image {
-            desktop
-            mobile
-            android
-            ios
+      SectionData {
+        AffiliateID
+        SectionTitle
+        ItemTotalCount
+        ItemTotalCountFmt
+        StartTime
+        EndTime
+        DayRange
+        Items {
+          LinkID
+          ItemID
+          ItemType
+          ItemTitle
+          DefaultLinkURL
+          Status
+          Image {
+            DesktopURL
+            MobileURL
+            AndroidURL
+            IosURL
           }
-          status
-          footer [
-            footerIcon
-            footerText
-          ]
-          performanceSummary {
-            formattedCommission
-            commission
-            conversionPercentage
-            compareCommissionPercentage
-            click
-            compareClick
-            sold
-            compareSold
+          Metrics {
+            MetricType
+            MetricTitle
+            MetricValue
+            MetricDifferenceValue
+            Trend
+          }
+          Footer {
+            FooterType
+            FooterIcon
+            FooterText
           }
         }
-      }
-      filters {
-        title
-        from
-        to
       }
     }
   }

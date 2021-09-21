@@ -15,6 +15,19 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         />
 
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/error_image_deffered"
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/unify_space_96"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:ignore="ContentDescription"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
+        app:imageDpiSupportType="singleDpi"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_title"
         android:layout_width="0dp"

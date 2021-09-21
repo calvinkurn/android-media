@@ -17,6 +17,7 @@ data class AffiliateSearchData(
             @SerializedName("items") val items : List<Items>?
     ){
         data class Items (
+                @SerializedName("id") val id : String?,
                 @SerializedName("title") val title : String?,
                 @SerializedName("image") val image : Image?,
                 @SerializedName("additionalInformation") val additionalInformation : List<AdditionalInformation>?,
@@ -78,7 +79,7 @@ data class AffiliateSearchData(
             @SerializedName("errorType") var errorType : Int?,
             @SerializedName("title") var title : String?,
             @SerializedName("message") var message : String?,
-            @SerializedName("errorStatus") var erroStatus : Int?,
+            @SerializedName("errorStatus") var errorStatus : Int?,
             @SerializedName("errorImage") val errorImage : Cards.Items.Image?,
             @SerializedName("errorCta") val errorCta : List<ErrorCta>?
     ){
@@ -90,10 +91,10 @@ data class AffiliateSearchData(
         ){
 
             data class CtaLink (
-                    @SerializedName("desktop") val desktop : String?,
-                    @SerializedName("mobile") val mobile : String?,
-                    @SerializedName("ios") val ios : String?,
-                    @SerializedName("android") val android : String?
+                    @SerializedName("desktop") val desktopUrl : String?,
+                    @SerializedName("mobile") val mobileUrl : String?,
+                    @SerializedName("ios") val iosUrl : String?,
+                    @SerializedName("android") val androidUrl : String?
             )
         }
     }
