@@ -51,6 +51,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
         try {
             // cancel period task
             trackerTimer?.cancel()
+            trackerTimer = null
 
             // cancel coroutines
             if (isActive) {

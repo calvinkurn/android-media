@@ -15,7 +15,7 @@ interface LiveBroadcaster {
     val connection: BroadcasterConnection
 
     fun init(context: Context, handler: Handler)
-    fun prepare(config: BroadcasterConfig? = null)
+    fun prepare(config: BroadcasterConfig?.() -> Unit)
     fun setListener(listener: BroadcasterListener)
     fun startPreview(surfaceView: SurfaceView)
     fun stopPreview()
@@ -25,4 +25,5 @@ interface LiveBroadcaster {
     fun pause()
     fun reconnect()
     fun stop()
+    fun release()
 }

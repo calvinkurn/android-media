@@ -81,8 +81,8 @@ class LiveBroadcasterManager constructor(
         }
     }
 
-    override fun prepare(config: BroadcasterConfig?) {
-        if (config != null) mConfig = config
+    override fun prepare(config: BroadcasterConfig?.() -> Unit) {
+        mConfig = BroadcasterConfig().apply(config)
         configureStreamer(mConfig)
     }
 
@@ -153,9 +153,16 @@ class LiveBroadcasterManager constructor(
 
     override fun stop() {
         stopStream()
+        stopPreview()
         broadcastState(BroadcasterState.Stop)
-        streamer?.release()
         job.cancel()
+    }
+
+    override fun release() {
+        streamer?.release()
+        mListener = null
+        mBitrateAdapter = null
+        streamer = null
     }
 
     override fun getHandler(): Handler {
@@ -412,6 +419,7 @@ class LiveBroadcasterManager constructor(
     private fun cancelStatsJob() {
         try {
             statisticUpdateTimer?.cancel()
+            statisticUpdateTimer = null
             logger.tracker.stopTrack()
         } catch (ignored: Exception) { }
     }
