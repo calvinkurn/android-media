@@ -17,6 +17,8 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.content_caption_page_preview.*
 
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
@@ -56,15 +58,24 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireArguments().getParcelable<CreatePostViewModel>(CreatePostViewModel.TAG)?.let {
+            createContentPostViewModel.setNewContentData(it)
+            createPostModel = it
+        }
         initVar()
         initView()
     }
 
     private fun initVar() {
-        createPostModel = createContentPostViewModel.getPostData() ?: CreatePostViewModel()
+        if (createContentPostViewModel.getPostData() != null)
+        createPostModel = createContentPostViewModel.getPostData()!!
     }
     private fun initView() {
         adapter.updateProduct(createPostModel.completeImageList)
+        if (!createPostModel.isEditState)
+            content_post_image_rv.visible()
+        else
+            content_post_image_rv.gone()
         content_post_image_rv.setHasFixedSize(true)
         content_post_image_rv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

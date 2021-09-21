@@ -179,13 +179,12 @@ open class SubmitPostUseCaseNew @Inject constructor(
             requestParams.putString(PARAM_AUTHOR_TYPE, CONTENT_SHOP)
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_MEDIA_MODEL_LIST, mediaList)
-            requestParams.putString(PARAM_ACTION, ACTION_CREATE)
-
 
             if (!id.isNullOrEmpty()) {
                 requestParams.putString(PARAM_ID, id)
-                requestParams.putString(PARAM_ACTION, ACTION_CREATE)
+                requestParams.putString(PARAM_ACTION, ACTION_UPDATE)
             } else {
+                requestParams.putString(PARAM_ACTION, ACTION_CREATE)
                 requestParams.putObject(PARAM_MEDIA_LIST, media)
             }
             return requestParams

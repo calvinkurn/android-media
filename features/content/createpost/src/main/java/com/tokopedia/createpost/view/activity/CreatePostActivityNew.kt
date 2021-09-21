@@ -118,17 +118,16 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+        var isEditState: Boolean = false
         fun createIntent(
             context: Context,
             createPostViewModel: CreatePostViewModel,
-            isCreatePostPage: Boolean,
-            isFirstLaunch: Boolean,
+            param_type: String
         ): Intent {
+            isEditState = createPostViewModel.isEditState
             val intent = Intent(context, CreatePostActivityNew::class.java)
-
-                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+            intent.putExtra(PARAM_TYPE, param_type)
             intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
-
             return intent
         }
     }
@@ -161,6 +160,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
             if (!create_post_toolbar.isVisible)
                 create_post_toolbar?.visibility = View.VISIBLE
+        } else if (intent.getStringExtra(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE) {
+            content_action_post_button?.text = getString(R.string.feed_content_text_post)
         }
 
         return when (intent.extras?.get(PARAM_TYPE)) {
@@ -185,7 +186,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         content_back_button.setOnClickListener {
-            onBackPressed()
+            KeyboardHandler.hideSoftKeyboard(this)
+            if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState)
+                finish()
+            else
+                onBackPressed()
         }
         create_post_toolbar.visibility = View.VISIBLE
 

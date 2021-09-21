@@ -125,10 +125,6 @@ class TagViewProvider
         child.isClickable = true
         child.isFocusable = true
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
-        if(feedXMediaTagging.X == 0f)
-            feedXMediaTagging.X = (parent.width / 2).toPx()
-        if(feedXMediaTagging.Y == 0f)
-            feedXMediaTagging.Y = (parent.height / 2).toPx()
         child.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {

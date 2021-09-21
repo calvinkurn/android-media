@@ -128,8 +128,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (getLatestTotalProductCount() < 5) {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
+            val imageWidth = ((mediaModel.imageView?.width))?.toFloat() ?: 0f
+            val imageHeight = ((mediaModel.imageView?.height))?.toFloat() ?: 0f
             createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
-                FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
+                FeedXMediaTagging(tagIndex = tagListSize,
+                    posX = 0.5f,
+                    posY = 0.5f,
+                    X = imageWidth/ 2,
+                    Y = imageHeight / 2))
             openProductTaggingScreen()
         } else {
             Toaster.build(requireView(),
