@@ -12,6 +12,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.DateUtil
 import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.DEFAULT_STRING_RESOURCE
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -49,7 +50,7 @@ class RepurchaseSortFilterViewHolder(
             val title = if(selectedItems.isNotEmpty() && it.titleFormat != null) {
                 val selectedFilterCount = selectedItems.count().orZero()
                 itemView.context.getString(it.titleFormat, selectedFilterCount)
-            } else if (selectedDateFilter != null && it.title == -1) {
+            } else if (selectedDateFilter != null && it.title == DEFAULT_STRING_RESOURCE) {
                 val startDate = DateUtil.getGregorianCalendar(selectedDateFilter.startDate)
                 val endDate = DateUtil.getGregorianCalendar(selectedDateFilter.endDate)
                 val startDateFormatted = calendarToStringFormat(startDate, DATE_FORMAT)

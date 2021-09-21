@@ -29,9 +29,9 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
+    const val DEFAULT_STRING_RESOURCE = -1
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
-    private const val DEFAULT_STRING_RESOURCE = -1
 
     fun MutableList<Visitable<*>>.addLayoutList() {
         val sortFilter = RepurchaseSortFilterUiModel(SORT_FILTER, emptyList())
