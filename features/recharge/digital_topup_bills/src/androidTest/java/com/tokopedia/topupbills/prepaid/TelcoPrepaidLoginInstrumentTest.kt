@@ -117,8 +117,8 @@ class TelcoPrepaidLoginInstrumentTest {
         interaction_product_mccm()
         validate_recent_widget_login()
 
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-//            hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
+            hasAllSuccess())
 
     }
 
@@ -173,7 +173,7 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(telco_filter_chip)).perform(swipeLeft())
         Thread.sleep(1000)
 
-        clientNumberWidget_clickFilterChip_withText("Make it Happen")
+        clientNumberWidget_clickFilterChip_withText("085612309812")
         clientNumberWidget_validateText("085612309812")
     }
 

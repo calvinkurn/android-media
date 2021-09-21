@@ -3,9 +3,11 @@ package com.tokopedia.topupbills.utils
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -15,9 +17,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withParentIndex
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
@@ -26,8 +25,10 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.AllOf
 
 object CommonTelcoActions {
@@ -121,6 +122,14 @@ object CommonTelcoActions {
             )
         )
     }
+    fun promoWidget_scrollToItem(viewInteraction: ViewInteraction, position: Int) {
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                position,
+                scrollTo()
+            )
+        )
+    }
 
     fun promoItem_click(viewInteraction: ViewInteraction) {
         viewInteraction.perform(
@@ -187,5 +196,20 @@ object CommonTelcoActions {
 
     fun bottomSheet_close() {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
+    }
+
+    fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            var currentIndex = 0
+            override fun describeTo(description: Description) {
+                description.appendText("with index: ")
+                description.appendValue(index)
+                matcher.describeTo(description)
+            }
+
+            override fun matchesSafely(view: View?): Boolean {
+                return matcher.matches(view) && currentIndex++ == index
+            }
+        }
     }
 }

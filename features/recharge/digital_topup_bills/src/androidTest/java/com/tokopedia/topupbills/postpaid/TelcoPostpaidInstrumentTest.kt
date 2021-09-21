@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.provider.ContactsContract
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -37,6 +38,7 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_type
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
+import com.tokopedia.topupbills.utils.CommonTelcoActions.promoWidget_scrollToItem
 import com.tokopedia.topupbills.utils.CommonTelcoActions.stubAccessingSavedNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
@@ -95,14 +97,15 @@ class TelcoPostpaidInstrumentTest {
         validate_interaction_promo()
         validate_interaction_saved_number()
 
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
-//            hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
+            hasAllSuccess())
     }
 
     fun validate_pdp_client_number_widget_interaction() {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+        Espresso.closeSoftKeyboard()
     }
 
     fun validate_show_contents_pdp_telco_not_login() {
@@ -115,6 +118,7 @@ class TelcoPostpaidInstrumentTest {
     fun validate_interaction_promo() {
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_validateText(EMPTY_TEXT)
+        Thread.sleep(2000)
 
         val viewInteraction = onView(AllOf.allOf(
             AllOf.allOf(withId(R.id.recycler_view_menu_component),
@@ -126,6 +130,9 @@ class TelcoPostpaidInstrumentTest {
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         promoItem_click(viewInteraction)
+        onView(withId(R.id.recycler_view_menu_component)).perform(swipeUp())
+        Thread.sleep(1000)
+        onView(withId(R.id.recycler_view_menu_component)).perform(swipeUp())
         Thread.sleep(3000)
     }
 

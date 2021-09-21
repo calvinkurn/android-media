@@ -129,8 +129,8 @@ class TelcoPrepaidInstrumentTest {
         interaction_product_filter()
         validate_interaction_promo()
 
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
-//            hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
+            hasAllSuccess())
     }
 
     fun validate_pdp_client_number_widget_interaction() {
@@ -275,11 +275,11 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(3000)
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
         onView(withId(R.id.telco_filter_btn)).perform(click())
-        onView(withId(R.id.sort_filter_prefix)).check(matches(isDisplayed()))
+        onView(CommonTelcoActions.withIndex(withId(R.id.sort_filter_prefix), 1)).check(matches(isDisplayed()))
 
         Thread.sleep(2000)
         onView(AllOf.allOf(isDisplayed(), withId(R.id.telco_sort_filter))).check(matches(isDisplayed()))
-        onView(withId(R.id.sort_filter_prefix)).perform(click())
+        onView(CommonTelcoActions.withIndex(withId(R.id.sort_filter_prefix), 1)).perform(click())
     }
 
     @After

@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -28,7 +26,6 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.prepaid.TelcoPrepaidLoginInstrumentTest
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -107,8 +104,8 @@ class TelcoPostpaidLoginInstrumentTest {
         click_on_tab_menu_login()
         click_item_recent_widget_login()
 
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-//                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
+                hasAllSuccess())
     }
 
 
@@ -133,6 +130,9 @@ class TelcoPostpaidLoginInstrumentTest {
     fun validate_filter_chip() {
         clientNumberWidget_clickFilterChip_withText("Tokopedia")
         clientNumberWidget_validateText("081232323239")
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_clickFilterChip_withText("081208120812")
+        clientNumberWidget_validateText("081208120812")
     }
 
     fun click_on_tab_menu_login() {

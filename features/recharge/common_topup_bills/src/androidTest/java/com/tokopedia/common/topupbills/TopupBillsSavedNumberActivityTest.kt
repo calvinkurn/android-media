@@ -95,21 +95,20 @@ class TopupBillsSavedNumberActivityTest {
             )
         )
         mActivityRule.launchActivity(intent)
-//        validate_tab_switching()
+        validate_tab_switching()
         validate_search_filter_interaction()
-//        validate_favorite_number_empty_state()
+        validate_favorite_number_empty_state()
     }
 
     fun validate_tab_switching() {
-        onView(withId(R.id.common_topup_bills_contacts_rv)).perform(swipeUp())
-        Thread.sleep(1000)
         onView(withId(R.id.common_topup_bills_contacts_rv)).perform(swipeLeft())
-        Thread.sleep(3000)
+        Thread.sleep(1000)
+        onView(withId(R.id.common_topupbills_favorite_number_rv)).perform(swipeRight())
+        Thread.sleep(1000)
     }
 
     fun validate_search_filter_interaction() {
         // Contact List
-        onView(withId(R.id.common_topupbills_favorite_number_clue)).check(matches(isDisplayed()))
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NUMBER_PREFIX))
@@ -136,7 +135,6 @@ class TopupBillsSavedNumberActivityTest {
         onView(withId(R.id.common_topup_bills_contacts_rv)).perform(swipeLeft())
         Thread.sleep(2000)
 
-        onView(withId(R.id.common_topupbills_favorite_number_clue)).check(matches(isDisplayed()))
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NUMBER_PREFIX))

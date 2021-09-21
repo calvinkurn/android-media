@@ -483,7 +483,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClearAutoComplete() {
-            topupAnalytics.eventClearInputNumber()
             showProducts = false
             renderPromoAndRecommendation()
 
@@ -506,6 +505,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             } else {
                 topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
             }
+        }
+
+        override fun onClickClearInput() {
+            topupAnalytics.eventClearInputNumber()
         }
     }
 
