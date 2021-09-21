@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
@@ -48,9 +47,11 @@ class DateFilterViewHolder(
     }
 
     override fun bind(element: DateFilterUiModel) {
-        tpSortTitle?.text = getString(element.titleRes.orZero())
         rbSort?.isChecked = element.isChecked == true
         divider?.showWithCondition(!element.isLastItem)
+        element.titleRes?.let {
+            tpSortTitle?.text = getString(it)
+        }
         container?.setOnClickListener {
             listener.onClickItem(rbSort?.isChecked == true, adapterPosition, element.startDate, element.endDate)
         }
