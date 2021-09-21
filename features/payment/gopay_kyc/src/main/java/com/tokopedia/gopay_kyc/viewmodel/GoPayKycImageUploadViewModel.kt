@@ -19,7 +19,7 @@ class GoPayKycImageUploadViewModel @Inject constructor(
 
     var ktpPath = ""
     var selfieKtpPath = ""
-    var kycRequestId: String = ""
+    private var kycRequestId: String = ""
     val uploadSuccessLiveData = MutableLiveData<Boolean>()
 
     // to prevent unwanted re-initiate kyc call in that case where submit kyc has failed
@@ -50,9 +50,11 @@ class GoPayKycImageUploadViewModel @Inject constructor(
                 ktpPath,
                 selfieKtpPath
             )
-            uploadKycDocumentUseCase.uploadKycDocuments({
-                kycRequestId = initiateKycResponse.initiateKycData.kycRequestId
-                submitKycInfo()
+            uploadKycDocumentUseCase.uploadKycDocuments({ isUploadSuccessful ->
+                if (isUploadSuccessful) {
+                    kycRequestId = initiateKycResponse.initiateKycData.kycRequestId
+                    submitKycInfo()
+                } else updateKycUploadStatus(false)
             }, {
                 updateKycUploadStatus(false)
             })
@@ -78,7 +80,6 @@ class GoPayKycImageUploadViewModel @Inject constructor(
     companion object {
         const val CODE_SUCCESS = "SUCCESS"
         const val DOCUMENT_TYPE_KYC_PROOF = "KYC_PROOF"
-        const val DOCUMENT_TYPE_SELFIE = "SELFIE"
     }
 
     override fun onCleared() {

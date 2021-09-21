@@ -111,15 +111,17 @@ class SaveCaptureImageUseCase @Inject constructor(
     }
 
     private fun bitmapToByte(bitmap: Bitmap?): List<Byte> {
-        val stream = ByteArrayOutputStream()
-        bitmap?.compress(
-            Bitmap.CompressFormat.JPEG,
-            IMAGE_QUALITY,
-            stream
-        )
-
-        //@Todo should we recycle bitmap here
-        return stream.toByteArray().toList()
+        try {
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(
+                Bitmap.CompressFormat.JPEG,
+                IMAGE_QUALITY,
+                stream
+            )
+            return stream.toByteArray().toList()
+        } finally {
+            bitmap?.recycle()
+        }
     }
 
     companion object {

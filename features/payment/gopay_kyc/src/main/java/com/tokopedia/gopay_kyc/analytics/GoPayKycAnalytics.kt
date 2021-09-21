@@ -4,12 +4,12 @@ import com.tokopedia.gopay_kyc.di.GoPayKycScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 @GoPayKycScope
 class GoPayKycAnalytics @Inject constructor(
-    //private val userSession: dagger.Lazy<UserSession>
+    val userSession: dagger.Lazy<UserSessionInterface>
 ) {
 
     private val analyticTracker: ContextAnalytics
@@ -34,7 +34,7 @@ class GoPayKycAnalytics @Inject constructor(
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
         map[GoPayKycConstants.KEY_BUSINESS_UNIT] = GoPayKycConstants.VALUE_BUSINESS_UNIT
         map[GoPayKycConstants.KEY_CURRENT_SITE] = GoPayKycConstants.VALUE_CURRENT_SITE
-        //map[GoPayKycConstants.KEY_USER_ID] = userSession.get().userId
+        map[GoPayKycConstants.KEY_USER_ID] = userSession.get().userId
         analyticTracker.sendGeneralEvent(map)
     }
 }

@@ -225,7 +225,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         try {
             cameraView?.clearCameraListeners();
             cameraView?.addCameraListener(cameraListener);
-            cameraView?.open();
+            cameraView?.open()
         } catch (e: Throwable) {
             e.printStackTrace();
         }
@@ -261,6 +261,13 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         onVisible()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (viewModel.isCameraOpen) {
+            cameraView?.close()
+        }
     }
 
     override fun onDestroy() {

@@ -28,7 +28,7 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     @Inject
-    lateinit var goPayKycAnalytics: GoPayKycAnalytics
+    lateinit var goPayKycAnalytics: dagger.Lazy<GoPayKycAnalytics>
 
     private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -38,7 +38,7 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             // @Todo send click back kyc page
-            goPayKycAnalytics.sendOpenScreenEvents()
+            goPayKycAnalytics.get().sendOpenScreenEvents()
         }
     }
     override fun onCreateView(
@@ -56,7 +56,7 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
         observeViewModel()
         upgradeNowButton.setOnClickListener {
             // @Todo click upgrade kyc page
-            goPayKycAnalytics.sendOpenScreenEvents()
+            goPayKycAnalytics.get().sendOpenScreenEvents()
             // @Todo remove this code after testing
             //context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
             viewModel.checkKycStatus()
