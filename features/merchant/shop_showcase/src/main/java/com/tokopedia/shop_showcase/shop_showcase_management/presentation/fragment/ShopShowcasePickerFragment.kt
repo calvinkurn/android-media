@@ -46,8 +46,6 @@ import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmod
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.add_showcase_bottomsheet_picker.view.*
-import kotlinx.android.synthetic.main.fragment_shop_showcase_picker.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -359,8 +357,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         addShowcaseBottomSheet = BottomSheetUnify().apply {
             setTitle(ctx.getString(R.string.button_tambah_etalase))
             setChild(View.inflate(ctx, R.layout.add_showcase_bottomsheet_picker, null).apply {
-                textFieldAddShowcaseBottomSheet = textfield_add_showcase_name
-                buttonAddShowcaseBottomSheet = btn_add_showcase_save
+                textFieldAddShowcaseBottomSheet = findViewById(R.id.textfield_add_showcase_name)
+                buttonAddShowcaseBottomSheet = findViewById(R.id.btn_add_showcase_save)
 
                 // set text change listener for add showcase name textfield
                 textFieldAddShowcaseBottomSheet?.textFieldInput?.addTextChangedListener(object : AfterTextWatcher() {
@@ -424,7 +422,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             preSelectedShowcaseList?.let { selectedShowcaseList?.addAll(it) }
             renderButtonCounter(selectedShowcaseList?.size)
         }
-        rv_list_etalase_picker?.apply {
+        rvPicker?.apply {
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
             adapter = showcasePickerAdapter
@@ -482,45 +480,45 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun observeGetShowcaseList() {
         observe(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse) {
             when(it) {
-               is Success -> {
-                   showLoading(false)
-                   val errorMessage = it.data.shopShowcases.error.message
-                   showcaseList = it.data.shopShowcases.result
-                   if(errorMessage.isNotEmpty()) {
-                       showToaster(errorMessage, Toaster.TYPE_ERROR)
-                   } else {
-                       showGlobalError(false)
-                       if(showcaseList.size.isMoreThanZero()) {
-                           showEmptyStatePickerList(false)
-                           // checked new created showcase, if showcaseId is not equal to zero
-                           if(totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
-                               showcaseList.map { showcaseItem ->
-                                   if(showcaseItem.id == newCreatedShowcaseId) {
-                                       showcaseItem.isChecked = true
-                                       selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
-                                       renderButtonCounter(selectedShowcaseList?.size)
-                                       totalCheckedShowcase += 1
-                                   }
-                               }
-                           }
-                           // check previous selected showcase
-                           if(selectedShowcaseList?.size.isMoreThanZero()) {
-                               showcaseList.forEach { item ->
-                                   selectedShowcaseList?.forEach { selectedItem ->
-                                       if(item.id == selectedItem.showcaseId) {
-                                           // assign new showcase name from cloud, to prevent empty showcase from edit product
-                                           selectedItem.showcaseName = item.name
-                                           item.isChecked = true
-                                       }
-                                   }
-                               }
-                           }
-                           showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
-                       } else {
-                           showEmptyStatePickerList(true)
-                       }
-                   }
-               }
+                is Success -> {
+                    showLoading(false)
+                    val errorMessage = it.data.shopShowcases.error.message
+                    showcaseList = it.data.shopShowcases.result
+                    if(errorMessage.isNotEmpty()) {
+                        showToaster(errorMessage, Toaster.TYPE_ERROR)
+                    } else {
+                        showGlobalError(false)
+                        if(showcaseList.size.isMoreThanZero()) {
+                            showEmptyStatePickerList(false)
+                            // checked new created showcase, if showcaseId is not equal to zero
+                            if(totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
+                                showcaseList.map { showcaseItem ->
+                                    if(showcaseItem.id == newCreatedShowcaseId) {
+                                        showcaseItem.isChecked = true
+                                        selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
+                                        renderButtonCounter(selectedShowcaseList?.size)
+                                        totalCheckedShowcase += 1
+                                    }
+                                }
+                            }
+                            // check previous selected showcase
+                            if(selectedShowcaseList?.size.isMoreThanZero()) {
+                                showcaseList.forEach { item ->
+                                    selectedShowcaseList?.forEach { selectedItem ->
+                                        if(item.id == selectedItem.showcaseId) {
+                                            // assign new showcase name from cloud, to prevent empty showcase from edit product
+                                            selectedItem.showcaseName = item.name
+                                            item.isChecked = true
+                                        }
+                                    }
+                                }
+                            }
+                            showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
+                        } else {
+                            showEmptyStatePickerList(true)
+                        }
+                    }
+                }
                 is Fail -> {
                     showLoading(false)
                     showEmptyStatePickerList(false)

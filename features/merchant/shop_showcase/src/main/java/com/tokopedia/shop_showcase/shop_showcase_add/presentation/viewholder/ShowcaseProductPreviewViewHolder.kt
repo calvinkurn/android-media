@@ -10,12 +10,16 @@ import com.tokopedia.shop_showcase.common.util.getCurrencyFormatted
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
-import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListener: ShopShowcasePreviewListener): RecyclerView.ViewHolder(itemView) {
 
     private val productCard: ProductCardListView by lazy {
-        itemView.findViewById<ProductCardListView>(R.id.product_card)
+        itemView.findViewById(R.id.product_card)
+    }
+
+    private val cardCheckbox: CheckboxUnify by lazy {
+        itemView.findViewById(R.id.card_checkbox)
     }
 
     fun bind(element: BaseShowcaseProduct) {
@@ -38,7 +42,7 @@ class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListen
             }
 
             // hide checkbox in preview page
-            itemView.card_checkbox.gone()
+            cardCheckbox.gone()
         }
     }
 
