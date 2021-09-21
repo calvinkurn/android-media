@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_carousel_widget.view.*
@@ -90,6 +91,7 @@ class CarouselViewHolder(
             tvCarouselBannerTitle.text = element.title
             tvCarouselBannerTitle.visible()
         }
+        setTagNotification(element.tag)
         if (element.isEmpty()) {
             if (element.isShowEmpty && element.shouldShowEmptyStateIfEmpty()) {
                 setupEmptyState(element)
@@ -103,6 +105,20 @@ class CarouselViewHolder(
             }
         } else {
             setupCarousel(element)
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagCarousel.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagCarousel.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 

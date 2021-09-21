@@ -45,9 +45,9 @@ class SubmitReportUseCase @Inject constructor(
             }
         """
 
-        fun createRequestParam(categoryId: Int, productId: Int, fields: Map<String, Any>): RequestParams = RequestParams.create()
+        fun createRequestParam(categoryId: Int, productId: Long, fields: Map<String, Any>): RequestParams = RequestParams.create()
                 .apply {
-                    putInt(PARAM_PRODUCT_ID, productId)
+                    putLong(PARAM_PRODUCT_ID, productId)
                     putInt(PARAM_CATEGORY_ID, categoryId)
                     putObject(PARAM_FIELDS, fields)
                 }
