@@ -1573,14 +1573,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         }
                     }
                     (itemData as? TickerItemUiModel)?.let {
-                        SellerHomeTracking.sendHomeTickerCtaClickEvent(it.id, it.type)
+                        SellerHomeTracking.sendHomeTickerCtaClickEvent(
+                            it.id,
+                            getTickerType(it.color)
+                        )
                     }
                 }
             })
 
             addOnImpressionListener(tickerImpressHolder) {
                 tickers.firstOrNull()?.let { ticker ->
-                    SellerHomeTracking.sendHomeTickerImpressionEvent(ticker.id, ticker.type)
+                    SellerHomeTracking.sendHomeTickerImpressionEvent(
+                        ticker.id,
+                        getTickerType(ticker.color)
+                    )
                 }
             }
         }
