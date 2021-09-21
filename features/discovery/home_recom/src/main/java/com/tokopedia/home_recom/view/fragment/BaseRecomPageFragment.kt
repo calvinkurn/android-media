@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -24,14 +25,19 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.util.RecomPageConstant
 import com.tokopedia.home_recom.util.RecomPageConstant.PAGE_TITLE_RECOM_DEFAULT
 import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
 import com.tokopedia.home_recom.util.RecomPageUiUpdater
+import com.tokopedia.home_recom.util.showToastError
+import com.tokopedia.home_recom.util.showToastErrorWithAction
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -263,6 +269,52 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             it.isEnabled = true
             it.isRefreshing = false
         }
+    }
+
+    fun updateMinicartWidgetVisibility(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        miniCartWidget?.let {
+            if (miniCartSimplifiedData.miniCartItems.isEmpty()) {
+                it.gone()
+            } else {
+                it.updateData(miniCartSimplifiedData)
+                it.show()
+            }
+        }
+    }
+
+    fun goToLogin() {
+        activity?.let {
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    RecomPageConstant.REQUEST_CODE_LOGIN)
+        }
+    }
+
+
+    fun isWarehouseIdEmpty(): Boolean {
+        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        localAddress?.let {
+            if (it.warehouse_id.isNullOrEmpty()) return true
+            if (it.warehouse_id == "0") return true
+        }
+        return false
+    }
+
+    fun showEmptyPage() {
+        renderEmptyPage()
+    }
+
+    fun showErrorFullPage(throwable: Throwable) {
+        renderPageError(throwable)
+    }
+
+    fun showErrorSnackbarWithRetryLoad(pageNumber: Int, throwable: Throwable) {
+        showToastErrorWithAction(throwable, View.OnClickListener {
+            loadMoreData(pageNumber)
+        })
+    }
+
+    fun showErrorSnackbar(throwable: Throwable) {
+        showToastError(throwable)
     }
 
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {

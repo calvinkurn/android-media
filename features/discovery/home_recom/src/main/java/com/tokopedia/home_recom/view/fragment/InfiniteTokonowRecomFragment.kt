@@ -273,7 +273,7 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.minicartWidgetUpdater.observe(viewLifecycleOwner, Observer {
             it?.let {
-                miniCartWidget?.updateData(it)
+                updateMinicartWidgetVisibility(it)
             }
         })
         viewModel.recommendationNextLiveData.observe(viewLifecycleOwner, Observer {
@@ -346,39 +346,5 @@ class InfiniteTokonowRecomFragment :
 //         */
 //        miniCartWidget?.updateData(listOf(localAddress?.shop_id ?: ""))
         viewModel.getMiniCart(localAddress?.shop_id ?: "")
-    }
-
-    private fun isWarehouseIdEmpty(): Boolean {
-        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        localAddress?.let {
-            if (it.warehouse_id.isNullOrEmpty()) return true
-            if (it.warehouse_id == "0") return true
-        }
-        return false
-    }
-
-    private fun showEmptyPage() {
-        renderEmptyPage()
-    }
-
-    private fun showErrorFullPage(throwable: Throwable) {
-        renderPageError(throwable)
-    }
-
-    private fun showErrorSnackbarWithRetryLoad(pageNumber: Int, throwable: Throwable) {
-        showToastErrorWithAction(throwable, View.OnClickListener {
-            loadMoreData(pageNumber)
-        })
-    }
-
-    private fun showErrorSnackbar(throwable: Throwable) {
-        showToastError(throwable)
-    }
-
-    private fun goToLogin() {
-        activity?.let {
-            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                    RecomPageConstant.REQUEST_CODE_LOGIN)
-        }
     }
 }
