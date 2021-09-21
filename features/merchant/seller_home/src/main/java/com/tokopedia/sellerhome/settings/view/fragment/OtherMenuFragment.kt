@@ -744,7 +744,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             activity?.supportFragmentManager?.let { fm ->
                 shareBottomSheet.run {
                     imageSaved(storageImageUrl)
-                    show(fm, this)
+                    show(fm, this@OtherMenuFragment)
 
                     NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
                         userSession.shopId, userSession.userId
