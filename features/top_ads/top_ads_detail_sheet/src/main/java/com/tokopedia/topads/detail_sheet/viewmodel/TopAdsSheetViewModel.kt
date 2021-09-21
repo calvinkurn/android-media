@@ -9,6 +9,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
@@ -82,16 +83,23 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.gql_query_product_action))
-        topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(action)
-                },
-                {
-                    it.printStackTrace()
-                })
+        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<ProductActionResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<ProductActionResponse>
+                val nonGroupResponse = response.data.topadsUpdateSingleAds
+                onSuccess(action)
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+        })
     }
 
     fun getAutoAdsStatus(shopId: String, resources: Resources) {
@@ -113,7 +121,7 @@ class TopAdsSheetViewModel @Inject constructor(
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetGroupIdUseCase.cancelJobs()
-        topAdsProductActionUseCase.cancelJobs()
+        topAdsProductActionUseCase.unsubscribe()
         topAdsGetAutoAdsStatusUseCase.cancelJobs()
     }
 }

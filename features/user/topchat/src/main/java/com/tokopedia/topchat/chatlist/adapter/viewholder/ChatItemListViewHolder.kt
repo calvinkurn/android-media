@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
-import android.graphics.Typeface.*
+import android.graphics.Typeface.BOLD
+import android.graphics.Typeface.NORMAL
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,16 +16,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -36,7 +39,7 @@ import com.tokopedia.utils.time.TimeHelper
 /**
  * @author : Steven 2019-08-07
  */
-class ChatItemListViewHolder(
+class ChatItemListViewHolder constructor(
         itemView: View,
         var listener: ChatListItemListener
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
@@ -84,6 +87,7 @@ class ChatItemListViewHolder(
         bindLabel(element)
         bindPin(element)
         bindSmartReplyIndicator(element)
+        ImageUtil.setTypingAnimation(typingImage)
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
@@ -137,8 +141,8 @@ class ChatItemListViewHolder(
                 bindMessageState(chat)
             }
         }
-
-        listener.chatItemClicked(chat, adapterPosition)
+        chat.markAsActive()
+        listener.chatItemClicked(chat, adapterPosition, Pair(chat, adapterPosition))
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
@@ -152,7 +156,7 @@ class ChatItemListViewHolder(
         }.show(listener.getSupportChildFragmentManager(), LongClickMenu.TAG)
     }
 
-    private fun handleChatMenuClick(itemMenus: Menus.ItemMenus, element: ItemChatListPojo) {
+    private fun handleChatMenuClick(itemMenus: TopchatItemMenu, element: ItemChatListPojo) {
         with(itemView.context) {
             when (itemMenus.title) {
                 getString(R.string.menu_delete_chat) -> delete(element)
@@ -241,9 +245,9 @@ class ChatItemListViewHolder(
         }
     }
 
-    private fun createChatLongClickMenu(element: ItemChatListPojo): MutableList<Menus.ItemMenus> {
+    private fun createChatLongClickMenu(element: ItemChatListPojo): MutableList<TopchatItemMenu> {
         with(itemView.context) {
-            val menus = arrayListOf<Menus.ItemMenus>()
+            val menus = arrayListOf<TopchatItemMenu>()
             val delete = getString(R.string.menu_delete_chat)
             val markAsRead = getString(R.string.menu_mark_as_read)
             val markAsUnread = getString(R.string.menu_mark_as_unread)
@@ -258,14 +262,14 @@ class ChatItemListViewHolder(
                 pinText = getString(R.string.menu_pin_chat)
                 pinDrawable = R.drawable.ic_topchat_pin_chat
             }
-            menus.add(Menus.ItemMenus(pinText, pinDrawable))
+            menus.add(TopchatItemMenu(pinText, pinDrawable))
 
             if (element.hasUnreadItem()) {
-                menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))
+                menus.add(TopchatItemMenu(markAsRead, R.drawable.ic_chat_read_filled_grey))
             } else {
-                menus.add(Menus.ItemMenus(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
+                menus.add(TopchatItemMenu(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
             }
-            menus.add(Menus.ItemMenus(delete, R.drawable.ic_trash_filled_grey))
+            menus.add(TopchatItemMenu(delete, R.drawable.ic_trash_filled_grey))
 
             return menus
         }
@@ -273,13 +277,9 @@ class ChatItemListViewHolder(
 
     private fun bindTypingState() {
         typingImage.show()
-        MethodChecker.animateVectorDrawable(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
-        setMessageTyping()
-    }
-
-    private fun setMessageTyping() {
         message.hide()
         typingText.show()
+        ImageUtil.startAVDTypingAnimation(typingImage)
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -296,13 +296,22 @@ class ChatItemListViewHolder(
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        if (chat.isActive) {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+            )
+        } else {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     private fun hideTyping() {
         message.show()
         typingImage.hide()
         typingText.hide()
-        MethodChecker.animateVectorDrawable(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        ImageUtil.stopAVDTypingAnimation(typingImage)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {
@@ -331,8 +340,10 @@ class ChatItemListViewHolder(
         when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
-                unreadCounter.text = chatItem.totalUnread
-                unreadCounter.show()
+                if(chatItem.totalUnread.toIntOrZero() > 0) {
+                    unreadCounter.text = chatItem.totalUnread
+                    unreadCounter.show()
+                }
             }
             STATE_CHAT_READ -> {
                 unreadCounter.hide()

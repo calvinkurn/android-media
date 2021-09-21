@@ -17,6 +17,9 @@ include "features:discovery:wishlist_common"
 include "features:discovery:discovery_common"
 include "features:home:account-home"
 
+include "features:discovery:home_wishlist"
+include "features:transaction:buyerorder"
+
 include "tkpdabstraction"
 include "tkpddesign"
 
@@ -43,7 +46,6 @@ include "libraries:cm_push_notifications"
 include "libraries:date_picker_range"
 include "libraries:base_list_seller"
 include "libraries:imageuploader"
-include "libraries:image_picker"
 include "libraries:tracking_optimizer"
 include "libraries:webview"
 include "libraries:instrumentation_test"

@@ -17,6 +17,12 @@ public class BannerShopProductViewModel extends ImpressHolder implements Item<Ba
     private final String appLink;
     private final String imageUrl;
     private final String adsClickUrl;
+    private String productId;
+    private String productName;
+    private int productMinOrder;
+    private String productCategory;
+    private String productPrice;
+    private String shopId;
 
     public BannerShopProductViewModel(CpmData cpmData, ProductCardModel product, String appLink, String imageUrl, String adsClickUrl) {
         this.cpmData = cpmData;
@@ -44,6 +50,54 @@ public class BannerShopProductViewModel extends ImpressHolder implements Item<Ba
 
     public ProductCardModel getProduct() {
         return product;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getProductMinOrder() {
+        return productMinOrder;
+    }
+
+    public void setProductMinOrder(int productMinOrder) {
+        this.productMinOrder = productMinOrder;
+    }
+
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public void setProductCategory(String productCategory) {
+        this.productCategory = productCategory;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 
     @Override

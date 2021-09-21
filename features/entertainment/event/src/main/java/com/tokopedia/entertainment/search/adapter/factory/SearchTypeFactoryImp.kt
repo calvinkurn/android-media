@@ -6,7 +6,10 @@ import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.*
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
 
-class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory {
+class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {},
+                           val searchEventListener: SearchEventListViewHolder.SearchEventListListener,
+                           val searchLocationListener: SearchLocationListViewHolder.SearchLocationListener
+) : SearchTypeFactory {
 
     override fun type(model: FirstTimeModel): Int {
         return FirstTimeBackgroundItemViewHolder.LAYOUT
@@ -35,9 +38,9 @@ class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory
         } else if (type == HistoryBackgroundItemViewHolder.LAYOUT) {
             HistoryBackgroundItemViewHolder(view)
         }  else if (type == SearchLocationListViewHolder.LAYOUT) {
-            SearchLocationListViewHolder(view, onClicked)
+            SearchLocationListViewHolder(view, onClicked, searchLocationListener)
         } else if(type == SearchEventListViewHolder.LAYOUT){
-            SearchEventListViewHolder(view)
+            SearchEventListViewHolder(view, searchEventListener)
         } else if(type == SearchEmptyStateViewHolder.LAYOUT){
             SearchEmptyStateViewHolder(view)
         } else{

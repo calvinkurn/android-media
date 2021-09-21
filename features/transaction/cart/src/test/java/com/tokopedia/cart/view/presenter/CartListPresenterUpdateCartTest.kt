@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
@@ -17,12 +18,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -254,7 +257,6 @@ object CartListPresenterUpdateCartTest : Spek({
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
@@ -289,11 +291,11 @@ object CartListPresenterUpdateCartTest : Spek({
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = true
+                    setAllItemSelected(true)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
@@ -326,27 +328,24 @@ object CartListPresenterUpdateCartTest : Spek({
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = true
                             ))
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
@@ -365,6 +364,45 @@ object CartListPresenterUpdateCartTest : Spek({
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
                 verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
+                }
+            }
+        }
+
+        Scenario("success update cart with only tokonow products") {
+
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val shopDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = true)))
+                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = true)))
+                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = false)))
+            }
+
+            val updateParam = slot<RequestParams>()
+            println("update")
+
+            Given("update cart data") {
+                every { updateCartUseCase.createObservable(match {
+                    println("update1")
+                    val updateRequest = it.getObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
+                    updateRequest.size == 2
+                }) } returns Observable.just(updateCartData)
+            }
+
+            Given("shop data list") {
+                println("update2")
+                every { view.getAllAvailableCartDataList() } answers { shopDataList }
+            }
+
+            When("process to update cart data") {
+                println("update3")
+                cartListPresenter.processUpdateCartData(true, true)
+            }
+
+            Then("should update cart with only tokonow products") {
+                verify {
+                    updateCartUseCase.createObservable(any())
                 }
             }
         }
@@ -413,11 +451,28 @@ object CartListPresenterUpdateCartTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllAvailableCartDataList() } answers { emptyList() }
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
             }
 
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartData(false)
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
+        Scenario("failed update cart to save state because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartData(true)
             }
 
             Then("should hide progress loading") {

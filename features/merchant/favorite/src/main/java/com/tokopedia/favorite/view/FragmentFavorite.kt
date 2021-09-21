@@ -31,11 +31,12 @@ import com.tokopedia.favorite.view.adapter.FavoriteAdapter
 import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
-import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -73,7 +74,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     lateinit var progressBar: ProgressBar
     lateinit var mainContent: RelativeLayout
     private var wishlistNotLoggedIn: View? = null
-    private var btnLogin: Button? = null
+    private var btnLogin: UnifyButton? = null
 
     @JvmField
     @Inject
@@ -124,7 +125,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
             startActivity(intent)
         }
 
-        viewModel!!.refresh.observe(this, Observer { isRefreshing: Boolean ->
+        viewModel!!.refresh.observe(viewLifecycleOwner, Observer { isRefreshing: Boolean ->
             if (isRefreshing) {
                 showRefreshLoading()
             } else {
@@ -132,13 +133,13 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
             }
         })
 
-        viewModel!!.isErrorLoad.observe(this, Observer { isErrorLoad: Boolean ->
+        viewModel!!.isErrorLoad.observe(viewLifecycleOwner, Observer { isErrorLoad: Boolean ->
             if (isErrorLoad) {
                 showErrorLoadData()
             }
         })
 
-        viewModel!!.initialData.observe(this,
+        viewModel!!.initialData.observe(viewLifecycleOwner,
                 Observer<List<Visitable<*>>> { data: List<Visitable<*>> ->
                     val visitables: MutableList<Visitable<*>> = ArrayList();
                     visitables.addAll(data);
@@ -147,39 +148,39 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                     stopTracePerformanceMonitoring()
                 }
         )
-        viewModel!!.isNetworkFailed.observe(this, Observer { isFailed: Boolean ->
+        viewModel!!.isNetworkFailed.observe(viewLifecycleOwner, Observer { isFailed: Boolean ->
             isNetworkFailed = isFailed
             validateMessageError()
         })
-        viewModel!!.isLoadingFavoriteShop.observe(this, Observer { isLoading: Boolean ->
+        viewModel!!.isLoadingFavoriteShop.observe(viewLifecycleOwner, Observer { isLoading: Boolean ->
             if (isLoading) {
                 showLoadMoreLoading()
             } else {
                 stopLoadingFavoriteShop()
             }
         })
-        viewModel!!.isErrorAddFavoriteShop.observe(this, Observer { isError: Boolean ->
+        viewModel!!.isErrorAddFavoriteShop.observe(viewLifecycleOwner, Observer { isError: Boolean ->
             if (isError) {
                 showErrorAddFavoriteShop()
             }
         })
-        viewModel!!.addedFavoriteShop.observe(this, Observer { favoriteShop: FavoriteShopViewModel -> addFavoriteShop(favoriteShop) })
-        viewModel!!.isErrorLoadMore.observe(this, Observer { isError: Boolean ->
+        viewModel!!.addedFavoriteShop.observe(viewLifecycleOwner, Observer { favoriteShop: FavoriteShopUiModel -> addFavoriteShop(favoriteShop) })
+        viewModel!!.isErrorLoadMore.observe(viewLifecycleOwner, Observer { isError: Boolean ->
             if (isError) {
                 showErrorLoadMore()
             }
         })
-        viewModel!!.moreDataFavoriteShop.observe(this,
+        viewModel!!.moreDataFavoriteShop.observe(viewLifecycleOwner,
                 Observer<List<Visitable<*>>> { data: List<Visitable<*>> ->
                     val visitables: MutableList<Visitable<*>> = ArrayList();
                     visitables.addAll(data);
                     showMoreDataFavoriteShop(visitables)
                 }
         )
-        viewModel!!.favoriteShopImpression.observe(this, Observer {
+        viewModel!!.favoriteShopImpression.observe(viewLifecycleOwner, Observer {
             clickUrl: String -> sendFavoriteShopImpression(clickUrl)
         })
-        viewModel!!.refreshData.observe(this,
+        viewModel!!.refreshData.observe(viewLifecycleOwner,
                 Observer<List<Visitable<*>>> { data: List<Visitable<*>> ->
                     val visitables: MutableList<Visitable<*>> = ArrayList();
                     visitables.addAll(data);
@@ -243,7 +244,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     val baseAppComponent: BaseAppComponent
-        get() = (activity!!.application as BaseMainApplication).baseAppComponent
+        get() = (requireActivity().application as BaseMainApplication).baseAppComponent
 
     override fun getScreenName(): String {
         return SCREEN_UNIFY_HOME_SHOP_FAVORIT
@@ -317,9 +318,9 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
         favoriteAdapter!!.showLoading()
     }
 
-    private fun addFavoriteShop(shopViewModel: FavoriteShopViewModel) {
+    private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
         val favoriteShopPosition = 2
-        favoriteAdapter!!.addElement(favoriteShopPosition, shopViewModel)
+        favoriteAdapter?.addElement(favoriteShopPosition, shopUiModel)
     }
 
     private fun sendFavoriteShopImpression(clickUrl: String) {

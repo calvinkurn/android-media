@@ -2,7 +2,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.gql.CloseChannel
 import com.tokopedia.home.beranda.domain.interactor.CloseChannelUseCase
@@ -14,10 +14,12 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.confirmVerified
+import io.mockk.mockk
+import io.mockk.verifyOrder
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
 
 class HomeViewModelListCarouselUnitTest{
     @get:Rule
@@ -25,7 +27,7 @@ class HomeViewModelListCarouselUnitTest{
 
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
-    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getAtcUseCase = mockk<AddToCartOccMultiUseCase>(relaxed = true)
     private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
@@ -44,7 +46,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -52,20 +54,8 @@ class HomeViewModelListCarouselUnitTest{
         // Express checkout clicked
         homeViewModel.onCloseBuyAgain(dataModel.channel!!.id, 0)
 
-
         // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java }
-            })
-        }
-        confirmVerified(observerHome)
-
+        assert(homeViewModel.homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java })
     }
 
     @Test
@@ -82,7 +72,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -91,19 +81,7 @@ class HomeViewModelListCarouselUnitTest{
         homeViewModel.onCloseBuyAgain(dataModel.channelModel.id, 0)
 
 
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is RecommendationListCarouselDataModel &&
-                        (it.list.first() as RecommendationListCarouselDataModel).channelModel.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.none { it::class.java == RecommendationListCarouselDataModel::class.java }
-            })
-        }
-        confirmVerified(observerHome)
-
+        assert(homeViewModel.homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java })
     }
 
     @Test
@@ -121,7 +99,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = false)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)

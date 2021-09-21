@@ -5,9 +5,9 @@
     {
       "event": "viewSellerWidget",
       "eventCategory": "seller app - home",
-      "eventAction": "{{impression widget card - .{1,} (GOOD|WARNING|DANGER)}}",
-      "eventLabel": "{{.{1,}}}",
-      "sessionIris": "{{.{1,}}}"
+      "eventAction": "impression widget card - .{1,} (GOOD|WARNING|DANGER)",
+      "eventLabel": ".{1,}",
+      "sessionIris": ".{1,}"
     }
   ]
 }

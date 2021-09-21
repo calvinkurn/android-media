@@ -25,7 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    />
+                    android:contentDescription="photoHeader" />
 
                 <RelativeLayout
                     android:layout_width="90dp"
@@ -37,7 +37,8 @@
                         android:id="@+id/profilePhoto"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_centerHorizontal="true"
+                        android:contentDescription="photoProfile" />
 
                     <ImageView
                         android:id="@+id/btnEditProfilePhoto"
@@ -50,9 +51,25 @@
                         android:layout_margin="@dimen/spacing_lvl1"
                         app:srcCompat="@drawable/ic_edit_pencil_photo"
                         android:elevation="@dimen/spacing_lvl1"
-                        android:background="@drawable/rounded_bg_icon_with_shadow"/>
+                        android:background="@drawable/rounded_bg_icon_with_shadow"
+                        android:contentDescription="btnEditPhotoProfile" />
                 </RelativeLayout>
             </RelativeLayout>
+  
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_default_name_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                app:descriptionText="@string/text_change_name_warning_message"
+                app:closeButtonVisibility="gone"
+                app:tickerType="warning"
+                app:tickerShapeType="loose"
+                app:layout_constraintTop_toBottomOf="@id/headerContainer"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,13 +78,13 @@
                 android:paddingBottom="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintTop_toBottomOf="@+id/headerContainer">
+                app:layout_constraintTop_toBottomOf="@+id/ticker_default_name_warning">
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl5"/>
+                    android:layout_marginTop="@dimen/spacing_lvl4"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/bod"
@@ -114,10 +131,10 @@
         android:layout_height="match_parent">
     </FrameLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_centerInParent="true"
         android:visibility="gone" />
 </RelativeLayout>

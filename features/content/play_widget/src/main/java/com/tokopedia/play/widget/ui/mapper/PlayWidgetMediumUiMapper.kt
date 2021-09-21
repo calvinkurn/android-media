@@ -6,6 +6,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.util.datetime.PlayWidgetDateFormatter
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ import javax.inject.Inject
  */
 class PlayWidgetMediumUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
+        private val promoLabelMapper: PlayWidgetPromoLabelMapper,
         private val videoMapper: PlayWidgetVideoMapper,
         private val userSession: UserSessionInterface
 ) : PlayWidgetMapper {
@@ -33,7 +35,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 background = widgetBackground,
                 config = configMapper.mapWidgetConfig(data),
                 items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
-                    add(0, mapWidgetItemOverlay(widgetBackground))
+                    if (shouldAddLeftBanner(widgetBackground)) add(0, mapWidgetItemOverlay(widgetBackground))
                 }
         )
     }
@@ -59,6 +61,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         }
     }
 
+    private fun shouldAddLeftBanner(item: PlayWidgetBackgroundUiModel) = item.overlayImageUrl.isNotBlank()
+
     private fun mapWidgetItemOverlay(item: PlayWidgetBackgroundUiModel): PlayWidgetMediumOverlayUiModel = PlayWidgetMediumOverlayUiModel(
             appLink = item.overlayImageAppLink,
             webLink = item.overlayImageWebLink,
@@ -81,17 +85,19 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 channelType = channelType,
                 appLink = item.appLink,
                 webLink = item.webLink,
-                startTime = item.startTime,
+                startTime = PlayWidgetDateFormatter.formatDate(item.startTime),
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
-                hasPromo = item.config.hasPromo,
+                promoType = promoLabelMapper.mapWidgetPromoType(item.config.promoLabels),
                 reminderType = getReminderType(item.config.isReminderSet),
                 partner = mapWidgetPartnerInfo(item.partner),
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = shouldHaveActionMenu(channelType, item.partner.id),
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
                 share = mapWidgetShare(item.share),
-                performanceSummaryLink = item.performanceSummaryPageLink
+                performanceSummaryLink = item.performanceSummaryPageLink,
+                hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels),
+                poolType = item.widgetSortingMethod,
         )
     }
 

@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -60,8 +62,23 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun bind(element: ImageUploadViewModel?) {
         if (element == null) return
         super.bind(element)
-        bindChatReadStatus(element)
+        hideReadStatusIfRetry(element)
         bindBackground(element)
+        bindLoadingAnimation(element)
+    }
+
+    private fun hideReadStatusIfRetry(element: ImageUploadViewModel) {
+        if(element.isRetry) {
+            chatReadStatus.hide()
+        }
+    }
+
+    private fun bindLoadingAnimation(element: ImageUploadViewModel) {
+        if (ViewUtil.areSystemAnimationsEnabled(itemView.context) && element.isDummy) {
+            progressBarSendImage?.show()
+        } else {
+            progressBarSendImage?.hide()
+        }
     }
 
     private fun bindBackground(element: ImageUploadViewModel) {

@@ -26,7 +26,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_kupon_telur" />
+                app:srcCompat="@drawable/ic_kupon_telur"
+                tools:ignore="contentDescription" />
 
             <ImageView
                 android:id="@+id/bg_button_coupon"
@@ -36,7 +37,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/bg_button_promostacking" />
+                app:srcCompat="@drawable/bg_button_promostacking"
+                tools:ignore="contentDescription" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/title_button_coupon"
@@ -67,7 +69,6 @@
                 android:id="@+id/counter_coupons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_3"
                 android:paddingLeft="@dimen/dp_3"
@@ -78,7 +79,7 @@
 
             </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_action_coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,6 +90,7 @@
             android:layout_marginRight="@dimen/dp_10"
             android:text="Cek"
             android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
             android:visibility="gone" />
 
         </RelativeLayout>
@@ -126,7 +128,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/background_checkout_ticker_active_up" />
+                        app:srcCompat="@drawable/background_checkout_ticker_active_up"
+                        tools:ignore="contentDescription" />
 
                     <ImageView
                         android:id="@+id/bg_active_down"
@@ -139,7 +142,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/background_checkout_ticker_active_down" />
+                        app:srcCompat="@drawable/background_checkout_ticker_active_down"
+                        tools:ignore="contentDescription" />
 
                     <ImageView
                         android:id="@+id/imageCloseGlobal"
@@ -152,7 +156,8 @@
                         android:paddingLeft="@dimen/dp_4"
                         android:paddingBottom="@dimen/dp_4"
                         android:scaleType="center"
-                        app:srcCompat="@drawable/ic_close_promo_checkout" />
+                        app:srcCompat="@drawable/ic_close_promo_checkout"
+                        tools:ignore="contentDescription" />
 
                     <LinearLayout
                         android:id="@+id/layout_content"
@@ -166,9 +171,10 @@
                         android:paddingTop="@dimen/dp_10"
                         android:paddingBottom="@dimen/dp_10">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/titleCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.Bold"
+                            android:textColor="@color/Unify_N700_96"
                             android:layout_marginEnd="@dimen/dp_5"
                             android:layout_marginRight="@dimen/dp_5"
                             android:ellipsize="end"
@@ -176,9 +182,10 @@
                             android:textSize="@dimen/sp_13"
                             tools:text="Kupon Gratis Ongkir JT Rp 50000" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/descCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.BlackDisabled"
+                            android:textColor="@color/Unify_N700_68"
                             android:layout_marginTop="@dimen/dp_3"
                             android:layout_marginEnd="@dimen/dp_5"
                             android:layout_marginRight="@dimen/dp_5"

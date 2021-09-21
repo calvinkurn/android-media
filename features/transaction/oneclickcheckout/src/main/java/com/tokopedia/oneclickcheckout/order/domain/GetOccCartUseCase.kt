@@ -1,8 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -12,12 +14,17 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
+class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
+                                            private val mapper: GetOccCartMapper,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     fun createRequestParams(source: String): RequestParams {
-        return RequestParams.create().apply {
+        val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
+        chosenAddressRequestHelper.addChosenAddressParam(params)
+
+        return params
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
@@ -26,8 +33,9 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
-            val cart = response.response.data.cartList.firstOrNull()
-            if (!errorMessage.isNullOrEmpty() || cart == null) {
+            val cart = response.response.data.groupShop.firstOrNull()
+            val products = cart?.cartDetails?.firstOrNull()?.products
+            if (!errorMessage.isNullOrEmpty() || cart == null || products.isNullOrEmpty()) {
                 throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
             }
             return mapper.mapGetOccCartDataToOrderData(response.response.data)
@@ -40,34 +48,24 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String) {
-  get_occ_cart_page(source: ${"$"}source) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {
-      max_quantity
+      errors
+      error_code
+      pop_up_message
       max_char_note
-      messages {
-        ErrorFieldBetween
-        ErrorFieldMaxChar
-        ErrorFieldRequired
-        ErrorProductAvailableStock
-        ErrorProductAvailableStockDetail
-        ErrorProductMaxQuantity
-        ErrorProductMinQuantity
-      }
+      kero_token
+      kero_unix_time
+      kero_discom_token
+      error_ticker
       tickers {
         id
         message
         page
         title
-      }
-      ticker_message {
-        message
-        replacement {
-            identifier
-            value
-        }
       }
       occ_main_onboarding {
         force_show_coachmark
@@ -89,142 +87,54 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
         }
       }
-      kero_token
-      kero_unix_time
-      kero_discom_token
-      errors
-      cart_list {
+      group_shop_occ {
         errors
-        cart_id
-        product {
-          product_tracker_data {
-            attribution
-            tracker_list_name
-          }
-          isWishlist
-          product_id
-          product_name
-          product_price_fmt
-          product_price
-          parent_id
-          category_id
-          category
-          catalog_id
-          wholesale_price {
-            qty_min_fmt
-            qty_max_fmt
-            qty_min
-            qty_max
-            prd_prc
-            prd_prc_fmt
-          }
-          product_weight_fmt
-          product_weight
-          product_condition
-          product_status
-          product_url
-          product_returnable
-          is_freereturns
-          is_preorder
-          product_cashback
-          product_min_order
-          product_max_order
-          product_rating
-          product_invenage_value
-          product_switch_invenage
-          product_invenage_total {
-            by_user {
-              in_cart
-              last_stock_less_than
-            }
-            by_user_text {
-              in_cart
-              last_stock_less_than
-              complete
-            }
-            is_counted_by_user
-            by_product {
-              in_cart
-              last_stock_less_than
-            }
-            by_product_text {
-              in_cart
-              last_stock_less_than
-              complete
-            }
-            is_counted_by_product
-          }
-          price_changes {
-            changes_state
-            amount_difference
-            original_amount
-            description
-          }
-          product_price_currency
-          product_image {
-            image_src
-            image_src_200_square
-            image_src_300
-            image_src_square
-          }
-          product_all_images
-          product_notes
-          product_quantity
-          product_weight_unit_code
-          product_weight_unit_text
-          last_update_price
-          is_update_price
-          product_alias
-          sku
-          campaign_id
-          product_original_price
-          product_price_original_fmt
-          is_slash_price
-          product_finsurance
-          is_wishlisted
-          is_ppp
-          is_cod
-          warehouse_id
-          is_parent
-          is_campaign_error
-          is_blacklisted
+        errors_unblocking
+        cart_string
+        payment_profile
+        is_disable_change_courier
+        auto_courier_selection
+        shipment_information {
+          shop_location
           free_shipping {
             eligible
             badge_url
           }
-          booking_stock
-          product_preorder {
-            duration_day
+          free_shipping_extra {
+            eligible
+            badge_url
+          }
+          preorder {
+            is_preorder
+            duration
           }
         }
-        cart_string
-        payment_profile
-        purchase_protection_plan_data {
-          protection_available
-          protection_type_id
-          protection_price_per_product
-          protection_price
-          protection_title
-          protection_subtitle
-          protection_link_text
-          protection_link_url
-          protection_opt_in
-          protection_checkbox_disabled
-          unit
-          source
+        courier_selection_error {
+          title
+          description
+        }
+        bo_metadata {
+          bo_type
+          bo_eligibilities {
+            key
+            value
+          }
+          additional_attributes {
+            key
+            value
+          }
         }
         shop {
           shop_id
-          user_id
-          admin_ids
           shop_name
-          shop_image
-          shop_url
-          shop_status
+          shop_alert_message
+          shop_ticker
+          maximum_weight_wording
+          maximum_shipping_weight
           is_gold
           is_gold_badge
           is_official
-          is_free_returns
+          is_tokonow
           gold_merchant {
             is_gold
             is_gold_badge
@@ -234,21 +144,18 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             is_official
             os_logo_url
           }
-          address_id
+          shop_type_info {
+            shop_tier
+            shop_grade
+            badge
+            badge_svg
+            title
+            title_fmt
+          }
           postal_code
           latitude
           longitude
           district_id
-          district_name
-          origin
-          address_street
-          province_id
-          city_id
-          city_name
-          province_name
-          country_name
-          is_allow_manage
-          shop_domain
           shop_shipments {
             ship_id
             ship_name
@@ -265,30 +172,91 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
           }
         }
+        cart_details {
+          products {
+            errors
+            cart_id
+            product_id
+            parent_id
+            product_name
+            product_price
+            category_id
+            category
+            wholesale_price {
+              qty_min_fmt
+              qty_max_fmt
+              qty_min
+              qty_max
+              prd_prc
+              prd_prc_fmt
+            }
+            product_weight
+            product_weight_actual
+            is_preorder
+            product_cashback
+            product_min_order
+            product_max_order
+            product_invenage_value
+            product_switch_invenage
+            product_image {
+              image_src_200_square
+            }
+            product_notes
+            product_quantity
+            campaign_id
+            product_original_price
+            product_price_original_fmt
+            initial_price
+            initial_price_fmt
+            slash_price_label
+            product_finsurance
+            warehouse_id
+            free_shipping {
+              eligible
+            }
+            free_shipping_extra {
+              eligible
+            }
+            product_preorder {
+              duration_day
+            }
+            product_tracker_data {
+              attribution
+              tracker_list_name
+            }
+            variant_description_detail {
+              variant_name
+              variant_description
+            }
+            product_warning_message
+            product_alert_message
+            product_information
+            purchase_protection_plan_data {
+              protection_available
+              protection_type_id
+              protection_price_per_product
+              protection_price
+              protection_title
+              protection_subtitle
+              protection_link_text
+              protection_link_url
+              protection_opt_in
+              protection_checkbox_disabled
+              unit
+              source
+            }
+          }
+        }
+        toko_cabang {
+          message
+          badge_url
+        }
         warehouse {
+          warehouse_id
           is_fulfillment
         }
       }
-      profile_index_wording
-      profile_recommendation_wording
       profile {
-        has_preference
-        is_changed_profile
-        message
-        onboarding_header_message
-        onboarding_component {
-          header_title
-          body_image
-          body_message
-          info_component {
-            text
-            link
-          }
-        }
-        profile_revamp_wording
-        is_recom
-        profile_id
-        status
         address {
           address_id
           receiver_name
@@ -304,7 +272,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           longitude
           latitude
           postal_code
-          geolocation
+          state
+          state_detail
+          status
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         payment {
           enable
@@ -313,14 +287,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           gateway_name
           image
           description
-          url
-          fee
           minimum_amount
           maximum_amount
-          flags {
-            pin
-          }
           wallet_amount
+          fee
           metadata
           mdr
           credit_card {
@@ -340,6 +310,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             card_type
             is_expired
             tnc_info
+            unix_timestamp
+            token_id
+            tenor_signature
+            is_afpb
           }
           error_message {
             message
@@ -356,7 +330,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
           }
           ticker_message
-          is_enable_next_button
           is_disable_pay_button
           is_ovo_only_campaign
           ovo_additional_data {
@@ -378,6 +351,42 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 button_title
                 error_message
                 error_ticker
+            }
+          }
+          bid
+          specific_gateway_campaign_only_type
+          wallet_additional_data {
+            wallet_type
+            enable_wallet_amount_validation
+            activation {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            top_up {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            phone_number_registered {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
             }
           }
         }
@@ -535,6 +544,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               sp_ids
             }
@@ -558,7 +568,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         change_cc_link
         callback_url
       }
-      error_ticker
       prompt {
         type
         title
@@ -571,11 +580,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           color
         }
       }
-      occ_revamp {
-        enable
-        total_profile
-        change_template_text
-      }
+      total_product_price
     }
   }
 }"""

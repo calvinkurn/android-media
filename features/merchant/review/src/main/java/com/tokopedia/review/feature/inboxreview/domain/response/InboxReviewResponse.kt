@@ -39,8 +39,8 @@ data class InboxReviewResponse(
                 @SerializedName("attachments")
                 val attachments: List<Attachment> = listOf(),
                 @Expose
-                @SerializedName("feedbackID")
-                val feedbackID: Int? = 0,
+                @SerializedName("feedbackIDStr")
+                val feedbackID: String = "",
                 @Expose
                 @SerializedName("invoiceID")
                 val invoiceID: String? = "",
@@ -67,7 +67,10 @@ data class InboxReviewResponse(
                 val reviewTime: String? = "",
                 @Expose
                 @SerializedName("user")
-                val user: User = User()
+                val user: User = User(),
+                @SerializedName("isKejarUlasan")
+                @Expose
+                val isKejarUlasan: Boolean = false
         ) {
             data class Attachment(
                     @Expose
@@ -79,8 +82,8 @@ data class InboxReviewResponse(
             )
             data class Product(
                     @Expose
-                    @SerializedName("productID")
-                    val productID: Int? = 0,
+                    @SerializedName("productIDStr")
+                    val productID: String = "",
                     @Expose
                     @SerializedName("productName")
                     val productName: String? = "",
@@ -96,8 +99,8 @@ data class InboxReviewResponse(
             ) {
                 data class ProductVariant(
                         @Expose
-                        @SerializedName("variantID")
-                        val variantID: Int? = 0,
+                        @SerializedName("variantIDStr")
+                        val variantID: String = "",
                         @Expose
                         @SerializedName("variantName")
                         val variantName: String? = ""
@@ -105,8 +108,8 @@ data class InboxReviewResponse(
             }
             data class User(
                     @Expose
-                    @SerializedName("userID")
-                    val userID: Int? = 0,
+                    @SerializedName("userIDStr")
+                    val userID: String = "",
                     @Expose
                     @SerializedName("userName")
                     val userName: String? = ""

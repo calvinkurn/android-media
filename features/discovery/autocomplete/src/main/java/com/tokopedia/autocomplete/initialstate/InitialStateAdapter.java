@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel;
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel;
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,9 +77,9 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
     }
 
-    public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel, int index) {
+    public void renderRecentSearch(RecentSearchDataView recentSearchDataView, int index) {
         if (index >= 0 && index < list.size()) {
-            list.set(index, recentSearchViewModel);
+            list.set(index, recentSearchDataView);
             notifyItemChanged(index);
         }
     }

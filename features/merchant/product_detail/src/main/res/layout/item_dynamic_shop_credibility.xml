@@ -40,7 +40,6 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
             app:layout_constraintLeft_toRightOf="@+id/shop_ava"

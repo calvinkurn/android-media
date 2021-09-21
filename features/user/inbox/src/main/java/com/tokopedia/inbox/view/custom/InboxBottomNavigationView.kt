@@ -14,14 +14,13 @@ import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.getTypeface
 
 class InboxBottomNavigationView : BottomNavigationView {
 
     private var menuView: BottomNavigationMenuView? = null
     private var buttons: Array<BottomNavigationItemView>? = null
     private var labelFontSize: Float = DEFAULT_FONT_SIZE
-    private var badges: Array<Typography?> = Array(3) { null }
+    private var badges: Array<Typography?> = Array(4) { null }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -47,6 +46,7 @@ class InboxBottomNavigationView : BottomNavigationView {
             InboxFragmentType.NOTIFICATION -> R.id.menu_inbox_notification
             InboxFragmentType.CHAT -> R.id.menu_inbox_chat
             InboxFragmentType.DISCUSSION -> R.id.menu_inbox_discussion
+            InboxFragmentType.REVIEW -> R.id.menu_inbox_review
             else -> throw UnsupportedOperationException("Unsupported fragment type")
         }
         selectedItemId = pageId

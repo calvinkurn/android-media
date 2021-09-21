@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
  * Use kotlin version
  */
 @Deprecated
-public class GraphqlUseCase extends UseCase<GraphqlResponse> {
+public class GraphqlUseCase extends UseCase<GraphqlResponse> implements GraphqlUseCaseInterface {
 
     private List<GraphqlRequest> mRequests;
     private GraphqlCacheStrategy mCacheStrategy;
@@ -72,6 +72,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         mRequests.addAll(requests);
     }
 
+    @Override
     public void addRequest(GraphqlRequest requestObject) {
         this.mRequests.add(requestObject);
     }
@@ -79,6 +80,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     /**
      * For clearing all previous request, in order to reuse same UseCase instance
      */
+    @Override
     public void clearRequest() {
         this.mRequests.clear();
     }

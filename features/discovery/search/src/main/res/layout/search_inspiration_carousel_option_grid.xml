@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.productcard.ProductCardGridView
     android:id="@+id/optionGridCardView"
-    android:layout_width="132dp"
+    android:layout_width="@dimen/carousel_product_card_grid_width"
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"

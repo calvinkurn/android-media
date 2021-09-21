@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl1">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbPmQuestionnaireOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmQuestionnaireItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="body_2"
+        tools:text="Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya" />
+</LinearLayout>

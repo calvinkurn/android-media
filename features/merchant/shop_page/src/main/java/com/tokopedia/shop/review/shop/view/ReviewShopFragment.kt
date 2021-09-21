@@ -87,7 +87,7 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
         super.onViewCreated(view, savedInstanceState)
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_product_review)!!)
-        getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+        getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -161,7 +161,7 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
     }
 
     override fun onSmoothScrollToReplyView(adapterPosition: Int) {
-        getRecyclerView(view).smoothScrollToPosition(adapterPosition)
+        getRecyclerView(view)?.smoothScrollToPosition(adapterPosition)
     }
 
     override fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int) {

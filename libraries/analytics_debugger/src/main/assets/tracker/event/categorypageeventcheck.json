@@ -3,63 +3,56 @@
   "mode": "exact",
   "query": [
     {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
       "businessUnit": "travel & entertainment",
+      "clientId": ".*",
       "eventCategory": "digital - event",
-      "currentSite": "tokopediadigitalevents",
-      "item_list": "{{.*}}",
-      "screenName": "{{.*}}",
-      "category": "events",
-      "event": "view_item_list",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
       "eventAction": "impression page product",
-      "sessionIris": "{{.*}}",
-      "items": [
-        {
-          "item_id": "{{.*}}",
-          "price":"{{.*}}",
-          "dimension40": "{{.*}}",
-          "index": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
-        }
-      ],
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
+      "clientId": ".*",
       "eventCategory": "digital - event",
-      "currentSite": "tokopediadigitalevents",
-      "item_list": "{{.*}}",
-      "screenName": "{{.*}}",
-      "category": "events",
+      "currentSite": "tokopediadigitalEvent",
+      "item_list": ".*",
       "event": "select_content",
+      "userId": ".*",
       "eventAction": "click page product",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "dimension40": "{{.*}}",
-          "index": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "none / other",
-          "item_variant": "none / other",
-          "item_category": "none / other"
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
       "eventCategory": "digital - event",
-      "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
-      "category": "events",
-      "event": "clickEvent",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
       "eventAction": "click filter",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

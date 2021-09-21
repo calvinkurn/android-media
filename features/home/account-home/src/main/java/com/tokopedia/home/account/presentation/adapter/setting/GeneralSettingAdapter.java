@@ -10,17 +10,18 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.home.account.presentation.widget.TagRoundedSpan;
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 import java.util.List;
@@ -54,14 +55,16 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void updateSettingItem(int settingId) {
-        int position = findSwitchPosition(settingId);
-        if (position != POSITION_UNDEFINED) {
-            SettingItemViewModel settingItemViewModel =
-                    settingItems.get(position);
-            if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
-                notifyItemChanged(position);
+        try {
+            int position = findSwitchPosition(settingId);
+            if (position != POSITION_UNDEFINED) {
+                SettingItemViewModel settingItemViewModel =
+                        settingItems.get(position);
+                if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
+                    notifyItemChanged(position);
+                }
             }
-        }
+        } catch (Throwable ignored) {}
     }
 
     private int findSwitchPosition(int settingId) {
@@ -105,141 +108,72 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return settingItems.size();
+        if (settingItems != null) {
+            return settingItems.size();
+        } else {
+            return 0;
+        }
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
-        private LabelView labelView;
-
+        private final Typography titleView;
+        private final Typography bodyView;
+        private final ImageView arrowIcon;
 
         public GeneralSettingViewHolder(View itemView) {
             super(itemView);
-            labelView = itemView.findViewById(R.id.labelview);
+            titleView = itemView.findViewById(R.id.account_user_item_common_title);
+            bodyView = itemView.findViewById(R.id.account_user_item_common_body);
+            arrowIcon = itemView.findViewById(R.id.account_user_item_icon_arrow);
 
             itemView.setOnClickListener(view -> {
                 if (listener != null){
-                    listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    if(getAdapterPosition()>=0 && getAdapterPosition() < settingItems.size()) {
+                        listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    }
                 }
             });
         }
 
         public void bind(SettingItemViewModel item){
-            SpannableString title = generateSpannableTitle(item);
-            labelView.setTitle(title);
-            labelView.setSubTitle(item.getSubtitle());
-            labelView.setImageResource(item.getIconResource());
-
-            if (item.getIconResource() > 0){
-                labelView.getImageView().setVisibility(View.VISIBLE);
-                labelView.getImageView().setImageResource(item.getIconResource());
+            SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
+                    itemView.getContext(), item, GeneralSettingMenuLabel.LABEL_NEW);
+            titleView.setText(title);
+            if(item.getSubtitle() != null && !item.getSubtitle().isEmpty()) {
+                bodyView.setVisibility(View.VISIBLE);
+                bodyView.setText(item.getSubtitle());
+            } else bodyView.setVisibility(View.GONE);
+            if(item.isHideArrow()) {
+                arrowIcon.setVisibility(View.GONE);
             } else {
-                labelView.getImageView().setVisibility(View.GONE);
+                arrowIcon.setVisibility(View.VISIBLE);
             }
-            labelView.showRightArrow(item.isHideArrow());
-        }
-
-        private SpannableString generateSpannableTitle(SettingItemViewModel item) {
-            String indicatorNew = " BARU";
-            String title = item.getTitle();
-            String notificationTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.title_notification_setting);
-            String preferenceTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.title_occ_preference_setting);
-            int boxColor = -1;
-
-            if (title.equals(notificationTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
-            } else if (title.equals(preferenceTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
-            }
-
-            if (boxColor > -1 && !hasBeenOneMonth(title)) {
-                int startPosition = title.length() + 1;
-                int endPosition = startPosition + indicatorNew.length() - 1;
-                title += indicatorNew;
-
-                SpannableString spannable = new SpannableString(title);
-                TagRoundedSpan newTag = new TagRoundedSpan(
-                        itemView.getContext(),
-                        4,
-                        boxColor,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
-                );
-
-                spannable.setSpan(
-                        new RelativeSizeSpan(0.57f),
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                spannable.setSpan(
-                        new StyleSpan(Typeface.BOLD),
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                spannable.setSpan(
-                        newTag,
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                return spannable;
-            } else {
-                return new SpannableString(title);
-            }
-        }
-
-        private boolean hasBeenOneMonth(String title) {
-            String key = title + ".NewTag";
-            String prefKey = this.getClass().getName() + ".pref";
-            int dayOffset = 30;
-            long now = new Date().getTime();
-
-            SharedPreferences preferences = itemView.getContext().getSharedPreferences(prefKey, Context.MODE_PRIVATE);
-
-            if (!preferences.contains(key)) {
-                preferences.edit().putLong(key, now).apply();
-                return false;
-            }
-
-            long firstTimeSeenDate = preferences.getLong(key, -1);
-            long duration = Math.abs(firstTimeSeenDate - now);
-            long dayPassed = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);
-
-            return dayPassed >= dayOffset;
         }
     }
 
     class SwitchSettingViewHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView summaryextView;
-        private Switch aSwitch;
-        private View view;
+        private final Typography titleTextView;
+        private final Typography summaryextView;
+        private final SwitchUnify aSwitch;
+        private final View view;
 
         public SwitchSettingViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            titleTextView = itemView.findViewById(R.id.title);
-            summaryextView = itemView.findViewById(R.id.subtitle);
-            aSwitch = itemView.findViewById(R.id.switchWidget);
-            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (switchSettingListener != null) {
-                switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
-            }});
-
+            titleTextView = itemView.findViewById(R.id.account_user_item_common_title);
+            summaryextView = itemView.findViewById(R.id.account_user_item_common_body);
+            aSwitch = itemView.findViewById(R.id.account_user_item_common_switch);
             itemView.setOnClickListener(view -> aSwitch.toggle());
         }
 
         public void bind(SwitchSettingItemViewModel item){
-            titleTextView.setText(item.getTitle());
+            if(!item.labelType().isEmpty()) {
+                SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
+                        itemView.getContext(), item, item.labelType());
+                titleTextView.setText(title);
+            } else {
+                titleTextView.setText(item.getTitle());
+            }
             summaryextView.setText(item.getSubtitle());
 
             boolean switchState = switchSettingListener.isSwitchSelected(item.getId());
@@ -253,6 +187,11 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     }
                 });
             }
+
+            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (switchSettingListener != null) {
+                    switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
+                }});
         }
     }
 

@@ -25,7 +25,7 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void renderRewardUi(TopSectionResponse topSectionResponse,List<SectionContent> sections );
+        void renderRewardUi(TopSectionResponse topSectionResponse,List<SectionContent> sections , RewardsRecommendation rewardsRecommendation);
 
     }
 

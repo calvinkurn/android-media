@@ -4,7 +4,6 @@
 
     <application>
         <activity android:name=".activity.BaseProvideRatingActivity"
-            android:exported="true"
             android:label="@string/cu_surey_layana"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.Launcher" />

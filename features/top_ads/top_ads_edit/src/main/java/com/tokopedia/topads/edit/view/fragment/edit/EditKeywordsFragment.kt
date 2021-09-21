@@ -4,34 +4,42 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.data.SharedViewModel
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
+import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
 import com.tokopedia.topads.edit.utils.Constants.FROM_EDIT
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.ITEM_POSITION
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_NAME
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
@@ -52,8 +60,16 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.EditKeywordListAdapte
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.topads.edit.view.sheet.ChooseKeyBottomSheet
+import com.tokopedia.topads.edit.view.sheet.InfoBottomSheet
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_edit_keword_layout.*
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 
 /**
@@ -61,8 +77,13 @@ import javax.inject.Inject
  */
 
 
-private const val CLICK_SETUP_KEY = "click - setup keyword"
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
+private const val CLICK_DAILY_BUDGET_BOX = "click - box anggaran harian manual"
+private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
+private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
+private const val CLICK_EDIT_KEYWORD_BID = "click - edit kata kunci"
+private const val CLICK_EDIT_KEYWORD_DELETE = "click - delete icon kata kunci"
+
 class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
@@ -71,26 +92,54 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var callBack: ButtonAction
     private var minSuggestKeyword = "0"
     private var maxSuggestKeyword = "0"
-    private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-    private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-    private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var deletedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
+    private var addedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
+    private var editedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
+    private var existingKeyword: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var recommendedKeywords: ArrayList<KeywordDataItem>? = arrayListOf()
     private var initialBudget: MutableList<String> = mutableListOf()
     private var isnewlyAddded: MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private var selectedData: ArrayList<KeywordDataItem>? = arrayListOf()
+    private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var cursor = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var budgetInput: TextFieldUnify
+    private lateinit var budgetInputRekomendasi: TextFieldUnify
+    private lateinit var selectedKeyword: Typography
+    private lateinit var selected_Keyword: Typography
+    private lateinit var biayaRekomendasi: Typography
+    private lateinit var biayaPencerian: Typography
+    private lateinit var minSuggestedBidPencerian: Typography
+    private lateinit var minSuggestedBidRekomendasi: Typography
+    private lateinit var info1: ImageUnify
+    private lateinit var info2: ImageUnify
+    private lateinit var div: View
+    private var receivedRecom = false
+    private var receivedKeywords = false
+    private var productId: MutableList<String> = mutableListOf()
+
     private var userID: String = ""
+    private lateinit var addKeyword: Typography
+    private lateinit var ticker: Ticker
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestBidPerClick = "0"
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(EditFormDefaultViewModel::class.java)
     }
+
+    private val viewModelKeyword by lazy {
+        viewModelProvider.get(KeywordAdsViewModel::class.java)
+    }
+
     private val sharedViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel::class.java)
     }
     private var groupId = 0
     private var productIds = ""
@@ -105,12 +154,51 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onAddKeyword, ::onActionClicked))
+        adapter = EditKeywordListAdapter(
+            EditKeywordListAdapterTypeFactoryImpl(
+                this::onAddKeyword,
+                ::onDeleteItem,
+                this::onEditBudget,
+                ::onEditType
+            )
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_keword_layout), container, false)
-        recyclerView = view.findViewById(R.id.keyword_list)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(
+            resources.getLayout(R.layout.topads_create_fragment_budget_list),
+            container,
+            false
+        )
+        recyclerView = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
+        addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
+        ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
+        budgetInput = view.findViewById(com.tokopedia.topads.common.R.id.budget)
+        budgetInputRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.budgetRekomendasi)
+        selectedKeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
+        selected_Keyword = view.findViewById(com.tokopedia.topads.common.R.id.selected_keyword)
+        biayaRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.biaya_rekomendasi)
+        biayaPencerian = view.findViewById(com.tokopedia.topads.common.R.id.biaya_pencarian)
+        info1 = view.findViewById(com.tokopedia.topads.common.R.id.info1)
+        info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
+        div = view.findViewById(com.tokopedia.topads.common.R.id.div)
+        minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
+        minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
+
+        if(sharedViewModel?.getIsWhiteListedUser()) {
+            biayaRekomendasi.visibility = View.VISIBLE
+            budgetInputRekomendasi.visibility = View.VISIBLE
+            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
+        } else {
+            biayaRekomendasi.visibility = View.GONE
+            budgetInputRekomendasi.visibility = View.GONE
+            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
+        }
+
         setAdapter()
         return view
     }
@@ -119,10 +207,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.isNestedScrollingEnabled = false
+        recyclerView.hasFixedSize()
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
-
     }
 
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -139,59 +227,302 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
+            productIds = it.joinToString(",")
+            productId = it
+            if (productIds.isNotEmpty() && recommendedKeywords?.isEmpty() == true)
+                viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+            if (productIds.isNotEmpty()) {
+                getLatestBid()
+            }
+            getBidForKeywords()
+
+        })
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
+            if(it.isEmpty() && productIds.isNotEmpty()) {
+                getLatestBid()
+                viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+            }
+        })
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
+            groupId = it
+            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
+        })
+    }
+
+    private fun getBidForKeywords() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
+    private fun getLatestBid() {
+        val dummyId: MutableList<String> = mutableListOf()
+        productId.forEach {
+            dummyId.add(it)
+        }
+        val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
+        suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
+        viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
+    }
 
-    private fun onActionClicked(pos: Int) {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SETUP_KEY, groupId.toString(), userID)
-        val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
-        sheet.show(fragmentManager!!, "")
-        sheet.onSaved = { bid, type, position ->
-            if (ifNewKeyword((adapter.items[position] as EditKeywordItemViewModel).data.tag)) {
-                addedKeywords?.forEach {
-                    if (it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
-                        it.priceBid = bid
-                        it.type = type
-                    }
+    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
+        data.firstOrNull()?.let {
+            suggestBidPerClick = it.suggestionBid
+            minBid = it.minBid
+            maxBid = it.maxBid
+        }
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if (it.bidType.equals("product_auto_search")) {
+                    budgetInput.textFieldInput.setText(suggestBidPerClick)
+                } else if (it.bidType.equals("product_auto_browse")) {
+                    budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
                 }
             }
-            if ((adapter.items[position] as EditKeywordItemViewModel).data.type != type) {
-                actionStatusChange(position)
+        })
+        checkForbidValidity(getCurrentBid())
+        checkForRekommendedBid(getCurrentRekommendedBid())
+    }
+
+    private fun getCurrentBid(): Int {
+        return if (budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
+            budgetInput.textFieldInput.text.toString().removeCommaRawString().toInt()
+        else
+            0
+    }
+
+    private fun getCurrentRekommendedBid(): Int {
+        return if (budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
+            budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().toInt()
+        else
+            0
+    }
+
+    private fun checkForbidValidity(result: Int) {
+        when {
+            minBid == "0" || maxBid == "0" -> {
+                return
             }
-            (adapter.items[position] as EditKeywordItemViewModel).data.type = type
+            result < minBid.toDouble() -> {
+                minSuggestedBidPencerian.visibility = View.GONE
+                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, false)
+                actionEnable(false)
+            }
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+                minSuggestedBidPencerian.visibility = View.VISIBLE
+                setMessageErrorField("", "", false, false)
+                actionEnable(true)
+            }
+            result > maxBid.toDouble() -> {
+                minSuggestedBidPencerian.visibility = View.GONE
+                actionEnable(false)
+                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, false)
+            }
+            result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
+                minSuggestedBidPencerian.visibility = View.GONE
+                actionEnable(false)
+                setMessageErrorField(
+                    getString(R.string.topads_common_50_multiply_error),
+                    Constants.MULTIPLY_CONST,
+                    true,
+                    false
+                )
+            }
+            else -> {
+                minSuggestedBidPencerian.visibility = View.GONE
+                actionEnable(true)
+                setMessageErrorField(
+                    getString(R.string.recommendated_bid_message_new),
+                    suggestBidPerClick,
+                    false,
+                    false
+                )
+            }
+        }
+    }
+
+
+    private fun checkForRekommendedBid(result: Int) {
+        when {
+            minBid == "0" || maxBid == "0" -> {
+                return
+            }
+            result < minBid.toDouble() -> {
+                minSuggestedBidRekomendasi.visibility = View.GONE
+                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, true)
+                actionEnable(false)
+            }
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+                minSuggestedBidRekomendasi.visibility = View.VISIBLE
+                setMessageErrorField("", "", false, true)
+                actionEnable(true)
+            }
+            result > maxBid.toDouble() -> {
+                minSuggestedBidRekomendasi.visibility = View.GONE
+                actionEnable(false)
+                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, true)
+            }
+            result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
+                minSuggestedBidRekomendasi.visibility = View.GONE
+                actionEnable(false)
+                setMessageErrorField(
+                    getString(R.string.topads_common_50_multiply_error),
+                    Constants.MULTIPLY_CONST,
+                    true,
+                    true
+                )
+            }
+            else -> {
+                minSuggestedBidRekomendasi.visibility = View.GONE
+                actionEnable(true)
+                setMessageErrorField(
+                    getString(R.string.recommendated_bid_message_new),
+                    suggestBidPerClick,
+                    false,
+                    true
+                )
+            }
+        }
+    }
+
+    private fun onEditBudget(pos: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_BID, "")
+        val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
+        sheet.show(childFragmentManager, "")
+        sheet.onSaved = { bid, position ->
             (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid
             adapter.notifyItemChanged(position)
+        }
+    }
 
+    private fun onEditType(pos: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
+        val sheet = ChooseKeyBottomSheet.newInstance()
+        val type = (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt
+        sheet.show(childFragmentManager, type)
+        sheet.onSelect = { typeKey ->
+            val typeInt = if (typeKey == BROAD_TYPE)
+                BROAD_POSITIVE
+            else
+                EXACT_POSITIVE
+            (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt = typeInt
+            if ((adapter.items[pos] as EditKeywordItemViewModel).data.typeInt != type) {
+                actionStatusChange(pos)
+            }
+            adapter.notifyItemChanged(pos)
         }
-        sheet.onDelete = { position ->
-            showConfirmationDialog(position)
+    }
+
+    private fun actionEnable(isEnable: Boolean) {
+        callBack.buttonDisable(isEnable)
+    }
+
+    private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {
+        if(!forRekommendedBid) {
+            budgetInput.setError(bool)
+            budgetInput.setMessage(String.format(error, bid))
+        } else {
+            budgetInputRekomendasi.setError(bool)
+            budgetInputRekomendasi.setMessage(String.format(error, bid))
         }
+    }
+
+    private fun onSuccessRecommended(keywords: List<KeywordData>) {
+        receivedRecom = true
+        keywords.forEach {
+            recommendedKeywords?.addAll(0, it.keywordData)
+        }
+        if (existingKeyword?.isEmpty() == false)
+            checkForCommonData()
+    }
+
+    private fun checkForCommonData() {
+        if (!receivedKeywords || !receivedRecom)
+            return
+        val listItem: MutableList<KeySharedModel> = mutableListOf()
+        var commonToRecommendation: Boolean
+        existingKeyword?.forEach { selected ->
+            commonToRecommendation = false
+            recommendedKeywords?.forEach { recommend ->
+                if (selected.tag == recommend.keyword) {
+                    commonToRecommendation = true
+                    listItem.add(mapToModel(selected, recommend))
+                }
+            }
+            if (!commonToRecommendation) {
+                listItem.add(mapToModelManual(selected))
+            }
+        }
+        listItem.forEach {
+            adapter.items.add(EditKeywordItemViewModel(it))
+        }
+        setCount()
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun onDeleteItem(position: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_DELETE, "")
+        showConfirmationDialog(position)
+    }
+
+    private fun updateString() {
+        if (adapter.items.count() == 0)
+            setEmptyView()
+    }
+
+    private fun setCount() {
+        selectedKeyword.text =
+            String.format(getString(R.string.topads_common_selected_keyword), adapter.items.count())
+    }
+
+    private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
+        return KeySharedModel(
+            selected.tag,
+            "-1",
+            getString(R.string.topads_common_keyword_competition_unknown),
+            selected.priceBid,
+            minSuggestKeyword,
+            selected.source,
+            selected.type,
+            selected.keywordId,
+        )
+    }
+
+    private fun mapToModel(
+        selected: GetKeywordResponse.KeywordsItem,
+        recommend: KeywordDataItem
+    ): KeySharedModel {
+        return KeySharedModel(
+            selected.tag,
+            recommend.totalSearch,
+            recommend.competition,
+            selected.priceBid,
+            minSuggestKeyword,
+            selected.source,
+            selected.type,
+            selected.keywordId,
+        )
     }
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
         if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == "0")
-            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword.toString()
+            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
-        bundle.putString(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
+        bundle.putString(
+            SUGGESTION_BID,
+            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid
+        )
         bundle.putInt(ITEM_POSITION, pos)
-        bundle.putInt(CURRENT_KEY_TYPE, (adapter.items[pos] as EditKeywordItemViewModel).data.type)
-        bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.tag)
+        bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.name)
         bundle.putInt(FROM_EDIT, 1)
         bundle.putString(GROUPID, groupId.toString())
         return bundle
-    }
-
-    private fun ifNewKeyword(tag: String): Boolean {
-        return addedKeywords?.find { item -> item.tag == tag } != null
     }
 
     private fun actionStatusChange(position: Int) {
@@ -202,22 +533,35 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun showConfirmationDialog(position: Int) {
-        val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(R.string.topads_edit_delete_keyword_conf_dialog_title))
-        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
-                (adapter.items[position] as EditKeywordItemViewModel).data.tag)))
-        dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
-        dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(
+                String.format(
+                    getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
+                    (adapter.items[position] as EditKeywordItemViewModel).data.name
+                )
+            )
+            dialog.setDescription(
+                MethodChecker.fromHtml(
+                    String.format(
+                        getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
+                        (adapter.items[position] as EditKeywordItemViewModel).data.name
+                    )
+                )
+            )
+            dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
+            dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                deleteKeyword(position)
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setSecondaryCTAClickListener {
-            deleteKeyword(position)
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
 
+    }
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         data.firstOrNull()?.let {
@@ -239,9 +583,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun deleteKeyword(position: Int) {
         var pos = 0
-        if (selectedData?.isNotEmpty()!!) {
+        if (selectedData?.isNotEmpty() == true) {
             selectedData?.forEachIndexed { index, select ->
-                if (select.keyword == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
+                if (select.keyword == (adapter.items[position] as EditKeywordItemViewModel).data.name) {
                     pos = index
                 }
             }
@@ -251,10 +595,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (isExistsOriginal(position)) {
                 deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
             } else {
-                if (addedKeywords!!.isNotEmpty()) {
+                if (addedKeywords?.isNotEmpty() == true) {
                     var index = 0
                     addedKeywords?.forEachIndexed { it, key ->
-                        if (key.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
+                        if (key.name == (adapter.items[position] as EditKeywordItemViewModel).data.name) {
                             index = it
                         }
                     }
@@ -262,17 +606,32 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
-        adapter.items.removeAt(position)
-        isnewlyAddded.removeAt(position)
-        initialBudget.removeAt(position)
+        if (position < adapter.itemCount)
+            adapter.items.removeAt(position)
+        if (position < isnewlyAddded.size)
+            isnewlyAddded.removeAt(position)
+        if (position < initialBudget.size)
+            initialBudget.removeAt(position)
         if (adapter.items.isEmpty()) {
             setEmptyView()
         }
         adapter.notifyDataSetChanged()
+        setCount()
+        adapter.getBidData(initialBudget, isnewlyAddded)
+        ticker.gone()
+        updateString()
+        view?.let {
+            Toaster.build(
+                it,
+                getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            ).show()
+        }
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.tag == it } != null)
+        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {
@@ -282,57 +641,121 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
-            productIds = it.joinToString(",")
-        })
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, Observer {
-            groupId = it
-            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
-        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
-        add_keyword.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_KATA_KUNCI, "")
+
+        info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
+        info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
+        info1.setOnClickListener {
+            InfoBottomSheet.newInstance().show(childFragmentManager, 0)
+        }
+        info2.setOnClickListener {
+            InfoBottomSheet.newInstance().show(childFragmentManager, 1)
+        }
+        addKeyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                CLICK_TAMBAH_KATA_KUNCI,
+                ""
+            )
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                CLICK_TAMBAH_KATA_KUNCI,
+                ""
+            )
             onAddKeyword()
         }
+
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if (it.bidType.equals("product_search")) {
+                    budgetInput.textFieldInput.setText(
+                        ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
+                    )
+                } else if(it.bidType.equals("product_browse")) {
+                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
+                }
+            }
+        })
+
+        if(budgetInput.textFiedlLabelText.text.isEmpty()) {
+            budgetInput.setError(true)
+            budgetInput.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
+        }
+        if(budgetInputRekomendasi.textFiedlLabelText.text.isEmpty()) {
+            budgetInputRekomendasi.setError(true)
+            budgetInputRekomendasi.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
+        }
+
+        budgetInput.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                    CLICK_DAILY_BUDGET_BOX, "")
+            }
+        }
+        budgetInput.textFieldInput.addTextChangedListener(object :
+            NumberTextWatcher(budgetInput.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val result = number.toInt()
+                sharedViewModel.setDailyBudget(result)
+                checkForbidValidity(result)
+            }
+        })
+
+
+        budgetInputRekomendasi.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                CLICK_DAILY_BUDGET_REKOMENDASI_BOX, "")
+        }
+        budgetInputRekomendasi.textFieldInput.addTextChangedListener(object :
+            NumberTextWatcher(budgetInputRekomendasi.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val result = number.toInt()
+                sharedViewModel.setRekomendedBudget(result)
+                checkForRekommendedBid(result)
+            }
+        })
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         this.cursor = cursor
+        receivedKeywords = true
         if (data.isEmpty()) {
             setEmptyView()
         } else {
             data.forEach { result ->
-                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
-                    adapter.items.add(EditKeywordItemViewModel(result))
+                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE)) {
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)
                     originalKeyList.add(result.tag)
+                    existingKeyword?.add(result)
                 }
             }
-            if (adapter.items.isEmpty()) {
+            if (existingKeyword?.isEmpty() == true) {
                 setEmptyView()
             } else {
+                ticker.visibility = View.GONE
+                checkForCommonData()
                 setVisibilityOperation(View.VISIBLE)
-                adapter.notifyDataSetChanged()
             }
             recyclerviewScrollListener.updateStateAfterGetData()
             adapter.getBidData(initialBudget, isnewlyAddded)
         }
+
     }
 
     private fun setEmptyView() {
-        adapter.items.clear()
+        adapter.clearList()
         adapter.items.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
-        headlineList?.visibility = View.INVISIBLE
-
         adapter.notifyDataSetChanged()
     }
 
-    private fun setVisibilityOperation(visibilty: Int) {
-        headlineList?.visibility = visibilty
-        add_keyword?.visibility = visibilty
-        add_image?.visibility = visibilty
+    private fun setVisibilityOperation(visibility: Int) {
+        addKeyword.visibility = visibility
+        ticker.visibility = View.GONE
+        selected_Keyword.visibility = visibility
+        info2.visibility = visibility
+        div.visibility = visibility
+        selectedKeyword.visibility = visibility
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -340,32 +763,46 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
-                if (selectedData?.size != 0)
+                if (selectedData?.size != 0) {
                     updateKeywords(selectedData)
+                    setCount()
+                    ticker.visibility = View.GONE
+                }
             }
         }
     }
 
     private fun updateKeywords(selectedKeywords: ArrayList<KeywordDataItem>?) {
         if (adapter.items.isNotEmpty() && adapter.items[0] is EditKeywordEmptyViewModel) {
-            adapter.items.clear()
+            adapter.clearList()
         }
         selectedKeywords?.forEach {
-            if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
+            if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
                 if (it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
-                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
-                        "0", it.bidSuggest, false, it.keyword, it.source)))
+                adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
                 if (!isExistsOriginal(it.keyword)) {
-                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
-                            "0", it.bidSuggest, false, it.keyword, it.source))
+                    addedKeywords?.add(mapToSharedModel(it))
                 }
             }
         }
         adapter.getBidData(initialBudget, isnewlyAddded)
         setVisibilityOperation(View.VISIBLE)
+    }
+
+    private fun mapToSharedModel(it: KeywordDataItem): KeySharedModel {
+        return KeySharedModel(
+            it.keyword,
+            it.totalSearch,
+            it.competition,
+            it.bidSuggest,
+            minSuggestKeyword,
+            it.source,
+            BROAD_POSITIVE,
+            "0",
+        )
     }
 
     override fun onAttach(context: Context) {
@@ -375,22 +812,39 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         } else {
             throw RuntimeException("The parent fragment must implement ButtonAction")
         }
-
     }
 
     fun sendData(): Bundle {
         val bundle = Bundle()
-        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+        val list: ArrayList<KeySharedModel> = arrayListOf()
         list.addAll(adapter.getCurrentItems())
 
         if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
-                if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
-                    if (isExistsOriginal(item.data.tag))
+                if (index < adapter.data.size && (item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
+                    if (isExistsOriginal(item.data.name))
                         editedKeywords?.add(item.data)
                 }
             }
         }
+        bidTypeData?.clear()
+        bidTypeData?.add(TopAdsBidSettingsModel("product_search", getCurrentBid().toFloat()))
+        if(sharedViewModel?.getIsWhiteListedUser()) {
+            bidTypeData?.add(
+                TopAdsBidSettingsModel(
+                    "product_browse",
+                    getCurrentRekommendedBid().toFloat()
+                )
+            )
+        } else {
+            bidTypeData?.add(
+                TopAdsBidSettingsModel(
+                    "product_browse",
+                    getCurrentBid().toFloat()
+                )
+            )
+        }
+        bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
         bundle.putParcelableArrayList(POSITIVE_EDIT, editedKeywords)
@@ -401,5 +855,4 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     interface ButtonAction {
         fun buttonDisable(enable: Boolean)
     }
-
 }

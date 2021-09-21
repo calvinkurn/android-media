@@ -18,6 +18,8 @@ public interface SearchConstant {
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
@@ -82,15 +84,22 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
-        String HEADLINE = "headline";
-        String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
+        String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
         String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+    }
+
+    interface HeadlineAds {
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        int HEADLINE_ITEM_VALUE_FIRST_PAGE = 2;
+        int HEADLINE_ITEM_VALUE_LOAD_MORE = 1;
+        int HEADLINE_PRODUCT_COUNT = 3;
+        String INFINITESEARCH = "infinitesearch";
     }
 
     interface SearchShop {
@@ -151,6 +160,7 @@ public interface SearchConstant {
     }
 
     interface ProductCardLabel {
+        String LABEL_FULFILLMENT = "fulfillment";
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
         String TEXT_DARK_ORANGE = "textDarkOrange";
@@ -161,14 +171,17 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
-        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
     }
 
     interface TopAdsComponent {
@@ -183,5 +196,13 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
+    }
+
+    interface ImageUrl {
+        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
+    }
+
+    interface CustomDimension {
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
     }
 }

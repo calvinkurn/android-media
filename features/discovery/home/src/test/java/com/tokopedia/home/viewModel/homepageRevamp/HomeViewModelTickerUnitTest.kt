@@ -10,6 +10,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,7 +38,6 @@ class HomeViewModelTickerUnitTest {
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).apply {
-            setNeedToShowGeolocationComponent(true)
         }
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -66,17 +66,7 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.showTicker()
-        homeViewModel.onCloseTicker()
-
-        // Expect ticker not show on user screen
-        verify {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeLiveData.value!!.list.filterIsInstance(TickerDataModel::class.java).isNotEmpty())
     }
 
     @Test
@@ -93,20 +83,9 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.removeViewHolderAtPosition(0)
+        homeViewModel.onCloseTicker()
 
-        // Expect ticker not show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
-            })
-            // check data is not available cause removed
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeLiveData.value!!.list.filterIsInstance(TickerDataModel::class.java).isEmpty())
     }
 
     @Test
@@ -124,15 +103,7 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.showTicker()
 
-        // Expect ticker not show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeLiveData.value!!.list.filterIsInstance(TickerDataModel::class.java).isNotEmpty())
     }
 }

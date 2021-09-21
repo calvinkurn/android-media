@@ -31,6 +31,7 @@ object InstrumentationAuthHelper {
             email = "erick.samuel+testingtokenandroid1@tokopedia.com"
             accessTokenBearer = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
             shopId = "0"
+            setIsShopOwner(true)
         }
     }
 
@@ -55,13 +56,28 @@ object InstrumentationAuthHelper {
         }
     }
 
-    private fun userSession(
+    fun userSession(
             context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
             action: UserSession.() -> Unit
     ) {
         try {
             val userSession = UserSession(context)
+            userSession.setIsLogin(true)
+            userSession.action()
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
 
+    private fun userSessionWithModifier(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            modifyUserSession: ((UserSession) -> Unit)? = null,
+            action: UserSession.() -> Unit
+    ) {
+        try {
+            val userSession = UserSession(context)
+            modifyUserSession?.invoke(userSession)
             userSession.setIsLogin(true)
             userSession.action()
         }

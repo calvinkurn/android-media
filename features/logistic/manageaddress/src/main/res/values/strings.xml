@@ -2,8 +2,9 @@
     <string name="app_name">manageaddress</string>
 
     <!--Manage Address-->
-    <string name="address_name">Rumah</string>
+    <string name="image_desc">imageDesc</string>
     <string name="address_label">Alamat Utama</string>
+    <string name="address_label_new">Utama</string>
     <string name="receiver_name">Nama</string>
     <string name="receiver_number">0821112233445</string>
     <string name="address_detail">Detail Alamat</string>
@@ -14,6 +15,7 @@
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="daftar_alamat">Daftar Alamat</string>
     <string name="tambah_alamat">Tambah Alamat</string>
+    <string name="pilih_alamat">Pilih Alamat</string>
 
     <string name="title_empty_address">Belum ada alamat yang terdaftar</string>
     <string name="text_empty_address">Tambah alamat untuk pengiriman pesananmu. Bisa daftarkan lebih dari satu alamat, lho.</string>
@@ -24,9 +26,12 @@
     <string name="tokopedia_note_delimeter">[Tokopedia Note:</string>
     <string name="ubah_alamat">Ubah Alamat</string>
 
+    <string name="set_default_address">Jadikan Alamat Utama</string>
+    <string name="set_default_choose_address">Jadikan Alamat Utama &amp; Pilih</string>
+    <string name="delete_address">Hapus Alamat</string>
+
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="shipping_address">Alamat Pengiriman</string>
     <string name="change_address">Ubah Alamat</string>
     <string name="add_address">Tambah Alamat Baru</string>
     <string name="label_oops">Oopppsss..</string>
@@ -36,7 +41,6 @@
     <!--Content Description-->
     <string name="content_desc_rb_check_address">radio pilih alamat</string>
     <string name="content_desc_button_change_address">button ubah alamat</string>
-    <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
     <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
 
     <!--Shop Location-->

@@ -21,43 +21,23 @@ class GetPopularKeywordUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(HomeWidget.PopularKeywordQuery::class.java)
     }
     companion object {
-
         const val PARAM_COUNT = "count"
+        const val PARAM_PAGE = "page"
         const val DEFAULT_COUNT = 4
+        const val DEFAULT_PAGE = 1
     }
 
     private var params: RequestParams = RequestParams.create()
 
-    //region query
-    private val query by lazy {
-        val count = "\$count"
-
-        """
-            query PopularKeywords($count: Int!) {
-                popular_keywords(count: $count) {
-                    keywords {
-                      url
-                      image_url
-                      keyword
-                      mobile_url
-                      product_count
-                      product_count_formatted
-                    }
-                }
-            }
-        """.trimIndent()
-    }
-    //endregion
-
     override suspend fun executeOnBackground(): HomeWidget.PopularKeywordQuery {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
 
-    fun setParams(count: Int = DEFAULT_COUNT) {
+    fun setParams(count: Int = DEFAULT_COUNT, page: Int = DEFAULT_PAGE) {
         params.parameters.clear()
         params.putInt(PARAM_COUNT, count)
+        params.putInt(PARAM_PAGE, page)
     }
 }

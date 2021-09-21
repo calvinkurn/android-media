@@ -11,6 +11,7 @@ import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
+import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -24,7 +25,7 @@ import kotlin.math.min
 class DealsHomeMapper @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun mapLayoutToBaseItemViewModel(homeLayout: List<EventHomeLayout>, brands: List<Brand>,
-                                     nearestLocations: List<Location>)
+                                     nearestLocations: List<Location>, tickerData: DealsEventHome.TickerHome)
             : List<DealsBaseItemDataView> {
 
         val layouts = mutableListOf<DealsBaseItemDataView>()
@@ -111,6 +112,14 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
             layouts.add(bannersDataView)
         }
 
+        if(tickerData.message.isNotEmpty() && tickerData.devices.isNotEmpty()){
+            if(tickerData.devices.contains(TYPE_TICKER_DEVICE)) {
+                val tickerDeals = DealsTickerDataView(tickerData.devices, tickerData.message)
+                tickerDeals.isLoadedAndSuccess()
+                layouts.add(tickerDeals)
+            }
+        }
+
         if (categoriesDataView.list.isNotEmpty()) {
             categoriesDataView.isLoadedAndSuccess()
             layouts.add(categoriesDataView)
@@ -153,6 +162,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
     companion object {
         private val TYPE_CAROUSEL = R.string.deals_homepage_banner_carousel_tag
         private val TYPE_TOPDEALS = R.string.deals_homepage_layout_topdeals_tag
+        private val TYPE_TICKER_DEVICE = "ANDROID"
 
         private val FOOD_SECTION_TITLE = R.string.deals_homepage_food_section_title
         private val FOOD_SECTION_SUBTITLE = R.string.deals_homepage_food_section_subtitle

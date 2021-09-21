@@ -9,10 +9,12 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -30,7 +32,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
+class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
@@ -39,7 +41,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -110,10 +112,30 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         }
     }
 
-    fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
+    fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
         UohIdlingResource.increment()
         launch {
-            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcMultiResult.value = result
+
+            // analytics
+            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+            listParam.forEachIndexed { index, product ->
+                arrayListProducts.add(
+                    ECommerceAdd.Add.Products(
+                    name = product.productName,
+                    id = product.productId.toString(),
+                    price = product.productPrice.toString(),
+                    quantity = product.qty.toString(),
+                    dimension79 = product.shopId.toString()
+                ))
+            }
+
+            if (result is Success) {
+                UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
+                    verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+            }
+
             UohIdlingResource.decrement()
         }
     }

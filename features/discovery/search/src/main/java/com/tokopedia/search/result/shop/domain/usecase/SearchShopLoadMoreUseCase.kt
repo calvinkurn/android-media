@@ -49,6 +49,10 @@ query SearchShop(${'$'}params : String!) {
         source
         total_shop
         search_url
+        header {
+            response_code
+            keyword_process
+        }
         paging {
             uri_next
             uri_previous
@@ -94,6 +98,7 @@ query SearchShop(${'$'}params : String!) {
             reputation_score
             is_official
             ga_key
+            is_pm_pro
         }
         top_shop {
             shop_id

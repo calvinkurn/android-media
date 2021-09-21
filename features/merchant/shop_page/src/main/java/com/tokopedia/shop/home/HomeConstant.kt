@@ -5,11 +5,6 @@ object HomeConstant {
 }
 
 object GqlQueryConstant {
-    const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
-    const val GQL_GET_SHOP_NPL_CAMPAIGN_TNC = "gql_get_shop_npl_campaign_tnc"
-    const val GQL_GET_CAMPAIGN_NOTIFY_ME = "gql_get_campaign_notify_me"
-    const val GQL_CHECK_CAMPAIGN_NOTIFY_ME = "gql_check_campaign_notify_me"
-    const val GQL_ATC_MUTATION = "atcMutation"
     const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 
@@ -19,6 +14,7 @@ object WidgetType {
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
+    const val SHOWCASE = "etalase"
 }
 
 object WidgetName {
@@ -32,6 +28,16 @@ object WidgetName {
     const val PRODUCT = "product"
     const val RECENT_ACTIVITY = "recent_activity"
     const val BUY_AGAIN = "buy_again"
+    const val REMINDER = "reminder"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
+
+    // showcase widget name list
+    const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"
+    const val SHOWCASE_SLIDER_MEDIUM = "etalase_slider_medium"
+    const val SHOWCASE_SLIDER_TWO_ROWS = "etalase_slider_kecil_2_baris"
+    const val SHOWCASE_GRID_SMALL = "etalase_banner_3_x_2"
+    const val SHOWCASE_GRID_MEDIUM = "etalase_banner_besar_2x2"
+    const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2x1"
+    const val IS_SHOW_ETALASE_NAME = 1
 }

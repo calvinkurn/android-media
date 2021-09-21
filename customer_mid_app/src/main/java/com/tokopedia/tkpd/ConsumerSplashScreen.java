@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
@@ -15,15 +16,17 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
-import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -37,21 +40,10 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
     private boolean isApkTempered;
-
-    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination;
-        destination = new Intent(context, ConsumerSplashScreen.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        return destination;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +66,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
+                initializationNewRelic();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -85,6 +78,15 @@ public class ConsumerSplashScreen extends SplashScreen {
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
+    }
+
+    private void initializationNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .start(this.getApplication());
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
     }
 
     private void syncFcmToken() {
@@ -159,8 +161,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
-                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
+                LogManager logManager = LogManager.instance;
+                if (logManager!= null) {
+                    logManager.refreshConfig();
+                }
             }
 
             @Override

@@ -129,6 +129,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Long, val is2x1Required : Boolean = false) {
     ACTION_BUTTON_ICON(100, 100, 3L),
     BIG_IMAGE(720, 360, 10L, true),
+    BIG_IMAGE_GRID(720, 360, 10L),
     PRODUCT_IMAGE(360, 360, 5L),
     CAROUSEL(720, 360, 10L, true),
     VISUAL_COLLAPSED(360, 64, 5L, false),

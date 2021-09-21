@@ -9,6 +9,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3P
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
+import com.tokopedia.product.manage.common.constant.GetProductV3QueryConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class GetProductUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Product {
 
-        val graphqlRequest = GraphqlRequest(getQuery(), GetProductV3Response::class.java, params.parameters)
+        val graphqlRequest = GraphqlRequest(query, GetProductV3Response::class.java, params.parameters)
         val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
         if (errors.isNullOrEmpty()) {
@@ -36,19 +37,16 @@ class GetProductUseCase @Inject constructor(
 
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
+        private const val OPERATION_NAME = "getProductV3"
+        private val OPERATION_PARAM = """
+            ${'$'}productID: String!,${'$'}options: OptionV3!
+        """.trimIndent()
 
-        fun createRequestParams(productId: String): RequestParams {
-            val options = OptionV3()
-            val getProductV3Param = GetProductV3Param(productId, options)
-            val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_PRODUCT_ID, getProductV3Param.productID)
-            requestParams.putObject(PARAM_OPTIONS, getProductV3Param.options)
-            return requestParams
-        }
+        private val QUERY_PARAM = """
+            productID:${'$'}productID, options:${'$'}options
+        """.trimIndent()
 
-        private fun getQuery() = """
-            query getProductV3(${'$'}productID: String!, ${'$'}options: OptionV3!) {
-                getProductV3(productID: ${'$'}productID, options: ${'$'}options ) {
+        private val QUERY_REQUEST = """
                     productID
                     productName
                    	status
@@ -209,8 +207,22 @@ class GetProductUseCase @Inject constructor(
                         status
                       }
                     }
-                  }
-                }
-            """.trimIndent()
+        """.trimIndent()
+        private val query = String.format(
+                GetProductV3QueryConstant.BASE_QUERY,
+                OPERATION_NAME,
+                OPERATION_PARAM,
+                QUERY_PARAM,
+                QUERY_REQUEST
+        )
+
+        fun createRequestParams(productId: String): RequestParams {
+            val options = OptionV3()
+            val getProductV3Param = GetProductV3Param(productId, options)
+            val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_PRODUCT_ID, getProductV3Param.productID)
+            requestParams.putObject(PARAM_OPTIONS, getProductV3Param.options)
+            return requestParams
+        }
     }
 }

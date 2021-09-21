@@ -13,31 +13,33 @@ import com.tokopedia.usecase.coroutines.UseCase
 
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: RequestParams = RequestParams.create()
     var isFirstLoad: Boolean = true
-    protected var cacheStrategy: GraphqlCacheStrategy = getCacheFirstCacheStrategy()
+    protected var cacheStrategy: GraphqlCacheStrategy = getAlwaysCloudCacheStrategy()
 
     inline fun <reified T> GraphqlResponse.getData(): T {
         return this.getData(T::class.java)
     }
 
-    private fun getCacheFirstCacheStrategy(): GraphqlCacheStrategy {
+    protected fun getAlwaysCloudCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .build()
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setSessionIncluded(true)
+            .build()
     }
 
-    private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
+    protected fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .build()
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setSessionIncluded(true)
+            .build()
     }
 
     fun setUseCache(useCache: Boolean) {
         cacheStrategy = if (useCache) {
             getCacheOnlyCacheStrategy()
         } else {
-            getCacheFirstCacheStrategy()
+            getAlwaysCloudCacheStrategy()
         }
     }
 }

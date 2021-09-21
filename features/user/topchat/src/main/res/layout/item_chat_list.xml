@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/interactive_adapter_template_chat">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
         android:id="@+id/thumbnail"
         android:layout_width="@dimen/dp_topchat_56"
         android:layout_height="@dimen/dp_topchat_56"

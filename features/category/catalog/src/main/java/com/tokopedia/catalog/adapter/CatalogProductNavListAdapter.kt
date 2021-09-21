@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
+import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.viewholder.products.CatalogListProductViewHolder
@@ -15,7 +16,8 @@ import com.tokopedia.common_category.factory.BaseProductTypeFactory
 
 class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFactory,
                                    private val visitables: ArrayList<Visitable<CatalogTypeFactory>>,
-                                   private val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+                                   private val onItemChangeView: OnItemChangeView,
+                                   private val catalogProductCardListener: CatalogProductCardListener) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
@@ -148,6 +150,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 } else {
                     viewedProductList.add(item)
                 }
+                catalogProductCardListener.onProductImpressed(item,holder.adapterPosition)
             }
         }
     }

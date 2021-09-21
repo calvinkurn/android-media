@@ -151,7 +151,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             isPermissionGranted(Manifest.permission.CAMERA) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
 
     private fun requestCameraPermission() = requestPermissions(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_CAMERA
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_CAMERA
     )
 
     /**
@@ -161,7 +161,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
 
     private fun requestGalleryPermission() = requestPermissions(
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_GALLERY
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_GALLERY
     )
 
     private fun isPermissionGranted(permission: String): Boolean =

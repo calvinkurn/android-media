@@ -10,18 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:textColor="@color/default_black_text"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topAdsBottomSheetDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/setting_topads_bottomsheet_padding"
         android:maxLines="3"
         android:textSize="@dimen/top_ads_description_size"
-        android:textColor="@color/setting_grey_text"
+        android:textColor="@color/Unify_N700_68"
         android:paddingLeft="@dimen/setting_topads_description_padding_horizontal"
         android:paddingStart="@dimen/setting_topads_description_padding_horizontal"
         android:paddingRight="@dimen/setting_topads_description_padding_horizontal"

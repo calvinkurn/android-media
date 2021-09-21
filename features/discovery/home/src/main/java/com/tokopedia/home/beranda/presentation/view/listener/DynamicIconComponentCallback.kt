@@ -6,6 +6,7 @@ import com.tokopedia.home.analytics.v2.DynamicIconTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 
 /**
  * Created by Lukas on 1/14/21.
@@ -22,12 +23,19 @@ class DynamicIconComponentCallback (private val context: Context?, private val h
         RouteManager.route(context, dynamicIcon.applink)
     }
 
-    override fun onImpressIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int) {
-        DynamicIconTracking.sendDynamicIconImpress(
-                userId = homeCategoryListener.userId,
-                dynamicIcons = dynamicIcons,
-                position = position,
-                type = type
+    override fun onImpressIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, iconPosition: Int, adapterPosition: Int, type: Int) {
+        homeCategoryListener.putEEToTrackingQueue(
+                DynamicIconTracking.sendDynamicIconImpress(
+                        userId = homeCategoryListener.userId,
+                        dynamicIcon = dynamicIcon,
+                        iconPosition = iconPosition,
+                        adapterPposition = adapterPosition,
+                        type = type
+                )
         )
+    }
+
+    override fun onIconChannelImpressed(iconComponentModel: DynamicIconComponentDataModel, parentPosition: Int) {
+
     }
 }

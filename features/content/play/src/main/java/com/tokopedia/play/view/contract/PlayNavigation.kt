@@ -9,6 +9,8 @@ interface PlayNavigation {
 
     fun navigateToNextPage()
 
+    fun canNavigateNextPage(): Boolean
+
     fun requestEnableNavigation()
 
     fun requestDisableNavigation()

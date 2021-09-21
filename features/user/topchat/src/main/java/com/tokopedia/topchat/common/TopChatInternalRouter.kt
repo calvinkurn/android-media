@@ -36,14 +36,21 @@ open class TopChatInternalRouter {
 
         const val SOURCE_TOPCHAT = "topchat"
 
-        fun getAttachProductIntent(context: Context, shopId: String, shopName: String,
-                                   isSeller: Boolean): Intent {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+        fun getAttachProductIntent(
+            context: Context,
+            shopId: String,
+            shopName: String,
+            isSeller: Boolean,
+            warehouseId: String
+        ): Intent {
+            val intent = RouteManager.getIntent(
+                context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT
+            )
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT)
-
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId)
             return intent
         }
 

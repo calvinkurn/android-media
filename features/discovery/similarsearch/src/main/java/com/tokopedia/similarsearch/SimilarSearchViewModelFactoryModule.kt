@@ -1,9 +1,8 @@
 package com.tokopedia.similarsearch
 
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
-import com.tokopedia.similarsearch.di.AddToCartUseCaseModule
 import com.tokopedia.similarsearch.di.SimilarSearchModuleScope
 import com.tokopedia.similarsearch.di.UserSessionModule
 import com.tokopedia.similarsearch.di.WishlistUseCaseModule
@@ -20,8 +19,7 @@ import javax.inject.Named
 @Module(includes = [
     GetSimilarProductsUseCaseModule::class,
     WishlistUseCaseModule::class,
-    UserSessionModule::class,
-    AddToCartUseCaseModule::class
+    UserSessionModule::class
 ])
 internal class SimilarSearchViewModelFactoryModule(
         private val similarSearchQuery: String
@@ -36,10 +34,11 @@ internal class SimilarSearchViewModelFactoryModule(
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
             addToCartUseCase: AddToCartUseCase,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            coroutineDispatchers: CoroutineDispatchers
     ): ViewModelProvider.Factory {
         return SimilarSearchViewModelFactory(
-                ProductionDispatcherProvider(),
+                coroutineDispatchers,
                 similarSearchQuery,
                 getSimilarProductsUseCase,
                 addWishListUseCase,

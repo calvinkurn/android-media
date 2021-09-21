@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -19,12 +20,14 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
 
     init {
         view.radio_button.setOnClickListener {
-            itemSelected.invoke(adapterPosition)
+            if (adapterPosition != RecyclerView.NO_POSITION)
+                itemSelected.invoke(adapterPosition)
         }
 
         view.groupCard.setOnClickListener { view ->
             view.radio_button.isChecked = true
-            itemSelected.invoke(adapterPosition)
+            if (adapterPosition != RecyclerView.NO_POSITION)
+                itemSelected.invoke(adapterPosition)
         }
     }
 

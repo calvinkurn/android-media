@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -49,7 +50,7 @@ class GetBarChartDataUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        getBarChartDataUseCase = GetBarChartDataUseCase(gqlRepository, mapper)
+        getBarChartDataUseCase = GetBarChartDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test

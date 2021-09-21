@@ -51,19 +51,19 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_OPEN_BOTTOMSHEET
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
@@ -80,8 +80,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -109,11 +107,15 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
+import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper
+import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
@@ -134,6 +136,9 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -159,6 +164,9 @@ class AddEditProductPreviewFragment :
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
+    private var isFragmentFirstTimeLoaded = true
+    private var isAdminEligible = true
+    private var isProductLimitEligible: Boolean = true
 
     private var toolbar: Toolbar? = null
 
@@ -203,7 +211,7 @@ class AddEditProductPreviewFragment :
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
-    //loading
+    // loading
     private var loadingLayout: MotionLayout? = null
 
     // admin revamp
@@ -211,10 +219,12 @@ class AddEditProductPreviewFragment :
     private var adminRevampErrorLayout: FrameLayout? = null
     private var adminRevampGlobalError: GlobalError? = null
 
+    // product limitation
+    private var productLimitationTicker: Ticker? = null
+    private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-
-    private var isAdminEligible = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -224,10 +234,8 @@ class AddEditProductPreviewFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         // start PLT monitoring
         startPerformanceMonitoring()
-
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
-
         super.onCreate(savedInstanceState)
 
         arguments?.let {
@@ -243,7 +251,6 @@ class AddEditProductPreviewFragment :
                 viewModel.getProductDraft(draftId.toLongOrZero())
             }
             if (viewModel.getProductId().isNotEmpty()) {
-                //TODO is goldmerchant and isregular
                 ProductEditStepperTracking.trackScreen(shopId, false, false)
             } else {
                 ProductAddStepperTracking.trackScreen()
@@ -286,7 +293,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -307,7 +314,7 @@ class AddEditProductPreviewFragment :
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, mutableListOf(), this)
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -349,13 +356,16 @@ class AddEditProductPreviewFragment :
         editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
-        //loading
+        // loading
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         // admin revamp
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
         adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
         adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
+
+        // product limitation
+        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
 
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
@@ -393,10 +403,17 @@ class AddEditProductPreviewFragment :
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
             }
+
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                     ?: DetailInputModel())
+            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+                productLimitationBottomSheet?.setIsSavingToDraft(true)
+                productLimitationBottomSheet?.show(childFragmentManager)
             } else {
                 viewModel.productInputModel.value?.detailInputModel?.productName?.let {
                     viewModel.validateProductNameInput(it)
@@ -492,6 +509,9 @@ class AddEditProductPreviewFragment :
         multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
+
+        setupProductLimitationViews()
+
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
@@ -504,6 +524,7 @@ class AddEditProductPreviewFragment :
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
         observeAdminPermission()
+        observeProductLimitationData()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -534,6 +555,7 @@ class AddEditProductPreviewFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         isFragmentVisible = false
+        isFragmentFirstTimeLoaded = false
         removeObservers()
     }
 
@@ -786,7 +808,7 @@ class AddEditProductPreviewFragment :
                         startProductAddService(productInputModel)
                         Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
-                        view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                        Toaster.build(requireView(), validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -849,7 +871,6 @@ class AddEditProductPreviewFragment :
         doneButton?.show()
         enablePhotoEdit()
         enableDetailEdit()
-        showProductPhotoPreview(productInputModel)
         showProductDetailPreview(productInputModel)
     }
 
@@ -869,14 +890,14 @@ class AddEditProductPreviewFragment :
     private fun enablePhotoEdit() {
         addEditProductPhotoButton?.text = getString(R.string.action_add_product_photo)
         addProductPhotoTipsLayout?.hide()
-        productPhotosView?.show()
+        productPhotosView?.animateExpand()
     }
 
     private fun enableDetailEdit() {
         context?.let {
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
-            addEditProductDetailButton?.show()
+            addEditProductDetailButton?.animateExpand()
             dividerDetail?.hide()
         }
     }
@@ -885,7 +906,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
-            addEditProductDescriptionButton?.show()
+            addEditProductDescriptionButton?.animateExpand()
         }
     }
 
@@ -898,23 +919,27 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
-            addEditProductShipmentButton?.show()
+            addEditProductShipmentButton?.animateExpand()
         }
     }
 
     private fun enablePromotionEdit() {
-        editProductPromotionLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
+            editProductPromotionLayout?.animateExpand()
+        } else {
+            editProductPromotionLayout?.animateCollapse()
+        }
     }
 
     private fun enableStatusEdit() {
-        editProductStatusLayout?.show()
+        editProductStatusLayout?.animateExpand()
     }
 
     private fun disableShipmentEdit() {
         context?.let {
             if (addEditProductShipmentButton?.text != getString(R.string.action_change)) {
                 addEditProductShipmentButton?.text = getString(R.string.action_add)
-                addEditProductShipmentButton?.show()
+                addEditProductShipmentButton?.animateExpand()
             }
         }
     }
@@ -923,7 +948,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             if (addEditProductDescriptionButton?.text != getString(R.string.action_change)) {
                 addEditProductDescriptionButton?.text = getString(R.string.action_add)
-                addEditProductDescriptionButton?.show()
+                addEditProductDescriptionButton?.animateExpand()
             }
         }
     }
@@ -948,6 +973,10 @@ class AddEditProductPreviewFragment :
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
+
+                    // set temporary price when first loaded
+                    SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
+
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
@@ -1055,8 +1084,10 @@ class AddEditProductPreviewFragment :
                     Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(activity, result.exception)
-                    Toaster.build(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToasterFailed(result.exception)
+                    // log error
+                    AddEditProductErrorHandler.logMessage(TIMBER_PREFIX_PRODUCT_NAME_VALIDATION + " : " + result.serviceResponse)
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.exception)
                 }
                 else -> {
                     // no-op
@@ -1092,7 +1123,7 @@ class AddEditProductPreviewFragment :
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                     if (isStartButtonClicked) {
-                        showToasterFailSetLocation()
+                        showToasterFailed(it.throwable)
                     }
                 }
             }
@@ -1142,6 +1173,29 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun observeProductLimitationData() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
+        if (isAdding() || viewModel.isDuplicate) {
+            if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
+            viewModel.productLimitationData.observe(viewLifecycleOwner) {
+                when(it) {
+                    is Success -> {
+                        val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
+                        setupBottomSheetProductLimitation(productLimitationModel)
+
+                        // store to shared preferences, to reuse at another fragment
+                        SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
+                    }
+                    is Fail -> {
+                        productLimitationTicker?.gone()
+                        showToasterFailed(it.throwable)
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1175,12 +1229,10 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
-        var pictureIndex = 0
-        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
-            if (urlOrPath.startsWith(HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
-            else urlOrPath
-        }
-        productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
+        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
+        val pictureList = productInputModel.detailInputModel.pictureList
+
+        viewModel.updateProductPhotos(imageUrlOrPathList, pictureList)
     }
 
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
@@ -1188,16 +1240,16 @@ class AddEditProductPreviewFragment :
         productNameView?.text = detailInputModel.productName
         productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
-        productDetailPreviewLayout?.show()
+        productDetailPreviewLayout?.animateExpand()
     }
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
         if (isVariantEmpty) {
             addEditProductVariantButton?.text = getString(R.string.action_add)
-            addProductVariantTipsLayout?.show()
+            addProductVariantTipsLayout?.animateExpand()
         } else {
             addEditProductVariantButton?.text = getString(R.string.action_change)
-            addProductVariantTipsLayout?.hide()
+            addProductVariantTipsLayout?.animateCollapse()
         }
     }
 
@@ -1264,15 +1316,19 @@ class AddEditProductPreviewFragment :
     private fun moveToImagePicker() {
         val adapter = productPhotoAdapter ?: return
         // show error message when maximum product image is reached
-        val productPhotoSize = adapter.getProductPhotoPaths().size
-        if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+        val productPhotoCount = adapter.getProductPhotoPaths().size
+        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
+        if (productPhotoCount == maxProductPhotoCount) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
         else {
+            val isAdding = viewModel.isAdding || !isEditing()
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
                         ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddEditNavigation.getIntent(requireContext(), ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
+            val intent = ImagePickerAddEditNavigation.getIntent(
+                    requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
+                    isAdding)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -1488,15 +1544,14 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun showToasterFailSetLocation() {
-        view?.let {
-            Toaster.build(
-                    it,
-                    getString(R.string.label_for_toaster_fail_set_shop_location),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-            ).show()
-        }
+    private fun showToasterFailed(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        Toaster.build(
+                requireView(),
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+        ).show()
     }
 
     private fun getSaveShopShippingLocationData(
@@ -1587,5 +1642,74 @@ class AddEditProductPreviewFragment :
             }
         }
         adminRevampErrorLayout?.show()
+    }
+
+    private fun setupProductLimitationViews() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
+
+        val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
+        val tickers = listOf(
+            TickerData(
+                description = getString(R.string.label_product_limitation_ticker, productLimitStartDate),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            ),
+            TickerData(
+                description = getString(R.string.label_product_limitation_ticker_more_info),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+        )
+
+        val adapter = TickerPagerAdapter(context, tickers)
+        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                if (linkUrl == KEY_OPEN_BOTTOMSHEET) {
+                    productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+                    productLimitationBottomSheet?.setIsSavingToDraft(false)
+                    productLimitationBottomSheet?.show(childFragmentManager)
+                } else {
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                }
+            }
+        })
+        productLimitationTicker?.addPagerView(adapter, tickers)
+        productLimitationTicker?.showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
+    }
+
+    private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
+        if (productLimitationModel.isUnlimited) {
+            productLimitationTicker?.gone()
+            return
+        }
+
+        productLimitationModel.apply {
+            productLimitationBottomSheet = ProductLimitationBottomSheet(actionItems, isEligible, limitAmount)
+            isProductLimitEligible = isEligible
+        }
+
+        productLimitationBottomSheet?.setOnBottomSheetResult { urlResult ->
+            when {
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_FINISH_ACTIVITY) -> {
+                    activity?.finish()
+                }
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    startActivity(intent)
+                    saveProductToDraft()
+                    activity?.finish()
+                }
+                urlResult.startsWith(HTTP_PREFIX) -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                }
+                else -> {
+                    val intent = RouteManager.getIntent(context, urlResult)
+                    startActivity(intent)
+                }
+            }
+        }
+
+        // launch bottomsheet automatically when fragment loaded
+        if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
+            productLimitationTicker?.performClick()
+        }
     }
 }

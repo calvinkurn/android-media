@@ -9,6 +9,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
@@ -20,4 +21,9 @@ buildscript {
 
 dependencies {
 
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.networkDependencies.glide
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 }

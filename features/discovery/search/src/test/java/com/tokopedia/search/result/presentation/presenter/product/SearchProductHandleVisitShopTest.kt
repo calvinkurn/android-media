@@ -5,7 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.Data
 import io.mockk.*
@@ -52,7 +52,7 @@ internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtur
         `Then verify top ads url hitter for click shop`(topAdsData)
         `Then verify view handle route to shop page`(shopId)
 
-        val name = "/searchproduct - organic ads"
+        val name = "/searchproduct - organic ads - 0"
         val shopName = topAdsData.shop.name
         val shopUrl = topAdsData.shop.uri
         val position = productItemViewModel.position.toString()
@@ -61,14 +61,14 @@ internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtur
         `Then assert go to shop page data layer`(shopId, name, shopName, shopUrl, position, categoryBreadcrumb)
     }
 
-    private fun List<Visitable<*>>.findProductItemWith(productId: String, isAds: Boolean): ProductItemViewModel {
+    private fun List<Visitable<*>>.findProductItemWith(productId: String, isAds: Boolean): ProductItemDataView {
         return find {
-            it is ProductItemViewModel && it.productID == productId && it.isAds == isAds
-        } as ProductItemViewModel
+            it is ProductItemDataView && it.productID == productId && it.isAds == isAds
+        } as ProductItemDataView
     }
 
-    private fun `Given view click three dots`(productItemViewModel: ProductItemViewModel) {
-        productListPresenter.onThreeDotsClick(productItemViewModel, 0)
+    private fun `Given view click three dots`(productItemDataView: ProductItemDataView) {
+        productListPresenter.onThreeDotsClick(productItemDataView, 0)
     }
 
     private fun `When handle visit shop`() {
@@ -126,7 +126,7 @@ internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtur
         `Then verify top ads url hitter is not called`()
         `Then verify view handle route to shop page`(shopId)
 
-        val name = "/searchproduct - organic"
+        val name = "/searchproduct - organic - 0"
         val shopName = productItem.shop.name
         val shopUrl = productItem.shop.url
         val position = productItemViewModel.position.toString()

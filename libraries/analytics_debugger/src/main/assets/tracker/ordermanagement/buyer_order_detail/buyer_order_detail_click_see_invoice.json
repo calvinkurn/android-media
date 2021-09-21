@@ -1,0 +1,15 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on \"Lihat Invoice\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPurchaseList",
+      "eventAction": "click lihat invoice",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Seller Order Management",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

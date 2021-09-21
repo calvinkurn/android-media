@@ -157,15 +157,16 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/kyc_intro_button" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/close_button"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:background="@color/kyc_centralized_00ffffff"
+        android:background="@color/Unify_N0_20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_kyc_arrow_back_black"
-        android:contentDescription="close_button"/>
+        app:unifyImageButtonVariant="image"
+        app:unifyImageButtonType="main"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -175,7 +176,7 @@
         app:layout_constraintLeft_toRightOf="@id/close_button"
         app:layout_constraintTop_toTopOf="@id/close_button"
         app:typographyType="heading_4"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/title_kyc_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

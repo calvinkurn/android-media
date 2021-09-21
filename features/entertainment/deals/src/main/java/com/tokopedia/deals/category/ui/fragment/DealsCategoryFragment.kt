@@ -255,8 +255,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
         }
 
         sort_filter_deals_category.run {
+            var selectedChips = 0
             filterItems.forEachIndexed { index, sortFilterItem ->
                 if (chips[index].isSelected) {
+                    selectedChips++
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 }
 
@@ -283,7 +285,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     onFilterChipClicked(chips)
                 }
             }
-
+            indicatorCounter = selectedChips
             selectFilterFromChipsData()
         }
     }
@@ -294,20 +296,22 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var additionalSelectedFilterCount = 0
 
     private fun selectFilterFromChipsData() {
-        sort_filter_deals_category.let {
-            for ((i, item) in it.chipItems.withIndex()) {
-                if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
-                else item.type = ChipsUnify.TYPE_NORMAL
-            }
-
-            it.indicatorCounter -= additionalSelectedFilterCount
-            additionalSelectedFilterCount = 0
-            if (chips.size > it.chipItems.size) {
-                for (i in it.chipItems.size until chips.size) {
-                    if (chips[i].isSelected) additionalSelectedFilterCount++
+        sort_filter_deals_category.let { sortFilter ->
+            sortFilter.chipItems?.let { chipItems ->
+                for ((i, item) in chipItems.withIndex()) {
+                    if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
+                    else item.type = ChipsUnify.TYPE_NORMAL
                 }
+
+                sortFilter.indicatorCounter -= additionalSelectedFilterCount
+                additionalSelectedFilterCount = 0
+                if (chips.size > chipItems.size) {
+                    for (i in chipItems.size until chips.size) {
+                        if (chips[i].isSelected) additionalSelectedFilterCount++
+                    }
+                }
+                sortFilter.indicatorCounter += additionalSelectedFilterCount
             }
-            it.indicatorCounter += additionalSelectedFilterCount
         }
     }
 

@@ -21,6 +21,7 @@ import com.tokopedia.travel.country_code.di.TravelCountryCodeComponent
 import com.tokopedia.travel.country_code.presentation.adapter.PhoneCodePickerAdapterTypeFactory
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.country_code.presentation.viewmodel.PhoneCodePickerViewModel
+import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -102,7 +103,7 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
             .inject(this)
 
     override fun loadData(page: Int) {
-        viewModel.getCountryList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_get_all_country))
+        viewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
     }
 
     companion object {

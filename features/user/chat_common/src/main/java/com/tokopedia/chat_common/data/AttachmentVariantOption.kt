@@ -14,7 +14,7 @@ class AttachmentVariantOption(
 
         @SerializedName("hex")
         @Expose
-        val hex: String = ""// ex:#ff3303
+        val hex: String = ""// ex: # ff3303
 ) {
     fun isColor(): Boolean {
         return hex.isNotEmpty()

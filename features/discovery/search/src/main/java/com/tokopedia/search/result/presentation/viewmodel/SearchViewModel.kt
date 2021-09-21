@@ -3,12 +3,12 @@ package com.tokopedia.search.result.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 
 internal class SearchViewModel(
-        coroutineDispatcher: DispatcherProvider
-): BaseViewModel(coroutineDispatcher.ui()) {
+        coroutineDispatcher: CoroutineDispatchers
+): BaseViewModel(coroutineDispatcher.main) {
 
     private val showAutoCompleteEventLiveData = MutableLiveData<Event<Boolean>>()
     private val hideLoadingEventLiveData = MutableLiveData<Event<Boolean>>()

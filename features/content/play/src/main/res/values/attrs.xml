@@ -3,4 +3,8 @@
     <declare-styleable name="MaximumHeightRecyclerView">
         <attr name="maximumHeight" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="NestedScrollableHost">
+        <attr name="lockScroll" format="boolean"/>
+    </declare-styleable>
 </resources>

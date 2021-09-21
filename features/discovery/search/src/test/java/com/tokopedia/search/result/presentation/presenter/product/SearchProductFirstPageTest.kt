@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
@@ -138,7 +137,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {
         val message = slotSearchParameterErrorLog.captured
 
-        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
+        @Suppress("UNCHECKED_CAST")
+        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any?>)
     }
 
     @Test

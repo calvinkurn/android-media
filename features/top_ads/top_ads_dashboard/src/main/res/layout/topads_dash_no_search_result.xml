@@ -18,7 +18,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ill_no_product" />
+            app:srcCompat="@drawable/no_products" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_title"

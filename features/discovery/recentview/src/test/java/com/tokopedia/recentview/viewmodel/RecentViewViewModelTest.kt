@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.recentview.domain.usecase.RecentViewUseCase
 import com.tokopedia.recentview.view.presenter.RecentViewViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,7 +29,7 @@ class RecentViewViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
-    private val dispatcher = RecentViewTestDispatcher()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     lateinit var viewModel: RecentViewViewModel
 

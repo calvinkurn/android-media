@@ -3,15 +3,15 @@ package com.tokopedia.variant_common.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.model.VariantCategory
-import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
-class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<VariantContainerViewHolder>() {
+class VariantContainerAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<VariantContainerViewHolder>() {
 
     var variantContainerData: List<VariantCategory> = listOf()
 

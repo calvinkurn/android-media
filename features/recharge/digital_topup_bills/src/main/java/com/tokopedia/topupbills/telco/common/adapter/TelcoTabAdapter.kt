@@ -23,8 +23,8 @@ class TelcoTabAdapter(fragment: Fragment, listener: Listener) : FragmentStateAda
             val recomFragment = DigitalTelcoRecommendationFragment.newInstance()
 
             when (position) {
-                0 -> promoFragment
-                1 -> recomFragment
+                0 -> if (tabList.size == 1) promoFragment else recomFragment
+                1 -> promoFragment
                 else -> promoFragment
             }
         }

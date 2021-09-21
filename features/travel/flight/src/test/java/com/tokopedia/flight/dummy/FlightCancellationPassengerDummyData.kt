@@ -1,7 +1,7 @@
 package com.tokopedia.flight.dummy
 
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 
 /**

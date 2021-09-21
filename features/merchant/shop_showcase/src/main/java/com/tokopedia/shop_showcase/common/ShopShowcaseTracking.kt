@@ -186,7 +186,7 @@ class ShopShowcaseTracking (context: Context?) {
         )
     }
 
-    fun addShowcaseIsCreatedSuccessfully(shopId: String, shopType: String, isSuccess: Boolean = false) {
+    fun onFinishCreateOrUpdateShowcase(shopId: String, shopType: String, isSuccess: Boolean = false) {
         eventAction = if(isSuccess) {
             CLICK_FINISH_SUCCESS
         } else {

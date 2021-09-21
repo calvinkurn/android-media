@@ -17,7 +17,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         tools:visibility="visible"
         tools:text="Lihat 9 pertanyaan lainnya"/>
 

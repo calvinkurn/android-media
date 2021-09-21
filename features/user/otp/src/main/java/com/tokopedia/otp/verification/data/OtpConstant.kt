@@ -9,9 +9,15 @@ object OtpConstant {
 
     const val OTP_DATA_EXTRA = "otp-data-extra"
     const val OTP_MODE_EXTRA = "otp-mode-extra"
+    const val IS_MORE_THAN_ONE_EXTRA = "is-more-than-one-extra"
+    const val OTP_WA_NOT_REGISTERED_TITLE = "otp-wa-not-registered-title"
+    const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
+    const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
     object OtpMode {
         const val SMS = "sms"
+        const val WA = "whatsapp"
+        const val EMAIL = "email"
         const val MISCALL = "misscall"
         const val PIN = "PIN"
         const val GOOGLE_AUTH = "google_authenticator"

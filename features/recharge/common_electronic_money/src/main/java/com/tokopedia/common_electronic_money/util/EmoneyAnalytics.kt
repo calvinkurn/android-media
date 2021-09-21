@@ -2,17 +2,15 @@ package com.tokopedia.common_electronic_money.util
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import kotlin.collections.HashMap
 
 class EmoneyAnalytics {
 
-    private fun addComponentClickNFC(mapEvent: MutableMap<String, Any>, screenName: String, userId: String, irisSessionId: String) {
+    private fun addComponentClickNFC(mapEvent: MutableMap<String, Any>, userId: String, irisSessionId: String) {
         mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
         mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
         mapEvent[Param.SESSION_IRIS] = irisSessionId
         mapEvent[Param.USER_ID] = userId
-        mapEvent[Param.SCREEN_NAME] = screenName
         mapEvent[Param.CLIENT_ID] = "none"
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -27,6 +25,14 @@ class EmoneyAnalytics {
         mapEvent[Param.USER_ID] = userId
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, mapEvent)
+    }
+
+    private fun addComponentTapcash(mapEvent: MutableMap<String, Any>, irisSessionId: String){
+        mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
+        mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
+        mapEvent[Param.SESSION_IRIS] = irisSessionId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     fun openScreenNFC(operatorName: String, userId: String, irisSessionId: String) {
@@ -55,17 +61,17 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 action,
-                "$category - $operator")
-        addComponentClickNFC(map,"${screenName}-${operator}", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map,userId, irisSessionId)
     }
 
-    fun clickTopupEmoney(category: String, operator:String, userId: String, irisSessionId: String) {
+    fun clickTopupEmoney(userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TOPUP,
-                "$category - $operator")
-        addComponentClickNFC(map, "${Screen.SUCCESS_NFC}-$operator", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
     }
 
     fun clickTryAgainTapEmoney(category: String, userId: String, irisSessionId: String) {
@@ -73,9 +79,76 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TRY_AGAIN,
-                "$category")
-        addComponentClickNFC(map, "${Screen.FAILED_NFC}", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
     }
+
+    fun onTapEmoneyCardShowLoading(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.CHECK_STEP_2,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowLastBalance(cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.SUCCESS_CHECK_BALANCE,
+                "$cardNumber - $balance")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowErrorTracking(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.FAILED_UPDATE_BALANCE,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowErrorTrackingNFCNotSupproted(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowErrorTapcashClickContactCS(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.CLICK_CONTACT_TOKOPEDIA_CARE,
+                Label.CHECK_BALANCE_PAGE
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
+    fun onShowErrorTapcashClickUpdateBalanceCardFailed(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.IMPRESSION_EVENT_TOP,
+                ""
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
+    fun onShowErrorTapcashImpressionUpdateBalanceCardFailed(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.CLICK_CONTACT_TOKOPEDIA_CARE,
+                Label.TAPCASH_BNI_FAILED
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
 
     //---------------------------------------------------------------------------------------------------------
     // OLD ANALYTICS
@@ -124,37 +197,11 @@ class EmoneyAnalytics {
         ))
     }
 
-    fun onTapEmoneyCardShowLoading() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.CHECK_STEP_2,
-                Label.EMONEY
-        ))
-    }
-
-    fun onShowErrorTracking() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.FAILED_UPDATE_BALANCE,
-                Label.EMONEY
-        ))
-    }
-
-    fun onShowLastBalance() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.SUCCESS_CHECK_BALANCE,
-                Label.EMONEY
-        ))
-    }
-
     interface Event {
         companion object {
             const val CLICK_NFC = "clickNFC"
             const val OPEN_SCREEN = "openScreen"
+            const val GENERAL_EVENT = "digitalGeneralEvent"
         }
     }
 
@@ -170,6 +217,7 @@ class EmoneyAnalytics {
     interface Category {
         companion object {
             const val DIGITAL_NFC = "digital - nfc page"
+            const val TAPCASH_NFC = "dg - bni tapcash"
         }
     }
 
@@ -182,6 +230,7 @@ class EmoneyAnalytics {
             const val CHECK_STEP_2 = "check step - 2"
             const val CARD_IS_NOT_SUPPORTED = "card not supported"
             const val FAILED_UPDATE_BALANCE = "failed update saldo"
+            const val FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT = "failed nfc"
             const val SUCCESS_CHECK_BALANCE = "success check saldo"
 
             const val CLICK_TOPUP = "click top up now"
@@ -189,6 +238,10 @@ class EmoneyAnalytics {
             const val CLICK_CLOSE_INITAL_PAGE = "click x button initial"
             const val SUCCESS_CLICK_CLOSE_PAGE = "click x button success"
             const val FAILED_CLICK_CLOSE_PAGE = "click x button failed"
+            const val FAILED_CLICK_CLOSE_PAGE_NFC_NOT_SUPPORTED = "click x button failed nfc"
+
+            const val IMPRESSION_EVENT_TOP = "impression topup bni tapcash failed"
+            const val CLICK_CONTACT_TOKOPEDIA_CARE = "click hubungi tokopedia care"
         }
     }
 
@@ -196,6 +249,8 @@ class EmoneyAnalytics {
         companion object {
             const val EMONEY = "emoney"
             const val BRIZZI = "brizzi"
+            const val TAPCASH_BNI_FAILED = "topup bni tapcash failed"
+            const val CHECK_BALANCE_PAGE = "check saldo page"
         }
     }
 

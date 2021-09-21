@@ -22,10 +22,10 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
-import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper.Companion.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -70,7 +70,7 @@ class NotificationViewModelTest {
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
 
-    private val dispatcher = TestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val notificationItemsObserver: Observer<Result<NotificationDetailResponseModel>> = mockk(relaxed = true)
     private val bumpReminderObserver: Observer<Resource<BumpReminderResponse>> = mockk(relaxed = true)
@@ -552,8 +552,8 @@ class NotificationViewModelTest {
                 .productRecommendationWidget
                 ?.data
                 ?.let {
-                    mappingToRecommendationModel(it)
-                } ?: listOf(RecommendationWidget())
+                    it.mappingToRecommendationModel()
+                }
 
         val expectedValue = listOfRecommWidget.first()
 

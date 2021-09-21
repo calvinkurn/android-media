@@ -15,9 +15,12 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.talk.R
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_ITEM_THREAD_MESSAGE_PATH
+import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_TAB
+import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_THREAD
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -30,13 +33,16 @@ class TalkInboxActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
+    private val userSession = UserSession(targetContext)
 
     @get:Rule
     var activityRule: IntentsTestRule<TalkInboxActivity> = object : IntentsTestRule<TalkInboxActivity>(TalkInboxActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupGraphqlMockResponse(TalkMockResponse())
             fakeLogin()
+            additionalLoginInfo()
         }
 
         override fun getActivityIntent(): Intent {
@@ -52,11 +58,13 @@ class TalkInboxActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(TalkMockResponse())
     }
 
     @After
     fun tear() {
+        userSession.name = ""
+        userSession.shopId = ""
+        userSession.shopName = ""
         clearLogin()
     }
 
@@ -72,9 +80,51 @@ class TalkInboxActivityTest {
         }
     }
 
+    @Test
+    fun validateLoadedViewThread() {
+        actionTest {
+            refreshView()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_THREAD)
+            gtmLogDBSource.finishTest()
+        }
+    }
+
+    @Test
+    fun validateSwitchTab() {
+        actionTest {
+            swipeAnotherTab()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_TAB)
+            gtmLogDBSource.finishTest()
+        }
+    }
+
     private fun clickItemThread() {
         pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxRecyclerView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TalkInboxViewHolder>(0, ViewActions.click()))
+    }
+
+    private fun swipeAnotherTab() {
+        pauseTestFor(2000L)
+        val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(ViewActions.swipeLeft())
+    }
+
+    private fun refreshView() {
+        pauseTestFor(2000L)
+        val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(ViewActions.swipeDown())
+    }
+
+    private fun additionalLoginInfo() {
+        userSession.name = "User Name"
+        userSession.shopId = "fakeShopId"
+        userSession.shopName = "Shop Name"
     }
 }

@@ -1,26 +1,26 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.os.Build
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
-import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
+import kotlinx.android.synthetic.main.home_header_ovo.view.*
 
-class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategoryListener)
+class HomeHeaderOvoViewHolder(itemView: View,
+                              private val listener: HomeCategoryListener
+)
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
 
     companion object {
@@ -30,8 +30,24 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
-        renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+        renderEmptySpace()
+        element.headerDataModel?.let {
+            resetView()
+            when(it.homeBalanceModel.balanceType) {
+                HomeBalanceModel.TYPE_STATE_1 -> {
+                    renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+                }
+                HomeBalanceModel.TYPE_STATE_2, HomeBalanceModel.TYPE_STATE_3 -> {
+                    renderBalanceLayout(
+                            it.homeBalanceModel,
+                            element.headerDataModel?.isUserLogin?: false,
+                            element.needToShowUserWallet)
+                }
+                else -> resetView()
+            }
+        }
+
+        renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -39,31 +55,26 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
         bind(element)
     }
 
-    private fun renderEmptySpace(isUserLogin: Boolean) {
-        val emptySpace = itemView.findViewById<FrameLayout>(R.id.view_empty)
-        emptySpace.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = emptySpace.viewTreeObserver
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        val layoutParams = emptySpace.layoutParams
-                        setupHeight(isUserLogin, layoutParams)
-                        emptySpace.layoutParams = layoutParams
-                        emptySpace.invalidate()
-                    }
-                }
-        )
+    private fun resetView() {
+        itemView.findViewById<OvoWidgetView>(R.id.view_ovo).gone()
+        itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).gone()
     }
 
-    private fun setupHeight(isUserLogin: Boolean, layoutParams: ViewGroup.LayoutParams) {
-        var additionalHeight = 0
-
-        if (listener.isNewNavigation()) {
-            additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8))
-            if (!isUserLogin) additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_12))
+    private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
+        val chooseAddressView = itemView.widget_choose_address
+        if (needToShowChooseAddress) {
+            listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
+        } else {
+            chooseAddressView.gone()
         }
+    }
 
-        layoutParams.height = listener.homeMainToolbarHeight + additionalHeight
+    private fun renderEmptySpace() {
+        val emptySpace = itemView.findViewById<FrameLayout>(R.id.view_empty)
+        val layoutParams = emptySpace.layoutParams
+        layoutParams.height = getFullToolbarHeight(itemView.context)
+        emptySpace.layoutParams = layoutParams
+        emptySpace.invalidate()
     }
 
     private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {
@@ -76,5 +87,21 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                 ovoView.gone()
             }
         }
+    }
+
+    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean, needToShowUserWallet: Boolean) {
+        val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
+        data?.let {
+            if (isUserLogin && needToShowUserWallet) {
+                balanceWidgetView.visible()
+                balanceWidgetView.bind(it, listener)
+            } else {
+                balanceWidgetView.gone()
+            }
+        }
+    }
+
+    fun getBalanceWidgetView(): BalanceWidgetView? {
+        return itemView.findViewById(R.id.view_balance_widget)
     }
 }

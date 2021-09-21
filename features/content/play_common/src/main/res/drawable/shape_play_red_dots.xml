@@ -4,8 +4,8 @@
     android:shape="oval">
 
     <size
-        android:height="@dimen/dp_5"
-        android:width="@dimen/dp_5"
+        android:height="@dimen/layout_lvl1"
+        android:width="@dimen/layout_lvl1"
         />
 
     <solid android:color="@color/play_dms_R500" />

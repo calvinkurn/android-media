@@ -4,6 +4,9 @@
     <string name="state_failed_set_user_setting">Gagal mengubah pengaturan notifikasi, mohon cek koneksi Anda</string>
     <string name="title_show_case_setting_type">Atur notifikasi yang ingin diterima</string>
     <string name="description_show_case_setting_type">Kamu bisa atur notifikasi mulai dari push notification, e-mail, atau SMS.</string>
+
+    <string name="settingnotif_img_desc_icon_section">icon section</string>
+
     <string name="settingnotif_onboarding_message">Atur bagaimana kamu menerima notifikasi berbelanja dan beraktivitas di Tokopedia.</string>
 
     <string name="settingnotif_added_phone">Tambah Nomor HP</string>

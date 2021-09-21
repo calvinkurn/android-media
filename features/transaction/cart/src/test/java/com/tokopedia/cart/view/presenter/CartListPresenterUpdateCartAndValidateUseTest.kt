@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -43,7 +44,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk(relaxed = true)
     val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
@@ -121,6 +122,26 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
             Then("should render promo button state active default") {
                 verify {
                     view.renderPromoCheckoutButtonActiveDefault(emptyList())
+                }
+            }
+        }
+
+        Scenario("failed update and validate use with akamai exception") {
+
+            val exception = AkamaiErrorException("error message")
+
+            Given("update and validate use data") {
+                every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should clear auto apply and show red toast message") {
+                verify {
+                    clearCacheAutoApplyStackUseCase.createObservable(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }

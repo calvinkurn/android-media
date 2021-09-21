@@ -99,4 +99,6 @@
     <dimen name="gami_ll_reward_message_top_margin">0dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_112">112dp</dimen>
+    <dimen name="gami_reward_second_line_side_margin">16dp</dimen>
+    <dimen name="gami_ovo_points_end_margin">16dp</dimen>
 </resources>

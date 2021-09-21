@@ -7,8 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -20,6 +19,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -29,12 +30,15 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
+import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_RETRY
+import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -61,11 +65,6 @@ import javax.inject.Named
         )
 )
 class ChatModule {
-
-    private val NET_READ_TIMEOUT = 60
-    private val NET_WRITE_TIMEOUT = 60
-    private val NET_CONNECT_TIMEOUT = 60
-    private val NET_RETRY = 1
 
     @ChatScope
     @Provides
@@ -115,15 +114,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession: UserSession):
-            XUserIdInterceptor {
-        return XUserIdInterceptor(context, networkRouter, userSession)
-    }
-
-    @ChatScope
-    @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
                                       userSessionInterface: UserSessionInterface):
             FingerprintInterceptor {
@@ -156,13 +146,10 @@ class ChatModule {
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            xUserIdInterceptor: XUserIdInterceptor):
+                            httpLoggingInterceptor: HttpLoggingInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor(context))
-                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -208,13 +195,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@TopchatContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
-    @ChatScope
-    @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
@@ -256,5 +236,18 @@ class ChatModule {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideChatReplyUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatReplyPojo> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

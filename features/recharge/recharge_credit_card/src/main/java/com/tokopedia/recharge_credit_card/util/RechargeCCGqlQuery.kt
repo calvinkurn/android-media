@@ -54,6 +54,7 @@ object RechargeCCGqlQuery {
               operator {
                 id
                 attributes {
+                  name
                   image_url
                   default_product_id
                 }

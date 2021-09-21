@@ -9,24 +9,24 @@ import kotlinx.android.synthetic.main.suggestion_top_shop_see_more_layout.view.*
 class SuggestionTopShopSeeMoreViewHolder(
         itemView: View,
         private val suggestionTopShopListener: SuggestionTopShopListener
-) : AbstractViewHolder<SuggestionTopShopCardViewModel>(itemView) {
+) : AbstractViewHolder<SuggestionTopShopCardDataView>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.suggestion_top_shop_see_more_layout
     }
 
-    override fun bind(element: SuggestionTopShopCardViewModel) {
+    override fun bind(element: SuggestionTopShopCardDataView) {
         bindTitle(element)
         bindListener(element)
     }
 
-    private fun bindTitle(element: SuggestionTopShopCardViewModel) {
+    private fun bindTitle(element: SuggestionTopShopCardDataView) {
         itemView.suggestionTopShopSeeMoreTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
             itemView.suggestionTopShopSeeMoreTitle?.text = element.title
         }
     }
 
-    private fun bindListener(element: SuggestionTopShopCardViewModel) {
+    private fun bindListener(element: SuggestionTopShopCardDataView) {
         itemView.suggestionTopShopSeeMoreCard?.setOnClickListener {
             suggestionTopShopListener.onTopShopSeeMoreClicked(element)
         }

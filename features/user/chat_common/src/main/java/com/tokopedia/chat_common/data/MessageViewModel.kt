@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
@@ -11,9 +12,17 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     var blastId: Long = 0
     var fraudStatus = 0
+    var label: String = ""
 
+    var attachment: Any? = null
+        private set
+
+    /**
+     * constructor for GQL response
+     */
     constructor(
-            reply: Reply
+            reply: Reply,
+            attachment: Any? = null
     ) : super(
             messageId = reply.msgId.toString(),
             fromUid = reply.senderId.toString(),
@@ -31,6 +40,33 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     ) {
         blastId = reply.blastId
         fraudStatus = reply.fraudStatus
+        label = reply.label
+        this.attachment = attachment
+    }
+
+    /**
+     * constructor for WS response
+     */
+    constructor(
+        pojo: ChatSocketPojo,
+        attachment: Any? = null
+    ) : super(
+            messageId = pojo.msgId.toString(),
+            fromUid = pojo.fromUid,
+            from = pojo.from,
+            fromRole = pojo.fromRole,
+            attachmentId = "",
+            attachmentType = "",
+            replyTime = pojo.message.timeStampUnixNano,
+            startTime = pojo.startTime,
+            isRead = false,
+            isDummy = false,
+            isSender = !pojo.isOpposite,
+            message = pojo.message.censoredReply,
+            source = pojo.source
+    ) {
+        label = pojo.label
+        this.attachment = attachment
     }
 
     constructor(
@@ -107,7 +143,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     }
 
     fun isFromSmartReply(): Boolean {
-        return source == SOURCE_TOPBOT
+        return source == SOURCE_TOPBOT || source.startsWith(SOURCE_SMART_REPLY)
     }
 
     fun isFromBroadCast(): Boolean {
@@ -116,5 +152,13 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     fun isBanned(): Boolean {
         return fraudStatus == 1
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
+    }
+
+    fun hasAttachment(): Boolean {
+        return attachment != null
     }
 }

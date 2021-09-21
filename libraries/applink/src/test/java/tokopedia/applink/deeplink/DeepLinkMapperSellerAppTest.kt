@@ -4,8 +4,11 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
+import io.mockk.every
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -24,8 +27,20 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check home appLink then should return tokopedia internal seller home in sellerapp`() {
+    fun `check home appLink login then return seller home in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
+        every {
+            DeeplinkMapperHome.isLoginAndHasShop(context)
+        } returns true
+        assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check home appLink not login then return seller home in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/welcome"
+        every {
+            DeeplinkMapperHome.isLoginAndHasShop(context)
+        } returns false
         assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
     }
 
@@ -112,13 +127,9 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check browser appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.BROWSER, "")
-    }
-
-    @Test
-    fun `check webview appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.WEBVIEW, "")
+    fun `check pm benefit package appLink then should return tokopedia internal pm benefit package in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE, expectedDeepLink)
     }
 
     @Test
@@ -188,6 +199,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller info detail with url appLink then should return webview`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview?url=https://www.tokopedia.com/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL + "?url=https://www.tokopedia.com/help", expectedDeepLink)
+    }
+
+    @Test
     fun `check shipping editor appLink then should return tokopedia internal seller shipping editor in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR, expectedDeepLink)
@@ -207,7 +224,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller history appLink then should return seller home seller history in sellerapp with search param`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product&search=product"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
         assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_HISTORY}?search=product", expectedDeepLink)
     }
 
@@ -224,6 +241,18 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check review reminder then should return tokopedia internal review reminder`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.REVIEW_REMINDER , expectedDeepLink)
+    }
+
+    @Test
+    fun `check review reminder previous then should return tokopedia internal review reminder`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER_PREVIOUS , expectedDeepLink)
+    }
+
+    @Test
     fun `check reputation applink with tab param then should return internal review in sellerapp`() {
         val tabInboxReview = "inbox-review"
         val tabParam = "tab"
@@ -234,7 +263,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
                 .build()
                 .toString()
 
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}&${tabParam}=${tabInboxReview}"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}"
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, tabParam to tabInboxReview)
@@ -251,9 +280,32 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
                 .build()
                 .toString()
 
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}&${filterParam}=${filterUnread}"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}"
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, filterParam to filterUnread)
+    }
+
+    @Test
+    fun `check shop setting appLink then should return tokopedia internal shop setting in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/menu-setting"
+        val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check sellerapp webview deeplink`() {
+        val queryParam = "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview" + queryParam
+        val appLink = ApplinkConst.SellerApp.WEBVIEW + queryParam
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check sellerapp browser deeplink`() {
+        val queryParam = "?ext=true&titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/browser" + queryParam
+        val appLink = ApplinkConst.SellerApp.BROWSER + queryParam
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }

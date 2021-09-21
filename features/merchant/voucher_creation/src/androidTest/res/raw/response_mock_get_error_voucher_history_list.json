@@ -1,0 +1,10 @@
+[
+  {
+    "errors": [
+      {
+        "message": "Invalid request schema received. Kindly correct it.",
+        "extensions": {}
+      }
+    ]
+  }
+]

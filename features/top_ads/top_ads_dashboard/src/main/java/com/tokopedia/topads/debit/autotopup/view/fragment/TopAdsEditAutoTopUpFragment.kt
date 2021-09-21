@@ -45,7 +45,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var userSession: UserSession? = null
     private var selectedItem = AutoTopUpItem()
-    private var bonus = 1
+    private var bonus = 1.0
     private var autoTopupStatus: AutoTopUpStatus? = null
     private var autoTopupEnabled = true
 
@@ -138,7 +138,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         setLayoutOnToggle(true)
         showToastSuccess(typeBottomsheet)
         autoTopupStatus?.availableNominals?.let {
-            selectedItem = it[pos]
+            selectedItem = if (it.size < pos) it[0] else it[pos]
         }
         viewModel.saveSelection(auto_topup_status.isChecked, selectedItem)
         setupText()

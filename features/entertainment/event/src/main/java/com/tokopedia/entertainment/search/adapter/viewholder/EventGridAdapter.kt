@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_grid_item.view.*
 
-class EventGridAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var listEvent: MutableList<EventGrid> = mutableListOf()
     var isLoading = false
@@ -52,13 +52,14 @@ class EventGridAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 txt_price.text = event.harga_now
 
                 addOnImpressionListener(event, {
-                    EventCategoryPageTracking.getInstance().impressionGridViewProduct(event, listEvent, position + 1)
+                    listener.impressionCategory(event, listEvent, position)
                 })
 
                 setOnClickListener {
+                    listener.clickCategory(event, listEvent, position)
                     RouteManager.route(holder.view.context, event.app_url)
                     //TODO Open new Activity
-                    EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listEvent, position + 1)
+
                 }
             }
         }
@@ -74,6 +75,16 @@ class EventGridAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val nama_event: String,
             val harga_start: String,
             val harga_now: String,
-            val app_url: String
+            val app_url: String,
+            val category_id: String = ""
     ) : ImpressHolder()
+
+    interface EventGridListener{
+        fun impressionCategory(event: EventGridAdapter.EventGrid,
+                               listsEvent: List<EventGridAdapter.EventGrid>,
+                               position: Int)
+        fun clickCategory(event: EventGridAdapter.EventGrid,
+                          listsEvent: List<EventGridAdapter.EventGrid>,
+                          position: Int)
+    }
 }

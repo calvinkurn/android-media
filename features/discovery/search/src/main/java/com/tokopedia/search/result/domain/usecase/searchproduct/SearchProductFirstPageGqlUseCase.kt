@@ -1,36 +1,65 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.*
+import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.QuickFilterModel
+import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
+import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
+import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.TopAdsParams
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import rx.Emitter
+import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
 import rx.functions.Func1
-import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
+
+private const val TDN_SEARCH_INVENTORY_ID = "2"
+private const val TDN_SEARCH_ITEM_COUNT = 4
+private const val TDN_SEARCH_DIMENSION = 3
 
 class SearchProductFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
-        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
-): UseCase<SearchProductModel>() {
+        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val coroutineDispatchers: CoroutineDispatchers,
+        private val searchLogger: SearchLogger
+): UseCase<SearchProductModel>(), CoroutineScope {
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = coroutineDispatchers.main + masterJob
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
             addQuickFilterRequest(query, params)
             addProductAdsRequest(requestParams, params)
-            addHeadlineAdsRequest(requestParams, searchProductParams)
+            addHeadlineAdsRequest(requestParams, headlineAdsParams)
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
@@ -39,24 +68,17 @@ class SearchProductFirstPageGqlUseCase(
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequests(graphqlRequestList)
 
-        return graphqlUseCase
+        val gqlSearchProductObservable = graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
                 .map(searchProductModelMapper)
+
+        val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
+
+        return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
     }
 
-    private fun getQueryFromParameters(parameters: Map<String, Any>): String {
+    private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
         return parameters[SearchApiConst.Q]?.toString() ?: ""
-    }
-
-    private fun createHeadlineParams(parameters: Map<String, Any>): String {
-        val headlineParams = HashMap(parameters)
-
-        headlineParams[TopAdsParams.KEY_EP] = HEADLINE
-        headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = HEADLINE_TEMPLATE_VALUE
-        headlineParams[TopAdsParams.KEY_ITEM] = HEADLINE_ITEM_VALUE
-        headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = HEADLINE_PRODUCT_COUNT
-
-        return UrlParamUtils.generateUrlParamString(headlineParams)
     }
 
     private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
@@ -68,20 +90,6 @@ class SearchProductFirstPageGqlUseCase(
                     QUICK_FILTER_QUERY,
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
-
-    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
-        if (!requestParams.isSkipHeadlineAds()) {
-            val headlineParams = createHeadlineParams(searchProductParams)
-            add(createHeadlineAdsRequest(headlineParams = headlineParams))
-        }
-    }
-
-    private fun createHeadlineAdsRequest(headlineParams: String) =
-            GraphqlRequest(
-                    HEADLINE_ADS_QUERY,
-                    HeadlineAdsModel::class.java,
-                    mapOf(GQL.KEY_HEADLINE_PARAMS to headlineParams)
             )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
@@ -123,10 +131,67 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_PARAMS to params)
             )
 
-    companion object {
-        internal const val HEADLINE_PRODUCT_COUNT = 3
+    private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
+        return Observable.create<List<TopAdsImageViewModel>>({ emitter ->
+            try {
+                launch { emitTopAdsImageViewData(emitter, query) }
+            }
+            catch (throwable: Throwable) {
+                searchLogger.logTDNError(throwable)
+                emitter.onNext(listOf())
+            }
+        }, BUFFER).tdnTimeout()
+    }
 
-        internal const val QUICK_FILTER_QUERY = """
+    private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageViewModel>>, query: String) {
+        withContext(coroutineDispatchers.io) {
+            try {
+                val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
+                        topAdsImageViewUseCase.getQueryMapSearch(query)
+                )
+                emitter.onNext(topAdsImageViewModelList)
+                emitter.onCompleted()
+            }
+            catch (throwable: Throwable) {
+                searchLogger.logTDNError(throwable)
+                emitter.onNext(listOf())
+            }
+        }
+    }
+
+    private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
+            getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
+
+    private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
+        val timeoutMs : Long = TDN_TIMEOUT
+
+        return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
+            searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
+            emitter.onNext(listOf())
+        }, BUFFER))
+    }
+
+    private fun setTopAdsImageViewModelList(
+            searchProductModel: SearchProductModel?,
+            topAdsImageViewModelList: List<TopAdsImageViewModel>?
+    ): SearchProductModel? {
+        if (searchProductModel == null || topAdsImageViewModelList == null) return searchProductModel
+
+        searchProductModel.setTopAdsImageViewModelList(topAdsImageViewModelList)
+
+        return searchProductModel
+    }
+
+    override fun unsubscribe() {
+        super.unsubscribe()
+
+        if (isActive && !masterJob.isCancelled) masterJob.children.map { it.cancel() }
+    }
+
+    companion object {
+        private const val TDN_TIMEOUT: Long = 2_000
+
+        private const val QUICK_FILTER_QUERY = """
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
@@ -164,95 +229,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        internal const val HEADLINE_ADS_QUERY = """
-            query HeadlineAds(${'$'}headline_params: String!) {
-                headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
-                    status {
-                        error_code
-                        message
-                    }
-                    header {
-                        process_time
-                        total_data
-                    }
-                    data {
-                        id
-                        ad_ref_key
-                        redirect
-                        ad_click_url
-                        headline {
-                            template_id
-                            name
-                            image {
-                                full_url
-                                full_ecs
-                            }
-                            shop {
-                                id
-                                name
-                                domain
-                                tagline
-                                slogan
-                                location
-                                city
-                                gold_shop
-                                gold_shop_badge
-                                shop_is_official
-                                merchant_vouchers
-                                product {
-                                    id
-                                    name
-                                    price_format
-                                    applinks
-                                    product_cashback
-                                    product_cashback_rate
-                                    product_new_label
-                                    count_review_format
-                                    rating_average
-                                    label_group {
-                                        title
-                                        type
-                                        position
-                                    }
-                                    image_product{
-                                        product_id
-                                        product_name
-                                        image_url
-                                        image_click_url
-                                    }
-                                    campaign {
-                                        original_price
-                                        discount_percentage
-                                    }
-                                }
-                                image_shop {
-                                    cover
-                                    s_url
-                                    xs_url
-                                    cover_ecs
-                                    s_ecs
-                                    xs_ecs
-                                }
-                            }
-                            badges {
-                                image_url
-                                show
-                                title
-                            }
-                            button_text
-                            promoted_text
-                            description
-                            uri
-                            layout
-                            position
-                        }
-                        applinks
-                    }
-                }
-            }
-        """
-
-        internal const val GLOBAL_NAV_GQL_QUERY = """
+        private const val GLOBAL_NAV_GQL_QUERY = """
             query GlobalSearchNavigation(${'$'}query: String!, ${'$'}params: String!) {
                 global_search_navigation(keyword:${'$'}query, device:"android", size:5, params:${'$'}params) {
                     data {
@@ -281,7 +258,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        internal const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
+        private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
             query SearchInspirationCarousel(${'$'}params: String!) {
                 searchInspirationCarouselV2(params: ${'$'}params) {
                     data {
@@ -296,6 +273,8 @@ class SearchProductFirstPageGqlUseCase(
                             banner_image_url
                             banner_link_url
                             banner_applink_url
+                            identifier
+                            meta
                             product {
                                 id
                                 name
@@ -316,6 +295,25 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                              	badges {
+                                    title
+                                    image_url
+                                    show
+                                }
+                              	shop {
+                                    name
+                                    city
+                                }
+                                freeOngkir {
+                                    isActive
+                                    image_url
+                                }
+                                ads {
+                                    id
+                                    productClickUrl
+                                    productWishlistUrl
+                                    productViewUrl
+                                }
                             }
                         }
                     }
@@ -323,7 +321,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        internal const val SEARCH_INSPIRATION_WIDGET_QUERY = """
+        private const val SEARCH_INSPIRATION_WIDGET_QUERY = """
             query SearchInspirationWidget(${'$'}params: String!) {
                 searchInspirationWidget(params:${'$'}params){
                     data {

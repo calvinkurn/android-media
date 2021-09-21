@@ -10,20 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/setting_title_indented_margin_top"
+        android:layout_marginStart="@dimen/setting_indented_margin_start"
         android:paddingBottom="@dimen/setting_title_indented_margin_bottom"
         android:textColor="@color/Unify_N700_96"
         android:letterSpacing="@integer/setting_title_letter_spacing"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text = "TINGKATKAN PENJUALAN"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

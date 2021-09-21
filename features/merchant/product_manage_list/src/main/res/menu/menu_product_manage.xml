@@ -9,12 +9,6 @@
         android:title="@string/title_add_product"
         android:visible="false"
         app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/label_view_add_image"
-                app:showAsAction="never"
-                android:title="@string/add_product_text_description"/>
-        </menu>
     </item>
 
     <item

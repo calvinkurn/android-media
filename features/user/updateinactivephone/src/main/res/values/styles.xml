@@ -8,6 +8,6 @@
   
   <style name="BoldToolbar">
     <item name="android:textSize">@dimen/fontSize_lvl4</item>
-    <item name="android:textColor">@color/dark_N0</item>
+    <item name="android:textColor">@color/updateinactivephone_dms_dark_n0</item>
   </style>
 </resources>

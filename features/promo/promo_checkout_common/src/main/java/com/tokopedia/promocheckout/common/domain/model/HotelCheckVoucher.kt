@@ -34,7 +34,8 @@ class HotelCheckVoucher (
         var isSuccess: Boolean = true,
         @SerializedName("errorMessage")
         @Expose
-        var errorMessage: String = ""
+        var errorMessage: String = "",
+        var messageColor: String = ""
 
 ) {
     class Response(

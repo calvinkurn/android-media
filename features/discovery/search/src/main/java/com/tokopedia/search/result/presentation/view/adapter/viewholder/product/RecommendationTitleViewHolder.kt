@@ -5,13 +5,13 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.RecommendationTracking
 
 class RecommendationTitleViewHolder(
         itemView: View
-) :  AbstractViewHolder<RecommendationTitleViewModel>(itemView) {
+) :  AbstractViewHolder<RecommendationTitleDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,7 +22,7 @@ class RecommendationTitleViewHolder(
     private val title: TextView by lazy { itemView.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { itemView.findViewById<TextView>(R.id.see_more) }
 
-    override fun bind(element: RecommendationTitleViewModel?) {
+    override fun bind(element: RecommendationTitleDataView?) {
         element?.let { viewModel ->
             title.text = viewModel.title
             seeMore.visibility = if(viewModel.seeMoreUrl.isNotEmpty()) View.VISIBLE else View.GONE

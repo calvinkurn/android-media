@@ -8,8 +8,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_8"
     android:paddingTop="@dimen/dp_24"
-    android:orientation="vertical"
-    android:background="@color/Unify_N0">
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -75,5 +74,14 @@
 
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_shop_reputation_badge"
+        android:contentDescription="@string/content_desc_image_view_shop_reputation_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>

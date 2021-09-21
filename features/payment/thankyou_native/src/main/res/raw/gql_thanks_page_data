@@ -18,6 +18,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     order_amount_str
     amount
     amount_str
+    combine_amount
     payment_items{
         item_name
         item_desc
@@ -35,6 +36,8 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        gateway_name
        amount
        amount_str
+       amount_combine
+       amount_combine_str
     }
     promo_data {
         promo_code
@@ -68,6 +71,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
             thumbnail_product
             bebas_ongkir_dimension
             is_bbi
+            category_id
         }
         shipping_amount
         shipping_amount_str
@@ -123,6 +127,14 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     }
     config_flag
     config_list
+    gateway_additional_data{
+       key
+       value
+    }
+    fee_details{
+        name
+        amount
+    }
   }
 }
 

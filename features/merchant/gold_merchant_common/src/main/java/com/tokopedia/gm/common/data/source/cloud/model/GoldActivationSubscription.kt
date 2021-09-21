@@ -8,26 +8,25 @@ data class GoldActivationSubscription(
         @Expose
         val goldActivationData: GMActivation = GMActivation()
 ) {
-        fun isSuccess() : Boolean {
-                return goldActivationData.header.errorCode == ""
-        }
+    fun isSuccess(): Boolean {
+        return goldActivationData.header.errorCode.isBlank()
+    }
 }
 
 data class GMActivation(
-        @SerializedName("ActivationSubscriptionHeader")
+        @SerializedName("header")
         @Expose
         val header: GMActivationHeader = GMActivationHeader(),
 
-        @SerializedName("ActivationSubscriptionData")
+        @SerializedName("data")
         @Expose
         val data: GMActivationData = GMActivationData()
 )
 
 data class GMActivationData(
-        @SerializedName("shop_id")
+        @SerializedName("shop_tier")
         @Expose
-        val shopId: Int = 0,
-
+        val shopTier: Int = 0,
         @SerializedName("product")
         @Expose
         val product: GMActivationProduct = GMActivationProduct(),
@@ -38,7 +37,7 @@ data class GMActivationData(
 )
 
 data class GMActivationHeader(
-        @SerializedName("message")
+        @SerializedName("messages")
         @Expose
         val message: List<String> = listOf(),
 
@@ -54,7 +53,7 @@ data class GMActivationHeader(
 data class GMActivationProduct(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String? = "0",
 
         @SerializedName("name")
         @Expose

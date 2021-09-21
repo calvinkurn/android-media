@@ -18,7 +18,7 @@
         android:paddingBottom="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:background="@color/Unify_N0">
         <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -2,7 +2,7 @@ package com.tokopedia.play.util.video.buffer
 
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -16,12 +16,12 @@ import javax.inject.Inject
  */
 class PlayViewerVideoBufferGovernor (
         private val playVideoPlayer: PlayVideoWrapper,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val scope: CoroutineScope
 ) {
 
     class Factory @Inject constructor (
-            private val dispatcher: CoroutineDispatcherProvider
+            private val dispatcher: CoroutineDispatchers
     ) {
 
         fun create(

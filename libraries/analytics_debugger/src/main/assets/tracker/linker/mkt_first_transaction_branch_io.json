@@ -5,44 +5,44 @@
     {
       "buoList": [
         {
-          "canonicalIdentifier_": "{{.*}}",
-          "canonicalUrl_": "{{.*}}",
-          "creationTimeStamp_": "{{\\d+}}",
-          "description_": "{{.*}}",
-          "expirationInMilliSec_": "{{\\d+}}",
-          "indexMode_": "{{\\w+}}",
-          "localIndexMode_": "{{\\w+}}",
+          "canonicalIdentifier_": ".*",
+          "canonicalUrl_": ".*",
+          "creationTimeStamp_": "\\d+",
+          "description_": ".*",
+          "expirationInMilliSec_": "\\d+",
+          "indexMode_": "\\w+",
+          "localIndexMode_": "\\w+",
           "metadata_": {
-            "contentSchema": "{{\\w+}}",
+            "contentSchema": "\\w+",
             "currencyType": "IDR",
             "customMetadata": {
-              "ProductCategory": "{{\\w+}}"
+              "ProductCategory": "\\w+"
             },
-            "price": "{{\\d+}}",
-            "productName": "{{\\w+}}",
-            "quantity": "{{\\d+}}",
-            "sku": "{{\\w+}}"
+            "price": "\\d+",
+            "productName": "\\w+",
+            "quantity": "\\d+",
+            "sku": "\\w+"
           },
-          "title_": "{{\\w+}}"
+          "title_": "\\w+"
         }
       ],
       "customProperties": {
         "nameValuePairs": {
-          "paymentID": "{{\\w+}}",
-          "productType": "{{\\w+}}",
-          "userId": "{{\\w+}}",
-          "new_buyer": "{{true|false}}",
-          "monthly_new_buyer": "{{true|false}}"
+          "paymentID": "\\w+",
+          "productType": "\\w+",
+          "userId": "\\w+",
+          "new_buyer": "true|false",
+          "monthly_new_buyer": "true|false"
         }
       },
       "eventName": "PURCHASE",
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {
-          "transaction_id": "{{\\d+}}",
-          "currency": "{{\\w+}}",
-          "shipping": "{{\\d+}}",
-          "revenue": "{{\\d+}}"
+          "transaction_id": "\\d+",
+          "currency": "\\w+",
+          "shipping": "\\d+",
+          "revenue": "\\d+"
         }
       }
     }

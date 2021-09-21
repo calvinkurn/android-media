@@ -1,32 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="month_title">
-        <item>@string/month_1</item>
-        <item>@string/month_2</item>
-        <item>@string/month_3</item>
-        <item>@string/month_4</item>
-        <item>@string/month_5</item>
-        <item>@string/month_6</item>
-        <item>@string/month_7</item>
-        <item>@string/month_8</item>
-        <item>@string/month_9</item>
-        <item>@string/month_10</item>
-        <item>@string/month_11</item>
-        <item>@string/month_12</item>
-    </string-array>
-
     <array name="filter_date">
         <item>Semua Tanggal Transaksi</item>
         <item>30 Hari Terakhir</item>
         <item>90 Hari Terakhir</item>
         <item>Pilih Tanggal Sendiri</item>
-    </array>
-
-    <array name="filter_status">
-        <item>Menunggu Konfirmasi (1)</item>
-        <item>Diproses (2)</item>
-        <item>Dikirim</item>
-        <item>Tiba di Tujuan</item>
-        <item>Dikomplain</item>
     </array>
 </resources>

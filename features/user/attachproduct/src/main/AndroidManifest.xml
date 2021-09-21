@@ -5,10 +5,11 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.AttachProductActivity"
+            android:name=".view.activity.NewAttachProductActivity"
             android:screenOrientation="portrait"
+            android:label="@string/string_attach_product_activity_title"
             android:theme="@style/Theme.AttachCommon">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

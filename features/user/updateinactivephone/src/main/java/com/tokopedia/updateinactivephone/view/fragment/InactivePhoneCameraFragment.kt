@@ -192,7 +192,7 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     override fun onStop() {
         super.onStop()
-        // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326#63629326
+        // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326# 63629326
         cameraView?.close()
     }
 

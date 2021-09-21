@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerAdultDesc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerAdultLabel"
-        app:srcCompat="@drawable/ic_flight_passenger" />
+       app:srcCompat="@drawable/ic_flight_passenger" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightPassengerAdultLabel"
@@ -65,7 +65,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerAdultDesc" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icFlightPassengerChild"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
@@ -74,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerChildDesc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerChildLabel"
-        app:srcCompat="@drawable/ic_flight_child" />
+        app:icon_name="CHILD" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightPassengerChildLabel"

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -19,14 +19,14 @@ import kotlinx.android.synthetic.main.item_topads_shop.view.*
  */
 class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener?,
                            private val cardTitleListener: CardTitleView.CardTitleListener?)
-    : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener, DynamicFeedShopAdapter.TopAdsShopImpressionListener {
+    : AbstractViewHolder<TopadsShopUiModel>(v), TopAdsItemClickListener, DynamicFeedShopAdapter.TopAdsShopImpressionListener {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topads_shop
     }
 
-    override fun bind(element: TopadsShopViewModel?) {
+    override fun bind(element: TopadsShopUiModel?) {
         if (element == null) {
             itemView.hide()
             return
@@ -51,7 +51,7 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
 
     }
 
-    override fun bind(element: TopadsShopViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: TopadsShopUiModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
             return

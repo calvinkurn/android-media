@@ -1,0 +1,24 @@
+[
+  {
+    "data": {
+      "recharge_favorite_number": {
+        "list": [
+          {
+            "client_number": "6032984072952405",
+            "label": "",
+            "product_id": 2069,
+            "operator_id": 578,
+            "category_id": 34
+          },
+          {
+            "client_number": "6013502000675709",
+            "label": "",
+            "product_id": 3235,
+            "operator_id": 1015,
+            "category_id": 34
+          }
+        ]
+      }
+    }
+  }
+]

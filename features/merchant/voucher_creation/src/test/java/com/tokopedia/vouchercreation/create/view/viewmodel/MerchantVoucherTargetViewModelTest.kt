@@ -112,6 +112,13 @@ class MerchantVoucherTargetViewModelTest {
     }
 
     @Test
+    fun `reloading voucher target data will should notify user to return to initial value if the voucher is private and promo code isn't empty`() {
+        mViewModel.setReloadVoucherTargetData(VoucherTargetType.PRIVATE, DUMMY_PROMO_CODE, anyString())
+
+        assert(mViewModel.shouldReturnToInitialValue.value == true)
+    }
+
+    @Test
     fun `reloading voucher target data will change voucher target list data`() {
         mViewModel.setReloadVoucherTargetData(DUMMY_TARGET_TYPE, DUMMY_PROMO_CODE, DUMMY_PREFIX)
 

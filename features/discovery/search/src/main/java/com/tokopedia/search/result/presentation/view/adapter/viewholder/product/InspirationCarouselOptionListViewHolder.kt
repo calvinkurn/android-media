@@ -5,16 +5,16 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
@@ -22,13 +22,13 @@ import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.vi
 class InspirationCarouselOptionListViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
+) : AbstractViewHolder<InspirationCarouselDataView.Option>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_list
     }
 
-    override fun bind(item: InspirationCarouselViewModel.Option) {
+    override fun bind(item: InspirationCarouselDataView.Option) {
         bindOptionTitle(item.title)
         bindOnClickListener(item)
 
@@ -58,7 +58,7 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindOnClickListener(item: InspirationCarouselViewModel.Option) {
+    private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
         itemView.viewAllOption?.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item)
         }
@@ -68,11 +68,11 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindImpressionListener(product: InspirationCarouselViewModel.Option.Product) {
+    private fun bindImpressionListener(product: InspirationCarouselDataView.Option.Product) {
         itemView.productImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
-    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+    private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
                 inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
@@ -82,7 +82,7 @@ class InspirationCarouselOptionListViewHolder(
 
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
+            it.loadImage(imgUrl)
         }
     }
 
@@ -98,12 +98,12 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindSalesAndRating(product: InspirationCarouselViewModel.Option.Product) {
+    private fun bindSalesAndRating(product: InspirationCarouselDataView.Option.Product) {
         bindRatingSalesFloat(product)
         bindTextIntegrityWithSalesRatingFloat(product)
     }
 
-    private fun bindRatingSalesFloat(product: InspirationCarouselViewModel.Option.Product) {
+    private fun bindRatingSalesFloat(product: InspirationCarouselDataView.Option.Product) {
         val willShowSalesRatingFloat = product.willShowRating()
 
         itemView.optionListCardImageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
@@ -113,7 +113,7 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselViewModel.Option.Product) {
+    private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselDataView.Option.Product) {
         val labelGroupViewModel = product.getLabelIntegrity()
 
         itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(product.willShowSalesAndRating())
@@ -121,15 +121,15 @@ class InspirationCarouselOptionListViewHolder(
         itemView.optionListCardTextViewSales?.initLabelGroup(labelGroupViewModel)
     }
 
-    private fun Typography.initLabelGroup(labelGroup: LabelGroupViewModel?) {
-        if (labelGroup == null) hide()
-        else showTypography(labelGroup)
+    private fun Typography.initLabelGroup(labelGroupData: LabelGroupDataView?) {
+        if (labelGroupData == null) hide()
+        else showTypography(labelGroupData)
     }
 
-    private fun Typography.showTypography(labelGroupViewModel: LabelGroupViewModel) {
-        shouldShowWithAction(labelGroupViewModel.title.isNotEmpty()) {
-            it.text = MethodChecker.fromHtml(labelGroupViewModel.title)
-            it.setTextColor(labelGroupViewModel.type.toUnifyTextColor(context))
+    private fun Typography.showTypography(labelGroupDataView: LabelGroupDataView) {
+        shouldShowWithAction(labelGroupDataView.title.isNotEmpty()) {
+            it.text = MethodChecker.fromHtml(labelGroupDataView.title)
+            it.setTextColor(labelGroupDataView.type.toUnifyTextColor(context))
         }
     }
 

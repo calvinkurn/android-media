@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -50,18 +49,17 @@ import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
-import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rx.subscriptions.CompositeSubscription
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -84,12 +82,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var versionCode: String = ""
     private var userId: String = ""
     private var sessionToken: String = ""
-    private var fcmToken: String = ""
     private var loginState: String = ""
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
     private var lastAccessedPage: String? = ""
-    private var resizedUriImage: Uri? = null
     private var categoryItem: Int = -1
     private var reportType: Int = 0
     private var labelsId: ArrayList<Int> = arrayListOf()
@@ -100,8 +96,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var selectedImage: ArrayList<String> = arrayListOf()
 
     private val requiredPermissions: Array<String>
-        get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+        get() = if (Build.VERSION.SDK_INT < VERSION_CODES.Q) {
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feedback_page, container, false)
@@ -148,7 +147,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
             REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
                 data?.let {
-                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
+                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)?: ""
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
                     selectedImage = arrayListOf(newUri.toString())
@@ -186,9 +185,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 imageSize = originalFile.length()/1000
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
-                    resizeImage(image)
-                    val resizedFile = File(resizedUriImage?.path)
-                    sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
+                    resizeImage(image)?.let { imageFile ->
+                        sendAttachmentImage(feedbackId, imageFile, totalImage, initCountImage)
+                    }
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
                     sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
                 } else {
@@ -225,6 +224,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                             initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
             val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.FEEDBACK_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -498,21 +498,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun resizeImage(data: String) {
+    private fun resizeImage(data: String):File? {
         val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
         val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        resizedUriImage = Uri.parse(ImagePreviewUtils.saveImageFromBitmap(requireActivity(), b2, ImagePreviewUtils.processPictureName(Math.random().toInt())))
-    }
-
-    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "IMG_" + Calendar.getInstance().time, null)
-        return Uri.parse(path)
+        return ImageProcessingUtil.writeImageToTkpdPath(b2, Bitmap.CompressFormat.JPEG, quality = 80)
     }
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {

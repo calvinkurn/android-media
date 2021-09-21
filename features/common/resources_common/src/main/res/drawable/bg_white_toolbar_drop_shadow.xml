@@ -4,8 +4,8 @@
         <shape
             android:shape="rectangle">
             <gradient
-                android:startColor="#999999"
-                android:endColor="#e7e7e7"
+                android:startColor="@color/Unify_N200"
+                android:endColor="@color/Unify_N75"
                 android:type="linear"
                 android:angle="270">
             </gradient>
@@ -15,7 +15,7 @@
 
     <item android:bottom="1dp">
         <shape>
-            <solid android:color="#FFFFFF" />
+            <solid android:color="@color/Unify_N0" />
             <corners android:radius="1dp" />
         </shape>
     </item>

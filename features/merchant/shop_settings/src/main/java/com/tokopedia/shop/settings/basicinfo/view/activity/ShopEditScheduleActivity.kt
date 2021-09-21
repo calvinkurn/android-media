@@ -2,13 +2,12 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.Toolbar
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -16,8 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -28,12 +27,13 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.view.customview.ImageLabelView
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
-import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
@@ -42,6 +42,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     companion object {
         private const val SAVED_SELECTED_START_DATE = "svd_selected_start_date"
         private const val SAVED_SELECTED_END_DATE = "svd_selected_end_date"
+        private const val TIME_MULTIPLIER = 1000L
+        private const val DEFAULT_TIME = 0L
 
         @JvmStatic
         fun createIntent(context: Context, draftId: String): Intent {
@@ -54,16 +56,23 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModel: ShopScheduleViewModel
 
-    private var progressDialog: ProgressDialog? = null
+    private var header: HeaderUnify? = null
+    private var loader: LoaderUnify? = null
+    private var layout: LinearLayout? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
     private var isClosedNow: Boolean = false
-    private var selectedStartCloseUnixTimeMs: Long = 0
-    private var selectedEndCloseUnixTimeMs: Long = 0
+    private var selectedStartCloseUnixTimeMs: Long = DEFAULT_TIME
+    private var selectedEndCloseUnixTimeMs: Long = DEFAULT_TIME
+    private var labelStartClose: ImageLabelView? = null
+    private var labelEndClose: ImageLabelView? = null
+    private var tfShopCloseNote: TextFieldUnify? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupUI()
+
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
@@ -84,7 +93,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             setupView(shopBasicDataModel)
         } else {
             // execute get shop basic data use case
-            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
+            showLoading()
             viewModel.getShopBasicData()
         }
 
@@ -115,7 +124,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setupView(shopBasicDataModel: ShopBasicDataModel?) {
-        if (selectedStartCloseUnixTimeMs == 0L || selectedEndCloseUnixTimeMs == 0L) {
+        if (selectedStartCloseUnixTimeMs == DEFAULT_TIME || selectedEndCloseUnixTimeMs == DEFAULT_TIME) {
             val closeSchedule = shopBasicDataModel?.closeSchedule
 
             if (isClosedNow) { // if close now, default: H
@@ -124,57 +133,57 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
                 selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     currentDate.time
                 } else {
-                    closedUntil!!.toLong() * 1000L
+                    closedUntil.toLongOrZero() * TIME_MULTIPLIER
                 }
             } else { // if NOT close now, default: H+1
                 selectedStartCloseUnixTimeMs = if (isEmptyNumber(closeSchedule)) {
                     tomorrowDate.time
                 } else {
-                    closeSchedule!!.toLong() * 1000L
+                    closeSchedule.toLongOrZero() * TIME_MULTIPLIER
                 }
                 val closedUntil = shopBasicDataModel?.closeUntil
                 selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     tomorrowDate.time
                 } else {
-                    closedUntil!!.toLong() * 1000L
+                    closedUntil.toLongOrZero() * TIME_MULTIPLIER
                 }
             }
         }
 
         setUIShopSchedule(shopBasicDataModel)
 
-        labelStartClose.setOnClickListener {
+        labelStartClose?.setOnClickListener {
             val minDate = tomorrowDate
             val selectedDate = unixToDate(selectedStartCloseUnixTimeMs)
             showStartDatePickerDialog(selectedDate, minDate)
         }
 
-        labelEndClose.setOnClickListener {
+        labelEndClose?.setOnClickListener {
             val minDate = unixToDate(selectedStartCloseUnixTimeMs)
             val selectedDate = unixToDate(selectedEndCloseUnixTimeMs)
             showEndDatePickerDialog(selectedDate, minDate)
         }
 
-        tfShopCloseNote.textFieldInput.afterTextChanged {
-            tfShopCloseNote.setError(false)
-            tfShopCloseNote.setMessage("")
+        tfShopCloseNote?.textFieldInput?.afterTextChanged {
+            tfShopCloseNote?.setError(false)
+            tfShopCloseNote?.setMessage("")
         }
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        findViewById<Toolbar>(R.id.toolbar)?.let {
-            setSupportActionBar(it)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
-            it.title = getString(R.string.shop_settings_shop_status)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        loader = findViewById(R.id.loader)
+        layout = findViewById(R.id.layout)
+        header = findViewById<HeaderUnify>(R.id.header)?.apply {
+            setSupportActionBar(this)
+            title = getString(R.string.shop_settings_shop_status)
         }
+        labelStartClose = findViewById(R.id.labelStartClose)
+        labelEndClose =  findViewById(R.id.labelEndClose)
+        tfShopCloseNote =  findViewById(R.id.tfShopCloseNote)
 
-        val tvSave: Typography? = findViewById(R.id.tvSave)
-        tvSave?.apply {
-            visibility = View.VISIBLE
-            isEnabled = true
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+
+        header?.actionTextView?.apply {
             setOnClickListener { onSaveButtonClicked() }
         }
     }
@@ -209,22 +218,22 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         this.shopBasicDataModel = shopBasicDataModel
         setupView(shopBasicDataModel)
-        hideSubmitLoading()
+        hideLoading()
     }
 
     private fun onFailGetShopBasicData(throwable: Throwable) {
-        hideSubmitLoading()
+        hideLoading()
         showErrorMessage(throwable, View.OnClickListener { viewModel.getShopBasicData() })
     }
 
     private fun onSuccessUpdateShopSchedule(message: String) {
-        hideSubmitLoading()
+        hideLoading()
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, message) })
         finish()
     }
 
     private fun onFailUpdateShopSchedule(throwable: Throwable) {
-        hideSubmitLoading()
+        hideLoading()
         showSnackbarErrorSubmitEdit(throwable)
     }
 
@@ -252,28 +261,28 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     private fun setStartCloseDate(date: Date) {
         selectedStartCloseUnixTimeMs = date.time
-        labelStartClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelStartClose?.setContent(toReadableString(FORMAT_DAY_DATE, date))
         // move end date to start date, if the end < start
-        if (selectedEndCloseUnixTimeMs > 0 && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
+        if (selectedEndCloseUnixTimeMs > DEFAULT_TIME && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
             setEndCloseDate(Date(selectedStartCloseUnixTimeMs))
         }
     }
 
     private fun setEndCloseDate(date: Date) {
         selectedEndCloseUnixTimeMs = date.time
-        labelEndClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelEndClose?.setContent(toReadableString(FORMAT_DAY_DATE, date))
     }
 
     private fun onSaveButtonClicked() {
         hideKeyboard()
-        val closeNote = tfShopCloseNote.textFieldInput.text.toString()
+        val closeNote = tfShopCloseNote?.textFieldInput?.text?.toString().orEmpty()
         if (closeNote.isEmpty()) {
-            tfShopCloseNote.setError(true)
-            tfShopCloseNote.setMessage(getString(R.string.note_must_be_filled))
+            tfShopCloseNote?.setError(true)
+            tfShopCloseNote?.setMessage(getString(R.string.note_must_be_filled))
             return
         }
 
-        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
+        showLoading()
         @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel?.isClosed == true)
             ShopScheduleActionDef.CLOSED
         else
@@ -283,8 +292,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         viewModel.updateShopSchedule(
                 shopAction,
                 isClosedNow || shopBasicDataModel?.isClosed == true,
-                if (closeStart == 0L) null else closeStart.toString(),
-                if (closeEnd == 0L) null else closeEnd.toString(),
+                if (closeStart == DEFAULT_TIME) null else closeStart.toString(),
+                if (closeEnd == DEFAULT_TIME) null else closeEnd.toString(),
                 closeNote)
     }
 
@@ -296,53 +305,48 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun showSubmitLoading(message: String) {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(this)
-        }
-        if (progressDialog?.isShowing == false) {
-            progressDialog?.setMessage(message)
-            progressDialog?.isIndeterminate = true
-            progressDialog?.setCancelable(false)
-            progressDialog?.show()
-        }
+    private fun showLoading() {
+        loader?.show()
+        layout?.hide()
     }
 
-    private fun hideSubmitLoading() {
-        if (progressDialog?.isShowing == true) {
-            progressDialog?.dismiss()
-            progressDialog = null
-        }
+    private fun hideLoading() {
+        loader?.hide()
+        layout?.show()
     }
 
     private fun setUIShopSchedule(shopBasicDataModel: ShopBasicDataModel?) {
         //set close schedule
         if (isClosedNow || shopBasicDataModel?.isClosed == true) {
-            labelStartClose.isEnabled = false
+            labelStartClose?.isEnabled = false
             setStartCloseDate(currentDate)
         } else {
-            labelStartClose.isEnabled = true
+            labelStartClose?.isEnabled = true
             setStartCloseDate(Date(selectedStartCloseUnixTimeMs))
         }
 
         //set open schedule.
         setEndCloseDate(Date(selectedEndCloseUnixTimeMs))
-        tfShopCloseNote.textFieldInput.setText(shopBasicDataModel?.closeNote)
+        tfShopCloseNote?.textFieldInput?.setText(shopBasicDataModel?.closeNote)
 
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(this, throwable.cause)
-        snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-            onSaveButtonClicked()
-        })
-        snackbar?.show()
+        layout?.let {
+            snackbar = Toaster.build(it, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again)) {
+                onSaveButtonClicked()
+            }
+            snackbar?.show()
+        }
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
         val message = ErrorHandler.getErrorMessage(this, throwable.cause)
-        snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
-        snackbar?.show()
+        layout?.let {
+            snackbar = Toaster.build(it, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
+            snackbar?.show()
+        }
     }
 
 }

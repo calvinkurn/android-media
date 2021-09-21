@@ -1,18 +1,21 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -24,15 +27,15 @@ import dagger.Provides
 @Module
 class ChatRoomFakePresenterModule {
 
-    @Provides
     @ChatScope
-    fun provideTestDispatcher(): TopchatCoroutineContextProvider {
-        return TopchatAndroidTestCoroutineContextDispatcher()
+    @Provides
+    fun provideRemoteConfig(@TopchatContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides
     @ChatScope
-    fun provideGetChatUseCase(
+    fun provideTopChatRoomPresenter(
             tkpdAuthInterceptor: TkpdAuthInterceptor,
             fingerprintInterceptor: FingerprintInterceptor,
             userSession: UserSessionInterface,
@@ -42,7 +45,6 @@ class ChatRoomFakePresenterModule {
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
             getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-            deleteMessageListUseCase: DeleteMessageListUseCase,
             getShopFollowingUseCase: GetShopFollowingUseCase,
             toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
             addToCartUseCase: AddToCartUseCase,
@@ -57,37 +59,44 @@ class ChatRoomFakePresenterModule {
             chatAttachmentUseCase: ChatAttachmentUseCase,
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
             chatBackgroundUseCase: ChatBackgroundUseCase,
+            chatSrwUseCase: SmartReplyQuestionUseCase,
+            tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+            moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
             sharedPref: SharedPreferences,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: CoroutineDispatchers,
+            remoteConfig: RemoteConfig
     ): TopChatRoomPresenter {
         return TopChatRoomPresenterStub(
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                userSession,
-                webSocketUtil,
-                getChatUseCase,
-                topChatRoomWebSocketMessageMapper,
-                getTemplateChatRoomUseCase,
-                replyChatUseCase,
-                getExistingMessageIdUseCase,
-                deleteMessageListUseCase,
-                getShopFollowingUseCase,
-                toggleFavouriteShopUseCase,
-                addToCartUseCase,
-                compressImageUseCase,
-                seamlessLoginUsecase,
-                getChatRoomSettingUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
-                uploadImageUseCase,
-                orderProgressUseCase,
-                groupStickerUseCase,
-                chatAttachmentUseCase,
-                chatToggleBlockChat,
-                chatBackgroundUseCase,
-                sharedPref,
-                dispatchers
-        )
+                        tkpdAuthInterceptor,
+                        fingerprintInterceptor,
+                        userSession,
+                        webSocketUtil,
+                        getChatUseCase,
+                        topChatRoomWebSocketMessageMapper,
+                        getTemplateChatRoomUseCase,
+                        replyChatUseCase,
+                        getExistingMessageIdUseCase,
+                        getShopFollowingUseCase,
+                        toggleFavouriteShopUseCase,
+                        addToCartUseCase,
+                        compressImageUseCase,
+                        seamlessLoginUsecase,
+                        getChatRoomSettingUseCase,
+                        addWishListUseCase,
+                        removeWishListUseCase,
+                        uploadImageUseCase,
+                        orderProgressUseCase,
+                        groupStickerUseCase,
+                        chatAttachmentUseCase,
+                        chatToggleBlockChat,
+                        chatBackgroundUseCase,
+                        chatSrwUseCase,
+                        tokoNowWHUsecase,
+                        moveChatToTrashUseCase,
+                        sharedPref,
+                        dispatchers,
+                        remoteConfig
+                )
     }
 
 }

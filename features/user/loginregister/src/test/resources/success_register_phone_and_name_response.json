@@ -1,0 +1,11 @@
+{
+  "register": {
+    "user_id": "",
+    "sid": "",
+    "access_token": "",
+    "refresh_token": "",
+    "enable_2fa": true,
+    "enable_skip_2fa": true,
+    "errors": []
+  }
+}

@@ -44,12 +44,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
             buttonNotify = masterProductCardListView?.getNotifyMeButton()
             masterProductCardListView?.setNotifyMeOnClickListener {
+                sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
+                sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
         }
@@ -140,13 +142,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }
@@ -204,4 +206,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         }
     }
 
+    private fun sentNotifyButtonEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+    }
 }

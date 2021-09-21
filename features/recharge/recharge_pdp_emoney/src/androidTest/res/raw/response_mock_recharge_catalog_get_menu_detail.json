@@ -1,0 +1,147 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 267,
+          "name": "uang-elektronik",
+          "label": "Uang Elektronik",
+          "icon": ""
+        },
+        "recommendations": [
+          {
+            "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/e-money.png",
+            "title": "Rp 20.000",
+            "clientNumber": "6032984072952405",
+            "appLink": "tokopedia://digital/form?category_id\u003d34\u0026client_number\u003d6032984072952405\u0026product_id\u003d2069\u0026operator_id\u003d578\u0026is_from_widget\u003dtrue",
+            "webLink": "https://pulsa.tokopedia.com/?action\u003dinit_data\u0026operator_id\u003d578\u0026product_id\u003d2069\u0026client_number\u003d6032984072952405",
+            "type": "history",
+            "categoryId": 34,
+            "productId": 2069,
+            "isATC": true,
+            "description": "",
+            "operatorID": 578
+          },
+          {
+            "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+            "title": "Rp 20.000",
+            "clientNumber": "6013502000675709",
+            "appLink": "tokopedia://digital/form?category_id\u003d34\u0026client_number\u003d6013502000675709\u0026product_id\u003d3235\u0026operator_id\u003d1015\u0026is_from_widget\u003dtrue",
+            "webLink": "https://pulsa.tokopedia.com/?action\u003dinit_data\u0026operator_id\u003d1015\u0026product_id\u003d3235\u0026client_number\u003d6013502000675709",
+            "type": "history",
+            "categoryId": 34,
+            "productId": 3235,
+            "isATC": true,
+            "description": "",
+            "operatorID": 1015
+          }
+        ],
+        "promos": [
+          {
+            "id": 2249,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/28/66931192/66931192_e94bef41-f13d-4cbb-a9c8-27bbefff308b.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "Cashback hingga Rp350.000 untuk transaksi Top Up, Tagihan, Travel, Entertainment.",
+            "subtitle": "Kode promo: {RAMADANTOPED}",
+            "promo_code": "RAMADANTOPED"
+          },
+          {
+            "id": 2476,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-8",
+            "status": 1,
+            "title": "[FASHDG] Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+            "subtitle": "kode promo : {FASHDG}",
+            "promo_code": "FASHDG"
+          },
+          {
+            "id": 2253,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_b0650fd6-0fa0-4167-8b1e-a04a303e5b0d.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-13/",
+            "status": 1,
+            "title": "[COBATOPUP] Top Up Apa Saja, Cashback hingga Rp50.000.",
+            "subtitle": "Kode Promo: {COBATOPUP}",
+            "promo_code": "COBATOPUP"
+          },
+          {
+            "id": 2925,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-brizzi-2/",
+            "status": 1,
+            "title": "[BRIZZIGO] Nikmati diskon Rp10.000 untuk isi ulang Brizzi.",
+            "subtitle": "Kode Promo: {BRIZZIGO}",
+            "promo_code": "BRIZZIGO"
+          },
+          {
+            "id": 2887,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/11/34631992/34631992_6d272d3c-6df4-4401-93ca-4804e169b1ea.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-tapcash-2",
+            "status": 1,
+            "title": "[BNIGO] Top Up TapCash, Diskon s.d Rp5rb. Kuota Terbatas.",
+            "subtitle": "Kode Promo: {BNIGO}",
+            "promo_code": "BNIGO"
+          },
+          {
+            "id": 2889,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/11/34631992/34631992_c072daf6-97a8-40b1-bae1-c58775b6438f.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-tapcash/",
+            "status": 1,
+            "title": "[TOPUPTAPCASH] Isi Saldo TapCash, Cashback s.d Rp15rb. Kuota Terbatas.",
+            "subtitle": "Kode Promo: {TOPUPTAPCASH}",
+            "promo_code": "TOPUPTAPCASH"
+          },
+          {
+            "id": 2491,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/10/23/34631992/34631992_b5c6d33d-6228-45ca-b235-42f88a10cad0.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-e-money-1/",
+            "status": 1,
+            "title": "[IOSEMONEY] Top Up E-Money dengan iOS, dapat cashback s.d Rp5rb. Kuota terbatas.",
+            "subtitle": "Kode Promo: {IOSEMONEY}",
+            "promo_code": "IOSEMONEY"
+          },
+          {
+            "id": 2603,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/10/1/41966928/41966928_d1099876-dfc0-4a02-88a0-81b54b5fb681.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-e-money/",
+            "status": 1,
+            "title": "[TOPUPEMONEY] Khusus Top Up e-Money, ada bonus cashback!",
+            "subtitle": "Kode Promo: {TOPUPEMONEY}",
+            "promo_code": "TOPUPEMONEY"
+          },
+          {
+            "id": 2057,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/2/42484317/42484317_6d6951b2-0887-4bde-9aac-36bfc030841a.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-brizzi/",
+            "status": 1,
+            "title": "[TOPUPBRIZZI] Cashback 2% hingga Rp10.000 untuk top up BRIZZI. Klik di sini.",
+            "subtitle": "Kode Promo: {TOPUPBRIZZI}",
+            "promo_code": "TOPUPBRIZZI"
+          }
+        ],
+        "tickers": [
+          {
+            "ID": 10,
+            "Name": "ticker 1",
+            "Content": "this is dummy ticker",
+            "Type": "",
+            "Environment": "",
+            "ActionText": "Action Text",
+            "ActionLink": "Action Link"
+          }
+        ],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]

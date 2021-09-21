@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
@@ -35,7 +35,7 @@ class DigitalHomePageSearchViewModelTest {
 
         digitalHomePageSearchViewModel =
                 DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
-                        RechargeHomepageTestDispatchersProvider())
+                        CoroutineTestDispatchersProvider)
     }
 
     @Test

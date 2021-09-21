@@ -1,28 +1,46 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
@@ -30,11 +48,12 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CPL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
@@ -48,13 +67,22 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.UPLOAD_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
+import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
+import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CONVENTIONAL_VALIDATION
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_ACTIVATED
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.ON_DEMAND_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
@@ -64,6 +92,9 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -76,11 +107,28 @@ class AddEditProductShipmentFragment:
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var selectedWeightPosition: Int = 0
+    private var shipperServicesIds: ArrayList<Int>? = arrayListOf()
+    private var isCPLActivated: Boolean = false
 
     private var radiosInsurance: RadioGroup? = null
     private var radioRequiredInsurance: RadioButtonUnify? = null
     private var radioOptionalInsurance: RadioButtonUnify? = null
     private var tickerInsurance: Ticker? = null
+
+    private var shipmentInputLayout: ConstraintLayout? = null
+    private var layoutCustomShipmentOnDemand: ConstraintLayout? = null
+    private var layoutCustomShipmentConventional: ConstraintLayout? = null
+    private var radiosShipment: RadioGroup? = null
+    private var radioStandarShipment: RadioButtonUnify? = null
+    private var radioCustomShipment: RadioButtonUnify? = null
+    private var btnChangeOnDemandShipment: Typography? = null
+    private var btnChangeConventionalShipment: Typography? = null
+    private var btnIconOnDemand: IconUnify? = null
+    private var btnIconConventional: IconUnify? = null
+    private var shipmentListOnDemand: RecyclerView? = null
+    private var shipmentListConventional: RecyclerView? = null
+    private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
+    private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -101,9 +149,10 @@ class AddEditProductShipmentFragment:
     override fun initInjector() {
         DaggerAddEditProductShipmentComponent
                 .builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .addEditProductShipmentModule(AddEditProductShipmentModule())
-                .build().inject(this)
+                .addEditProductComponent(AddEditProductComponentBuilder
+                        .getComponent(requireContext().applicationContext as BaseMainApplication))
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,8 +200,18 @@ class AddEditProductShipmentFragment:
         setupWeightInput()
         setupInsuranceTicker()
         setupInsuranceRadios()
+
         setupSubmitButton()
         setupOnBackPressed()
+
+        if (GlobalConfig.isSellerApp()) {
+            setupShipment()
+            initShipmentData()
+        } else {
+            hideShipment()
+        }
+
+        initObserver()
 
         // PLT monitoring
         stopNetworkRequestPerformanceMonitoring()
@@ -189,6 +248,14 @@ class AddEditProductShipmentFragment:
             }
         }
         super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_CPL) {
+                shipperServicesIds = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+            }
+        }
     }
 
     override fun onResume() {
@@ -252,9 +319,57 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
         tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
 
+        shipmentInputLayout = view.findViewById(R.id.shipment_input_layout)
+        layoutCustomShipmentOnDemand = view.findViewById(R.id.layout_custom_ondemand)
+        layoutCustomShipmentConventional = view.findViewById(R.id.layout_custom_conventional)
+        radiosShipment = view.findViewById(R.id.radios_cpl)
+        radioStandarShipment = view.findViewById(R.id.radio_standard_shipment)
+        radioCustomShipment = view.findViewById(R.id.radio_custom_shipment)
+        btnChangeOnDemandShipment = view.findViewById(R.id.btn_change_on_demand)
+        btnChangeConventionalShipment = view.findViewById(R.id.btn_change_conventional)
+        shipmentListOnDemand = view.findViewById(R.id.rv_on_demand)
+        shipmentListConventional = view.findViewById(R.id.rv_conventional)
+        btnIconOnDemand = view.findViewById(R.id.btn_info_on_demand)
+        btnIconConventional = view.findViewById(R.id.btn_info_conventional)
+
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         mainLayout = view.findViewById(R.id.main_layout)
+    }
+
+    private fun initShipmentData() {
+        if (shipmentViewModel.isAddMode) {
+            shipmentViewModel.getCPLList(shopId.toLong(), "")
+        } else {
+            shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
+        }
+    }
+
+    private fun initObserver() {
+        shipmentViewModel.cplList.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    applyShipmentValue(it.data)
+                }
+                is Fail -> {
+                    hideShipment()
+                }
+            }
+        })
+    }
+
+    private fun updateLayoutShipment() {
+        if (shipmentOnDemandAdapter.checkActivatedSpIds().isEmpty()) {
+            layoutCustomShipmentOnDemand?.gone()
+        } else {
+            layoutCustomShipmentOnDemand?.visible()
+        }
+
+        if (shipmentConventionalAdapter.checkActivatedSpIds().isEmpty()) {
+            layoutCustomShipmentConventional?.gone()
+        } else {
+            layoutCustomShipmentConventional?.visible()
+        }
     }
 
     private fun setupWeightInput() {
@@ -288,10 +403,124 @@ class AddEditProductShipmentFragment:
         }
     }
 
+    private fun setupShipment() {
+        setupShipmentRadios()
+        shipmentListOnDemand?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = shipmentOnDemandAdapter
+        }
+
+        shipmentListConventional?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = shipmentConventionalAdapter
+        }
+
+        btnChangeOnDemandShipment?.setOnClickListener {
+            goToCustomProductLogistic()
+        }
+
+        btnChangeConventionalShipment?.setOnClickListener {
+            goToCustomProductLogistic()
+        }
+
+        btnIconOnDemand?.setOnClickListener {
+            ShipmentInfoBottomSheet().show(
+                childFragmentManager,
+                ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE
+            )
+        }
+
+        btnIconConventional?.setOnClickListener {
+            ShipmentInfoBottomSheet().show(
+                childFragmentManager,
+                ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE
+            )
+        }
+    }
+
+    private fun goToCustomProductLogistic() {
+        startActivityForResult(
+            RouteManager.getIntent(
+                context,
+                ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
+            ).apply {
+                putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                if (shipmentViewModel.isAddMode) {
+                    putExtra(EXTRA_PRODUCT_ID, "")
+                } else {
+                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
+                }
+                putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
+            }, REQUEST_CODE_CPL
+        )
+    }
+
+    private fun setupShipmentRadios() {
+        radioStandarShipment?.setOnClickListener {
+            showDialogStandardShipment()
+        }
+
+        radioCustomShipment?.setOnClickListener {
+            shipmentRadioValue(false)
+        }
+    }
+
+    private fun shipmentRadioValue(isStandardShipment: Boolean) {
+        if (isStandardShipment) {
+            layoutCustomShipmentOnDemand?.gone()
+            layoutCustomShipmentConventional?.gone()
+            shipperServicesIds = arrayListOf()
+        } else {
+            updateLayoutShipment()
+            if (shipperServicesIds?.isEmpty() == true) {
+                val newShipperServiceIds = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
+                shipperServicesIds = ArrayList(newShipperServiceIds)
+            }
+        }
+    }
+
+    private fun getListActivatedSpIds(onDemandList: List<Int>, conventionalList: List<Int>): List<Int> {
+        val activatedListShipperIds = mutableListOf<Int>()
+        activatedListShipperIds.addAll(onDemandList)
+        activatedListShipperIds.addAll(conventionalList)
+        return activatedListShipperIds
+    }
+
+    private fun showDialogStandardShipment() {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.title_standard_shipment))
+            setDescription(getString(R.string.description_standard_shipment))
+            setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
+            setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
+            setPrimaryCTAClickListener {
+                shipmentRadioValue(true)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                radioStandarShipment?.isChecked = false
+                radioCustomShipment?.isChecked = true
+                dismiss()
+            }
+        }.show()
+    }
+
     private fun setupSubmitButton() {
         btnEnd?.setOnClickListener {
-            btnEnd?.isLoading = true
-            submitInput(UPLOAD_DATA)
+            var isEligible = true
+            var productLimitationModel = ProductLimitationModel()
+
+            if (RollenceUtil.getProductLimitationRollence()) {
+                productLimitationModel = SharedPreferencesUtil.getProductLimitationModel(requireActivity())
+                        ?: ProductLimitationModel()
+                isEligible = productLimitationModel.isEligible
+            }
+
+            if (isEligible) {
+                btnEnd?.isLoading = true
+                submitInput(UPLOAD_DATA)
+            } else {
+                showProductLimitationBottomSheet(productLimitationModel)
+            }
         }
         btnSave?.setOnClickListener {
             btnSave?.isLoading = true
@@ -344,6 +573,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition
+            cplModel.shipmentServicesIds = shipperServicesIds
         }
     }
 
@@ -371,6 +601,81 @@ class AddEditProductShipmentFragment:
         radioRequiredInsurance?.isChecked = mustInsurance
         radioOptionalInsurance?.isChecked = !mustInsurance
         tickerInsurance?.isVisible = !mustInsurance
+    }
+
+    private fun applyShipmentValue(data: CustomProductLogisticModel) {
+        val cplProduct = data.cplProduct
+        if (cplProduct.isEmpty() || cplProduct[0].cplStatus == 0) {
+            radioStandarShipment?.isChecked = true
+            radioCustomShipment?.isChecked = false
+            isCPLActivated = true
+            shipmentRadioValue(true)
+            updateShipmentDataStandard(data)
+        } else {
+            radioStandarShipment?.isChecked = false
+            radioCustomShipment?.isChecked = true
+            isCPLActivated = false
+            shipmentRadioValue(false)
+            updateShipmentDataCustom(data)
+        }
+    }
+
+
+    private fun hideShipment() {
+        shipmentInputLayout?.gone()
+    }
+
+    private fun updateShipmentDataStandard(data: CustomProductLogisticModel) {
+        shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+        shipmentOnDemandAdapter.setAllProductIdsActivated()
+        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+        shipmentConventionalAdapter.setAllProductIdsActivated()
+    }
+
+    private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
+        if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
+            shipmentConventionalAdapter.updateData(data.shipperList[0].shipper)
+            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        } else {
+            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+            shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        }
+        updateLayoutShipment()
+    }
+
+    private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {
+        val actionItems = productLimitationModel.actionItems
+        val bottomSheet = ProductLimitationBottomSheet(actionItems, productLimitationModel.isEligible,
+                productLimitationModel.limitAmount)
+
+        bottomSheet.setOnBottomSheetResult { urlResult ->
+            when {
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_FINISH_ACTIVITY) -> {
+                    activity?.finish()
+                }
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    startActivity(intent)
+                    productInputModel?.let { shipmentViewModel.saveProductDraft(it) }
+                    activity?.finish()
+                }
+                urlResult.startsWith(HTTP_PREFIX) -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                }
+                else -> {
+                    val intent = RouteManager.getIntent(context, urlResult)
+                    startActivity(intent)
+                }
+            }
+        }
+        bottomSheet.setIsSavingToDraft(true)
+        bottomSheet.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showUnitWeightOption() {

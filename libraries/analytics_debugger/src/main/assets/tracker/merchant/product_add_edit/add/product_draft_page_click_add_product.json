@@ -5,9 +5,9 @@
     {
       "event" : "clickAddProduct",
       "eventCategory" : "draft product page",
-      "eventAction" : "click add product ",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventAction" : "click add product",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

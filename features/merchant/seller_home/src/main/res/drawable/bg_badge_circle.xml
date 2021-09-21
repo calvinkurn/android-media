@@ -7,8 +7,8 @@
     <size android:width="10dp" android:height="10dp"/>
     <solid
         android:width="8dp"
-        android:color="#00AA5B"/>
+        android:color="@color/Unify_G600"/>
     <stroke
         android:width="2dp"
-        android:color="@android:color/white" />
+        android:color="@color/Unify_N0" />
 </shape>

@@ -7,17 +7,19 @@ import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWi
  */
 
 data class ProgressDataUiModel(
-        val valueTxt: String = "",
-        val maxValueTxt: String = "",
-        val value: Int = 0,
-        val maxValue: Int = 0,
-        val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.GOOD,
-        val subtitle: String = "",
-        override val dataKey: String = "",
-        override var error: String = "",
-        override var isFromCache: Boolean = false
+    val valueTxt: String = "",
+    val maxValueTxt: String = "",
+    val value: Int = 0,
+    val maxValue: Int = 0,
+    val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.Good,
+    val subtitle: String = "",
+    override var dataKey: String = "",
+    override var error: String = "",
+    override var isFromCache: Boolean = false,
+    override val showWidget: Boolean = false
 ) : BaseDataUiModel {
+
     override fun shouldRemove(): Boolean {
-        return !isFromCache && value == 0
+        return value == 0
     }
 }

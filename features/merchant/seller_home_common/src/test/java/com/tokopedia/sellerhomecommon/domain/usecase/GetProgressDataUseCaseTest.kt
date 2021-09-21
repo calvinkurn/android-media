@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -37,7 +38,7 @@ class GetProgressDataUseCaseTest {
     @RelaxedMockK
     lateinit var mapper: ProgressMapper
     private val getProgressDataUseCase by lazy {
-        GetProgressDataUseCase(gqlRepository, mapper)
+        GetProgressDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetProgressDataUseCase.getRequestParams(

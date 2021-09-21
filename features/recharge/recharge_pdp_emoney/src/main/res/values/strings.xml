@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
+
+    <string name="recharge_pdp_emoney_check_saldo">Cek Saldo</string>
+    <string name="recharge_pdp_emoney_update_saldo">Update Saldo</string>
+
+
+    <string name="recharge_pdp_emoney_input_card_no_label">Nomor Kartu</string>
+
+    <string name="recharge_pdp_emoney_promo_tab">Promo</string>
+    <string name="recharge_pdp_emoney_recents_tab">Transaksi Terakhir</string>
+
+    <string name="recharge_pdp_emoney_products_title">Mau top-up berapa?</string>
+
+    <string name="recharge_pdp_emoney_check_saldo_title">Mau cek saldo? Bisa di sini &#128073;</string>
+    <string name="recharge_pdp_emoney_check_saldo_description">Jangan lupa cek setelah top-up untuk lihat saldo terbaru kamu.</string>
+    <string name="recharge_pdp_emoney_check_saldo_cta">Cek Saldo</string>
+
+    <string name="recharge_pdp_emoney_card_number_label">No. Kartu</string>
+    <string name="recharge_pdp_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
+
+    <string name="recharge_pdp_emoney_product_see_details">Lihat Detail</string>
+    <string name="recharge_pdp_emoney_product_detail_bottom_sheet_title">Detail Produk</string>
+    <string name="recharge_pdp_emoney_product_price_label">Harga</string>
+
+    <string name="recharge_pdp_emoney_number_error_not_found">Oops, nomornya nggak ketemu. Cek lagi, ya.</string>
+    <string name="recharge_pdp_emoney_number_length_minimal_16_char">Harusnya ada 16 angka, nih. Cek lagi, ya.</string>
+
+    <string name="recharge_pdp_emoney_menu_langganan">Langganan</string>
+
+    <string name="recharge_pdp_emoney_total_payment">Total Pembayaran</string>
+    <string name="recharge_pdp_emoney_next">Lanjut</string>
+
+    <string name="recharge_pdp_emoney_coachmark_title">Pilih mau top-up berapa banyak &#x1f4b0;</string>
+    <string name="recharge_pdp_emoney_coachmark_subtitle">Ini nominal top-up yang bisa kamu pilih, lengkap dengan harga masing-masing.</string>
+
+
+</resources>

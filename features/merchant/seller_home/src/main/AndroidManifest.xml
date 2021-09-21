@@ -10,10 +10,10 @@
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/SellerHomeTheme">
+            android:theme="@style/SellerHomeTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

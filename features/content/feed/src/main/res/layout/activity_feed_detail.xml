@@ -10,18 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/Unify_N0"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/Theme.White"
-            app:elevation="@dimen/dp_8"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            tools:targetApi="lollipop" />
-
         <include
             android:id="@+id/shop_info_card"
             layout="@layout/feed_detail_header" />

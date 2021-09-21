@@ -3,7 +3,6 @@ package com.tokopedia.productcard.v2
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -17,14 +16,14 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageWithTarget
+import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
@@ -421,32 +420,27 @@ abstract class ProductCardView: BaseCustomView {
         if(!TextUtils.isEmpty(url)) {
             val view = LayoutInflater.from(context).inflate(R.layout.product_card_badge_layout, null)
 
-            ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    loadShopBadgeSuccess(view, resource)
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    loadShopBadgeFailed(view)
-                }
-            })
+            loadImageWithTarget(context, url, {
+                centerCrop()
+            }, MediaTarget(
+                    view.findViewById<ImageView>(R.id.badge),
+                    onReady = { badgeView, resource ->
+                        loadShopBadgeSuccess(view, badgeView, resource)
+                    },
+                    onFailed = { _, _ ->
+                        loadShopBadgeFailed(view)
+                    }
+            ))
         }
     }
 
-    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
-        val image = view.findViewById<ImageView>(R.id.badge)
-
+    private fun loadShopBadgeSuccess(layout: View, badgeView: ImageView, bitmap: Bitmap) {
         if (bitmap.height <= 1 && bitmap.width <= 1) {
-            view.visibility = View.GONE
+            layout.visibility = View.GONE
         } else {
-            image.setImageBitmap(bitmap)
-            view.visibility = View.VISIBLE
-            addShopBadge(view)
+            badgeView.setImageBitmap(bitmap)
+            layout.visibility = View.VISIBLE
+            addShopBadge(layout)
         }
     }
 
@@ -498,7 +492,7 @@ abstract class ProductCardView: BaseCustomView {
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageRounded2(context, it, freeOngkir.imageUrl)
+            it.loadIcon(freeOngkir.imageUrl)
         }
     }
 
@@ -512,7 +506,7 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setImageProductUrl(imageUrl: String) {
         imageProduct?.let {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+            it.loadImage(imageUrl)
         }
     }
 

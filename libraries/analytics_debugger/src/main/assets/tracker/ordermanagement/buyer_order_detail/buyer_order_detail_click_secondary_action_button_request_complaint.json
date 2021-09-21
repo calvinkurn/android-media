@@ -1,0 +1,15 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on secondary action button \"Komplain\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPurchaseList",
+      "eventAction": "click on secondary button - ajukan complain",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Seller Order Management",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

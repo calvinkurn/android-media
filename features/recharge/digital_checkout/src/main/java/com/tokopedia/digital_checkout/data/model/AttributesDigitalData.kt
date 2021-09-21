@@ -34,13 +34,17 @@ data class AttributesDigitalData(
 
         var userInputPrice: UserInputPriceDigital = UserInputPriceDigital(),
 
+        var isOpenAmount: Boolean = false,
+
         var autoApplyVoucher: CartAutoApplyVoucher = CartAutoApplyVoucher(),
 
         var defaultPromoTab: String = "",
 
         var postPaidPopupAttribute: PostPaidPopupAttribute = PostPaidPopupAttribute(),
 
-        var fintechProduct: List<FintechProduct> = listOf()
+        var fintechProduct: List<FintechProduct> = listOf(),
+
+        var adminFee: Double = 0.0
 ) : Parcelable {
 
     @Parcelize
@@ -63,6 +67,8 @@ data class AttributesDigitalData(
             var isCoupon: Int = 0,
 
             var discountAmount: Double = 0.0,
+
+            var discountAmountLabel: String = "",
 
             var title: String = "",
 

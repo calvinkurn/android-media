@@ -9,7 +9,7 @@ import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.category.utils.MapperCategoryLayout
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.search.model.response.CuratedData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -29,7 +29,7 @@ class DealsCategoryViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val getChipsCategoryUseCase: GetChipsCategoryUseCase = mockk()
     private val dealsSearchUseCase: DealsSearchUseCase = mockk()

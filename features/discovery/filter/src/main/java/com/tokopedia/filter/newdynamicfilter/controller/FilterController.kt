@@ -371,8 +371,13 @@ open class FilterController {
         for(optionUniqueId in filterViewState) {
             val optionKey = OptionHelper.parseKeyFromUniqueId(optionUniqueId)
             val currentOptionValue = filterParameter[optionKey] ?: ""
-            val optionSeparator = if (currentOptionValue.isNotEmpty()) OptionHelper.OPTION_SEPARATOR else ""
             val addedOptionValue = OptionHelper.parseValueFromUniqueId(optionUniqueId)
+
+            if (currentOptionValue == addedOptionValue) continue
+
+            val optionSeparator = if (currentOptionValue.isNotEmpty())
+                OptionHelper.OPTION_SEPARATOR
+            else ""
 
             filterParameter[optionKey] = currentOptionValue + optionSeparator + addedOptionValue
         }

@@ -6,10 +6,11 @@ import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.FileUtil.writeBufferToFile
 import com.tokopedia.utils.file.FileUtil.writeStreamToFile
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -42,7 +43,6 @@ object ImageProcessingUtil {
 
     const val DEFAULT_DIRECTORY = "Tokopedia/"
 
-    private const val LOG_ERROR_TAG = "P1#IMAGE_UTIL#"
     private const val LOG_ERROR_MAX_LIMIT = 1000
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
@@ -59,7 +59,7 @@ object ImageProcessingUtil {
         return inSampleSize
     }
 
-    private fun getWidthAndHeight(file: File): Pair<Int, Int> {
+    fun getWidthAndHeight(file: File): Pair<Int, Int> {
         return try {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
@@ -447,8 +447,10 @@ object ImageProcessingUtil {
 
     private fun logError(logTitle: String, throwable: Throwable) {
         val stacktrace = Log.getStackTraceString(throwable)
-        Timber.w("${LOG_ERROR_TAG}${logTitle};reason='${limitAndCleanString(throwable.message)
-        }';data='${limitAndCleanString(stacktrace)}'")
+        ServerLogger.log(Priority.P1, "IMAGE_UTIL", mapOf("type" to logTitle,
+                "reason" to limitAndCleanString(throwable.message),
+                "data" to limitAndCleanString(stacktrace)
+        ))
     }
 
     private fun limitAndCleanString(string: String?): String {

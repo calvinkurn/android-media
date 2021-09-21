@@ -4,16 +4,16 @@ import androidx.annotation.LayoutRes
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.RecomTitle
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Author errysuprayogi on 15,March,2019
  */
 class RecomTitleViewHolder(itemView: View) : AbstractViewHolder<RecomTitle>(itemView) {
 
-    private val textView: TextViewCompat
+    private val textView: Typography
 
     init {
         textView = itemView.findViewById(R.id.title)

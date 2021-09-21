@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
@@ -57,7 +56,6 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         const val EXTRA_PRODUCT_ID = "product_id"
         private const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
         private const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
-        private const val EXTRA_PRODUCT_ID_IMAGE = "EXTRA_PRODUCT_ID"
 
         fun getInstance(productId: String): ReviewProductFragment {
             val reviewProductFragment = ReviewProductFragment()
@@ -121,7 +119,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_vertical_product_review)?.let {
             dividerItemDecoration.setDrawable(it)
         }
-        getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+        getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         observeViewModel()
     }
 
@@ -169,7 +167,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         startActivity(intent)
     }
@@ -179,7 +177,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>?, element: ReviewProductModelContent?) {
-        val listLocation = mutableListOf<String>()
+        val listLocation = ArrayList<String>()
         val listDesc = mutableListOf<String>()
         if (list != null) {
             for (image in list) {
@@ -191,13 +189,13 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         val elementProductId = element?.productId
 
         val bundle = Bundle()
-        bundle.putStringArray(EXTRA_IMAGE_URL_LIST, listLocation.toTypedArray())
+        bundle.putStringArrayList(EXTRA_IMAGE_URL_LIST, listLocation)
         bundle.putInt(EXTRA_DEFAULT_POSITION, position)
-        bundle.putString(EXTRA_PRODUCT_ID_IMAGE, elementProductId)
+        bundle.putString(EXTRA_PRODUCT_ID, elementProductId)
         RouteManager.route(
                 context,
                 bundle,
-                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY_OLD,
                 productId
         )
         reputationTracking.eventImageClickOnReview(
@@ -218,7 +216,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onSmoothScrollToReplyView(adapterPosition: Int) {
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            getRecyclerView(view).smoothScrollToPosition(adapterPosition)
+            getRecyclerView(view)?.smoothScrollToPosition(adapterPosition)
         }
     }
 

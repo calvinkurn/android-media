@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatsetting.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingBuyerUiModel
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingSellerUiModel
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
@@ -13,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 
@@ -27,8 +26,6 @@ class ChatSettingViewModelTest {
 
     @RelaxedMockK
     private lateinit var getChatSettingUseCase: GetChatSettingUseCase
-
-    private val testDispatchers = TopchatCoroutineContextProvider()
 
     private lateinit var viewModel: ChatSettingViewModel
 

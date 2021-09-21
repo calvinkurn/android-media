@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.type
 
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 
 /**
  * Created by jegul on 03/06/20
@@ -15,7 +15,7 @@ sealed class EtalaseType {
         fun getByType(type: Int, etalaseId: String): EtalaseType {
             return when (type) {
                 1 -> User
-                ETALASE_DEFAULT -> Group(getFMenuByEtalaseId(etalaseId))
+                ShopEtalaseTypeDef.ETALASE_DEFAULT -> Group(getFMenuByEtalaseId(etalaseId))
                 else -> Unknown
             }
         }

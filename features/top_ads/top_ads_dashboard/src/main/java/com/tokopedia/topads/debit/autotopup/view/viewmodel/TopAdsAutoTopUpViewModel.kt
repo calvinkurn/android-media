@@ -23,7 +23,6 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         private val useCase: GraphqlUseCase<TkpdProducts>,
         private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
         private val saveSelectionUseCase: TopAdsSaveSelectionUseCase,
-        @Named("Main")
         val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()

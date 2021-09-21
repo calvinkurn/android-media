@@ -10,6 +10,7 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder
 data class MemberDataView(
         val title: String = "",
         val icon: String = "",
+        val isError: Boolean = false,
         val items: ArrayList<MemberItemDataView> = arrayListOf()
 )
 

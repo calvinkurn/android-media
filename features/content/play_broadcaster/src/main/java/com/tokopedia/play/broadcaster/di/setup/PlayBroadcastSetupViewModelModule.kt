@@ -42,11 +42,6 @@ abstract class PlayBroadcastSetupViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EditCoverTitleViewModel::class)
-    abstract fun getEditCoverTitleViewModel(viewModel: EditCoverTitleViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(DataStoreViewModel::class)
     abstract fun getDataStoreViewModel(viewModel: DataStoreViewModel): ViewModel
 
@@ -55,4 +50,8 @@ abstract class PlayBroadcastSetupViewModelModule {
     @ViewModelKey(BroadcastScheduleViewModel::class)
     abstract fun getSetupBroadcastScheduleViewModel(viewModel: BroadcastScheduleViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayTitleAndTagsSetupViewModel::class)
+    abstract fun getPlayTitleAndTagsSetupViewModel(viewModel: PlayTitleAndTagsSetupViewModel): ViewModel
 }

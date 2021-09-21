@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_telco_product.view.*
 
 class TelcoProductViewHolder(itemView: View, private val productType: Int,
-                             val listener: OnClickListener)
+                             val listener: ActionListener)
     : AbstractViewHolder<TelcoProduct>(itemView) {
 
     lateinit var adapter: TelcoProductAdapter
@@ -24,6 +24,10 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             telco_prepaid_title_product.text = element.attributes.desc
 
+            if (element.isSpecialProductPromo())
+                listener.onTrackSpecialProductImpression(element, adapterPosition)
+
+            renderCardSize()
             renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
@@ -34,9 +38,17 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         }
     }
 
+    private fun renderCardSize() {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_MCCM) {
+                telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+            }
+        }
+    }
+
     private fun renderDescProduct(element: TelcoProduct) {
         with(itemView) {
-            if (productType == TelcoProductType.PRODUCT_LIST) {
+            if (productType == TelcoProductType.PRODUCT_LIST || productType == TelcoProductType.PRODUCT_MCCM) {
                 telco_empty_view.hide()
                 telco_desc_product.show()
                 telco_desc_product.text = element.attributes.detail
@@ -135,8 +147,9 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }
 
-    interface OnClickListener {
+    interface ActionListener {
         fun onClickItemProduct(element: TelcoProduct, position: Int)
         fun onClickSeeMoreProduct(element: TelcoProduct, position: Int)
+        fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int)
     }
 }

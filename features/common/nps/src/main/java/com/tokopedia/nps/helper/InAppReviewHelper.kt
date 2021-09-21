@@ -5,10 +5,11 @@ import android.util.Log
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import timber.log.Timber
 
 object InAppReviewHelper {
     const val CACHE_IN_APP_REVIEW = "CACHE_IN_APP_REVIEW"
@@ -26,10 +27,10 @@ object InAppReviewHelper {
             if (enableInAppReview && !hasShownInAppReviewBefore) {
                 val inAppReviewManager: ReviewManager = ReviewManagerFactory.create(activity)
                 inAppReviewManager.requestReviewFlow().addOnCompleteListener { request ->
-                    if (request.isSuccessful()) {
-                        Timber.w("P1#IN_APP_REVIEW_STAT#request;activity='${activity.javaClass.name}'")
-                        inAppReviewManager.launchReviewFlow(activity, request.getResult()).addOnCompleteListener {
-                            Timber.w("P1#IN_APP_REVIEW_STAT#shown;activity='${activity.javaClass.name}'")
+                    if (request.isSuccessful) {
+                        ServerLogger.log(Priority.P1, "IN_APP_REVIEW_STAT", mapOf("type" to "request", "activity" to activity.javaClass.name))
+                        inAppReviewManager.launchReviewFlow(activity, request.result).addOnCompleteListener {
+                            ServerLogger.log(Priority.P1, "IN_APP_REVIEW_STAT", mapOf("type" to "shown", "activity" to activity.javaClass.name))
                             setInAppReviewHasShownBefore(activity)
                             callback?.onCompleted()
                         }
@@ -42,7 +43,7 @@ object InAppReviewHelper {
                 return false
             }
         } catch (e: Exception) {
-            Timber.w("P1#IN_APP_REVIEW_STAT#error;activity='${activity.javaClass.name}';err='${Log.getStackTraceString(e)}'")
+            ServerLogger.log(Priority.P1, "IN_APP_REVIEW_STAT", mapOf("type" to "error", "activity" to activity.javaClass.name, "err" to Log.getStackTraceString(e)))
             return false
         }
     }

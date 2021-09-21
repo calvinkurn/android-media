@@ -72,7 +72,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorMessage, actualData.value)
+        Assert.assertEquals(errorMessage, actualData.value?.message)
     }
 
     @Test
@@ -92,7 +92,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 
     //========================================= MENU DETAIL ================================
@@ -146,11 +146,11 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
@@ -186,7 +186,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -194,11 +194,11 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
@@ -212,7 +212,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -232,6 +232,6 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorPrefix
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 }

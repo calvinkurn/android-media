@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
-    <solid android:color="#FF03AC0E" />
+    <solid android:color="@color/Unify_G500" />
     <stroke
         android:width="@dimen/dp_2"
-        android:color="@color/white" />
+        android:color="@color/Unify_N0" />
 
 </shape>

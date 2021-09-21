@@ -2,8 +2,8 @@ package com.tokopedia.topupbills.common.util
 
 object DigitalTopupBillsGqlQuery {
     val catalogProductTelco = """
-        query telcoProductMultiTab(${'$'}menuID: Int!,${'$'}operatorID: String!,${'$'}filterData: [RechargeCatalogFilterData]) {
-          rechargeCatalogProductInputMultiTab(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operatorID, filterData:${'$'}filterData) {
+        query telcoProductMultiTab(${'$'}menuID: Int!,${'$'}operatorID: String!,${'$'}filterData: [RechargeCatalogFilterData], ${'$'}clientNumber: [String]) {
+          rechargeCatalogProductInputMultiTab(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operatorID, filterData:${'$'}filterData, clientNumber:${'$'}clientNumber) {
             productInputs {
               label
               needEnquiry
@@ -61,37 +61,5 @@ object DigitalTopupBillsGqlQuery {
             }
           }
         }
-    """.trimIndent()
-
-    val prefixSelectTelco = """
-        query telcoPrefixSelect(${'$'}menuID: Int!) {
-          rechargeCatalogPrefixSelect(menuID:${'$'}menuID, platformID: 5) {
-            componentID
-            name
-            paramName
-            text
-            help
-            placeholder
-            validations {
-              id
-              title
-              message
-              rule
-            }
-            prefixes {
-              key
-              value
-              operator {
-                id
-                attributes {
-                  name
-                  default_product_id
-                  image_url
-                }
-              }
-            }
-          }
-        }
-
     """.trimIndent()
 }

@@ -19,6 +19,8 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.Const;
 import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 
 import java.io.InterruptedIOException;
 import java.net.SocketException;
@@ -44,10 +46,10 @@ import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
  */
 @Deprecated
 public class GraphqlCloudDataStore implements GraphqlDataStore {
-    private GraphqlApi mApi;
-    private GraphqlCacheManager mCacheManager;
-    private FingerprintManager mFingerprintManager;
-    private static String TAG = GraphqlCloudDataStore.class.getSimpleName();
+    private final GraphqlApi mApi;
+    private final GraphqlCacheManager mCacheManager;
+    private final FingerprintManager mFingerprintManager;
+    private static final String TAG = GraphqlCloudDataStore.class.getSimpleName();
 
     @Inject
     public GraphqlCloudDataStore() {
@@ -107,6 +109,8 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
                         LoggingUtils.logGqlError("java", requests.toString(), throwable);
+                    } else {
+                        LoggingUtils.logGqlErrorNetwork("java", requests.toString(), throwable);
                     }
                 }).map(httpResponse -> {
                     if (httpResponse == null) {
@@ -130,7 +134,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         else {
                             header.put(QUERY_HASHING_HEADER, "");
                         }
-                        Timber.w("P1#GQL_HASHING#error;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(requests.get(0).getQuery()), requests.get(0).getMd5(), queryHashValues.toString());
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "error");
+                        messageMap.put("name", CacheHelper.getQueryName(requests.get(0).getQuery()));
+                        messageMap.put("key", requests.get(0).getMd5());
+                        messageMap.put("hash", queryHashValues.toString());
+                        ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
                         mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
@@ -149,7 +158,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
-                    String qhValues [] = CacheHelper.parseQueryHashHeader(graphqlResponseInternal.getQueryHash());
+                    String[] qhValues = CacheHelper.parseQueryHashHeader(graphqlResponseInternal.getQueryHash());
                     boolean executeCacheFlow = false;
                     boolean executeQueryHashFlow = false;
                     if(qhValues.length > 0){
@@ -163,7 +172,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             GraphqlRequest request = requests.get(i);
                             if(executeQueryHashFlow){
                                 mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
-                                Timber.w("P1#GQL_HASHING#success;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(request.getQuery()), request.getMd5(), qhValues[i]);
+                                Map<String, String> messageMap = new HashMap<>();
+                                messageMap.put("type", "success");
+                                messageMap.put("name", CacheHelper.getQueryName(request.getQuery()));
+                                messageMap.put("key", request.getMd5());
+                                messageMap.put("hash", qhValues[i]);
+                                ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
                             }
                             if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;

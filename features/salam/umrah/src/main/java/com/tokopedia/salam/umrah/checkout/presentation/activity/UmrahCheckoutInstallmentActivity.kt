@@ -17,8 +17,8 @@ import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
 
 class UmrahCheckoutInstallmentActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutComponent> {
 
-    override fun getNewFragment(): Fragment? = UmrahCheckoutInstallmentFragment.getInstance(
-            intent.getParcelableArrayListExtra(EXTRA_SCHEMES),
+    override fun getNewFragment(): Fragment = UmrahCheckoutInstallmentFragment.getInstance(
+            intent.getParcelableArrayListExtra(EXTRA_SCHEMES) ?: ArrayList(),
             intent.getIntExtra(EXTRA_DEFAULT_OPTION_SCHEMES,0)
     )
 

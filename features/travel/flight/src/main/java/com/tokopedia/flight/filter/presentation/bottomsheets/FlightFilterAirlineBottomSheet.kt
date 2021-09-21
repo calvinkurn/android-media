@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterAirlineAdapterTypeFactory
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
-import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter_airline.view.*
 import java.util.*

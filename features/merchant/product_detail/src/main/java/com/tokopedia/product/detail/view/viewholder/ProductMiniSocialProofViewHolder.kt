@@ -10,11 +10,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.view.adapter.MiniSocialProofAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.item_hierarchycal_social_proof.view.*
 import kotlinx.android.synthetic.main.shimmering_social_proof.view.*
 
 /**
@@ -39,7 +37,7 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
         } else {
-            val availableData = element.getSocialProofData()
+            val availableData = element.socialProofData
             view.run {
                 if (availableData.isEmpty()) {
                     layoutParams.height = 0
@@ -65,9 +63,9 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
 
     private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(view) {
         if (shouldShowSingleSocialProof)
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 0, 16.toPx(), 16.toPx())
         else
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
@@ -86,6 +84,6 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
     }
 
     private fun setAdapterData(element: ProductMiniSocialProofDataModel) {
-        miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
+        miniSocialProofAdapter?.setData(element.socialProofData.toMutableList(), getComponentTrackData(element))
     }
 }

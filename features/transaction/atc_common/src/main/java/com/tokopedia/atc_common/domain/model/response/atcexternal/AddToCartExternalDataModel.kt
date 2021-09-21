@@ -23,5 +23,6 @@ data class AddToCartExternalDataModel(
         var variant: String = "",
         var trackerAttribution: String = "",
         var isMultiOrigin: Boolean = false,
-        var isFreeOngkir: Boolean = false
+        var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false
 )

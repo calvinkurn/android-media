@@ -9,14 +9,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
-class AppAuthUseCase @Inject constructor(
-        repository: GraphqlRepository) : GraphqlUseCase<AppAuthResponse>(repository) {
+class AppAuthUseCase @Inject constructor(val repository: dagger.Lazy<GraphqlRepository>) {
 
-    init {
-        setGraphqlQuery(query)
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(AppAuthResponse::class.java)
-    }
+    var useCase: GraphqlUseCase<AppAuthResponse>? = null
 
     companion object {
         val query:String =
@@ -30,12 +25,29 @@ class AppAuthUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    fun setParams(content: String, version: String = "1") {
+
+    private fun getOrCreateUseCase() : GraphqlUseCase<AppAuthResponse> {
+        val useCaseTemp = useCase
+        if (useCaseTemp == null) {
+            val newUseCase = GraphqlUseCase<AppAuthResponse>(repository.get())
+            newUseCase.setGraphqlQuery(query)
+            newUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            newUseCase.setTypeClass(AppAuthResponse::class.java)
+            useCase = newUseCase
+            return newUseCase
+        } else {
+            return useCaseTemp
+        }
+    }
+
+    suspend fun execute(content: String, version: String = "1"): AppAuthResponse{
+        val useCase = getOrCreateUseCase()
         val params: Map<String, Any?> = mutableMapOf(
                 SubmitDeviceInfoUseCase.PARAM_INPUT to MutationSignDvcRequest(
                         version, content
                 )
         )
-        setRequestParams(params)
+        useCase.setRequestParams(params)
+        return useCase.executeOnBackground()
     }
 }

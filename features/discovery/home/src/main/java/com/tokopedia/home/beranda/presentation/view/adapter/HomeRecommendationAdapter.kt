@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
@@ -65,4 +66,5 @@ interface HomeRecommendationListener: SmartListener {
     fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
     fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
     fun onRetryGetProductRecommendationData()
+    fun onProductWithPmProImpressed(pmProView: View?, position: Int)
 }

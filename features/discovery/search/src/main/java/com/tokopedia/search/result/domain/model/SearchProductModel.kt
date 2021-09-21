@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
@@ -112,6 +113,10 @@ data class SearchProductModel(
             @Expose
             val suggestion: Suggestion = Suggestion(),
 
+            @SerializedName("banner")
+            @Expose
+            val banner: Banner = Banner(),
+
             @SerializedName("products")
             @Expose
             val productList: List<Product> = listOf()
@@ -178,6 +183,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -269,6 +275,24 @@ data class SearchProductModel(
             val text: String = ""
     )
 
+    data class Banner(
+            @SerializedName("position")
+            @Expose
+            val position: Int = -1,
+
+            @SerializedName("text")
+            @Expose
+            val text: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = "",
+    )
+
     data class Product(
             @SerializedName("id")
             @Expose
@@ -302,6 +326,7 @@ data class SearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -393,7 +418,11 @@ data class SearchProductModel(
 
             @SerializedName("productViewUrl")
             @Expose
-            val productViewUrl: String = ""
+            val productViewUrl: String = "",
+
+            @SerializedName("tag")
+            @Expose
+            val tag: Int = 0,
     )
 
     data class ProductShop(
@@ -625,9 +654,17 @@ data class SearchProductModel(
             @Expose
             val bannerApplinkUrl: String = "",
 
+            @SerializedName("identifier")
+            @Expose
+            val identifier: String = "",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: String = "",
+
             @SerializedName("product")
             @Expose
-            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
+            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
     )
 
     data class InspirationCarouselProduct (
@@ -639,6 +676,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -689,7 +727,58 @@ data class SearchProductModel(
 
             @SerializedName("discount_percentage")
             @Expose
-            val discountPercentage: Int = 0
+            val discountPercentage: Int = 0,
+
+            @SerializedName("badges")
+            @Expose
+            val badgeList: List<InspirationCarouselProductBadge> = listOf(),
+
+            @SerializedName("shop")
+            @Expose
+            val shop: InspirationCarouselProductShop = InspirationCarouselProductShop(),
+
+            @SerializedName("freeOngkir")
+            @Expose
+            val freeOngkir: InspirationCarouselProductFreeOngkir = InspirationCarouselProductFreeOngkir(),
+
+            @SerializedName("ads")
+            @Expose
+            val ads: ProductAds = ProductAds(),
+    ) {
+        fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
+    }
+
+    data class InspirationCarouselProductBadge(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("image_url")
+            @Expose
+            val imageUrl: String = "",
+
+            @SerializedName("show")
+            @Expose
+            val isShown: Boolean = false
+    )
+
+    data class InspirationCarouselProductShop(
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
+    )
+
+    data class InspirationCarouselProductFreeOngkir(
+        @SerializedName("isActive")
+        @Expose
+        val isActive: Boolean = false,
+
+        @SerializedName("image_url")
+        @Expose
+        val imageUrl: String = ""
     )
 
     data class SearchInspirationWidget(

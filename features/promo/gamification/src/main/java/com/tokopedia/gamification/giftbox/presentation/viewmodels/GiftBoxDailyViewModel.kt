@@ -6,11 +6,14 @@ import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.*
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -103,7 +106,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
         fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
             var ids = arrayListOf<String>()
             response.gamiCrack.benefits?.forEach {
-                if (!it.referenceID.isNullOrEmpty()) {
+                if (!it.referenceID.isNullOrEmpty() && it.displayType == DisplayType.CATALOG) {
                     ids.add(it.referenceID)
                 }
             }
@@ -126,7 +129,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
                 autoApplycallback?.success(response)
             }
         }, onError = {
-            //Do nothing
+            Timber.e(it)
         })
     }
 }

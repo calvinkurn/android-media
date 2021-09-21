@@ -2,14 +2,18 @@ package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
@@ -49,7 +53,10 @@ class GroupDetailViewModelTest {
     private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase = mockk(relaxed = true)
     private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase = mockk(relaxed = true)
     private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
+    private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
+    private val headlineInfoUseCase: GetHeadlineInfoUseCase = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
 
 
@@ -65,6 +72,9 @@ class GroupDetailViewModelTest {
                 topAdsGetProductKeyCountUseCase,
                 topAdsGetProductStatisticsUseCase,
                 groupInfoUseCase,
+                headlineInfoUseCase,
+                bidInfoUseCase,
+                topAdsCreateUseCase,
                 userSession)
     }
 
@@ -75,7 +85,7 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `get product data `() {
-        viewModel.getGroupProductData(1, 1, "", "", 1, "", "", {}) {}
+        viewModel.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
         verify {
             topAdsGetGroupProductDataUseCase.execute(any(), any())
         }
@@ -83,16 +93,31 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `get group info success`() {
-        val expected = 10
-        var actual = 0
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(priceBid = expected)
+        val expected = 10.0F
+        var actual = 0.0F
+        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
         val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.priceBid
+            actual = it.daiyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        viewModel.getGroupInfo(res, "", onSuccess)
+        viewModel.getGroupInfo(res, "", "", onSuccess)
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `get headline info success`() {
+        val expected = 10
+        var actual = 0
+        val data = HeadlineInfoResponse.TopAdsGetPromoHeadline.Data(priceBid = expected)
+        val onSuccess: (data: HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) -> Unit = {
+            actual = it.priceBid
+        }
+        every { headlineInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            onSuccess.invoke(data)
+        }
+        viewModel.getHeadlineInfo(res, "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -107,7 +132,7 @@ class GroupDetailViewModelTest {
         every { topAdsGetProductStatisticsUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data.getDashboardProductStatistics)
         }
-        viewModel.getProductStats(res, "", "", listOf(), onSuccess, "", 1)
+        viewModel.getProductStats(res, "", "", listOf(), onSuccess, "", 1, 0)
         Assert.assertEquals(expected, actual)
     }
 
@@ -145,7 +170,7 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `get topads stats`() {
-        viewModel.getTopAdsStatistic(Date(), Date(), 1, {}, "")
+        viewModel.getTopAdsStatistic(Date(), Date(), 1, {}, "", 0)
         verify {
             topAdsGetStatisticsUseCase.execute(any(), any())
         }
@@ -159,7 +184,7 @@ class GroupDetailViewModelTest {
         val onSuccess: (data: List<GroupListDataItem>) -> Unit = {
             actual = it[0].totalItem
         }
-        every { topAdsGetGroupListUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsGetGroupListUseCase.execute(any(), any()) } answers {
             onSuccess.invoke(listOf(data))
         }
         viewModel.getGroupList("", onSuccess)
@@ -173,7 +198,7 @@ class GroupDetailViewModelTest {
         val onSuccess: () -> Unit = {
             actual = expected
         }
-        every { topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsProductActionUseCase.execute(any(), any()) } answers {
             onSuccess.invoke()
         }
         viewModel.setProductAction(onSuccess, "", listOf(), res, "")

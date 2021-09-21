@@ -24,7 +24,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
@@ -36,15 +35,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
-import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
-import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -156,7 +152,6 @@ public class GraphqlClient {
             tkpdOkHttpBuilder.addInterceptor(interceptor);
         }
 
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 
@@ -173,9 +168,9 @@ public class GraphqlClient {
     @NotNull
     protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new GraphqlEmbraceInterceptor());
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

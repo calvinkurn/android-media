@@ -34,10 +34,8 @@
 
     <style name="LabelLayout.TopAdsLabelView">
         <item name="android:minHeight">@dimen/dp_64</item>
-        <item name="content_text_size">@dimen/sp_14</item>
         <item name="lv_image_width">@dimen/dp_28</item>
         <item name="lv_image_margin_right">@dimen/dp_24</item>
-        <item name="title_text_size">@dimen/sp_14</item>
         <item name="lv_sub_title_text_size">@dimen/sp_14</item>
     </style>
 

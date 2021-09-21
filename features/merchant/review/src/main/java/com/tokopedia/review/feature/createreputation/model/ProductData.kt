@@ -5,9 +5,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductData(
-    @SerializedName("productID")
+    @SerializedName("productIDStr")
     @Expose
-    val productID: Long = 0,
+    val productIDStr: String = "",
     @SerializedName("productImageURL")
     @Expose
     val productImageURL: String = "",

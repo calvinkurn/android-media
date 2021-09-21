@@ -3,8 +3,8 @@
 
     <style name="ToolbarExpandedTitle3">
         <item name="android:textSize">@dimen/sp_20</item>
-        <item name="android:shadowColor">#ffffff</item>
-        <item name="android:textColor">@color/black_39</item>
+        <item name="android:shadowColor">@color/Unify_Static_White</item>
+        <item name="android:textColor">@color/Unify_Static_Black</item>
         <item name="android:singleLine">false</item>
         <item name="android:maxLines">5</item>
     </style>

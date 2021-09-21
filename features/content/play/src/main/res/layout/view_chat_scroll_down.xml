@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_chat_scroll"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:background="@drawable/bg_play_chat_scroll_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,14 +16,14 @@
 
     <View
         android:id="@+id/v_indicator_red"
-        android:layout_width="@dimen/dp_5"
-        android:layout_height="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_width="@dimen/layout_lvl1"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:background="@drawable/shape_play_red_dots"
         app:layout_constraintTop_toTopOf="@id/iv_chat_scroll"
         app:layout_constraintEnd_toEndOf="@id/iv_chat_scroll"
+        tools:visibility="visible"
         />
 
 </merge>

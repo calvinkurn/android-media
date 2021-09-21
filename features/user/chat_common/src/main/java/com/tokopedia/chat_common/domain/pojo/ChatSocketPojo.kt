@@ -50,7 +50,10 @@ data class ChatSocketPojo(
         var blastId: Long = 0L,
         @SerializedName("source")
         @Expose
-        var source: String = ""
+        var source: String = "",
+        @SerializedName("label")
+        @Expose
+        var label: String = ""
 )
 
 

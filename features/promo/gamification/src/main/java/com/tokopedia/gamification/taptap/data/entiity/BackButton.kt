@@ -7,7 +7,7 @@ data class BackButton(
         val cancelText: String,
 
         @SerializedName("imageURL")
-        val imageURL: String,
+        val imageURL: String?,
 
         @SerializedName("isShow")
         val isShow: Boolean,

@@ -15,7 +15,7 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <com.tokopedia.design.component.CircleOverlayView
+    <com.tokopedia.homecredit.view.widget.CircleOverlayView
         android:layout_above="@+id/camera_controls"
         android:id="@+id/cicleOverlay"
         android:layout_width="match_parent"

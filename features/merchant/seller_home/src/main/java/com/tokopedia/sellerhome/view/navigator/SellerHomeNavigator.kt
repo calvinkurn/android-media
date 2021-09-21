@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -22,6 +24,11 @@ class SellerHomeNavigator(
     private val sellerHomeRouter: SellerHomeRouter?,
     private val userSession: UserSessionInterface
 ) {
+
+    companion object {
+        private const val OTHER_MENU_REVAMP_EXPERIMENT = "sa_lainnyarevamp"
+        private const val OTHER_MENU_REVAMP_VALUE = "sa_lainnyarevamp"
+    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -146,17 +153,31 @@ class SellerHomeNavigator(
     }
 
     private fun initFragments() {
+        clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "")
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, "0", "", "")
+        otherSettingsFragment =
+            if (useRevampedOtherMenu()) {
+                OtherMenuFragment.createInstance()
+            } else {
+                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
+            }
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
         addPage(chatFragment, context.getString(R.string.sah_chat))
         addPage(somListFragment, context.getString(R.string.sah_sale))
         addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
+    }
+
+    private fun clearFragments() {
+        val transaction = fm.beginTransaction()
+        for (fragment in fm.fragments) {
+            transaction.remove(fragment)
+        }
+        transaction.commitNowAllowingStateLoss()
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
@@ -216,7 +237,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
         return somListFragment
     }
 
@@ -227,7 +248,14 @@ class SellerHomeNavigator(
     private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
         hideAllPages(transaction)
         fragment?.let {
+            scrollFragmentToTop(it)
             transaction.show(it)
+        }
+    }
+
+    private fun scrollFragmentToTop(fragment: Fragment) {
+        if (fragment.isVisible) {
+            (fragment as? SellerHomeFragmentListener)?.onScrollToTop()
         }
     }
 
@@ -252,4 +280,15 @@ class SellerHomeNavigator(
             shopName
         }
     }
+
+    private fun useRevampedOtherMenu(): Boolean {
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                OTHER_MENU_REVAMP_EXPERIMENT, "")
+            remoteConfigRollenceValue.equals(OTHER_MENU_REVAMP_VALUE, ignoreCase = true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
 }

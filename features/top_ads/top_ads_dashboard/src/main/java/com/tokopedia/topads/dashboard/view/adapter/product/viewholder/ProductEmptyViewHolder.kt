@@ -21,7 +21,7 @@ class ProductEmptyViewHolder(val view: View) : ProductViewHolder<ProductEmptyMod
     override fun bind(item: ProductEmptyModel, selectMode: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
             view.text_title.text = view.context.getString(R.string.topads_dash_no_product_found)
-            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         }
     }
 

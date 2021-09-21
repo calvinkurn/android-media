@@ -7,13 +7,14 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 
 data class CarouselDataUiModel (
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         val items: List<CarouselItemUiModel> = emptyList(),
         override var error: String = "",
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
 ): BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && items.isEmpty()
+        return items.isEmpty()
     }
 }
 

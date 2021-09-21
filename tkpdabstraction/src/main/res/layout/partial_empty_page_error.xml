@@ -30,7 +30,7 @@
         android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/msg_network_error_1"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textStyle="bold"
         app:typographyType="body_1"
         app:typographyWeight="reguler"/>
@@ -42,7 +42,7 @@
         android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/msg_network_error_2"
-        android:textColor="@color/grey_400"
+        android:textColor="@color/Unify_N150"
         android:textStyle="bold"
         app:typographyType="body_3"
         app:typographyWeight="reguler"/>

@@ -49,6 +49,7 @@ class SettingsPresenter(var context: Context?,
             if (it.isDobVerified) {
                 if (it.isAdult || it.age >= minimumAdultAge) {
                     adultAgeVerified = true
+                    saveSettingValue(PREFERENCE_ADULT_AGE_VERIFIED_KEY, adultAgeVerified)
                     showSafeModeOption()
                 }
             }
@@ -104,6 +105,10 @@ class SettingsPresenter(var context: Context?,
         val editor = settings.edit()
         editor.putBoolean(key, isChecked)
         editor.apply()
+    }
+
+    companion object {
+        const val PREFERENCE_ADULT_AGE_VERIFIED_KEY = "preference_adult_age_verified_key"
     }
 
 }

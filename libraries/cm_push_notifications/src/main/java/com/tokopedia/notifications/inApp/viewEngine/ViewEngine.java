@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -36,7 +38,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMText;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -48,15 +52,15 @@ import timber.log.Timber;
  */
 public class ViewEngine {
 
-    private WeakReference<Activity> activityWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
 
     private View inAppView;
 
-    private int resCmClose = R.id.iv_close;
-    private int resCmImage = R.id.iv_cmImage;
-    private int resCmTitle = R.id.tv_cmTitle;
-    private int resCmMessage = R.id.tv_cmMessage;
-    private int buttonContainer = R.id.ll_buttonContainer;
+    private final int resCmClose = R.id.iv_close;
+    private final int resCmImage = R.id.iv_cmImage;
+    private final int resCmTitle = R.id.tv_cmTitle;
+    private final int resCmMessage = R.id.tv_cmMessage;
+    private final int buttonContainer = R.id.ll_buttonContainer;
 
     public ViewEngine(Activity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -139,9 +143,12 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
-            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
-                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
-                    + "';data='" + cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -349,12 +356,14 @@ public class ViewEngine {
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
         } catch (NumberFormatException e) {
-            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
-                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
-                    + "';data='" + cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString(e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
 
-        int margin[] = {0, 0, 0, 0};
+        int[] margin = {0, 0, 0, 0};
         switch (orientation) {
             case CmInAppConstant.ORIENTATION_VERTICAL:
                 margin[1] = (int) getPXtoDP(8);

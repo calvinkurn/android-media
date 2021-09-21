@@ -1,0 +1,14 @@
+{
+  "readme": "open duplicate voucher page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/voucherduplicate - review",
+      "isLoggedInStatus" : ".+",
+      "currentSite" : "tokopediaseller",
+      "userId" : ".+",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}

@@ -40,16 +40,16 @@ class PhoneNumberView @JvmOverloads constructor(
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N300))
-            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N300))
+            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
         }
 
     var error: String
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
-            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
+            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
 
     var label: String
@@ -91,9 +91,9 @@ class PhoneNumberView @JvmOverloads constructor(
     private fun focusListener(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else {
-                line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N500))
+                line.setBackgroundColor(MethodChecker.getColor(context, R.color.updateinactivephone_dms_dark_n500))
             }
         }
     }

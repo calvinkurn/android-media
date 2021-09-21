@@ -15,4 +15,6 @@
     <string name="yesterday">Kemarin</string>
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
+
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
 </resources>

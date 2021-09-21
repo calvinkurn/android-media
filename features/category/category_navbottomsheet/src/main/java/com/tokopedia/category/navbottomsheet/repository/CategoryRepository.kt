@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor() : BaseRepository() {
 
-    suspend fun getCategoryListWithCategoryDetail(categoryID: String): GraphqlResponse? {
+    suspend fun getCategoryListWithCategoryDetail(categoryID: String, source: String): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
         type.add(CategoryAllListResponse::class.java)
         type.add(CategoryDetailResponse::class.java)
-        return getGQLData(getQueries(), type, getRequests(categoryID))
+        return getGQLData(getQueries(), type, getRequests(categoryID, source))
     }
 
     private fun getQueries(): MutableList<String> {
@@ -30,17 +30,18 @@ class CategoryRepository @Inject constructor() : BaseRepository() {
         return queries
     }
 
-    private fun getRequests(categoryID: String): MutableList<HashMap<String, Any>> {
+    private fun getRequests(categoryID: String, source: String): MutableList<HashMap<String, Any>> {
         val request: MutableList<HashMap<String, Any>> = ArrayList()
-        request.add(getListParams().parameters)
+        request.add(getListParams(source).parameters)
         request.add(getDetailParams(categoryID).parameters)
         return request
     }
 
 
-    private fun getListParams(): RequestParams {
+    private fun getListParams(source : String): RequestParams {
         return RequestParams().apply {
             putBoolean("catnav", false)
+            putString("source", source)
         }
     }
 

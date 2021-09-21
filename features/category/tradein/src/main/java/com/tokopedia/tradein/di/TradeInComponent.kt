@@ -13,9 +13,6 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface TradeInComponent {
     fun inject(tradeInHomeActivity: TradeInHomeActivity)
-    fun inject(moneyInHomeActivity: MoneyInHomeActivity)
-    fun inject(finalPriceActivity: FinalPriceActivity)
-    fun inject(moneyInCheckoutActivity: MoneyInCheckoutActivity)
     fun inject(tradeInAddressFragment: TradeInAddressFragment)
     fun inject(tradeInInitialPriceFragment: TradeInInitialPriceFragment)
     fun inject(tradeInFinalPriceFragment: TradeInFinalPriceFragment)

@@ -29,7 +29,9 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
         collectiveBannerModel.let {
             if (it.banners.isNotEmpty()) {
                 bannerModel.title = it.meta.label
+                bannerModel.id = it.banners[0].id
                 bannerModel.imageUrl = it.banners[0].attribute.imageUrl
+                bannerModel.description = it.banners[0].attribute.description
                 bannerModel.destinationLink =
                         if (it.banners[0].attribute.appUrl.isNotEmpty())
                             it.banners[0].attribute.appUrl
@@ -42,6 +44,8 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
     fun setData(bannerModel: TravelVideoBannerModel) {
         this.bannerModel = bannerModel
     }
+
+    fun getData(): TravelVideoBannerModel = bannerModel
 
     fun build() {
         if (::bannerModel.isInitialized) {

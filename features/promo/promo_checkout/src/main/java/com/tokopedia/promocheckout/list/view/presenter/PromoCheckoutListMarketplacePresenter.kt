@@ -13,11 +13,13 @@ import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoLastSeenResponse
+import com.tokopedia.promocheckout.util.PromoCheckoutQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.HashMap
@@ -32,8 +34,7 @@ class PromoCheckoutListMarketplacePresenter(val graphqlUseCase: GraphqlUseCase,
 
         val variables = HashMap<String, Any>()
         variables.put(SERVICE_ID, serviceId)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_last_seen), PromoLastSeenResponse::class.java, variables, false)
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutLastSeen(), PromoLastSeenResponse::class.java, variables, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -129,8 +130,7 @@ class PromoCheckoutListMarketplacePresenter(val graphqlUseCase: GraphqlUseCase,
             return
         }
         view.showProgressBar()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutExchangeCoupon(), ResponseExchangeCoupon::class.java, null, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

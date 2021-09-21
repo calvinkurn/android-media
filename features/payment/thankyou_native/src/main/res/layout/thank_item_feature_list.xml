@@ -18,6 +18,7 @@
             android:layout_height="@dimen/layout_lvl4"
             android:scaleType="centerInside"
             app:unify_image_corner_radius = "0"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFeatureItemDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 

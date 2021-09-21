@@ -27,4 +27,5 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val disabled: Boolean,
                                 val hideShipperName: Boolean,
                                 val codData: CodDataPromo,
-                                val etaData: EstimatedTimeArrivalPromo) : RatesViewModelType, Parcelable
+                                val etaData: EstimatedTimeArrivalPromo,
+                                val isBebasOngkirExtra: Boolean) : RatesViewModelType, Parcelable

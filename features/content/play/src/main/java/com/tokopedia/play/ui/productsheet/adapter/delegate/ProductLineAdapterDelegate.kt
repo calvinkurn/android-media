@@ -6,16 +6,15 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 
 /**
  * Created by jegul on 03/03/20
  */
 class ProductLineAdapterDelegate(
         listener: ProductLineViewHolder.Listener
-) : TypedAdapterDelegate<ProductLineUiModel, PlayProductUiModel, ProductLineViewHolder>(R.layout.item_play_product_line), ProductLineViewHolder.Listener by listener {
+) : TypedAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductLineViewHolder>(ProductLineViewHolder.LAYOUT), ProductLineViewHolder.Listener by listener {
 
-    override fun onBindViewHolder(item: ProductLineUiModel, holder: ProductLineViewHolder) {
+    override fun onBindViewHolder(item: PlayProductUiModel.Product, holder: ProductLineViewHolder) {
         holder.bind(item)
     }
 

@@ -23,14 +23,24 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isLoaded: Boolean
     var isLoading: Boolean
     var isFromCache: Boolean
+    var isNeedToBeRemoved: Boolean
     var emptyState: WidgetEmptyStateUiModel
     fun copy(): BaseWidgetUiModel<T>
+    fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
+
+    fun shouldShowEmptyStateIfEmpty(): Boolean {
+        return emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+    }
+
+    fun isEmpty(): Boolean = data == null || data?.shouldRemove() == true
+
 }
 
 data class WidgetEmptyStateUiModel(
-        val imageUrl: String = "",
-        val title: String = "",
-        val description: String = "",
-        val ctaText: String = "",
-        val appLink: String = ""
+    val imageUrl: String = "",
+    val title: String = "",
+    val description: String = "",
+    val ctaText: String = "",
+    val appLink: String = ""
 )

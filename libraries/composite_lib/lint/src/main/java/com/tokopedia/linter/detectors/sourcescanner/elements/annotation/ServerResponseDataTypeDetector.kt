@@ -37,8 +37,8 @@ object ServerResponseDataTypeDetector {
     const val TYPE_CHARACTER_WRAPPER = "java.lang.Character"
 
 
-    private val classTypeIdentifierMap = mapOf("id" to TYPE_STRING)
-    private val primitiveTypeIdentifierMap = mapOf("price" to TYPE_DOUBLE, "price" to TYPE_DOUBLE_WRAPPER)
+    private val classTypeIdentifierMap = mapOf("^id_|_id\$|^id\$" to TYPE_STRING)
+    private val primitiveTypeIdentifierMap = mapOf("^price\$" to TYPE_DOUBLE, "^price\$" to TYPE_DOUBLE_WRAPPER)
 
 
     const val DATA_TYPE_IMPORT_ID = "Invalid Data Type"
@@ -110,10 +110,10 @@ object ServerResponseDataTypeDetector {
 
 
     var checkContainInKeys =
-            { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key) }) }
+            { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key.toRegex()) }) }
 
     var checkIsKeys =
-            { map: Map<String, String>, attribute: String -> (map.filter { attribute == it.key }) }
+            { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key.toRegex()) }) }
 
     fun getAttributeName(annotation: UAnnotation): String? {
         val attributes: List<UNamedExpression> = annotation.attributeValues

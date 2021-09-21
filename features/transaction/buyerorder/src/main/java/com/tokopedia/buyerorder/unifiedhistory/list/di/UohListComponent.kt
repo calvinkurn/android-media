@@ -2,7 +2,7 @@ package com.tokopedia.buyerorder.unifiedhistory.list.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,7 +24,7 @@ interface UohListComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun dispatcherProvider(): BuyerDispatcherProvider
+    fun dispatcherProvider(): CoroutineDispatchers
 
     fun inject(uohListFragment: UohListFragment)
 }

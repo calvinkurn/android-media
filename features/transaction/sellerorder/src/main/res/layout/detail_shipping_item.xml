@@ -8,8 +8,7 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/layout_lvl2">
+    android:layout_marginRight="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_title"
@@ -56,7 +55,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:text="@string/kode_booking"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,12 +63,23 @@
         app:typographyWeight="reguler"
         tools:text="@string/kode_booking" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/booking_code_copy"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:contentDescription="Tombol salin kode booking"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/booking_code_title"
+        app:layout_constraintStart_toEndOf="@id/booking_code_title"
+        app:layout_constraintTop_toTopOf="@id/booking_code_title" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/booking_code_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_toEndOf="@id/booking_code_title"
         android:inputType="none"
         android:textColor="@color/Unify_G500"
         android:textIsSelectable="true"
@@ -190,14 +199,15 @@
             app:typographyWeight="reguler"
             tools:text="@string/nomor_resi" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/no_resi_copy"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_toEndOf="@id/no_resi_title"
-            app:srcCompat="@drawable/ic_copy_black" />
+            android:contentDescription="Tombol salin nomor resi"
+            app:icon_name="COPY" />
 
     </RelativeLayout>
 
@@ -227,15 +237,15 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/shipping_address_copy"
-        android:layout_width="@dimen/spacing_lvl4"
-        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        app:icon_name="COPY"
         app:layout_constraintStart_toEndOf="@id/alamat_label"
-        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
-        app:srcCompat="@drawable/ic_copy_black" />
+        app:layout_constraintTop_toBottomOf="@id/rl_no_resi" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/shippingPrintedLabel"

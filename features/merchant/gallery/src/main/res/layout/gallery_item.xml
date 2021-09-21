@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.tokopedia.unifycomponents.ImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/galleryImage"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="0dp">
-
-        <com.tokopedia.design.image.SquareImageView
-            android:id="@+id/galleryImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"/>
-
-    </androidx.cardview.widget.CardView>
-
-</LinearLayout>
+    android:layout_height="wrap_content"
+    android:adjustViewBounds="true"
+    android:gravity="center"
+    android:scaleType="centerCrop" />

@@ -1,22 +1,16 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.helper.*
 import com.tokopedia.play.model.*
-import com.tokopedia.play.robot.play.andThen
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isTrue
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,33 +22,15 @@ class PlayViewModelFieldTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
-
-    private val pinnedBuilder = PlayPinnedModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
-    private val shareInfoBuilder = PlayShareInfoModelBuilder()
-    private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
-    private val totalViewBuilder = PlayTotalViewModelBuilder()
     private val likeBuilder = PlayLikeModelBuilder()
     private val statusInfoBuilder = PlayStatusInfoModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
+    private val channelReportBuilder = PlayChannelReportModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
-
     private val responseBuilder = PlayResponseBuilder()
-    private val classBuilder = ClassBuilder()
-    private val uiModelMapper = classBuilder.getPlayUiModelMapper()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatchers.main)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given video player is set, when page is created and video player is retrieved, it should return the same one`() {
@@ -68,7 +44,7 @@ class PlayViewModelFieldTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            videoPlayerFieldResult
+            viewModel.videoPlayer
                     .isEqualTo(expectedModel)
         }
     }
@@ -88,7 +64,7 @@ class PlayViewModelFieldTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            statusTypeFieldResult
+            viewModel.statusType
                     .isEqualTo(expectedModel)
         }
     }
@@ -110,7 +86,7 @@ class PlayViewModelFieldTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            videoOrientationFieldResult
+            viewModel.videoOrientation
                     .isEqualTo(expectedModel)
         }
     }
@@ -119,8 +95,10 @@ class PlayViewModelFieldTest {
     fun `given channel type is set, when page is created and channel type is retrieved, it should return the same one`() {
         val channelType = PlayChannelType.Live
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = channelType
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = PlayChannelType.Live
+                        )
                 )
         )
 
@@ -130,32 +108,8 @@ class PlayViewModelFieldTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            channelTypeFieldResult
+            viewModel.channelType
                     .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
-    fun `given like param is set, when page is created and like param is retrieved, it should return the same one`() {
-        val likeParam = likeBuilder.buildParam(
-                contentId = "123",
-                contentType = 50,
-                likeType = 7
-        )
-        val channelData = channelDataBuilder.buildChannelData(
-                likeInfo = likeBuilder.buildIncompleteData(
-                        param = likeParam
-                )
-        )
-
-        val expectedModel = likeParam
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            likeParamInfoFieldResult
-                    .isEqualTo(likeParam)
         }
     }
 
@@ -188,32 +142,12 @@ class PlayViewModelFieldTest {
     }
 
     @Test
-    fun `given partner info is set, when page is created and partnerId is retrieved, it should return correct value`() {
-        val partnerId = 123515L
-
-        val channelData = channelDataBuilder.buildChannelData(
-                partnerInfo = partnerInfoBuilder.buildIncompleteData(
-                        basicInfo = partnerInfoBuilder.buildPlayPartnerBasicInfo(
-                                id = partnerId
-                        )
-                )
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.partnerId.isEqualTo(partnerId)
-        }
-    }
-
-    @Test
     fun `given total view is set, when page is created and total view is retrieved, it should return correct value`() {
         val totalView = "5.91k"
 
         val channelData = channelDataBuilder.buildChannelData(
-                totalViewInfo = totalViewBuilder.buildCompleteData(
-                        totalView = totalView
+                channelReportInfo = channelReportBuilder.buildChannelReport(
+                        totalViewFmt = totalView
                 )
         )
 
@@ -233,52 +167,6 @@ class PlayViewModelFieldTest {
             setMockUserId(validUserId)
         } thenVerify {
             viewModel.userId.isEqualTo(validUserId)
-        }
-    }
-
-    @Test
-    fun `given channel data, when it is updated, then lastCompleteChannelData should also reflect the update`() {
-        val cartInfo = cartInfoBuilder.buildIncompleteData(shouldShow = true)
-        val initialChannelData = channelDataBuilder.buildChannelData(
-                cartInfo = cartInfo
-        )
-
-        val totalLike = "751"
-        val totalView = "999"
-        val mockReportSummaries = responseBuilder.buildCustomReportSummariesReponse(totalLike, totalView)
-
-        val cartCount = 87
-        val isLiked = true
-
-        givenPlayViewModelRobot {
-            setMockResponseReportSummaries(mockReportSummaries)
-            setMockCartCountResponse(cartCount)
-            setMockResponseIsLike(isLiked)
-        } andWhen {
-            createPage(initialChannelData)
-        } andThen {
-            focusPage(initialChannelData)
-        } thenVerify {
-            lastCompleteChannelDataFieldResult
-                    .isNotEqualTo(initialChannelData)
-                    .isEqualTo(
-                            initialChannelData.copy(
-                                    totalViewInfo = totalViewBuilder.buildCompleteData(totalView),
-                                    likeInfo = likeBuilder.buildCompleteData(
-                                            param = initialChannelData.likeInfo.param,
-                                            status = likeBuilder.buildStatus(
-                                                    totalLike = totalLike.toInt(),
-                                                    totalLikeFormatted = totalLike,
-                                                    isLiked = isLiked,
-                                                    source = LikeSource.Network
-                                            )
-                                    ),
-                                    cartInfo = cartInfoBuilder.buildCompleteData(
-                                            shouldShow = initialChannelData.cartInfo.shouldShow,
-                                            count = cartCount
-                                    )
-                            )
-                    )
         }
     }
 }

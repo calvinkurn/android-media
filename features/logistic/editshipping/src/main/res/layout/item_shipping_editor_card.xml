@@ -25,14 +25,13 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                app:tckv_content_text_size = "@dimen/sp_12"
                 app:tickerShapeType="loose"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <ImageView
                 android:id="@+id/img_shipment_item"
-                android:layout_width="@dimen/dp_52"
+                android:layout_width="@dimen/dp_64"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"

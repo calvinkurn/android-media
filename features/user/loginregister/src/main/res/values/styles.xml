@@ -16,4 +16,25 @@
     <style name="loginRegisterHelperText">
         <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
+
+    <!-- Tkpd Design -->
+    <style name="TextInputLayoutColorLine" parent="Theme.Design.Light">
+        <item name="android:textColorHint">@color/Unify_Static_Black_44</item>
+        <item name="colorControlNormal">@color/Unify_N200</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorControlHighlight">@color/Unify_G500</item>
+    </style>
+
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/Unify_Static_Black_44</item>
+        <item name="focusedTextColorLabel">@color/Unify_Static_Black_44</item>
+        <item name="disabledTextColorLabel">@color/Unify_Static_Black_44</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
 </resources>

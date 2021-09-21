@@ -837,7 +837,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = DiscomActivity.newInstance(getActivity(), token);
+            Intent intent = DiscomActivity.newInstance(getActivity(), token, false);
             startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
         };
     }
@@ -871,7 +871,9 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (address.getLatitude() != null &&
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
-                !address.getLongitude().equals("")
+                !address.getLongitude().equals("") &&
+                !address.getLatitude().equals("0.0") &&
+                !address.getLongitude().equals("0.0")
         ) {
             mPresenter.requestReverseGeoCode(getContext(), address);
         }

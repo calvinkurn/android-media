@@ -1,13 +1,13 @@
 package com.tokopedia.logisticaddaddress.domain;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.AutoCompleteUiModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.PredictionResult;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Data;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Prediction;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel;
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,8 @@ public class MapsMapper implements IMapsMapper{
     }
 
     @Override
-    public AutoCompleteViewModel convertAutoCompleteModel(Data autoCompleteData, String query) {
-        AutoCompleteViewModel autoCompleteViewModel = new AutoCompleteViewModel();
+    public AutoCompleteUiModel convertAutoCompleteModel(Data autoCompleteData, String query) {
+        AutoCompleteUiModel autoCompleteUiModel = new AutoCompleteUiModel();
         List<PredictionResult> predictionResults = new ArrayList<>();
         for (Prediction predictions : autoCompleteData.getPredictions()) {
             PredictionResult simplifiedResult = new PredictionResult();
@@ -41,22 +41,22 @@ public class MapsMapper implements IMapsMapper{
             simplifiedResult.setPlaceId(predictions.getPlaceId());
             predictionResults.add(simplifiedResult);
         }
-        autoCompleteViewModel.setListOfPredictionResults(predictionResults);
-        return autoCompleteViewModel;
+        autoCompleteUiModel.setListOfPredictionResults(predictionResults);
+        return autoCompleteUiModel;
     }
 
     @Override
-    public CoordinateViewModel convertAutoCompleteLocationId(CoordinateModel coordinateModel) {
-        CoordinateViewModel coordinateViewModel = new CoordinateViewModel();
+    public CoordinateUiModel convertAutoCompleteLocationId(CoordinateModel coordinateModel) {
+        CoordinateUiModel coordinateUiModel = new CoordinateUiModel();
         LatLng coordinate = new LatLng(
                 coordinateModel.getGeometry().getLocation().getLat(),
                 coordinateModel.getGeometry().getLocation().getLng()
         );
-        coordinateViewModel.setCoordinate(coordinate);
-        coordinateViewModel.setTitle(coordinateModel.getName());
-        coordinateViewModel.setAddress(coordinateModel.getFormattedAddress());
-        coordinateViewModel.setPlaceId(coordinateModel.getPlaceId());
-        return coordinateViewModel;
+        coordinateUiModel.setCoordinate(coordinate);
+        coordinateUiModel.setTitle(coordinateModel.getName());
+        coordinateUiModel.setAddress(coordinateModel.getFormattedAddress());
+        coordinateUiModel.setPlaceId(coordinateModel.getPlaceId());
+        return coordinateUiModel;
     }
 
     private String modifiedString(String text, String query) {

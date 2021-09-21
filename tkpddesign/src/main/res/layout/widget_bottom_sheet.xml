@@ -23,7 +23,7 @@
                 android:layout_margin="@dimen/dp_10"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
-                android:textColor="@color/font_black_primary_70"
+                android:textColor="@color/Unify_N700_68"
                 tools:text="Contoh Judul"/>
 
             <TextView
@@ -63,7 +63,7 @@
         android:layout_margin="@dimen/dp_10"
         android:gravity="center"
         android:background="@drawable/rect_white_rounded_stroke_gray"
-        android:textColor="@color/font_black_disabled_38"
+        android:textColor="@color/Unify_N700_32"
         tools:text="Test" />
 
     <TextView
@@ -74,6 +74,6 @@
         android:background="@drawable/bg_button_green_enabled"
         android:gravity="center"
         android:text="@string/text_ticker_action_close"
-        android:textColor="@color/font_white_primary_70" />
+        android:textColor="@color/Unify_N0" />
 
 </LinearLayout>

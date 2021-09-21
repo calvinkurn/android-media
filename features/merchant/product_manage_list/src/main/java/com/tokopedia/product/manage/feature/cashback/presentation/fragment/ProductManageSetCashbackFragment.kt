@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -213,7 +214,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun getCashbackPrice(price: String, cashback : Int): String {
-        return (price.toIntOrZero()*cashback/ PERCENT).getCurrencyFormatted()
+        return (price.toDoubleOrZero() * cashback / PERCENT).getCurrencyFormatted()
     }
 
     private fun observeSetCashback() {

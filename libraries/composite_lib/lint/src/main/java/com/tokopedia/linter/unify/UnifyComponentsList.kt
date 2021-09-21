@@ -33,13 +33,12 @@ object UnifyComponentsList {
     fun getUnifyMapping(): Map<String, UnifyMapping> {
         return mapOf(
                 SdkConstants.FLOATING_ACTION_BUTTON.defaultName() to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
-                LinterConstants.Classes.FLOATING_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
                 FLOATING_ACTION_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
                 SdkConstants.TAB_LAYOUT.defaultName() to UnifyMapping(TAB),
                 SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
                 BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
                 LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
-                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
+                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_TIME_PICKER_UNIFY),
                 DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
                 SNACK_BAR to UnifyMapping(TOASTER)
 

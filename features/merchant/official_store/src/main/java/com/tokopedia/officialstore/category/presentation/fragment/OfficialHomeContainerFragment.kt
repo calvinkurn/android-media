@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -16,10 +17,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -29,12 +36,17 @@ import com.tokopedia.officialstore.category.di.DaggerOfficialStoreCategoryCompon
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
 import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
+import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
+import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
+import com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
@@ -48,23 +60,23 @@ import kotlinx.android.synthetic.main.fragment_official_home.*
 import java.util.*
 import javax.inject.Inject
 
-class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
+class OfficialHomeContainerFragment
+    : BaseDaggerFragment(),
+        HasComponent<OfficialStoreCategoryComponent>,
         AllNotificationListener,
-        RecyclerViewScrollListener {
+        RecyclerViewScrollListener,
+        OSContainerListener {
 
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
-
         const val KEY_CATEGORY = "key_category"
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
     }
-
-    @Inject
-    lateinit var viewModel: OfficialStoreCategoryViewModel
+    private val queryHashingKey = "android_do_query_hashing"
+    private val tabAdapter: OfficialHomeContainerAdapter by lazy {
+        OfficialHomeContainerAdapter(context, childFragmentManager)
+    }
 
     private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
@@ -77,22 +89,39 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
     private var useNewInbox = false
+    private var chooseAddressView: OSChooseAddressWidgetView? = null
+    private var chooseAddressData = OSChooseAddressData()
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
+    private var selectedCategory: Category? = null
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
-    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
-
     private lateinit var remoteConfig: RemoteConfig
-    private val queryHashingKey = "android_do_query_hashing"
 
-    private val tabAdapter: OfficialHomeContainerAdapter by lazy {
-        OfficialHomeContainerAdapter(context, childFragmentManager)
+    @Inject
+    lateinit var viewModel: OfficialStoreCategoryViewModel
+
+    fun selectFirstTab() {
+        val tab = tabLayout?.getTabAt(0)
+        tab?.let {
+            it.select()
+        }
+    }
+
+    fun selectTabByCategoryId(categoryId: String) {
+        val position = tabLayout?.getPositionBasedOnCategoryId(categoryId) ?: -1
+        if (position != -1) {
+            val tab = tabLayout?.getTabAt(position)
+            tab?.let {
+                it.select()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
-        startOfficialStorePerformanceMonitoring()
+        startOfficialStorePerformanceMonitoring(savedInstanceState)
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
@@ -104,7 +133,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_official_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_official_home, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,12 +143,20 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
-        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+        fetchOSCategory()
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
 
     override fun onDestroy() {
-        viewModel.officialStoreCategoriesResult.removeObservers(this)
+        viewModel.removeObservers(this)
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        conditionalViewModelRefresh()
     }
 
     override fun getComponent(): OfficialStoreCategoryComponent? {
@@ -136,6 +174,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         if(dy == 0) return
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
+        chooseAddressView?.adjustViewCollapseOnScrolled(
+                dy = dy,
+                whenWidgetGone = {osDivider.gone()},
+                whenWidgetShow = {osDivider.show()})
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -144,7 +186,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         toolbar?.run {
@@ -164,6 +206,62 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         component?.inject(this)
     }
 
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            conditionalViewModelRefresh()
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        userVisibleHint = !hidden
+    }
+
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        chooseAddressData.setLocalCacheModel(localCacheModel)
+        chooseAddressView?.updateChooseAddressInitializedState(false)
+        getChooseAddressWidget()?.updateWidget()
+        updateCurrentFragmentData()
+    }
+
+    override fun onChooseAddressServerDown() {
+        removeChooseAddressWidget()
+    }
+
+    private fun removeChooseAddressWidget() {
+        chooseAddressView?.gone()
+    }
+
+    private fun updateCurrentFragmentData() {
+        var currentTabPos: Int = -1
+        selectedCategory?.let {
+            currentTabPos = tabLayout?.getPositionBasedOnCategoryId(it.categoryId) ?: -1
+        }
+        if (currentTabPos != -1) {
+            val currentFragment = tabAdapter.getCurrentFragment(currentTabPos) as? OfficialHomeFragment
+            currentFragment?.forceLoadData()
+        }
+    }
+
+    private fun fetchOSCategory() {
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false),
+                onCacheStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCacheStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCloudStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                },
+                onCloudStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                })
+    }
+
     private fun observeOfficialCategoriesData() {
         viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -174,7 +272,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                 is Fail -> {
                     removeLoading()
                     NetworkErrorHelper.showEmptyState(context, official_home_motion) {
-                        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+                        fetchOSCategory()
                     }
                 }
             }
@@ -182,7 +280,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         })
     }
 
-    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+    private fun getSelectedCategoryId(officialStoreCategories: OfficialStoreCategories): Int {
         officialStoreCategories.categories.forEachIndexed { index, category ->
             if (keyCategory !== "0" && category.categoryId == keyCategory) {
                 return index
@@ -198,8 +296,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        val categorySelected = getSelectedCategory(officialStoreCategories)
+        val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
+        selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
             tabAdapter.categoryList.forEachIndexed { index, category ->
@@ -215,7 +314,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categoryReselected?.let {
+                    selectedCategory = categoryReselected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
@@ -224,7 +325,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categorySelected?.let {
+                    selectedCategory = categorySelected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
@@ -235,15 +338,27 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
-            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon, it.imageInactiveURL))
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(
+                    categoryId = it.categoryId,
+                    title = it.title,
+                    iconUrl = it.icon,
+                    inactiveIconUrl = it.imageInactiveURL))
         }
         return tabItemDataList
     }
 
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
     }
 
     private fun init(view: View) {
@@ -254,6 +369,25 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
+        chooseAddressView = view.findViewById(R.id.view_widget_choose_address)
+        chooseAddressView?.let {
+            it.initChooseAddressWidget(
+                    needToShowChooseAddress = isChooseAddressRollenceActive(),
+                    listener = this,
+                    fragment = this,
+                    widgetShown = {
+                        it.show()
+                        it.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+                            override fun onGlobalLayout() {
+                                it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                it.setMeasuredHeight()
+                            }
+                        })
+                    },
+                    widgetGone = {
+                        it.gone()
+                    })
+        }
     }
 
     //status bar background compability
@@ -264,7 +398,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
         statusBar?.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
     }
@@ -300,7 +433,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(IconList.ID_MESSAGE) {}
+                        .addIcon(getInboxIcon()) {}
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}
@@ -316,7 +449,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -336,8 +469,58 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         } else null
     }
 
-    private fun startOfficialStorePerformanceMonitoring(){
-        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
-        officialStorePerformanceMonitoringListener = null
+    private fun startOfficialStorePerformanceMonitoring(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
+
+    private fun chooseAddressAbTestCondition(
+            ifChooseAddressActive: () -> Unit = {},
+            ifChooseAddressNotActive: () -> Unit = {}) {
+        val isActive = isChooseAddressRollenceActive()
+        if (isActive) {
+            ifChooseAddressActive.invoke()
+        } else {
+            ifChooseAddressNotActive.invoke()
+        }
+    }
+
+    private fun isChooseAddressRollenceActive(): Boolean {
+        return ChooseAddressUtils.isRollOutUser(requireContext())
+    }
+
+    private fun getChooseAddressWidget(): ChooseAddressWidget? {
+       return chooseAddressView?.getChooseAddressWidget()
+    }
+
+
+    private fun conditionalViewModelRefresh() {
+        chooseAddressAbTestCondition(
+                ifChooseAddressActive = {
+                    if (isAddressDataChanged()) {
+                        getChooseAddressWidget()?.updateWidget()
+                        fetchOSCategory()
+                    }
+                },
+                ifChooseAddressNotActive = {
+                }
+        )
+    }
+
+    private fun isAddressDataChanged(): Boolean {
+        var isAddressChanged = false
+        chooseAddressData.toLocalCacheModel().let {
+            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+
+        if (isAddressChanged) {
+            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+            chooseAddressData = OSChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
+        }
+        return isAddressChanged
+    }
+
 }

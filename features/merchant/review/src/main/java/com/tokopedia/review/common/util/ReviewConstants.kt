@@ -82,23 +82,22 @@ object ReviewConstants {
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
     const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
+    const val HAS_TICKER_REVIEW_REMINDER = "hasTickerReviewReminder"
+    const val HAS_COACHMARK_REMINDER_MESSAGE = "hasCoachmarkReminderMessage"
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
+    const val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+    const val ARGS_IS_PRODUCT_REVIEW = "ARGS_IS_PRODUCT_REVIEW"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
-    const val PARAM_UTM_SOURCE = "utm_source"
+    const val PARAM_SOURCE = "source"
     const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
-
-    const val REVIEW_PENDING_TRACE = "review_pending_trace"
-    const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
-    const val REVIEW_PENDING_PLT_NETWORK_METRICS = "review_pending_plt_network_metrics"
-    const val REVIEW_PENDING_PLT_RENDER_METRICS = "review_pending_plt_render_metrics"
 
     const val REVIEW_DETAIL_TRACE = "review_history_detail_trace"
     const val REVIEW_DETAIL_PLT_PREPARE_METRICS = "review_history_detail_plt_prepare_metrics"
@@ -129,6 +128,22 @@ object ReviewConstants {
     const val SELLER_REVIEW_REPLY_PLT_PREPARE_METRICS = "seller_review_reply_plt_prepare_metrics"
     const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
     const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
+
+    const val REVIEW_READING_TRACE = "review_reading_trace"
+    const val REVIEW_READING_PLT_PREPARE_METRICS = "review_reading_plt_prepare_metrics"
+    const val REVIEW_READING_PLT_NETWORK_METRICS = "review_reading_plt_network_metrics"
+    const val REVIEW_READING_PLT_RENDER_METRICS = "review_reading_plt_render_metrics"
+
+    const val REVIEW_GRID_GALLERY_TRACE = "review_grid_gallery_trace"
+    const val REVIEW_GRID_GALLERY_PLT_PREPARE_METRICS = "review_grid_gallery_plt_prepare_metrics"
+    const val REVIEW_GRID_GALLERY_PLT_NETWORK_METRICS = "review_grid_gallery_network_metrics"
+    const val REVIEW_GRID_GALLERY_PLT_RENDER_METRICS = "review_grid_gallery_render_metrics"
+
+    const val RATING_ONE = 1
+    const val RATING_TWO = 2
+    const val RATING_THREE = 3
+    const val RATING_FOUR = 4
+    const val RATING_FIVE = 5
 }
 
 

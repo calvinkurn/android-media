@@ -9,7 +9,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.*
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
 import com.tokopedia.salam.umrah.common.usecase.UmrahTravelAgentsUseCase
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.salam.umrah.homepage.presentation.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,7 +27,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                                                  private val umrahHomepageMyUmrahUseCase: UmrahHomepageMyUmrahUseCase,
                                                  private val umrahHomepageBannerUseCase : UmrahHomepageBannerUseCase,
                                                  private val umrahTravelAgentsUseCase: UmrahTravelAgentsUseCase,
-                                                 dispatcher: UmrahDispatchersProvider) : BaseViewModel(dispatcher.Main) {
+                                                 dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
 
     private val homePageModelMutable = MutableLiveData<List<UmrahHomepageModel>>()

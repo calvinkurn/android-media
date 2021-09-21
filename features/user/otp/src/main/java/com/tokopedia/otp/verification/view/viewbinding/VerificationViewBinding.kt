@@ -17,7 +17,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class VerificationViewBinding @Inject constructor() : BaseOtpViewBinding() {
+open class VerificationViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_verification
 

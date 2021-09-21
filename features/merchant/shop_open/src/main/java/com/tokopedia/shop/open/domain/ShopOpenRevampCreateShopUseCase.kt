@@ -1,8 +1,8 @@
 package com.tokopedia.shop.open.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.open.data.model.CreateShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
-import com.tokopedia.deals.common.utils.DealsDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.model.response.LocationType
@@ -16,9 +16,9 @@ import javax.inject.Inject
  * @author by jessica on 15/06/20
  */
 
-class DealsBaseViewModel @Inject constructor(dispatcher: DealsDispatcherProvider,
+class DealsBaseViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                              private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.main) {
 
     // fragments may also observe location to determined whether the location changes.
     private val _observableCurrentLocation = MutableLiveData<Location>()

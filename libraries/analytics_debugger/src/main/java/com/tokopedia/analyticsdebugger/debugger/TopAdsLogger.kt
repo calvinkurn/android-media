@@ -85,7 +85,7 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
         fun getInstance(context: Context) : TopAdsLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
-                    instance = TopAdsLogger(context)
+                    instance = TopAdsLogger(context.applicationContext)
                 } else {
                     instance = emptyInstance()
                 }

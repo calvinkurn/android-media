@@ -2,6 +2,8 @@ package com.tokopedia.product.info.util
 
 import android.content.Context
 import android.view.View
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -13,6 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 object ProductDetailBottomSheetBuilder {
     private const val PDP_TIME_PUKUL = "pukul"
+    private const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
 
     fun getShopNotesBottomSheet(context: Context, dateValue: String, descValue: String, titleValue: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
@@ -29,5 +32,11 @@ object ProductDetailBottomSheetBuilder {
         }
 
         return bottomSheetUnify
+    }
+
+    fun openChooseAddressBottomSheet(listener: ChooseAddressBottomSheet.ChooseAddressBottomSheetListener, childFragmentManager: FragmentManager) {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(listener)
+        chooseAddressBottomSheet.show(childFragmentManager, SHIPPING_CHOOSE_ADDRESS_TAG)
     }
 }

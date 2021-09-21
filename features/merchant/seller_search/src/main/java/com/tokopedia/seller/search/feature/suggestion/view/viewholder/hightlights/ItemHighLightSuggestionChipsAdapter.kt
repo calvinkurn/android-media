@@ -1,6 +1,5 @@
 package com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,9 +50,7 @@ class ItemHighLightSuggestionChipsAdapter(private val highLightListener: Highlig
                     setOnClickListener {
                         highLightListener.onHighlightItemClicked(data, adapterPosition)
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        background = ContextCompat.getDrawable(context, R.drawable.chips_ripple)
-                    }
+                    background = ContextCompat.getDrawable(context, R.drawable.chips_ripple)
                 }
             }
         }

@@ -24,9 +24,9 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.data.*
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
@@ -35,9 +35,9 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_review_detail.*
-import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
@@ -53,10 +53,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val SCORE_ZERO = 0
         const val SCORE_MAX = 2
 
-        fun createNewInstance(feedbackId: Long) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: String) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(KEY_FEEDBACK_ID, feedbackId)
+                    putString(KEY_FEEDBACK_ID, feedbackId)
                 }
             }
         }
@@ -66,6 +66,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: ReviewDetailViewModel
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
+    private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -125,6 +126,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
+        bindViews()
         initHeader()
         initErrorPage()
         observeReviewDetails()
@@ -182,7 +184,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setFeedbackId(it.getLong(KEY_FEEDBACK_ID))
+            viewModel.setFeedbackId(it.getString(KEY_FEEDBACK_ID) ?: "")
         }
     }
 
@@ -239,7 +241,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Long) {
+    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: String) {
         with(product) {
             reviewDetailProductCard.setOnClickListener {
                 ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
@@ -363,6 +365,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun bindViews() {
+        reviewConnectionErrorRetryButton = view?.findViewById(com.tokopedia.review.inbox.R.id.reviewConnectionErrorRetryButton)
+    }
+
     private fun initHeader() {
         reviewDetailHeader.apply {
             title = getString(R.string.review_history_details_toolbar)
@@ -373,17 +379,15 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun initErrorPage() {
-        reviewDetailConnectionError.apply {
-            reviewConnectionErrorRetryButton.setOnClickListener {
-                retry()
-            }
+        reviewConnectionErrorRetryButton?.setOnClickListener {
+            retry()
         }
     }
 
     private fun addHeaderIcons(editable: Boolean) {
         reviewDetailHeader.apply {
             clearIcons()
-            addRightIcon(R.drawable.ic_share)
+            addRightIcon(R.drawable.ic_history_details_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
                 (viewModel.reviewDetails.value as? Success)?.let {
                     ReviewDetailTracking.eventClickShare(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
@@ -423,10 +427,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun goToEditForm() {
         with((viewModel.reviewDetails.value as Success).data) {
-            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId.toString(), product.productId.toString())
+            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId, product.productId)
             val intent = RouteManager.getIntent(context, Uri.parse(uri).buildUpon()
                     .appendQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE, ReviewConstants.EDIT_MODE.toString())
-                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId.toString()).build().toString())
+                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId).build().toString())
             startActivityForResult(intent, EDIT_FORM_REQUEST_CODE)
         }
     }
@@ -446,7 +450,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
     }
 
-    private fun goToPdp(productId: Long) {
+    private fun goToPdp(productId: String) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 

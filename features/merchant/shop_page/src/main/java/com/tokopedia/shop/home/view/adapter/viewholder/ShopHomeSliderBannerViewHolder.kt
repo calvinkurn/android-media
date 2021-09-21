@@ -4,6 +4,7 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
@@ -14,7 +15,7 @@ import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 /**
@@ -36,6 +37,7 @@ class ShopHomeSliderBannerViewHolder(
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
     private var carouselData: ArrayList<Any>? = null
+    private var textViewTitle: Typography? = view?.findViewById(R.id.textViewTitle)
 
     private var itmListener = { view: View, data: Any ->
         val img: ShopCarouselBannerImageUnify = view.findViewById(R.id.imageCarousel)
@@ -53,20 +55,13 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
-        carouselShopPage?.post {
-            img.initialWidth = carouselShopPage?.measuredWidth
-        }
         val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         //avoid crash in ImageUnify when image url is returned as base64
         try {
-            img.post {
+            if(img.context.isValidGlideContext()) {
                 val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
-                img.layoutParams.height = (carouselShopPage?.measuredWidth.orZero() * ratio).toInt()
-                img.requestLayout()
-                try {
-                    if(img.context.isValidGlideContext())
-                        img.setImageUrl(carouselItem.imageUrl)
-                } catch (e: Throwable) { }
+                img.heightRatio = ratio
+                img.setImageUrl(carouselItem.imageUrl, ratio)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -122,7 +117,7 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
@@ -133,6 +128,16 @@ class ShopHomeSliderBannerViewHolder(
             } else {
                 text = shopHomeDisplayWidgetUiModel.header.title
                 show()
+            }
+        }
+        bannerData?.let{
+            val widthRatio = getIndexRatio(it, 0).toString()
+            val heightRatio = getIndexRatio(it, 1).toString()
+            carouselShopPage?.apply {
+                (layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = "$widthRatio:$heightRatio"
+                post {
+                    (carouselShopPage?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ""
+                }
             }
         }
     }

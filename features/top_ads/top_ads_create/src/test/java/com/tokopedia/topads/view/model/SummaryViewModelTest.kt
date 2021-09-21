@@ -1,12 +1,16 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -33,12 +37,15 @@ class SummaryViewModelTest {
     private lateinit var context: Context
 
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
+    private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
+
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(context, rule.dispatchers, topAdsGetShopDepositUseCase, repository))
+        viewModel = spyk(SummaryViewModel(context, rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase, repository))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -53,38 +60,30 @@ class SummaryViewModelTest {
     }
 
     @Test
-    fun `test exception in topAdsCreated`() {
-        var t: Throwable? = null
-        val myThrowable: Throwable = Exception("my excep")
+    fun validateGroup() {
+        val data = ResponseGroupValidateName()
+        every {
+            validGroupUseCase.execute(captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(ResponseGroupValidateName) -> Unit>()
+            onSuccess.invoke(data)
+        }
 
-        coEvery { repository.getReseponse(any(), any()) } throws myThrowable
+        viewModel.validateGroup("name", {})
 
-        viewModel.topAdsCreated(hashMapOf(),
-                onSuccessGetDeposit = {},
-                onErrorGetAds = { t = it }
-        )
-        Assert.assertEquals(myThrowable.message, t?.message)
+        verify {
+            validGroupUseCase.execute(any(), any())
+        }
     }
 
     @Test
-    fun `test result in topAdsCreated`() {
-        val expected = 1000
-        var actual = 0
-        val response: GraphqlResponse = mockk(relaxed = true)
-        val successData: ResponseCreateGroup = mockk(relaxed = true)
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseCreateGroup::class.java) } returns listOf()
-        every { response.getData<ResponseCreateGroup>(ResponseCreateGroup::class.java) } returns successData
-        every { successData.topadsCreateGroupAds.errors } returns emptyList()
-        viewModel.topAdsCreated(
-                hashMapOf(),
-                { actual = 1000 },
-                onErrorGetAds = {}
-        )
-
-        Assert.assertEquals(expected, actual)
+    fun `test exception in topAdsCreated`() {
+        val dataProduct: Bundle = mockk()
+        val dataKeyword: HashMap<String, Any?> = mockk()
+        val dataGroup: HashMap<String, Any?> = mockk()
+        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup, {}, {})
+        verify {
+            topAdsCreateUseCase.execute(any(), any())
+        }
     }
-
 }

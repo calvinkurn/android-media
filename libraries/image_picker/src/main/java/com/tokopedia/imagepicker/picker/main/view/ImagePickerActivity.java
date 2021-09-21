@@ -31,22 +31,22 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.common.model.MediaItem;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
-import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
-import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_SOURCE_PAGE;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IMAGES_FED_INTO_IMAGE_PICKER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
@@ -55,8 +55,8 @@ import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_
 public final class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
-        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView,
-        ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener, VideoRecorderFragment.VideoPickerCallback {
+        ImagePickerPresenter.ImagePickerView,
+        ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener {
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
@@ -85,6 +85,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerPreviewWidget imagePickerPreviewWidget;
     private boolean isFinishEditting;
     private String imageTooLargeErrorMessage = "";
+    private String pageSource = "Unknown Page";
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -102,6 +103,9 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
             imagePickerBuilder = intent.getParcelableExtra(EXTRA_IMAGE_PICKER_BUILDER);
+            if (intent.getExtras().containsKey(EXTRA_SOURCE_PAGE)) {
+                pageSource = intent.getStringExtra(EXTRA_SOURCE_PAGE);
+            }
         } else {
             imagePickerBuilder = ImagePickerBuilder.getSquareImageBuilder(getContext());
         }
@@ -137,7 +141,9 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
-        getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        }
 
         setupPreview();
         setupViewPager();
@@ -216,11 +222,11 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     protected void imagePickerViewPagerOnPageSelected(int position) {
         if (selectedTab != position) {
             Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
-            if (previousFragment != null && previousFragment instanceof ImagePickerCameraFragment) {
+            if (previousFragment instanceof ImagePickerCameraFragment) {
                 ((ImagePickerCameraFragment) previousFragment).onInvisible();
             }
             Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
-            if (fragment != null && fragment instanceof ImagePickerCameraFragment) {
+            if (fragment instanceof ImagePickerCameraFragment) {
                 ((ImagePickerCameraFragment) fragment).onVisible();
             }
         }
@@ -301,14 +307,12 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             return;
         }
         int cameraIndex = imagePickerBuilder.getCameraIndex();
-        String[] permissions = null;
+        Set<String> permissions = new HashSet<>();
         if (cameraIndex > -1) {
-            permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        } else {
-            permissions = new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            permissions.add(Manifest.permission.CAMERA);
+        }
+        if (imagePickerBuilder.getGalleryIndex() > -1) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -415,11 +419,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public int getRatioX() {
         return imagePickerBuilder.getRatioX();
-    }
-
-    @Override
-    public void onClickImageInstagram(String url, boolean isChecked, String description) {
-        onImageSelected(url, isChecked, description);
     }
 
     @Override
@@ -535,7 +534,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
                         imagePickerBuilder.getImageTooLargeErrorMessage(),
                         imagePickerBuilder.isRecheckSizeAfterResize(),
                         imagePickerBuilder.getConvertToWebp()
-                ));
+                ), pageSource);
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
@@ -640,7 +639,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
     }
@@ -677,26 +676,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
         outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
         outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
-    }
-
-    @Override
-    public void onVideoTaken(String filePath) {
-        onImageSelected(filePath, true, null);
-    }
-
-    @Override
-    public void onVideoRecorder(int state) {
-        tabLayout.setClickable(state != StateRecorderType.START);
-    }
-
-    @Override
-    public void onVideoPreviewVisible() {
-        onPreviewCameraViewVisible();
-    }
-
-    @Override
-    public void onVideoRecorderVisible() {
-        onCameraViewVisible();
     }
 
     public void trackOpen() {

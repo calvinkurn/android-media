@@ -19,13 +19,13 @@
 
     <com.tokopedia.navigation.presentation.customview.LottieBottomNavbar android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="@dimen/unify_space_48"
         tools:layout_height="100dp"
         android:elevation="15dp"
         android:orientation="vertical"
         app:buttonColor="@color/Unify_N500"
         app:buttonContainerBackgroundColor="@color/Unify_N0"
-        app:buttonsHeight="@dimen/dp_48"
+        app:buttonsHeight="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,6 @@
         app:setViewPagerSwipeable="false"
         app:navbarElevation="15dp"
         app:viewPagerBackground="@color/Unify_N0"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" />
 </LinearLayout>

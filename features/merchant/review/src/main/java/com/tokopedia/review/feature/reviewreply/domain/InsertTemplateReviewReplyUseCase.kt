@@ -19,8 +19,8 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         private const val MESSAGE = "message"
         const val INSERT_TEMPLATE_REVIEW_MUTATION_CLASS_NAME = "InsertTemplateReview"
         const val INSERT_TEMPLATE_REVIEW_MUTATION = """
-            mutation insert_template_review(${'$'}shopID: Int!, ${'$'}title: String!, ${'$'}message: String!) {
-              insertResponseTemplate(shopID: ${'$'}shopID, title: ${'$'}title, message: ${'$'}message) {
+            mutation insert_template_review(${'$'}shopID: String!, ${'$'}title: String!, ${'$'}message: String!) {
+              insertResponseTemplateV2(shopID: ${'$'}shopID, title: ${'$'}title, message: ${'$'}message) {
                     success
                     data {
                        templateId
@@ -35,7 +35,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(shopID: Int, title: String, message: String): Map<String, Any> =
+        fun createParams(shopID: String, title: String, message: String): Map<String, Any> =
                 mapOf(SHOP_ID to shopID, TITLE to title, MESSAGE to message)
     }
 

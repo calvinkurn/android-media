@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.registerinitial.stub
 
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
-import com.tokopedia.user.session.UserSessionInterface
 
 class RegisterInitialFragmentStub : RegisterInitialFragment() {
 

@@ -1,5 +1,0 @@
-mutation ($id: Int!, $uuid: String!) {
-  travelRecentSearchDelete(userID:$id,dataType:HOTEL,UUID:$uuid){
-    Result
-  }
-}

@@ -1,11 +1,11 @@
 package com.tokopedia.atc_common.domain.analytics
 
-import com.appsflyer.AFInAppEventParameterName
-import com.appsflyer.AFInAppEventType
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.track.AFInAppEventParameterName
+import com.tokopedia.track.AFInAppEventType
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,6 +25,7 @@ object AddToCartBaseAnalytics {
     const val VALUE_CURRENCY = "IDR"
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir ekstra"
     const val VALUE_NONE_OTHER = "none / other"
 
     fun sendEETracking(data: MutableMap<String, Any>) {
@@ -34,7 +35,8 @@ object AddToCartBaseAnalytics {
     fun sendAppsFlyerTracking(productId: String, productName: String, price: String, quantity: String, category: String) {
         try {
             val content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity))
-            TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
+            TrackApp.getInstance().appsFlyer.sendEvent(
+                AFInAppEventType.ADD_TO_CART,
                     mutableMapOf<String, Any>(
                             AFInAppEventParameterName.CONTENT_ID to productId,
                             AFInAppEventParameterName.CONTENT_TYPE to CONTENT_TYPE,

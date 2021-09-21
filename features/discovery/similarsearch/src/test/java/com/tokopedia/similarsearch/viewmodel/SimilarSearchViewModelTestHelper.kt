@@ -2,7 +2,7 @@ package com.tokopedia.similarsearch.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.similarsearch.SimilarSearchViewModel
-import com.tokopedia.similarsearch.testutils.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarSearchQuery
 import com.tokopedia.usecase.coroutines.UseCase
@@ -45,7 +45,7 @@ internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
     val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
 
     return SimilarSearchViewModel(
-            TestDispatcherProvider(),
+            CoroutineTestDispatchersProvider,
             getSimilarSearchQuery(),
             getSimilarProductsUseCase,
             addWishListUseCase,

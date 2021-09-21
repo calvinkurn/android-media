@@ -1,26 +1,32 @@
 package com.tokopedia.shop.common.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GqlGetIsShopOsUseCase @Inject constructor(
-        @Named(GQLQueryNamedConstant.GET_IS_OFFICIAL)
-        private var gqlQuery: String,
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<GetIsShopOfficialStore>() {
 
     companion object {
         private const val PARAM_SHOP_ID = "shop_id"
+        const val QUERY = """
+          query getIsOfficial(${'$'}shop_id: Int!){
+            getIsOfficial(shop_id: ${'$'}shop_id){
+              data{
+                is_official
+                expired_date
+              }
+              message_error
+            }
+          }
+        """
         @JvmStatic
         fun createParams(shopId: Int): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
@@ -30,7 +36,7 @@ class GqlGetIsShopOsUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
     val request by lazy {
-        GraphqlRequest(gqlQuery, GetIsShopOfficialStore.Response::class.java, params.parameters)
+        GraphqlRequest(QUERY, GetIsShopOfficialStore.Response::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): GetIsShopOfficialStore {

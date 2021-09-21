@@ -2,7 +2,14 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -29,7 +36,10 @@ interface PlayBroadcastMapper {
             response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel
+    fun mapLiveStream(
+        channelId: String,
+        media: CreateLiveStreamChannelResponse.GetMedia
+    ): LiveStreamInfoUiModel
 
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
 
@@ -49,7 +59,7 @@ interface PlayBroadcastMapper {
 
     fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel
 
-    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel
+    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 
@@ -60,4 +70,15 @@ interface PlayBroadcastMapper {
     fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
+
+    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+
+    fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
+                              title: String,
+                              durationInMs: Long): InteractiveSessionUiModel
+
+    fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel
 }

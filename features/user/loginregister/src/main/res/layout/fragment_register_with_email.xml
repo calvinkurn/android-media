@@ -1,115 +1,114 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@color/Unify_N0">
-  
-  <ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent">
-    
+    android:background="@color/Unify_N0">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_lvl2"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/wrapper_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_lvl3"
+                app:text_field_input_type="textEmailAddress"
+                app:text_field_label="@string/title_email"
+                app:text_field_label_static="true" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/wrapper_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_lvl3"
+                app:text_field_input_type="textEmailAddress"
+                app:text_field_label="@string/title_full_name"
+                app:text_field_label_static="true" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/wrapper_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_lvl3"
+                app:text_field_input_type="textPassword"
+                app:text_field_label="@string/prompt_password"
+                app:text_field_label_static="true" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/register_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl3"
+                android:contentDescription="@string/content_desc_register_button_register"
+                android:enabled="false"
+                android:gravity="center"
+                android:text="@string/title_register_wo_u"
+                app:unifyButtonType="main" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/register_next_detail_t_and_p"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:gravity="center"
+                app:typographyType="body_2"
+                tools:text="Dengan menekan " />
+
+        </LinearLayout>
+
+    </ScrollView>
+
     <LinearLayout
-      android:id="@+id/linearLayout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:focusable="true"
-      android:focusableInTouchMode="true"
-      android:orientation="vertical"
-      android:padding="@dimen/layout_lvl2"
-      android:visibility="visible">
+        android:id="@+id/redirect_reset_password"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_lvl2"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-      <com.tokopedia.unifycomponents.TextFieldUnify
-          android:id="@+id/wrapper_email"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/layout_lvl3"
-          app:text_field_label="@string/title_email"
-          app:text_field_label_static = "true"
-          app:text_field_input_type="textEmailAddress"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/account_registered_title"
+            app:typographyType="heading_2" />
 
-      <com.tokopedia.unifycomponents.TextFieldUnify
-          android:id="@+id/wrapper_name"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/layout_lvl3"
-          app:text_field_label="@string/title_full_name"
-          app:text_field_label_static = "true"
-          app:text_field_input_type="textEmailAddress"/>
-      
-      <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/wrapper_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl3"
-        app:text_field_label="@string/prompt_password"
-        app:text_field_label_static = "true"
-        app:text_field_input_type="textPassword"/>
-      
-      <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/register_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:contentDescription="@string/content_desc_register_button_register"
-        android:enabled="false"
-        android:gravity="center"
-        android:text="@string/title_register_wo_u"
-        app:unifyButtonType="main" />
-  
-      <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/register_next_detail_t_and_p"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:gravity="center"
-        app:typographyType="body_2"
-        tools:text="Dengan menekan "/>
-    
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/account_registered_body"
+            app:typographyType="body_2" />
+
     </LinearLayout>
-    
-  </ScrollView>
-  
-  <LinearLayout
-    android:id="@+id/redirect_reset_password"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/layout_lvl2"
-    android:orientation="vertical"
-    android:visibility="gone">
-    
-    <com.tokopedia.unifyprinciples.Typography
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
-      android:text="@string/account_registered_title"
-      app:typographyType="heading_2" />
-    
-    <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/body"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
-      android:text="@string/account_registered_body"
-      app:typographyType="body_2"/>
-  
-  </LinearLayout>
-  
-  <com.tokopedia.unifycomponents.LoaderUnify
-    android:id="@+id/progress_bar"
-    android:layout_width="@dimen/layout_lvl4"
-    android:layout_height="@dimen/layout_lvl4"
-    android:visibility="gone"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,23 +1,22 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -28,7 +27,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Reload Rates`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
@@ -44,7 +44,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Reload Rates On Invalid Button State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
@@ -57,9 +57,79 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Reload Rates On Invalid Preference`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment())
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates On Invalid Address`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates While Debounce`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceTimeBy(100)
+        orderSummaryPageViewModel.reloadRates()
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 2) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates After Debounce`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(exactly = 4) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(exactly = 2) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
     fun `Get Rates Failed`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         // When
@@ -70,7 +140,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 OrderShipment(
                         serviceName = "",
                         serviceDuration = "",
-                        serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
+                        serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
                         shippingRecommendationData = null),
                 (orderSummaryPageViewModel.orderShipment.value))
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -79,7 +149,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingErrorMessage = "error"
         every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData().apply {
             errorId = "1"
@@ -103,10 +174,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Without Preference Duration`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -128,10 +200,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Without Any Duration`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         shippingDurationViewModels.clear()
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -152,17 +225,17 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Revamp With Recommendation`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
             this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
                 shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
-        ), isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -183,86 +256,24 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
-    }
-
-    @Test
-    fun `Get Rates Duration Error Distance Exceed`() {
-        // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        val errorMessage = "error"
-        shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
-            this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
-            this.errorMessage = errorMessage
-        }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
-        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-
-        // When
-        orderSummaryPageViewModel.getRates()
-
-        // Then
-        assertEquals(
-                OrderShipment(
-                        serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = helper.firstDuration.serviceData.serviceName,
-                        serviceId = helper.firstDuration.serviceData.serviceId,
-                        serviceErrorMessage = errorMessage,
-                        shippingRecommendationData = helper.shippingRecommendationData,
-                        logisticPromoViewModel = helper.logisticPromo),
-                orderSummaryPageViewModel.orderShipment.value)
-        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        verify(exactly = 1) { orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED) }
-    }
-
-    @Test
-    fun `Get Rates Duration Error Weight Exceed`() {
-        // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        val errorMessage = "error"
-        shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
-            this.errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-            this.errorMessage = errorMessage
-        }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
-        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-
-        // When
-        orderSummaryPageViewModel.getRates()
-
-        // Then
-        assertEquals(
-                OrderShipment(
-                        serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = helper.firstDuration.serviceData.serviceName,
-                        serviceId = helper.firstDuration.serviceData.serviceId,
-                        serviceErrorMessage = errorMessage,
-                        shippingRecommendationData = helper.shippingRecommendationData,
-                        logisticPromoViewModel = helper.logisticPromo),
-                orderSummaryPageViewModel.orderShipment.value)
-        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        verify(exactly = 1) { orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED) }
     }
 
     @Test
     fun `Get Rates Courier Error Revamp With Recommendation`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
                 shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
-        ), isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -283,21 +294,15 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
     }
 
     @Test
-    fun `Get Rates Courier Error Distance Exceed`() {
+    fun `Get Rates Duration Not Match Revamp With No Recommendation`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        val errorMessage = "error"
-        shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
-            this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
-            this.errorMessage = errorMessage
-        }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(shipment = OrderProfileShipment())
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -307,110 +312,22 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(
                 OrderShipment(
-                        serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = helper.firstDuration.serviceData.serviceName,
-                        serviceId = helper.firstDuration.serviceData.serviceId,
-                        serviceErrorMessage = errorMessage,
-                        shipperName = helper.firstCourierFirstDuration.productData.shipperName,
-                        shipperProductId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shipperId = helper.firstCourierFirstDuration.productData.shipperId,
-                        ratesId = helper.firstCourierFirstDuration.ratesId,
-                        ut = helper.firstCourierFirstDuration.productData.unixTime,
-                        checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
-                        shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
+                        serviceName = "",
+                        serviceDuration = "",
+                        serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
                 orderSummaryPageViewModel.orderShipment.value)
-        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        verify(exactly = 1) { orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED) }
-    }
-
-    @Test
-    fun `Get Rates Courier Error Weight Exceed`() {
-        // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        val errorMessage = "error"
-        shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
-            this.errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-            this.errorMessage = errorMessage
-        }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
-        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-
-        // When
-        orderSummaryPageViewModel.getRates()
-
-        // Then
-        assertEquals(
-                OrderShipment(
-                        serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = helper.firstDuration.serviceData.serviceName,
-                        serviceId = helper.firstDuration.serviceData.serviceId,
-                        serviceErrorMessage = errorMessage,
-                        shipperName = helper.firstCourierFirstDuration.productData.shipperName,
-                        shipperProductId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shipperId = helper.firstCourierFirstDuration.productData.shipperId,
-                        ratesId = helper.firstCourierFirstDuration.ratesId,
-                        ut = helper.firstCourierFirstDuration.productData.unixTime,
-                        checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
-                        shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
-                        shippingRecommendationData = helper.shippingRecommendationData,
-                        logisticPromoViewModel = helper.logisticPromo),
-                orderSummaryPageViewModel.orderShipment.value)
-        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        verify(exactly = 1) { orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED) }
-    }
-
-    @Test
-    fun `Get Rates Courier Error Pinpoint`() {
-        // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
-            this.errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
-            this.errorMessage = "error"
-        }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
-        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-
-        // When
-        orderSummaryPageViewModel.getRates()
-
-        // Then
-        assertEquals(
-                OrderShipment(
-                        serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = helper.firstDuration.serviceData.serviceName,
-                        serviceId = helper.firstDuration.serviceData.serviceId,
-                        serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
-                        shipperName = helper.firstCourierFirstDuration.productData.shipperName,
-                        shipperProductId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shipperId = helper.firstCourierFirstDuration.productData.shipperId,
-                        ratesId = helper.firstCourierFirstDuration.ratesId,
-                        ut = helper.firstCourierFirstDuration.productData.unixTime,
-                        checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
-                        shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
-                        needPinpoint = true,
-                        shippingRecommendationData = helper.shippingRecommendationData,
-                        logisticPromoViewModel = helper.logisticPromo),
-                orderSummaryPageViewModel.orderShipment.value)
-        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Get Rates Courier Revamp With Second Courier Recommended`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -431,7 +348,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -444,10 +361,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Second Courier Recommended`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -468,7 +386,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -481,15 +399,16 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Distance Exceed With Selected Order Shipment`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
             this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -513,15 +432,16 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Weight Exceed With Selected Order Shipment`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
             this.errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -545,15 +465,16 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Distance Exceed With Selected Order Shipment`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -573,7 +494,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
@@ -585,15 +506,16 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Weight Exceed With Selected Order Shipment`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
             this.errorMessage = errorMessage
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -613,7 +535,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
@@ -625,14 +547,15 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Pinpoint With Selected Order Shipment`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
             this.errorMessage = "error"
         }
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -652,7 +575,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         needPinpoint = true,
                         shippingRecommendationData = helper.shippingRecommendationData,
@@ -664,10 +587,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier With Selected Order Shipment Second Courier`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -688,7 +612,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -701,13 +625,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier With Selected Order Shipment No Courier`() {
         // Given
-        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
         val shippingCourierViewModels = shippingDurationViewModels[0].shippingCourierViewModelList.toMutableList()
         shippingCourierViewModels.removeAt(0)
         shippingDurationViewModels[0].shippingCourierViewModelList = shippingCourierViewModels
-        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -728,7 +653,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -739,11 +664,75 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Get Rates On Error Order`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(errors = listOf("error")))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(OrderShipment(
+                isDisabled = true,
+                isLoading = false,
+                serviceName = helper.shipment.serviceName,
+                serviceDuration = helper.shipment.serviceDuration,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
+        ), orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Get Rates Overweight`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(
+                shop = helper.orderData.cart.shop.copy(maximumWeight = 10, maximumWeightWording = "max"),
+                products = arrayListOf(helper.product.copy(weight = 100)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(false, orderSummaryPageViewModel.orderProfile.value.enable)
+        assertEquals(90.0, orderSummaryPageViewModel.orderShop.value.overweight, 0.0)
+        assertEquals(OrderShipment(
+                isLoading = false,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
+        ), orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Get Rates With No Pinpoint And Disable Change Courier`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+                address = helper.address.copy(latitude = "", longitude = ""),
+                shipment = helper.shipment.copy(isDisableChangeCourier = true)
+        )
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(true, orderSummaryPageViewModel.orderProfile.value.enable)
+        assertEquals(OrderShipment(
+                serviceName = helper.shipment.serviceName,
+                serviceDuration = helper.shipment.serviceDuration,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                needPinpoint = true
+        ), orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
     fun `Choose Courier`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shippingRecommendationData = helper.shippingRecommendationData.apply {
-            shippingDurationViewModels = shippingDurationViewModels.reversed()
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = helper.shippingRecommendationData.apply {
+            shippingDurationUiModels = shippingDurationUiModels.reversed()
         })
 
         // When
@@ -763,7 +752,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -771,8 +760,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Courier With No Corresponding Courier`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.chooseCourier(ShippingCourierUiModel().apply {
@@ -782,15 +771,15 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         })
 
         // Then
-        assertEquals(helper.orderShipment, orderSummaryPageViewModel._orderShipment)
+        assertEquals(helper.orderShipment, orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Choose Duration`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, false)
@@ -810,7 +799,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.firstCourierSecondDuration.productData.shipperProductId.toString(), any()) }
@@ -819,10 +808,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Duration With No Bbo`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         shippingRecommendationData.logisticPromo = null
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
 
         // When
         orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, false)
@@ -840,7 +829,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                         shippingRecommendationData = shippingRecommendationData,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.firstCourierSecondDuration.productData.shipperProductId.toString(), any()) }
@@ -849,8 +838,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Duration With Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         val error = "error"
         helper.firstCourierSecondDuration.productData.error = ErrorProductData().apply {
@@ -875,7 +864,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         serviceErrorMessage = error,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -884,8 +873,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Duration With Pinpoint Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, true)
@@ -905,7 +894,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
                         needPinpoint = true,
                         isServicePickerEnable = false,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -914,8 +903,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(serviceErrorMessage = "")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -927,9 +916,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
-        assertEquals(false, shipping.isServicePickerEnable)
+        assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -937,8 +926,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Service Picker Enabled`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isServicePickerEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isServicePickerEnable = true)
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -952,7 +941,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -960,8 +949,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Previous Shipping In Error State`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(serviceErrorMessage = "error")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "error")
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -975,7 +964,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -983,12 +972,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Pinpoint Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
-        shippingRecommendationData.shippingDurationViewModels[1].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
+        shippingRecommendationData.shippingDurationUiModels[1].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
         }
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -1003,7 +992,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.needPinpoint)
         assertEquals(OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE, shipping.serviceErrorMessage)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -1011,14 +1000,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Courier Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         val errorMessage = "error"
-        shippingRecommendationData.shippingDurationViewModels[1].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
+        shippingRecommendationData.shippingDurationUiModels[1].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = "1"
             this.errorMessage = errorMessage
         }
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -1032,7 +1021,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(errorMessage, shipping.serviceErrorMessage)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -1040,8 +1029,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Multiple Voucher`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green")),
@@ -1055,7 +1044,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -1063,11 +1052,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Without Corresponding Duration`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
-        val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        val durations = shippingRecommendationData.shippingDurationUiModels.toMutableList()
         durations.removeAt(1)
-        shippingRecommendationData.shippingDurationViewModels = durations
+        shippingRecommendationData.shippingDurationUiModels = durations
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1087,11 +1077,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Without Corresponding Courier`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
-        val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        val durations = shippingRecommendationData.shippingDurationUiModels.toMutableList()
         durations[1].shippingCourierViewModelList[0].productData.shipperProductId = 0
-        shippingRecommendationData.shippingDurationViewModels = durations
+        shippingRecommendationData.shippingDurationUiModels = durations
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1111,11 +1102,13 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Red State`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
+        val promoErrorMessage = "error promo"
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red"))
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red", text = promoErrorMessage))
         )), status = "OK"))
 
         // When
@@ -1125,13 +1118,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
-        assertEquals(OccGlobalEvent.Error(null, OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.Error(null, promoErrorMessage), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Choose Logistic Promo No State`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(status = "OK"))
@@ -1149,7 +1143,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Server Error Status`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(status = "ERROR"))
@@ -1167,7 +1162,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         val response = Throwable()
@@ -1184,10 +1180,80 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Choose Logistic Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        orderSummaryPageViewModel.getRates()
+        val response = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(response)
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Unchoose Logistic Promo Success`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
+
+        val discountAmount = 100
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When Choose Logistic Promo
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then Have Logistic Discount
+        val firstShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, firstShipping.isApplyLogisticPromo)
+
+        val firstTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(discountAmount, firstTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, firstTotal.orderCost.shippingFee, 0.0)
+
+        // When Unchoose Logistic Promo
+        orderSummaryPageViewModel.chooseDuration(helper.firstDuration.serviceData.serviceId, helper.secondCourierFirstDuration, false)
+
+        // Then Have No Logistic Discount
+        val secondShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, secondShipping.isApplyLogisticPromo)
+        assertEquals(true, secondShipping.isServicePickerEnable)
+        assertEquals(null, secondShipping.logisticPromoShipping)
+        assertEquals(helper.secondCourierFirstDuration.productData.insurance, secondShipping.insurance.insuranceData)
+        assertEquals(helper.secondCourierFirstDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+
+        val secondTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(0, secondTotal.orderCost.shippingDiscountAmount)
+        assertEquals(1500.0, secondTotal.orderCost.shippingFee, 0.0)
+    }
+
+    @Test
     fun `Auto Apply Logistic Promo Success`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1198,23 +1264,81 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Auto Apply Logistic Promo Success With Different Benefit`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+
+        val firstDiscountAmount = 100
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = firstDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+
+        // When Choose Logistic Promo
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then Have First Discount Amount
+        val firstShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, firstShipping.isApplyLogisticPromo)
+
+        val firstTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(firstDiscountAmount, firstTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, firstTotal.orderCost.shippingFee, 0.0)
+
+        // Given Second Discount Amount
+        val secondDiscountAmount = 50
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = secondDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+
+        // When Update Quantity
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val secondShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, secondShipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierSecondDuration, secondShipping.logisticPromoShipping)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, secondShipping.insurance.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
+
+        val secondTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(secondDiscountAmount, secondTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, secondTotal.orderCost.shippingFee, 0.0)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Auto Apply Logistic Promo Without Corresponding Courier`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1224,14 +1348,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val shippingRecommendationData = helper.shippingRecommendationData
-        val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        val durations = shippingRecommendationData.shippingDurationUiModels.toMutableList()
         durations[1].shippingCourierViewModelList[0].productData.shipperProductId = 0
-        shippingRecommendationData.shippingDurationViewModels = durations
+        shippingRecommendationData.shippingDurationUiModels = durations
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1244,8 +1368,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Auto Apply Logistic Promo Red State`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1258,8 +1383,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         )), status = "OK"))
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1272,8 +1397,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Auto Apply Logistic Promo Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1285,8 +1411,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1296,97 +1422,170 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Auto Apply Logistic Promo Error On Disable Change Courier`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(shipment = helper.shipment.copy(isDisableChangeCourier = true))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        orderSummaryPageViewModel.getRates()
+        val throwable = Throwable()
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(false, shipping.isDisabled)
+        assertEquals(OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE, shipping.serviceErrorMessage)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Auto Apply Logistic Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        orderSummaryPageViewModel.getRates()
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        val throwable = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Set Insurance Check`() {
         // Given
-        orderSummaryPageViewModel._orderShipment = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
                 shipperProductId = 1, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
         // Then
-        assertEquals(true, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
-    fun `Set Insurance Check Using Same State`() {
+    fun `Set Insurance Uncheck`() {
         // Given
-        orderSummaryPageViewModel._orderShipment = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = true),
                 shipperProductId = 1, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(false)
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
+    }
+
+    @Test
+    fun `Set Insurance Check Using Same State`() {
+        // Given
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
+                shipperProductId = 1, serviceName = "service")
+
+        // When
+        orderSummaryPageViewModel.setInsuranceCheck(false)
+
+        // Then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
     fun `Set Insurance Check On Invalid SpId`() {
         // Given
-        orderSummaryPageViewModel._orderShipment = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
                 shipperProductId = 0, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
     fun `Change Pinpoint`() {
         // Given
-        orderSummaryPageViewModel._orderShipment = OrderShipment(needPinpoint = true)
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(needPinpoint = true)
 
         // When
         orderSummaryPageViewModel.changePinpoint()
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel._orderShipment.needPinpoint)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.needPinpoint)
     }
 
     @Test
     fun `Change Pinpoint On Invalid State`() {
         // Given
-        orderSummaryPageViewModel._orderShipment = OrderShipment(needPinpoint = false)
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(needPinpoint = false)
 
         // When
         orderSummaryPageViewModel.changePinpoint()
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel._orderShipment.needPinpoint)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.needPinpoint)
     }
 
     @Test
     fun `Save Pinpoint Success`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { editAddressUseCase.get().createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 1}}")
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.TriggerRefresh(successMessage = OrderSummaryPageViewModel.SAVE_PINPOINT_SUCCESS_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Save Pinpoint On Invalid Preference State`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
         verify(inverse = true) { editAddressUseCase.get().createObservable(any()) }
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Save Pinpoint Error`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { editAddressUseCase.get().createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
 
         // When
@@ -1399,7 +1598,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Save Pinpoint Failed`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val throwable = Throwable()
         every { editAddressUseCase.get().createObservable(any()) } returns Observable.error(throwable)
 
@@ -1413,8 +1612,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Clear Bbo If Exist Success`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1432,8 +1631,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Clear Bbo If Exist When Bbo Not Applied`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.clearBboIfExist()
@@ -1445,13 +1644,13 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Clear Bbo If Exist When No Bbo Shipping`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
-        orderSummaryPageViewModel._orderShipment = orderSummaryPageViewModel._orderShipment.copy(logisticPromoShipping = null)
+        orderSummaryPageViewModel.orderShipment.value = orderSummaryPageViewModel.orderShipment.value.copy(logisticPromoShipping = null)
 
         // When
         orderSummaryPageViewModel.clearBboIfExist()
@@ -1463,10 +1662,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Clear Bbo If Exist When No Bbo Available`() {
         // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         shippingRecommendationData.logisticPromo = null
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
 
         // When
         orderSummaryPageViewModel.clearBboIfExist()

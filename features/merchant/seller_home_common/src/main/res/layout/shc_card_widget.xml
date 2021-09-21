@@ -27,7 +27,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:ellipsize="end"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,13 +44,22 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_22dp"
             android:text="@string/shc_load_failed"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"
             app:typographyWeight="bold"
             tools:text="Rp999.999.999" />
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
+            android:id="@+id/card_value_countdown_view"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardSubValue"
@@ -60,7 +69,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:ellipsize="end"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

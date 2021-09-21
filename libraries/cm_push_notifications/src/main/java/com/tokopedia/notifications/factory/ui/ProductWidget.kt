@@ -56,12 +56,11 @@ internal open class ProductWidget(
 
     override fun setCollapseViewData(view: RemoteViews) {
         // set notification icon
-        if (model.icon.isNullOrEmpty()) {
+        productImage?.let{
+            view.setImageViewBitmap(R.id.iv_icon_collapsed, it)
+        } ?: run {
             view.setImageViewBitmap(R.id.iv_icon_collapsed, base.defaultIcon())
-        } else {
-            view.setImageViewBitmap(R.id.iv_icon_collapsed, base.getBitmap(model.icon))
         }
-
         // set title and message of collapsed
         view.setTextViewText(R.id.tv_collapse_title, spanStr(model.title))
         view.setTextViewText(R.id.tv_collapsed_message, spanStr(model.message))
@@ -116,6 +115,7 @@ internal open class ProductWidget(
         // set pending intent of product image and content
         view.setOnClickPendingIntent(R.id.iv_productImage, contract.productDetailIntent(product))
         view.setOnClickPendingIntent(R.id.ll_content, contract.productDetailIntent(product))
+        view.setOnClickPendingIntent(R.id.status_bar_latest_event_content, contract.productDetailIntent(product))
 
         // action button
         if (product.actionButton.onlyOne()) {

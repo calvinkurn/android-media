@@ -20,6 +20,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -41,6 +42,7 @@ class LineGraphViewHolder(
 
         @LayoutRes
         private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_chart_tooltip
+        private const val ANIMATION_DURATION = 200
     }
 
     private var showAnimation: ValueAnimator? = null
@@ -48,6 +50,9 @@ class LineGraphViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         showAnimation?.end()
         hideAnimation?.end()
         observeState(element)
@@ -61,9 +66,9 @@ class LineGraphViewHolder(
         setupTooltip(element)
     }
 
-    private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendLineGraphCtaClickEvent(dataKey, value)
+    private fun openAppLink(element: LineGraphWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.appLink)) {
+            listener.sendLineGraphCtaClickEvent(element)
         }
     }
 
@@ -75,6 +80,7 @@ class LineGraphViewHolder(
      * */
     private fun observeState(element: LineGraphWidgetUiModel) {
         val data: LineGraphDataUiModel? = element.data
+        itemView.show()
         when {
             null == data -> {
                 showViewComponent(false, element)
@@ -85,7 +91,7 @@ class LineGraphViewHolder(
                 onStateLoading(false)
                 showViewComponent(false, element)
                 onStateError(true)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> {
                 onStateLoading(false)
@@ -133,10 +139,10 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+                openAppLink(element)
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+                openAppLink(element)
             }
         }
 
@@ -146,9 +152,21 @@ class LineGraphViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendLineGraphImpressionEvent(element)
             }
-            if (showEmptyState) {
-                showEmptyState = true
-                setupEmptyState(element.emptyState)
+            if (element.isEmpty()) {
+                if (element.isShowEmpty) {
+                    if (element.shouldShowEmptyStateIfEmpty()) {
+                        setupEmptyState(element)
+                    } else {
+                        animateHideEmptyState()
+                    }
+                } else {
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        listener.onRemoveWidget(adapterPosition)
+                        itemView.toggleWidgetHeight(false)
+                    }
+                }
             } else {
                 animateHideEmptyState()
             }
@@ -156,17 +174,16 @@ class LineGraphViewHolder(
     }
 
     private fun showEmpty(element: LineGraphWidgetUiModel): Boolean {
-        return element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
-                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty() && element.isShowEmpty
     }
 
-    private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
-        with(emptyState) {
+    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+        with(element.emptyState) {
             itemView.tvLineGraphEmptyStateTitle.text = title
             itemView.tvLineGraphEmptyStateDescription.text = description
             itemView.tvShcMultiLineEmptyStateCta.text = ctaText
             itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                listener.sendLineChartEmptyStateCtaClickEvent(element)
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()
@@ -206,15 +223,15 @@ class LineGraphViewHolder(
     private fun getLineChartConfig(element: LineGraphWidgetUiModel): LineChartConfigModel {
         val lineChartData = getLineChartData(element)
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { !showEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -222,7 +239,7 @@ class LineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData.yAxisLabel
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
@@ -243,7 +260,7 @@ class LineGraphViewHolder(
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()
@@ -283,6 +300,8 @@ class LineGraphViewHolder(
 
         fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
-        fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
+        fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {}
+
+        fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.initialstate.curatedcampaign
 
 import com.tokopedia.autocomplete.initialstate.InitialStateItem
 
-fun InitialStateItem.convertToCuratedCampaignViewModel(featureId: String): CuratedCampaignViewModel {
-    return CuratedCampaignViewModel(
+fun InitialStateItem.convertToCuratedCampaignDataView(featureId: String): CuratedCampaignDataView {
+    return CuratedCampaignDataView(
             template = template,
             imageUrl = imageUrl,
             applink = applink,
@@ -12,6 +12,7 @@ fun InitialStateItem.convertToCuratedCampaignViewModel(featureId: String): Curat
             subtitle = subtitle,
             productId = itemId,
             type = type,
-            featureId = featureId
+            featureId = featureId,
+            campaignCode = campaignCode
     )
 }

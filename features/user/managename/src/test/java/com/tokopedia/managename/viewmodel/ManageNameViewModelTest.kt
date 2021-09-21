@@ -2,7 +2,7 @@ package com.tokopedia.managename.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.managename.coroutines.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.managename.data.model.UpdateNameModel
 import com.tokopedia.managename.domain.AddNameUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,7 +27,7 @@ class ManageNameViewModelTest {
     val addNameUseCase = mockk<AddNameUseCase>(relaxed = true)
     val name = "Test Name"
 
-    val dispatcher = TestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
     private var observer = mockk<Observer<com.tokopedia.usecase.coroutines.Result<UpdateNameModel>>>(relaxed = true)
     lateinit var viewModel: ManageNameViewModel
 

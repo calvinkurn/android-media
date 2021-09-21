@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
 
 /**
@@ -36,8 +35,7 @@ object RouteManagerKt {
             }
             return true
         }
-        val deeplinkType = DeepLinkChecker.getDeepLinkType(activity, url)
-        when (deeplinkType) {
+        when (DeepLinkChecker.getDeepLinkType(activity, url)) {
             DeepLinkChecker.HOME -> {
                 val intent = RouteManager.getIntentNoFallback(activity, ApplinkConst.HOME)
                 if (intent != null) {

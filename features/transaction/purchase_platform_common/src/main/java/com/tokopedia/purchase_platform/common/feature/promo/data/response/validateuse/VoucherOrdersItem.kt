@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class VoucherOrdersItem(
@@ -11,15 +11,6 @@ data class VoucherOrdersItem(
 
         @field:SerializedName("unique_id")
         val uniqueId: String = "",
-
-        @field:SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int = 0,
-
-        @field:SerializedName("discount_amount")
-        val discountAmount: Int = 0,
-
-        @field:SerializedName("address_id")
-        val addressId: Int = 0,
 
         @field:SerializedName("title_description")
         val titleDescription: String = "",
@@ -36,24 +27,9 @@ data class VoucherOrdersItem(
         @field:SerializedName("duration")
         val duration: String = "",
 
-        @field:SerializedName("cart_id")
-        val cartId: Int = 0,
-
-        @field:SerializedName("shop_id")
-        val shopId: Int = 0,
-
-        @field:SerializedName("benefit_details")
-        val benefitDetails: List<BenefitDetailsItem> = emptyList(),
-
         @field:SerializedName("success")
         val success: Boolean = false,
 
         @field:SerializedName("invoice_description")
-        val invoiceDescription: String = "",
-
-        @field:SerializedName("order_id")
-        val orderId: Int = 0,
-
-        @field:SerializedName("warehouse_id")
-        val warehouseId: Int = 0
+        val invoiceDescription: String = ""
 )

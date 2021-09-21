@@ -11,8 +11,19 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_HIGHLIGHT_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_TITLE_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_FEATURED_PRODUCT_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_MEMBERSHIP_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_MERCHANT_VOUCHER_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_SHOP_PRODUCT_ADD_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_SHOP_PRODUCT_FIRST_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL
+import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_SORT_FILTER_DATA_MODEL
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
@@ -61,6 +72,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddUiModel
     private val shopProductFirstUiModel: ShopProductUiModel?
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] as? ShopProductUiModel
+    override val stickyHeaderPosition: Int
+        get() = visitables.indexOf(shopProductSortFilterUiViewModel)
 
     override fun showErrorNetwork(message: String, onRetryListener: ErrorNetworkModel.OnRetryListener) {
         errorNetworkModel.errorMessage = message
@@ -84,10 +97,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         return shopProductUiModelList.size
     }
 
-    override fun getStickyHeaderPosition(): Int {
-        return visitables.indexOf(shopProductSortFilterUiViewModel)
-    }
-
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         if (holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             val staggeredLayoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
@@ -104,24 +113,24 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopProductAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
             ShopProductViewGridType.SMALL_GRID -> {
-                2
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_small_grid) ?: 2
             }
             ShopProductViewGridType.LIST -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
             }
         }
     }
 
-    override fun createStickyViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val stickyViewType = getItemViewType(stickyHeaderPosition)
         val view = onCreateViewItem(parent, stickyViewType)
         return shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType)
     }
 
-    override fun bindSticky(viewHolder: RecyclerView.ViewHolder) {
+    override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
         if (viewHolder is ShopProductSortFilterViewHolder) {
             (mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL] as? ShopProductSortFilterUiModel)?.let {
                 viewHolder.bind(it)
@@ -133,7 +142,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         notifyChangedItem(shopProductSortFilterPosition)
     }
 
-    override fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener) {
+    override fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?) {
         this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener
     }
 
@@ -203,17 +212,17 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun getEtalaseNameHighLight(shopProductUiModel: ShopProductUiModel): String {
         shopProductEtalaseHighlightUiModel?.let {
-            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselUiModelList
+            val etalaseHighlightCarouselViewModelList = it.getEtalaseHighlightCarouselUiModelList()
             var i = 0
-            val sizei = etalaseHighlightCarouselViewModelList.size
+            val sizei = etalaseHighlightCarouselViewModelList?.size.orZero()
             while (i < sizei) {
-                val shopProductViewModelList = etalaseHighlightCarouselViewModelList[i].shopProductUiModelList
+                val shopProductViewModelList = etalaseHighlightCarouselViewModelList?.getOrNull(i)?.shopProductUiModelList
                 var j = 0
-                val sizej = shopProductViewModelList.size
+                val sizej = shopProductViewModelList?.size.orZero()
                 while (j < sizej) {
-                    val shopProductViewModelEtalase = shopProductViewModelList[j]
-                    if (shopProductViewModelEtalase.id == shopProductUiModel.id && shopProductUiModel.etalaseId == etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseId) {
-                        return etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseName
+                    val shopProductViewModelEtalase = shopProductViewModelList?.getOrNull(j)
+                    if (shopProductViewModelEtalase?.id == shopProductUiModel.id && shopProductUiModel.etalaseId == etalaseHighlightCarouselViewModelList?.getOrNull(i)?.shopEtalaseViewModel?.etalaseId) {
+                        return etalaseHighlightCarouselViewModelList.getOrNull(i)?.shopEtalaseViewModel?.etalaseName.orEmpty()
                     }
                     j++
                 }
@@ -225,8 +234,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun getEtalaseNameHighLightType(shopProductUiModel: ShopProductUiModel): Int? {
         return shopProductEtalaseHighlightUiModel?.let {
-            val matchEtalaseHighlight = it.etalaseHighlightCarouselUiModelList.firstOrNull {
-                it.shopProductUiModelList.firstOrNull { it.id == shopProductUiModel.id } != null
+            val matchEtalaseHighlight = it.getEtalaseHighlightCarouselUiModelList()?.firstOrNull {
+                it.shopProductUiModelList?.firstOrNull { it.id == shopProductUiModel.id } != null
             }
             matchEtalaseHighlight?.shopEtalaseViewModel?.type
         }
@@ -603,6 +612,61 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
             notifyChangedItem(visitables.indexOf(this))
+        }
+    }
+
+    fun addSuggestionSearchTextSection(suggestionText: String, suggestionQuery: String) {
+        visitables.remove(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        visitables.add(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        notifyDataSetChanged()
+    }
+
+    fun addEmptySearchResultState() {
+        visitables.add(ShopProductEmptySearchUiModel())
+    }
+
+    fun addEmptyShowcaseResultState() {
+        visitables.add(ShopProductEmptyShowcaseUiModel())
+    }
+
+    fun addProductSuggestion(productList: List<ShopProductUiModel>) {
+        shopProductUiModelList.addAll(productList)
+        visitables.add(ShopProductTitleEmptyUiModel())
+        visitables.addAll(productList)
+        mapDataModel()
+    }
+
+    fun clearShopPageProductResultEmptyState() {
+        visitables.firstOrNull{
+            it is ShopProductEmptySearchUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductEmptyShowcaseUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductTitleEmptyUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+    }
+
+    fun clearShopPageChangeGridSection(){
+        visitables.firstOrNull{
+            it is ShopProductChangeGridSectionUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
         }
     }
 }

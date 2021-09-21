@@ -3,12 +3,13 @@ package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
+import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.util.extension.awaitMeasured
-import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
@@ -28,8 +29,8 @@ class PortraitVideoBoundsProvider(
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int = coroutineScope {
         return@coroutineScope if (videoOrientation.isHorizontal) {
-            val toolbarLayout = async { toolbarView.awaitMeasured() }
-            val statsInfoLayout = async { statsInfoView.awaitMeasured() }
+            val toolbarLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, toolbarView::awaitMeasured) }) {}
+            val statsInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, statsInfoView::awaitMeasured) }) {}
 
             awaitAll(toolbarLayout, statsInfoLayout)
 
@@ -79,5 +80,9 @@ class PortraitVideoBoundsProvider(
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
         return@coroutineScope interactionTopmostY
+    }
+
+    companion object {
+        private const val MEASURE_TOP_BOUNDS_TIMEOUT = 35000L
     }
 }

@@ -214,15 +214,17 @@
                     app:typographyType="body_3"
                     app:typographyWeight="bold" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_see_detail_price_arrow"
                     android:layout_width="@dimen/layout_lvl2"
                     android:layout_height="@dimen/layout_lvl2"
+                    app:icon_name="CHEVRON_DOWN"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_see_detail_price"
                     app:layout_constraintEnd_toEndOf="@+id/tv_total_payment_amount"
                     app:layout_constraintTop_toTopOf="@+id/tv_see_detail_price"
-                    tools:src="@drawable/ic_system_action_arrow_down_normal_24" />
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"/>
             </LinearLayout>
 
 

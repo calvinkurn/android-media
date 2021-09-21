@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
@@ -52,7 +52,7 @@ class DigitalHomePageViewModelTest {
 
         digitalHomePageViewModel = DigitalHomePageViewModel(
                 digitalHomePageUseCase,
-                DigitalHomePageTestDispatchersProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 

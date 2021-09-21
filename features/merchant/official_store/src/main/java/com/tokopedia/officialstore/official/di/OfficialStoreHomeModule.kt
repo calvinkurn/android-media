@@ -9,10 +9,13 @@ import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFIT
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
-import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -26,6 +29,16 @@ class OfficialStoreHomeModule {
     @OfficialStoreHomeScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
+
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGraphqlCoroutineUseCase(graphqlRepository: GraphqlRepository) =
+            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides
@@ -62,19 +75,10 @@ class OfficialStoreHomeModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
     }
 
-    @OfficialStoreHomeScope
-    @Provides
-    fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
-                                         graphqlUseCase: GraphqlUseCase,
-                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(rawQueries.toString() ?: "",
-                graphqlUseCase,
-                userSessionInterface)
-    }
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: OfficialStoreDispatcherProvider) = OfficialHomeMapper(context, dispatchers)
+    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: CoroutineDispatchers) = OfficialHomeMapper(context, dispatchers)
 
     @OfficialStoreHomeScope
     @Provides
@@ -87,4 +91,8 @@ class OfficialStoreHomeModule {
     @OfficialStoreHomeScope
     @Provides
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
 }

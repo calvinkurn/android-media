@@ -8,14 +8,11 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
 
-
-
 /**
  * Created by fwidjaja on 2019-11-07.
  */
 class SomBottomSheetCourierProblemsAdapter(private var listener: ActionListener): RecyclerView.Adapter<SomBottomSheetCourierProblemsAdapter.ViewHolder>() {
     var listChildCourierProblems = mutableListOf<SomReasonRejectData.Data.SomRejectReason.Child>()
-    var reasonCode = ""
     var selectedRadio = -1
 
     interface ActionListener {

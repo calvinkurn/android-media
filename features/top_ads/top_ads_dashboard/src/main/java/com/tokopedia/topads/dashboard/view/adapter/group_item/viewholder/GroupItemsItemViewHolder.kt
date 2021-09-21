@@ -27,11 +27,14 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
  */
 
 private const val CLICK_ATUR_IKLAN = "click - atur iklan"
-
+private const val CLICK_IMG_MENU = "click - edit group button"
+private const val CLICK_NON_AKTIFKAN = "click - nonaktifkan group ads"
+private const val CLICK_UHBAH = "click - ubah iklan group ads"
+private const val CLICK_HAPUS = "click - hapus iklan group ads"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int) -> Unit),
+                               private var editDone: ((groupId: Int, strategy: String) -> Unit),
                                private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
@@ -46,6 +49,13 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
+            if(item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
+                view.img_key.visibility = View.GONE
+                view.key_count.visibility = View.GONE
+            } else {
+                view.img_key.visibility = View.VISIBLE
+                view.key_count.visibility = View.VISIBLE
+            }
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
             view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
@@ -114,16 +124,25 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
-                editDone.invoke(item.data.groupId)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
+                if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
+                    editDone.invoke(item.data.groupId, item.data.strategies[0])
+                } else {
+                    editDone.invoke(item.data.groupId, "")
+                }
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet?.onDeleteClick = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
             sheet?.changeStatus = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                    CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

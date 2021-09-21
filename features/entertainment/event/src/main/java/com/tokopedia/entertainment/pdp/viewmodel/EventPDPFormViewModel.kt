@@ -19,8 +19,8 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
                                                private val usecase: EventProductDetailUseCase) : BaseViewModel(dispatcher) {
 
 
-    val errorMutable = MutableLiveData<String>()
-    val error : LiveData<String>
+    private val errorMutable = MutableLiveData<Throwable>()
+    val error : LiveData<Throwable>
         get() = errorMutable
 
     val mFormDataMutable = MutableLiveData<MutableList<Form>>()
@@ -36,7 +36,7 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
                 }
 
                 is Fail -> {
-                    errorMutable.value = data.throwable.message
+                    errorMutable.value = data.throwable
                 }
             }
         }

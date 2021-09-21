@@ -63,14 +63,6 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
     }
 
     @Override
-    public DeepLinkResult dispatchFrom(Activity activity) {
-        if (activity == null) {
-            throw new NullPointerException("activity == null");
-        }
-        return dispatchFrom(activity, activity.getIntent());
-    }
-
-    @Override
     public DeepLinkResult dispatchFrom(Activity activity, Intent sourceIntent) {
         if (activity == null) {
             throw new NullPointerException("activity == null");
@@ -300,7 +292,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
             }
 
             Class<?> c = entry.getActivityClass();
-            TaskStackBuilder taskStackBuilder = null;
+            TaskStackBuilder taskStackBuilder;
             if (entry.getType() != DeepLinkEntry.Type.CLASS) {
                 Method method;
                 try {
@@ -328,11 +320,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
                 throw new Exception("Instead of TaskStackBuilder, applink produce an Intent instance");
             }
 
-            if (taskStackBuilder != null) {
-                return taskStackBuilder;
-            } else {
-                throw new Exception("Instead of TaskStackBuilder, applink produce an Intent instance");
-            }
+            return taskStackBuilder;
         } else {
             throw new Exception("No registered entity to handle deep link: " + uri.toString());
         }

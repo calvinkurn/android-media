@@ -21,6 +21,7 @@ import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisione
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampSplashScreenFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
 
@@ -104,10 +105,6 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         }
     }
 
-    override fun isDarkModeOn(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-    }
-
     private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
@@ -118,7 +115,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
 
     private fun setBackgroundColor() {
         window?.decorView?.apply {
-            if (isDarkModeOn()) {
+            if (context.isDarkMode()) {
                 setBackgroundColor(
                         androidx.core.content.ContextCompat.getColor(
                                 context,

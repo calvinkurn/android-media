@@ -29,12 +29,13 @@ class GetHomeRecommendationUseCase @Inject constructor(
         return homeRecommendationMapper.mapToHomeRecommendationDataModel(graphqlUseCase.executeOnBackground(), tabName, pageNumber)
     }
 
-    fun setParams(tabName: String, recomId: Int, count: Int, page: Int) {
+    fun setParams(tabName: String, recomId: Int, count: Int, page: Int, location: String = "") {
         params.parameters.clear()
         params.putString(PARAM_TAB_NAME, tabName)
         params.putInt(PARAM_RECOM_ID, recomId)
         params.putInt(PARAM_COUNT, count)
         params.putInt(PARAM_PAGE, page)
+        params.putString(PARAM_LOCATION, location)
     }
 
     companion object{
@@ -42,5 +43,6 @@ class GetHomeRecommendationUseCase @Inject constructor(
         private const val PARAM_RECOM_ID = "recomID"
         private const val PARAM_COUNT = "count"
         private const val PARAM_PAGE = "page"
+        private const val PARAM_LOCATION = "location"
     }
 }

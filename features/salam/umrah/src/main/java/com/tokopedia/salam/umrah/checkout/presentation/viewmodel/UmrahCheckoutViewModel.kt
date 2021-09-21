@@ -8,7 +8,7 @@ import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultParams
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutGetDataUseCase
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutResultUseCase
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase: UmrahCheckoutGetDataUseCase,
                                                  val umrahCheckoutResultUseCase: UmrahCheckoutResultUseCase,
-                                                 coroutineDispatcher: UmrahDispatchersProvider)
-    : BaseViewModel(coroutineDispatcher.Main) {
+                                                 coroutineDispatcher: CoroutineDispatchers)
+    : BaseViewModel(coroutineDispatcher.main) {
 
     private val checkoutMappedMutable = MutableLiveData<Result<UmrahCheckoutMapperEntity>>()
     val checkoutMapped: LiveData<Result<UmrahCheckoutMapperEntity>>

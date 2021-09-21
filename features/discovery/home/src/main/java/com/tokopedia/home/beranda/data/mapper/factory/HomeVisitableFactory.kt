@@ -12,7 +12,6 @@ interface HomeVisitableFactory {
     fun addHomeHeaderOvo(): HomeVisitableFactory
     fun addTickerVisitable(): HomeVisitableFactory
     fun addUserWalletVisitable(): HomeVisitableFactory
-    fun addGeolocationVisitable(): HomeVisitableFactory
     fun addDynamicIconVisitable(): HomeVisitableFactory
     fun addAtfComponentVisitable(isProcessingAtf: Boolean): HomeVisitableFactory
     fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory

@@ -1,10 +1,9 @@
 package com.tokopedia.purchase_platform.common.feature.promonoteligible
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleViewHolder
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.purchase_platform.common.databinding.ItemPromoRedStateBinding
 
 /**
  * Created by Irfan Khoirul on 2019-06-21.
@@ -18,8 +17,8 @@ class PromoNotEligibleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         return PromoNotEligibleViewHolder.LAYOUT
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return PromoNotEligibleViewHolder(view)
+        val binding = ItemPromoRedStateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PromoNotEligibleViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

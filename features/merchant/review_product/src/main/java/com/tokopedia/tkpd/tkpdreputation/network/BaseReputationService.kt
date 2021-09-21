@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.TkpdOkHttpBuilder
 import com.tokopedia.user.session.UserSession
@@ -31,7 +30,6 @@ open class BaseReputationService {
         val tkpdOkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
         tkpdOkHttpBuilder.addInterceptor(TkpdAuthInterceptor(context, networkRouter, userSession))
         tkpdOkHttpBuilder.addInterceptor(FingerprintInterceptor(networkRouter, userSession))
-        tkpdOkHttpBuilder.addInterceptor(RiskAnalyticsInterceptor(context))
 
         return Retrofit.Builder()
                 .baseUrl(baseUrl)

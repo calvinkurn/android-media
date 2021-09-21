@@ -1,11 +1,19 @@
 package com.tokopedia.entertainment.home.analytics
 
+import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_SELECT_CONTENT
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClick
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClickedBundle
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralImpression
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Promo.PROMOTION
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
 
 /**
@@ -32,7 +40,11 @@ class EventHomePageTracking {
         val ID = "id"
         val NAME = "name"
         val CREATIVE = "creative"
+        val CREATIVE_NAME = "creative_name"
         val CREATIVE_URL = "creative_url"
+        val CREATIVE_SLOT = "creative_slot"
+        val ITEM_ID = "item_id"
+        val ITEM_NAME = "item_name"
         val POSITION = "position"
         val CATEGORY = "category"
         val PROMO_ID = "promo_id"
@@ -85,45 +97,36 @@ class EventHomePageTracking {
         return TrackApp.getInstance().gtm
     }
 
+
     fun openHomeEvent() {
         val data = DataLayer.mapOf(
-                Event.KEY, "openScreen",
-                Event.CATEGORY, "",
-                Event.ACTION, "",
-                Event.LABEL, "",
-                Misc.SCREENNAME, "digital/event",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events"
-
+                TrackAppUtils.EVENT_ACTION, "impression homepage",
+                TrackAppUtils.EVENT_LABEL, ""
         )
+        data.addGeneralClick()
         getTracker().sendGeneralEvent(data)
     }
 
     fun impressionTopEventProduct(item: EventItemModel,
                                   listItems: List<String>,
-                                  position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression top event",
-                Event.LABEL, "",
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, DataLayer.listOf(DataLayer.mapOf(
-                Impression.NAME, item.title,
-                Impression.ID, item.produkId,
-                Impression.PRICE, item.price,
-                Impression.BRAND, "none",
-                Impression.CATEGORY, "hiburan",
-                Impression.VARIANT, "none",
-                Impression.LIST, listItems,
-                Impression.POSITION, position)))
-        ))
+                                  position: Int,
+                                  userId: String
+    ) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.produkId}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression top event")
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
     fun clickSeeAllTopEventProduct() {
@@ -141,235 +144,161 @@ class EventHomePageTracking {
 
     fun clickTopEventProduct(item: EventItemModel,
                              listItems: List<String>,
-                             position: Int) {
-        val data = DataLayer.mapOf(
-                Event.KEY, "productClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click top event",
-                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.mapOf(
-                Click.ACTION_FIELD, DataLayer.mapOf("list", item.title),
-                Product.KEY, DataLayer.listOf(DataLayer.mapOf(
-                Product.NAME, item.title,
-                Product.ID, item.produkId,
-                Product.PRICE, item.price,
-                Product.BRAND, "none",
-                Product.CATEGORY, "hiburan",
-                Product.VARIANT, "none",
-                Product.LIST, listItems,
-                Product.POSITION, position)))))
-        getTracker().sendEnhanceEcommerceEvent(data)
+                             position: Int,
+                             userId: String
+    ) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.produkId}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click top event")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", item.title, position.toString()))
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title:String, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "impression on curated ", getActivityinEnglish(title)),
-                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, getProductList(listItems)
-        )))
+    fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>,
+                                      title:String, position: Int, userId: String) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.produkId}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, String.format("%s %s", "impression on curated",
+                    getActivityinEnglish(title)))
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title:String, position: Int) {
-        val data = DataLayer.mapOf(
-                Event.KEY, "productClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "click on curated ", getActivityinEnglish(title)),
-                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.mapOf(Click.ACTION_FIELD, DataLayer.mapOf("list", item.title),
-                Product.KEY, getProductList(listItems))
-        ))
-        getTracker().sendEnhanceEcommerceEvent(data)
+    fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>,
+                                 title:String, position: Int, userId: String) {
+
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.produkId}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, String.format("%s %s", "click on curated", getActivityinEnglish(title)))
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", item.title, position.toString()))
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
 
     fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, "clickEvent",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "click lihat semua curated", getActivityinEnglish(title)),
-                Event.LABEL, String.format("%s - %d", title, position),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events"
-        ))
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, String.format("%s %s", "click lihat semua curated", getActivityinEnglish(title)),
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %d", title, position)
+        )
+        data.addGeneralClick()
+        getTracker().sendGeneralEvent(data)
     }
 
-    private fun getLocationList(items: List<EventItemLocationModel>): Any? {
-        var list = mutableListOf<Any>()
-        items.forEachIndexed { index, it ->
-            list.add(DataLayer.mapOf(
-                    Promo.ID, it.id,
-                    Promo.NAME, it.title,
-                    Promo.CREATIVE, it.title,
-                    Promo.CREATIVE_URL, it.imageUrl,
-                    Promo.POSITION, index + 1,
-                    Promo.PROMO_ID, "none",
-                    Promo.PROMO_CODE, ""
-            ))
+    fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>,
+                                position: Int, userId: String) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.imageUrl)
+            putString(Promo.ITEM_ID, "${item.id}")
+            putString(Promo.ITEM_NAME, item.title)
         }
-        return list
-    }
 
-    private fun getProductList(items: List<EventItemModel>): Any? {
-        var list = mutableListOf<Any>()
-        items.forEachIndexed { index, it ->
-            list.add(DataLayer.mapOf(
-                    Product.NAME, it.title,
-                    Product.ID, it.produkId,
-                    Product.PRICE, it.price,
-                    Product.BRAND, "none",
-                    Product.CATEGORY, "none",
-                    Product.VARIANT, "none",
-                    Product.LIST, it.title,
-                    Product.POSITION, index + 1
-            ))
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression on section international")
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
         }
-        return list
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
-    private fun getPromotionList(items: List<EventItemModel>): Any? {
-        var list = mutableListOf<Any>()
-        items.forEachIndexed { index, it ->
-            list.add(DataLayer.mapOf(
-                    Promo.ID, it.produkId,
-                    Promo.NAME, it.title,
-                    Promo.CREATIVE, it.title,
-                    Promo.CREATIVE_URL, it.imageUrl,
-                    Promo.POSITION, index + 1,
-                    Promo.PROMO_ID, "none",
-                    Promo.PROMO_CODE, ""
-            ))
+    fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>,
+                           position: Int, userId: String) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.title)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.imageUrl)
+            putString(Promo.ITEM_ID, "${item.id}")
+            putString(Promo.ITEM_NAME, item.title)
         }
-        return list
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click on section international")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", item.title, position.toString()))
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression on section international",
-                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_IMPRESSION, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
-                Promo.ID, item.id,
-                Promo.NAME, "promo slot name",
-                Promo.CREATIVE, item.title,
-                Promo.CREATIVE_URL, item.imageUrl,
-                Promo.POSITION, position,
-                Promo.CATEGORY, "hiburan",
-                Promo.PROMO_ID, item.id,
-                Promo.PROMO_CODE, "none"
-        ))))))
-    }
+    fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int,
+                         userId: String) {
 
-    fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click on section international",
-                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
-                Promo.ID, item.id,
-                Promo.NAME, "promo slot name",
-                Promo.CREATIVE, item.title,
-                Promo.CREATIVE_URL, item.imageUrl,
-                Promo.POSITION, position,
-                Promo.CATEGORY, "hiburan",
-                Promo.PROMO_ID, item.id,
-                Promo.PROMO_CODE, "none"
-        ))))
-        ))
-    }
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.displayName)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.id}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
 
-    fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression banner",
-                Event.LABEL, "",
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_IMPRESSION, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
-                Promo.ID, item.id,
-                Promo.NAME, item.displayName,
-                Promo.CREATIVE, item.displayName,
-                Promo.CREATIVE_URL, item.url,
-                Promo.POSITION, position,
-                Promo.CATEGORY, "hiburan",
-                Promo.PROMO_ID, item.id,
-                Promo.PROMO_CODE, "none"
-        ))))))
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression banner")
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
     fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "clickEvent",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click category icon",
-                Event.LABEL, String.format("%s - %s", item.title, position),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events"
-        ))
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click category icon",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", item.title, position)
+        )
+        data.addGeneralClick()
+        getTracker().sendGeneralEvent(data)
     }
 
-    fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click banner",
-                Event.LABEL, String.format("%s - %s", item.displayName, position.toString()),
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevent",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
-                Promo.ID, item.id,
-                Promo.NAME, item.displayName,
-                Promo.CREATIVE, item.displayName,
-                Promo.CREATIVE_URL, item.url,
-                Promo.POSITION, position,
-                Promo.CATEGORY, "hiburan",
-                Promo.PROMO_ID, item.id,
-                Promo.PROMO_CODE, "none"
-        ))))))
+    fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int,
+                    userId: String
+    ) {
+        val itemBundle = Bundle().apply {
+            putString(Promo.CREATIVE_NAME, item.displayName)
+            putString(Promo.CREATIVE_SLOT, "$position")
+            putString(Promo.CREATIVE_URL, item.appUrl)
+            putString(Promo.ITEM_ID, "${item.id}")
+            putString(Promo.ITEM_NAME, item.title)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click banner")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", item.displayName, position.toString()))
+            putParcelableArrayList(PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
     private fun getActivityinEnglish(title: String):String{

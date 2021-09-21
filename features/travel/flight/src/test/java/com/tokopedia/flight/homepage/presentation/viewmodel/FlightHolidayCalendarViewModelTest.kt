@@ -1,14 +1,15 @@
 package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.dummy.HOLIDAY_EMPTY_DATA
 import com.tokopedia.flight.dummy.HOLIDAY_WITH_DATA
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
@@ -29,7 +30,7 @@ class FlightHolidayCalendarViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FlightHolidayCalendarViewModel(useCase, TravelTestDispatcherProvider())
+        viewModel = FlightHolidayCalendarViewModel(useCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -69,7 +70,7 @@ class FlightHolidayCalendarViewModelTest {
 
         for ((index, item) in viewModel.holidayCalendarData.value!!.withIndex()) {
             item.getTitle() shouldBe HOLIDAY_WITH_DATA.data[index].attribute.label
-            item.getDate().time shouldBe TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, HOLIDAY_WITH_DATA.data[index].attribute.date).time
+            item.getDate().time shouldBe HOLIDAY_WITH_DATA.data[index].attribute.date.toDate(DateUtil.YYYY_MM_DD).time
         }
     }
 }

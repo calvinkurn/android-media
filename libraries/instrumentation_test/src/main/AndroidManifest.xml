@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.instrumentation.test">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application
-        android:requestLegacyExternalStorage="true" >
+    <application android:requestLegacyExternalStorage="true">
         <meta-data
             android:name="io.branch.sdk.TestMode"
             android:value="true" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_goe_api_key_ma"
+            tools:replace="android:value" />
+
         <activity
             android:name="com.tokopedia.test.application.benchmark_component.activity.TkpdIsolationActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 </manifest>

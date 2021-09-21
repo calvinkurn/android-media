@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toTopOf="@+id/txt_no_data_description"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@+id/img_no_data"

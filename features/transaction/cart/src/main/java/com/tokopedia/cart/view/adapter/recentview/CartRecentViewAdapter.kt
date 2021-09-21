@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.adapter.recentview
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cart.databinding.ItemProductRecentViewBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.viewholder.CartRecentViewItemViewHolder
@@ -20,9 +21,8 @@ class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(CartRecentViewItemViewHolder.LAYOUT, parent, false)
-        return CartRecentViewItemViewHolder(view, actionListener)
+        val binding = ItemProductRecentViewBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        return CartRecentViewItemViewHolder(binding, actionListener)
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +31,7 @@ class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val holderView = holder as CartRecentViewItemViewHolder
-        val data = recentViewItemHoldeDataList.get(position)
+        val data = recentViewItemHoldeDataList[position]
         holderView.bind(data)
     }
 

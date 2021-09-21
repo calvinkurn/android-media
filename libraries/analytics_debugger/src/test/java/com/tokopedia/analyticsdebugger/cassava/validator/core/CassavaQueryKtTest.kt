@@ -13,7 +13,7 @@ class CassavaQueryKtTest {
         assert(actual.mode == QueryMode.EXACT)
         assert(actual.readme.isNullOrEmpty().not())
         assert(actual.query.size == 2)
-        assert(actual.query.first().containsKey("discoveryName"))
+        assert(actual.query.first().second.containsKey("discoveryName"))
     }
 
     @Test

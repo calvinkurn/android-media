@@ -10,6 +10,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -31,8 +32,7 @@ class CheckPromoStackingCodeUseCase constructor(val resources: Resources,
     }
 
     override fun createObservable(params: RequestParams?): Observable<ResponseGetPromoStackUiModel> {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.check_promo_code_promostacking), ResponseGetPromoStackFirst::class.java, variables)
+        val graphqlRequest = GraphqlRequest(PromoQuery.promoCheckPromoCodePromoStackingFirst(), ResponseGetPromoStackFirst::class.java, variables)
         val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

@@ -9,6 +9,6 @@
         android:topLeftRadius="30dp"
         android:topRightRadius="30dp" />
 
-    <solid android:color="#E84E40" />
+    <solid android:color="@color/Unify_Y500" />
 
 </shape>

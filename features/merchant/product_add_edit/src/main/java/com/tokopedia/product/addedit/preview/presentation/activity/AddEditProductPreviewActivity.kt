@@ -25,8 +25,7 @@ import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.user.session.UserSession
 
-
-class AddEditProductPreviewActivity : BaseSimpleActivity() {
+open class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     companion object {
         fun createInstance(context: Context?, draftId: String? = null): Intent {

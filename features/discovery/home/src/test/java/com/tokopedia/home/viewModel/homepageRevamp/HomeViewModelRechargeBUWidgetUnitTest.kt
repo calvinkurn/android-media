@@ -6,8 +6,6 @@ import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeBUWidgetThrowReturn
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeBUWidgetUseCase
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
@@ -48,11 +46,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // insert null recharge to home data
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
-        // Expect recharge bu widget not available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
-            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
-        }
-
+        assert(homeViewModel.homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
     }
 
     @Test
@@ -156,7 +150,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
     @Test
     fun `Get Recharge Recommendation Failed`(){
-        val rechargeDataModel = RechargeBUWidgetDataModel(channel = ChannelModel(id = "1", groupId = "1"))
+        val rechargeDataModel = RechargeBUWidgetDataModel(data = RechargePerso(), channel = ChannelModel(id = "1", groupId = "1"))
 
         // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
@@ -176,10 +170,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // viewmodel load recharge data
         homeViewModel.getRechargeBUWidget(WidgetSource.TOPUP_BILLS)
 
-        // Expect recharge bu widget not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(rechargeDataModel))
-        }
+        assert(!homeViewModel.homeDataModel.list.contains(rechargeDataModel))
     }
 
     @Test

@@ -50,6 +50,10 @@ public class RulesManager {
         dataConsumer.viewDismissed(id);
     }
 
+    public void updateVisibleStateForAlreadyShown() {
+        dataConsumer.updateVisibleStateForAlreadyShown();
+    }
+
     public void interactedWithView(long id){
         dataConsumer.interactedWithView(id);
     }

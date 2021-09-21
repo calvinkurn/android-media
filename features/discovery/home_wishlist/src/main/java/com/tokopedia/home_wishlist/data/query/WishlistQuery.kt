@@ -4,9 +4,10 @@ object WishlistQuery {
     private const val query = "\$query"
     private const val page = "\$page"
     private const val count = "\$count"
+    private const val additionalParams = "\$additionalParams"
     fun getQuery() = """
-        query getWishlist($query: String!, $page: Int, $count: Int){
-          wishlist(page: $page, count:$count, query:$query){
+        query getWishlist($query: String!, $page: Int, $count: Int, $additionalParams: WishlistAdditionalParams){
+          wishlist(page: $page, count:$count, query:$query, additionalParams: $additionalParams){
               has_next_page
               total_data
               items {
@@ -50,6 +51,10 @@ object WishlistQuery {
                     position
                 }
                 free_ongkir{
+                  is_active
+                  image_url
+                }
+                free_ongkir_extra{
                   is_active
                   image_url
                 }

@@ -2,11 +2,14 @@ package com.tokopedia.managepassword.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordData
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
+import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,10 +32,12 @@ class AddPasswordViewModelTestJunit {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val addPasswordUseCase = mockk<AddPasswordUseCase>(relaxed = true)
+    val addPasswordv2UseCase = mockk<AddPasswordV2UseCase>(relaxed = true)
     val getProfileCompletionUseCase = mockk<GetProfileCompletionUseCase>(relaxed = true)
+    val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
-    private var observer = mockk<Observer<Result<AddPasswordResponseModel>>>(relaxed = true)
+    private var observer = mockk<Observer<Result<AddPasswordData>>>(relaxed = true)
     private var validatePasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
     private var validateConfirmPasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
     private var hasPasswordObserver = mockk<Observer<Result<ProfileDataModel>>>(relaxed = true)
@@ -43,7 +48,9 @@ class AddPasswordViewModelTestJunit {
     fun setUp() {
         viewModel = AddPasswordViewModel(
                 addPasswordUseCase,
+                addPasswordv2UseCase,
                 getProfileCompletionUseCase,
+                generatePublicKeyUseCase,
                 dispatcher
         )
         viewModel.response.observeForever(observer)
@@ -69,7 +76,7 @@ class AddPasswordViewModelTestJunit {
 
     @Test
     fun `createPassword Success`() {
-        val mockAddPassword = AddPasswordResponseModel.AddPassword(isSuccess = true)
+        val mockAddPassword = AddPasswordData(isSuccess = true)
         val mockAddPasswordResponse = AddPasswordResponseModel(mockAddPassword)
 
         every { addPasswordUseCase.submit(any(), any()) } answers {
@@ -78,12 +85,12 @@ class AddPasswordViewModelTestJunit {
         viewModel.createPassword(password, confirmPassword)
 
         /* Then */
-        verify { observer.onChanged(Success(mockAddPasswordResponse)) }
+        verify { observer.onChanged(Success(mockAddPasswordResponse.addPassword)) }
     }
 
     @Test
     fun `createPassword isSuccess = false`() {
-        val mockAddPassword = AddPasswordResponseModel.AddPassword(isSuccess = false, errorMessage = "Error")
+        val mockAddPassword = AddPasswordData(isSuccess = false, errorMessage = "Error")
         val mockAddPasswordResponse = AddPasswordResponseModel(mockAddPassword)
 
         every { addPasswordUseCase.submit(any(), any()) } answers {

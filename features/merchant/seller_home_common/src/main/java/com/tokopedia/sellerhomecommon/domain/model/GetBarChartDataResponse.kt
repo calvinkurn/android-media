@@ -24,6 +24,9 @@ data class BarChartWidgetDataModel(
         @SerializedName("dataKey")
         val dataKey: String = "",
         @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean = false,
+        @Expose
         @SerializedName("errorMsg")
         val errorMsg: String = ""
 )

@@ -6,6 +6,7 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.B
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -25,6 +26,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         const val BANNER_ADS_INSIDE_RECOMMENDATION = "banner inside recommendation tab ads"
         const val BANNER_FIELD = "/ - banner inside recom tab - %s - "
         const val BANNER_ADS_FIELD = "/ - p%s - banner inside recomm tab ads"
+        private const val LABEL_FULFILLMENT = "fulfillment"
     }
 
     private object ActionField{
@@ -188,7 +190,8 @@ object HomeRecommendationTracking : BaseTrackerConst(){
             variant = "",
             productPrice = homeRecommendationItemDataModel.product.priceInt.toString(),
             productPosition = homeRecommendationItemDataModel.position.toString(),
-            isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive,
+            isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive && !homeRecommendationItemDataModel.product.labelGroup.any { it.position == LABEL_FULFILLMENT },
+            isFreeOngkirExtra = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive && homeRecommendationItemDataModel.product.labelGroup.any { it.position == LABEL_FULFILLMENT },
             category = homeRecommendationItemDataModel.product.categoryBreadcrumbs,
             brand = "",
             clusterId = homeRecommendationItemDataModel.product.clusterId,

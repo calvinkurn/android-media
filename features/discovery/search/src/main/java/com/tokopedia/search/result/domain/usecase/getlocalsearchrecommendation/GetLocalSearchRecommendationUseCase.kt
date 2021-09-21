@@ -38,59 +38,59 @@ class GetLocalSearchRecommendationUseCase(
 
     companion object {
         private const val LOCAL_SEARCH_QUERY = """
-query SearchProduct(${'$'}params: String!) {
-    ace_search_product_v4(params: ${'$'}params) {
-        header {
-            totalData
-        }
-        data {
-            products {
-                id
-                name
-                shop {
-                    id
-                    name
-                    city
-                    rating_average
+            query SearchProduct(${'$'}params: String!) {
+                ace_search_product_v4(params: ${'$'}params) {
+                    header {
+                        totalData
+                    }
+                    data {
+                        products {
+                            id
+                            name
+                            shop {
+                                id
+                                name
+                                city
+                                rating_average
+                            }
+                            freeOngkir {
+                                isActive
+                                imgUrl
+                            }
+                            imageUrl
+                            imageUrl300
+                            imageUrl700
+                            price
+                            priceInt
+                            priceRange
+                            categoryId
+                            categoryName
+                            categoryBreadcrumb
+                            rating
+                            ratingAverage
+                            countReview
+                            priceInt
+                            originalPrice
+                            discountPercentage
+                            warehouseIdDefault
+                            boosterList
+                            source_engine
+                            labelGroups {
+                                title
+                                position
+                                type
+                            }
+                            badges {
+                                title
+                                imageUrl
+                                show
+                            }
+                            wishlist
+                            count_sold
+                        }
+                    }
                 }
-                freeOngkir {
-                    isActive
-                    imgUrl
-                }
-                imageUrl
-                imageUrl300
-                imageUrl700
-                price
-                priceInt
-                priceRange
-                categoryId
-                categoryName
-                categoryBreadcrumb
-                rating
-                ratingAverage
-                countReview
-                priceInt
-                originalPrice
-                discountPercentage
-                warehouseIdDefault
-                boosterList
-                source_engine
-                labelGroups {
-                    title
-                    position
-                    type
-                }
-                badges {
-                    title
-                    imageUrl
-                    show
-                }
-                wishlist
-                count_sold
             }
-        }
-    }
-}
         """
     }
 }

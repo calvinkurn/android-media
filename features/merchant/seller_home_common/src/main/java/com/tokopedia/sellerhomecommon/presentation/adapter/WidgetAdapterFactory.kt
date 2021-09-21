@@ -35,4 +35,8 @@ interface WidgetAdapterFactory {
     fun type(multiLineGraphWidget: MultiLineGraphWidgetUiModel): Int
 
     fun type(announcementWidgetUiModel: AnnouncementWidgetUiModel): Int
+
+    fun type(recommendationWidget: RecommendationWidgetUiModel): Int
+
+    fun type(milestoneWidgetUiModel: MilestoneWidgetUiModel): Int
 }

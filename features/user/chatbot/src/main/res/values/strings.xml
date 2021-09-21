@@ -30,5 +30,21 @@
     <string name="cb_bot_toolbar_title">Tanya</string>
     <string name="cb_dot">●</string>
     <string name="chatbot_csat_button_text">Kirim</string>
+    <string name="chatbot_resend">"Upload Ulang"</string>
+    <string name="chatbot_delete">"Hapus"</string>
+    <string name="chatbot_transaction_not_found">"Transaksi Tidak Ditemukan"</string>
+    <string name="chatbot_total_text">"Total:"</string>
+    <string name="chatbot_empty_title">Yah, masih kosong</string>
+    <string name="chatbot_pembelian_empty_description">Kamu belum melakukan transaksi pembelian dalam 1 bulan terakhir.</string>
+    <string name="chatbot_penjualan_empty_description">Kamu belum melakukan transaksi penjualan dalam 1 bulan terakhir.</string>
+    <string name="chatbot_penarikan_dana_empty_description">Kamu belum melakukan penarikan dana dalam 1 bulan terakhir.</string>
+    <string name="chatbot_error_title">Oops, ada sedikit kendala</string>
+    <string name="chatbot_error_description">Transaksimu belum bisa ditampilkan.</string>
+    <string name="chatbot_sender_info_prefix">chatbot_</string>
+    <string name="chatbot_action_bubble_text_color_prefix">#%s</string>
+    <string name="chatbot_retry_image_upload_bottom_sheet_title">Gambarmu gagal di-upload</string>
+    <string name="chatbot_your_picture_has_been_deleted">Gambarmu sudah dihapus.</string>
+    <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
+    <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
 
 </resources>

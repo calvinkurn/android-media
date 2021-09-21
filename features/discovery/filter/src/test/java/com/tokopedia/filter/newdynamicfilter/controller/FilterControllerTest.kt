@@ -660,6 +660,26 @@ class FilterControllerTest {
         assertActiveFilterMap(expectedMap)
     }
 
+    @Test
+    fun `active filter map with same value should not have separator`() {
+        val sameOptionValue = "1234"
+        val susuOption = Option(key = SearchApiConst.SC, value = sameOptionValue, name = "susu")
+        val semuaSusuOption = Option(key = SearchApiConst.SC, value = sameOptionValue, name = "semua susu")
+
+        val filterParameter = mapOf(
+                susuOption.key to susuOption.value,
+                semuaSusuOption.key to semuaSusuOption.value,
+        )
+        val filterList = listOf(Filter(options = listOf(susuOption, semuaSusuOption)))
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        val expectedMap = mutableMapOf<String, String>()
+        expectedMap[SearchApiConst.SC] = sameOptionValue
+
+        assertActiveFilterMap(expectedMap)
+    }
+
     private fun assertFilterValueCorrect(optionList: List<Option>) {
         for(option in optionList) {
             val actualFilterValue = filterController.getFilterValue(option.key)

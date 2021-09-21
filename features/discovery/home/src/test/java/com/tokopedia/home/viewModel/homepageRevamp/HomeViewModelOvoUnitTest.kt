@@ -52,6 +52,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
@@ -89,17 +90,12 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         ).apply{
-            setNeedToShowGeolocationComponent(true)
-            setGeolocationPermission(true)
         }
+        homeViewModel.setNewBalanceWidget(false)
 
         homeViewModel.refresh(true)
 
         homeViewModel.isRequestNetworkLiveData.observeOnce {
-            assert(it != null)
-        }
-
-        homeViewModel.sendLocationLiveData.observeOnce {
             assert(it != null)
         }
     }
@@ -120,25 +116,16 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
 
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
+        assert(
+            homeViewModel.homeDataModel.let {
                 it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.tokopointsDrawerHomeData == null
-            })
-        }
-        confirmVerified(observerHome)
+            }
+        )
     }
 
     @Test
@@ -158,6 +145,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.getTokocashPendingBalance()
 
@@ -190,6 +178,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.getTokocashPendingBalance()
 
@@ -218,24 +207,13 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.refresh(true)
 
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
-            })
+        homeViewModel.homeDataModel.let {
+            it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
         }
-        confirmVerified(observerHome)
     }
 
     @Test
@@ -253,24 +231,13 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
-            })
+        homeViewModel.homeDataModel.let {
+            it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
         }
-        confirmVerified(observerHome)
     }
 
     @Test
@@ -290,6 +257,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoPoint()
         verifyOrder {
@@ -319,6 +287,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoPoint()
@@ -350,6 +319,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoPoint()
@@ -385,6 +355,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoPoint()
         verifyOrder {
@@ -421,6 +392,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()
@@ -451,6 +423,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()
@@ -479,6 +452,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoCash()
         homeViewModel.popupIntroOvoLiveData.observeOnce { assert(it != null) }
@@ -513,6 +487,7 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
+        homeViewModel.setNewBalanceWidget(false)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()
@@ -532,3 +507,4 @@ class HomeViewModelOvoUnitTest{
         confirmVerified(observerHome)
     }
 }
+

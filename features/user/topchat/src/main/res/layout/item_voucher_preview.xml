@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/dp_topchat_270"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_4"
     android:orientation="vertical">
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
@@ -20,13 +21,10 @@
         android:layout_gravity="end"
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:layout_marginEnd="@dimen/dp_topchat_10"
-        android:layout_marginRight="@dimen/dp_topchat_10"
+        android:contentDescription="@string/content_desc_close_voucher_btn"
         android:paddingStart="@dimen/dp_topchat_6"
-        android:paddingLeft="@dimen/dp_topchat_6"
         android:paddingTop="@dimen/dp_topchat_10"
         android:paddingEnd="@dimen/dp_topchat_14"
-        android:paddingRight="@dimen/dp_topchat_14"
         android:paddingBottom="@dimen/dp_topchat_6"
         app:srcCompat="@drawable/topchat_ic_close_white" />
-
 </FrameLayout>

@@ -71,7 +71,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
-            getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+            getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
         view.authenticateCreditCard.setOnClickListener {
             activity?.run {
@@ -138,13 +138,9 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = ""
 
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
-    }
+    override fun isLoadMoreEnabledByDefault() = false
 
     override fun showGetListError(throwable: Throwable?) {
         hideAuthPaymentView()
@@ -177,7 +173,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     private fun onNeedVerifPhone() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            //val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
             dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
             dialog.setDescription(getString(R.string.payment_label_desc_dialog_verif))
             dialog.setPrimaryCTAText(getString(R.string.payment_label_continue_dialog_verif))

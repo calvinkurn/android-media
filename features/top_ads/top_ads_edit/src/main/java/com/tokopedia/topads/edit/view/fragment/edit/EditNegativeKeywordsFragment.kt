@@ -3,7 +3,6 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
@@ -34,6 +35,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
 import javax.inject.Inject
 
@@ -103,7 +105,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         this.cursor = cursor
         data.forEach { result ->
-            if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT) && result.status != -1) {
+            if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT)) {
                 adapter.items.add(EditNegKeywordItemViewModel(result))
                 originalKeyList.add(result.tag)
             }
@@ -131,20 +133,23 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun showNegConfirmationDialog(position: Int) {
-        val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
-        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
-                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
-        dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
-        dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
+            dialog.setDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
+                    (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
+            dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
+            dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                deleteNegKeyword(position)
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setSecondaryCTAClickListener {
-            deleteNegKeyword(position)
-            dialog.dismiss()
-        }
-        dialog.show()
+
     }
 
     private fun deleteNegKeyword(position: Int) {
@@ -171,6 +176,11 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         updateItemCount()
+        view?.let {
+            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_neg_keyword_common_del_toaster),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL).show()
+        }
     }
 
     private fun onAddKeyword() {

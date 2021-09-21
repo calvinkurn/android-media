@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,10 +19,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeBinding
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
@@ -42,7 +43,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.view_recharge_home.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class RechargeHomepageFragment : BaseDaggerFragment(),
@@ -71,16 +72,20 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var sliceOpenApp: Boolean = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
+    var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
+
+    private var binding by autoCleared<ViewRechargeHomeBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.view_recharge_home, container, false)
+        binding = ViewRechargeHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(RechargeHomepageViewModel::class.java)
 
             adapter = RechargeHomepageAdapter(it, RechargeHomepageAdapterTypeFactory(this,
@@ -100,27 +105,30 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideStatusBar()
-        digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        
+        binding.digitalHomepageToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         initSearchView()
 
         calculateToolbarView(0)
 
-        recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycler_view.adapter = adapter
-        while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
-        recycler_view.addItemDecoration(RechargeHomeSectionDecoration(
+        
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = adapter
+        while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(0)
+        binding.recyclerView.addItemDecoration(RechargeHomeSectionDecoration(
                 SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
         ))
-        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                calculateToolbarView(recycler_view.computeVerticalScrollOffset())
+                calculateToolbarView(binding.recyclerView.computeVerticalScrollOffset())
             }
         })
 
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
+        
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
             loadData()
         }
 
@@ -136,32 +144,30 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun initSearchView() {
-        digital_homepage_search_view.setFocusChangeListener(this)
+        
+        binding.digitalHomepageSearchView.setFocusChangeListener(this)
     }
 
     private fun hideStatusBar() {
-        digital_homepage_container.fitsSystemWindows = false
-        digital_homepage_container.requestApplyInsets()
+        
+        binding.digitalHomepageContainer.fitsSystemWindows = false
+        binding.digitalHomepageContainer.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = digital_homepage_container.systemUiVisibility
+            var flags = binding.digitalHomepageContainer.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            digital_homepage_container.systemUiVisibility = flags
+            binding.digitalHomepageContainer.systemUiVisibility = flags
             context?.run {
                 activity?.window?.statusBarColor =
                         androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
 
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
@@ -170,18 +176,19 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private fun calculateToolbarView(offset: Int) {
 
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / searchBarTransitionRange * (offset)
+        var offsetAlpha = OFFSET_ALPHA / searchBarTransitionRange * (offset)
         //2.5 is maximum
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
 
-        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= 255) {
+        val searchBarContainer = binding.digitalHomepageSearchView.findViewById<LinearLayout>(R.id.search_input_view_container)
+        if (offsetAlpha >= OFFSET_ALPHA) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            digital_homepage_toolbar.toOnScrolledMode()
+            binding.digitalHomepageToolbar.toOnScrolledMode()
             context?.run {
-                digital_homepage_order_list.setColorFilter(
+                
+                binding.digitalHomepageOrderList.setColorFilter(
                         ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
                 )
                 searchBarContainer.background =
@@ -189,8 +196,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-            digital_homepage_toolbar.toInitialMode()
-            digital_homepage_order_list.clearColorFilter()
+            binding.digitalHomepageToolbar.toInitialMode()
+            binding.digitalHomepageOrderList.clearColorFilter()
             context?.run {
                 searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background)
@@ -213,38 +220,47 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> renderSearchBarView(it.data)
                 is Fail -> {
+                    hideLoading()
                     adapter.showGetListError(it.throwable)
-                    digital_homepage_toolbar.hide()
+                    binding.digitalHomepageToolbar.hide()
                 }
             }
         })
 
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
             hideLoading()
+            renderList(it)
+        })
 
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
-            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
+        viewModel.rechargeTickerHomepageModel.observe(viewLifecycleOwner, Observer { tickerListResult ->
+            when (tickerListResult) {
+                is Success -> {
+                    viewModel.rechargeHomepageSections.value?.let {
+                        tickerList = tickerListResult.data
+                        renderList(it)
+                    }
+                }
+                is Fail -> tickerList =  RechargeTickerHomepageModel()
             }
-            homeComponentsData = it.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
-            adapter.renderList(mappedData)
         })
     }
 
     override fun loadData() {
         adapter.showLoading()
-        digital_homepage_toolbar.hide()
+        binding.digitalHomepageToolbar.hide()
         viewModel.getRechargeHomepageSectionSkeleton(
-                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
-                swipe_refresh_layout.isRefreshing
+                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize)
+        )
+
+        viewModel.getTickerHomepageSection(
+                viewModel.createRechargeHomepageTickerParams(listOf(), platformId)
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: String, isLoadFromCloud: Boolean) {
+    override fun loadRechargeSectionData(sectionID: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize),
-                    isLoadFromCloud
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize)
             )
         }
     }
@@ -368,9 +384,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
                     (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
-        if (index >= 0) {
-            recycler_view.post {
-                adapter.apply {
+        binding.recyclerView?.post {
+            adapter.apply {
+                if (index >= 0 && index < adapter.data.size) {
                     data.removeAt(index)
                     notifyItemRemoved(index)
                 }
@@ -380,7 +396,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
+            binding.digitalHomepageSearchView.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
 
             redirectToSearchByDynamicIconsFragment()
@@ -396,20 +412,29 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun renderList(sections: List<RechargeHomepageSections.Section>){
+        val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList)
+        val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
+            homeComponent.visitableId()?.toInt()
+        }
+        homeComponentsData = sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+        adapter.renderList(mappedData)
+    }
+
     fun onBackPressed() {
         rechargeHomepageAnalytics.eventClickBackButton()
     }
 
     private fun hideLoading() {
-        swipe_refresh_layout.isEnabled = true
-        swipe_refresh_layout.isRefreshing = false
+        binding.swipeRefreshLayout.isEnabled = true
+        binding.swipeRefreshLayout.isRefreshing = false
         adapter.hideLoading()
     }
 
     private fun renderSearchBarView(rechargeHomepageSectionSkeleton: RechargeHomepageSectionSkeleton) {
-        digital_homepage_toolbar.show()
-        digital_homepage_search_view.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
-        digital_homepage_order_list.setOnClickListener {
+        binding.digitalHomepageToolbar.show()
+        binding.digitalHomepageSearchView.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
+        binding.digitalHomepageOrderList.setOnClickListener {
             rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
         }
@@ -422,6 +447,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
+
+        private const val OFFSET_ALPHA = 255f
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()

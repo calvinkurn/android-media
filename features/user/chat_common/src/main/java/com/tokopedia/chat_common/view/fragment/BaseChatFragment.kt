@@ -41,7 +41,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , BaseChatActivityListener
         , AttachmentMenu.AttachmentMenuListener {
 
-    open lateinit var viewState: BaseChatViewState
+    open var viewState: BaseChatViewState? = null
 
     protected var messageId: String = ""
     protected var opponentId = ""
@@ -52,7 +52,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
     protected var amISeller = false
-    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
     abstract fun onSendButtonClicked()
@@ -76,14 +75,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
-    open fun prepareListener() {
-        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
-            onSendButtonClicked()
-        }
-    }
+    open fun prepareListener() { }
 
     private fun prepareView(view: View) {
-        getRecyclerView(view).setHasFixedSize(true)
+        getRecyclerView(view)?.setHasFixedSize(true)
     }
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
@@ -166,7 +161,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun handleBranchIOLinkClick(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            val intent = RouteManager.getSplashScreenIntent(activity)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
@@ -207,20 +202,20 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveStartTypingEvent() {
-        viewState.onShowStartTyping()
+        viewState?.onShowStartTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        viewState.removeDummyIfExist(visitable)
-        viewState.onReceiveMessageEvent(visitable)
+        viewState?.removeDummyIfExist(visitable)
+        viewState?.onReceiveMessageEvent(visitable)
     }
 
     override fun onReceiveStopTypingEvent() {
-        viewState.onShowStopTyping()
+        viewState?.onShowStopTyping()
     }
 
     override fun onReceiveReadEvent() {
-        viewState.onReceiveRead()
+        viewState?.onReceiveRead()
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
@@ -241,12 +236,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onDestroy() {
         super.onDestroy()
-        viewState.clear()
+        viewState?.clear()
     }
 
     override fun onBackPressed(): Boolean {
-        if (viewState.isAttachmentMenuVisible()) {
-            viewState.hideAttachmentMenu()
+        if (viewState?.isAttachmentMenuVisible() == true) {
+            viewState?.hideAttachmentMenu()
             return true
         }
         return false

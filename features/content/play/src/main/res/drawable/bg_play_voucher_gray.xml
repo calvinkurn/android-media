@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"
+    >
+    <corners
+        android:radius="@dimen/play_pinned_voucher_radius"
+        />
+    <solid
+        android:color="@color/play_dms_voucher_bg"
+        />
+</shape>

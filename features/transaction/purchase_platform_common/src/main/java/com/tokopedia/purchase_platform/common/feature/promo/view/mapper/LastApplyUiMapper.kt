@@ -127,6 +127,7 @@ object LastApplyUiMapper {
                 description = usageSummariesUiModel.desc,
                 type = usageSummariesUiModel.type,
                 amountStr = usageSummariesUiModel.amountStr,
-                amount = usageSummariesUiModel.amount)
+                amount = usageSummariesUiModel.amount,
+                currencyDetailsStr = usageSummariesUiModel.currencyDetailStr)
     }
 }

@@ -3,29 +3,10 @@ package com.tokopedia.search.utils
 import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sortfilter.SortFilter
-
-private const val NON_FILTER_PREFIX = "srp_"
-internal val nonFilterParameterKeyList = setOf(
-        SearchApiConst.Q,
-        SearchApiConst.RF,
-        SearchApiConst.ACTIVE_TAB,
-        SearchApiConst.SOURCE,
-        SearchApiConst.LANDING_PAGE,
-        SearchApiConst.PREVIOUS_KEYWORD,
-        SearchApiConst.ORIGIN_FILTER,
-        SearchApiConst.SKIP_REWRITE,
-        SearchApiConst.NAVSOURCE,
-        SearchApiConst.SKIP_BROADMATCH,
-        SearchApiConst.HINT,
-        SearchApiConst.FIRST_INSTALL,
-        SearchApiConst.SEARCH_REF
-)
 
 internal fun removeQuickFilterElevation(sortFilter: SortFilter?) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sortFilter != null) {
@@ -44,85 +25,6 @@ internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter
             sortFilter.elevation = elevation.toFloat()
         }
     }
-}
-
-internal fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
-    var sortFilterCount = 0
-
-    val mutableMapParameter = mapParameter.toMutableMap()
-    val sortFilterParameter = mutableMapParameter.createAndCountSortFilterParameter {
-        sortFilterCount += it
-    }
-
-    if (sortFilterParameter.hasMinAndMaxPriceFilter()) sortFilterCount -= 1
-    if (sortFilterParameter.isSortHasDefaultValue()) sortFilterCount -= 1
-
-    return sortFilterCount
-}
-
-private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (Int) -> Unit): Map<String, Any> {
-    val iterator = iterator()
-
-    while (iterator.hasNext()) {
-        val entry = iterator.next()
-
-        if (entry.isNotSortAndFilterEntry()) {
-            iterator.remove()
-            continue
-        }
-
-        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
-    }
-
-    return this
-}
-
-private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
-    return isNotFilterAndSortKey() || isPriceFilterWithZeroValue()
-}
-
-private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
-    return nonFilterParameterKeyList.contains(key) || key.startsWith(NON_FILTER_PREFIX)
-}
-
-private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
-    return (key == SearchApiConst.PMIN && value.toString() == "0")
-            || (key == SearchApiConst.PMAX && value.toString() == "0")
-}
-
-private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
-    var hasMinPriceFilter = false
-    var hasMaxPriceFilter = false
-
-    for(entry in this) {
-        if (entry.key == SearchApiConst.PMIN) hasMinPriceFilter = true
-        if (entry.key == SearchApiConst.PMAX) hasMaxPriceFilter = true
-
-        // Immediately return so it doesn't continue the loop
-        if (hasMinPriceFilter && hasMaxPriceFilter) return true
-    }
-
-    return false
-}
-
-fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
-    val sortValue = this[SearchApiConst.OB]
-
-    return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
-}
-
-internal fun getSortFilterParamsString(mapParameter: Map<String, Any>): String {
-    val sortAndFilterParameter = mapParameter
-            .filter { !it.key.startsWith(NON_FILTER_PREFIX) }
-            .minus(nonFilterParameterKeyList)
-
-    return UrlParamUtils.generateUrlParamString(sortAndFilterParameter)
-}
-
-internal fun getFilterParams(mapParameter: Map<String, String>): Map<String, String> {
-    return mapParameter
-            .filter { !it.key.startsWith(NON_FILTER_PREFIX) }
-            .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
 }
 
 internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)

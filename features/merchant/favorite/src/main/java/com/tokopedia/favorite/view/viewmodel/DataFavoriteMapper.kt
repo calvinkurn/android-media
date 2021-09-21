@@ -5,22 +5,21 @@ import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.FavoriteShopItem
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author madi on 4/6/17.
  */
 object DataFavoriteMapper {
 
-    fun prepareDataFavoriteShop(favoriteShop: FavoriteShopItem): FavoriteShopViewModel {
-        val favoriteShopViewModel = FavoriteShopViewModel()
-        favoriteShopViewModel.shopId = favoriteShop.id
-        favoriteShopViewModel.shopName = favoriteShop.name
-        favoriteShopViewModel.shopAvatarImageUrl = favoriteShop.iconUri
-        favoriteShopViewModel.shopLocation = favoriteShop.location
-        favoriteShopViewModel.isFavoriteShop = favoriteShop.isFav
-        favoriteShopViewModel.badgeUrl = favoriteShop.badgeUrl
-        return favoriteShopViewModel
+    fun prepareDataFavoriteShop(favoriteShop: FavoriteShopItem): FavoriteShopUiModel {
+        val favoriteShopUiModel = FavoriteShopUiModel()
+        favoriteShopUiModel.shopId = favoriteShop.id
+        favoriteShopUiModel.shopName = favoriteShop.name
+        favoriteShopUiModel.shopAvatarImageUrl = favoriteShop.iconUri
+        favoriteShopUiModel.shopLocation = favoriteShop.location
+        favoriteShopUiModel.isFavoriteShop = favoriteShop.isFav
+        favoriteShopUiModel.badgeUrl = favoriteShop.badgeUrl
+        return favoriteShopUiModel
     }
 
     fun prepareListFavoriteShop(favoriteShop: FavoriteShop): List<Visitable<*>> {
@@ -35,8 +34,8 @@ object DataFavoriteMapper {
         return elementList
     }
 
-    fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopViewModel {
-        val topAdsShopViewModel = TopAdsShopViewModel()
+    fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopUiModel {
+        val topAdsShopViewModel = TopAdsShopUiModel()
         val viewModelTopAdsShopItemList = ArrayList<TopAdsShopItem>()
         val topAdsShopItemList = topAdsShop.topAdsShopItemList
 

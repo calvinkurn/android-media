@@ -36,4 +36,6 @@
 
     <string name="content_desc_filterTitleTextView">text title filter</string>
     <string name="content_desc_filterSeeAll">button lihat semua filter</string>
+    <string name="content_desc_iconNew">icon new</string>
+    <string name="content_desc_ratingView">rating view</string>
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
@@ -23,11 +26,14 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
+import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
+import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -47,6 +53,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
@@ -63,10 +70,16 @@ import kotlin.math.abs
  */
 
 private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
-
+private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
+private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
+private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
+private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
+    private var currentDateText: String = ""
+    private var isWhiteListedUser: Boolean = false
+
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
     }
@@ -87,6 +100,11 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     override fun renderGraph() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_DATE_PICKER, customDateText)
     }
 
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
@@ -141,14 +159,18 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
+        topAdsDashboardPresenter.getWhiteListedUser(::onSuccessWhiteListing)
         auto_ad_status_image.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
         onBoarding.setOnClickListener {
             RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                CLICK_COBA_AUO_ADS, "")
         }
         loadData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         swipe_refresh_layout.setOnRefreshListener {
@@ -181,9 +203,28 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 }
             }
         })
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab?.position) {
+                    CONST_1 -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_TANPA_GRUP, "")
+                    }
+                }
+            }
+        })
         Utils.setSearchListener(context, view, ::fetchData)
     }
 
+
+    private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
+        response.data.forEach {
+            if(it.featureId == 39 && it.featureName == "split_bid") {
+                isWhiteListedUser = true
+            }
+        }
+    }
     private fun renderManualViewPager() {
         view_pager_frag?.adapter = getViewPagerAdapter()
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -198,13 +239,19 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tab_layout?.setupWithViewPager(view_pager_frag)
     }
 
+    private fun prepareBundle() : Bundle {
+        var bundle = Bundle()
+        bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
+        return bundle
+    }
+
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(GRUP)
         tab_layout?.addNewTab(TANPA_GRUP)
-        list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment()))
-        list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment()))
+        list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment.createInstance(prepareBundle())))
+        list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment.createInstance(prepareBundle())))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
@@ -233,7 +280,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun fetchNextPage(page: Int) {
         topAdsDashboardPresenter.getGroupProductData(page, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 null, format.format(startDate ?: Date()), format.format(endDate
-                ?: Date()), this::onSuccessResult, this::onEmptyResult)
+                ?: Date()), 0, this::onSuccessResult, this::onEmptyResult)
     }
 
     override fun onDestroy() {
@@ -251,7 +298,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if (checkInProgress()) {
             showProgressLayout()
         } else {
-            manualAds()
+            setNoAdsView()
         }
     }
 
@@ -284,6 +331,23 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         empty_view?.visible()
         mulai_beriklan.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
+                CLICK_MULAI_BERIKLAN, "")
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        }
+    }
+
+
+    private fun setNoAdsView() {
+        view_pager_frag?.gone()
+        autoads_layout?.gone()
+        app_bar_layout_2?.gone()
+        empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_no_ads))
+        empty_view?.text_desc?.text = getString(R.string.topads_dashboard_empty_ads_desc)
+        empty_view?.visible()
+        mulai_beriklan.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
+                CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
     }
@@ -361,7 +425,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getGroupProductData(1, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+                null, format.format(startDate), format.format(endDate), 0, this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
@@ -414,11 +478,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 ?: Date(), selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
-    override fun onLoadTopAdsShopDepositError(throwable: Throwable) {
-        if (isAttached())
-            snackbarRetry?.showRetrySnackbar()
-    }
-
     override fun onErrorGetShopInfo(throwable: Throwable) {
         if (isAttached()) {
             swipe_refresh_layout.isRefreshing = false
@@ -463,6 +522,16 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             else -> manualAds()
         }
         loadStatisticsData()
+    }
+
+    override fun onError(message: String) {
+        val errorMessage = com.tokopedia.topads.common.data.util.Utils.getErrorMessage(context, message)
+        view?.let {
+            Toaster.build(it, errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        }
     }
 
     override fun onDestroyView() {

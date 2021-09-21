@@ -181,6 +181,8 @@ public class Product implements Parcelable {
 
     private boolean loaded = false;
 
+    private boolean hasAddToCartButton = false;
+
     public Product() {
     }
 
@@ -671,5 +673,13 @@ public class Product implements Parcelable {
 
     public String getHeadlineProductRatingAverage() {
         return this.headlineProductRatingAverage;
+    }
+
+    public boolean isHasAddToCartButton() {
+        return hasAddToCartButton;
+    }
+
+    public void setHasAddToCartButton(boolean hasAddToCartButton) {
+        this.hasAddToCartButton = hasAddToCartButton;
     }
 }

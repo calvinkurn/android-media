@@ -1,9 +1,11 @@
 package com.tokopedia.cart.view.subscriber
 
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.view.CartLogger
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import rx.Subscriber
+import timber.log.Timber
 
 /**
  * Created by Irfan Khoirul on 2019-12-18.
@@ -16,7 +18,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
     }
 
     override fun onError(e: Throwable) {
-        e.printStackTrace()
+        Timber.e(e)
         view?.let {
             if (!initialLoad) {
                 it.hideProgressLoading()
@@ -24,6 +26,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             it.renderLoadGetCartDataFinish()
             it.renderErrorInitialGetCartListData(e)
             it.stopCartPerformanceTrace()
+            CartLogger.logOnErrorLoadCartPage(e)
         }
     }
 

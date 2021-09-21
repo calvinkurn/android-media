@@ -13,16 +13,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_policy_icon"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_hotel_location" />
+            app:icon_name="LOCATION_FILLED"
+            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_policy_name"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart= "@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"

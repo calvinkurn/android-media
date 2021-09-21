@@ -6,3 +6,5 @@ const val GQL_COMPONENT: String = """query ComponentInfo(${'$'}device: String!, 
   }
 }
 """
+
+const val GQL_COMPONENT_QUERY_NAME : String = "componentInfo"

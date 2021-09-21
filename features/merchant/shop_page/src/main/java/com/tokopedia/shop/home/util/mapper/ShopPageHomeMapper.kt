@@ -1,25 +1,29 @@
 package com.tokopedia.shop.home.util.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
+import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
-import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
+    private const val PRODUCT_RATING_DIVIDER = 20
 
     fun mapToShopPageHomeLayoutUiModel(
             response: ShopLayoutWidget,
@@ -51,7 +55,7 @@ object ShopPageHomeMapper {
                     it.imageUrl = primaryImage.original
                     it.imageUrl300 = primaryImage.resize300
                     it.totalReview = stats.reviewCount.toString()
-                    it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
+                    it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
                     if (cashback.cashbackPercent > 0) {
                         it.cashback = cashback.cashbackPercent.toDouble()
                     }
@@ -72,7 +76,8 @@ object ShopPageHomeMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
@@ -92,6 +97,7 @@ object ShopPageHomeMapper {
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: "")
+
         return if(isHasOCCButton) {
             ProductCardModel(
                     productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -110,7 +116,7 @@ object ShopPageHomeMapper {
                     discountPercentage = discountPercentage,
                     slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                     formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                    countSoldRating = shopHomeProductViewModel.rating.toString(),
+                    countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                     freeOngkir = freeOngkirObject,
                     labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                         mapToProductCardLabelGroup(it)
@@ -120,8 +126,7 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
-        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel, isWideContent: Boolean): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -138,14 +143,15 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage,
                 slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
-                hasAddToCartButton = isHasAddToCartButton
+                hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN,
+                isWideContent = isWideContent
         )
     }
 
@@ -166,13 +172,14 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage.takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 slashedPrice = shopHomeProductViewModel.originalPrice.orEmpty().takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
+                countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN,
                 stockBarLabel = shopHomeProductViewModel.stockLabel,
                 stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
         )
@@ -189,7 +196,8 @@ object ShopPageHomeMapper {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 
@@ -228,6 +236,7 @@ object ShopPageHomeMapper {
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
+            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             else -> {
                 null
             }
@@ -244,6 +253,17 @@ object ShopPageHomeMapper {
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
             productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
+    )
+
+    private fun mapToShowcaseListUiModel(
+            widgetResponse: ShopLayoutWidget.Widget
+    ) = ShopHomeShowcaseListSliderUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(widgetResponse.header),
+            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -306,7 +326,7 @@ object ShopPageHomeMapper {
                 id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
-                originalPrice = it.price
+                originalPrice = it.displayedPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
@@ -393,7 +413,8 @@ object ShopPageHomeMapper {
                 header.ctaLink,
                 header.cover,
                 header.ratio,
-                header.isAtc
+                header.isAtc,
+                header.etalaseId
         )
     }
 
@@ -409,7 +430,7 @@ object ShopPageHomeMapper {
                 originalPrice = it.originalPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
-                rating = it.rating
+                rating = it.rating.toDoubleOrZero()
                 isPo = it.isPO
                 isWishList = false
                 productUrl = it.productUrl
@@ -421,6 +442,28 @@ object ShopPageHomeMapper {
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
             }
+        }
+    }
+
+    private fun mapToShowcaseListItemUiModel(
+            data: List<ShopLayoutWidget.Widget.Data>,
+            widgetName: String,
+            widgetHeader: ShopLayoutWidget.Widget.Header
+    ): List<ShopHomeShowcaseListItemUiModel> {
+        val uiModelData = data.map {
+            ShopHomeShowcaseListItemUiModel().apply {
+                id = it.linkId.toString()
+                imageUrl = it.imageUrl
+                appLink = it.appLink
+                name = it.showcaseName
+                viewType = widgetName
+                isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
+            }
+        }
+        return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
+            ShopHomeShowcaseListBaseWidgetViewHolder.getReorderShowcasePositionForTwoRowsSlider(uiModelData)
+        } else {
+            uiModelData
         }
     }
 
@@ -448,7 +491,7 @@ object ShopPageHomeMapper {
                 imageUrl = response.imageUrl
                 imageUrl300 = ""
                 totalReview = response.totalReview
-                rating = (response.rating / 20).roundToInt().toDouble()
+                rating = (response.rating.toDoubleOrZero() / PRODUCT_RATING_DIVIDER)
                 isPo = response.isPO
                 isWishList = false
                 productUrl = response.productUrl
@@ -456,6 +499,7 @@ object ShopPageHomeMapper {
                 isShowWishList = !isMyOwnProduct
                 isShowFreeOngkir = response.isShowFreeOngkir
                 freeOngkirPromoIcon = response.freeOngkirPromoIcon
+                labelGroupList = response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {

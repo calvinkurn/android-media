@@ -15,5 +15,8 @@ data class LabelGroup(
         val position: String = "",
         @SerializedName("type")
         @Expose
-        val type: String = ""
+        val type: String = "",
+        @SerializedName("url")
+        @Expose
+        val imageUrl: String = ""
 ) 

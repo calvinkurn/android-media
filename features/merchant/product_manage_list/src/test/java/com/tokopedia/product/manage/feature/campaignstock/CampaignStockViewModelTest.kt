@@ -7,13 +7,10 @@ import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockData
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.NonVariantStockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.Product
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createShopOwnerAccess
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.AccessId.EDIT_PRODUCT
@@ -22,6 +19,7 @@ import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModel
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.ProductStatusConstant.STATUS_CODE_INACTIVE
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetail
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
@@ -166,6 +164,158 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
     }
 
     @Test
+    fun `given edit status response is NULL when edit status NOT success should return initial product status`() = runBlocking {
+        val isSuccess = false
+        val productStatusResponse = null
+        val initialProductStatus = ProductStatus.INACTIVE
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = productStatusResponse)
+        val otherCampaignStockData = OtherCampaignStockData(status = initialProductStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            initialProductStatus,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given edit status response is NULL when edit status success should return product status input`() = runBlocking {
+        val productStatusResponse = null
+        val isSuccess = true
+        val isActive = true // input = ProductStatus.ACTIVE
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = productStatusResponse)
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.INACTIVE)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(isActive)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.ACTIVE,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given edit product status is NOT success when updateStockData should return initial product status`() = runBlocking {
+        val isSuccess = false
+        val productStatus = ProductStatus.INACTIVE //initial status
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = null)
+        val otherCampaignStockData = OtherCampaignStockData(status = productStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.INACTIVE,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
     fun `given edit status response INACTIVE when update non-variant stock should return status result INACTIVE`() = runBlocking {
         val shopId = "1"
         val productId = "1"
@@ -263,7 +413,10 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 totalStock,
                 ProductStatus.INACTIVE,
                 editVariantResponse.productUpdateV3Data.isSuccess,
-                editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+                hashMapOf(
+                        Pair(productId, UpdateCampaignVariantResult(ProductStatus.INACTIVE, 2, ""))
+                )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -319,7 +472,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.INACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf()
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -378,7 +532,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.INACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf(
+                    Pair("1", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 1, "")),
+                    Pair("2", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 0, ""))
+            )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -450,7 +608,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.ACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf(
+                    Pair("1", UpdateCampaignVariantResult(ProductStatus.ACTIVE, 1, "")),
+                    Pair("2", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 2, ""))
+            )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }

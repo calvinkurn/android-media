@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
 
-    <com.tokopedia.design.image.RoundedCornerImageView
+    <com.tokopedia.notifcenter.widget.RoundedCornerImageView
         android:id="@+id/image"
         android:layout_width="@dimen/notif_dp_48"
         android:layout_height="@dimen/notif_dp_48"

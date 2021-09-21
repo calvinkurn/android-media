@@ -24,7 +24,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val IS_NEW_VIEW_HOLDER = true
+        const val GRID_LAYOUT_MANAGER_SPAN_COUNT = 5
+        const val RATING_ONE = 1
+        const val RATING_TWO = 2
+        const val RATING_THREE = 3
+        const val RATING_FOUR = 4
+        const val RATING_FIVE = 5
         val LAYOUT = R.layout.item_dynamic_review
     }
 
@@ -43,7 +48,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             }
             setSeeAllReviewClickListener(componentData)
             it.imageReviews?.let { images ->
-                renderImageReview(images, element.totalRating, element.ratingScore, componentData)
+                renderImageReview(images, element.totalRating, element.ratingScore, element.formattedRating, element.totalRatingCount, element.totalReviewCount, componentData)
             }
             val reviewData = it.listOfReviews?.firstOrNull()
             reviewData?.let { review ->
@@ -78,7 +83,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, formattedRating: String, formattedRatingCount: String, formattedReviewCount: String, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
@@ -87,21 +92,29 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
         with(view) {
             review_count.apply {
-                text = context.getString(R.string.review_out_of_total_reviews, totalRating)
+                text = if (listener.shouldShowRatingAndReviewCount()) {
+                    if (formattedReviewCount == "0") {
+                        context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
+                    } else {
+                        context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
+                    }
+                } else {
+                    context.getString(R.string.review_out_of_total_reviews, totalRating)
+                }
                 show()
             }
             review_rating.apply {
                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
-                text = ratingScore.toString()
+                text = if (listener.shouldShowRatingAndReviewCount()) formattedRating else ratingScore.toString()
                 show()
             }
 
             if (imageReviews.isNotEmpty()) {
                 image_review_list.apply {
                     adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
-                            componentTrackDataModel, IS_NEW_VIEW_HOLDER)
+                            componentTrackDataModel)
                     show()
-                    layoutManager = GridLayoutManager(context, 5)
+                    layoutManager = GridLayoutManager(context, GRID_LAYOUT_MANAGER_SPAN_COUNT)
                 }
                 return
             }
@@ -111,6 +124,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewStars(reviewData: Review) {
         view.rating_review_pdp.apply {
+            if (reviewData.productRating == 0) {
+                hide()
+                return
+            }
             setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(reviewData.productRating)))
             show()
         }
@@ -118,6 +135,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewAuthor(reviewData: Review) {
         view.txt_date_user_pdp.apply {
+            if (reviewData.user.fullName.isEmpty()) {
+                return
+            }
             text = HtmlLinkHelper(context, context.getString(R.string.review_author, reviewData.user.fullName)).spannedString
             show()
         }
@@ -158,12 +178,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun getRatingDrawable(param: Int): Int {
         return when (param) {
-            0 -> R.drawable.ic_rating_star_zero
-            1 -> R.drawable.ic_rating_star_one
-            2 -> R.drawable.ic_rating_star_two
-            3 -> R.drawable.ic_rating_star_three
-            4 -> R.drawable.ic_rating_star_four
-            5 -> R.drawable.ic_rating_star_five
+            RATING_ONE -> R.drawable.ic_rating_star_one
+            RATING_TWO -> R.drawable.ic_rating_star_two
+            RATING_THREE -> R.drawable.ic_rating_star_three
+            RATING_FOUR -> R.drawable.ic_rating_star_four
+            RATING_FIVE -> R.drawable.ic_rating_star_five
             else -> R.drawable.ic_rating_star_zero
         }
     }

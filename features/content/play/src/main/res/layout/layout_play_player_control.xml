@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingEnd="@dimen/play_player_control_spacing_right"
-            android:paddingRight="@dimen/play_player_control_spacing_right"
             android:background="@null"
             app:srcCompat="@drawable/ic_play_play_white"
             tools:ignore="RtlSymmetry" />
@@ -29,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingEnd="@dimen/play_player_control_spacing_right"
-            android:paddingRight="@dimen/play_player_control_spacing_right"
             android:background="@null"
             app:srcCompat="@drawable/ic_play_pause_white"
             tools:ignore="RtlSymmetry" />
@@ -40,8 +38,7 @@
         android:id="@id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/play_offset_12"
         app:layout_constraintBottom_toBottomOf="@id/ll_video_time"
         app:layout_constraintEnd_toStartOf="@id/ll_video_time"
         app:layout_constraintStart_toEndOf="@id/fl_play_pause"

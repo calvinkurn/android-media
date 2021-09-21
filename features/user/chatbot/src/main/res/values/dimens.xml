@@ -2,4 +2,21 @@
 <resources>
     <dimen name="sp_9">9sp</dimen>
     <dimen name="dp_270">270dp</dimen>
+    <dimen name="chatbot_invoice_sent_width">300dp</dimen>
+    <dimen name="dp_chatbot_0">0dp</dimen>
+    <dimen name="dp_chatbot_20">20dp</dimen>
+    <dimen name="dp_chatbot_1">1dp</dimen>
+    <dimen name="dp_chatbot_2">2dp</dimen>
+    <dimen name="dp_chatbot_3">3dp</dimen>
+    <dimen name="dp_chatbot_6">6dp</dimen>
+    <dimen name="dp_chatbot_10">10dp</dimen>
+    <dimen name="dp_chatbot_11">11dp</dimen>
+    <dimen name="dp_chatbot_18">18dp</dimen>
+    <dimen name="dp_chatbot_19">19dp</dimen>
+    <dimen name="dp_chatbot_36">36dp</dimen>
+    <dimen name="dp_chatbot_50">50dp</dimen>
+    <dimen name="dp_chatbot_60">60dp</dimen>
+    <dimen name="dp_chatbot_87">87dp</dimen>
+    <dimen name="dp_chatbot_110">110dp</dimen>
+    <dimen name="dp_chatbot_240">240dp</dimen>
 </resources>

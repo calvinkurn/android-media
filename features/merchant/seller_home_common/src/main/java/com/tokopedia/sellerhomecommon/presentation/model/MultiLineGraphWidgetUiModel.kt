@@ -22,6 +22,7 @@ data class MultiLineGraphWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel,
         val isComparePeriodeOnly: Boolean
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
@@ -31,6 +32,10 @@ data class MultiLineGraphWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
-        return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, isComparePeriodeOnly)
+        return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, isComparePeriodeOnly)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<MultiLineGraphDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

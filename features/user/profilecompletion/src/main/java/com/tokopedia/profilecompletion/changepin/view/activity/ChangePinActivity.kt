@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -17,8 +16,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
-import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFrom2FAFragment
 import com.tokopedia.profilecompletion.changepin.view.fragment.ForgotPinFragment
+import com.tokopedia.profilecompletion.changepin.view.fragment.ResetPinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
@@ -33,8 +32,8 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
-            ChangePinFrom2FAFragment.createInstance(bundle)
+        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, false) == true) {
+            ResetPinFragment.createInstance(bundle)
         } else {
             ChangePinFragment.createInstance(bundle)
         }
@@ -71,9 +70,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
             setWindowFlag(true)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
@@ -97,26 +94,15 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         window.attributes = winParams
     }
 
-    private fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
-        supportFragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        val fragmentTransactionManager = supportFragmentManager.beginTransaction()
-
-        fragmentTransactionManager.add(parentViewResourceID, fragment, tag)
-        if (isBackAnimation)
-            fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right)
-        else fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_left)
-        fragmentTransactionManager.addToBackStack(BACK_STACK_ROOT_TAG)
-        fragmentTransactionManager.commit()
+    private fun addFragment(containerViewId: Int, fragment: Fragment) {
+        val fragmentTransaction = this.supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(containerViewId, fragment)
+        fragmentTransaction.commit()
     }
 
     fun goToForgotPin(bundle: Bundle) {
         val fragment = ForgotPinFragment.createInstance(bundle)
-        doFragmentTransaction(fragment, TAG_FORGOT_PIN, false)
+        addFragment(parentViewResourceID, fragment)
     }
 
-    companion object {
-        private const val BACK_STACK_ROOT_TAG = "root_fragment"
-
-        private const val TAG_FORGOT_PIN = "forgotPin"
-    }
 }

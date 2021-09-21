@@ -1,0 +1,66 @@
+[
+  {
+    "data": {
+      "rechargeCatalogDynamicInput": {
+        "needEnquiry": true,
+        "isShowingProduct": false,
+        "dynamicFields": [
+          {
+            "param_name": "",
+            "name": "client_number",
+            "text": "No. Meter/ID Pel",
+            "style": "input_numeric",
+            "placeholder": "",
+            "help": "No. Meter atau Id Pelanggan adalah nomor yang tertera pada kartu pelanggan",
+            "data_collections": [],
+            "validations": []
+          },
+          {
+            "param_name": "product",
+            "name": "product_id",
+            "text": "",
+            "style": "hidden",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "291",
+                    "attributes": {
+                      "price": "",
+                      "price_plain": 10000,
+                      "promo": null,
+                      "desc": "Tagihan Listrik Bulanan",
+                      "detail": "1.Transaksi Tagihan Listrik  yang dilakukan pukul 23:30-00.59 WIB akan mulai diproses pada pukul 01.00 WIB sesuai kebijakan pihak PLN <br> 2. Jatuh tempo pembayaran tagihan listrik adalah <b> tanggal 20 di setiap bulannya. </b><br/>3. Proses verifikasi pembayaran maksimum <b>2x24 jam hari kerja. </b><br/>",
+                      "detail_compact": "1.Transaksi Tagihan Listrik  yang dilakukan pukul 23:30-00.59 WIB akan mulai diproses pada pukul 01.00 WIB sesuai kebijakan pihak PLN <br> 2. Jatuh tempo pembayaran tagihan listrik adalah <b> tanggal 20 di setiap bulannya. </b><br/>3. Proses verifikasi pembayaran maksimum <b>2x24 jam hari kerja. </b><br/>",
+                      "info": "",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 3,
+                      "product_labels": [],
+                      "product_descriptions": [],
+                      "hide_from_subscription": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "validations": []
+          },
+          {
+            "param_name": "enquiry",
+            "name": "enquiry_result",
+            "text": "Lanjut",
+            "style": "enquiry",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [],
+            "validations": []
+          }
+        ]
+      }
+    }
+  }
+]

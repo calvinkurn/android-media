@@ -4,12 +4,10 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 
@@ -35,7 +33,7 @@ class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder
         textView?.text = MethodChecker.fromHtml(uiModel.etalaseName)
         if (!TextUtils.isEmpty(uiModel.etalaseBadge)) {
             ivBadge?.let {
-                ImageHandler.LoadImage(it, uiModel.etalaseBadge)
+                it.loadIcon(uiModel.etalaseBadge)
             }
             ivBadge?.visibility = View.VISIBLE
         } else {

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
@@ -26,14 +26,14 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.Subscriber
 
 internal class ProductCardOptionsViewModel(
-        dispatcherProvider: DispatcherProvider,
+        dispatcherProvider: CoroutineDispatchers,
         val productCardOptionsModel: ProductCardOptionsModel?,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
-): BaseViewModel(dispatcherProvider.ui()) {
+): BaseViewModel(dispatcherProvider.main) {
 
     private val productCardOptionsItemListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val productCardOptionsItemList = mutableListOf<Visitable<*>>()

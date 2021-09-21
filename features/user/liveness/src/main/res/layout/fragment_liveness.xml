@@ -17,6 +17,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ai.advance.liveness.lib.LivenessView
             android:id="@+id/liveness_view"
             style="@style/liveness_preview" />
@@ -42,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/liveness_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/liveness_dms_toolbar_text_color"
         app:layout_constraintBottom_toBottomOf="@id/back_view_camera_activity"
         app:layout_constraintLeft_toRightOf="@id/back_view_camera_activity"
         app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
@@ -62,7 +63,7 @@
         app:typographyType="heading_4"
         android:gravity="center"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/liveness_dms_tip_color"
         android:paddingLeft="@dimen/spacing_lvl5"
         android:paddingRight="@dimen/spacing_lvl5"
         app:layout_constraintTop_toBottomOf="@id/guideline"

@@ -14,8 +14,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
-    private var listener: BottomSheetListener? = null
-    private var contentView: View? = null
 
     companion object {
         private const val MODEL = "model"
@@ -29,6 +27,9 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
             }
         }
     }
+
+    private var listener: BottomSheetListener? = null
+    private var contentView: View? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

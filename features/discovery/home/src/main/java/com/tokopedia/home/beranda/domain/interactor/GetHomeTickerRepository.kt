@@ -17,9 +17,9 @@ class GetHomeTickerRepository @Inject constructor(
 ){
     val gqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    suspend fun getTickerData(): HomeTickerData {
+    suspend fun getTickerData(locationParams: String = ""): HomeTickerData {
         val gqlResponse = gqlRepository.getReseponse(
-                listOf(buildRequest()), GraphqlCacheStrategy
+                listOf(buildRequest(locationParams)), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(HomeIconData::class.java)
         if (errors.isNullOrEmpty()) {
@@ -28,7 +28,12 @@ class GetHomeTickerRepository @Inject constructor(
         } else throw MessageErrorException(errors.joinToString { it.message })
     }
 
-    private fun buildRequest(): GraphqlRequest {
-        return GraphqlRequest(QueryHome.homeTickerQuery, HomeTickerData::class.java)
+    private fun buildRequest(locationParams: String): GraphqlRequest {
+        return GraphqlRequest(QueryHome.homeTickerQuery, HomeTickerData::class.java, mapOf(PARAM_LOCATION to locationParams))
+    }
+
+
+    companion object{
+        private const val PARAM_LOCATION = "location"
     }
 }

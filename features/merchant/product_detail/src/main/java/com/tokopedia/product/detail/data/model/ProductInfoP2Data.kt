@@ -3,15 +3,18 @@ package com.tokopedia.product.detail.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQueryResult
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
+import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
-import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
+import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -86,10 +89,6 @@ data class ProductInfoP2Data(
         @Expose
         var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
 
-        @SerializedName("merchantVoucher")
-        @Expose
-        var merchantVoucher: MerchantVoucherQueryResult = MerchantVoucherQueryResult(),
-
         @SerializedName("installmentRecommendation")
         @Expose
         var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
@@ -106,13 +105,29 @@ data class ProductInfoP2Data(
         @Expose
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
 
+        @SerializedName("ratesEstimate")
+        @Expose
+        var ratesEstimate: List<P2RatesEstimate> = listOf(),
+
+        @SerializedName("bebasOngkir")
+        @Expose
+        var bebasOngkir: BebasOngkir = BebasOngkir(),
+
+        @SerializedName("uniqueSellingPoint")
+        @Expose
+        var uspTokoCabangData: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang(),
+
         @SerializedName("mostHelpFulReviewData")
         @Expose
         var mostHelpFulReviewData: MostHelpfulReviewData = MostHelpfulReviewData(),
 
         @SerializedName("reviewImage")
         @Expose
-        var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery()
+        var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery(),
+
+        @SerializedName("rating")
+        @Expose
+        var rating: ProductRatingCount = ProductRatingCount()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

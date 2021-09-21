@@ -7,8 +7,6 @@ import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.viewModel.homepage.givenInjectCouponTimeBasedUseCaseReturn
-import com.tokopedia.home.viewModel.homepage.givenInjectCouponTimeBasedUseCaseThrowReturn
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder

@@ -1,256 +1,34 @@
 [
   {
     "data": {
-      "ProductReviewImageListQuery": {
-        "detail": {
-          "imageCountFmt": "Lainnya 2+",
-          "images": [
-            {
-              "description": "pengiriman cepat produk oke sesuai harga",
-              "imageAttachmentID": 24741332,
-              "reviewID": 274031069,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2020/11/11/7b133d87-cb4c-4c1a-b6f1-eb5f523a0599.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2020/11/11/7b133d87-cb4c-4c1a-b6f1-eb5f523a0599.jpg"
-            },
-            {
-              "description": "",
-              "imageAttachmentID": 26778774,
-              "reviewID": 292000832,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2020/12/15/f53c75c8-1cf2-4062-af1d-207412a25fad.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2020/12/15/f53c75c8-1cf2-4062-af1d-207412a25fad.jpg"
-            },
-            {
-              "description": "",
-              "imageAttachmentID": 26778775,
-              "reviewID": 292000832,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2020/12/15/2269b92f-eb66-47bd-8cb1-a14bb4e0ff1c.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2020/12/15/2269b92f-eb66-47bd-8cb1-a14bb4e0ff1c.jpg"
-            },
-            {
-              "description": "",
-              "imageAttachmentID": 26778776,
-              "reviewID": 292000832,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2020/12/15/109e0d34-ee1a-4f4c-b277-0d9642cbe6a9.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2020/12/15/109e0d34-ee1a-4f4c-b277-0d9642cbe6a9.jpg"
-            },
-            {
-              "description": "",
-              "imageAttachmentID": 27364428,
-              "reviewID": 296780833,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2020/12/23/3651d8d6-2e41-4806-8719-175c1b412c47.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2020/12/23/3651d8d6-2e41-4806-8719-175c1b412c47.jpg"
-            },
-            {
-              "description": "",
-              "imageAttachmentID": 28656522,
-              "reviewID": 307281855,
-              "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/12/bfac1757-4218-44bd-85f8-6841f05e86e7.jpg",
-              "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/1/12/bfac1757-4218-44bd-85f8-6841f05e86e7.jpg"
-            }
-          ],
-          "reviews": [
-            {
-              "isAnonymous": false,
-              "isReportable": false,
-              "isUpdated": false,
-              "message": "pengiriman cepat produk oke sesuai harga",
-              "rating": 5,
-              "ratingDescription": "Sangat Baik",
-              "reviewId": 274031069,
-              "reviewer": {
-                "fullName": "Adityo",
-                "profilePicture": "https://accounts.tokopedia.com/image/v1/u/3352791/user_thumbnail/desktop",
-                "url": "https://www.tokopedia.com/people/3352791",
-                "userID": 3352791
-              },
-              "time_format": {
-                "date_time_fmt1": "11 Nov 2020, 16:46 WIB"
-              },
-              "updateTime": 1605113169
-            },
-            {
-              "isAnonymous": true,
-              "isReportable": false,
-              "isUpdated": false,
-              "message": "pas ultah anak bsk yg ke-11. gpplah buat baju harian anak",
-              "rating": 5,
-              "ratingDescription": "Sangat Baik",
-              "reviewId": 292000832,
-              "reviewer": {
-                "fullName": "n***k",
-                "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
-                "url": "",
-                "userID": 0
-              },
-              "time_format": {
-                "date_time_fmt1": "15 Dec 2020, 12:49 WIB"
-              },
-              "updateTime": 1608036552
-            },
-            {
-              "isAnonymous": false,
-              "isReportable": false,
-              "isUpdated": false,
-              "message": "cepet sampenya & rapi packing nya... bahan kaosnya adem & real pict...😃😃 ..goof jobs Tokopedia...",
-              "rating": 5,
-              "ratingDescription": "Sangat Baik",
-              "reviewId": 296780833,
-              "reviewer": {
-                "fullName": "Nayda",
-                "profilePicture": "https://accounts.tokopedia.com/image/v1/u/28357290/user_thumbnail/desktop",
-                "url": "https://www.tokopedia.com/people/28357290",
-                "userID": 28357290
-              },
-              "time_format": {
-                "date_time_fmt1": "23 Dec 2020, 22:46 WIB"
-              },
-              "updateTime": 1608763571
-            },
-            {
-              "isAnonymous": false,
-              "isReportable": false,
-              "isUpdated": false,
-              "message": "Selamat Birthday Tokped! Kaosnya bagus 👍🏻",
-              "rating": 5,
-              "ratingDescription": "Sangat Baik",
-              "reviewId": 307281855,
-              "reviewer": {
-                "fullName": "Argo",
-                "profilePicture": "https://accounts.tokopedia.com/image/v1/u/21560236/user_thumbnail/desktop",
-                "url": "https://www.tokopedia.com/people/21560236",
-                "userID": 21560236
-              },
-              "time_format": {
-                "date_time_fmt1": "12 Jan 2021, 17:30 WIB"
-              },
-              "updateTime": 1610472630
-            }
-          ]
-        },
-        "hasNext": true,
-        "hasPrev": false,
-        "list": [
-          {
-            "imageID": 28656522,
-            "imageSibling": [
-              28656522
-            ],
-            "reviewID": 307281855
-          },
-          {
-            "imageID": 27364428,
-            "imageSibling": [
-              27364428
-            ],
-            "reviewID": 296780833
-          },
-          {
-            "imageID": 26778776,
-            "imageSibling": [
-              26778776,
-              26778775,
-              26778774
-            ],
-            "reviewID": 292000832
-          },
-          {
-            "imageID": 26778775,
-            "imageSibling": [
-              26778776,
-              26778775,
-              26778774
-            ],
-            "reviewID": 292000832
-          },
-          {
-            "imageID": 26778774,
-            "imageSibling": [
-              26778776,
-              26778775,
-              26778774
-            ],
-            "reviewID": 292000832
-          }
-        ]
-      }
-    }
-  },
-  {
-    "data": {
-      "ProductMostHelpfulReviewQuery": {
-        "list": [
-          {
-            "imageAttachments": [],
-            "isAnonymous": false,
-            "isReportable": true,
-            "isUpdated": false,
-            "likeDislike": {
-              "isShowable": false,
-              "likeStatus": 0,
-              "totalDislike": 0,
-              "totalLike": 1
-            },
-            "message": "Barang bagus, packing profesional. Makasih Kak",
-            "productRating": 5,
-            "productRatingDescription": "Sangat Baik",
-            "productVariant": {
-              "name": "XL"
-            },
-            "reputationId": 0,
-            "reviewCreateTime": "4 bulan lalu",
-            "reviewCreateTimestamp": "1598030734",
-            "reviewId": 234596125,
-            "reviewResponse": {
-              "by": 2291974,
-              "createTime": "4 bulan lalu",
-              "createTimestamp": "1598030734",
-              "message": "Terima kasih telah berbelanja di Tokopedia Merchandise. Bagikan link toko kami https://www.tokopedia.com/merchandise kepada teman-teman Anda dan favoritkan Toko kami untuk terus update mengenai stok dan produk terbaru"
-            },
-            "reviewUpdateTime": "",
-            "reviewUpdateTimestamp": "",
-            "title": "",
-            "user": {
-              "fullName": "Bagus",
-              "image": "https://accounts.tokopedia.com/image/v1/u/2291974/user_thumbnail/desktop",
-              "label": "Pembeli",
-              "url": "https://www.tokopedia.com/people/2291974",
-              "userId": 2291974
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "data": {
       "discussionMostHelpful": {
-        "productID": "1060686573",
+        "productID": "1060957410",
         "question": [
           {
             "answer": {
-              "answerID": "",
+              "answerID": "599501005",
               "attachedProductCount": 0,
-              "content": "",
-              "createTime": "",
-              "createTimeFormatted": "",
-              "isSeller": false,
-              "userID": "",
-              "userName": "",
-              "userThumbnail": "",
-              "userThumbnail2": ""
+              "content": "Hi Toppers, Mohon Maaf jika ada keterlambatan respondnya , Terus follow Toko Kami agar terus terupdate jika ada Stock dan produk baru :)",
+              "createTime": "2021-03-16T13:09:16Z",
+              "createTimeFormatted": "16 Mar",
+              "isSeller": true,
+              "userID": "65370927",
+              "userName": "Tokopedia Merchandise",
+              "userThumbnail": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png",
+              "userThumbnail2": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png"
             },
-            "content": "ready kahh..?",
+            "content": "ready kahh.. SCREENSHOT TEST?",
             "createTime": "2020-12-21T17:09:29Z",
-            "createTimeFormatted": "21 Des",
+            "createTimeFormatted": "Des 2020",
             "questionID": "300689192",
-            "totalAnswer": 0,
+            "totalAnswer": 1,
             "userID": "28357290",
             "userName": "Nayda",
             "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/28357290/user_thumbnail/desktop"
           }
         ],
         "shopID": "1990266",
-        "shopURL": "",
+        "shopURL": "https://www.tokopedia.com/merchandise",
         "totalQuestion": 1
       }
     }

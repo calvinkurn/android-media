@@ -18,7 +18,7 @@ object BackgroundGenerator {
                 topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                shadowColor = R.color.topchat_message_shadow,
+                shadowColor = R.color.topchat_dms_message_shadow,
                 elevation = R.dimen.dp_topchat_2,
                 shadowRadius = R.dimen.dp_topchat_1,
                 shadowGravity = Gravity.CENTER

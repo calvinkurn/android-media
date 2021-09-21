@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.collection.SparseArrayCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
@@ -32,12 +32,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
-                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
+                val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
+                shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
-            shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
+            val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
+            shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
 
@@ -67,14 +69,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getTabInactiveColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_gray_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_N500
         else
             com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
     private fun getTabActivateColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_green_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_G600
         else
             com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
@@ -94,7 +96,10 @@ internal class ShopPageFragmentPagerAdapter(
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return registeredFragments.get(position)
+        return if (listShopPageTabModel.isNotEmpty())
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        else
+            null
     }
 
     fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {

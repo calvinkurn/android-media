@@ -5,10 +5,10 @@ package com.tokopedia.hotel.common.presentation.widget
  */
 
 import android.content.Context
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SpanningLinearLayoutManager : LinearLayoutManager {
 

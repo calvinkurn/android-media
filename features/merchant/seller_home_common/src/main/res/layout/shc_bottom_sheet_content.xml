@@ -8,6 +8,6 @@
         android:id="@+id/rvBottomSheetContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/Neutral_N50" />
+        android:divider="@color/Unify_N50" />
 
 </LinearLayout>

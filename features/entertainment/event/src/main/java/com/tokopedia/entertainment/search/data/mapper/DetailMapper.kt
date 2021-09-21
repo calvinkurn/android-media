@@ -18,7 +18,8 @@ object DetailMapper {
                 nama_event = event.title,
                 harga_start = "Mulai dari",
                 harga_now = event.price,
-                app_url = event.appUrl
+                app_url = event.appUrl,
+                category_id = event.childCategoryIds
         )
     }
 }

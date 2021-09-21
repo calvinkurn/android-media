@@ -52,7 +52,7 @@ class PartialCentralizedPromoCreationView(
     override fun shouldShowCoachMark(): Boolean = showCoachMark && view.partialSuccess.isShown
 
     override fun getCoachMarkItem() = with(view) {
-        partialSuccess.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        partialSuccess.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         CoachMarkItem(partialSuccess,
                 context.getString(R.string.sh_coachmark_title_promo_creation),
                 context.getString(R.string.sh_coachmark_desc_promo_creation))

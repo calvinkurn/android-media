@@ -1,10 +1,5 @@
 package com.tokopedia.hotel.destination.view.adapter.viewholder
 
-import androidx.core.content.ContextCompat
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.TextUtils
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler

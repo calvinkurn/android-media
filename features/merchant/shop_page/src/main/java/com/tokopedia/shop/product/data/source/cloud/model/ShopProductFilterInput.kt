@@ -3,7 +3,7 @@ package com.tokopedia.shop.product.data.source.cloud.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ShopProductFilterInput (
+data class ShopProductFilterInput(
         @SerializedName("page")
         @Expose
         var page: Int = 1,
@@ -34,5 +34,21 @@ data class ShopProductFilterInput (
 
         @SerializedName("pmin")
         @Expose
-        var pmin: Int = 0
+        var pmin: Int = 0,
+
+        @SerializedName("user_districtId")
+        @Expose
+        var userDistrictId: String = "",
+
+        @SerializedName("user_cityId")
+        @Expose
+        var userCityId: String = "",
+
+        @SerializedName("user_lat")
+        @Expose
+        var userLat: String = "",
+
+        @SerializedName("user_long")
+        @Expose
+        var userLong: String = ""
 )

@@ -19,6 +19,9 @@ import java.util.*
  * Created by Pika on 10/6/20.
  */
 
+private const val SIX_MONTH = -6
+private const val ONE_UNIT = -1
+
 class CustomDatePicker : BottomSheetUnify() {
 
     lateinit var minDate: Date
@@ -29,6 +32,7 @@ class CustomDatePicker : BottomSheetUnify() {
     private lateinit var selectedDateOriginal: Date
     lateinit var selectedStartDate: Date
     private lateinit var listenerCalendar: ActionListener
+    private var isCreditSheet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +43,13 @@ class CustomDatePicker : BottomSheetUnify() {
 
     private fun getBundleData() {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
+        calendar.add(Calendar.DATE, ONE_UNIT)
         val selectDateDef: String = Utils.format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
+        if (isCreditSheet) {
+            calendar.add(Calendar.MONTH, SIX_MONTH)
+        } else {
+            calendar.add(Calendar.YEAR, ONE_UNIT)
+        }
         val minDateDef = Utils.format.format(calendar.time)
         val maxDateDef: String = Utils.format.format(Date())
         minDate = minDateDef.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
@@ -56,7 +64,6 @@ class CustomDatePicker : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setTitle(resources.getString(R.string.topads_dash_choose_date))
         renderSinglePickCalendar(arrayListOf())
-        setFieldEnable(false)
         dateStart?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 dateFlag = 0
@@ -79,11 +86,6 @@ class CustomDatePicker : BottomSheetUnify() {
         dateEnd?.textFieldInput?.keyListener = null
     }
 
-    private fun setFieldEnable(enable: Boolean) {
-        dateEnd?.isEnabled = enable
-        dateStart?.isEnabled = enable
-    }
-
     private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
         if (minDate > maxDate) {
             maxDate = minDate
@@ -102,7 +104,6 @@ class CustomDatePicker : BottomSheetUnify() {
                     dateStart?.textFieldInput?.setText(outputFormat.format(date))
                     selectedStartDate = date
                     minDate = date
-                    setFieldEnable(true)
                     dateEnd?.requestFocus()
                 } else if (dateFlag == 1) {
                     dateEnd?.textFieldInput?.setText(outputFormat.format(date))
@@ -114,15 +115,16 @@ class CustomDatePicker : BottomSheetUnify() {
                 }
             }
 
-            override fun onDateUnselected(date: Date) {
-
-            }
+            override fun onDateUnselected(date: Date) {}
         })
-
     }
 
     fun setListener(listener: ActionListener) {
         this.listenerCalendar = listener
+    }
+
+    fun setCreditSheet() {
+        isCreditSheet = true
     }
 
     companion object {

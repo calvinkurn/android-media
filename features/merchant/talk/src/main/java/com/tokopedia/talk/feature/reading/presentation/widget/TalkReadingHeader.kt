@@ -56,7 +56,7 @@ class TalkReadingHeader : BaseCustomView {
         talkReadingHeaderBinding?.readingHeaderChips?.apply {
             sortFilterItems.removeAllViews()
             addItem(talkReadingHeaderModel.categories)
-            chipItems.first().refChipUnify.setChevronClickListener {
+            chipItems?.first()?.refChipUnify?.setChevronClickListener {
                 showBottomSheet()
             }
             filterRelationship = RELATIONSHIP_AND

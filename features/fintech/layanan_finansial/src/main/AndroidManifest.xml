@@ -4,7 +4,7 @@
     <application>
         <activity android:name=".view.acitivity.LayananAcitivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

@@ -7,18 +7,6 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/play_widget_medium_bg_loader"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
-        tools:visibility="visible" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/play_widget_medium_title"
         android:layout_width="0dp"
@@ -55,11 +43,12 @@
         android:id="@+id/play_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/play_widget_dp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title">
+        app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
+        tools:background="@color/play_widget_dms_light_gray">
 
         <FrameLayout
             android:id="@+id/play_widget_overlay"
@@ -88,7 +77,6 @@
             android:id="@+id/play_widget_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:clipToPadding="false"
             android:paddingStart="@dimen/spacing_lvl4"

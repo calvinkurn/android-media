@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/play_product_featured_width"
+    android:layout_height="@dimen/play_product_featured_height"
+    android:background="@drawable/bg_play_product_featured"
+    android:padding="@dimen/spacing_lvl2"
+    >
+
+    <include
+        layout="@layout/layout_play_product"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

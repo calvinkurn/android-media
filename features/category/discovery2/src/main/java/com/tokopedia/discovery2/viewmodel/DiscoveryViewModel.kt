@@ -18,7 +18,8 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
-import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
+import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCase
+import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryInjectCouponDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -33,6 +34,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,6 +50,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 private const val IS_ADULT = 1
+private const val SCROLL_DEPTH = 100
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val userSession: UserSessionInterface,
@@ -58,13 +61,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
-    private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
-    var bottomTabNavDataComponent : ComponentsItem?  = null
+    var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
+    private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -72,26 +75,29 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
 
+    @Inject
+    lateinit var discoveryInjectCouponDataUseCase: DiscoveryInjectCouponDataUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         setDiscoveryLiveState(it.pageInfo)
+                        setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
                             findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
-                        setPageInfo(it)
                     }
                 },
                 onError = {
@@ -112,6 +118,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
+            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
@@ -248,5 +255,31 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
     }
 
-    fun getWishListLiveData() = wishlistUpdateLiveData
+    fun checkAddressVisibility() = chooseAddressVisibilityLiveData
+    fun getAddressVisibilityValue() = chooseAddressVisibilityLiveData.value ?: false
+
+    fun sendCouponInjectDataForLoggedInUsers() {
+        launchCatchError(
+                block = {
+                    if (userSession.isLoggedIn) {
+                        discoveryInjectCouponDataUseCase.sendDiscoveryInjectCouponData()
+                    }
+                },
+                onError = {
+                    discoveryPageInfo.value = Fail(it)
+                }
+        )
+    }
+
+    fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
+        return if(range > 0) SCROLL_DEPTH * (offset + extent) / range else 0
+    }
+
+    fun getShareUTM(data:PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > 11){
+            campaignCode = data.campaignCode.substring(0,11)
+        }
+        return "${data.identifier}-${campaignCode}"
+    }
 }

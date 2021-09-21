@@ -42,7 +42,7 @@
         android:paddingLeft="@dimen/dp_2"
         android:paddingEnd="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
-        android:textColor="@color/tp_loyalty_color"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintTop_toBottomOf="@+id/iv_bg"
         tools:text="Kupon Membership" />

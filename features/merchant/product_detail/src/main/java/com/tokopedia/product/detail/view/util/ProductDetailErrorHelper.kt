@@ -2,16 +2,17 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.os.Handler
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.url.TokopediaUrl
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -91,7 +92,7 @@ object ProductDetailErrorHelper {
     private fun logDeeplinkError(deeplinkUrl: String = "", errorCode: Int) {
         val weblink = convertToWeblink(deeplinkUrl)
         if (!links.contains(weblink)) {
-            Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$weblink;errorCode=$errorCode")
+            ServerLogger.log(Priority.P2, "PDP_OPEN_DEEPLINK_ERROR", mapOf("type" to weblink, "errorCode" to errorCode.toString()))
             links.add(weblink)
 
             Handler().postDelayed({

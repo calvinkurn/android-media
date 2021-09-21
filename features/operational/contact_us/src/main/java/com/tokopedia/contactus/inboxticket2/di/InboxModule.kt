@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
@@ -63,11 +65,15 @@ class InboxModule(private val context: Context) {
                                   submitRatingUseCase: SubmitRatingUseCase,
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                   contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
+                                  chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase,
+                                  secureUploadUseCase: SecureUploadUseCase,
                                   userSession: UserSessionInterface,
-                                  dispatcher: CoroutineDispatcher): InboxDetailContract.Presenter {
-        return InboxDetailPresenter(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, userSession, dispatcher)
+                                  dispatcher: CoroutineDispatchers): InboxDetailContract.Presenter {
+        return InboxDetailPresenter(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, chipUploadHostConfigUseCase, secureUploadUseCase, userSession, dispatcher)
     }
 
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     fun getDefaultDispatcher(): CoroutineDispatcher {

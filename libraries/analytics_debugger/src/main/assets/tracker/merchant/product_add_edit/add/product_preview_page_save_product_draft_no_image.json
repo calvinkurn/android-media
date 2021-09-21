@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "add product page",
       "eventAction" : "click yes to quit",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
       "screenName":"/addproductpage - stepper"
     }
   ]

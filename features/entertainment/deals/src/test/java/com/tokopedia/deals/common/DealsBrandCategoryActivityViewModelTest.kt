@@ -4,27 +4,21 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
-import com.tokopedia.deals.search.model.response.Category
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.search.model.response.CuratedData
-import com.tokopedia.deals.search.model.response.EventChildCategory
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 import com.tokopedia.deals.DealsJsonMapper
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 
 class DealsBrandCategoryActivityViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val useCase: GetChipsCategoryUseCase = mockk()
     private lateinit var viewModel: DealsBrandCategoryActivityViewModel

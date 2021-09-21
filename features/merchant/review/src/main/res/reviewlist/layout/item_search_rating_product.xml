@@ -5,11 +5,24 @@
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/tickerReviewReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:closeButtonVisibility="visible"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        app:titleText="@string/review_reminder_ticker_title" />
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarRatingProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_6"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -19,7 +32,7 @@
         app:search_bar_show_icon="false"
         app:search_bar_clearable="true"
         app:search_bar_enable="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tickerReviewReminder"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

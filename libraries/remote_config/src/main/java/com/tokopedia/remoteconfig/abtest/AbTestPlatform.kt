@@ -10,6 +10,11 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.EXPERIMENT_NAME_TOKOPOINT
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -47,31 +52,27 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
-
-    override fun getByteArray(key: String?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
-    override fun getByteArray(key: String?, defaultValue: ByteArray?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?, defaultValue: Double): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?): Long {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?, defaultValue: Long): Long {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -85,6 +86,8 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
                 NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
+                NAVIGATION_EXP_TOP_NAV2 -> return NAVIGATION_VARIANT_REVAMP2
+                EXPERIMENT_NAME_TOKOPOINT -> return EXPERIMENT_NAME_TOKOPOINT
             }
         }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
@@ -98,6 +101,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (editor != null) {
             editor.putString(key, value)
             editor.commit()
+        }
+    }
+
+    fun deleteKeyLocally(key:String){
+        editor?.let {
+            it.remove(key)
+            it.commit()
         }
     }
 
@@ -208,18 +218,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         private const val CONSUMER_PRO_APPLICATION = 3;
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
-
-        const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"
-        const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
-        const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
-
-        const val HOME_EXP = "Home Revamp 2021"
-        const val HOME_VARIANT_OLD = "Existing Home"
-        const val HOME_VARIANT_REVAMP = "home revamp"
-
-        const val KEY_AB_INBOX_REVAMP = "Inbox Revamp"
-        const val VARIANT_OLD_INBOX = ""
-        const val VARIANT_NEW_INBOX = "Inbox Revamp"
     }
 
 }

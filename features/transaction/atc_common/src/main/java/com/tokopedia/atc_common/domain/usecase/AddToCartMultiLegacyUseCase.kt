@@ -5,13 +5,16 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
-class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase): UseCase<AtcMultiData>() {
+class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
+                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AtcMultiData>() {
 
     companion object {
         private const val PARAM = "param"
@@ -24,12 +27,14 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
     }
 
     private var query: String = ""
-    private var params: MutableMap<String, Any> = mutableMapOf()
+    private var params: MutableMap<String, Any?> = mutableMapOf()
     private var userId: String = ""
 
-    fun setup(query: String, params: MutableMap<String, Any>, userId: String) {
-        this.query = query
+    fun setup(query: String, params: MutableMap<String, Any?>, userId: String) {
+        params[KEY_CHOSEN_ADDRESS] = chosenAddressAddToCartRequestHelper.getChosenAddress()
         this.params = params
+
+        this.query = query
         this.userId = userId
     }
 

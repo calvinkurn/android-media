@@ -7,7 +7,7 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerModel(var layout: EventHomeDataResponse.Data.EventHome.Layout): HomeEventItem<HomeTypeFactory> {
+class BannerModel(var layout: EventHomeDataResponse.Data.EventHome.Layout = EventHomeDataResponse.Data.EventHome.Layout()): HomeEventItem() {
 
     var items : MutableList<String> = mutableListOf()
 

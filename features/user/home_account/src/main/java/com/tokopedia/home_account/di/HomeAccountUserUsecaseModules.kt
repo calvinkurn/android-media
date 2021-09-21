@@ -1,20 +1,20 @@
 package com.tokopedia.home_account.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountTokopointsUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class HomeAccountUserUsecaseModules {
@@ -57,9 +57,7 @@ class HomeAccountUserUsecaseModules {
     }
 
     @Provides
-    fun provideGetRecomendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                       graphqlUseCase: GraphqlUseCase,
-                                       userSession: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
+    fun provideTokopointUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): HomeAccountTokopointsUseCase {
+        return HomeAccountTokopointsUseCase(graphqlRepository, dispatchers)
     }
 }

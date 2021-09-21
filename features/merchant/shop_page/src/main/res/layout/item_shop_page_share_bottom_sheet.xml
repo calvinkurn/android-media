@@ -11,11 +11,11 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@null"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -25,7 +25,6 @@
         app:typographyType="heading_4"
         android:text="@string/shop_page_share_instagram"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintLeft_toRightOf="@id/iv_social_media_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,14 +34,13 @@
         android:id="@+id/item_separator"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginLeft="48dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="@dimen/dp_22"
         app:layout_constraintTop_toBottomOf="@id/tv_social_media_name"
         app:layout_constraintLeft_toLeftOf="@id/tv_social_media_name"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_N100"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

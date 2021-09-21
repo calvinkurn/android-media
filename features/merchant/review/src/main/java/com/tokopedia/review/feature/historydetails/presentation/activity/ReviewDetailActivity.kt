@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.historydetails.presentation.fragment.ReviewDetailFragment
@@ -14,13 +12,13 @@ import com.tokopedia.review.feature.historydetails.presentation.fragment.ReviewD
 class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     private var reputationId: String = ""
-    private var feedbackId: Long = 0
+    private var feedbackId: String = ""
     private var reviewDetailFragment: ReviewDetailFragment? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplink()
-        reviewDetailFragment = ReviewDetailFragment.createNewInstance(if(feedbackId != 0L) feedbackId else reputationId.toLongOrZero())
+        reviewDetailFragment = ReviewDetailFragment.createNewInstance(if(feedbackId.isNotBlank()) feedbackId else reputationId)
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         supportActionBar?.hide()
@@ -96,6 +94,6 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
     private fun getDataFromApplink() {
         val uri = intent.data ?: return
         reputationId = uri.lastPathSegment ?: ""
-        feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID).toLongOrZero()
+        feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID) ?: ""
     }
 }

@@ -1,9 +1,0 @@
-mutation {
- clearCacheAutoApplyStack(
-    serviceID: "#serviceId",
-    promoCode: #promoCode,
-    isOCC: #isOCC) {
-        Success
-        ticker_message
- }
-}

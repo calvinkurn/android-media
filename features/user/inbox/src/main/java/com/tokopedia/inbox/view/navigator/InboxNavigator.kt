@@ -22,6 +22,7 @@ class InboxNavigator constructor(
     private var notificationFragment: Fragment? = null
     private var chatFragment: Fragment? = null
     private var discussionFragment: Fragment? = null
+    private var reviewFragment: Fragment? = null
 
     @InboxFragmentType
     var currentSelectedPage: Int = InboxFragmentType.NONE
@@ -36,10 +37,12 @@ class InboxNavigator constructor(
         chatFragment = fragmentFactory.createChatListFragment()
         notificationFragment = fragmentFactory.createNotificationFragment()
         discussionFragment = fragmentFactory.createTalkInboxFragment()
+        reviewFragment = fragmentFactory.createReviewInboxFragment()
 
         addPage(notificationFragment, context.getString(R.string.inbox_title_notification))
         addPage(chatFragment, context.getString(R.string.inbox_title_chat))
         addPage(discussionFragment, context.getString(R.string.inbox_title_discussion))
+        addPage(reviewFragment, context.getString(R.string.inbox_title_review))
     }
 
     fun start(@InboxFragmentType page: Int) {
@@ -147,6 +150,7 @@ class InboxNavigator constructor(
             InboxFragmentType.NOTIFICATION -> notificationFragment
             InboxFragmentType.CHAT -> chatFragment
             InboxFragmentType.DISCUSSION -> discussionFragment
+            InboxFragmentType.REVIEW -> reviewFragment
             else -> null
         }
     }

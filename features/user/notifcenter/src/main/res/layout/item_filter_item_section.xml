@@ -15,7 +15,7 @@
         android:paddingTop="@dimen/notif_dp_6"
         android:paddingRight="@dimen/notif_dp_12"
         android:paddingBottom="@dimen/notif_dp_6"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_G600"
         tools:text="superstar" />
 
 </FrameLayout>

@@ -1,26 +1,29 @@
 package com.tokopedia.home.component
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
-import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -28,6 +31,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.reflect.KClass
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.intent.rule.IntentsTestRule
+
 
 private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
@@ -35,7 +42,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
  */
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
@@ -50,13 +57,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun resetAll() {
         disableCoachMark(context)
         gtmLogDBSource.deleteAll().subscribe()
+        intending(isInternal()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
     }
 
     @Test
     fun testComponentProductHighlight() {
         initTest()
 
-        doActivityTest(ProductHighlightComponentViewHolder::class) { _: RecyclerView.ViewHolder, _: Int ->
+        doActivityTestByModelClass(dataModelClass = ProductHighlightDataModel::class) { _: RecyclerView.ViewHolder, _: Int ->
             clickOnProductHighlightItem()
         }
 
@@ -71,8 +84,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentPopularKeyword() {
         initTest()
 
-        doActivityTest(PopularKeywordViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnPopularKeywordSection(viewHolder, i)
+        doActivityTestByModelClass(delayBeforeRender = 2000, dataModelClass = PopularKeywordListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnPopularKeywordSection(viewHolder)
         }
 
         getAssertPopularKeyword(gtmLogDBSource, context)
@@ -86,7 +99,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentMixLeft() {
         initTest()
 
-        doActivityTest(MixLeftComponentViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = MixLeftDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnMixLeftSection(viewHolder, i)
         }
 
@@ -101,7 +114,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentMixTop() {
         initTest()
 
-        doActivityTest(MixTopComponentViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = MixTopDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnMixTopSection(viewHolder, i)
         }
 
@@ -150,7 +163,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testRecommendationFeedBanner() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -184,7 +197,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
         login()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -199,7 +212,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testOpenScreenHomepage() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -214,7 +227,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testTicker() {
         initTest()
 
-        doActivityTest(TickerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = TickerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnTickerSection(viewHolder)
         }
 
@@ -230,6 +243,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         initTest()
 
         doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            //close salam widget
+            clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+            //close digital widget
             clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
         }
 
@@ -245,6 +261,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         initTest()
 
         doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            //click salam widget
+            clickOnReminderWidget(viewHolder, i, homeRecycleView)
+            //click digital widget
             clickOnReminderWidget(viewHolder, i, homeRecycleView)
         }
 
@@ -259,7 +278,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testRecommendationFeedProductNonLogin() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -274,7 +293,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentCategoryWidget() {
         initTest()
 
-        doActivityTest(CategoryWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnCategoryWidgetSection(viewHolder, i)
         }
 
@@ -291,7 +310,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
         login()
 
-        doActivityTest(RechargeBUWidgetMixLeftViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             checkRechargeBUWidget(viewHolder, i)
         }
 
@@ -317,11 +336,29 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    private fun <T: Any> doActivityTestByModelClass(delayBeforeRender: Long = 2000L, dataModelClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
+
+        val visitableList = homeRecycleAdapter?.currentList?: listOf()
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName }
+        val targetModelIndex = visitableList.indexOf(targetModel)
+
+        targetModelIndex.let { targetModelIndex->
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, targetModelIndex)
+            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
+            val targetModelViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+            targetModelViewHolder?.let { targetModelViewHolder-> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
+        }
+        endActivityTest()
+    }
+
     private fun <T: Any> doActivityTest(viewClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount)  {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            Thread.sleep(1000)
             val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)
             if (viewHolder != null && viewClass.simpleName == viewHolder.javaClass.simpleName) {
                 isTypeClass.invoke(viewHolder, i)
@@ -357,7 +394,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun endActivityTest() {
-        activityRule.activity.finish()
+        activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
         waitForLoadCassavaAssert()
     }

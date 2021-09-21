@@ -35,23 +35,20 @@ annotation class SocmedPackage {
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(SocmedClass.INSTAGRAM, SocmedClass.WHATSAPP, SocmedClass.LINE, SocmedClass.TWITTER, SocmedClass.FACEBOOK)
+@StringDef(SocmedClass.WHATSAPP, SocmedClass.FACEBOOK)
 annotation class SocmedClass {
     companion object {
         const val WHATSAPP = "com.whatsapp.ContactPicker"
         const val FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
-        const val LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
-        const val TWITTER = "com.twitter.composer.ComposerShareActivity"
-        const val INSTAGRAM = "com.instagram.share.handleractivity.ShareHandlerActivity"
     }
 }
 
 enum class Socmed(@SocmedPackage val packageString: String,
                   @SocmedClass val classString: String) {
-    INSTAGRAM(SocmedPackage.INSTAGRAM, SocmedClass.INSTAGRAM),
+    INSTAGRAM(SocmedPackage.INSTAGRAM, ""),
+    LINE(SocmedPackage.LINE, ""),
+    TWITTER(SocmedPackage.TWITTER, ""),
     WHATSAPP(SocmedPackage.WHATSAPP, SocmedClass.WHATSAPP),
-    LINE(SocmedPackage.LINE, SocmedClass.LINE),
-    TWITTER(SocmedPackage.TWITTER, SocmedClass.TWITTER),
     FACEBOOK(SocmedPackage.FACEBOOK, SocmedClass.FACEBOOK)
 }
 
@@ -68,11 +65,6 @@ object SharingUtil {
 
     private const val AUTHORITY = "com.tokopedia.sellerapp.provider"
 
-    @Deprecated("Use internal storage directory instead")
-    private val voucherDirectoryPath by lazy {
-        Environment.getExternalStorageDirectory().toString() + File.separator + VOUCHER_DIR + File.separator
-    }
-
     fun copyTextToClipboard(context: Context, label: String, text: String) {
         val clipboard: ClipboardManager? = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         clipboard?.run {
@@ -81,7 +73,7 @@ object SharingUtil {
     }
 
     fun shareToBroadCastChat(context: Context, voucherId: Int) {
-        val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create?voucher_id=$voucherId"
+        val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id=$voucherId"
         val broadCastChatIntent = BroadCastChatWebViewActivity.createNewIntent(
                 context = context,
                 url = broadCastChatUrl,
@@ -110,7 +102,7 @@ object SharingUtil {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
-                            Socmed.TWITTER -> {
+                            Socmed.TWITTER, Socmed.LINE -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {
@@ -122,46 +114,6 @@ object SharingUtil {
                 })
                 .submit()
 
-    }
-
-    @Deprecated("Please use getSavedImageDirFile to save images into internal storage as directly accessing external storage could impose security leaks")
-    private fun saveImageToExternalStorage(imageBitmap: Bitmap): String {
-        val fileName = String.format(FILE_NAME_FORMAT, System.currentTimeMillis().toString())
-        checkVoucherDirectory()
-        val filePath = File(voucherDirectoryPath, fileName)
-
-        val fos = FileOutputStream(filePath)
-        try {
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        } finally {
-            try {
-                fos.close()
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-            }
-        }
-        return filePath.toString()
-    }
-
-    /**
-     * Check if directory for saving voucher images is exist. If not, make the directory
-     * Delete file(s) if there are already a lot of files inside the dir
-     */
-    @Deprecated("Use FileProviderUtil File.checkVoucherDirectory() instead")
-    private fun checkVoucherDirectory() {
-        val fileDir = File(voucherDirectoryPath)
-        if (fileDir.exists() && fileDir.isDirectory) {
-            val voucherFiles = fileDir.listFiles()
-            voucherFiles?.run {
-                if (size >= MAXIMUM_FILES_IN_FOLDER) {
-                    get(0)?.delete()
-                }
-            }
-        } else {
-            fileDir.mkdir()
-        }
     }
 
     private fun goToSocialMedia(@SocmedPackage packageString: String,

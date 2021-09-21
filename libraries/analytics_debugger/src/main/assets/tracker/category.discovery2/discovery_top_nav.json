@@ -5,35 +5,35 @@
     {
       "event": "clickNavigationDrawer",
       "eventCategory": "top nav - discovery page",
-      "eventAction": "{{.*}}",
+      "eventAction": ".*",
       "eventLabel": "",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "home & browse",
-      "pageType": "{{.*}}",
-      "pagePath": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "pageType": ".*",
+      "pagePath": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "eventAction": "click search box",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickDiscovery",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "eventAction": "click back button",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickDiscovery",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "eventAction": "click social share",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

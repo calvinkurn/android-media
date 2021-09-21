@@ -18,20 +18,22 @@ class BrandRecommendationViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         componentData.value = components
-        mapBrandRecomItems()
     }
 
-    private fun mapBrandRecomItems() {
+    fun mapBrandRecomItems() {
         components.data?.let {
             if(listData == null){
                 listData = DiscoveryDataMapper.
                 mapListToComponentList(it, ComponentNames.BrandRecommendationItem.componentName,
-                        components.name, position, components.properties?.type ?: SQUARE_DESIGN).
+                        components.name, position, components.properties?.type ?: SQUARE_DESIGN,
+                        components.id).
                 filter { list -> !list.data?.firstOrNull()?.imageUrlMobile.isNullOrEmpty() }
             }
             componentItemLiveData.value = listData
         }
     }
+
+    fun getComponentID() = components.id
 
     fun getComponentDataLiveData(): LiveData<ComponentsItem> = componentData
     fun getListDataLiveData(): LiveData<List<ComponentsItem>> = componentItemLiveData

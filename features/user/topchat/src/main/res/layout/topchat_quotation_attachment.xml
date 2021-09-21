@@ -16,7 +16,7 @@
         android:paddingTop="@dimen/spacing_lvl3"
         tools:ignore="RtlSymmetry">
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
             android:id="@+id/ivThumbnail"
             android:layout_width="@dimen/spacing_lvl8"
             android:layout_height="@dimen/spacing_lvl8"

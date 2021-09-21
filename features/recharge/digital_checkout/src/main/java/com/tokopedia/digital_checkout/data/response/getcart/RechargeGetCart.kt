@@ -13,6 +13,10 @@ data class RechargeGetCart(
         @Expose
         val id: String = "",
 
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
+
         @SerializedName("user_id")
         @Expose
         val userId: String = "",
@@ -119,7 +123,7 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee")
         @Expose
-        val adminFee: Int = 0
+        val adminFee: Double = 0.0
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")

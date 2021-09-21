@@ -13,5 +13,6 @@ data class TokopointsDrawer(
         val sectionContent: List<SectionContentItem> = listOf(),
         @SerializedName("redirectAppLink")
         val redirectAppLink: String = "",
-        val mainPageTitle: String = ""
+        val mainPageTitle: String = "",
+        val isError: Boolean = false
 )

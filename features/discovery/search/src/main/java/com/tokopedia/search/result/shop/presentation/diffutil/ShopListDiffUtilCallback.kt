@@ -2,8 +2,8 @@ package com.tokopedia.search.result.shop.presentation.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 
 internal class ShopListDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -17,14 +17,14 @@ internal class ShopListDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is ShopViewModel.ShopItem && newItem is ShopViewModel.ShopItem)
+        return if (oldItem is ShopDataView.ShopItem && newItem is ShopDataView.ShopItem)
             areShopItemsTheSame(oldItem, newItem)
         else
             oldItem::class == newItem::class
     }
 
-    private fun areShopItemsTheSame(oldShopItem: ShopViewModel.ShopItem, newShopItem: ShopViewModel.ShopItem): Boolean {
-        return oldShopItem.id == newShopItem.id
+    private fun areShopItemsTheSame(oldShopDataItem: ShopDataView.ShopItem, newShopDataItem: ShopDataView.ShopItem): Boolean {
+        return oldShopDataItem.id == newShopDataItem.id
     }
 
     override fun getOldListSize(): Int {
@@ -42,7 +42,7 @@ internal class ShopListDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is ShopEmptySearchViewModel && newItem is ShopEmptySearchViewModel) oldItem == newItem
+        return if (oldItem is ShopEmptySearchDataView && newItem is ShopEmptySearchDataView) oldItem == newItem
         else true
     }
 }

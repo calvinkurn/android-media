@@ -8,40 +8,28 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
-import android.security.keystore.KeyProperties;
-import androidx.annotation.RequiresApi;
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.fingerprint.R;
+import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAKeyGenParameterSpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Formatter;
 
 
 /**
@@ -138,7 +126,7 @@ public class FingerPrintDialog extends BottomSheets {
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                getCallback().onAuthenticationSucceeded(getPublicKey(generatePublicKey(context)), getSignature());
+                getCallback().onAuthenticationSucceeded(FingerPrintUtil.INSTANCE.getPublicKey(FingerPrintUtil.INSTANCE.generatePublicKey(context)), getSignature());
             }
 
             @Override
@@ -147,12 +135,6 @@ public class FingerPrintDialog extends BottomSheets {
                 super.onAuthenticationFailed();
             }
         };
-    }
-
-    public static String getPublicKey(PublicKey publicKey) {
-        String encoded = Base64.encodeToString(publicKey.getEncoded(), Base64.NO_WRAP);
-        String publicKeyString = "-----BEGIN PUBLIC KEY-----\n" + encoded + "\n-----END PUBLIC KEY-----";
-        return Base64.encodeToString(publicKeyString.getBytes(), Base64.NO_WRAP);
     }
 
     private String getSignature() {
@@ -207,7 +189,7 @@ public class FingerPrintDialog extends BottomSheets {
             keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
             keyStore.load(null);
 
-            generateKeyPair(keyStore);
+            FingerPrintUtil.INSTANCE.generateKeyPair(keyStore);
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
@@ -239,42 +221,6 @@ public class FingerPrintDialog extends BottomSheets {
         } catch (KeyStoreException | UnrecoverableKeyException
                 | NoSuchAlgorithmException | InvalidKeyException| IOException | CertificateException e) {
             throw new RuntimeException("Failed to init Cipher", e);
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    public static PublicKey generatePublicKey(Context context) {
-        FingerprintManager fingerprintManager = context.getSystemService(FingerprintManager.class);
-        if (fingerprintManager != null && fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints()) {
-            PublicKey publicKey = null;
-            try {
-                KeyStore keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
-                keyStore.load(null);
-                generateKeyPair(keyStore);
-
-                publicKey = keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey();
-                KeyFactory factory = KeyFactory.getInstance(publicKey.getAlgorithm());
-                X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey.getEncoded());
-                return factory.generatePublic(spec);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return publicKey;
-        } else {
-            return null;
-        }
-    }
-
-    protected static void generateKeyPair(KeyStore keyStore) throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        //check if key is stored already, if null, create new key
-        if (keyStore.getCertificate(FingerprintConstant.FINGERPRINT) == null || keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey() == null) {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, FingerprintConstant.ANDROID_KEY_STORE);
-            KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FingerprintConstant.FINGERPRINT,
-                    KeyProperties.PURPOSE_SIGN )
-                    .setDigests(KeyProperties.DIGEST_SHA1)
-                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1);
-            keyPairGenerator.initialize(builder.build());
-            keyPairGenerator.generateKeyPair();
         }
     }
 

@@ -5,16 +5,16 @@
     {
       "customProperties": {
         "nameValuePairs": {
-          "product_id": "{{.*}}",
-          "price": "{{.*}}",
-          "Category Level 1": "{{.*}}",
-          "userId": "{{.*}}",
-          "qty": "{{.*}}",
-          "currency": "{{.*}}"
+          "product_id": ".*",
+          "price": ".*",
+          "Category Level 1": ".*",
+          "userId": ".*",
+          "qty": ".*",
+          "currency": ".*"
         }
       },
       "eventName": "ADD_TO_CART",
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "buoList": [],
       "standardProperties": {
         "nameValuePairs": {}

@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.data.model.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 
 data class AddToCartOccRequestParams(
         @SerializedName("product_id")
@@ -34,6 +35,9 @@ data class AddToCartOccRequestParams(
         @SerializedName("notes")
         @Expose
         var notes: String = "",
+        @SerializedName("chosen_address")
+        @Expose
+        var chosenAddressAddToCart: ChosenAddress? = null,
 
         // analytics data
         var productName: String = "",

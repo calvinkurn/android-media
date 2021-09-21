@@ -22,7 +22,18 @@ class GetHomeTokopointsListDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): TokopointsDrawerListHomeData {
         graphqlUseCase.clearCache()
+        setParams()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
+    }
+
+    fun setParams() {
+        params.parameters.clear()
+        params.putString(API_VERSION, API_VERSION_VALUE)
+    }
+
+    companion object {
+        private const val API_VERSION = "apiVersion"
+        private const val API_VERSION_VALUE = "3.0.0"
     }
 }

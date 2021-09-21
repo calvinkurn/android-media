@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
-import com.tokopedia.home.account.presentation.util.dispatchers.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
@@ -60,7 +60,7 @@ class BuyerAccountViewModelTest {
     private val walletPref: WalletPref = mockk(relaxed = true)
 
     private lateinit var viewModel: BuyerAccountViewModel
-    private val dispatcherProvider = TestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     @Before
     fun setUp() {

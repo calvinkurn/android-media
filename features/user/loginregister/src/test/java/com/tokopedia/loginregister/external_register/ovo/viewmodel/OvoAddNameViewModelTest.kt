@@ -7,13 +7,13 @@ import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterP
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoData
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.ActivateOvoUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,8 +31,6 @@ class OvoAddNameViewModelTest {
     private val activateOvoUseCase = mockk<ActivateOvoUseCase>(relaxed = true)
     private val externalRegisterPreference = mockk<ExternalRegisterPreference>(relaxed = true)
 
-    private val dispatcher = Dispatchers.Unconfined
-
     private var activateOvoResponse = mockk<Observer<Result<ActivateOvoResponse>>>(relaxed = true)
 
     lateinit var viewModel: OvoAddNameViewModel
@@ -42,7 +40,7 @@ class OvoAddNameViewModelTest {
         viewModel = OvoAddNameViewModel(
                 activateOvoUseCase,
                 externalRegisterPreference,
-                dispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.activateOvoResponse.observeForever(activateOvoResponse)
     }

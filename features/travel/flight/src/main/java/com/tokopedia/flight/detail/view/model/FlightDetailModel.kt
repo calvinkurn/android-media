@@ -1,10 +1,10 @@
 package com.tokopedia.flight.detail.view.model
 
 import android.os.Parcelable
-import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import kotlinx.android.parcel.Parcelize
 
 /**

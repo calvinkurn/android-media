@@ -41,4 +41,5 @@ public class SearchBarConstant {
 
     public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
 
+    public static final String HOME_SCREEN_NAME = "/";
 }

@@ -3,27 +3,27 @@
   "mode": "exact",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "claim coupon impression",
       "event": "view_item",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
-          "promo_code": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "promo_id": "{{.*}}",
-          "creative_url": "{{.*}}"
+          "item_id": ".*",
+          "promo_code": ".*",
+          "creative_slot": ".*",
+          "promo_id": ".*",
+          "creative_url": ".*"
         }
       ]
     },
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click on header claim coupon",
       "event": "select_content",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

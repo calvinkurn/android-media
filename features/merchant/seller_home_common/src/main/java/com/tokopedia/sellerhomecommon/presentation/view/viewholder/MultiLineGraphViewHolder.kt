@@ -362,7 +362,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -370,7 +370,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
@@ -384,9 +384,9 @@ class MultiLineGraphViewHolder(
 
         lineChartDataSets.forEach {
             if (lineChartData != it) {
-                val maxValueCurrent = lineChartData?.yAxisLabel?.maxBy { axis -> axis.value }?.value
+                val maxValueCurrent = lineChartData?.yAxisLabel?.maxByOrNull { axis -> axis.value }?.value
                         ?: 0f
-                val maxValue = it.yAxisLabel.maxBy { axis -> axis.value }?.value ?: 0f
+                val maxValue = it.yAxisLabel.maxByOrNull { axis -> axis.value }?.value ?: 0f
 
                 if (maxValue >= maxValueCurrent) {
                     lineChartData = it

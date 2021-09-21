@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
@@ -53,8 +53,12 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     var remoteConfig: RemoteConfig? = null
 
     private var recycler: VerticalRecyclerView? = null
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelFragmentProvider.get(OrderHistoryViewModel::class.java)
+    }
     private lateinit var adapter: OrderHistoryAdapter
     private var shopId: String? = null
 
@@ -134,7 +138,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
                 productId = product.productId.toLong(),
                 shopId = product.shopId.toInt(),
                 quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )
         return RequestParams.create().apply {
             putObject(

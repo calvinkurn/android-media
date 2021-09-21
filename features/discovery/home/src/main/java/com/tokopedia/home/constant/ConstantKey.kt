@@ -13,6 +13,7 @@ object ConstantKey {
         const val AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2"
         const val AB_TEST_AUTO_TRANSITION_KEY = "auto_transition"
         const val HOME_SHOW_ONBOARDING_NAVIGATION = "android_customer_home_show_nav_onboarding"
+        const val HOME_SHOW_NEW_BALANCE_WIDGET = "android_customer_home_show_balance_widget"
     }
 
     object TkpdCache {
@@ -47,17 +48,20 @@ object ConstantKey {
     }
 
     object ABtestValue {
-        const val VALUE_NEW_REVIEW_FLOW = "New Review Flow"
         const val AUTO_TRANSITION_VARIANT = "auto_transition"
     }
 
     object HomeTimber {
-        const val TAG = "P2#HOME_STATUS#"
         const val MAX_LIMIT = 1000
     }
 
     object ResetPassword {
         const val KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD"
         const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
+    }
+
+    object BeautyFest {
+        const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
+        const val KEY_IS_BEAUTY_FEST ="KEY_IS_BEAUTY_FEST"
     }
 }

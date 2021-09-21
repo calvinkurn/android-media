@@ -23,7 +23,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUploadListener)
     : BaseChatViewHolder<ImageUploadViewModel>(itemView) {
 
-    private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
+    protected val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
     protected val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val name: TextView? = itemView?.findViewById(getChatNameId())
     private val label: TextView? = itemView?.findViewById(getLabelId())

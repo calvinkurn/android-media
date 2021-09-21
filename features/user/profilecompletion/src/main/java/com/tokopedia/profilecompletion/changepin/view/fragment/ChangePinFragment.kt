@@ -29,6 +29,7 @@ import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
@@ -91,6 +92,11 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
@@ -104,6 +110,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initObserver()
+        ColorUtils.setBackgroundColor(context, activity)
     }
 
     override fun onResume() {
@@ -203,8 +210,8 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinInput?.pinTextField?.let { view ->
             view.post {
                 if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
         }
@@ -302,6 +309,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     open fun goToSuccessPage() {
+
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             if(source < 1) {
@@ -310,6 +318,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             source = 0
         }
+
         startActivity(intent)
         activity?.finish()
     }

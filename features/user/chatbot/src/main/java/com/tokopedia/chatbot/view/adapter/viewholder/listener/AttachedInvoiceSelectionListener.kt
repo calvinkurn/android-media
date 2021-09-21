@@ -7,5 +7,4 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
  */
 interface AttachedInvoiceSelectionListener {
     fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo)
-    fun showSearchInvoiceScreen()
 }

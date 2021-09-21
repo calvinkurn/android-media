@@ -1,12 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -15,21 +18,30 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetTableDataUseCase(
-        private val graphqlRepository: GraphqlRepository,
-        private val mapper: TableMapper
-) : BaseGqlUseCase<List<TableDataUiModel>>() {
+    graphqlRepository: GraphqlRepository,
+    private val tableMapper: TableMapper,
+    dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(
+    graphqlRepository, tableMapper, dispatchers, GetTableDataResponse::class.java, QUERY, false
+) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<TableDataUiModel> {
+        val dataKays: List<DataKeyModel> =
+            (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetTableDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTableDataResponse>()
-            val tableData = data.fetchSearchTableWidgetData.data
-            return mapper.mapRemoteModelToUiModel(tableData, cacheStrategy.type == CacheType.CACHE_ONLY)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return tableMapper.mapRemoteDataToUiData(data, isFromCache, dataKays)
         } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -37,13 +49,16 @@ class GetTableDataUseCase(
         private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(
-                dataKey: List<String>,
-                dynamicParameter: DynamicParameterModel
+            dataKey: List<TableAndPostDataKey>,
+            dynamicParameter: DynamicParameterModel
         ): RequestParams {
-            val dataKeys = dataKey.map {
+            val dataKeys: List<DataKeyModel> = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = dynamicParameter.toJsonString()
+                    key = it.dataKey,
+                    jsonParams = dynamicParameter.copy(
+                        limit = it.maxData, tableFilter = it.filter
+                    ).toJsonString(),
+                    maxDisplay = it.maxDisplayPerPage
                 )
             }
             return RequestParams.create().apply {
@@ -71,6 +86,7 @@ class GetTableDataUseCase(
                   }
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

@@ -1,16 +1,12 @@
 package com.tokopedia.hotel.destination.view.viewmodel
 
-import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.R
-import com.tokopedia.hotel.destination.HotelDestinationQueries
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -20,8 +16,6 @@ import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,9 +32,8 @@ class HotelDestinationViewModel @Inject constructor(
         private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
         private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
@@ -72,7 +65,7 @@ class HotelDestinationViewModel @Inject constructor(
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
             searchDestination.postValue(Shimmering)
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
@@ -85,7 +78,7 @@ class HotelDestinationViewModel @Inject constructor(
     fun deleteRecentSearch(query: String, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()
@@ -95,21 +88,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
-        this.permissionCheckerHelper = permissionCheckerHelper
-    }
-
-    fun getCurrentLocation(activity: Activity, fusedLocationProviderClient: FusedLocationProviderClient) {
-        val locationDetectorHelper = LocationDetectorHelper(
-                permissionCheckerHelper,
-                fusedLocationProviderClient,
-                activity.applicationContext)
-        locationDetectorHelper.getLocation(onGetLocation(), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.hotel_destination_need_permission))
-    }
-
-    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+        fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
@@ -137,7 +116,7 @@ class HotelDestinationViewModel @Inject constructor(
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
+    fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
             if (latitude == 0.0 && longitude == 0.0) longLat.postValue(Fail(Throwable()))
             else longLat.postValue(Success(Pair(longitude, latitude)))

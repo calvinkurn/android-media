@@ -13,6 +13,8 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import com.tokopedia.iris.util.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -61,19 +63,19 @@ class TrackingRepository(
 
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
-                    Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
                     trackingDao.flush()
                 } else if (dbCount >= getLineDBSend()) {
                     // if the line is big, send it
                     if (dbCount % 5 == 0) {
                         IrisAnalytics.getInstance(context).setAlarm(true, force = true)
                         if (dbCount % 50 == 0) {
-                            Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("dbCountSend %d lines", dbCount)))
                         }
                     }
                 }
             } catch (e: Throwable) {
-                Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
             }
         }
 
@@ -81,7 +83,7 @@ class TrackingRepository(
         return try {
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
-            Timber.e("P1#IRIS#getFromOldest %s", e.toString())
+            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("getFromOldest %s", e.toString())))
             ArrayList()
         }
     }
@@ -90,7 +92,7 @@ class TrackingRepository(
         try {
             trackingDao.delete(data)
         } catch (ignored: Throwable) {
-            Timber.e("P1#IRIS#deletingData %s", ignored.toString())
+            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("deletingData %s", ignored.toString())))
         }
     }
 
@@ -102,12 +104,14 @@ class TrackingRepository(
             val response = apiService.sendSingleEventAsync(requestBody)
             val isSuccessFul = response.isSuccessful
             if (!isSuccessFul) {
-                Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
+                ServerLogger.log(Priority.P1, "IRIS_REALTIME_ERROR", mapOf("type" to "not_success", "data" to data.take(ERROR_MAX_LENGTH).trim()))
                 saveRealTimeCmData(eventName, data, session)
             }
             return isSuccessFul
         } catch (e: Exception) {
-            Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            ServerLogger.log(Priority.P1, "IRIS_REALTIME_ERROR", mapOf("type" to "exception",
+                    "data" to data.take(ERROR_MAX_LENGTH).trim(),
+                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()))
             saveRealTimeCmData(eventName, data, session)
             return false
         }
@@ -122,7 +126,9 @@ class TrackingRepository(
                 }
             }
         }catch (e:Exception){
-            Timber.e("P1#IRIS_REALTIME_ERROR#transform_exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            ServerLogger.log(Priority.P1, "IRIS_REALTIME_ERROR", mapOf("type" to "transform_exception",
+                    "data" to data.take(ERROR_MAX_LENGTH).trim(),
+                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()))
         }
     }
 
@@ -168,11 +174,9 @@ class TrackingRepository(
                 }
             } else {
                 lastSuccessSent = false
-                Timber.e("P1#IRIS#failedSendData;data='${request.take(ERROR_MAX_LENGTH).trim()}'")
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "failedSendData",
+                        "data" to request.take(ERROR_MAX_LENGTH).trim()))
                 break
-            }
-            if (lastSuccessSent){
-                Timber.i("P1#IRIS#successSendData;data='${request.take(ERROR_MAX_LENGTH).trim()}'")
             }
             counterLoop++
         }

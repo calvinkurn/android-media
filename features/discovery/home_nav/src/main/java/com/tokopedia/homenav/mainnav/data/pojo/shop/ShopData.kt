@@ -6,7 +6,7 @@ data class ShopData(
         @SerializedName("userShopInfo")
         val userShopInfo: ShopInfoPojo = ShopInfoPojo(),
         @SerializedName("notifications")
-        val notifications: NotificationPojo
+        val notifications: NotificationPojo = NotificationPojo()
 ) {
     data class ShopInfoPojo(
             @SerializedName("info")
@@ -22,15 +22,15 @@ data class ShopData(
 
     data class NotificationPojo(
             @SerializedName("sellerOrderStatus")
-            val sellerOrderStatus: SellerOrderStatus
+            val sellerOrderStatus: SellerOrderStatus = SellerOrderStatus()
     ) {
         data class SellerOrderStatus(
                 @SerializedName("newOrder")
-                val newOrderCount: Int,
+                val newOrderCount: Int = 0,
                 @SerializedName("readyToShip")
-                val readyToShipOrderCount: Int,
+                val readyToShipOrderCount: Int = 0,
                 @SerializedName("inResolution")
-                val inResolution: Int
+                val inResolution: Int = 0
         )
     }
 }

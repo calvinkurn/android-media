@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <dimen name="hc_oval_width">33dp</dimen>
+    <dimen name="hc_oval_height">64dp</dimen>
+    <dimen name="hc_ktp_height">93dp</dimen>
+</resources>

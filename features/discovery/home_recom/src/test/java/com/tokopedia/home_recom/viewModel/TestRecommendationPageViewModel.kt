@@ -8,16 +8,20 @@ import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.entity.Data
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.model.entity.ProductDetailData
+import com.tokopedia.home_recom.model.entity.ProductRecommendationProductDetail
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -43,6 +47,8 @@ class TestRecommendationPageViewModel {
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getPrimaryProductUseCase = mockk<GetPrimaryProductUseCase>(relaxed = true)
+    private val getTopadsIsAdsUseCase = mockk<GetTopadsIsAdsUseCase>(relaxed = true)
+    private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -54,9 +60,12 @@ class TestRecommendationPageViewModel {
             removeWishListUseCase = removeWishListUseCase,
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             addToCartUseCase = addToCartUseCase,
-            getPrimaryProductUseCase = getPrimaryProductUseCase
+            getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
+            getPrimaryProductUseCase = getPrimaryProductUseCase,
+            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)
+    private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
 
     @Test
     fun `get success data from network without product info`(){
@@ -73,9 +82,13 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success data from network with product info`(){
+    fun `get success data from network with product info`() {
         val slot = slot<Subscriber<List<RecommendationWidget>>>()
-        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity()
+        coEvery {
+            getPrimaryProductUseCase.executeOnBackground()
+        } returns PrimaryProductEntity(
+                ProductRecommendationProductDetail(
+                        listOf(Data())))
         every { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
         every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
                 RecommendationWidget(
@@ -140,7 +153,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(mockWishlistModel)
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == true)
@@ -154,7 +167,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == false)

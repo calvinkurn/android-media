@@ -52,7 +52,6 @@ class ShopSearchProductViewModelTest {
         verify {
             GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
         }
-        assertTrue(getSearchShopProductUseCase.requestParams.isNotEmpty())
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()
         }
@@ -69,7 +68,6 @@ class ShopSearchProductViewModelTest {
         verify {
             GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
         }
-        assertTrue(getSearchShopProductUseCase.requestParams.isNotEmpty())
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()
         }
@@ -88,5 +86,14 @@ class ShopSearchProductViewModelTest {
 
         assertTrue(viewModel.isLoggedIn())
         assertTrue(viewModel.isMyShop("10023"))
+    }
+
+    @Test
+    fun `userId should return the mocked value`() {
+        val sampleShopId = "123"
+        every {
+            viewModel.userId
+        } returns sampleShopId
+        assert(viewModel.userId == sampleShopId)
     }
 }

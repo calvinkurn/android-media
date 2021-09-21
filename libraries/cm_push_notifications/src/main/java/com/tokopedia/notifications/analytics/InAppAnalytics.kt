@@ -65,12 +65,14 @@ object InAppAnalytics {
                 KEY_PROMO_CODE to ""
         )
 
+        val campaignCode = data.campaignCode ?: ""
+
         sendTracker(mapOf(
                 KEY_EVENT to KEY_PROMO_CLICK,
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK,
-                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()} ${if (data.campaignCode.isNotEmpty())
-                    " - ${data.campaignCode}" else "" }",
+                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()} ${if (campaignCode.isNotEmpty())
+                    " - $campaignCode" else "" }",
                 KEY_ECOMMERCE to mapOf(
                         KEY_PROMO_CLICK to mapOf(
                                 KEY_PROMOTIONS to listOf(promotion)

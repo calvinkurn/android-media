@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.search.adapter.viewholder
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -11,11 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
-import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_city_adapter_item.view.*
@@ -23,9 +21,11 @@ import kotlinx.android.synthetic.main.ent_search_location_suggestion.view.*
 import timber.log.Timber
 import java.util.*
 
-class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) : SearchEventViewHolder<SearchLocationModel>(view) {
+class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
+                                   val listener: SearchLocationListener
+) : SearchEventViewHolder<SearchLocationModel>(view) {
 
-    val locationListAdapter = LocationAdapter()
+    val locationListAdapter = LocationAdapter(listener)
 
     init {
         with(itemView) {
@@ -64,7 +64,8 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             val imageUrl: String
     ) : ImpressHolder()
 
-    class LocationAdapter : RecyclerView.Adapter<LocationViewHolder>() {
+    class LocationAdapter(val listener: SearchLocationListener) :
+            RecyclerView.Adapter<LocationViewHolder>() {
 
         lateinit var listLocation: List<LocationSuggestion>
         lateinit var searchQuery: String
@@ -84,13 +85,13 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             holder.view.loc_type.text = location.type
 
             holder.view.setOnClickListener {
-                EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
+                listener.clickLocationEvent(location,
                         listLocation.get(position), position)
                 goToDetail(holder, location.city, location.id_city)
             }
 
             holder.view.addOnImpressionListener(location, {
-                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation.get(position),position)
+                listener.impressionLocationEvent(listLocation.get(position),position)
             })
         }
 
@@ -115,12 +116,17 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             val intent = RouteManager.getIntent(holder.view.context,
                     Link.EVENT_CATEGORY + "?id_city={id_city}&query_text={query_text}",
                     id_city, query_text)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             holder.view.context.startActivity(intent)
         }
     }
 
     class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
+    interface SearchLocationListener{
+        fun impressionLocationEvent(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int)
+        fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion,
+                               listsLocation: SearchLocationListViewHolder.LocationSuggestion,
+                               position: Int)
+    }
 
 }

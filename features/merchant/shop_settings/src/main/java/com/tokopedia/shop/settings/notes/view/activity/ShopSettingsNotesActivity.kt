@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.Toolbar
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
-import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 
 /**
@@ -26,6 +26,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     private val reorderFragment: ShopSettingsNotesReorderFragment?
         get() = supportFragmentManager
                 .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG) as ShopSettingsNotesReorderFragment
+    private var tvSave: View? = null
 
     companion object {
         @JvmStatic
@@ -34,11 +35,11 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tvSave.setOnClickListener {
+        tvSave?.setOnClickListener {
             val fragment = reorderFragment
             fragment?.saveReorder()
         }
-        tvSave.visibility = View.GONE
+        tvSave?.visibility = View.GONE
     }
 
     override fun inflateFragment() {
@@ -50,14 +51,21 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-            supportActionBar!!.title = this.title
+        initView()
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        findViewById<Toolbar>(R.id.toolbar).apply {
+            setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            setSupportActionBar(this)
         }
+        if (supportActionBar != null) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+            supportActionBar?.title = this.title
+        }
+    }
+
+    private fun initView() {
+        tvSave = findViewById(R.id.tvSave)
     }
 
     override fun getNewFragment(): Fragment {
@@ -66,7 +74,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount != 0) {
-            tvSave.visibility = View.GONE
+            tvSave?.visibility = View.GONE
             supportFragmentManager.popBackStack()
         } else {
             super.onBackPressed()
@@ -74,7 +82,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_setting_note
+        return R.layout.activity_shop_settings_note
     }
 
     override fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>) {
@@ -82,7 +90,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         replaceAndHideOldFragment(fragment, true, ShopSettingsNotesReorderFragment.TAG)
         invalidateOptionsMenu()
         // handler is to prevent flicker when invalidating option menu
-        Handler().post { tvSave.visibility = View.VISIBLE }
+        Handler().post { tvSave?.visibility = View.VISIBLE }
     }
 
     override fun onSuccessReorderNotes() {

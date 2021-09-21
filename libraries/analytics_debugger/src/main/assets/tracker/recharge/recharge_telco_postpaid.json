@@ -6,31 +6,31 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input manual number",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click x on input number",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "view_item",
       "eventCategory": "digital - homepage",
       "eventAction": "impression promo digital",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "promo_code": "{{.*}}",
-          "promo_id": "{{.*}}",
-          "category": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "promo_code": ".*",
+          "promo_id": ".*",
+          "category": ".*"
         }
       ]
     },
@@ -38,18 +38,18 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click salin promo digital",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click 3 dots",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

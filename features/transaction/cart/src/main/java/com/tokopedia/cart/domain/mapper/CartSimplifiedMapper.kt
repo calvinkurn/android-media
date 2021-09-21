@@ -10,7 +10,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOW
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -21,10 +20,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import javax.inject.Inject
 import kotlin.math.min
-
-/**
- * Created by Irfan Khoirul on 2019-10-17.
- */
 
 class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: Context) {
 
@@ -55,8 +50,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
         var errorCount = 0
         cartDataListResponse.unavailableSections.forEach {
-            it.unavailableGroups.forEach {
-                errorCount += it.cartDetails.size
+            it.unavailableGroups.forEach { unavailableGroup ->
+                errorCount += unavailableGroup.cartDetails.size
             }
         }
         cartListData.isError = errorCount > 0
@@ -69,12 +64,46 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
-        cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
-        cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
+        cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
+        cartListData.outOfServiceData = cartDataListResponse.outOfService
+        cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
+        cartListData.popUpMessage = cartDataListResponse.popUpMessage
+        cartListData.popupErrorMessage = cartDataListResponse.popupErrorMessage
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
+    }
+
+    private fun mapLocalizationChooseAddressData(data: LocalizationChooseAddress): LocalizationChooseAddressData {
+        return LocalizationChooseAddressData(
+                addressId = data.addressId,
+                addressName = data.addressName,
+                address = data.addressName,
+                postalCode = data.postalCode,
+                phone = data.phone,
+                receiverName = data.receiverName,
+                status = data.status,
+                country = data.country,
+                provinceId = data.provinceId,
+                provinceName = data.provinceName,
+                cityId = data.cityId,
+                cityName = data.cityName,
+                districtId = data.districtId,
+                districtName = data.districtName,
+                address2 = data.address2,
+                latitude = data.latitude,
+                longitude = data.longitude,
+                cornerId = data.cornerId,
+                isCorner = data.isCorner,
+                isPrimary = data.isPrimary,
+                buyerStoreCode = data.buyerStoreCode,
+                type = data.type,
+                state = data.state,
+                stateDetail = data.stateDetail,
+                shopId = data.tokoNow.shopId,
+                warehouseId = data.tokoNow.warehouseId
+        )
     }
 
     private fun mapActionAvailableGroupData(actions: List<Action>): List<ActionData> {
@@ -91,32 +120,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         return actionDatas
     }
 
-    private fun mapOutOfServiceData(outOfService: OutOfService): OutOfServiceData {
-        return OutOfServiceData().apply {
-            id = outOfService.id
-            image = outOfService.image
-            title = outOfService.title
-            description = outOfService.description
-            buttons = mapButtonListData(outOfService.buttons)
-        }
-    }
-
-    private fun mapButtonListData(buttons: List<Button>): List<ButtonData> {
-        val buttonListData = ArrayList<ButtonData>()
-        buttons.forEach {
-            buttonListData.add(
-                    ButtonData().apply {
-                        id = it.id
-                        code = it.code
-                        message = it.message
-                        color = it.color
-                    }
-            )
-        }
-
-        return buttonListData
-    }
-
     private fun mapShoppingSummaryData(shoppingSummary: ShoppingSummary): ShoppingSummaryData {
         return ShoppingSummaryData().apply {
             totalWording = shoppingSummary.totalWording
@@ -126,6 +129,20 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             sellerCashbackWording = shoppingSummary.sellerCashbackWording
         }
     }
+
+    private fun mapPromoSummaryData(promoSummary: PromoSummary): PromoSummaryData =
+            PromoSummaryData(
+                    title = promoSummary.title,
+                    details = promoSummary.details.map {
+                        PromoSummaryDetailData(
+                                description = it.description,
+                                type = it.type,
+                                amountStr = it.amountStr,
+                                amount = it.amount,
+                                currencyDetailStr = it.currencyDetailStr
+                        )
+                    }.toMutableList()
+            )
 
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
         val ticker = tickers[0]
@@ -146,34 +163,54 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupAvailableData(availableGroup: AvailableGroup,
                                           cartDataListResponse: CartDataListResponse,
                                           actionsData: List<ActionData>): ShopGroupAvailableData {
-        return ShopGroupAvailableData().let {
-            it.isChecked = availableGroup.checkboxState
-            it.isError = false
-            it.errorTitle = ""
-            it.shopName = availableGroup.shop.shopName
-            it.shopId = availableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (availableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isGoldMerchant = availableGroup.shop.goldMerchant.isGoldBadge
-            it.isOfficialStore = availableGroup.shop.isOfficial == 1
-            it.shopBadge =
-                    if (availableGroup.shop.isOfficial == 1) availableGroup.shop.officialStore.osLogoUrl
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) availableGroup.shop.goldMerchant.goldMerchantLogoUrl
-                    else ""
-            it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = availableGroup.shipmentInformation.shopLocation
-            it.isHasPromoList = availableGroup.hasPromoList
-            it.cartString = availableGroup.cartString
-            it.promoCodes = availableGroup.promoCodes
-            it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
+        return ShopGroupAvailableData().apply {
+            isChecked = availableGroup.checkboxState
+            errorTitle = ""
+            shopName = availableGroup.shop.shopName
+            shopId = availableGroup.shop.shopId
+            shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
+            isFulfillment = availableGroup.isFulFillment
+            fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+            fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
+            isHasPromoList = availableGroup.hasPromoList
+            cartString = availableGroup.cartString
+            promoCodes = availableGroup.promoCodes
+            maximumWeightWording = availableGroup.shop.maximumWeightWording
+            maximumShippingWeight = availableGroup.shop.maximumShippingWeight
+            cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, this, cartDataListResponse, false, actionsData, 0, "")
 
-            it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
-            it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
-            it.incidentInfo = availableGroup.shop.shopAlertMessage
-            it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
-            it
+            preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
+            freeShippingBadgeUrl = when {
+                availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
+                availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
+                else -> ""
+            }
+            incidentInfo = availableGroup.shop.shopAlertMessage
+            estimatedTimeArrival = availableGroup.shipmentInformation.estimation
+            shopTicker = availableGroup.shop.shopTicker
+            isTokoNow = availableGroup.shop.isTokoNow
+            isShowPin = availableGroup.pinned.isPinned
+            pinCoachmarkMessage = availableGroup.pinned.coachmarkMessage
+        }
+    }
+
+    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+        val shopTypeInfo = shop.shopTypeInfo
+        val tmpShopType =
+                when {
+                    shop.isGold == 1 -> SHOP_TYPE_GOLD_MERCHANT
+                    shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                    else -> SHOP_TYPE_REGULER
+                }
+        return ShopTypeInfoData().apply {
+            shopTier = shopTypeInfo.shopTier
+            shopGrade = shopTypeInfo.shopGrade
+            shopBadge = shopTypeInfo.shopBadge
+            badgeSvg = shopTypeInfo.badgeSvg
+            title = shopTypeInfo.title
+            titleFmt = shopTypeInfo.titleFmt
+            shopType = tmpShopType
         }
     }
 
@@ -212,11 +249,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct, selectedUnavailableActionId)
             val cartItemHolderData = CartItemHolderData(
                     cartItemData = cartItemData,
-                    errorFormItemValidationType = 0,
-                    errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
-                    isSelected = cartItemData.originData?.isCheckboxState ?: true,
+                    isSelected = cartItemData.originData.isCheckboxState,
                     actionsData = actionsData,
                     errorType = errorType
             )
@@ -253,7 +288,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isDisableAllProducts = isDisabledAllProduct
             when (shopGroupData) {
                 is ShopGroupAvailableData -> {
-                    it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
+                    it.isParentHasErrorOrWarning = shopGroupData.isWarning
+                    it.shouldValidateWeight = shopGroupData.shouldValidateWeight
                 }
                 is ShopGroupWithErrorData -> {
                     it.selectedUnavailableActionId = selectedUnavailableActionId
@@ -268,13 +304,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
-            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder
-                        ?: 0
+            cartItemHolderData.cartItemData.updatedData.quantity > cartItemHolderData.cartItemData.originData.maxOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.maxOrder
             }
-            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder
-                        ?: 0
+            cartItemHolderData.cartItemData.updatedData.quantity < cartItemHolderData.cartItemData.originData.minOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.minOrder
             }
         }
     }
@@ -308,7 +342,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isPreOrder = cartDetail.product.isPreorder == 1
             it.isCod = cartDetail.product.isCod
             it.isFreeReturn = cartDetail.product.isFreereturns == 1
-            it.isCashBack = !cartDetail.product.productCashback.isEmpty()
+            it.isCashBack = cartDetail.product.productCashback.isNotEmpty()
             it.isFavorite = false
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
@@ -327,10 +361,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else ""
             it.isCheckboxState = cartDetail.isCheckboxState
             it.priceOriginal = cartDetail.product.productOriginalPrice
-            if (cartDetail.product.freeShipping.eligible && cartDetail.product.freeShipping.badgeUrl.isNotBlank()) {
-                it.isFreeShipping = true
-                it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
-            }
+            it.isFreeShippingExtra = cartDetail.product.freeShippingExtra.eligible
+            it.isFreeShipping = cartDetail.product.freeShipping.eligible
             it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
             it.productInformation = cartDetail.product.productInformation
             it.warningMessage = cartDetail.product.productWarningMessage
@@ -357,16 +389,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartItemData.let {
             it.shopName = availableGroup.shop.shopName
             it.shopCity = availableGroup.shop.cityName
-            it.shopId = availableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (availableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isOfficialStore = availableGroup.shop.isOfficial == 1
-            it.isGoldMerchant = availableGroup.shop.goldMerchant.isGoldBadge
+            it.shopId = availableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(availableGroup.shop)
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
+            it.isTokoNow = availableGroup.shop.isTokoNow
         }
     }
 
@@ -374,15 +402,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartItemData.let {
             it.shopName = unavailableGroup.shop.shopName
             it.shopCity = unavailableGroup.shop.cityName
-            it.shopId = unavailableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (unavailableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (unavailableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isOfficialStore = unavailableGroup.shop.isOfficial == 1
-            it.isGoldMerchant = unavailableGroup.shop.goldMerchant.isGoldBadge
+            it.shopId = unavailableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
         }
     }
 
@@ -413,12 +437,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             for (trackingDetail in lastApplyPromoData.trackingDetails) {
                 for (shopGroupAvailableData in shopGroupAvailableDataList) {
                     val cartItemDataList = shopGroupAvailableData.cartItemDataList
-                    cartItemDataList?.let {
+                    cartItemDataList.let {
                         for (cartItemHolderData in cartItemDataList) {
-                            val originData = cartItemHolderData.cartItemData?.originData
-                            if (originData?.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
-                                originData?.promoCodes = trackingDetail.promoCodesTracking
-                                originData?.promoDetails = trackingDetail.promoDetailsTracking
+                            val originData = cartItemHolderData.cartItemData.originData
+                            if (originData.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
+                                originData.promoCodes = trackingDetail.promoCodesTracking
+                                originData.promoDetails = trackingDetail.promoDetailsTracking
                             }
                         }
                     }
@@ -509,25 +533,13 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isError = !unavailableGroup.errors.isNullOrEmpty()
             it.errorLabel = unavailableGroup.errors.firstOrNull() ?: ""
             it.shopName = unavailableGroup.shop.shopName
-            it.shopId = unavailableGroup.shop.shopId.toString()
-            it.shopType =
-                    when {
-                        unavailableGroup.shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
-                        unavailableGroup.shop.goldMerchant.isGoldBadge -> SHOP_TYPE_GOLD_MERCHANT
-                        else -> SHOP_TYPE_REGULER
-                    }
+            it.shopId = unavailableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cityName = unavailableGroup.shop.cityName
-            it.isGoldMerchant = unavailableGroup.shop.goldMerchant.isGoldBadge
-            it.isOfficialStore = unavailableGroup.shop.isOfficial == 1
-            it.shopBadge =
-                    when {
-                        unavailableGroup.shop.isOfficial == 1 -> unavailableGroup.shop.officialStore.osLogoUrl
-                        unavailableGroup.shop.goldMerchant.isGoldBadge -> unavailableGroup.shop.goldMerchant.goldMerchantLogoUrl
-                        else -> ""
-                    }
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
 
             var isDisableAllProducts = true
             isDisableAllProducts = mapShopError(it, unavailableGroup, isDisableAllProducts)

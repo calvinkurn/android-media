@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/Unify_N0" />
-            <stroke android:color="@color/tkpd_main_green"
+            <stroke android:color="@color/Unify_G500"
                 android:width="0.5dp"/>
             <size android:height="@dimen/dp_6"
                 android:width="@dimen/dp_6"/>
@@ -15,6 +15,6 @@
         android:left="@dimen/dp_7"
         android:right="@dimen/dp_7">
         <bitmap android:src="@drawable/ic_action_check"
-            android:tint="@color/tkpd_main_green" />
+            android:tint="@color/Unify_G500" />
     </item>
 </layer-list>

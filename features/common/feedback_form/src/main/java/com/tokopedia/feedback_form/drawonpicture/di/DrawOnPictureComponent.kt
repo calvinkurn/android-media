@@ -9,7 +9,7 @@ import dagger.Component
  */
 @DrawOnPictureScope
 @Component(dependencies = [BaseAppComponent::class],
-        modules = [DrawOnPictureModule::class, DrawOnPictureViewModelModule::class])
+        modules = [DrawOnPictureViewModelModule::class])
 interface DrawOnPictureComponent {
     fun inject(drawOnPictureFragment: DrawOnPictureFragment)
 }

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -34,7 +35,7 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
     }
 
     fun setParams(serviceId: String, promoCodeList: ArrayList<String>) {
-        queryString = GraphqlHelper.loadRawString(context.resources, R.raw.clear_cache_auto_apply_stack)
+        queryString = PromoQuery.clearCacheAutoApplyStack()
         queryString = queryString.replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
 
         queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
@@ -43,7 +44,7 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
     }
 
     fun setParams(serviceId: String, promoCodeList: ArrayList<String>, isOcc: Boolean) {
-        queryString = GraphqlHelper.loadRawString(context.resources, R.raw.clear_cache_auto_apply_stack)
+        queryString = PromoQuery.clearCacheAutoApplyStack()
         queryString = queryString.replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
 
         queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))

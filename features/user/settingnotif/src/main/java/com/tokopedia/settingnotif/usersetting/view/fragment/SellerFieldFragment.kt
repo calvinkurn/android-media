@@ -1,11 +1,10 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
-import android.os.Bundle
-import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
@@ -13,7 +12,12 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class SellerFieldFragment: SettingFieldFragment() {
 
-    private lateinit var viewModel: SettingStateViewModel
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
@@ -21,17 +25,6 @@ class SellerFieldFragment: SettingFieldFragment() {
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_seller_notif_setting
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(SettingStateViewModel::class.java)
     }
 
     override fun onResume() {
@@ -68,7 +61,15 @@ class SellerFieldFragment: SettingFieldFragment() {
             updatedSettingIds: List<Map<String, Any>>
     ) {
         settingViewModel.requestUpdateUserSetting(TYPE_PUSH_NOTIF, updatedSettingIds)
-        settingViewModel.requestUpdateMoengageUserSetting(updatedSettingIds)
+
+        for (setting in updatedSettingIds) {
+            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
+            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
+
+            if (name !is String || value !is Boolean) return
+
+            settingViewModel.requestUpdateMoengageUserSetting(name, value)
+        }
     }
 
     private fun pushNotifValidation() {

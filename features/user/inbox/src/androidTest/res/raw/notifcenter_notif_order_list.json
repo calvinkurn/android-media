@@ -1,0 +1,22 @@
+{
+  "notifcenter_notifOrderList": {
+    "list": [
+      {
+        "icon": "https://images.tokopedia.net/img/notif-center/transaction_ongoing.png",
+        "text": "Transaksi berlangsung",
+        "counter_str": "0",
+        "link": {
+          "android_link": "tokopedia://order/marketplace/filter"
+        }
+      },
+      {
+        "icon": "",
+        "text": "Lihat semua",
+        "counter_str": "0",
+        "link": {
+          "android_link": "tokopedia://buyer/order"
+        }
+      }
+    ]
+  }
+}

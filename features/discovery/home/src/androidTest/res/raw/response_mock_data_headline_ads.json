@@ -1,0 +1,746 @@
+[
+  {
+    "data": {
+      "displayAdsV3": {
+        "data": [
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFHAy76Aefbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUf6mdFH_K7HsHp6AjRop1hbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_7H7P7O1gpCoqjOE_7z0H7NEu9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2SHjNE1_uvucWN_7zuHJOke92-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&cpm_template_req=3&t=android&uid=16939915&page=1&template_id_used=3&r=https%3A%2F%2Fwww.tokopedia.com%2Fserbaserbikhaswonog&src=homepage&click_ad_type=1",
+            "ad_ref_key": "100064846",
+            "applinks": "tokopedia://shop/10090748",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Ada promo menarik untuk produk ori buatan Indonesia.",
+              "image": {
+                "full_ecs": "https://www.pngkey.com/png/full/7-78730_white-twitter-logo-png-twitter-icon-png.png",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHAnfoAK7oiFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sJDUSz2Q31i6sJfHsJNHsedo_rDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZYIe3N31VK5HsnaHm4hHZ4ObpypoAVjo_yFb_VigMyWoAJa6ZOx6_rOb_JFy3JOy_zs6_xsgZNkrcribm-src7i6sJfbm-xgVYpyfYagZUEHsydbsnh6AeaHpHd6_rRo_JDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz92vzOgt_uzcqjh1e_z6HBu7_jz-P7Y_H3xqzO-W_Vz6QJNE_MWgqBgk_BzVoJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-vepzR_uzSHJOk_92vzcDp_S2u8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_-HqMra_S2zo1Y1qRBvzV1F_32C8jBXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJOoA1FoAyRH_rDH_HRHseO6_nOHZFhHpJdoAnaopHh997?uid=16939915&src=homepage&page=1&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&cpm_template_req=3&template_id_used=3"
+              },
+              "name": "Serbaserbikhaswonogiri",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kab. Wonogiri",
+                "domain": "serbaserbikhaswonog",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "10090748",
+                "image_shop": {
+                  "s_url": "https://www.pngkey.com/png/full/7-78730_white-twitter-logo-png-twitter-icon-png.png"
+                },
+                "is_followed": false,
+                "location": "Kab. Wonogiri",
+                "name": "Test png",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1545046717",
+                    "count_review_format": "12",
+                    "id": "1545046717",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFHAy76Aefbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUf6mdFH_K7HsHp6AjRop1hbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_7H7P7O1gpCoqjOE_7z0H7NEu9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2SHjNE1_uvucWN_7zuHJOke92-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?r=https%3A%2F%2Fwww.tokopedia.com%2Fserbaserbikhaswonog%2Fpetai-belah-vacum-500gr&src=homepage&product_id=1545046717&page=1&template_id_used=3&click_ad_type=2&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&cpm_template_req=3",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/20/10e942d4-d9e0-454c-815e-3e8f8d92f3ca.jpg"
+                    },
+                    "name": "Petai belah vacum 500gr",
+                    "price_format": "Rp 50.000",
+                    "product_rating": 96,
+                    "uri": "https://www.tokopedia.com/serbaserbikhaswonog/petai-belah-vacum-500gr"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1372459051",
+                    "count_review_format": "12",
+                    "id": "1372459051",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFHAy76Aefbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUf6mdFH_K7HsHp6AjRop1hbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_7H7P7O1gpCoqjOE_7z0H7NEu9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2SHjNE1_uvucWN_7zuHJOke92-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?template_id_used=3&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fserbaserbikhaswonog%2Fpetai-kupas-super-500gr&click_ad_type=2&uid=16939915&page=1&cpm_template_req=3&product_id=1372459051&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/24/83303cdd-aa4c-4c39-9438-212b56278d66.jpg"
+                    },
+                    "name": "PETAI KUPAS SUPER 500gr",
+                    "price_format": "Rp 110.000",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/serbaserbikhaswonog/petai-kupas-super-500gr"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1318402731",
+                    "count_review_format": "14",
+                    "id": "1318402731",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFHAy76Aefbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUf6mdFH_K7HsHp6AjRop1hbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_7H7P7O1gpCoqjOE_7z0H7NEu9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2SHjNE1_uvucWN_7zuHJOke92-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?click_ad_type=2&t=android&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fserbaserbikhaswonog%2Fharga-grosir-pete-sedang&src=homepage&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&page=1&cpm_template_req=3&template_id_used=3&product_id=1318402731",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/db930cd9-e768-4769-b436-ae1004863089.jpg"
+                    },
+                    "name": "HARGA GROSIR PETE SEDANG",
+                    "price_format": "Rp 7.500",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/serbaserbikhaswonog/harga-grosir-pete-sedang"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Ada promo menarik untuk produk ori buatan Indonesia.",
+                "tagline": ""
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/serbaserbikhaswonog"
+            },
+            "id": "100064846",
+            "redirect": "https://www.tokopedia.com/serbaserbikhaswonog"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopyfH_UaHsUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstabm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbs1N6_UR6Anh6AHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo8_zN_S2SHjYJgpVoqBJh_OzC8JNk13BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1Bd_92tQVB1z9xg8_CR_7zjQJh119BozcW73uPZqO22HI2qucoE3jP-HuBEu9xvzJV2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_M2sP1N1qpuoqMH7_1zVoJOE__o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2gH1NJyRB6uJjh_OzgoJY1__o-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?click_ad_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fbeddingcarolin&src=homepage&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&page=1&template_id_used=3&cpm_template_req=3&t=android&uid=16939915",
+            "ad_ref_key": "76612222",
+            "applinks": "tokopedia://shop/1827456",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Harga termurah, hanya di caroline bedding!",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2019/3/14/1827456/1827456_8e2027fd-5a54-48de-9124-983e343d4fd8.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srfosJaHsUabm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnh6Z4pbpJ7bpJdHsr7o_y5H_KaopeOoB4dg_UFHsPMgm7Oy_17b_edgc1W6_Jaom7N6AoBHpepgAzMgAKXqSCSUiFiyRCWUstaHmFiy3zwrfo5rM1i6sUfoadO6_jaopKFH_KpHprDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_9j781NEgp-vzcrh_32zH1Y1e9x6qBV2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8JOEqchguJud39jFP7YJgchHuVVN_1z0PVB91MWqq_CE3Bzs8B2IZ_Vg8Bud_7zCq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81NkyRu6ucDO_32soJOJz_zo8j7pZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk3_V6zcoN_Bz-H1Y13_zvuJ7pZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-ag9Vwqcuxgch2QMuwrI-5gIusPVYsQRuXPmUEHaFiPMBBPfuj9RCaQfzOyRzwq3zpUs2QH_e7HAydosyNoaFhoAedoAnhoA1dbAJO6ArpopeR6_CPwe?page=1&cpm_template_req=3&template_id_used=3&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&src=homepage"
+              },
+              "name": "caroline bedding",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Utara",
+                "domain": "beddingcarolin",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "1827456",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/3/14/1827456/1827456_8e2027fd-5a54-48de-9124-983e343d4fd8.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Utara",
+                "name": "caroline bedding",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1440686697",
+                    "count_review_format": "1.402",
+                    "id": "1440686697",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopyfH_UaHsUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstabm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbs1N6_UR6Anh6AHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo8_zN_S2SHjYJgpVoqBJh_OzC8JNk13BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1Bd_92tQVB1z9xg8_CR_7zjQJh119BozcW73uPZqO22HI2qucoE3jP-HuBEu9xvzJV2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_M2sP1N1qpuoqMH7_1zVoJOE__o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2gH1NJyRB6uJjh_OzgoJY1__o-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?page=1&click_ad_type=2&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fbeddingcarolin%2Fbantal-tidur-hotel-murah-100-high-quality-silicone-fiber-hollow-bantal&src=homepage&t=android&template_id_used=3&product_id=1440686697",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/6/cbf0d214-c0e0-464d-acda-cf7583ef11a4.jpg"
+                    },
+                    "name": "Bantal tidur hotel murah 100 % high quality silicone fiber hollow - Bantal",
+                    "price_format": "Rp 25.000",
+                    "product_rating": 97,
+                    "uri": "https://www.tokopedia.com/beddingcarolin/bantal-tidur-hotel-murah-100-high-quality-silicone-fiber-hollow-bantal"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1448401458",
+                    "count_review_format": "31",
+                    "id": "1448401458",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopyfH_UaHsUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstabm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbs1N6_UR6Anh6AHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo8_zN_S2SHjYJgpVoqBJh_OzC8JNk13BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1Bd_92tQVB1z9xg8_CR_7zjQJh119BozcW73uPZqO22HI2qucoE3jP-HuBEu9xvzJV2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_M2sP1N1qpuoqMH7_1zVoJOE__o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2gH1NJyRB6uJjh_OzgoJY1__o-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&page=1&click_ad_type=2&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fbeddingcarolin%2Fbantal-high-quality-silicone-katun-halus-bantal&product_id=1448401458&src=homepage&cpm_template_req=3&template_id_used=3",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/7/3/1827456/1827456_ae057738-7bfa-4120-946b-2a7d3948988c_389_378.jpg"
+                    },
+                    "name": "Bantal high quality silicone katun halus - BANTAL",
+                    "price_format": "Rp 37.000",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/beddingcarolin/bantal-high-quality-silicone-katun-halus-bantal"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1587374790",
+                    "count_review_format": "76",
+                    "id": "1587374790",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopyfH_UaHsUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstabm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbs1N6_UR6Anh6AHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo8_zN_S2SHjYJgpVoqBJh_OzC8JNk13BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1Bd_92tQVB1z9xg8_CR_7zjQJh119BozcW73uPZqO22HI2qucoE3jP-HuBEu9xvzJV2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_M2sP1N1qpuoqMH7_1zVoJOE__o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2gH1NJyRB6uJjh_OzgoJY1__o-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fbeddingcarolin%2Fbantal-guling-murah-bantal&cpm_template_req=3&product_id=1587374790&src=homepage&template_id_used=3&click_ad_type=2&t=android&uid=16939915&page=1",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/23/f3358d52-eebb-49a3-a965-6bde5ffe2bff.jpg"
+                    },
+                    "name": "Bantal/Guling murah - BANTAL",
+                    "price_format": "Rp 13.500",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/beddingcarolin/bantal-guling-murah-bantal"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Harga termurah, hanya di caroline bedding!",
+                "tagline": "kualitas baik , jujur dan terjamin"
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/beddingcarolin"
+            },
+            "id": "76612222",
+            "redirect": "https://www.tokopedia.com/beddingcarolin"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoseRoAn7HsnDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstpbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbseRosjdopHhosrOHsKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjNk3_-6qBja_M2gHjNk3_-6qBjpZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_oHqBJp_M20oJNE_9x6qMHh_32Sq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuoqBja_Ozso1NEz_oo8Bud_7oG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fgoodfruits&page=1&t=android&uid=16939915&src=homepage&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&template_id_used=3&click_ad_type=1",
+            "ad_ref_key": "64740420",
+            "applinks": "tokopedia://shop/2450817",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Harga termurah dengan kwalitas terbaik, hanya di GoodFruits!",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2019/1/16/2450817/2450817_9803ec00-0b26-48ce-90a9-cda6a59123d4.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sy7opeFoAUFbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnh6Z4hbpJfbpU7o_ndH_r5HseOHAKhoO4N6Anpg3HFHm7FysUfb_edyf1W6_Cx6ZOsgcJfy_1NH_UpgAeXqSCSUiFiyRCWUsthoiFiy3zwrfo5rM1i6sUfoad7opyN6ArpH_yRo_Udbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oA-6qBja_M2gHjNk3_-6qBja_M2gH7B2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouJ773BPV8JO9_9zozcrp3BHFHJOke_uHu7g03jPgPJ7au_ooHB-2_BPoH1O1gRP-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBjp_c2zH7Nkqpz68jOd_M2sH1OkgfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_32gHjY1ypu68j1p_92u8JYAZsjibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pjNosHOHsrh6VOY?page=1&template_id_used=3&uid=16939915&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&cpm_template_req=3&t=android"
+              },
+              "name": "GoodFruits",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Barat",
+                "domain": "goodfruits",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "2450817",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/1/16/2450817/2450817_9803ec00-0b26-48ce-90a9-cda6a59123d4.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Barat",
+                "name": "GoodFruits",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/996352718",
+                    "count_review_format": "35",
+                    "id": "996352718",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoseRoAn7HsnDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstpbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyRbseRosjdopHhosrOHsKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjNk3_-6qBja_M2gHjNk3_-6qBjpZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_oHqBJp_M20oJNE_9x6qMHh_32Sq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuoqBja_Ozso1NEz_oo8Bud_7oG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fgoodfruits%2Fcarrot-wortel-berastagi-brastagi-per-500gr-sayur-segar-goodfruits&cpm_template_req=3&click_ad_type=2&uid=16939915&page=1&product_id=996352718&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&template_id_used=3&t=android&src=homepage",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/10/6/22204875/22204875_21659d47-f3ff-47ca-84e3-d3627e501c71_798_798"
+                    },
+                    "name": "CARROT WORTEL BERASTAGI / BRASTAGI Per 500Gr SAYUR SEGAR GOODFRUITS",
+                    "price_format": "Rp 9.900",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/goodfruits/carrot-wortel-berastagi-brastagi-per-500gr-sayur-segar-goodfruits"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Harga termurah dengan kwalitas terbaik, hanya di GoodFruits!",
+                "tagline": "\"SELALU BUAH\"AN BERKWALITAS, SEGAR & BARU\""
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/goodfruits"
+            },
+            "id": "64740420",
+            "redirect": "https://www.tokopedia.com/goodfruits"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AJF6Anp6AeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUst7bm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsjho_ed6A1N6AjaH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz92vzOgt_uzcqjh1e_z6HBu7_jz-P7Y_H3xqzO-W_Vz6QJNE_MWgqBgk_BzVoJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6q_eO_uzuHJYJgpVvucrO_32VHJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqBVd_BzS81Y1e_oo8MPd_1zzH7BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&page=1&t=android&src=homepage&template_id_used=3&r=https%3A%2F%2Fwww.tokopedia.com%2Fubimaduabangray&cpm_template_req=3&click_ad_type=1",
+            "ad_ref_key": "81080384",
+            "applinks": "tokopedia://shop/6849383",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Rasa Tidak Akan Pernah Bohong !!",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2020/11/28/6849383/6849383_a2da462b-f22a-4989-895b-041a6d66ae09.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKhHAKFHpK7bm-xgVY789CBUstpbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5HsnaHm4hHZ4a6m4f6AeNHpKpbpydoAjp6Aowy_-jy_efHMUWgsUayZ776_KNb_KNo3UWHAehy_gjosgxg_nNbM2FgaUDUMoFQZUEH_yDUMVj9RosQR-BUstaosyX6_JOoAKdo_jd6_UhomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32V8jYIuMxouJgk_VzCoJdau9z6zJBR_OHhqV2I1MOHuJND_S26qOBkuM26uJ17_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjN2oAuouV1F_7zSH1Y1gpuoqj1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk19x6ucPN_OzCH7OEgRxozVJpZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-ag9Vwqcuxgch2QMuwrI-5gIusPVYsQRuXPmUEHaFiPMBBPfuj9RCaQfzOyRzwq3zpUs2Q6Ayfo_rFoAjRbAJFH_jFoprd6_gPwe?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&cpm_template_req=3&template_id_used=3&t=android&uid=16939915&page=1"
+              },
+              "name": "UBI MADU ABANG RAY",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Barat",
+                "domain": "ubimaduabangray",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "6849383",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/28/6849383/6849383_a2da462b-f22a-4989-895b-041a6d66ae09.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Barat",
+                "name": "UBI MADU ABANG RAY",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/866570497",
+                    "count_review_format": "216",
+                    "id": "866570497",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AJF6Anp6AeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUst7bm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsjho_ed6A1N6AjaH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz92vzOgt_uzcqjh1e_z6HBu7_jz-P7Y_H3xqzO-W_Vz6QJNE_MWgqBgk_BzVoJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6q_eO_uzuHJYJgpVvucrO_32VHJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqBVd_BzS81Y1e_oo8MPd_1zzH7BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?template_id_used=3&uid=16939915&src=homepage&page=1&product_id=866570497&t=android&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fubimaduabangray%2Fubi-madu-cilembu-mentah&click_ad_type=2",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/5/25/6d7b9e75-0f2b-4950-8a3a-8c3fc666e055.jpg"
+                    },
+                    "name": "ubi madu cilembu Mentah",
+                    "price_format": "Rp 10.500",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/ubimaduabangray/ubi-madu-cilembu-mentah"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1019077896",
+                    "count_review_format": "79",
+                    "id": "1019077896",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AJF6Anp6AeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUst7bm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsjho_ed6A1N6AjaH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz92vzOgt_uzcqjh1e_z6HBu7_jz-P7Y_H3xqzO-W_Vz6QJNE_MWgqBgk_BzVoJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6q_eO_uzuHJYJgpVvucrO_32VHJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqBVd_BzS81Y1e_oo8MPd_1zzH7BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fubimaduabangray%2Fubi-cilembu-mentah-5-kg&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&src=homepage&template_id_used=3&click_ad_type=2&product_id=1019077896&t=android",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/12/dbce08e8-da33-46fd-9763-b442daa9ff41.jpg"
+                    },
+                    "name": "ubi cilembu mentah 5 kg",
+                    "price_format": "Rp 90.000",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/ubimaduabangray/ubi-cilembu-mentah-5-kg"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Rasa Tidak Akan Pernah Bohong !!",
+                "tagline": "Rasa Tidak Akan Pernah Bohong !!"
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/ubimaduabangray"
+            },
+            "id": "81080384",
+            "redirect": "https://www.tokopedia.com/ubimaduabangray"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyaHpHFoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstObm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrNHsydosydopeao_Ufbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIBoqj1F_Bzu8JOk1_zozJJ7_jz0HjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP7hk39xvucr7_92CHJOJqR26uVjp_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9xo8MxD3uzV8VBNHIPvzczD_Vzz81OJqRzguO-03MjF8B21yR2qz7jh392u8JYJe3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6qBBO_S2081Nkgp-6qMrp_jz-H1Ok33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_jz0P7OkqpuvzcHF_BzV8JO1u3BM1_7YUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&template_id_used=3&click_ad_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fatmosofficial&t=android&page=1&cpm_template_req=3&uid=16939915&src=homepage",
+            "ad_ref_key": "86233077",
+            "applinks": "tokopedia://shop/1380618",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Masker KF94 ternyaman dan terbaik ada disini :)",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/GAnVPX/2020/11/27/9f1d83b0-af2d-4b24-aaff-a5055c8b02c1.png",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKfHsHpHArRbm-xgVY789CBUstpbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-Bb7PCQBge3m4aHAUFbpJhbpURbpBMH3edHfUFb3VMHMeWocUaomOxy3gMb3JOHA1OypxiHA-sHZNFQMribm-src7i6seFbm-xgVYpyfYagZUEHsyfbsrNHsydosydopeao_Ufbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIBoqj1F_Bzu8JOk1_zozJJ7_jz0HjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP7hk39xvucr7_92CHJOJqR26uVjp_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9xo8MxD3uzV8VBNHIPvzczD_Vzz81OJqRzguO-03MjF8B21yR2qz7jh392u8JYJe3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6qBBO_S2081Nkgp-6qMrp_jz-H1Ok33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_jz0P7OkqpuvzcHF_BzV8JO1u3BM1_7YUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUS-BruYtg3VjQcBXguYFrMYjP3o79fo5P3N7Ustpbm-fq3uRg3zwrI-5gIusPVY2gIHi6BDhosrFHAyNHp1ObAJfHsHRopKdHs1DH_KaHsnRopy76VOY?t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&uid=16939915&page=1&cpm_template_req=3&template_id_used=3"
+              },
+              "name": "Atmos Official",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Timur",
+                "domain": "atmosofficial",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "1380618",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/27/9f1d83b0-af2d-4b24-aaff-a5055c8b02c1.png"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Timur",
+                "name": "Atmos Official",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1670069355",
+                    "count_review_format": "281",
+                    "id": "1670069355",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyaHpHFoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstObm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrNHsydosydopeao_Ufbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIBoqj1F_Bzu8JOk1_zozJJ7_jz0HjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP7hk39xvucr7_92CHJOJqR26uVjp_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9xo8MxD3uzV8VBNHIPvzczD_Vzz81OJqRzguO-03MjF8B21yR2qz7jh392u8JYJe3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6qBBO_S2081Nkgp-6qMrp_jz-H1Ok33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_jz0P7OkqpuvzcHF_BzV8JO1u3BM1_7YUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?cpm_template_req=3&template_id_used=3&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fatmosofficial%2Fkf94-mask-masker-kf94-korea-model-3d-isi-10-pcs-putih&product_id=1670069355&t=android&src=homepage&page=1&click_ad_type=2&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/13/1afc657f-c012-49fc-83a2-f23367015f7d.jpg"
+                    },
+                    "name": "KF94 Mask / Masker KF94 Korea model 3D isi 10 pcs - Putih",
+                    "price_format": "Rp 13.500",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/atmosofficial/kf94-mask-masker-kf94-korea-model-3d-isi-10-pcs-putih"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1623778825",
+                    "count_review_format": "891",
+                    "id": "1623778825",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyaHpHFoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstObm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrNHsydosydopeao_Ufbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIBoqj1F_Bzu8JOk1_zozJJ7_jz0HjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP7hk39xvucr7_92CHJOJqR26uVjp_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9xo8MxD3uzV8VBNHIPvzczD_Vzz81OJqRzguO-03MjF8B21yR2qz7jh392u8JYJe3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6qBBO_S2081Nkgp-6qMrp_jz-H1Ok33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_jz0P7OkqpuvzcHF_BzV8JO1u3BM1_7YUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&click_ad_type=2&product_id=1623778825&template_id_used=3&t=android&uid=16939915&page=1&cpm_template_req=3&r=https%3A%2F%2Fwww.tokopedia.com%2Fatmosofficial%2Fkf94-mask-black-edition-kf94-masker-korea-4-ply-model-evo-putih&src=homepage",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/16/181182a0-45b5-46c0-ba17-b98cde92b06d.jpg"
+                    },
+                    "name": "KF94 Mask Black Edition / KF94 Masker Korea 4 ply model Evo - Putih",
+                    "price_format": "Rp 13.500",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/atmosofficial/kf94-mask-black-edition-kf94-masker-korea-4-ply-model-evo-putih"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1822077648",
+                    "count_review_format": "332",
+                    "id": "1822077648",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyaHpHFoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstObm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrNHsydosydopeao_Ufbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIBoqj1F_Bzu8JOk1_zozJJ7_jz0HjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP7hk39xvucr7_92CHJOJqR26uVjp_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9xo8MxD3uzV8VBNHIPvzczD_Vzz81OJqRzguO-03MjF8B21yR2qz7jh392u8JYJe3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6qBBO_S2081Nkgp-6qMrp_jz-H1Ok33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_jz0P7OkqpuvzcHF_BzV8JO1u3BM1_7YUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?page=1&click_ad_type=2&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fatmosofficial%2Fmasker-kf94-korea-model-3d-kf94-mask-putih&src=homepage&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&cpm_template_req=3&template_id_used=3&product_id=1822077648&t=android",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/3/29af3359-e28a-482f-913e-4f870366206e.jpg"
+                    },
+                    "name": "Masker KF94 Korea model 3D - KF94 Mask - Putih",
+                    "price_format": "Rp 13.500",
+                    "product_rating": 92,
+                    "uri": "https://www.tokopedia.com/atmosofficial/masker-kf94-korea-model-3d-kf94-mask-putih"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Masker KF94 ternyaman dan terbaik ada disini :)",
+                "tagline": "The best products for your needs."
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/atmosofficial"
+            },
+            "id": "86233077",
+            "redirect": "https://www.tokopedia.com/atmosofficial"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUOHp1RHpUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstfbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrOH_Hpo_yOH_1RH_jDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7o1OJqRPvuJJO_1z0P7Y1e_uozcWdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqMHh_uzo8jN13_VouV1p_uz0q1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuvzcHF_92SHJY1ypoozV1O_joG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?src=homepage&cpm_template_req=3&t=android&page=1&uid=16939915&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&template_id_used=3&click_ad_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fbfarmid",
+            "ad_ref_key": "62535732",
+            "applinks": "tokopedia://shop/9371415",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Harga sayur terbaik dengan kualitas terjamin, hanya di BFarmID",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/GAnVPX/2021/4/15/3fad7ece-613b-4ada-a3f0-fd3f3ff3a7bf.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syao_HOopHabm-xgVY789CBUstpbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-Bb7PCQBge3m4aHAUhbpe5H_15HfgxgAPByf1WosJpyi77y3zxb3JpgsnWgMepgsoMgsoxof-MbM2FgaUDUMoFQZUEo_nDUMVj9RosQR-BUstaosyXop1hHpHOos1ho_rh6ZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepeO_1z0P7Y1e_uozcWR_OzCo1OJqRx-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uzooV29z9xou7O7_1zSHO2_HACoqjJO_VPcqO2I39zoHB1p__-Zq1N9__VoucPRZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhkypVouJOE_BzgH1O1u_ooucW2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_BzsP1YJypCo8MrF_OzsH7OJu_u6e7tNUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUS-BruYtg3VjQcBXguYFrMYjP3o79fo5P3N7Ustpbm-fq3uRg3zwrI-5gIusPVY2gIHi6BDhHAjOoAyfo_UhbAJF6_17oAHfopnDH_JFH_epHpHh6VOY?t=android&uid=16939915&src=homepage&template_id_used=3&page=1&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR"
+              },
+              "name": "BFarm ID",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Bandung",
+                "domain": "bfarmid",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "9371415",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/15/3fad7ece-613b-4ada-a3f0-fd3f3ff3a7bf.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Bandung",
+                "name": "BFarm ID",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1095466521",
+                    "count_review_format": "53",
+                    "id": "1095466521",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUOHp1RHpUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstfbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrOH_Hpo_yOH_1RH_jDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7o1OJqRPvuJJO_1z0P7Y1e_uozcWdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqMHh_uzo8jN13_VouV1p_uz0q1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuvzcHF_92SHJY1ypoozV1O_joG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fbfarmid%2Fbrokoli-500-gr-area-bandung-cimahi-only-sayur-rumahan&src=homepage&template_id_used=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&click_ad_type=2&page=1&cpm_template_req=3&product_id=1095466521&t=android&uid=16939915",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/22/39114731/39114731_22ed2672-d917-4666-be94-b7c645534e75_1080_1080"
+                    },
+                    "name": "Brokoli 500 Gr (Area Bandung & Cimahi only) - Sayur Rumahan",
+                    "price_format": "Rp 13.000",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/bfarmid/brokoli-500-gr-area-bandung-cimahi-only-sayur-rumahan"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1095443670",
+                    "count_review_format": "53",
+                    "id": "1095443670",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUOHp1RHpUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstfbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrOH_Hpo_yOH_1RH_jDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7o1OJqRPvuJJO_1z0P7Y1e_uozcWdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqMHh_uzo8jN13_VouV1p_uz0q1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuvzcHF_92SHJY1ypoozV1O_joG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&src=homepage&product_id=1095443670&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fbfarmid%2Fselada-keriting-250-gr-area-bandung-cimahi-only&template_id_used=3&click_ad_type=2&page=1",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/22/39114731/39114731_37096f28-671e-402f-a1e5-c64d5102c0e8_1080_1080"
+                    },
+                    "name": "Selada Keriting 250 Gr (Area Bandung & Cimahi only)",
+                    "price_format": "Rp 5.000",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/bfarmid/selada-keriting-250-gr-area-bandung-cimahi-only"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1101433318",
+                    "count_review_format": "48",
+                    "id": "1101433318",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUOHp1RHpUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstfbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsrOH_Hpo_yOH_1RH_jDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7o1OJqRPvuJJO_1z0P7Y1e_uozcWdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqMHh_uzo8jN13_VouV1p_uz0q1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRuvzcHF_92SHJY1ypoozV1O_joG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?page=1&t=android&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fbfarmid%2Ftomat-cherry-250-gr-area-bandung-cimahi-only-sayur-rumahan&click_ad_type=2&product_id=1101433318&src=homepage&cpm_template_req=3&template_id_used=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/16/39114731/39114731_7aee4c20-c4a8-4715-8a21-634c589d3f39_1080_1080"
+                    },
+                    "name": "Tomat Cherry 250 Gr (Area Bandung & Cimahi only) - Sayur Rumahan",
+                    "price_format": "Rp 7.000",
+                    "product_rating": 99,
+                    "uri": "https://www.tokopedia.com/bfarmid/tomat-cherry-250-gr-area-bandung-cimahi-only-sayur-rumahan"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Harga sayur terbaik dengan kualitas terjamin, hanya di BFarmID",
+                "tagline": "Sayuran segar untuk anda setiap hari"
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/bfarmid"
+            },
+            "id": "62535732",
+            "redirect": "https://www.tokopedia.com/bfarmid"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosepHAHd6AjDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstRbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsyF6_1p6_UhosyfosrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HJOkgpV68j1F_32SH1NEz_CoqMraZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqBBR_Ozu8jY1Z9x6qBja_M2sq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRu68Bj7_BzC8jYJu_o6qBja_MBG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?click_ad_type=1&t=android&uid=16939915&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fmaskfashion&page=1&src=homepage&template_id_used=3",
+            "ad_ref_key": "64303889",
+            "applinks": "tokopedia://shop/9392604",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Harga termurah, hanya di Mask fashion shop!\nGRAB IT FAST",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2020/8/19/9392604/9392604_32f84548-c7a7-4d5e-99a8-3fc8fa3bcc1e.png",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sy7Hpnp6AKNbm-xgVY789CBUstpbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5HsnaHm4dbpJNbpjp6_UfHAe56_HNHsyFoV4pHMydoA176mOsofJRb_zjo31W6_Bx6m7pgMHdgMJpyMosH31XrcNSUiFiyRCWUstaHiFiy3zwrfo5rM1i6sUfoidfHAjOHpjaH_yfosyRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oACoqMrh_S2VHJOkgpV68j1F_32SHjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouJ773BPV8JO9_9zozcrp3BHFHJOke_uHu7g03jPgPJ7au_ooHB-2_BPoH1O1gRP-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBja_c2gP7Y1u92vuJBd_M2gHjNkyfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6ucoO_S2goJN1e92vzV1p_M2gHjN2Zsjibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJhHAUNHAyaoAzPwe?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&cpm_template_req=3&template_id_used=3&t=android&src=homepage&page=1"
+              },
+              "name": "Mask fashion shop",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Barat",
+                "domain": "maskfashion",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "9392604",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/8/19/9392604/9392604_32f84548-c7a7-4d5e-99a8-3fc8fa3bcc1e.png"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Barat",
+                "name": "Mask fashion shop",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1102906244",
+                    "count_review_format": "392",
+                    "id": "1102906244",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosepHAHd6AjDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstRbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbsyF6_1p6_UhosyfosrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HJOkgpV68j1F_32SH1NEz_CoqMraZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqBBR_Ozu8jY1Z9x6qBja_M2sq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1yRu68Bj7_BzC8jYJu_o6qBja_MBG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fmaskfashion%2Fmasker-evo-satuan-eceran-harga-per-pcs-min-4-pcs&cpm_template_req=3&page=1&template_id_used=3&click_ad_type=2&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&t=android&uid=16939915&product_id=1102906244",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/8/19/9ec270c2-f829-4037-93f3-8e0d4bdbc59d.jpg"
+                    },
+                    "name": "masker evo satuan eceran ( harga per pcs) min 4 pcs",
+                    "price_format": "Rp 8.000",
+                    "product_rating": 98,
+                    "uri": "https://www.tokopedia.com/maskfashion/masker-evo-satuan-eceran-harga-per-pcs-min-4-pcs"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Harga termurah, hanya di Mask fashion shop!\nGRAB IT FAST",
+                "tagline": ""
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/maskfashion"
+            },
+            "id": "64303889",
+            "redirect": "https://www.tokopedia.com/maskfashion"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_naH_efHpJObm-xgVY789CBUstpbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoidOosUFHpJOoAHhHpyRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepep_jzCH7NJe_o6zJJp_jzCH7NJe_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uzooV29z9xou7O7_1zSHO2_HACoqjJO_VPcqO2I39zoHB1p__-Zq1N9__VoucPRZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhku_-oqjVE_uzuHJOEz926qMHhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk1_oo8MH7_32zP7N1gR2o8jOEZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?src=homepage&template_id_used=3&page=1&t=android&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fsentral-safety&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&cpm_template_req=3&click_ad_type=1",
+            "ad_ref_key": "102146315",
+            "applinks": "tokopedia://shop/4636845",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Ada promo menarik untuk produk ori buatan Indonesia.",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/GAnVPX/2020/12/2/a25d51a5-1226-44a2-a39c-ee432511db7a.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHsJ7osHhoZFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sKDUSz2Q31i6sJfHsJNHsedo_rDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZYIe3N31VK5HsnaHm4hHi4abfJao3eOH3JOb_JaHsyWoAzxHiOxHpBsb3uBoAHao_JhgcURyZNkrcribm-src7i6sHfbm-xgVYpyfYagZUEHsyfbs1fHsnpH_17HpJposrObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAo6zJJp_jzCH7NJe_o6zJJp_jzCoJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouJ773BPV8JO9_9zozcrp3BHFHJOke_uHu7g03jPgPJ7au_ooHB-2_BPoH1O1gRP-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBja_c2uHjOke92ouV1F_92V8jNkypV-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2zH7OEypzoqBVR_BzS8jOE_92-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUS-BruYtg3VjQcBXguYFrMYjP3o79fo5P3N7Ustpbm-fq3uRg3zwrI-5gIusPVY2gIHi6BDho_rNHAUposHpbAJfoAnFo_Kdo_KDH_yFo_1RHpUfHOOY?page=1&cpm_template_req=3&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&src=homepage&template_id_used=3"
+              },
+              "name": "Sentral Safety Makmur",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Barat",
+                "domain": "sentral-safety",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "4636845",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/GAnVPX/2020/12/2/a25d51a5-1226-44a2-a39c-ee432511db7a.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Barat",
+                "name": "Sentral Safety Makmur",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1579023633",
+                    "count_review_format": "75",
+                    "id": "1579023633",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_naH_efHpJObm-xgVY789CBUstpbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoidOosUFHpJOoAHhHpyRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepep_jzCH7NJe_o6zJJp_jzCH7NJe_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uzooV29z9xou7O7_1zSHO2_HACoqjJO_VPcqO2I39zoHB1p__-Zq1N9__VoucPRZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhku_-oqjVE_uzuHJOEz926qMHhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk1_oo8MH7_32zP7N1gR2o8jOEZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fsentral-safety%2Fmasker-sensi-convex-4ply-earloop-isi-2-pcs-sachet-sensi-convex-mask-putih&click_ad_type=2&page=1&cpm_template_req=3&product_id=1579023633&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&template_id_used=3",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/3/76b03bdd-9de4-434a-b930-ea7f9da8b095.jpg"
+                    },
+                    "name": "Masker Sensi Convex 4ply Earloop Isi 2 pcs/sachet - Sensi Convex Mask - Putih",
+                    "price_format": "Rp 15.900",
+                    "product_rating": 99,
+                    "uri": "https://www.tokopedia.com/sentral-safety/masker-sensi-convex-4ply-earloop-isi-2-pcs-sachet-sensi-convex-mask-putih"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1640058858",
+                    "count_review_format": "297",
+                    "id": "1640058858",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_naH_efHpJObm-xgVY789CBUstpbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoidOosUFHpJOoAHhHpyRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepep_jzCH7NJe_o6zJJp_jzCH7NJe_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uzooV29z9xou7O7_1zSHO2_HACoqjJO_VPcqO2I39zoHB1p__-Zq1N9__VoucPRZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhku_-oqjVE_uzuHJOEz926qMHhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk1_oo8MH7_32zP7N1gR2o8jOEZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?template_id_used=3&click_ad_type=2&page=1&product_id=1640058858&uid=16939915&cpm_template_req=3&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fsentral-safety%2Fsensi-convex-mask-earloop-4ply-20pcs-masker-convex-earloop-4-ply-hijau&src=homepage&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/2/077d4b73-04b3-4d6e-9361-d5489bc0f12e.jpg"
+                    },
+                    "name": "sensi convex mask earloop 4ply 20pcs / masker convex earloop 4 ply - Hijau",
+                    "price_format": "Rp 143.900",
+                    "product_rating": 97,
+                    "uri": "https://www.tokopedia.com/sentral-safety/sensi-convex-mask-earloop-4ply-20pcs-masker-convex-earloop-4-ply-hijau"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1605573263",
+                    "count_review_format": "32",
+                    "id": "1605573263",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_naH_efHpJObm-xgVY789CBUstpbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoidOosUFHpJOoAHhHpyRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepep_jzCH7NJe_o6zJJp_jzCH7NJe_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uzooV29z9xou7O7_1zSHO2_HACoqjJO_VPcqO2I39zoHB1p__-Zq1N9__VoucPRZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhku_-oqjVE_uzuHJOEz926qMHhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uH7hk1_oo8MH7_32zP7N1gR2o8jOEZ3dFvZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUiwe?uid=16939915&cpm_template_req=3&t=android&template_id_used=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&click_ad_type=2&product_id=1605573263&r=https%3A%2F%2Fwww.tokopedia.com%2Fsentral-safety%2Fsensi-convex-mask-earloop-4ply-satuan-putih&src=homepage&page=1",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/1/d12db739-2e47-4602-ab9c-f80cae5310b6.jpg"
+                    },
+                    "name": "sensi convex mask earloop 4ply satuan - Putih",
+                    "price_format": "Rp 7.499",
+                    "product_rating": 99,
+                    "uri": "https://www.tokopedia.com/sentral-safety/sensi-convex-mask-earloop-4ply-satuan-putih"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Ada promo menarik untuk produk ori buatan Indonesia.",
+                "tagline": "GOOD PRICE , GOOD QUALITY"
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/sentral-safety"
+            },
+            "id": "102146315",
+            "redirect": "https://www.tokopedia.com/sentral-safety"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_U7H_JaoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstNbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbs1OH_nFHpnposJfHsefbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_Mj7H1N1z9PozJOR_92g8JNkZ_C6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjh_Sj7P7OEypovucDp_uz-8jNJ3_-681tNUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?template_id_used=3&click_ad_type=1&t=android&cpm_template_req=3&page=1&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Fsayurhd&src=homepage",
+            "ad_ref_key": "52411277",
+            "applinks": "tokopedia://shop/8102034",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                  "show": true,
+                  "title": "Power Merchant"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Harga termurah, hanya di Sayur Home Delivery!",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2020/3/28/8102034/8102034_0da68177-9d33-4bee-bfae-8dbbb9d56a50.png",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aoAJhHsrRbm-xgVY789CBUstpbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_yaH_jaoAKOoaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5HsnaHm4pbpUdbpKhHAUFHpe56AJFHsnpoV4FgcJf6AJRoa7NgAHpb_zig31WyMgxgZ7dgc-iysBjo_gxo_nXrcNSUiFiyRCWUsthoiFiy3zwrfo5rM1i6sUfoidOo_JFHAHFHpyhosU7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32V8jYIuMxouJgk_VzCoJdau9z6zJBR_OHhqV2I1MOHuJND_S26qOBkuM26uJ17_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjN2oAV6uJuR_1zoP7OE39x6qjjF_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1NNoIPo8MHp_Oz0H7O1Z926zVja_SBG6ZUDUSupg9-wq3ei6iUhosjp6_jhoZUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9f-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUEH_nDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstfomFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-ag9Vwqcuxgch2QMuwrI-5gIusPVYsQRuXPmUEHaFiPMBBPfuj9RCaQfzOyRzwq3zpUs2Qop1dHpKNHAUd997?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=homepage&cpm_template_req=3&template_id_used=3&t=android&uid=16939915&page=1"
+              },
+              "name": "Sayur Home Delivery",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Administrasi Jakarta Utara",
+                "domain": "sayurhd",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "id": "8102034",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/3/28/8102034/8102034_0da68177-9d33-4bee-bfae-8dbbb9d56a50.png"
+                },
+                "is_followed": false,
+                "location": "Kota Administrasi Jakarta Utara",
+                "name": "Sayur Home Delivery",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/758389028",
+                    "count_review_format": "379",
+                    "id": "758389028",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_U7H_JaoprDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUstNbm-7q3OBUsthosUh6_U76A1Rbm-xgVYpyfYagZUEHsyfbs1OH_nFHpnposJfHsefbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuE_7P3qJO1zM2HuJJ7_s-uPJNJZ9Pv1pVt3jPZQ1h1_Mh68jN03323qjN1z_zoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_Mj7H1N1z9PozJOR_92g8JNkZ_C6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjh_Sj7P7OEypovucDp_uz-8jNJ3_-681tNUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?src=homepage&template_id_used=3&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fsayurhd%2Fsayurhd-sayur-segar-toge-100gr&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&product_id=758389028&uid=16939915&page=1&click_ad_type=2",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/3/27/158531561563398/158531561563398_18bd79f7-23c3-43f2-9b1a-7f8b7ccf9f60.png"
+                    },
+                    "name": "SayurHD sayur segar toge 100gr",
+                    "price_format": "Rp 2.200",
+                    "product_rating": 95,
+                    "uri": "https://www.tokopedia.com/sayurhd/sayurhd-sayur-segar-toge-100gr"
+                  }
+                ],
+                "shop_is_official": false,
+                "slogan": "Harga termurah, hanya di Sayur Home Delivery!",
+                "tagline": ""
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/sayurhd"
+            },
+            "id": "52411277",
+            "redirect": "https://www.tokopedia.com/sayurhd"
+          },
+          {
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosy7HpnNoAUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthHmFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoid7HAJRHpHRosHd6_HFoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9xozJV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqBVR_uzs8jOEyp-o8MrO_92CH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqjJp_jzCH1NEyRB68MHF_OzSH1BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?src=homepage&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&click_ad_type=1&page=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Famazingfarm&cpm_template_req=3&template_id_used=3",
+            "ad_ref_key": "66430942",
+            "applinks": "tokopedia://shop/2773225",
+            "headline": {
+              "badges": [
+                {
+                  "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+                  "show": true,
+                  "title": "Official Store"
+                }
+              ],
+              "button_text": "Cek Sekarang",
+              "description": "Mau beli produk lokal berkualitas? Cek toko Amazing Farm sekarang!",
+              "image": {
+                "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/GAnVPX/2021/4/8/84ce20e0-b31d-4ccb-945e-8661c411411f.jpg",
+                "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syfoAHF6_eabm-xgVY789CBUstpbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJfHsJNHsedo_rDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZYIe3N31VK5HsnaHZ47bpK56Azsg_UFg_nWysHhgm77yfoib_j7o31W6AyfH3H7H_J7H_VMbM2FgaUDUMoFQZUEHsnDUMVj9RosQR-BUstaosyXoAnhopHpopyp6AjpHA1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1zCq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouJ773BPV8JO9_9zozcrp3BHFHJOke_uHu7g03jPgPJ7au_ooHB-2_BPoH1O1gRP-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBja_c2zP7O1yR2o8MHa_92So1OEe_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1p_c2CH7NJe_V68MoN_S2sHJY1gpV-QsnYUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiqcuxgch2QMuwrMusQfOwyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUsthHmFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sy7bm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUS-BruYtg3VjQcBXguYFrMYjP3o79fo5P3N7Ustpbm-fq3uRg3zwrI-5gIusPVY2gIHi6BDhHA1O6_KaopepbAJFo_yFoAHp6AxPwe?page=1&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=16939915&src=homepage&template_id_used=3&t=android"
+              },
+              "name": "Amazing Farm",
+              "promoted_text": "Dipromosikan oleh",
+              "shop": {
+                "city": "Kota Tangerang Selatan",
+                "domain": "amazingfarm",
+                "gold_shop": false,
+                "gold_shop_badge": true,
+                "id": "2773225",
+                "image_shop": {
+                  "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/84ce20e0-b31d-4ccb-945e-8661c411411f.jpg"
+                },
+                "is_followed": false,
+                "location": "Kota Tangerang Selatan",
+                "name": "Amazing Farm",
+                "pm_pro_shop": false,
+                "product": [
+                  {
+                    "applinks": "tokopedia://product/1055982743",
+                    "count_review_format": "42",
+                    "id": "1055982743",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosy7HpnNoAUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthHmFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoid7HAJRHpHRosHd6_HFoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9xozJV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqBVR_uzs8jOEyp-o8MrO_92CH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqjJp_jzCH1NEyRB68MHF_OzSH1BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?cpm_template_req=3&click_ad_type=2&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Famazingfarm%2Fwaldorf-salad-with-blue-cheese-dressing&template_id_used=3&t=android&src=homepage&page=1&uid=16939915&product_id=1055982743",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/19/d46a70c8-8d74-44f5-8e95-f273663f1655.png"
+                    },
+                    "name": "Waldorf Salad with Blue Cheese Dressing",
+                    "price_format": "Rp 40.000",
+                    "product_rating": 99,
+                    "uri": "https://www.tokopedia.com/amazingfarm/waldorf-salad-with-blue-cheese-dressing"
+                  },
+                  {
+                    "applinks": "tokopedia://product/1056043388",
+                    "count_review_format": "63",
+                    "id": "1056043388",
+                    "image_product": {
+                      "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosy7HpnNoAUDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthHmFiPcBWgZUEH_yaH_jaoAKOoaFiy3zwrfo5rM1i6sUfoid7HAJRHpHRosHd6_HFoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9xozJV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1__zqu7ud_uPoPJOJgpoq1pnF_32Co1h9zMWqzOB7__-uH77a1MB6u77h_uzSP7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_-HqBVR_uzs8jOEyp-o8MrO_92CH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_oHqjJp_jzCH1NEyRB68MHF_OzSH1BXHA7ibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-tg3VjQcBXguYag3o5QuYig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sJFbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoseDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?click_ad_type=2&product_id=1056043388&uid=16939915&r=https%3A%2F%2Fwww.tokopedia.com%2Famazingfarm%2Fwafu-salad-with-sesame-soy-dressing&src=homepage&t=android&page=1&template_id_used=3&cpm_template_req=3&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                      "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/19/40f603ac-82b7-47f7-b8ac-2bc5eb5f714f.png"
+                    },
+                    "name": "Wafu Salad with Sesame Soy Dressing",
+                    "price_format": "Rp 40.000",
+                    "product_rating": 99,
+                    "uri": "https://www.tokopedia.com/amazingfarm/wafu-salad-with-sesame-soy-dressing"
+                  }
+                ],
+                "shop_is_official": true,
+                "slogan": "Mau beli produk lokal berkualitas? Cek toko Amazing Farm sekarang!",
+                "tagline": "It&#39;s Fresh, It&#39;s Healthy!"
+              },
+              "template_id": "3",
+              "uri": "https://www.tokopedia.com/amazingfarm"
+            },
+            "id": "66430942",
+            "redirect": "https://www.tokopedia.com/amazingfarm"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -2,6 +2,8 @@ package com.tokopedia.util.logger
 
 import com.tokopedia.analytic.annotation.Level
 import com.tokopedia.gtmutil.interfaces.GTMLogger
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 
 object GTMLoggerImpl : GTMLogger {
@@ -12,10 +14,14 @@ object GTMLoggerImpl : GTMLogger {
         }
         when (level) {
             Level.ERROR, Level.WARNING -> {
-                Timber.w("P1#GTMLoggerImpl#error_or_warning_log;from='%s';current_thread='%s'", info, stacktrace.toString())
+                ServerLogger.log(Priority.P1, "GTMLoggerImpl", mapOf("type" to "error_or_warning_log",
+                        "from" to info, "current_thread" to stacktrace.toString()
+                ))
             }
             Level.IGNORE -> {
-                Timber.w("P1#GTMLoggerImpl#ignored_log;current_thread='%s'", stacktrace.toString())
+                ServerLogger.log(Priority.P1, "GTMLoggerImpl", mapOf("type" to "ignored_log",
+                        "current_thread" to stacktrace.toString()
+                ))
             }
         }
     }

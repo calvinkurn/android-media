@@ -6,5 +6,6 @@
     <string name="content_desc_btn_inbox">button inbox</string>
     <string name="content_desc_btn_notification">button notification</string>
 
-    <string name="tag_counter_id">iconCounter</string>
+    <string name="tag_counter_id">iconCounter %s</string>
+    <string name="tag_navigation_toolbar_searchbar">navigation toolbar searchbar</string>
 </resources>

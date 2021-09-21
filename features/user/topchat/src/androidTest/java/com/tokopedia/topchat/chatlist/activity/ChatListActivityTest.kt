@@ -1,66 +1,16 @@
 package com.tokopedia.topchat.chatlist.activity
 
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.matchers.hasTotalItemOf
+import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.matchers.withIndex
-import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
-import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
-import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
-import com.tokopedia.topchat.stub.common.UserSessionStub
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
+import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.Matchers.not
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
-class ChatListActivityTest {
-
-    @get:Rule
-    var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java)
-
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    private lateinit var chatListUseCase: GetChatListMessageUseCaseStub
-    private lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
-    private lateinit var userSession: UserSessionStub
-    private lateinit var activity: ChatListActivityStub
-
-    private val exEmptyChatListPojo = ChatListPojo()
-    private var exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
-            "success_get_chat_list.json",
-            ChatListPojo::class.java
-    )
-    private var exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
-            "success_get_chat_list_size_5.json",
-            ChatListPojo::class.java
-    )
-
-    @ExperimentalCoroutinesApi
-    @Before
-    fun setup() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        chatListUseCase = GetChatListMessageUseCaseStub()
-        chatNotificationUseCase = GetChatNotificationUseCaseStub()
-        userSession = mActivityTestRule.activity.userSessionInterface
-        activity = mActivityTestRule.activity
-    }
+class ChatListActivityTest: ChatListTest() {
 
     @Test
     fun empty_chat_list_buyer_only() {
@@ -93,7 +43,7 @@ class ChatListActivityTest {
 
         // Then
         onView(withId(R.id.recycler_view))
-                .check(hasTotalItemOf(2))
+                .check(matches(withTotalItem(2)))
     }
 
     @Test
@@ -135,6 +85,6 @@ class ChatListActivityTest {
 
         // Then
         onView(withIndex(withId(R.id.recycler_view), 0))
-                .check(hasTotalItemOf(5))
+                .check(matches(withTotalItem(5)))
     }
 }

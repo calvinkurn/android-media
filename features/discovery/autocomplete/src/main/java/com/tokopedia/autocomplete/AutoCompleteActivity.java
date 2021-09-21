@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking;
@@ -24,7 +25,9 @@ import com.tokopedia.autocomplete.searchbar.SearchBarView;
 import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
 import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.utils.UrlParamUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -32,6 +35,7 @@ import com.tokopedia.user.session.UserSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
@@ -52,6 +56,8 @@ public class AutoCompleteActivity extends BaseActivity
 
     protected SuggestionFragment suggestionFragment;
     protected InitialStateFragment initialStateFragment;
+
+    private String baseSRPApplink = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,9 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void handleIntent(Intent intent) {
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
+        modifyBaseSRPApplink(searchParameter);
+
+        baseSRPApplink = getBaseSRPApplink(searchParameter);
 
         handleIntentAutoComplete(searchParameter);
 
@@ -118,6 +127,23 @@ public class AutoCompleteActivity extends BaseActivity
         searchParameter.cleanUpNullValuesInMap();
 
         return searchParameter;
+    }
+
+    private void modifyBaseSRPApplink(SearchParameter searchParameter) {
+        String baseSRPApplinkParameter = searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
+
+        if (baseSRPApplinkParameter == null
+                || baseSRPApplinkParameter.isEmpty())
+            searchParameter.set(SearchApiConst.BASE_SRP_APPLINK, ApplinkConst.DISCOVERY_SEARCH);
+    }
+
+    private String getBaseSRPApplink(SearchParameter searchParameter) {
+        String baseSRPApplink = searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
+
+        if (baseSRPApplink.isEmpty())
+            baseSRPApplink = ApplinkConst.DISCOVERY_SEARCH;
+
+        return baseSRPApplink;
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
@@ -158,11 +184,20 @@ public class AutoCompleteActivity extends BaseActivity
         this.searchParameter = new SearchParameter(searchParameter);
 
         String query = searchParameter.getSearchQuery();
-        AutocompleteTracking.eventClickSubmit(query);
+        sendTrackingSubmitQuery(searchParameter, query);
 
         clearFocusSearchView();
         moveToSearchPage();
         return true;
+    }
+
+    private void sendTrackingSubmitQuery(@NotNull SearchParameter searchParameter, String query) {
+        Map<String, String> mapParameter = searchParameter.getSearchParameterHashMap();
+
+        if (UrlParamUtils.isTokoNow(mapParameter))
+            AutocompleteTracking.eventClickSubmitTokoNow(query);
+        else
+            AutocompleteTracking.eventClickSubmit(query);
     }
 
     private void clearFocusSearchView() {
@@ -177,9 +212,21 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private String createSearchResultApplink() {
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+        String searchResultApplink = baseSRPApplink.isEmpty()
+                ? ApplinkConstInternalDiscovery.SEARCH_RESULT
+                : baseSRPApplink;
+
+        Map<String, String> parameter = searchParameter.getSearchParameterHashMap();
+        removeNonRequiredSRPParam(parameter);
+
+        return searchResultApplink
                 + "?"
-                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+                + UrlParamHelper.generateUrlParamString(parameter);
+    }
+
+    private void removeNonRequiredSRPParam(Map<String, String> parameter) {
+        parameter.remove(SearchApiConst.BASE_SRP_APPLINK);
+        parameter.remove(SearchApiConst.HINT);
     }
 
     private void sendVoiceSearchGTM(String keyword) {

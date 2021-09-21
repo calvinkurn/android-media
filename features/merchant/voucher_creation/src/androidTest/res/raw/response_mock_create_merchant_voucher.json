@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "merchantPromotionCreateMV": {
+        "status": 200,
+        "message": "",
+        "process_time": 327.54093,
+        "data": {
+          "redirect_url": "https://www.tokopedia.com/v2/vouchertoko",
+          "voucher_id": 3111596,
+          "status": "Success"
+        }
+      }
+    }
+  }
+]

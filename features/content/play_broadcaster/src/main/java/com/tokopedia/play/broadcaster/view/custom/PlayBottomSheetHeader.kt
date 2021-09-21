@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.broadcaster.R
 
 class PlayBottomSheetHeader : ConstraintLayout {
@@ -46,6 +48,11 @@ class PlayBottomSheetHeader : ConstraintLayout {
 
     private fun setupView(view: View) {
         ivBack.setOnClickListener { mListener?.onBackButtonClicked(this) }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        mListener = null
     }
 
     interface Listener {

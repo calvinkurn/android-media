@@ -1,12 +1,11 @@
 package com.tokopedia.seller.menu.common.view.uimodel
 
-import androidx.annotation.StringRes
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 
 open class SectionTitleUiModel(
-    @StringRes val title: Int,
-    @StringRes val ctaText: Int? = null,
+    val title: String? = null,
+    val ctaText: String? = null,
     val type: SectionTitleType
 ): SettingUiModel {
 

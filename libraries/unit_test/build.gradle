@@ -7,7 +7,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.testDependencies.archCoreTesting
 
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 
     api rootProject.ext.miscDependencies.coroutineTest
 }

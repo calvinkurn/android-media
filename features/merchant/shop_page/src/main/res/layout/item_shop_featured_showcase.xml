@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:card_type="shadow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_12">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivShowcaseImg"
+            android:layout_width="@dimen/dp_140"
+            android:layout_height="@dimen/dp_140"
+            app:unify_image_type="rect"
+            app:unify_image_corner_radius="0"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShowcaseName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:ellipsize="end"
+            android:singleLine="true"
+            tools:text="Bicycle bag rockbros official store"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShowcaseCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginStart="@dimen/dp_8"
+            tools:text="16 Produk"
+            android:textColor="@color/Unify_N300"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+</com.tokopedia.unifycomponents.CardUnify>

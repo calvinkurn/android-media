@@ -2,14 +2,14 @@
 <resources>
     <style name="ToolbarExpandedTitle">
         <item name="android:textSize">@dimen/spacing_lvl5</item>
-        <item name="android:shadowColor">@color/Neutral_N0</item>
+        <item name="android:shadowColor">@color/Unify_N0</item>
         <item name="android:textColor">@color/Unify_N700_96</item>
         <item name="android:singleLine">true</item>
     </style>
 
     <style name="ToolbarExpandedTitle2">
         <item name="android:textSize">@dimen/fontSize_lvl6</item>
-        <item name="android:shadowColor">@color/Neutral_N0</item>
+        <item name="android:shadowColor">@color/Unify_N0</item>
         <item name="android:textColor">@color/Unify_N700_96</item>
         <item name="android:singleLine">false</item>
         <item name="android:maxLines">5</item>

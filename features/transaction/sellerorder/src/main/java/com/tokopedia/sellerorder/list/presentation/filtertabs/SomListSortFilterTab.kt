@@ -28,7 +28,7 @@ class SomListSortFilterTab(
 
     init {
         sortFilter.chipItems = arrayListOf()
-        sortFilter.indicatorNotifView.viewTreeObserver.addOnPreDrawListener {
+        sortFilter.indicatorNotifView?.viewTreeObserver?.addOnPreDrawListener {
             val count = selectedCount + if (selectedTab != null && selectedTab?.key != SomConsts.STATUS_ALL_ORDER) 1 else 0
             if (count != sortFilter.indicatorCounter) {
                 sortFilter.indicatorCounter = count
@@ -59,7 +59,7 @@ class SomListSortFilterTab(
 
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
         filterItems = ArrayList(statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }.map { createNewTabs(it) })
-        sortFilter.chipItems.clear()
+        sortFilter.chipItems?.clear()
         sortFilter.addItem(filterItems)
     }
 
@@ -90,7 +90,7 @@ class SomListSortFilterTab(
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
         isStatusFilterAppliedFromAdvancedFilter = false
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
-            sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
+            sortFilter.chipItems?.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
             true
         } else {
@@ -216,6 +216,6 @@ class SomListSortFilterTab(
 
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
-        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean = true)
+        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean = true)
     }
 }

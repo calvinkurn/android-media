@@ -10,11 +10,14 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.network.R;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +43,10 @@ public class MaintenancePage extends Activity {
         Intent intent = new Intent(context, MaintenancePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(IS_NETWORK, true);
-        Timber.w("P1#MAINTENANCE_PAGE#createIntentFromNetwork;data=''");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "createIntentFromNetwork");
+        messageMap.put("data", "");
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         return intent;
     }
 
@@ -49,7 +55,10 @@ public class MaintenancePage extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(IS_NETWORK, false);
         intent.putExtra("message", getMessage(context));
-        Timber.w("P1#MAINTENANCE_PAGE#createIntent;data=''");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "createIntent");
+        messageMap.put("data", "");
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         return intent;
     }
 
@@ -69,7 +78,10 @@ public class MaintenancePage extends Activity {
         setContentView(R.layout.activity_maintenance_page);
         initVar();
         initView();
-        Timber.w("P1#MAINTENANCE_PAGE#onCreateShow;data=''");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "onCreateShow");
+        messageMap.put("data", "");
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
     }
 
     private void initVar() {
@@ -91,7 +103,10 @@ public class MaintenancePage extends Activity {
     }
 
     private void checkServerMaintenanceStatus() {
-        Timber.w("P1#MAINTENANCE_PAGE#checkServerMaintenanceStatusLoad;data=''");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "checkServerMaintenanceStatusLoad");
+        messageMap.put("data", "");
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         Map<String, String> param = new HashMap<>();
         new HotListService().getApi().getHotList(AuthUtil.generateParams(this, param))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -113,7 +128,11 @@ public class MaintenancePage extends Activity {
                         if (tkpdResponseResponse.body() != null) {
                             status = tkpdResponseResponse.body().getStatus();
                         }
-                        Timber.w("P1#MAINTENANCE_PAGE#checkServerMaintenanceStatusResult;data='"+status+"'");
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "checkServerMaintenanceStatusResult");
+                        messageMap.put("data", status);
+                        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+
                         if (status.equals(UNDER_MAINTENANCE)) {
                             hideProgressBar();
                         } else {
@@ -132,7 +151,9 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+        Intent intent = new Intent();
+        intent.setClassName(this.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+        startActivity(intent);
         finish();
     }
 

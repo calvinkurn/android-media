@@ -20,7 +20,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_chainStyle="packed" />
 
-    <com.tokopedia.design.countdown.CountDownView
+    <com.tokopedia.officialstore.official.presentation.widget.CountDownView
         android:id="@+id/dc_header_count_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

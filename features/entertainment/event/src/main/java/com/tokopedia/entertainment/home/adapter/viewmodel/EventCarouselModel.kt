@@ -7,7 +7,8 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout) : HomeEventItem<HomeTypeFactory> {
+class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
+                         = EventHomeDataResponse.Data.EventHome.Layout()) : HomeEventItem() {
 
     var items : MutableList<EventItemModel> = mutableListOf()
 
@@ -22,7 +23,8 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                     it.price,
                     it.schedule,
                     it.isLiked,
-                    it.appUrl
+                    it.appUrl,
+                    it.seoUrl
             ))
         }
     }

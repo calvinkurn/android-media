@@ -5,7 +5,7 @@ import org.junit.Assert.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +29,7 @@ class UmrahTravelGalleryViewModelTest{
 
     @RelaxedMockK
     lateinit var mGraphqlRepository: GraphqlRepository
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahTravelGalleryViewModel: UmrahTravelGalleryViewModel
 
     private val umrahGalleries = listOf(UmrahGallery())

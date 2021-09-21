@@ -3,7 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder.EditKeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordViewModel
@@ -38,8 +38,8 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         holder.bind(items[position],added,minBid)
     }
 
-    fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
-        val selected: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
+    fun getCurrentItems(): List<KeySharedModel> {
+        val selected: MutableList<KeySharedModel> = mutableListOf()
         items.forEach {
             if (it is EditKeywordItemViewModel) {
                 selected.add(it.data)
@@ -52,6 +52,12 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         this.data = list
         this.added = isnewlyAddded
         notifyDataSetChanged()
+    }
+
+    fun clearList(){
+        this.items.clear()
+        this.added.clear()
+        this.data.clear()
     }
 
     fun setBid(bid: String) {

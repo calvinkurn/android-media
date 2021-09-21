@@ -63,7 +63,6 @@ include "libraries:websocket"
 include "features:top_ads:top_ads_management_sourcetagging"
 include "features:user:user_identification_common"
 include 'libraries:imageuploader'
-include 'libraries:blockcanary'
 include "libraries:core_legacy"
 include "features:user:fcm_common"
 include "libraries:weaver"

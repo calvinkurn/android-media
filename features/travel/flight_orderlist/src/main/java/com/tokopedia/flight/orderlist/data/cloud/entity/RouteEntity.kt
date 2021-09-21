@@ -63,7 +63,7 @@ class RouteEntity(
         val arrivalTerminal: String = "",
         @SerializedName("free_amenities")
         @Expose
-        val freeAmenities: AmenityEntity,
+        val freeAmenities: AmenityEntity = AmenityEntity(),
         @SerializedName("pnr")
         @Expose
         val pnr: String = "",
@@ -72,7 +72,7 @@ class RouteEntity(
         val stops: Int = 0,
         @SerializedName("stop_detail")
         @Expose
-        val stopDetailEntities: List<OrderStopDetailEntity>,
+        val stopDetailEntities: List<OrderStopDetailEntity> = arrayListOf(),
         @SerializedName("operating_airline")
         @Expose
-        val operatingAirline: String)
+        val operatingAirline: String = "")

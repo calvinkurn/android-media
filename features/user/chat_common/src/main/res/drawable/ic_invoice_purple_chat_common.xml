@@ -4,18 +4,18 @@
     android:viewportWidth="40"
     android:viewportHeight="40">
     <path
-        android:fillColor="#BB4DE8"
+        android:fillColor="@color/chatcommon_dms_bg_purple_icon"
         android:fillType="evenOdd"
         android:pathData="M20,20m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
     <group>
         <clip-path android:pathData="M20,20m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0 M 0,0" />
         <path
-            android:fillColor="#52EFC6FF"
+            android:fillColor="@color/chatcommon_dms_purple_icon"
             android:fillType="evenOdd"
             android:pathData="M34.167,0.5m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
     </group>
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="@color/Unify_Static_White"
         android:fillType="evenOdd"
         android:pathData="M24,16L16,16c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1h8c0.55,0 1,0.45 1,1s-0.45,1 -1,1zM24,20L16,20c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1h8c0.55,0 1,0.45 1,1s-0.45,1 -1,1zM24,24h-3c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1h3c0.55,0 1,0.45 1,1s-0.45,1 -1,1zM12,11v18l2,-1.6L16,29l2,-1.6 2,1.6 2,-1.6 2,1.6 2,-1.6 2,1.6L28,11L12,11z" />
 </vector>

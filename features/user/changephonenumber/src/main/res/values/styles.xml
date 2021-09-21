@@ -1,6 +1,6 @@
 <resources>
 
     <style name="PhoneNumberTextInput">
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
     </style>
 </resources>

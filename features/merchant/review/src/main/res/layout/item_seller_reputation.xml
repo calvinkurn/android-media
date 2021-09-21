@@ -3,31 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="9dp">
+    android:paddingTop="@dimen/dp_9">
 
     <LinearLayout
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/tv_score"
+        android:id="@+id/ly_reputation_group"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_toStartOf="@+id/tv_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:orientation="vertical">
 
-
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/fontvs"
+            app:typographyType="body_3"
             tools:text="19/10/2019 15:12"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,10 +36,10 @@
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/fonts"
+            app:typographyType="body_2"
             tools:text="Penjual mengabaikan pesanan"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,12 +47,12 @@
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/fontvs"
+            app:typographyType="body_3"
             tools:text="INV/2019018/XIX/X/38239348473"/>
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:maxLines="1"
         android:singleLine="true"
         android:layout_centerVertical="true"
@@ -59,11 +60,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@android:drawable/list_selector_background"
         android:gravity="end|center_vertical"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontl"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="heading_3"
+        app:typographyWeight="reguler"
         tools:text="0" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_below="@id/ly_reputation_group"/>
 
 </RelativeLayout>

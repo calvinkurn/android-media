@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +17,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_REGISTRATION_SHOP_CREATION
+import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
@@ -107,14 +111,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 when (requestCode) {
-                    REQUEST_LOGIN_PHONE -> {
+                    LoginConstants.Request.REQUEST_LOGIN_PHONE -> {
                         data?.extras?.run {
                             val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                             val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                             goToChooseAccountPage(accessToken, phoneNumber)
                         }
                     }
-                    REQUEST_REGISTER_PHONE -> {
+                    LoginConstants.Request.REQUEST_REGISTER_PHONE -> {
                         if (phone.isNotEmpty())
                             goToRegisterAddNamePage(phone.replace("-", ""))
                     }
@@ -171,6 +175,12 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     textFieldPhone.setError(false)
                     clearMessageFieldPhone()
                 }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                super.afterTextChanged(s)
+                removeFirstZeroPhoneNUmber(s)
+                removePhoneMaskingAtFirst(s)
             }
         })
 
@@ -265,7 +275,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
         when (registerCheckData.registerType) {
-            PHONE_TYPE -> {
+            LoginConstants.LoginType.PHONE_TYPE -> {
                 if (registerCheckData.isExist) {
                     goToLoginPhoneVerifyPage(registerCheckData.view.replace("-", ""))
                 } else {
@@ -353,11 +363,11 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
-        startActivityForResult(intent, REQUEST_LOGIN_PHONE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_LOGIN_PHONE)
     }
 
     private fun goToRegisterPhoneVerifyPage(phone: String) {
@@ -366,11 +376,11 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
-        startActivityForResult(intent, REQUEST_REGISTER_PHONE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_REGISTER_PHONE)
     }
 
     private fun goToAddPhoneVerifyPage(phoneNumber: String) {
@@ -380,8 +390,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
+    }
+
+    private fun getIsLoginRegisterFlow(): Boolean {
+        return if(GlobalConfig.isSellerApp()) {
+            true
+        } else {
+            return !userSession.isLoggedIn
+        }
     }
 
     private fun goToRegisterAddNamePage(phone: String) {
@@ -398,19 +416,29 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
     }
 
+    private fun removeFirstZeroPhoneNUmber(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "0") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
+    }
+
+    private fun removePhoneMaskingAtFirst(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "-") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
+    }
+
     companion object {
 
-        private const val REQUEST_LOGIN_PHONE = 112
-        private const val REQUEST_REGISTER_PHONE = 113
         private const val REQUEST_NAME_SHOP_CREARION = 114
         private const val REQUEST_COTP_PHONE_VERIFICATION = 115
         private const val REQUEST_CHOOSE_ACCOUNT = 116
 
         private const val OTP_TYPE_PHONE_VERIFICATION = 11
-        private const val OTP_TYPE_REGISTER_PHONE_NUMBER = 116
-        private const val OTP_TYPE_LOGIN_PHONE_NUMBER = 112
-
-        private const val PHONE_TYPE = "phone"
 
         fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
             val fragment = PhoneShopCreationFragment()
@@ -418,7 +446,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             return fragment
         }
 
-        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() &&
-                phone.length >= 6
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= 6
     }
 }

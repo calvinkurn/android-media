@@ -20,10 +20,10 @@ class FlightOrderCancellationListActivity : BaseFlightActivity(),
 
     override fun getComponent(): FlightOrderDetailComponent =
             DaggerFlightOrderDetailComponent.builder()
-                    .flightComponent(flightComponent)
+                    .flightComponent(getFlightComponent())
                     .build()
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean = true
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
     companion object {
         const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"

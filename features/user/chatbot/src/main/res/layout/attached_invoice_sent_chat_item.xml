@@ -1,173 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
+    android:layout_marginTop="@dimen/spacing_lvl4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingTop="@dimen/dp_3"
-    android:paddingRight="@dimen/dp_15"
-    android:paddingBottom="@dimen/dp_3">
+    tools:gravity="end"
+    tools:ignore="UselessParent">
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_chat_bubble"
+        android:layout_width="@dimen/chatbot_invoice_sent_width"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
-        android:textAllCaps="true"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/my_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="13:16 wib" />
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:minWidth="@dimen/chat_width">
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="small"
+            android:maxLines="1"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_44"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10 Oct 2017" />
 
-    <ImageView
-        android:id="@+id/left_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintRight_toLeftOf="@id/attach_invoice_item_invoice_date"
-        app:layout_constraintTop_toTopOf="@id/my_view"
-        app:srcCompat="@drawable/ic_error_to_send" />
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/dp_chatbot_50"
+            android:layout_height="@dimen/dp_chatbot_50"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
+            android:contentDescription="@null"
+            tools:srcCompat="@tools:sample/avatars[0]" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textSize="@dimen/fontSize_lvl1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="90.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_invoice_date"
+            app:layout_constraintTop_toTopOf="@+id/tv_invoice_date"
+            tools:labelType="general_light_red"
+            tools:text="Pesanan Dibatalkan Pesanan Dibatalkan" />
 
-    <View
-        android:id="@+id/my_view"
-        android:layout_width="@dimen/dp_270"
-        android:layout_height="@dimen/dp_0"
-        android:background="@drawable/right_bubble_with_stroke"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintLeft_toRightOf="@id/left_action"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/attach_invoice_item_invoice_date" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="heading_5"
+            tools:ignore="RtlSymmetry"
+            tools:text="Kaca Pembesar hewa unik" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_desc"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:typographyType="small"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/chatbot_black_color_opacity_lvl_35"
+            app:layout_constraintLeft_toLeftOf="@id/tv_invoice_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_name"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="+4 barang lainnyag" />
 
-    <TextView
-        android:id="@+id/attach_invoice_item_invoice_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:textColor="@color/chatbot_black_color_opacity_lvl_40"
-        android:textSize="@dimen/sp_11"
-        app:layout_constraintLeft_toLeftOf="@id/my_view"
-        app:layout_constraintTop_toBottomOf="@id/date"
-        tools:text="10 Oct 2017" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price_prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="top"
+            android:visibility="gone"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toRightOf="@id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_3"
+            android:text="@string/chatbot_total_text"
+            tools:visibility="visible"/>
 
-    <TextView
-        android:id="@+id/attach_invoice_item_invoice_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/chatbot_bg_attach_invoice_status_pink"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_2"
-        android:textColor="@color/chatbot_color_pink"
-        android:textSize="@dimen/sp_9"
-        app:layout_constraintLeft_toRightOf="@id/attach_invoice_item_invoice_date"
-        app:layout_constraintRight_toRightOf="@id/my_view"
-        app:layout_constraintTop_toBottomOf="@id/date"
-        tools:text="Kode resi pengiriman tidak valid" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Y500"
+            app:layout_constraintLeft_toRightOf="@id/tv_price_prefix"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp 25.500" />
 
-    <ImageView
-        android:id="@+id/attach_invoice_sent_item_product_image"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:src="@color/yellow_1"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintLeft_toLeftOf="@id/my_view"
-        app:layout_constraintTop_toBottomOf="@id/attach_invoice_item_invoice_date" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/attach_invoice_sent_item_product_name"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
-        android:textColor="@color/chatbot_black_color_opacity_lvl_70"
-        android:textSize="@dimen/sp_15"
-        app:layout_constraintLeft_toRightOf="@id/attach_invoice_sent_item_product_image"
-        app:layout_constraintRight_toRightOf="@id/my_view"
-        app:layout_constraintTop_toTopOf="@id/attach_invoice_sent_item_product_image"
-        tools:text="Helm Cargloss MXC Supertrack Ice Brown" />
-
-    <TextView
-        android:id="@+id/attach_invoice_sent_item_product_desc"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/chatbot_black_color_opacity_lvl_35"
-        android:textSize="@dimen/sp_13"
-        app:layout_constraintLeft_toRightOf="@id/attach_invoice_sent_item_product_image"
-        app:layout_constraintRight_toRightOf="@id/my_view"
-        app:layout_constraintTop_toBottomOf="@id/attach_invoice_sent_item_product_name"
-        tools:text="+4 barang lainnyag" />
-
-    <TextView
-        android:id="@+id/attach_invoice_sent_item_invoice_total"
-        style="@style/TextView.Small.White"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/chatbot_black_color_opacity_lvl_50"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toRightOf="@id/attach_invoice_sent_item_product_image"
-        app:layout_constraintTop_toBottomOf="@id/attach_invoice_sent_item_product_desc"
-        tools:text="Rp 10.000.000" />
-
-    <ImageView
-        android:id="@+id/chat_status"
-        android:layout_width="@dimen/dp_11"
-        android:layout_height="@dimen/dp_6"
-        android:layout_marginTop="@dimen/dp_3"
-        android:layout_marginEnd="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
-        app:layout_constraintRight_toLeftOf="@id/hour"
-        app:layout_constraintTop_toBottomOf="@+id/my_view"
-        tools:src="@drawable/ic_read_thin" />
-
-    <TextView
-        android:id="@+id/hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/time_color"
-        android:textSize="@dimen/sp_10"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/my_view"
-        tools:text="10:13 pm"
-        tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="@dimen/dp_15" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

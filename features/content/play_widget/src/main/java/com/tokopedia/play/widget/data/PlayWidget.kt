@@ -23,6 +23,7 @@ data class PlayWidgetItem(
         @SerializedName("appLink") val appLink: String = "",
         @SerializedName("webLink") val webLink: String = "",
         @SerializedName("startTime") val startTime: String = "",
+        @SerializedName("widgetSortingMethod") val widgetSortingMethod: String = "",
         @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
         @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
@@ -34,7 +35,13 @@ data class PlayWidgetItem(
 
 data class PlayWidgetItemConfig(
         @SerializedName("hasPromo") val hasPromo: Boolean = false,
-        @SerializedName("isReminderSet") val isReminderSet: Boolean = false
+        @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
+        @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList(),
+)
+
+data class PlayWidgetPromoLabel(
+        @SerializedName("text") val text: String = "",
+        @SerializedName("type") val type: String = "",
 )
 
 data class PlayWidgetItemPartner(

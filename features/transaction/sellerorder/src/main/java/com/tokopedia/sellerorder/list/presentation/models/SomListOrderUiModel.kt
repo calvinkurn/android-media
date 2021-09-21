@@ -19,8 +19,8 @@ data class SomListOrderUiModel(
         val orderResi: String = "",
         val orderStatusId: Int = 0,
         val status: String = "",
-        val statusColor: String = "#FFFFFF",
-        val statusIndicatorColor: String = "#FFFFFF",
+        val statusColor: String = "",
+        val statusIndicatorColor: String = "",
         val destinationProvince: String = "",
         val courierName: String = "",
         val courierProductName: String = "",
@@ -29,7 +29,8 @@ data class SomListOrderUiModel(
         val tickerInfo: TickerInfo = TickerInfo(),
         val buttons: List<Button> = emptyList(),
         var isChecked: Boolean = false,
-        var searchParam: String
+        var searchParam: String,
+        var isOpen: Boolean = false
 ) : Visitable<SomListAdapterTypeFactory> {
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

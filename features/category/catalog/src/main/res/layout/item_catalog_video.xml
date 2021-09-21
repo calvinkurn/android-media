@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="@dimen/spacing_lvl3"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/video_thumbnail_iv"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_112"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/video_thumbnail_iv"
+        app:layout_constraintStart_toStartOf="@id/video_thumbnail_iv"
+        app:layout_constraintEnd_toEndOf="@id/video_thumbnail_iv"
+        app:layout_constraintBottom_toBottomOf="@id/video_thumbnail_iv"
+        app:srcCompat="@drawable/ic_catalog_btn_play"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/video_title_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/video_thumbnail_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        tools:text="Review iPhone 11 - Ga bikin sirik lagi."
+        android:lines="2"
+        android:ellipsize="end"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/channel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/video_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/unify_space_4"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        tools:text="GadgetIn"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

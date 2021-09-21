@@ -8,6 +8,7 @@
         <activity
             android:label="@string/home_account_title"
             android:name=".view.activity.HomeAccountUserActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
             <intent-filter>

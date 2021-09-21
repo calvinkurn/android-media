@@ -67,7 +67,7 @@ data class HotelOrderDetail(
 
             @SerializedName("textColor")
             @Expose
-            val textColor: String = "#42b549",
+            val textColor: String = "",
 
             @SerializedName("backgroundColor")
             @Expose

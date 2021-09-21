@@ -1,0 +1,28 @@
+{
+  "readme": "Flight Search Tracking [PROMO CHIPS] with Priority P0.",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit" : "travel & entertainment",
+      "clientId" : ".*",
+      "eventCategory": "digital - flight",
+      "currentSite" : "tokopediadigitalflight",
+      "screenName" : "/flight/search",
+      "category" : "flight",
+      "event": "select_content",
+      "userId" : ".*",
+      "eventAction": "click on departure promo chip",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .* - .*"
+    }
+  ]
+}

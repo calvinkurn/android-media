@@ -16,5 +16,5 @@ object DealsDummyResponseString {
     const val DUMMY_FILTER_CHIPS_ONE = "Travel Entertainment Widget"
     const val DUMMY_FILTER_CHIPS_TWO = "Baju Baru"
 
-    const val FILTERS_CHIP_TITLE = "Filters"
+    const val FILTERS_CHIP_TITLE = "Filter"
 }

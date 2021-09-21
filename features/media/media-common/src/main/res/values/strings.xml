@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="media_toaster_title">Kualitas gambarmu diturunkan karena jaringan HP-mu lebih rendah dari 4G.</string>
+    <string name="media_toaster_cta">Ubah</string>
+</resources>

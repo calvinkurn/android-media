@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -109,6 +110,26 @@ object CartListPresenterValidateUseTest : Spek({
 
             Then("should set promo button inactive") {
                 verify {
+                    view.showPromoCheckoutStickyButtonInactive()
+                }
+            }
+        }
+
+        Scenario("failed validate use promo with akamai exception") {
+
+            val exception = AkamaiErrorException("error message")
+
+            Given("validate use promo data") {
+                every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            When("process validate use promo data") {
+                cartListPresenter.doValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should show red toast and set promo button inactive") {
+                verify {
+                    view.showToastMessageRed(exception)
                     view.showPromoCheckoutStickyButtonInactive()
                 }
             }

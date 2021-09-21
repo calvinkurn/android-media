@@ -3,7 +3,7 @@ package com.tokopedia.onboarding.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.onboarding.common.OnboardingIoDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DynamicOnboardingViewModel @Inject constructor(
-        dispatcher: OnboardingIoDispatcher,
+        dispatcher: CoroutineDispatchers,
         private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
 ) : BaseViewModel(dispatcher.main) {
 
@@ -49,7 +49,7 @@ class DynamicOnboardingViewModel @Inject constructor(
         action()
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         dynamicOnboardingUseCase.cancelJobs()
     }

@@ -8,4 +8,7 @@
     <color name="deal_grey_300">#e0e0e0</color>
     <color name="deal_location_grey_text">#7031353b</color>
     <color name="deal_location_type">#9e9fa3</color>
+    <color name="deal_dms_bg_scrim_voucher_start_color">#CC0D0D0D</color>
+    <color name="deal_dms_bg_scrim_voucher_center_color">#800D0D0D</color>
+    <color name="deal_dms_bg_scrim_voucher_end_color">#000D0D0D</color>
 </resources>

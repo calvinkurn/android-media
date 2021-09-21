@@ -14,13 +14,13 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.PreferenceMatchers.withTitle
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import org.hamcrest.*
 
@@ -33,14 +33,18 @@ class UohRobot {
         waitForData()
     }
 
+    fun hideKeyboard() {
+        onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard())
+    }
+
     fun clickPrimaryButton() {
-        onView(withId(R.id.rv_order_list))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_btn_action)))
     }
 
     fun clickThreeDotsMenu() {
-        onView(withId(R.id.rv_order_list))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickOnViewChild(com.tokopedia.buyerorder.R.id.iv_kebab_menu)))
     }
@@ -51,14 +55,14 @@ class UohRobot {
     }
 
     fun clickOrderCard() {
-        onView(withId(R.id.rv_order_list))
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickOnViewChild(com.tokopedia.buyerorder.R.id.cl_data_product)))
-        pressBack()
     }
 
     fun doSearch(str: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
+        onView(withId(R.id.et_search))
                 .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }
@@ -106,13 +110,13 @@ class UohRobot {
     }
 
     fun scrollToRecommendationList() {
-        onView(withId(R.id.rv_order_list))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
         waitForData()
     }
 
     fun clickAtcRecommendation() {
-        onView(withId(R.id.rv_order_list))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
                         clickOnViewChild(R.id.buttonAddToCart)))
         waitForData()
@@ -120,7 +124,7 @@ class UohRobot {
 
     fun clickRecommendationCard() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(withId(R.id.rv_order_list))
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
                         clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_product_item)))
         waitForData()
@@ -160,8 +164,8 @@ class UohRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        MatcherAssert.assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+    fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
+        MatcherAssert.assertThat(rule.validate(path), hasAllSuccess())
     }
 }
 

@@ -121,7 +121,7 @@ class HomeViewModelBestSellingWidgetTest {
         assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
         assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
 
-        homeViewModel.getRecommendationWidget(recomFilterChip, bestSellerDataModel)
+        homeViewModel.getRecommendationWidget(recomFilterChip, bestSellerDataModel, 1)
 
         assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
         assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)

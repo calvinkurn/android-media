@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.gson.GsonSingleton
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
@@ -22,6 +21,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.setLoading
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -30,18 +30,17 @@ import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
-import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.SetupBroadcastScheduleBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.TitleAndTagsEditBottomSheet
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.LivePusherState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -60,12 +59,12 @@ import javax.inject.Inject
  */
 class PlayBeforeLiveFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
     private lateinit var ivImagePreview: ImageView
-    private lateinit var tvCoverTitle: TextView
+    private lateinit var tvChannelTitle: TextView
     private lateinit var llSelectedProduct: LinearLayout
     private lateinit var tvSelectedProduct: TextView
     private lateinit var btnStartLive: PlayStartStreamingButton
@@ -172,9 +171,9 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductEditFragment -> childFragment.setListener(setupResultListener)
-            is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
             is SetupBroadcastScheduleBottomSheet -> childFragment.setListener(setupResultListener)
+            is TitleAndTagsEditBottomSheet -> childFragment.setListener(setupResultListener)
         }
     }
 
@@ -191,7 +190,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun initView(view: View) {
         with(view) {
             ivImagePreview = findViewById(R.id.iv_image_preview)
-            tvCoverTitle = findViewById(R.id.tv_cover_title)
+            tvChannelTitle = findViewById(R.id.tv_channel_title)
             tvSelectedProduct = findViewById(R.id.tv_selected_product)
             llSelectedProduct = findViewById(R.id.ll_selected_product)
             btnStartLive = findViewById(R.id.btn_start_live)
@@ -210,8 +209,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             openEditProductPage()
             analytic.clickEditProductTaggingOnFinalSetupPage()
         }
-        tvCoverTitle.setOnClickListener {
-            openEditCoverTitlePage()
+        tvChannelTitle.setOnClickListener {
+            openEditTitleAndTagsPage()
             analytic.clickEditTitleOnFinalSetupPage()
         }
         ivImagePreview.setOnClickListener {
@@ -231,6 +230,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeCreateChannel()
         observeProductList()
         observeCover()
+        observeTitle()
         observeLiveInfo()
         observeBroadcastSchedule()
         observeDeleteBroadcastSchedule()
@@ -266,8 +266,12 @@ class PlayBeforeLiveFragment @Inject constructor(
                 is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 else -> ivImagePreview.setImageDrawable(null)
             }
+        })
+    }
 
-            tvCoverTitle.text = it.title
+    private fun observeTitle() {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner, Observer {
+            tvChannelTitle.text = it.title
         })
     }
 
@@ -275,9 +279,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
-                is NetworkResult.Success -> {
-                    parentViewModel.startPushStream(manualStartTimer = true)
-                }
+                is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
                     showToaster(
                             message = it.error.localizedMessage,
@@ -291,7 +293,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
+        parentViewModel.observableLiveViewState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
     }
 
     private fun observeBroadcastSchedule() {
@@ -353,20 +355,43 @@ class PlayBeforeLiveFragment @Inject constructor(
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
-    private fun handleLiveInfoState(state: LivePusherState) {
+    private fun handleLiveInfoState(state: PlayLiveViewState) {
         if (!isVisible) return
         when (state) {
-            is LivePusherState.Started -> {
+            is PlayLiveViewState.Started -> {
                 openBroadcastLivePage()
                 btnStartLive.setLoading(false)
                 parentViewModel.setFirstTimeLiveStreaming()
             }
-            is LivePusherState.Error -> {
-                showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
-                        type = Toaster.TYPE_ERROR)
+            is PlayLiveViewState.Error -> {
                 btnStartLive.setLoading(false)
-                analytic.viewErrorOnFinalSetupPage(getString(R.string.play_live_broadcast_connect_fail))
+                handleLivePushError(state)
             }
+        }
+    }
+
+    private fun handleLivePushError(state: PlayLiveViewState.Error) {
+        when(state.error.type) {
+            PlayLivePusherErrorType.ConnectFailed -> showToaster(
+                message = getString(R.string.play_live_broadcast_connect_fail),
+                type = Toaster.TYPE_ERROR,
+                actionLabel = getString(R.string.play_broadcast_try_again),
+                actionListener = { parentViewModel.reconnectLiveStream() }
+            )
+            PlayLivePusherErrorType.SystemError -> showToaster(
+                message = getString(R.string.play_dialog_unsupported_device_desc),
+                type = Toaster.TYPE_ERROR,
+                actionLabel = getString(R.string.play_ok),
+                actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
+            )
+        }
+        analytic.viewErrorOnFinalSetupPage(state.error.reason)
+        if (GlobalConfig.DEBUG) {
+            Toast.makeText(
+                requireContext(),
+                "reason: ${state.error.reason} \n\n(Important! this message only appears in debug mode)",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -394,8 +419,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                 .commit()
     }
 
-    private fun openEditCoverTitlePage() {
-        getEditTitleBottomSheet().show(childFragmentManager)
+    private fun openEditTitleAndTagsPage() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editTitleAndTagsBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, TitleAndTagsEditBottomSheet::class.java.name) as TitleAndTagsEditBottomSheet
+        editTitleAndTagsBottomSheet.show(childFragmentManager, TAG_TITLE_AND_TAGS_EDIT)
     }
 
     private fun openSetupBroadcastSchedulePage() {
@@ -487,7 +514,8 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun showToaster(
             message: String,
             type: Int = Toaster.TYPE_NORMAL,
-            actionLabel: String = ""
+            actionLabel: String = "",
+            actionListener: View.OnClickListener = View.OnClickListener {  }
     ) {
         if (toasterBottomMargin == 0) {
             val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
@@ -499,14 +527,9 @@ class PlayBeforeLiveFragment @Inject constructor(
                 message = message,
                 actionLabel = actionLabel,
                 type = type,
-                bottomMargin = toasterBottomMargin
+                bottomMargin = toasterBottomMargin,
+                actionListener = actionListener
         )
-    }
-
-    private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
-        val editTitleBottomSheet = EditCoverTitleBottomSheet()
-        editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        return editTitleBottomSheet
     }
 
     private fun getSetupBroadcastScheduleBottomSheet(): SetupBroadcastScheduleBottomSheet {
@@ -520,5 +543,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         private const val KEY_SETUP_DATA = "setup_data"
         private const val TAG_COVER_EDIT = "cover_edit"
         private const val TAG_PRODUCT_EDIT = "product_edit"
+        private const val TAG_TITLE_AND_TAGS_EDIT = "title_and_tags_edit"
     }
 }

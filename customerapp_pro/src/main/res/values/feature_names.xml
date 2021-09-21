@@ -31,6 +31,7 @@
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
 
     <!--User Settings-->
     <string name="title_module_user_settings">Settings</string>
@@ -67,7 +68,10 @@
 
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
+    <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
@@ -79,8 +83,8 @@
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -163,6 +167,8 @@
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
 
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
+
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
 
@@ -185,13 +191,25 @@
     <string name="label_manage_address">Daftar Alamat</string>
 
     <string name="title_activity_add_address">Tambah Alamat</string>
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+
+    <string name="title_shipping_editor">Pengiriman</string>
+
+    <string name="label_image_preview">Gambar Bukti</string>
+
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
+
+    <string name="title_activity_cpl">Pengiriman Per Produk</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
     <!-- Dynamic feature for Power Merchant-->
     <string name="pm_title_activity">Power Merchant</string>
+    <string name="pm_benefit_package_title_activity">Paket Keuntungan</string>
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
@@ -296,7 +314,7 @@
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
-    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
@@ -310,8 +328,12 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
 
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
+
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
+    <string name="kol_activity_title">Komentar</string>
     <string name="kol_title_post_detail">Post Detail</string>
     <string name="kol_title_media_preview">Media Preview</string>
     <string name="kol_title_video_detail">Video Detail</string>
@@ -346,4 +368,11 @@
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
+
+    <!-- Review   -->
+    <string name="title_review">Ulasan</string>
 </resources>

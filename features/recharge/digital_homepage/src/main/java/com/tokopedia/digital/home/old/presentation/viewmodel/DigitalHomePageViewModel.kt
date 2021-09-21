@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.old.domain.*
 import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
-import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DigitalHomePageViewModel @Inject constructor(
         private val digitalHomePageUseCase: DigitalHomePageUseCase,
-        private val dispatcher: DigitalHomePageDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+        private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     private val mutableDigitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
     val digitalHomePageList: LiveData<List<DigitalHomePageItemModel>>
@@ -31,7 +31,7 @@ class DigitalHomePageViewModel @Inject constructor(
 
     fun getData(isLoadFromCloud: Boolean) {
         digitalHomePageUseCase.isFromCloud = isLoadFromCloud
-        launch(dispatcher.IO) {
+        launch(dispatcher.io) {
             val data = digitalHomePageUseCase.executeOnBackground()
             if (data.isEmpty() || checkError(data)) {
                 mutableIsAllError.postValue(true)

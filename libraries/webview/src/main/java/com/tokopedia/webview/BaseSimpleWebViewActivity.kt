@@ -2,29 +2,26 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
-import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.JsonReader
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
-import androidx.core.app.TaskStackBuilder
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.url.TokopediaUrl.Companion.getInstance
-import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
+import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -34,6 +31,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         private set
     protected var allowOverride = true
     protected var needLogin = false
+    protected var backPressedEnabled = true
+    protected var backPressedMessage = ""
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -54,6 +53,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun init(intent: Intent) {
+        url = ""
         intent.extras?.run {
             url = getString(KEY_URL, "").decode()
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
@@ -62,30 +62,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             pullToRefresh = getBoolean(KEY_PULL_TO_REFRESH, false)
             webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
+        intent.data?.let { uri ->
+            url = WebViewHelper.getEncodedUrlCheckSecondUrl(
+                uri,
+                uri.getQueryParameter(KEY_URL)?.decode() ?: url
+            )
 
-        intent.data?.run {
-            url = WebViewHelper.getEncodedUrlCheckSecondUrl(this, url)
+            showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar
+            allowOverride = uri.getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: allowOverride
+            needLogin = uri.getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: needLogin
+            pullToRefresh = uri.getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: pullToRefresh
+            webViewTitle = uri.getQueryParameter(KEY_TITLE) ?: webViewTitle
 
-            val needTitleBar = getQueryParameter(KEY_TITLEBAR)
-            needTitleBar?.let {
-                showTitleBar = it.toBoolean();
-            }
-
-            val override = getQueryParameter(KEY_ALLOW_OVERRIDE)
-            override?.let {
-                allowOverride = it.toBoolean();
-            }
-
-            val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
-            isLoginRequire?.let { needLogin = it.toBoolean() }
-
-            val isPullToRefreshEnabled = getQueryParameter(KEY_PULL_TO_REFRESH)
-            isPullToRefreshEnabled?.let { pullToRefresh = it.toBoolean() }
-
-            val needTitle = getQueryParameter(KEY_TITLE)
-            needTitle?.let { webViewTitle = it }
+            trackCampaign(uri)
         }
         logWebViewApplink()
+    }
+
+    //track campaign in case there is utm/gclid in url
+    fun trackCampaign(uri: Uri) {
+        TrackApp.getInstance().gtm.sendCampaign(this, uri.toString(), screenName, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -125,7 +121,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun reloadWebViewIfNeeded() {
         val needReload = try {
-            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+            PersistentCacheManager.instance.get(
+                KEY_CACHE_RELOAD_WEBVIEW,
+                Int::class.javaPrimitiveType!!,
+                0
+            ) == 1
         } catch (e: Exception) {
             false
         }
@@ -153,12 +153,36 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 f.webView.goBack()
             }
         } else {
-            goPreviousActivity()
+            if (backPressedEnabled) {
+                goPreviousActivity()
+            } else {
+                showOnBackPressedDisabledMessage()
+            }
+        }
+    }
+
+    fun setOnWebViewPageFinished() {
+        val uri = intent.data
+        uri?.let {
+            backPressedEnabled = it.getBooleanQueryParameter(KEY_BACK_PRESSED_ENABLED, true)
+            val message = it.getQueryParameter(KEY_BACK_PRESSED_MESSAGE)
+            backPressedMessage = if (!message.isNullOrBlank()) {
+                message
+            } else {
+                getString(R.string.webview_on_back_pressed_disabled_message)
+            }
+        }
+    }
+
+    fun enableBackButton() {
+        val f = fragment
+        if (f is BaseWebViewFragment && !f.webView.canGoBack()) {
+            backPressedEnabled = true
         }
     }
 
     fun goPreviousActivity() {
-        if (isTaskRoot) {
+        if (isTaskRoot || intent.data?.pathSegments?.joinToString() == ApplinkConst.WEBVIEW_PARENT_HOME_HOST) {
             RouteManager.route(this, ApplinkConst.HOME)
             finish()
         } else {
@@ -198,31 +222,52 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         return false
     }
 
+    private fun showOnBackPressedDisabledMessage() {
+        if (backPressedMessage.isNotBlank()) {
+            Toast.makeText(this, backPressedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
         if (domain.isNotEmpty()) {
             val baseDomain = getBaseDomain(domain)
             if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
-                if(!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
-                    Timber.w("P1#WEBVIEW_OPENED#browser;domain='$domain';url='$url'")
+                if (!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
+                    ServerLogger.log(
+                        Priority.P1,
+                        "WEBVIEW_OPENED",
+                        mapOf("type" to "browser", "domain" to domain, "url" to url)
+                    )
                     redirectToNativeBrowser()
                     return
                 }
-                Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+                ServerLogger.log(
+                    Priority.P1,
+                    "WEBVIEW_OPENED",
+                    mapOf("type" to "webview", "domain" to domain, "url" to url)
+                )
             }
         }
     }
 
     private fun redirectToNativeBrowser() {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(browserIntent)
-        finish()
+        try {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+            finish()
+        }catch (th:Throwable){
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "webview"
+            messageMap["url"] = url
+            ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
+        }
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        if(whiteListedDomains.isEnabled) {
+        if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
-                if(it.contains(domain)) {
+                if (it.contains(domain)) {
                     return true
                 }
             }
@@ -232,10 +277,19 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun getWhiteListedDomains() {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
-        val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-        if(whiteListedDomainsCsv.isNotBlank()) {
-            whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        try {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
+            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+            if (whiteListedDomainsCsv.isNotBlank()) {
+                whiteListedDomains =
+                    Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            }
+        } catch (e: Exception) {
+            whiteListedDomains = WhiteListedDomains()
+
+            if (!GlobalConfig.isAllowDebuggingTools()) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
         }
     }
 
@@ -251,14 +305,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     companion object {
 
         const val TOKOPEDIA_DOMAIN = "tokopedia"
+        const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
 
         fun getStartIntent(
-                context: Context,
-                url: String,
-                showToolbar: Boolean = true,
-                allowOverride: Boolean = true,
-                needLogin: Boolean = false,
-                title: String = ""
+            context: Context,
+            url: String,
+            showToolbar: Boolean = true,
+            allowOverride: Boolean = true,
+            needLogin: Boolean = false,
+            title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -266,94 +321,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 putExtra(KEY_ALLOW_OVERRIDE, allowOverride)
                 putExtra(KEY_NEED_LOGIN, needLogin)
                 putExtra(KEY_TITLE, title)
-            }
-        }
-    }
-
-    object DeeplinkIntent {
-
-        const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
-        const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
-        const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
-
-        @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
-        @JvmStatic
-        fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
-            val webUrl = extras.getString(KEY_URL, TokopediaUrl.getInstance().WEB)
-            val taskStackBuilder = TaskStackBuilder.create(context)
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            taskStackBuilder.addNextIntent(RouteManager.getIntent(context, ApplinkConst.HOME))
-            val destination = getStartIntent(context, webUrl)
-            taskStackBuilder.addNextIntent(destination)
-            return taskStackBuilder
-        }
-
-        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
-        @JvmStatic
-        fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
-            var webUrl = extras.getString(
-                    KEY_URL, TokopediaUrl.getInstance().WEB
-            )
-            var showToolbar: Boolean
-            var needLogin: Boolean
-            var allowOverride: Boolean
-
-            try {
-                showToolbar = extras.getBoolean(KEY_TITLEBAR, true)
-            } catch (e: ParseException) {
-                showToolbar = true
-            }
-
-            try {
-                needLogin = extras.getBoolean(KEY_NEED_LOGIN, false)
-            } catch (e: ParseException) {
-                needLogin = false
-            }
-
-            try {
-                allowOverride = extras.getBoolean(KEY_ALLOW_OVERRIDE, true)
-            } catch (e: ParseException) {
-                allowOverride = true
-            }
-
-            if (TextUtils.isEmpty(webUrl)) {
-                webUrl = TokopediaUrl.Companion.getInstance().WEB
-            }
-
-            return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
-        }
-
-        @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
-        @JvmStatic
-        fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val webUrl = extras.getString("url", getInstance().WEB)
-            val destinationIntent = Intent(Intent.ACTION_VIEW)
-            val decodedUrl: String?
-            decodedUrl = webUrl.decode()
-            val uriData = Uri.parse(decodedUrl)
-            destinationIntent.data = uriData
-            if (context == null) {
-                return destinationIntent
-            }
-            val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
-            // remove deeplink tokopedia if any
-            for (i in resolveInfos.indices.reversed()) {
-                val resolveInfo = resolveInfos[i]
-                val packageName = resolveInfo.activityInfo.packageName
-                if (packageName == CUSTOMERAPP_PACKAGE || packageName == SELLERAPP_PACKAGE) {
-                    resolveInfos.removeAt(i)
-                }
-            }
-
-            // return the first intent only (only if it is the only available browser)
-            return if (resolveInfos.size == 1) {
-                val resolveInfo = resolveInfos[0]
-                val browserIntent = Intent()
-                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                browserIntent.data = uriData
-                browserIntent
-            } else {
-                destinationIntent
             }
         }
     }

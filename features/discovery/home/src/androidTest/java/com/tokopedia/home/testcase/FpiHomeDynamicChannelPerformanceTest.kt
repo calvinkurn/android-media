@@ -11,8 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writeFPIPerformanceFile
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.R
+import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
@@ -32,7 +32,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     val TEST_CASE_OVERALL_SCROLL_PERFORMANCE = "test_case_overall_scroll"
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark()

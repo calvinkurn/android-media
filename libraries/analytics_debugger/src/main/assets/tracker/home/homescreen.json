@@ -3,15 +3,16 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "/",
-      "event": "{{.*}}",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "event": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "theme": ".*",
       "currentSite": "tokopediamarketplace",
       "businessUnit": "home & browse"
     }

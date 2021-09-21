@@ -4,9 +4,8 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class RatesParamHelperTest {
 
@@ -92,10 +91,10 @@ class RatesParamHelperTest {
     fun `given one product model when generate product json return json string`() {
         val data = ShippingParam().apply {
             products = listOf(
-                    Product(298851813, false)
+                    Product(298851813, isFreeShipping = false, isFreeShippingTc = false)
             )
         }
-        val expected = "[{\"product_id\":298851813,\"is_free_shipping\":false}]"
+        val expected = "[{\"product_id\":298851813,\"is_free_shipping\":false,\"is_free_shipping_tc\":false}]"
         val actual = RatesParamHelper.generateProducts(data)
         assertEquals(expected, actual)
     }

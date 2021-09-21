@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -54,11 +53,9 @@ public class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final long DISMISS_TIME = 10000;
-    protected Boolean isAllowFetchDepartmentView = false;
 
     protected UserSessionInterface userSessionInterface;
 
-    private Boolean isPause = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
 
     @Override
@@ -231,7 +228,6 @@ public class BaseActivity extends AppCompatActivity implements
 
     public void onLogout() {
         ((AbstractionRouter) getApplication()).onForceLogout(this);
-        new CacheApiClearAllUseCase(this).executeSync();
         setTetraUserId("");
     }
 

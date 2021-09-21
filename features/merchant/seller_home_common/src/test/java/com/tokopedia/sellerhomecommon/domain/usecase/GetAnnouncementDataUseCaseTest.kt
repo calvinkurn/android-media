@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetAnnouncementDataResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -46,7 +47,7 @@ class GetAnnouncementDataUseCaseTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        getAnnouncementDataUseCase = GetAnnouncementDataUseCase(gqlRepository, mapper)
+        getAnnouncementDataUseCase = GetAnnouncementDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test

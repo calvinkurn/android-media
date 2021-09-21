@@ -3,11 +3,12 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
 import okhttp3.Interceptor
 
 class InvoicePreviewUiModel(
-        id: Int,
+        id: String,
         invoiceCode: String,
         productName: String,
         date: String,
@@ -38,7 +39,7 @@ class InvoicePreviewUiModel(
                 date.isEmpty() ||
                 imageUrl.isEmpty() ||
                 invoiceUrl.isEmpty() ||
-                statusId == INVALID_ID ||
+                statusId == INVALID_STATUS_ID ||
                 status.isEmpty() ||
                 totalPriceAmount.isEmpty()
     }
@@ -48,10 +49,11 @@ class InvoicePreviewUiModel(
     }
 
     override fun generateMsgObj(
-            messageId: String,
-            opponentId: String,
-            message: String,
-            listInterceptor: List<Interceptor>
+        messageId: String,
+        opponentId: String,
+        message: String,
+        listInterceptor: List<Interceptor>,
+        userLocationInfo: LocalCacheModel
     ): Any {
         val startTime = SendableViewModel.generateStartTime()
         return SendWebsocketParam.generateParamSendInvoiceAttachment(
@@ -63,6 +65,7 @@ class InvoicePreviewUiModel(
     }
 
     companion object {
-        const val INVALID_ID = -1
+        const val INVALID_ID = "-1"
+        const val INVALID_STATUS_ID = -1
     }
 }

@@ -171,7 +171,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     if (!it.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
                         return
                     }
-                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY) ?: ArrayList()
                     setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)
@@ -668,10 +668,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                     }
                     if(viewModel.isMyShop) {
-                        if(it.data.sellerTemplate.templates.isEmpty()) return@Observer
+                        if(it.data.sellerTemplate.templates.isEmpty() || !it.data.sellerTemplate.isEnable) return@Observer
                         templateAdapter?.setData(it.data.sellerTemplate.templates)
                     } else {
-                        if(it.data.buyerTemplate.templates.isEmpty()) return@Observer
+                        if(it.data.buyerTemplate.templates.isEmpty() || !it.data.buyerTemplate.isEnable) return@Observer
                         templateAdapter?.setData(it.data.buyerTemplate.templates)
                     }
                     replyTemplateContainer.show()

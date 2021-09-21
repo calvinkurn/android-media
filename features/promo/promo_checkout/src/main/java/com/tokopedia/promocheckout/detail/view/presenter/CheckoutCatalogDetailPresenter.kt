@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.detail.model.couponredeem.PromoRedeemCouponRe
 import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
+import com.tokopedia.promocheckout.util.PromoCheckoutQuery
 
 import java.util.HashMap
 
@@ -31,7 +32,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         variables["is_gift"] = 0
         variables["gift_user_id"] = 0
         variables["gift_email"] = ""
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_checkout_prevalidate_coupon),
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutPrevalidateCoupon(),
                 PromoCouponPreValidateResponse::class.java, variables, false)
         mValidateCouponUseCase.clearRequest()
         mValidateCouponUseCase.addRequest(graphqlRequest)
@@ -70,8 +71,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         variables["catalog_id"] = item.id ?: 0
         variables["is_gift"] = 0
 
-        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
-                R.raw.promo_checkout_redeem_coupon),
+        val request = GraphqlRequest(PromoCheckoutQuery.promoCheckoutRedeemCoupon(),
                 PromoRedeemCouponResponse::class.java,
                 variables, false)
         mRedeemCouponUseCase.clearRequest()
@@ -118,14 +118,13 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         variables["catalog_id"] = catalogId
         variables["apiVersion"] = "2.0.0"
 
-        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
-                R.raw.promo_checkout_catalog_detail),
+        val request = GraphqlRequest(PromoCheckoutQuery.promoCheckoutCatalogDetail(),
                 CouponDetailsResponse::class.java,
                 variables, false)
         mGetCouponDetail!!.clearRequest()
         mGetCouponDetail.addRequest(request)
 
-        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_gql_current_points), UserPointsResponse::class.java, false)
+        val graphqlRequestPoints = GraphqlRequest(PromoCheckoutQuery.promoCurrentPoints(), UserPointsResponse::class.java, false)
         mGetCouponDetail.addRequest(graphqlRequestPoints)
         mGetCouponDetail.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {

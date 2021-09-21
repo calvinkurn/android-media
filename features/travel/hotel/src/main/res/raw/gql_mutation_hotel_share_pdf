@@ -1,5 +1,0 @@
-mutation sendNotification ($data: propertySendNotificationArgs!) {
-  propertySendNotification(input: $data){
-    Success
-  }
-}

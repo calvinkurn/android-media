@@ -1,0 +1,133 @@
+[
+  {
+    "data": {
+      "getProductV3": {
+        "productID": "1603766068",
+        "productName": "colore",
+        "status": "ACTIVE",
+        "stock": 1,
+        "priceCurrency": "IDR",
+        "price": 121000,
+        "lastUpdatePrice": "2021-02-19T09:15:44.105518Z",
+        "minOrder": 1,
+        "maxOrder": 1,
+        "description": "",
+        "weightUnit": "GR",
+        "weight": 500,
+        "condition": "NEW",
+        "mustInsurance": false,
+        "isKreasiLokal": false,
+        "alias": "colore",
+        "sku": "",
+        "gtin": "",
+        "url": "https://www.tokopedia.com/ketek-dinosaurus/colore",
+        "brand": {
+          "brandID": "0",
+          "name": "",
+          "brandStatus": 0,
+          "isActive": false
+        },
+        "catalog": {
+          "catalogID": "0",
+          "name": "",
+          "url": ""
+        },
+        "category": {
+          "id": "2821",
+          "name": "Makanan-Minuman - Paket-Parcel-Makanan - Parcel-Makanan",
+          "title": "Makanan & Minuman",
+          "isAdult": false,
+          "breadcrumbURL": "https://www.tokopedia.com/p/makanan-minuman/paket-parcel-makanan/parcel-makanan",
+          "detail": [
+            {
+              "id": "35",
+              "name": "Makanan & Minuman",
+              "breadcrumbURL": "https://www.tokopedia.com/p/makanan-minuman/paket-parcel-makanan/parcel-makanan",
+              "isAdult": false
+            },
+            {
+              "id": "2703",
+              "name": "Paket & Parcel Makanan",
+              "breadcrumbURL": "https://www.tokopedia.com/p/makanan-minuman/paket-parcel-makanan/parcel-makanan",
+              "isAdult": false
+            },
+            {
+              "id": "2821",
+              "name": "Parcel Makanan",
+              "breadcrumbURL": "https://www.tokopedia.com/p/makanan-minuman/paket-parcel-makanan/parcel-makanan",
+              "isAdult": false
+            }
+          ]
+        },
+        "menus": [],
+        "pictures": [
+          {
+            "picID": "5587304301",
+            "description": "",
+            "filePath": "VqbcmM/2021/2/15",
+            "fileName": "ec0ad8f7-e091-4808-815a-d4f17d83df64.jpg",
+            "width": 1125,
+            "height": 1125,
+            "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/2/15/ec0ad8f7-e091-4808-815a-d4f17d83df64.jpg",
+            "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/15/ec0ad8f7-e091-4808-815a-d4f17d83df64.jpg",
+            "url300": "",
+            "status": 0
+          }
+        ],
+        "position": {
+          "position": "0",
+          "isSwap": false
+        },
+        "preorder": {
+          "duration": 0,
+          "timeUnit": "",
+          "isActive": false
+        },
+        "shop": {
+          "id": "10421732"
+        },
+        "wholesale": [],
+        "campaign": {
+          "campaignID": "0",
+          "campaignType": 0,
+          "campaignTypeName": "",
+          "percentageAmount": 0,
+          "originalPrice": 0,
+          "discountedPrice": 0,
+          "originalStock": 0,
+          "isActive": false
+        },
+        "video": [],
+        "cashback": {
+          "percentage": 0
+        },
+        "lock": {
+          "full": false,
+          "partial": {
+            "price": false,
+            "status": false,
+            "stock": false,
+            "wholesale": false,
+            "name": false
+          }
+        },
+        "stats": {
+          "countView": 0,
+          "countReview": 0,
+          "countTalk": 0,
+          "rating": 0
+        },
+        "txStats": {
+          "itemSold": 0,
+          "txSuccess": 0,
+          "txReject": 0
+        },
+        "variant": {
+          "products": [],
+          "selections": [],
+          "sizecharts": []
+        }
+      }
+    }
+  }
+]

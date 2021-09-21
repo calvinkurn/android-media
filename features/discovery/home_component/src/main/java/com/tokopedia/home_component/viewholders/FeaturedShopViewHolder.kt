@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.decoration.CommonMarginStartDecoration
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -16,12 +17,12 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFe
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
 
 /**
@@ -36,18 +37,28 @@ class FeaturedShopViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_featured_shop
+        const val SIZE_2 = 2
     }
 
     private lateinit var adapter: FeaturedShopAdapter
 
     override fun bind(element: FeaturedShopDataModel) {
-        if(element.channelModel.channelGrids.size < 2){
+        invokeState(element.state,{
+            itemView.loading_view?.show()
+        },{
+            if(element.channelModel.channelGrids.size < SIZE_2){
+                itemView.content_container?.hide()
+            } else {
+                itemView.content_container?.show()
+                itemView.loading_view?.hide()
+                setHeaderComponent(element)
+                setChannelDivider(element)
+                initView(element)
+            }
+        },{
             itemView.content_container?.hide()
-        } else {
-            itemView.content_container?.show()
-            setHeaderComponent(element)
-            initView(element)
-        }
+        })
+
     }
 
     override fun bind(element: FeaturedShopDataModel, payloads: MutableList<Any>) {
@@ -58,8 +69,23 @@ class FeaturedShopViewHolder(
         initItems(element)
     }
 
+    private fun setChannelDivider(element: FeaturedShopDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
+    }
+
     private fun initItems(element: FeaturedShopDataModel)
     {
+        if (itemView.dc_banner_rv.itemDecorationCount == 0) {
+            itemView.dc_banner_rv.addItemDecoration(
+                    CommonMarginStartDecoration(
+                            marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_14)
+                    )
+            )
+        }
         val listData = mutableListOf<Visitable<*>>()
         val productDataList = convertDataToProductData(element.channelModel)
         listData.addAll(productDataList)
@@ -113,6 +139,14 @@ class FeaturedShopViewHolder(
             ))
         }
         return list
+    }
+
+    private fun invokeState(state: Int, stateLoading: () -> Unit, stateReady: () -> Unit, stateFailed: () -> Unit) {
+        when (state) {
+            FeaturedShopDataModel.STATE_LOADING -> {stateLoading.invoke()}
+            FeaturedShopDataModel.STATE_READY -> {stateReady.invoke()}
+            FeaturedShopDataModel.STATE_FAILED -> {stateFailed.invoke()}
+        }
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {

@@ -3,6 +3,7 @@ package com.tokopedia.onboarding.view.activity
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -14,12 +15,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.di.OnboardingComponent
+import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
@@ -29,7 +31,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -38,6 +39,9 @@ import javax.inject.Inject
  */
 
 class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponent> {
+
+    private val EXTRAS_COACHMARK_KEY = "coachmark"
+    private val EXTRAS_COACHMARK_DISABLE = "disable"
 
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
@@ -88,11 +92,18 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-
-        initObserver()
-        loadTime = System.currentTimeMillis()
-        viewModel.getData()
-        fetchAbTesting()
+        var isCoachmarkApplink = false
+        intent?.extras?.let {
+            isCoachmarkApplink = it.getString(EXTRAS_COACHMARK_KEY) == EXTRAS_COACHMARK_DISABLE
+        }
+        if (isCoachmarkApplink) {
+            handleDisableCoachmarkUri()
+        } else {
+            initObserver()
+            loadTime = System.currentTimeMillis()
+            viewModel.getData()
+            fetchAbTesting()
+        }
     }
 
     override fun onBackPressed() {
@@ -111,6 +122,11 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
             winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
         }
         window.attributes = winParams
+    }
+
+    private fun handleDisableCoachmarkUri() {
+        CoachMark2.isCoachmmarkShowAllowed = false
+        finish()
     }
 
     private fun initObserver() {

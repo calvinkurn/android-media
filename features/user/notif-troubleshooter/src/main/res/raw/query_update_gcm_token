@@ -1,7 +1,0 @@
-query update_gcm_token($oldToken: String!, $newToken: String!) {
-  notifier_updateGcm(new_device_id: $newToken, old_device_id: $oldToken) {
-    status
-    is_success
-    error_message
-  }
-}

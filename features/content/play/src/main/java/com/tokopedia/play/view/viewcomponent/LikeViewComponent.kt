@@ -4,9 +4,10 @@ import android.animation.Animator
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -26,23 +27,25 @@ class LikeViewComponent(
     private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
+    private val likeAnimatorListener = object : Animator.AnimatorListener {
+
+        override fun onAnimationRepeat(animation: Animator?) {
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            vLikeClickArea.isClickable = true
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+            vLikeClickArea.isClickable = false
+        }
+    }
+
     init {
-        animationLike.addAnimatorListener(object : Animator.AnimatorListener {
-
-            override fun onAnimationRepeat(animation: Animator?) {
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-                vLikeClickArea.isClickable = true
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationStart(animation: Animator?) {
-                vLikeClickArea.isClickable = false
-            }
-        })
+        animationLike.addAnimatorListener(likeAnimatorListener)
     }
 
     fun setEnabled(isEnabled: Boolean) {
@@ -56,16 +59,22 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
-        tvTotalLikes.text = totalLikes.totalLikeFormatted
+    fun setTotalLikes(totalLikes: String) {
+        tvTotalLikes.text = totalLikes
     }
 
     fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+        animationLike.cancelAnimation()
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
             if (animate) animationLike.playAnimation()
             else animationLike.progress = END_ANIMATED_PROGRESS
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        animationLike.removeAnimatorListener(likeAnimatorListener)
     }
 
     private companion object {

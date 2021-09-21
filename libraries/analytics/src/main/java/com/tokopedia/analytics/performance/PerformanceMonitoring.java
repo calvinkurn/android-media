@@ -39,12 +39,8 @@ public class PerformanceMonitoring {
                     this.pointStartTime = System.currentTimeMillis();
                     trace.start();
                 }
-            } else {
-                Timber.e("P2#FIREBASE_PERFORMANCE_INIT_DF#%s", "Firebase Performance initialization failed");
             }
-        } catch (Exception e){
-            Timber.e(e, "P2#FIREBASE_PERFORMANCE_INIT_DF#%s", e.getMessage());
-        }
+        } catch (Exception ignored){ }
     }
 
     public void stopTrace() {

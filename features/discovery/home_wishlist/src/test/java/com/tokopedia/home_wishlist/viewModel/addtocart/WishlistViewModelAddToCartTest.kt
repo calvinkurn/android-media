@@ -215,7 +215,7 @@ class WishlistViewModelAddToCartTest {
         wishlistViewModel.addToCartProduct(4)
 
         // Expect add to cart event is triggered with selected product Id
-        assert(wishlistViewModel.addToCartActionData.value == null)
+        assert(wishlistViewModel.addToCartActionData.value != null)
     }
     
     @Test

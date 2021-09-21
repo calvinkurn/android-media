@@ -2,8 +2,6 @@ package com.tokopedia.centralizedpromo.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
@@ -11,7 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
@@ -35,13 +32,6 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
 
     private val promoCreationPreference by lazy {
         getSharedPreferences(VOUCHER_CREATION, Context.MODE_PRIVATE)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(android.R.color.white)
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {

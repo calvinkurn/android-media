@@ -132,9 +132,11 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
             when (it) {
                 TalkTemplateMutationResults.TemplateActivateSuccess -> {
                     showToaster(getString(R.string.template_list_success_activate_template), false)
+                    updateAddTemplateButton()
                 }
                 TalkTemplateMutationResults.TemplateDeactivateSuccess -> {
                     showToaster(getString(R.string.template_list_success_deactivate_template), false)
+                    hideButton()
                 }
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     showToaster(getString(R.string.template_list_success_add_template), false)
@@ -161,7 +163,6 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                         return@Observer
                     }
                     renderList(it.data.buyerTemplate.templates, it.data.buyerTemplate.isEnable)
-                    showButton()
                 }
                 is Fail -> {
                     showToasterWithAction(getString(R.string.template_list_fail_load_template_list), true, View.OnClickListener {
@@ -174,10 +175,19 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun renderList(templates: List<String>, isEnabled: Boolean) {
-        talkTemplateListAddButton?.isEnabled = templates.shouldEnableButton()
+        if(!isEnabled) {
+            talkTemplateListRecyclerView?.hide()
+        } else {
+            talkTemplateListAddButton?.isEnabled = templates.shouldEnableButton()
+            talkTemplateListRecyclerView?.show()
+            showButton()
+        }
         adapter?.setData(templates)
-        talkTemplateListRecyclerView?.show()
         initSwitch(isEnabled)
+    }
+
+    private fun updateAddTemplateButton() {
+        if(adapter?.shouldShowAddTemplateButton() == true) showButton() else hideButton()
     }
 
     private fun initRecyclerView() {

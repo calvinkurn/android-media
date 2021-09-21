@@ -19,7 +19,7 @@
         android:gravity="center_horizontal"
         android:text="@string/introducing"
         android:textColor="@color/white"
-        android:textSize="@dimen/fontm"
+        android:textSize="@dimen/sp_16"
         android:textStyle="normal" />
 
     <ImageView
@@ -60,7 +60,7 @@
         android:gravity="center_horizontal"
         android:text="@string/textview_redirect_seller_app"
         android:textColor="@color/white"
-        android:textSize="@dimen/fontm"
+        android:textSize="@dimen/sp_16"
         android:textStyle="normal" />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView

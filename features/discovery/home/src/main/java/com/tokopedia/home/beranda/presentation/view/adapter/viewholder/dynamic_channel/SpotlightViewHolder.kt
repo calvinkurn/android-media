@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
@@ -29,6 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
 import java.util.ArrayList
@@ -128,7 +128,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
             longDescription.setSpan(StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             description.text = longDescription
 
-            ImageHandler.loadImageFitCenter(context, background, model.backgroundImageUrl)
+            background.loadImage(model.backgroundImageUrl)
 
             container.setOnClickListener { view ->
                 eventClickSpotlight(model, position)

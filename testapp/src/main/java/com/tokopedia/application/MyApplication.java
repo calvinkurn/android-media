@@ -19,19 +19,19 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -41,11 +41,10 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
@@ -71,6 +70,9 @@ public class MyApplication extends BaseMainApplication
     public void onCreate() {
 
         setVersionCode();
+        initFileDirConfig();
+
+        TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
@@ -100,7 +102,6 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
 
         super.onCreate();
-        initCacheApi();
 
         ResourceDownloadManager
                 .Companion.getManager()
@@ -112,6 +113,7 @@ public class MyApplication extends BaseMainApplication
         }
 
         IrisAnalytics.Companion.getInstance(this).initialize();
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
     }
 
 
@@ -138,66 +140,9 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-    public static class AppsflyerAnalytics extends DummyAnalytics {
+    @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
 
-        public AppsflyerAnalytics(Context context) {
-            super(context);
-        }
-    }
-
-    public static abstract class DummyAnalytics extends ContextAnalytics {
-
-        public DummyAnalytics(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void sendGeneralEvent(Map<String, Object> value) {
-
-        }
-
-        @Override
-        public void sendGeneralEvent(String event, String category, String action, String label) {
-
-        }
-
-        @Override
-        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
-
-        }
-
-        @Override
-        public void sendEvent(String eventName, Map<String, Object> eventValue) {
-
-        }
-    }
-
-    private void initCacheApi() {
-        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
-                getWhiteList(), String.valueOf(System.currentTimeMillis())));
-    }
-
-    public static List<CacheApiWhiteListDomain> getWhiteList() {
-        return new ArrayList<>(getShopWhiteList());
-    }
-
-    public static List<CacheApiWhiteListDomain> getShopWhiteList() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -232,11 +177,6 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public Class<?> getHomeClass() {
-        return null;
-    }
-
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         return null;
     }
 
@@ -450,6 +390,62 @@ public class MyApplication extends BaseMainApplication
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
+    }
+
+    public static class AppsflyerAnalytics extends DummyAnalytics {
+
+        public AppsflyerAnalytics(Context context) {
+            super(context);
+        }
+    }
+
+    public static abstract class DummyAnalytics extends ContextAnalytics {
+
+        public DummyAnalytics(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
+
+        }
+
+        @Override
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
+
         }
     }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
-    <string name="menu_delete">Hapus</string>
+    <string name="sbank_menu_delete">Hapus</string>
     <string name="cancel">Batal</string>
     <string name="bank_name_title">Nama Bank</string>
     <string name="account_number_title">Nomor Rekening</string>
@@ -57,5 +57,7 @@
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
     <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
     <string name="sbank_oke">oke</string>
+    <string name="sbank_ya_tambah">Ya, Tambah</string>
+    <string name="sbank_batal">Batal</string>
 
 </resources>

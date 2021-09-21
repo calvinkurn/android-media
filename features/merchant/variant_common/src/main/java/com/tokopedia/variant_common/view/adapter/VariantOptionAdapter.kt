@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
-import com.tokopedia.variant_common.view.ProductVariantListener
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.view.holder.BaseVariantViewHolder
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantColorViewHolder
@@ -15,7 +15,7 @@ import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 /**
  * Created by Yehezkiel on 08/03/20
  */
-class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<BaseVariantViewHolder<VariantOptionWithAttribute>>() {
+class VariantOptionAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<BaseVariantViewHolder<VariantOptionWithAttribute>>() {
 
     private val TYPE_IMAGE = 1
     private val TYPE_COLOR = 2

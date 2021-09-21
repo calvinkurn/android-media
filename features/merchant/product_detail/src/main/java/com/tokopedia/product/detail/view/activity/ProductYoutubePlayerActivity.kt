@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
-import com.tokopedia.keys.Keys.getGoogleGeoApiKey
+import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
@@ -38,7 +38,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         setContentView(R.layout.activity_product_youtube_player)
 
         selectedIndex = intent.getIntExtra(EXTRA_YOUTUBE_VIDEO_INDEX, 0)
-        videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA).asList()
+        videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA)?.asList() ?: listOf()
 
         youtube_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -46,8 +46,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
             youtube_list.adapter = YoutubeThumbnailAdapter(videoUrls.map { YoutubeVideo(url = it) }.toMutableList()){ _, index -> playVideoAt(index)
             }
         }
-        // TODO need to check in the future, map api is used for youtube?
-        youtube_player_main.initialize(this.getGoogleGeoApiKey(), this)
+        youtube_player_main.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {

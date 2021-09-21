@@ -46,5 +46,14 @@ data class SuggestionItem(
         val urlTracker: String = "",
 
         @SerializedName("tracking")
-        val tracking: SuggestionTracking = SuggestionTracking()
+        val tracking: SuggestionTracking = SuggestionTracking(),
+
+        @SerializedName("discount_percentage")
+        val discountPercentage: String = "",
+
+        @SerializedName("original_price")
+        val originalPrice: String = "",
+
+        @SerializedName("child_items")
+        val suggestionChildItems: List<SuggestionChildItem> = listOf()
 )

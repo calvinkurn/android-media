@@ -31,9 +31,9 @@ class AddressListPresenterTest  {
     fun `Get Address Success`() {
         val items = AddressDummyDataProvider.getAddressList()
 
-        every { useCase.execute(any()) } returns Observable.just(items)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.just(items)
 
-        presenter.getAddress()
+        presenter.getAddress(-1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -48,9 +48,9 @@ class AddressListPresenterTest  {
     fun `Get Address Return Empty`() {
         val items = AddressListModel()
 
-        every { useCase.execute(any()) } returns Observable.just(items)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.just(items)
 
-        presenter.getAddress()
+        presenter.getAddress(-1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -65,9 +65,9 @@ class AddressListPresenterTest  {
     fun `Get Address Error`() {
         val response = Throwable()
 
-        every { useCase.execute(any()) } returns Observable.error(response)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.error(response)
 
-        presenter.getAddress()
+        presenter.getAddress(-1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -81,9 +81,9 @@ class AddressListPresenterTest  {
     fun `Search Address Success`() {
         val items = AddressDummyDataProvider.getAddressList()
 
-        every { useCase.execute(any()) } returns Observable.just(items)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.just(items)
 
-        presenter.searchAddress("")
+        presenter.searchAddress("", -1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -98,9 +98,9 @@ class AddressListPresenterTest  {
     fun `Search Address Return Empty`() {
         val items = AddressListModel()
 
-        every { useCase.execute(any()) } returns Observable.just(items)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.just(items)
 
-        presenter.searchAddress("")
+        presenter.searchAddress("", -1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -115,9 +115,9 @@ class AddressListPresenterTest  {
     fun `Search Address Error`() {
         val response = Throwable()
 
-        every { useCase.execute(any()) } returns Observable.error(response)
+        every { useCase.execute(any(), any(), any(), any()) } returns Observable.error(response)
 
-        presenter.searchAddress("")
+        presenter.searchAddress("", -1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -131,9 +131,9 @@ class AddressListPresenterTest  {
     fun `LoadMore Address Success`() {
         val items = AddressDummyDataProvider.getAddressList()
 
-        every { useCase.loadMore(any(), any()) } returns Observable.just(items)
+        every { useCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(items)
 
-        presenter.loadMore()
+        presenter.loadMore(-1, -1, true)
 
         verifyOrder {
             view.showLoading()
@@ -147,9 +147,9 @@ class AddressListPresenterTest  {
     fun `LoadMore Address Error`() {
         val response = Throwable()
 
-        every { useCase.loadMore(any(), any()) } returns Observable.error(response)
+        every { useCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.error(response)
 
-        presenter.loadMore()
+        presenter.loadMore(-1, -1, true)
 
         verifyOrder {
             view.showLoading()

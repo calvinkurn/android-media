@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "gamiFloating": {
+        "cta": {
+          "appLink": "",
+          "url": ""
+        },
+        "id": 0,
+        "imgURL": "",
+        "isShowTime": false,
+        "name": "",
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "Success"
+          ],
+          "reason": ""
+        },
+        "sumToken": 0,
+        "sumTokenStr": "",
+        "timeRemainingSeconds": 0,
+        "timerBGColor": "",
+        "timerFontColor": "",
+        "unixTimestamp": 0
+      }
+    }
+  }
+]

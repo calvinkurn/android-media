@@ -241,7 +241,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)

@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/ar_text_adult_content"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,7 +33,7 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/dp_6"
         android:text="@string/ar_text_dob_warning"
-        android:textColor="@color/black_54"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_description_permission"
         app:layout_constraintVertical_bias="0"
         app:layout_goneMarginBottom="@dimen/dp_16"
-        app:cardBackgroundColor="@color/green_400"
+        app:cardBackgroundColor="@color/Unify_G500"
         app:cardCornerRadius="@dimen/dp_10">
 
         <TextView
@@ -65,7 +65,7 @@
             android:paddingTop="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_12"
             android:text="@string/ar_text_verify_dob"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
@@ -81,7 +81,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/ar_label_back"
-        android:textColor="@color/textColorDeny"
+        android:textColor="@color/Unify_N700_44"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

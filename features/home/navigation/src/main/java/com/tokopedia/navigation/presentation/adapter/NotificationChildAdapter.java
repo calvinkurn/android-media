@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.deprecated.label.LabelView;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.viewholder.BaseViewHolder;
 

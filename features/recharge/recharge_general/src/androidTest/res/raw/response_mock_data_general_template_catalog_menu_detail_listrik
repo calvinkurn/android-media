@@ -1,0 +1,182 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 113,
+          "name": "listrik-pln",
+          "label": "Listrik PLN",
+          "icon": ""
+        },
+        "recommendations": [
+
+        ],
+        "promos": [
+          {
+            "id": 2355,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/3/34631992/34631992_85c355be-a2f3-47fb-aed8-47a44ea18ce0.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-3/",
+            "status": 1,
+            "title": "[Flash Sale] Beli Token & Bayar Tagihan Listrik, Ada Diskon s.d 10rb. Kuota Terbatas.",
+            "subtitle": "Kode Promo: {BELIPLN}",
+            "promo_code": "BELIPLN"
+          },
+          {
+            "id": 2249,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/28/66931192/66931192_e94bef41-f13d-4cbb-a9c8-27bbefff308b.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[TOPED] Cashback hingga Rp350.000 untuk transaksi Top Up, Tagihan, Travel, Entertainment.",
+            "subtitle": "Kode promo: {TOPED}",
+            "promo_code": "TOPED"
+          },
+          {
+            "id": 2252,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+            "status": 1,
+            "title": "[COBABAYAR] Bayar Tagihan, Cashback hingga Rp100.000. ",
+            "subtitle": "Kode Promo: {COBABAYAR}",
+            "promo_code": "COBABAYAR"
+          },
+          {
+            "id": 2894,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/17/34631992/34631992_6d6f70d8-6af2-40bf-b5b3-c82bea5fa379.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[BONUSDISKON] Beli Pulsa s.d PLN, Diskon Rp10rb. Khusus Pengguna Baru.",
+            "subtitle": "Kode Promo: {BONUSDISKON}",
+            "promo_code": "BONUSDISKON"
+          },
+          {
+            "id": 2800,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/10/66931192/66931192_1e5c920d-3380-46a4-8d4b-9b32fdcbc22d.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-16",
+            "status": 1,
+            "title": "[DGSHOPPING]. Bayar Tagihan Dapat Kupon Belanja di Official Store",
+            "subtitle": "Kode Promo: (DGSHOPPING}",
+            "promo_code": "DGSHOPPING"
+          },
+          {
+            "id": 2476,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-8",
+            "status": 1,
+            "title": "[FASHDG] Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+            "subtitle": "kode promo : {FASHDG}",
+            "promo_code": "FASHDG"
+          },
+          {
+            "id": 2780,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/19/42484317/42484317_e990d99f-56f1-4f0b-ab75-df71b018b2d6.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-diskon-7",
+            "status": 1,
+            "title": "[DGMASTERCARD] Ada diskon 10% hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan",
+            "subtitle": "Kode Promo: {DGMASTERCARD}",
+            "promo_code": "DGMASTERCARD"
+          },
+          {
+            "id": 1573,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+            "status": 1,
+            "title": "[Tagihan] Bayar Tagihan, Cashback terus-terusan. Klik di Sini.",
+            "subtitle": "kode promo : {BAYARTERUS}",
+            "promo_code": "BAYARTERUS"
+          },
+          {
+            "id": 2093,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
+            "status": 1,
+            "title": "[BAYARINYUK] Bayarin tagihan mama, papa, saudara, siapa pun, cashback hingga Rp50.000! Klik di sini.",
+            "subtitle": "Kode Promo: {BAYARINYUK}",
+            "promo_code": "BAYARINYUK"
+          },
+          {
+            "id": 2739,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/8/34631992/34631992_c28f7d1c-3e77-41ae-b384-5a9fcf7b21a9.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-diskon-5/",
+            "status": 1,
+            "title": "[INDOTAGIHAN] Bayar tagihan, diskon 80%. Khusus pembayaran Indodana.",
+            "subtitle": "Kode Promo: {INDOTAGIHAN}",
+            "promo_code": "INDOTAGIHAN"
+          },
+          {
+            "id": 2874,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/2/66931192/66931192_56a1cf3b-1048-44cc-ae09-4d3db1aab587.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-ocbc",
+            "status": 1,
+            "title": "Khusus Hari Rabu, diskon hingga Rp25.000 untuk beli Pulsa, Paket Data, atau bayar Listrik PLN dengan Kartu Kredit OCBC NISP.",
+            "subtitle": "Kode promo: {DGOCBC}",
+            "promo_code": "DGOCBC"
+          },
+          {
+            "id": 2835,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/11/66931192/66931192_864e5831-2b17-463d-9eee-e69001446da0.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-bca/",
+            "status": 1,
+            "title": "Khusus hari Minggu, diskon Rp50rb Top Up, Tagihan, Travel, Entertainment dengan Kartu Kredit BCA.",
+            "subtitle": "Kode promo: {BCADIGI}",
+            "promo_code": "BCADIGI"
+          },
+          {
+            "id": 2810,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+            "status": 1,
+            "title": "[COMMON50] Top Up, Tagihan, Travel, Entertainment, diskon Rp50.000 dengan debit Commonwealth.",
+            "subtitle": "Kode promo: {COMMON50}",
+            "promo_code": "COMMON50"
+          },
+          {
+            "id": 2669,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/2/66931192/66931192_601cf779-4af2-47f2-9a7f-0aef51f4eb23.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-jcb/",
+            "status": 1,
+            "title": "[JCBPAY] Beli pulsa hingga bayar tagihan, cashback hingga Rp100rb dengan kartu kredit JCBPAY.",
+            "subtitle": "Kode promo: {JCBPAY}",
+            "promo_code": "JCBPAY"
+          },
+          {
+            "id": 1989,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/13/66931192/66931192_bb5068b0-d5fb-479f-825b-d687acf35a66.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-standard-chartered/",
+            "status": 1,
+            "title": "[SCPREMDG] Cashback hingga Rp50.000 dengan kartu kredit Standard Chartered Premium.",
+            "subtitle": "Kode Promo: {SCPREMDG}",
+            "promo_code": "SCPREMDG"
+          }
+        ],
+        "tickers": [
+          {
+            "ID": 136,
+            "Name": "Proteksi Tagihan",
+            "Content": "Listrik padam? Pakai Proteksi Tagihan, bisa klaim hingga 500rb.",
+            "Type": "success",
+            "Environment": "all",
+            "ActionText": "",
+            "ActionLink": ""
+          }
+        ],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]

@@ -2,11 +2,8 @@
 <com.tokopedia.shop.home.ShopCarouselBannerImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ivMultipleColumn"
+    android:adjustViewBounds="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:adjustViewBounds="true"
-    android:orientation="vertical"
     android:scaleType="fitXY"
-    app:unify_image_corner_radius="0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:unify_image_corner_radius="0" />

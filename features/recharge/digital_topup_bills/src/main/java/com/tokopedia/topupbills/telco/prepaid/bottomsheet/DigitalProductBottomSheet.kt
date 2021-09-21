@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 class DigitalProductBottomSheet : BottomSheetUnify() {
@@ -19,6 +20,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
     private lateinit var listener: ActionListener
 
     private var productId: String = ""
+    private var isSpecialProduct: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
@@ -44,6 +46,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
 
             arguments?.let {
                 setTitle(it.getString(TITLE, ""))
+                isSpecialProduct = it.getBoolean(IS_SPECIAL_PRODUCT, false)
                 val promo_price = it.getString(PROMO_PRICE)
                 val price = it.getString(PRICE)
                 details.text = it.getString(DETAILS)
@@ -57,7 +60,15 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                 }
 
                 selectItemBtn.setOnClickListener {
-                    listener.onClickOnProduct()
+                    if (::listener.isInitialized) {
+                        listener.onClickOnProduct(isSpecialProduct)
+                    } else {
+                        activity?.let { it2 ->
+                            Toaster.build(it2.findViewById(android.R.id.content),
+                                    getString(R.string.digital_telco_error_try_again),
+                                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+                    }
                     dismiss()
                 }
             }
@@ -65,7 +76,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
     }
 
     interface ActionListener {
-        fun onClickOnProduct()
+        fun onClickOnProduct(isSpecialProduct: Boolean)
     }
 
     companion object {
@@ -74,14 +85,25 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
         private const val DETAILS = "details"
         private const val PRICE = "price"
         private const val PROMO_PRICE = "promo_price"
+        private const val IS_SPECIAL_PRODUCT = "is_special_product"
 
-        fun newInstance(title: String, details: String, price: String, promoPrice : String?): DigitalProductBottomSheet {
-            val fragment = DigitalProductBottomSheet()
+        fun newInstance(
+                title: String,
+                details: String,
+                price: String,
+                promoPrice : String?,
+                isSpecialProduct: Boolean,
+                listener: ActionListener
+        ): DigitalProductBottomSheet {
+            val fragment = DigitalProductBottomSheet().apply {
+                setListener(listener)
+            }
             val bundle = Bundle()
             bundle.putString(DETAILS, details)
             bundle.putString(PRICE, price)
             bundle.putString(TITLE, title)
             bundle.putString(PROMO_PRICE, promoPrice)
+            bundle.putBoolean(IS_SPECIAL_PRODUCT, isSpecialProduct)
             fragment.arguments = bundle
             return fragment
         }

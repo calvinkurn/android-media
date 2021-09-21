@@ -7,8 +7,14 @@ import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
+import io.embrace.android.embracesdk.Embrace
 import timber.log.Timber
 
+private const val COOKIE_PREPARE_PAGE = 11;
+private const val COOKIE_NETWORK_REQUEST = 22;
+private const val COOKIE_RENDER_PAGE = 33;
+private const val TRACING_BUFF_SIZE = 50 * 1024 * 1024;
+private const val TRACING_INTERVAL = 500;
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
         val tagNetworkRequestDuration: String,
@@ -49,6 +55,7 @@ open class PageLoadTimePerformanceCallback(
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
+        Embrace.getInstance().startEvent(traceName, null, false)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
         startMethodTracing(traceName);
     }
@@ -60,15 +67,20 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.let {
             performanceMonitoring?.stopTrace()
+            stopEmbraceMonitoringOnly()
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
         }
         invalidate()
     }
 
+    override fun stopEmbraceMonitoringOnly() {
+        Embrace.getInstance().endEvent(traceName)
+    }
+
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",COOKIE_PREPARE_PAGE)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -78,13 +90,13 @@ open class PageLoadTimePerformanceCallback(
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",COOKIE_PREPARE_PAGE)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",COOKIE_NETWORK_REQUEST)
             requestNetworkDuration = System.currentTimeMillis()
         }
 
@@ -101,13 +113,13 @@ open class PageLoadTimePerformanceCallback(
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",COOKIE_NETWORK_REQUEST)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName", COOKIE_RENDER_PAGE)
             renderDuration = System.currentTimeMillis()
         }
 
@@ -124,7 +136,7 @@ open class PageLoadTimePerformanceCallback(
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",COOKIE_RENDER_PAGE)
         }
     }
 
@@ -166,24 +178,23 @@ open class PageLoadTimePerformanceCallback(
     }
 
     private fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+        if (GlobalConfig.DEBUG) {
             Trace.beginSection(sectionName)
         }
     }
 
     private fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+        if (GlobalConfig.DEBUG) {
             Trace.endSection()
         }
     }
 
     private fun startMethodTracing(traceName: String){
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
-                    Timber.i("PLTCallback: startMethodTracing  ==> "+traceName)
-                    Timber.i("PLTCallback: startMethodTracing ==> " +traceName)
-                    Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+                    Log.i("PLTCallback", "startMethodTracing ==> " +traceName)
+                    Debug.startMethodTracingSampling(traceName , TRACING_BUFF_SIZE , TRACING_INTERVAL);
                     break
                 }
             }
@@ -191,7 +202,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     private fun stopMethodTracing(traceName: String){
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
                     Log.i("PLTCallback" , "stopMethodTracing ==> "+traceName)

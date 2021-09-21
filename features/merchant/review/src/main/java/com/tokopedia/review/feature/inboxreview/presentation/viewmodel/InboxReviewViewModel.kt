@@ -19,6 +19,8 @@ import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewCou
 import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewUiModel
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
+import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderCounterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,6 +33,7 @@ class InboxReviewViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatchers,
         private val getInboxReviewUseCase: GetInboxReviewUseCase,
         private val getInboxReviewCounterUseCase: GetInboxReviewCounterUseCase,
+        private val productrevGetReminderCounterUseCase: ProductrevGetReminderCounterUseCase,
         val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -54,6 +57,9 @@ class InboxReviewViewModel @Inject constructor(
     private val _inboxReviewCounterText = MutableLiveData<Result<Int>>()
     val inboxReviewCounterText: LiveData<Result<Int>>
         get() = _inboxReviewCounterText
+
+    private val estimation = MutableLiveData<ProductrevGetReminderCounter>()
+    fun getEstimation(): LiveData<ProductrevGetReminderCounter> = estimation
 
     init {
         setupFeedBackInboxReview()
@@ -224,6 +230,13 @@ class InboxReviewViewModel @Inject constructor(
         }, onError = {
             feedbackInboxReviewMediator.postValue(Fail(it))
         })
+    }
+
+    fun fetchReminderCounter() {
+        launchCatchError(block = {
+            val responseWrapper = productrevGetReminderCounterUseCase.executeOnBackground()
+            estimation.postValue(responseWrapper.productrevGetReminderCounter)
+        }, onError = {})
     }
 
 }

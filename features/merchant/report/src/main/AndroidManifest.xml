@@ -6,7 +6,7 @@
             android:label="@string/product_report"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

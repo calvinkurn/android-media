@@ -2,7 +2,6 @@ package com.tokopedia.developer_options.ab_test_rollence
 
 import android.os.Bundle
 import android.text.Editable
-import androidx.fragment.app.FragmentActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,25 +9,27 @@ import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
-import androidx.appcompat.widget.AppCompatEditText
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.developer_options.R
 
 import com.tokopedia.developer_options.ab_test_rollence.adapters.AbTestRollenceConfigListAdapter
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.unifycomponents.TextFieldUnify
 
-class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceConfigListener {
+class AbTestRollenceConfigFragmentActivity : BaseActivity(), AbTestRollenceConfigListener {
 
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
+        const val ARGS_SELECTED_KEY_VALUE = "selected_key_value"
     }
 
     private lateinit var listAdapter: AbTestRollenceConfigListAdapter
     private var abTestRollenceConfig: AbTestPlatform? = null
     private var isListEmpty: Boolean = false
-    private var editTextSearchAbTestKey: AppCompatEditText? = null
+    private var editTextSearchAbTestKey: TextFieldUnify? = null
     private var textAbTestRevision: AppCompatTextView? = null
     private val searchKeyword : String
-        get() = editTextSearchAbTestKey?.text.toString()
+        get() = editTextSearchAbTestKey?.textFieldInput?.text.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +37,10 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
         initView()
     }
 
-    override fun onListItemClick(selectedConfigKey: String) {
+    override fun onListItemClick(selectedConfigKey: String, selectedConfigKeyValue: String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, selectedConfigKey)
+        fragmentBundle.putString(ARGS_SELECTED_KEY_VALUE, selectedConfigKeyValue)
 
         val dialog = AbTestRollenceConfigEditorDialog()
         dialog.arguments = fragmentBundle
@@ -51,6 +53,13 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
 
             updateListAdapterData(searchKeyword)
         }
+    }
+
+    override fun onEditorDeleteKeyButtonClick(editedConfigKey: String) {
+        if(editedConfigKey.isNotEmpty()){
+            abTestRollenceConfig?.deleteKeyLocally(editedConfigKey)
+        }
+        updateListAdapterData(searchKeyword)
     }
 
     private fun getFilteredKeys(vararg prefixes: String): Set<String> {
@@ -97,12 +106,12 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
             rvConfigList.adapter = listAdapter
         } else {
             rvConfigList.visibility = View.GONE
-            findViewById<AppCompatTextView>(R.id.empty_message).visibility = View.VISIBLE
+            findViewById<View>(R.id.empty_group).visibility = View.VISIBLE
         }
     }
 
     private fun initListener() {
-        editTextSearchAbTestKey?.addTextChangedListener(object: TextWatcher{
+        editTextSearchAbTestKey?.textFieldInput?.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

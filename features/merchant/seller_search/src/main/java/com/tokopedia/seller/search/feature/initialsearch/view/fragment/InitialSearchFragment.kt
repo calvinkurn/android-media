@@ -222,14 +222,4 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
-
-    fun onMinCharState() {
-        initialSearchAdapter.apply {
-            clearAllElements()
-            addMinCharState()
-        }
-        historyViewUpdateListener?.showHistoryView()
-    }
-
-
 }

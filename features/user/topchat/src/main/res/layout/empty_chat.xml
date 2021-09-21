@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/dp_topchat_12">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
         android:id="@+id/thumbnail_empty_chat_list"
         android:layout_width="@dimen/dp_topchat_160"
         android:layout_height="wrap_content"
@@ -51,10 +51,11 @@
         android:paddingStart="@dimen/spacing_lvl5"
         android:paddingEnd="@dimen/spacing_lvl5"
         android:text="@string/seller_empty_chat_subtitle"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_empty_chat_list"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.UnifyButton

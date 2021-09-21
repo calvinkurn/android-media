@@ -381,7 +381,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             }
             // since last ux improvement choose product is shown on initial view
             // it will produce error when click "selesai" and texfield showcase name still empty
-            tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, isSuccess = false)
+            tracking.onFinishCreateOrUpdateShowcase(shopId, shopType, isSuccess = false)
         } else {
             hideSoftKeyboard()
             if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
@@ -505,11 +505,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     val responseData = it.data
                     if (responseData.success) {
                         // navigate back to origin create showcase entry point
-                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, true)
+                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType, true)
                         activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     } else {
-                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType)
+                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                         showUnifyToaster(responseData.message)
                     }
                 }
@@ -541,6 +541,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                                     if (removeShowcaseProductResult.data.status) {
 
                                         // everything is fine, navigate back to showcase list
+                                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType, true)
                                         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
                                         intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
                                         activity?.setResult(Activity.RESULT_OK, intent)
@@ -548,6 +549,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                                     } else {
                                         // Show error remove showcase product
+                                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                                         showUnifyToaster(removeShowcaseProductResult.data.header.reason)
                                     }
 
@@ -555,16 +557,19 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                             } else {
                                 // Show error append new showcase product
+                                tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                                 showUnifyToaster(appendShowcaseProductResult.data.header.reason)
                             }
                         }
 
                     } else {
                         // Show error update name failed
+                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                         showUnifyToaster(updateShowcaseNameResult.data.message ?: getString(R.string.error_happens))
                     }
                 } else {
                     // Show error use case Fail result
+                    tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                     (updateShowcaseNameResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
                 }
             }

@@ -9,12 +9,8 @@ import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
-import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
-import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
-import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
-import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
 import dagger.Component
 
 /**
@@ -38,13 +34,10 @@ interface SellerHomeComponent {
 
     fun inject(sellerHomeFragment: MenuSettingFragment)
 
-    fun inject(sellerHomeFragment: OtherMenuFragment)
+    fun inject(sellerHomeFragment: com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment)
+    fun inject(otherMenuFragment: com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment)
     fun inject(sellerHomeFragment: CentralizedPromoFragment)
 
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)
     fun inject(firstVoucherBottomSheetFragment: FirstVoucherBottomSheetFragment)
-
-    fun inject(ratingBottomSheet: RatingBottomSheet)
-    fun inject(feedbackBottomSheet: FeedbackBottomSheet)
-    fun inject(thankYouBottomSheet: ThankYouBottomSheet)
 }

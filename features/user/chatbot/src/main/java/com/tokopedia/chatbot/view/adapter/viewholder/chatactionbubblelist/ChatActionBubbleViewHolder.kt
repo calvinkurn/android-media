@@ -1,23 +1,33 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist
 
-import androidx.recyclerview.widget.RecyclerView
+import android.graphics.Color
 import android.view.View
-import android.widget.TextView
-
+import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
 
-/**
- * Created by Hendri on 18/07/18.
- */
-class ChatActionBubbleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val chatActionMessage: TextView
+class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolder(itemView) {
+    private val chatActionMessage: Typography = itemView.findViewById(R.id.helpfull_question_option)
+    private val customerCareImage: ImageView = itemView.findViewById(R.id.chat_rating)
 
-    init {
-        chatActionMessage = itemView.findViewById(R.id.chat_action_message)
+    override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
+        chatActionMessage.text = element.text
+        chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context , (R.color.chatbot_color_option_list_text)))
+        customerCareImage.hide()
+        if (element.iconUrl.isNotEmpty()) {
+            setLiveChatButtonAction(element)
+        }
+        itemView.setOnClickListener { onSelect.invoke(element.bubbleType) }
     }
 
-    fun bind(element: ChatActionBubbleViewModel) {
-        chatActionMessage.text = element.text
+    private fun setLiveChatButtonAction(element: ChatActionBubbleViewModel) {
+        chatActionMessage.setTextColor(Color.parseColor(String.format(itemView.context.getString(R.string.chatbot_action_bubble_text_color_prefix), element.hexColor)))
+        customerCareImage.show()
+        ImageHandler.LoadImage(customerCareImage, element.iconUrl)
     }
 }

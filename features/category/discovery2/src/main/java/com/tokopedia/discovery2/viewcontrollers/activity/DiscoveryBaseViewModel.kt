@@ -37,6 +37,10 @@ abstract class DiscoveryBaseViewModel : LifecycleObserver {
 
     }
 
+    open fun refreshProductCarouselError() {
+
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     open fun onCreate() {
 

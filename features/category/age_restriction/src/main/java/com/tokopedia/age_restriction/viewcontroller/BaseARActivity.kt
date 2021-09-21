@@ -66,7 +66,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
         super.onCreate(savedInstanceState)
         arVM = ViewModelProviders.of(this,getVMFactory()).get(getViewModelType())
         origin = intent.getIntExtra("ORIGIN", 1)
-        destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM")
+        destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM") ?: ""
         when (origin) {
             1 -> {
                 event = CATEGORYPAGE
@@ -143,7 +143,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
     }
 

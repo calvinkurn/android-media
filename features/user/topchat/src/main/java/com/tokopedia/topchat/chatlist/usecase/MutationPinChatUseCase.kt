@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatlist.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.pojo.pinchat.PinChatResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -12,17 +12,17 @@ import kotlin.coroutines.CoroutineContext
 
 class MutationPinChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<PinChatResponse>,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun pinChat(
             msgId: String,
             onSuccess: (Boolean) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(msgId)
                     val response = gqlUseCase.apply {
@@ -30,12 +30,12 @@ class MutationPinChatUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response.chatPin.success)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

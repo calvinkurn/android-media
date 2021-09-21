@@ -3,12 +3,13 @@ package com.tokopedia.recommendation_widget_common.domain.request
 internal class GetRecommendationUseCaseRequest {
     companion object {
         val widgetListQuery = """
-            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!) {
-                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs) {
+            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean) {
+                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow) {
                     data {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -19,6 +20,16 @@ internal class GetRecommendationUseCaseRequest {
                         nextPage
                         prevPage
                         hasNext
+                      }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        thematicID
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                       }
                       recommendation {
                         id
@@ -37,6 +48,7 @@ internal class GetRecommendationUseCaseRequest {
                         slashedPriceInt
                         isWishlist
                         minOrder
+                        maxOrder
                         shop {
                           id
                           name
@@ -53,6 +65,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -74,6 +87,11 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
+                        parentID
                       }
                     }
                   }
@@ -96,6 +114,15 @@ internal class GetRecommendationUseCaseRequest {
                        pagination{
                             hasNext
                        }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                       }
                        recommendation {
                            id
                            name
@@ -110,6 +137,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name
@@ -119,6 +149,12 @@ internal class GetRecommendationUseCaseRequest {
                           labels {
                               title
                               color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
                           }
                           badges {
                               title
@@ -130,12 +166,20 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

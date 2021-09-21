@@ -1,17 +1,17 @@
 package com.tokopedia.logisticaddaddress.domain;
 
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Data;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.AutoCompleteUiModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel;
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 
 /**
  * Created by Fajar Ulin Nuha on 30/10/18.
  */
 public interface IMapsMapper {
 
-    AutoCompleteViewModel convertAutoCompleteModel(Data autoCompleteData, String query);
+    AutoCompleteUiModel convertAutoCompleteModel(Data autoCompleteData, String query);
 
-    CoordinateViewModel convertAutoCompleteLocationId(CoordinateModel coordinateModel);
+    CoordinateUiModel convertAutoCompleteLocationId(CoordinateModel coordinateModel);
 
 }

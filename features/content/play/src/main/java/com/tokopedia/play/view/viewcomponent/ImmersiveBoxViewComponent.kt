@@ -2,6 +2,8 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -39,6 +41,11 @@ class ImmersiveBoxViewComponent(
     private fun cancelAllAnimation() {
         fadeInFadeOutAnimation.cancel()
         fadeOutAnimation.cancel()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        cancelAllAnimation()
     }
 
     companion object {

@@ -6,6 +6,8 @@ import android.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import timber.log.Timber
@@ -37,11 +39,9 @@ object PushNotificationAnalytics {
         if (!BuildConfig.DEBUG) {
             val logMessage = generateLogMessage(context, data, message)
             FirebaseCrashlytics.getInstance().recordException(Exception(logMessage))
-            Timber.w(
-                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
-                    "PushNotification::notify(Context context, Bundle data)",
-                    logMessage
-            )
+            ServerLogger.log(Priority.P2, "LOG_PUSH_NOTIF", mapOf("type" to "PushNotification::notify(Context context, Bundle data)",
+                    "data" to logMessage
+            ))
         }
     }
 

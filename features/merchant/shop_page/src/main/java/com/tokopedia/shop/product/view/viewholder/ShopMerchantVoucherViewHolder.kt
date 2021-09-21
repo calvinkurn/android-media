@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
@@ -26,12 +26,9 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
     override fun bind(model: ShopMerchantVoucherUiModel) {
         model.data?.apply {
             merchantVoucherWidget?.setData(MvcData(
-                    title = titles?.firstOrNull()?.text ?: "",
-                    subTitle = model.data.subTitle ?: "",
-                    imageUrl = model.data.imageURL ?: ""
+                    animatedInfoList = model.data.animatedInfoList,
             ),
                     shopId = model.data.shopId ?: "0",
-                    isMainContainerSetFitsSystemWindows = false,
                     source = MvcSource.SHOP
             )
         }

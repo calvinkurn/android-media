@@ -2,9 +2,9 @@
   {
     "promotions": [
       {
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{\\d*}}",
-        "item_id": "{{\\d*}}",
+        "creative_name": ".*",
+        "creative_slot": "\\d*",
+        "item_id": "\\d*",
         "item_name": "/ - p1 - play dynamic banner - Resep Kekinian Buat Koki Dadakan"
       }
     ],

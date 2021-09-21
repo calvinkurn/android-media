@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewlist.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductReviewListResponse(
@@ -18,11 +19,15 @@ data class ProductReviewListResponse(
                 @SerializedName("rating")
                 val rating: Float? = 0.0F,
                 @SerializedName("reviewCount")
-                val reviewCount: Int? = -1
+                val reviewCount: Int? = -1,
+                @SerializedName("isKejarUlasan")
+                @Expose
+                val isKejarUlasan: Boolean = false
+
         ) {
             data class Product(
-                    @SerializedName("productID")
-                    val productID: Int? = -1,
+                    @SerializedName("productIDStr")
+                    val productID: String = "",
                     @SerializedName("productImageURL")
                     val productImageURL: String? = "",
                     @SerializedName("productName")

@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.data.checkout
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class CheckoutOccRequest(
@@ -10,6 +11,7 @@ data class CheckoutOccRequest(
 )
 
 data class Profile(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("profile_id")
         val profileId: Int = 0
 )
@@ -27,12 +29,20 @@ data class ParamCart(
         @SerializedName("data")
         val data: List<ParamData> = emptyList(),
         @SerializedName("mode")
-        val mode: Int = 0 // 0 = instant payment, 1 = scrooge payment page
-)
+        val mode: Int = 0, // 0 = instant payment, 1 = scrooge payment page
+        @SerializedName("feature_type")
+        val featureType: Int = FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+) {
+        companion object {
+                const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
+                const val FEATURE_TYPE_TOKONOW = 11
+        }
+}
 
 data class ParamData(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("address_id")
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         @SerializedName("shop_products")
         val shopProducts: List<ShopProduct> = emptyList()
 )
@@ -40,14 +50,16 @@ data class ParamData(
 data class ShopProduct(
         @SerializedName("promos")
         val promos: List<PromoRequest> = emptyList(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("product_data")
         val productData: List<ProductData> = emptyList(),
         @SerializedName("is_preorder")
         val isPreorder: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        val warehouseId: Int = 0,
+        val warehouseId: Long = 0,
         @SerializedName("finsurance")
         val finsurance: Int = 0,
         @SerializedName("shipping_info")
@@ -56,7 +68,7 @@ data class ShopProduct(
 
 data class ProductData(
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("product_notes")
@@ -66,8 +78,10 @@ data class ProductData(
 )
 
 data class ShippingInfo(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         val shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         val spId: Int = 0,
         @SerializedName("rates_id")

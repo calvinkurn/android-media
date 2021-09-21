@@ -1,14 +1,15 @@
 package com.tokopedia.shop.feed.view.adapter.holder
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
-import kotlinx.android.synthetic.main.item_post_entry_shop_page.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by yfsx on 16/05/19.
@@ -24,20 +25,20 @@ class WhitelistViewHolder(v: View,
         private const val FORMAT_NAME = "{{name}}"
     }
 
+    private val tvCaption: Typography? = itemView.findViewById(R.id.tvCaption)
+    private val ivAvatar: ImageView? = itemView.findViewById(R.id.ivAvatar)
+    private val btnCreatePost: View? = itemView.findViewById(R.id.btnCreatePost)
+
     override fun bind(element: WhitelistUiModel) {
         initView(element)
         initViewListener(element)
     }
 
     private fun initView(model: WhitelistUiModel) {
-        itemView.tvCaption.text = MethodChecker.fromHtml(formatWhiteListTitle(
+        tvCaption?.text = MethodChecker.fromHtml(formatWhiteListTitle(
                 model.whitelist.title))
 
-        ImageHandler.loadImageCircle2(
-                itemView.ivAvatar.context,
-                itemView.ivAvatar,
-                model.whitelist.image
-        )
+        ivAvatar?.loadImageCircle(model.whitelist.image)
     }
 
     private fun formatWhiteListTitle(title: String): String {
@@ -54,6 +55,6 @@ class WhitelistViewHolder(v: View,
     }
 
     private fun initViewListener(element: WhitelistUiModel) {
-        itemView.btnCreatePost.setOnClickListener { mainView.onWhitelistClicked(element) }
+        btnCreatePost?.setOnClickListener { mainView.onWhitelistClicked(element) }
     }
 }

@@ -2,11 +2,8 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCListResponse
-import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
-import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -49,11 +46,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
                 DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
         //endregion
 
-        //mvc
-        val mvcUseCase =  CatalogMVCListUseCase(null)
-        val mvcRequest = mvcUseCase.getGraphqlRequest(shopId.toString())
-
-        val requests = mutableListOf(discussionMostHelpfulRequest, mvcRequest)
+        val requests = mutableListOf(discussionMostHelpfulRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
@@ -65,13 +58,6 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
                 }
             }
 
-            if (gqlResponse.getError(mvcUseCase.getResponseClazz())?.isNotEmpty() != true) {
-                gqlResponse.doActionIfNotNull<TokopointsCatalogMVCListResponse> {
-                    p2GeneralData.tpCatalogMVCList = it.data
-                }
-            } else {
-                p2GeneralData.discussionMostHelpful = DiscussionMostHelpful()
-            }
             //endregion
 
         } catch (e: Throwable) {

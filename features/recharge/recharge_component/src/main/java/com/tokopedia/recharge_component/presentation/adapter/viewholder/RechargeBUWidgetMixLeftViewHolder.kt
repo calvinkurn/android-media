@@ -18,9 +18,9 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ImageHandler
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -81,6 +81,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             setupList(element)
             setSnapEffect()
             setHeaderComponent(element)
+            setChannelDivider(element)
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
@@ -115,6 +116,14 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         listener.onRechargeBUWidgetClickBanner(dataModel)
     }
 
+    private fun setChannelDivider(element: RechargeBUWidgetDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
+    }
+
     private fun initVar() {
         recyclerView = itemView.findViewById(R.id.rv_recharge_bu_product)
         image = itemView.findViewById(R.id.recharge_bu_parallax_image)
@@ -147,7 +156,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
         val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.bannerApplink))
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.applink))
         val productDataList = convertDataToProductData(rechargePerso)
         listData.addAll(productDataList)
         if (rechargePerso.textlink.isNotEmpty()) {

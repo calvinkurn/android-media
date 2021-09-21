@@ -2,24 +2,31 @@ package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
@@ -27,418 +34,1022 @@ fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageR
 
 class OrderSummaryPageRobot {
 
-    fun clickOnboardingInfo() {
-        onView(withId(R.id.tv_header_3)).perform(scrollTo()).perform(click())
-    }
-
     fun closeBottomSheet() {
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
-    fun clickAddPreferenceForNewBuyer() {
-        onView(withId(R.id.button_atur_pilihan)).perform(scrollTo()).perform(click())
-    }
+    fun clickAddProductQuantity(index: Int = 0, times: Int = 1) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
 
-    fun clickAddProductQuantity(times: Int = 1) {
-        val addButton = onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo())
-        for (i in 0 until times) {
-            addButton.perform(click())
-        }
+            override fun getDescription(): String = "click add product quantity"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val addButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_add)
+                for (i in 0 until times) {
+                    addButton.performClick()
+                }
+            }
+        }))
         Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
     }
 
-    fun clickMinusProductQuantity() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)).perform(scrollTo()).perform(click())
+    fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click minus product quantity"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val minusButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)
+                for (i in 0 until times) {
+                    minusButton.performClick()
+                }
+                Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+            }
+        }))
     }
 
-    fun clickEditPreference() {
-        onView(withId(R.id.iv_edit_preference)).perform(scrollTo()).check(matches(isDisplayed())).perform(click())
-    }
+    fun clickChangeAddressRevamp(func: (AddressBottomSheetRobot.() -> Unit)? = null) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun clickChangePreference(func: PreferenceListBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_choose_preference)).perform(scrollTo()).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
-        PreferenceListBottomSheetRobot().apply(func)
-    }
+            }
 
-    fun clickAddOrChangePreferenceRevamp(func: (PreferenceListBottomSheetRobot.() -> Unit)?) {
-        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).perform(click())
-        func?.let {
-            onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
-            PreferenceListBottomSheetRobot().apply(it)
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change address"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_change_address))
+            }
+        }))
+        if (func != null) {
+            AddressBottomSheetRobot().apply(func)
         }
     }
 
-    fun clickChangeAddressRevamp() {
-        onView(withId(R.id.btn_new_change_address)).perform(scrollTo()).perform(click())
-    }
-
     fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change duration"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_change_duration))
+            }
+        }))
         DurationBottomSheetRobot().apply(func)
     }
 
     fun clickChangePaymentRevamp() {
-        onView(withId(R.id.btn_new_change_payment)).perform(scrollTo()).perform(click())
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun clickChangeCourier(func: CourierBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_shipping_price)).perform(scrollTo()).perform(click())
-        CourierBottomSheetRobot().apply(func)
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change payment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_payment).performClick()
+            }
+        }))
     }
 
     fun clickChangeCourierRevamp(func: CourierBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_new_change_courier)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change courier"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_courier).performClick()
+            }
+        }))
         CourierBottomSheetRobot().apply(func)
     }
 
-    fun clickUbahDuration(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_shipping_change_duration)).perform(scrollTo()).perform(click())
+    fun clickShipmentErrorAction(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click shipping error action"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_shipping_error_message).performClick()
+            }
+        }))
         DurationBottomSheetRobot().apply(func)
     }
 
-    fun clickUbahDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
-        DurationBottomSheetRobot().apply(func)
+    fun clickShipmentReloadAction() {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click shipping reload action"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_reload_shipping).performClick()
+            }
+        }))
     }
 
     fun clickInsurance() {
-        onView(withId(R.id.cb_insurance)).perform(scrollTo()).perform(click())
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun clickBboTicker() {
-        onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
-        onView(withId(R.id.ticker_action)).perform(click())
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderInsuranceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click insurance checkbox"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.cb_insurance))
+            }
+        }))
     }
 
     fun clickApplyShipmentPromoRevamp() {
-        onView(withId(R.id.ticker_new_action)).perform(scrollTo()).perform(click())
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun clickOvoActivationButton(func: OvoActivationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
-        OvoActivationBottomSheetRobot().apply(func)
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click apply shipment promo from ticker"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.ticker_action).performClick()
+            }
+        }))
     }
 
     fun clickOvoActivationButtonRevamp(func: OvoActivationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click payment error action"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_payment_ovo_error_action).performClick()
+            }
+        }))
         OvoActivationBottomSheetRobot().apply(func)
     }
 
-    fun clickOvoTopUpButton() {
-        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
-    }
-
     fun clickOvoTopUpButtonRevamp() {
-        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click payment error message"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_payment_error_message).performClick()
+            }
+        }))
     }
 
-    fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).perform(click())
+    fun clickChangeInstallmentRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change installment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_installment_detail).performClick()
+            }
+        }))
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
-    fun clickInstallmentErrorAction(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).perform(click())
+    fun clickInstallmentErrorActionRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change installment error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_installment_error_action).performClick()
+            }
+        }))
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
     fun clickButtonPromo() {
-        onView(withId(R.id.btn_promo_checkout)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPromoCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click button promo"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_promo_checkout))
+            }
+        }))
     }
 
     fun clickButtonOrderDetail(func: OrderPriceSummaryBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_order_detail)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderTotalPaymentCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click button order detail"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_order_detail))
+            }
+        }))
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
     fun clickButtonContinueWithRedPromo() {
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_continue)).perform(click())
     }
 
-    fun closePromoNotEligibleBottomSheet() {
-        onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_close)).perform(click())
+    fun clickDialogPrimaryButton() {
+        // Wait for dialog to fully appear
+        Thread.sleep(1000)
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).perform(click())
     }
 
     fun pay() {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderTotalPaymentCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click pay"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_pay))
+            }
+        }))
     }
 
     infix fun pay(func: OrderSummaryPageResultRobot.() -> Unit) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderTotalPaymentCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click pay"
+
+            override fun perform(uiController: UiController?, view: View) {
+                click().perform(uiController, view.findViewById(R.id.btn_pay))
+            }
+        }))
         OrderSummaryPageResultRobot().apply(func)
     }
 
-    fun assertProductCard(shopName: String,
-                          shopLocation: String,
-                          hasShopBadge: Boolean,
+    fun clickAddNewAddress() {
+        onView(withId(R.id.btn_occ_add_new_address)).perform(click())
+    }
+
+    fun assertShopCard(shopName: String,
+                       hasShopBadge: Boolean,
+                       shopLocation: String,
+                       hasShopLocationImg: Boolean,
+                       isFreeShipping: Boolean,
+                       preOrderText: String,
+                       alertMessage: String) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderShopCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shop card"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(shopName, view.findViewById<Typography>(R.id.tv_shop_name).text.toString())
+                assertEquals(shopLocation, view.findViewById<Typography>(R.id.tv_shop_location).text.toString())
+                assertEquals(if (hasShopLocationImg) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iu_image_fulfill).visibility)
+                assertEquals(if (hasShopBadge) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iv_shop_badge).visibility)
+                assertEquals(if (isFreeShipping) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iu_free_shipping).visibility)
+                assertEquals(if (isFreeShipping) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.separator_free_shipping).visibility)
+                if (preOrderText.isNotEmpty()) {
+                    assertEquals(preOrderText, view.findViewById<Label>(R.id.lbl_pre_order).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.lbl_pre_order).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.separator_pre_order).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.lbl_pre_order).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.separator_pre_order).visibility)
+                }
+                if (alertMessage.isNotEmpty()) {
+                    assertEquals(alertMessage, view.findViewById<Label>(R.id.lbl_alert_message).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.lbl_alert_message).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.separator_alert_message).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.lbl_alert_message).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.separator_alert_message).visibility)
+                }
+            }
+        }))
+    }
+
+    fun assertShopBadge(hasShopBadge: Boolean = true, shopTypeName: String) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderShopCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shop badge"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (hasShopBadge) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.iv_shop_badge).visibility)
+                    assertEquals("image shop badge $shopTypeName", view.findViewById<View>(R.id.iv_shop_badge).contentDescription)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.iv_shop_badge).visibility)
+                }
+            }
+        }))
+    }
+
+    fun assertShopTicker(tickerMessage: String? = null,
+                         isCustom: Boolean = false) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderShopCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shop badge"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (tickerMessage != null && isCustom) {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_shop).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                    assertEquals(tickerMessage, view.findViewById<Typography>(R.id.occ_custom_ticker_description).text.toString())
+                } else if (tickerMessage != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.ticker_order_shop).visibility)
+                    assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_shop).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                }
+            }
+        }))
+    }
+
+    fun assertProductCard(index: Int = 0,
                           productName: String,
                           productPrice: String,
                           productSlashPrice: String?,
-                          isFreeShipping: Boolean,
-                          productQty: Int) {
-        onView(withId(R.id.tv_shop_name)).perform(scrollTo()).check(matches(withText(shopName)))
-        onView(withId(R.id.tv_shop_location)).check(matches(withText(shopLocation)))
-        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (hasShopBadge) {
-                assertEquals(View.VISIBLE, view.visibility)
-            } else {
-                assertEquals(View.GONE, view.visibility)
+                          productSlashPriceLabel: String?,
+                          productVariant: String?,
+                          productWarningMessage: String?,
+                          productAlertMessage: String?,
+                          productInfo: List<String>?,
+                          productQty: Int,
+                          productNotes: String?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert product $index card"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_product).visibility)
+                assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
+                assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
+                if (productSlashPrice == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                    assertEquals(productSlashPrice, view.findViewById<Typography>(R.id.tv_product_slash_price).text.toString())
+                }
+                if (productSlashPriceLabel == null) {
+                    assertEquals(View.GONE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                    assertEquals(productSlashPriceLabel, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).text.toString())
+                }
+                if (productVariant == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                    assertEquals(productVariant, view.findViewById<Typography>(R.id.tv_product_variant).text.toString())
+                }
+                if (productWarningMessage == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                    assertEquals(productWarningMessage, view.findViewById<Typography>(R.id.tv_qty_left).text.toString())
+                }
+                if (productAlertMessage == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                    assertEquals(productAlertMessage, view.findViewById<Typography>(R.id.tv_product_alert_message).text.toString())
+                }
+                val productInfoGroup = view.findViewById<ViewGroup>(R.id.flexbox_order_product_info)
+                if (productInfo != null) {
+                    for (i in productInfo.indices) {
+                        assertEquals(productInfo[i], (productInfoGroup.getChildAt(i) as Typography).text.toString())
+                    }
+                    assertEquals(productInfo.size, productInfoGroup.childCount)
+                } else {
+                    assertEquals(0, productInfoGroup.childCount)
+                }
+                assertEquals(productQty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+                if (productNotes != null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                    assertEquals(productNotes, view.findViewById<Typography>(R.id.tv_product_notes_preview).text.toString())
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
+                }
             }
-        }
-        onView(withId(R.id.tv_product_name)).check(matches(withText(productName)))
-        onView(withId(R.id.tv_product_price)).check(matches(withText(productPrice)))
-        onView(withId(R.id.tv_product_slash_price)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (productSlashPrice == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(productSlashPrice, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.iv_free_shipping)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (isFreeShipping) {
-                assertEquals(View.VISIBLE, view.visibility)
-            } else {
-                assertEquals(View.GONE, view.visibility)
-            }
-        }
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText(productQty.toString())))
+        }))
     }
 
-    fun assertProductQuantity(qty: Int) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
-    }
+    fun assertProductQuantity(index: Int = 0, qty: Int) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
 
-    fun assertProfileRevampWording(wording: String) {
-        onView(withId(R.id.tv_new_card_header)).perform(scrollTo()).check(matches(withText(wording)))
-    }
+            override fun getDescription(): String = "assert product $index quantity"
 
-    fun assertProfileRevampUtama(isDefaultProfile: Boolean) {
-        onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(if (isDefaultProfile) View.VISIBLE else View.GONE, view.visibility)
-        }
-    }
-
-    fun assertProfileRevampActionWording(actionWording: String) {
-        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
-    }
-
-    fun assertProfileAddress(headerMessage: String,
-                             addressName: String,
-                             addressDetail: String,
-                             isMainPreference: Boolean) {
-        onView(withId(R.id.tv_card_header)).perform(scrollTo()).check(matches(withText(headerMessage)))
-        onView(withId(R.id.tv_address_name)).check(matches(withText(addressName)))
-        onView(withId(R.id.tv_address_detail)).check(matches(withText(addressDetail)))
-        onView(withId(R.id.lbl_main_preference)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (isMainPreference) {
-                assertEquals(View.VISIBLE, view.visibility)
-            } else {
-                assertEquals(View.GONE, view.visibility)
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(qty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
             }
-        }
+        }))
     }
 
-    fun assertShipment(shippingName: String, shippingDuration: String, shippingPrice: String?, hasPromo: Boolean) {
-        onView(withId(R.id.tv_shipping_name)).perform(scrollTo()).check(matches(withText(shippingName)))
-        onView(withId(R.id.tv_shipping_duration)).check(matches(withText(shippingDuration)))
-        if (shippingPrice != null) {
-            onView(withId(R.id.tv_shipping_price)).perform(scrollTo()).check(matches(withText(shippingPrice)))
-        }
-        onView(withId(R.id.ticker_shipping_promo)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (hasPromo) {
-                assertEquals(View.VISIBLE, view.visibility)
-            } else {
-                assertEquals(View.GONE, view.visibility)
+    fun assertProductError(index: Int = 0,
+                           productName: String = "",
+                           productPrice: String = "",
+                           productVariant: String? = null,
+                           tickerMessage: String? = null) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert product $index card error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (tickerMessage != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.ticker_order_product).visibility)
+                    assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_product).visibility)
+                }
+                assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
+                assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                assertEquals(View.GONE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                if (productVariant == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                    assertEquals(productVariant, view.findViewById<Typography>(R.id.tv_product_variant).text.toString())
+                }
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                assertEquals(0, view.findViewById<ViewGroup>(R.id.flexbox_order_product_info).childCount)
+                assertEquals(View.GONE, view.findViewById<QuantityEditorUnify>(R.id.qty_editor_product).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
             }
-        }
+        }))
     }
 
-    fun assertShipmentRevamp(shippingDuration: String?, shippingCourier: String, shippingPrice: String?, shippingEta: String?) {
-        if (shippingDuration != null) {
-            onView(withId(R.id.tv_new_shipping_duration)).perform(scrollTo()).check(matches(withText(shippingDuration)))
-        } else {
-            onView(withId(R.id.tv_new_shipping_duration)).check { view, noViewFoundException ->
-                noViewFoundException?.printStackTrace()
-                assertEquals(View.GONE, view.visibility)
+    fun assertProfileEnable(isEnable: Boolean) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
             }
-        }
-        onView(withId(R.id.tv_new_shipping_courier)).perform(scrollTo()).check(matches(withText(shippingCourier)))
-        if (shippingPrice != null) {
-            onView(withId(R.id.tv_new_shipping_price)).perform(scrollTo()).check(matches(withText(shippingPrice)))
-        } else {
-            onView(withId(R.id.tv_new_shipping_price)).check { view, noViewFoundException ->
-                noViewFoundException?.printStackTrace()
-                assertEquals(View.GONE, view.visibility)
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
             }
-        }
-        if (shippingEta != null) {
-            onView(withId(R.id.tv_new_shipping_courier_eta)).perform(scrollTo()).check(matches(withText(shippingEta)))
-        } else {
-            onView(withId(R.id.tv_new_shipping_courier_eta)).check { view, noViewFoundException ->
-                noViewFoundException?.printStackTrace()
-                assertEquals(View.GONE, view.visibility)
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert profile enable"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(if (isEnable) 1.0f else 0.5f, view.alpha)
             }
-        }
+        }))
+    }
+
+    fun assertAddressRevamp(addressName: String, addressDetail: String, isMainAddress: Boolean = false) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert address"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(addressName, view.findViewById<Typography>(R.id.tv_address_name).text.toString())
+                assertEquals(addressDetail, view.findViewById<Typography>(R.id.tv_address_detail).text.toString())
+                assertEquals(if (isMainAddress) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.lbl_main_address).visibility)
+            }
+        }))
+    }
+
+    fun assertShipmentRevamp(shippingDuration: String? = null,
+                             shippingCourier: String = "",
+                             shippingPrice: String? = null,
+                             shippingEta: String? = null,
+                             shippingNotes: String? = null) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shipment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (shippingDuration != null) {
+                    assertEquals(shippingDuration, view.findViewById<Typography>(R.id.tv_shipping_duration).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_duration).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_duration).visibility)
+                }
+                assertEquals(shippingCourier, view.findViewById<Typography>(R.id.tv_shipping_courier).text.toString())
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_courier).visibility)
+                if (shippingPrice != null) {
+                    assertEquals(shippingPrice, view.findViewById<Typography>(R.id.tv_shipping_price).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_price).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_price).visibility)
+                }
+                if (shippingEta != null) {
+                    assertEquals(shippingEta, view.findViewById<Typography>(R.id.tv_shipping_courier_eta).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_courier_eta).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_courier_eta).visibility)
+                }
+                if (shippingNotes != null) {
+                    assertEquals(shippingNotes, view.findViewById<Typography>(R.id.tv_shipping_courier_notes).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_courier_notes).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_courier_notes).visibility)
+                }
+            }
+        }))
     }
 
     fun assertShipmentPromoRevamp(hasPromo: Boolean, promoTitle: String? = null, promoSubtitle: String? = null, promoDescription: String? = null) {
-        onView(withId(R.id.ticker_new_shipping_promo)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (hasPromo) {
-                assertEquals(View.VISIBLE, view.visibility)
-                val title = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_title)
-                if (promoTitle != null) {
-                    assertEquals(promoTitle, title.text)
-                    assertEquals(View.VISIBLE, title.visibility)
-                } else {
-                    assertEquals(View.GONE, title.visibility)
-                }
-                val subtitle = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_subtitle)
-                if (promoSubtitle != null) {
-                    assertEquals(promoSubtitle, subtitle.text)
-                    assertEquals(View.VISIBLE, subtitle.visibility)
-                } else {
-                    assertEquals(View.GONE, subtitle.visibility)
-                }
-                val desc = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description)
-                if (promoDescription != null) {
-                    assertEquals(promoDescription, desc.text)
-                    assertEquals(View.VISIBLE, desc.visibility)
-                } else {
-                    assertEquals(View.GONE, desc.visibility)
-                }
-            } else {
-                assertEquals(View.GONE, view.visibility)
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
             }
-        }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shipment promo"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tickerPromo = view.findViewById<View>(R.id.ticker_shipping_promo)
+                if (hasPromo) {
+                    assertEquals(View.VISIBLE, tickerPromo.visibility)
+                    val title = view.findViewById<Typography>(R.id.ticker_shipping_promo_title)
+                    if (promoTitle != null) {
+                        assertEquals(promoTitle, title.text)
+                        assertEquals(View.VISIBLE, title.visibility)
+                    } else {
+                        assertEquals(View.GONE, title.visibility)
+                    }
+                    val subtitle = view.findViewById<Typography>(R.id.ticker_shipping_promo_subtitle)
+                    if (promoSubtitle != null) {
+                        assertEquals(promoSubtitle, subtitle.text)
+                        assertEquals(View.VISIBLE, subtitle.visibility)
+                    } else {
+                        assertEquals(View.GONE, subtitle.visibility)
+                    }
+                    val desc = view.findViewById<Typography>(R.id.ticker_shipping_promo_description)
+                    if (promoDescription != null) {
+                        assertEquals(promoDescription, desc.text)
+                        assertEquals(View.VISIBLE, desc.visibility)
+                    } else {
+                        assertEquals(View.GONE, desc.visibility)
+                    }
+                } else {
+                    assertEquals(View.GONE, tickerPromo.visibility)
+                }
+            }
+        }))
     }
 
     fun assertShipmentError(errorMessage: String) {
-        onView(withId(R.id.tv_shipping_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(errorMessage)))
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shipment error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tvError = view.findViewById<Typography>(R.id.tv_shipping_error_message)
+                assertEquals(View.VISIBLE, tvError.visibility)
+                assertEquals(errorMessage, tvError.text.toString())
+            }
+        }))
     }
 
-    fun assertShipmentWithCustomDuration(shippingNameAndDuration: String, shippingCourierAndPrice: String, hasPromo: Boolean) {
-        onView(withId(R.id.tv_shipping_duration)).perform(scrollTo()).check(matches(withText(shippingNameAndDuration)))
-        onView(withId(R.id.tv_shipping_courier)).perform(scrollTo()).check(matches(withText(shippingCourierAndPrice)))
-        onView(withId(R.id.ticker_shipping_promo)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (hasPromo) {
-                assertEquals(View.VISIBLE, view.visibility)
-            } else {
-                assertEquals(View.GONE, view.visibility)
+    fun assertShipmentDisabled(title: String, description: String) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
             }
-        }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shipment disable"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tvErrorTitle = view.findViewById<Typography>(R.id.tv_shipping_courier)
+                assertEquals(View.VISIBLE, tvErrorTitle.visibility)
+                assertEquals(title, tvErrorTitle.text.toString())
+                val tvErrorDescription = view.findViewById<Typography>(R.id.tv_shipping_price)
+                assertEquals(View.VISIBLE, tvErrorDescription.visibility)
+                assertEquals(description, tvErrorDescription.text.toString())
+            }
+        }))
     }
 
     fun assertInsurance(isChecked: Boolean) {
-        if (isChecked) {
-            onView(withId(R.id.cb_insurance)).perform(scrollTo()).check(matches(isChecked()))
-        } else {
-            onView(withId(R.id.cb_insurance)).perform(scrollTo()).check(matches(isNotChecked()))
-        }
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun assertBboTicker(text: String) {
-        onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withId(R.id.ticker_shipping_promo_description)).check(matches(withText(text)))
-    }
-
-    fun assertProfilePayment(paymentName: String) {
-        onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
-    }
-
-    fun assertProfilePaymentDetail(detail: String) {
-        onView(withId(R.id.tv_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
-    }
-
-    fun assertInstallment(detail: String?) {
-        if (detail == null) {
-            onView(withId(R.id.tv_installment_type)).check { view, noViewFoundException ->
-                noViewFoundException?.printStackTrace()
-                assertEquals(View.GONE, view.visibility)
             }
-            onView(withId(R.id.tv_installment_detail)).check { view, noViewFoundException ->
-                noViewFoundException?.printStackTrace()
-                assertEquals(View.GONE, view.visibility)
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderInsuranceCard
             }
-        } else {
-            onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
-            onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
-        }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert insurance"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(isChecked, view.findViewById<CheckboxUnify>(R.id.cb_insurance).isChecked)
+            }
+        }))
     }
 
-    fun assertInstallmentError() {
-        onView(withId(R.id.tv_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
-        onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
+    fun assertPaymentRevamp(paymentName: String, paymentDetail: String?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert payment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(paymentName, view.findViewById<Typography>(R.id.tv_payment_name).text.toString())
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_name).visibility)
+                if (paymentDetail != null) {
+                    assertEquals(paymentDetail, view.findViewById<Typography>(R.id.tv_payment_detail).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_detail).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_payment_detail).visibility)
+                }
+            }
+        }))
     }
 
-    fun assertProfilePaymentError(message: String, buttonText: String) {
-        onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
-        onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+    fun assertInstallmentRevamp(detail: String?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert installment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (detail == null) {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_type).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_detail).visibility)
+                    assertEquals(detail, view.findViewById<Typography>(R.id.tv_installment_detail).text.toString())
+                }
+            }
+        }))
+    }
+
+    fun assertInstallmentErrorRevamp() {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert installment error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_message).visibility)
+                assertEquals("Cicilan tidak tersedia.", view.findViewById<Typography>(R.id.tv_installment_error_message).text.toString())
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_installment_error_action).visibility)
+                assertEquals("Ubah", view.findViewById<Typography>(R.id.tv_installment_error_action).text.toString())
+            }
+        }))
     }
 
     fun assertProfilePaymentErrorRevamp(message: String, buttonText: String?) {
-        var expectedMessage = "$message "
-        if (buttonText != null) {
-            expectedMessage += buttonText
-        }
-        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(expectedMessage)))
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun assertProfilePaymentOvoError(message: String?, buttonText: String?) {
-        if (message != null) {
-            onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
-        }
-        if (buttonText != null) {
-            onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
-        }
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert payment error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                var expectedMessage = "$message "
+                if (buttonText != null) {
+                    expectedMessage += buttonText
+                }
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_error_message).visibility)
+                assertEquals(expectedMessage, view.findViewById<Typography>(R.id.tv_payment_error_message).text.toString())
+            }
+        }))
     }
 
     fun assertProfilePaymentOvoErrorRevamp(message: String?, buttonText: String?) {
-        if (message != null && buttonText != null) {
-            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message $buttonText")))
-        } else if (message != null) {
-            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message ")))
-        } else if (buttonText != null) {
-            onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
-        }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert payment wallet error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (message != null && buttonText != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_error_message).visibility)
+                    assertEquals("$message $buttonText", view.findViewById<Typography>(R.id.tv_payment_error_message).text.toString())
+                } else if (message != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_error_message).visibility)
+                    assertEquals("$message ", view.findViewById<Typography>(R.id.tv_payment_error_message).text.toString())
+                } else if (buttonText != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_ovo_error_action).visibility)
+                    assertEquals(buttonText, view.findViewById<Typography>(R.id.tv_payment_ovo_error_action).text.toString())
+                }
+            }
+        }))
     }
 
     fun assertProfilePaymentInfoRevamp(message: String) {
-        onView(withId(R.id.tv_new_payment_info)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert payment info"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_payment_info).visibility)
+                assertEquals(message, view.findViewById<Typography>(R.id.tv_payment_info).text.toString())
+            }
+        }))
     }
 
     fun assertPayment(total: String, buttonText: String) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText))).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(true, view.isEnabled)
-            assertEquals(false, (view as UnifyButton).isLoading)
-        }
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderTotalPaymentCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert total"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val btnPay = view.findViewById<UnifyButton>(R.id.btn_pay)
+                assertEquals(buttonText, btnPay.text.toString())
+                assertEquals(true, btnPay.isEnabled)
+                assertEquals(false, btnPay.isLoading)
+                assertEquals(View.VISIBLE, btnPay.visibility)
+                assertEquals(total, view.findViewById<Typography>(R.id.tv_total_payment_value).text.toString())
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_total_payment_value).visibility)
+            }
+        }))
     }
 
     fun assertPaymentButtonEnable(isEnable: Boolean) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(isEnable, view.isEnabled)
-        }
-    }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
 
-    fun assertPaymentErrorTicker(message: String) {
-        onView(withId(R.id.ticker_payment_error)).perform(scrollTo()).check(matches(isDisplayed())).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(message, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text)
-        }
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderTotalPaymentCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert button payment enable"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(isEnable, view.findViewById<UnifyButton>(R.id.btn_pay).isEnabled)
+            }
+        }))
     }
 
     fun assertGlobalErrorVisible() {
@@ -446,6 +1057,10 @@ class OrderSummaryPageRobot {
             noViewFoundException?.printStackTrace()
             assertEquals(View.VISIBLE, view.visibility)
         }
+    }
+
+    fun assertNoAddressLayoutVisible() {
+        onView(withId(R.id.layout_no_address)).check(matches(isDisplayed()))
     }
 
     fun assertPromptBottomSheetVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
@@ -488,105 +1103,5 @@ class OrderSummaryPageResultRobot {
         assertEquals(redirectUrl, paymentPassData.redirectUrl)
         assertEquals(queryString, paymentPassData.queryString)
         assertEquals(method, paymentPassData.method)
-    }
-}
-
-class OrderPriceSummaryBottomSheetRobot {
-
-    fun assertSummary(productPrice: String = "",
-                      productDiscount: String? = null,
-                      shippingPrice: String = "",
-                      shippingDiscount: String? = null,
-                      isBbo: Boolean = false,
-                      insurancePrice: String? = null,
-                      paymentFee: String? = null,
-                      totalPrice: String = "") {
-        onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
-        onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (productDiscount == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(productDiscount, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_shipping_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (isBbo) {
-                assertEquals("Bebas Ongkir", (view as Typography).text)
-            } else {
-                assertEquals(shippingPrice, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_shipping_discount_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (shippingDiscount == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(shippingDiscount, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_insurance_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (insurancePrice == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(insurancePrice, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (paymentFee == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(paymentFee, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
-    }
-
-    fun closeBottomSheet() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(object : ViewAction {
-            override fun getConstraints(): Matcher<View> = isClickable()
-
-            override fun getDescription(): String = "Force click close bottom sheet"
-
-            override fun perform(uiController: UiController?, view: View?) {
-                view?.callOnClick()
-                // Wait for bottom sheet to close
-                Thread.sleep(1000)
-            }
-        })
-    }
-}
-
-class InstallmentDetailBottomSheetRobot {
-
-    fun chooseInstallment(term: Int) {
-        val installmentName = if (term == 0) "Bayar Penuh" else "${term}x Cicilan 0%"
-        onView(withText(installmentName)).perform(scrollTo()).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            val parent = view.parent as ViewGroup
-            val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
-            radioButtonUnify.performClick()
-            // Wait for bottom sheet to close
-            Thread.sleep(1000)
-        }
-    }
-}
-
-class OvoActivationBottomSheetRobot {
-
-    fun performActivation(isSuccess: Boolean) {
-        onView(withId(R.id.web_view)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
-        }
-        //block main thread for webview processing
-        Thread.sleep(2000)
     }
 }

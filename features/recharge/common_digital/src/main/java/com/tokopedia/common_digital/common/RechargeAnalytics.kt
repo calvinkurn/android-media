@@ -3,9 +3,12 @@ package com.tokopedia.common_digital.common
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.REGULAR_PRODUCT
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.SPECIAL_PROMO
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
+import com.tokopedia.common_digital.common.util.BranchProductGroup
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -41,9 +44,11 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
         TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, mapScreenLaunchData)
 
+        val groupWiseCategoryId = BranchProductGroup.getGroupWiseProductID(categoryId)
+
         // Branch
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, categoryId)
+                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId)
         ))
     }
 
@@ -67,13 +72,13 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 subscriber)
     }
 
-    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, categoryId: String): RechargeLinkerData {
+    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, groupWiseCategoryId: String): RechargeLinkerData {
         val rechargeLinkerData = RechargeLinkerData()
         rechargeLinkerData.linkerData = LinkerData().apply {
             productCategory = categoryName
             this.userId = userId
         }
-        rechargeLinkerData.categoryId = categoryId
+        rechargeLinkerData.categoryIds = groupWiseCategoryId
         return rechargeLinkerData
     }
 
@@ -134,7 +139,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 DigitalTrackingConst.Product.KEY_PRICE, digitalAtcTrackingModel.pricePlain.toString(),
                 DigitalTrackingConst.Product.KEY_BRAND, digitalAtcTrackingModel.operatorName.toLowerCase(),
                 DigitalTrackingConst.Product.KEY_CATEGORY, digitalAtcTrackingModel.categoryName.toLowerCase(),
-                DigitalTrackingConst.Product.KEY_VARIANT, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_VARIANT, if (digitalAtcTrackingModel.isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
                 DigitalTrackingConst.Product.KEY_QUANTITY, "1",
                 DigitalTrackingConst.Product.KEY_CATEGORY_ID, digitalAtcTrackingModel.categoryId,
                 DigitalTrackingConst.Product.KEY_CART_ID, digitalAtcTrackingModel.cartId,

@@ -10,12 +10,16 @@ open class FlightCheckVoucherMapper @Inject constructor() {
     fun mapData(data: FlightCheckVoucher): DataUiModel {
         return DataUiModel(
                 success = true,
-                message = MessageUiModel("#ade3af", "green", data.message),
+                message = MessageUiModel(data.messageColor, MESSAGE_STATE_COLOR, data.message),
                 codes = listOf(data.voucherCode),
                 titleDescription = data.titleDescription,
                 discountAmount = data.discountAmountPlain.toInt(),
                 cashbackWalletAmount = data.cashbackAmountPlain.toInt(),
                 isCoupon = data.isCoupon
         )
+    }
+
+    companion object{
+        private const val MESSAGE_STATE_COLOR: String = "green"
     }
 }

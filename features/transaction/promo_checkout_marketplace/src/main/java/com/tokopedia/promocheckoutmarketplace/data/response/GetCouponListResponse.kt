@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.data.response
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CouponListRecommendationResponse(
@@ -19,6 +20,8 @@ data class CouponListRecommendation(
 )
 
 data class Data(
+        @SerializedName("error_page")
+        val errorPage: ErrorPage = ErrorPage(),
         @SerializedName("result_status")
         val resultStatus: ResultStatus = ResultStatus(),
         @SerializedName("empty_state")
@@ -58,6 +61,26 @@ data class TncDetail(
         val iconImageUrl: String = "",
         @SerializedName("description")
         val description: String = ""
+)
+
+data class ErrorPage(
+        @SerializedName("is_show_error_page")
+        val isShowErrorPage: Boolean = false,
+        @SerializedName("image")
+        val img: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("description")
+        val desc: String = "",
+        @SerializedName("button")
+        val button: Button = Button()
+)
+
+data class Button(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("destination")
+        val destination: String = ""
 )
 
 data class ResultStatus(
@@ -143,7 +166,7 @@ data class Coupon(
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: String = "",
         @SerializedName("tag_image_urls")
         val tagImageUrls: List<String> = emptyList(),
         @SerializedName("benefit_amount")
@@ -157,7 +180,11 @@ data class Coupon(
         @SerializedName("radio_check_state")
         val radioCheckState: String = "",
         @SerializedName("clashing_infos")
-        val clashingInfos: List<ClashingInfo> = emptyList()
+        val clashingInfos: List<ClashingInfo> = emptyList(),
+        @SerializedName("currency_details_str")
+        val currencyDetailStr: String = "",
+        @SerializedName("coachmark")
+        val coachMark: PromoCoachmark = PromoCoachmark()
 )
 
 data class ClashingInfo(
@@ -165,6 +192,18 @@ data class ClashingInfo(
         val code: String = "",
         @SerializedName("message")
         val message: String = ""
+)
+
+data class PromoCoachmark(
+        @SerializedName("is_shown")
+        @Expose
+        val isShown: Boolean = false,
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("content")
+        @Expose
+        val content: String = ""
 )
 
 data class AttemptedPromoCodeError(

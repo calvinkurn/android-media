@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
 import android.graphics.Color
-import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -9,17 +8,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
+import com.tokopedia.home_component.mapper.ProductHighlightModelMapper
 import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.FPM_DEALS_WIDGET_PRODUCT_IMAGE
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
 import java.util.*
@@ -31,6 +30,8 @@ class ProductHighlightComponentViewHolder(
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
 
     private var isCacheData = false
+    private var masterProductCardListView: ProductCardListView? = null
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
@@ -38,6 +39,7 @@ class ProductHighlightComponentViewHolder(
 
     override fun bind(element: ProductHighlightDataModel?) {
         isCacheData = element?.isCache ?: false
+        initView()
         element?.let {
             setDealsChannelInfo(it)
             setDealsProductGrid(it.channelModel)
@@ -48,10 +50,23 @@ class ProductHighlightComponentViewHolder(
         bind(element)
     }
 
+    private fun initView() {
+        masterProductCardListView = itemView.findViewById(R.id.master_product_card_deals)
+    }
+
     private fun setDealsChannelInfo(productHighlightDataModel: ProductHighlightDataModel) {
         setDealsChannelTitle(productHighlightDataModel.channelModel.channelHeader)
         setDealsCountDownTimer(productHighlightDataModel)
         setDealsChannelBackground(productHighlightDataModel.channelModel.channelBanner)
+        setChannelDivider(productHighlightDataModel)
+    }
+
+    private fun setChannelDivider(element: ProductHighlightDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun setDealsCountDownTimer(dataModel: ProductHighlightDataModel) {
@@ -108,73 +123,22 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
-        grid?.let {
-            setDealsProductCard(channel, it)
-            setDealsProductName(it.name)
-            setDealsProductPrice(it.price)
-            setDealsProductSlashedPrice(it.slashedPrice)
-            setDealsProductImage(it.imageUrl)
-            setDealsProductDiscountLabel(it.discount)
-            setDealsProductStockbar(it.soldPercentage, it.label)
-            setDealsProductFreeOngkir(it.isFreeOngkirActive, it.freeOngkirImageUrl)
-            setDealsProductViewCount(it.productViewCountFormatted)
+        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it) }
+        channelDataModel?.let {
+            masterProductCardListView?.setProductModel(it)
         }
-
-    }
-
-    private fun setDealsProductFreeOngkir(isFreeOngkir: Boolean, imageFreeOngkirUrl: String) {
-        if (isFreeOngkir) {
-            itemView.imageFreeOngkirPromo?.visibility = View.VISIBLE
-            itemView.imageFreeOngkirPromo?.loadImage(imageFreeOngkirUrl)
-        }
+        grid?.let { setDealsProductCard(channel, it) }
     }
 
     private fun setDealsProductCard(channel: ChannelModel, grid: ChannelGrid) {
         if (!isCacheData) {
-            itemView.deals_product_card.addOnImpressionListener(channel) {
+            masterProductCardListView?.addOnImpressionListener(channel) {
                 productHighlightListener?.onProductCardImpressed(channel, grid, adapterPosition)
             }
         }
-        itemView.deals_product_card.setOnClickListener {
+        masterProductCardListView?.setOnClickListener {
             productHighlightListener?.onProductCardClicked(channel, grid, adapterPosition, grid.applink)
         }
     }
 
-    private fun setDealsProductStockbar(soldPercentage: Int, label: String) {
-        if (label.isNotEmpty()) {
-            itemView.deals_stockbar.setValue(soldPercentage)
-            itemView.deals_stockbar_label.text = label
-        } else {
-            itemView.deals_stockbar.visibility = View.GONE
-            itemView.deals_stockbar_label.visibility = View.GONE
-        }
-    }
-
-    private fun setDealsProductViewCount(productViewCount: String) {
-        itemView.deals_product_view_count.displayTextOrHide(productViewCount)
-    }
-
-    private fun setDealsProductDiscountLabel(label: String) {
-        itemView.deals_product_discount_label.setLabel(label)
-    }
-
-    private fun setDealsProductImage(imageUrl: String) {
-        itemView.deals_product_image.loadImageRounded(
-                imageUrl,
-                16,
-                FPM_DEALS_WIDGET_PRODUCT_IMAGE)
-    }
-
-    private fun setDealsProductSlashedPrice(slashedPrice: String) {
-        itemView.deals_product_slashed_price.displayTextOrHide(slashedPrice)
-        itemView.deals_product_slashed_price.paintFlags = itemView.deals_product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-    }
-
-    private fun setDealsProductPrice(price: String) {
-        itemView.deals_product_price.displayTextOrHide(price)
-    }
-
-    private fun setDealsProductName(productName: String) {
-        itemView.deals_product_name.displayTextOrHide(productName)
-    }
 }

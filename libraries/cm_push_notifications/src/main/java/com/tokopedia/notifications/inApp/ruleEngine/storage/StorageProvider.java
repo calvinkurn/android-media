@@ -181,7 +181,7 @@ public class StorageProvider implements InterfaceDataStore {
             public void call() {
                 CMInApp inAppData = inAppDataDao.getInAppData(id);
                 if (inAppData != null) {
-                    inAppDataDao.updateFrequency(inAppData.parentId);
+                    inAppDataDao.updateFrequencyWithShownTime(inAppData.parentId, System.currentTimeMillis());
                     inAppDataDao.updateShown(id);
                     storageProviderListener.onInappFreqUpdated();
                 }
@@ -205,6 +205,16 @@ public class StorageProvider implements InterfaceDataStore {
             @Override
             public void call() {
                 inAppDataDao.updateFreqWithPerst(id);
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Completable updateVisibleStateForAlreadyShown() {
+        return Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                inAppDataDao.updateVisibleStateForAlreadyShown();
             }
         }).subscribeOn(Schedulers.io());
     }

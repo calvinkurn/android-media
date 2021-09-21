@@ -1,0 +1,168 @@
+[{
+    "data": {
+        "status": "request_denied",
+        "ticker": {
+            "meta": {
+                "total_data": 0
+            },
+            "tickers": [{
+                "id": "663",
+                "title": "Android Test",
+                "message": "&nbsp;<a href=\\\"tokopedia://home\\\"\\>here refresh home</a> Attention, you are on Android Instrumentation Test",
+                "color": "",
+                "layout": "default",
+                "ticker_type": 1
+            }]
+        },
+        "slides": {
+            "meta": {
+                "total_data": 0
+            },
+            "slides": [{
+                "id": "11982",
+                "galaxy_attribution": "PG",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/7/16/99728578-1db1-4f64-b649-d6ac38bdc927.jpg",
+                "redirect_url": "https://m.tokopedia.com/discovery/bayar-di-tempat-new-user?source=home",
+                "applink": "tokopedia://discovery/bayar-di-tempat-new-user?source=home",
+                "topads_view_url": "",
+                "promo_code": "",
+                "creative_name": "X_PG_HPB_NU_COD_New User_22_July-20",
+                "type": "new_user_mp",
+                "campaignCode": ""
+            }]
+        },
+        "dynamicHomeIcon": {
+            "dynamicIcon": [{
+                "id": 496,
+                "galaxy_attribution": "PG",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Lihat Semua",
+                "url": "https://m.tokopedia.com/kategori-lainnya",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/3/85531617/85531617_89f1aada-8bd2-4282-be2d-25fcaecd9f9c.png",
+                "applinks": "tokopedia://category-explore?type=2\u0026tab=1",
+                "bu_identifier": "PG_PG_Lihat Semua"
+            }, {
+                "id": 500,
+                "galaxy_attribution": "PG",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Kategori",
+                "url": "https://m.tokopedia.com/kategori-belanja",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/3/85531617/85531617_fc0d80fb-1357-41f6-bced-866ea7f29bbb.png",
+                "applinks": "tokopedia://category-explore?type=1",
+                "bu_identifier": "PG_PG_Kategori"
+            }, {
+                "id": 447,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Top-Up \u0026 Tagihan",
+                "url": "https://m.tokopedia.com/top-up-tagihan",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/3/85531617/85531617_fb247fec-6870-4289-8477-b34dc0fab831.png",
+                "applinks": "tokopedia://recharge/home",
+                "bu_identifier": "DG_DG_Top-Up \u0026 Tagihan"
+            }, {
+                "id": 450,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Keuangan",
+                "url": "https://m.tokopedia.com/discovery/keuangan",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/3/85531617/85531617_0164df1a-ee10-475a-9d8d-87ab8807546f.png",
+                "applinks": "tokopedia://discovery/keuangan",
+                "bu_identifier": "FT_FT_Keuangan"
+            }, {
+                "id": 504,
+                "galaxy_attribution": "PG",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Travel \u0026 Entertainment",
+                "url": "https://m.tokopedia.com/travel-entertainment",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/3/85531617/85531617_489118cf-6e66-44da-8b49-5019524e4ba2.png",
+                "applinks": "tokopedia://travelentertainment/home",
+                "bu_identifier": "DG_DG_Travel \u0026 Entertainment"
+            }, {
+                "id": 85,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Handphone \u0026 Tablet",
+                "url": "https://www.tokopedia.com/p/handphone-tablet",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_e6fcdfd3-313d-4b3d-969d-4e87944b0c29.png",
+                "applinks": "tokopedia://category/65",
+                "bu_identifier": "null_null_Handphone \u0026 Tablet"
+            }, {
+                "id": 91,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Elektronik",
+                "url": "https://www.tokopedia.com/p/elektronik",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_1645f516-76ed-4bd2-a505-0d2c4f14d805.png",
+                "applinks": "tokopedia://category/60",
+                "bu_identifier": ""
+            }, {
+                "id": 104,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Pulsa",
+                "url": "https://www.tokopedia.com/pulsa?ispulsa=1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_426c7c26-e0e7-47cb-ba5a-52241b625d71.png",
+                "applinks": "tokopedia://digital/form?category_id=1\u0026menu_id=2\u0026template=telcopre",
+                "bu_identifier": "null_null_Pulsa"
+            }, {
+                "id": 172,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Pascabayar",
+                "url": "https://www.tokopedia.com/tagihan/pascabayar/?ispulsa=1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_084574be-ac35-40a3-b186-acf9f45b4d61.png",
+                "applinks": "tokopedia://digital/form?category_id=9\u0026menu_id=3",
+                "bu_identifier": "null_null_Pascabayar"
+            }, {
+                "id": 138,
+                "galaxy_attribution": "",
+                "persona": "",
+                "brand_id": "",
+                "category_persona": "",
+                "name": "Emas",
+                "url": "https://www.tokopedia.com/emas/",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/attachment/2020/7/2/85531617/85531617_613e0aaa-0962-44c1-a0a7-11f27edfd131.png",
+                "applinks": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Femas%2F",
+                "bu_identifier": "null_null_Emas"
+            }]
+        },
+        "homeFlag": {
+            "event_time": "",
+            "server_time": 1595493972,
+            "flags": [{
+                "name": "has_recom_nav_button",
+                "is_active": false
+            }, {
+                "name": "dynamic_icon_wrap",
+                "is_active": false
+            }, {
+                "name": "has_tokopoints",
+                "is_active": false
+            }, {
+                "name": "is_autorefresh",
+                "is_active": false
+            }]
+        }
+    }
+}]

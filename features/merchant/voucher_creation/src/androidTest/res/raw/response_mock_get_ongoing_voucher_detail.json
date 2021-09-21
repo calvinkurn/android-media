@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "merchantPromotionGetMVDataByID": {
+        "header": {
+          "process_time": 36705149,
+          "message": [],
+          "reason": "",
+          "error_code": ""
+        },
+        "data": {
+          "voucher_id": 3199088,
+          "voucher_name": "Nama Voucher",
+          "voucher_type": 3,
+          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2021/4/30/128068031/128068031_8d491a1d-0f8a-44f8-a2c8-129f7020499a.jpg",
+          "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2021/4/30/128068031/128068031_29a7e5b9-1faf-45f0-9c2b-e518019b0c6c.jpg",
+          "voucher_status": 2,
+          "voucher_discount_type": 1,
+          "voucher_discount_amt": 20000,
+          "voucher_discount_amt_max": 20000,
+          "voucher_minimum_amt": 287500,
+          "voucher_quota": 15,
+          "voucher_start_time": "2021-04-30T20:30:00Z",
+          "voucher_finish_time": "2021-05-07T16:00:00Z",
+          "voucher_code": "YDPSZ6LE74",
+          "create_time": "2021-04-30T16:02:40Z",
+          "update_time": "2021-04-30T20:28:07.00335Z",
+          "is_public": 1,
+          "voucher_type_formatted": "Cashback",
+          "voucher_discount_type_formatted": "idr",
+          "voucher_discount_amt_formatted": "20rb",
+          "confirmed_global_quota": 0,
+          "booked_global_quota": 0
+        }
+      }
+    }
+  }
+]
