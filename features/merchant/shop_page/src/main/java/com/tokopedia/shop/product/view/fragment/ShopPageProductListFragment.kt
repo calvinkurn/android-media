@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.annotation.DimenRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -71,7 +70,6 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -1186,9 +1184,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     val totalProduct = it.data.totalProductData
-                    if (shopProductAdapter.shopProductUiModelList.isEmpty() && totalProduct != 0) {
-                        updateEtalaseTitleSection()
-                    }
                     if(!isOwner)
                         updateProductChangeGridSection(totalProduct)
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
@@ -1270,18 +1265,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun updateProductChangeGridSection(totalProduct: Int) {
-        if (ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
-        }
-    }
-
-    private fun updateEtalaseTitleSection() {
-        if (!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.setShopProductEtalaseTitleData(ShopProductEtalaseTitleUiModel(
-                    getSelectedEtalaseChip(),
-                    ""
-            ))
-        }
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -1382,9 +1366,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 )
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
-        if (initialProductListData?.data?.isNotEmpty() == true) {
-            updateEtalaseTitleSection()
-        }
         if (!viewModel.isMyShop(shopId)) {
             viewModel.getBuyerViewContentData(
                     shopId,

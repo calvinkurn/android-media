@@ -66,7 +66,6 @@ import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -631,9 +630,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
-                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
-                }
+                changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
                 if (searchSuggestionData.text.isNotEmpty()) {
                     shopProductAdapter.addSuggestionSearchTextSection(
                             searchSuggestionData.text,
