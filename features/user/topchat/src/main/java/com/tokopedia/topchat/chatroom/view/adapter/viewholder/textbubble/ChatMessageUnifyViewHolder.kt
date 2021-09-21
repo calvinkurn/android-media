@@ -23,6 +23,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
@@ -34,6 +35,7 @@ class ChatMessageUnifyViewHolder(
     private val chatMsgListener: FlexBoxChatLayout.Listener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
+    private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.mb_bubble_msg)
     private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.ll_msg_container)
     private val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     private val onTouchListener = MessageOnTouchListener(msgCliclLinkListener)
@@ -92,6 +94,7 @@ class ChatMessageUnifyViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(msg, fxChat)
+        bindReplyReference(msg)
         bindAttachment(msg)
         bindMargin(msg)
         bindClick()
@@ -118,6 +121,10 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
+    }
+
+    private fun bindReplyReference(msg: MessageViewModel) {
+        messageBubble?.bindReplyData(msg)
     }
 
     private fun bindAttachment(msg: MessageViewModel) {
