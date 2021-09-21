@@ -114,7 +114,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (savedInstanceState == null) {
             if (imagePickerBuilder.supportMultipleSelection()) {
                 selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
-                imagesFedIntoPicker = imagePickerBuilder.getInitialSelectedImagePathList()
+                imagesFedIntoPicker = imagePickerBuilder.getInitialSelectedImagePathList();
                 imageDescriptionList = new ArrayList<>();
                 //create empty description for initial images
                 if (selectedImagePaths != null && selectedImagePaths.size() > 0) {
