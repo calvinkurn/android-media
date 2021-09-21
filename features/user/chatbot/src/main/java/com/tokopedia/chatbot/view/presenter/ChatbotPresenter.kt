@@ -8,10 +8,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -411,18 +409,20 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
-    override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):
-            AttachInvoiceSentViewModel {
-        val invoiceLinkAttributePojo = invoiceLinkPojo.attributes
-        return AttachInvoiceSentViewModel(
-                senderId,
-                userSession.name,
-                invoiceLinkAttributePojo.title,
-                invoiceLinkAttributePojo.description,
-                invoiceLinkAttributePojo.imageUrl,
-                invoiceLinkAttributePojo.totalAmount,
-                SendableViewModel.generateStartTime()
-        )
+    override fun generateInvoice(
+        invoiceLinkPojo: InvoiceLinkPojo, senderId: String
+    ) : AttachInvoiceSentViewModel {
+        return AttachInvoiceSentViewModel.Builder()
+            .withInvoiceAttributesResponse(invoiceLinkPojo)
+            .withFromUid(senderId)
+            .withFrom(userSession.name)
+            .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsRead(false)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .build()
     }
 
     override fun uploadImages(it: ImageUploadViewModel,
