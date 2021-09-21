@@ -21,6 +21,7 @@ import com.tokopedia.home_account.linkaccount.di.LinkAccountComponent
 import com.tokopedia.home_account.linkaccount.di.module.LinkAccountModule
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 
 /**
@@ -31,11 +32,15 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
 
     companion object {
         const val KEY_URL = "webview_url"
-        const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
 
-        const val QUERY_LD = "ld"
-        const val QUERY_PAGE = "page"
-        const val QUERY_APP_CLIENT_ID = "appClientId"
+        private const val QUERY_LD = "ld"
+        private const val QUERY_PAGE = "page"
+        private const val QUERY_APP_CLIENT_ID = "appClientId"
+
+        private const val LINK_ACC_PATH = "account-link/v1/gojek-auth"
+
+        private fun getAccountLinkUrl(): String =
+            TokopediaUrl.Companion.getInstance().ACCOUNTS.plus(LINK_ACC_PATH)
 
         fun newInstance(context: Context?, url: String?): Intent {
             val intent = Intent(context, LinkAccountWebViewActivity::class.java)
@@ -63,7 +68,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
 
         fun getLinkAccountUrl(redirectionApplink: String): Uri? {
             try {
-                val uri = Uri.parse(BASE_URL)
+                val uri = Uri.parse(getAccountLinkUrl())
                 val clientID = TrackApp.getInstance().gtm.cachedClientIDString
                 return uri.buildUpon()
                         .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
