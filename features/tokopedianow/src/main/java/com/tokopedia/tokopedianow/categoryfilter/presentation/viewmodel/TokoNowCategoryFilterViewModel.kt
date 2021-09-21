@@ -9,7 +9,6 @@ import com.tokopedia.tokopedianow.categoryfilter.domain.mapper.CategoryFilterMap
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -73,18 +72,6 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
 
     fun clearSelectedFilter() {
         _selectedFilter.postValue(null)
-
-        val filters = getFilterList().map { categoryL1 ->
-            val categoryL2List = categoryL1.childList.map { categoryL2 ->
-                categoryL2.copy(chipType = ChipsUnify.TYPE_NORMAL)
-            }
-            categoryL1.copy(
-                chipType = ChipsUnify.TYPE_NORMAL,
-                childList = categoryL2List
-            )
-        }
-
-        _categoryList.postValue(Success(filters))
     }
 
     fun setSelectedFilter(selectedFilter: SelectedSortFilter?) {
@@ -93,9 +80,5 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
 
     fun applyFilter() {
         _applyFilter.postValue(_selectedFilter.value)
-    }
-
-    private fun getFilterList(): MutableList<CategoryFilterChip> {
-        return _categoryList.value?.data.orEmpty().toMutableList()
     }
 }

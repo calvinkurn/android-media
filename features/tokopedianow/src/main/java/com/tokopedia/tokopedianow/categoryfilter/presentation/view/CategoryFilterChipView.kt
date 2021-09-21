@@ -5,10 +5,12 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.categoryfilter.presentation.adapter.CategoryFilterChipAdapter
 import com.tokopedia.tokopedianow.categoryfilter.presentation.adapter.CategoryFilterChipAdapter.CategoryFilterChipAdapterTypeFactory
 import com.tokopedia.tokopedianow.categoryfilter.presentation.decoration.CategoryChipFilterDecoration
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
+import com.tokopedia.tokopedianow.categoryfilter.presentation.viewholder.CategoryFilterChipViewHolder
 
 class CategoryFilterChipView: RecyclerView {
 
@@ -43,6 +45,15 @@ class CategoryFilterChipView: RecyclerView {
         val typeFactory = CategoryFilterChipAdapterTypeFactory(onCLickFilterChip)
         adapter = CategoryFilterChipAdapter(typeFactory).apply {
             submitList(items)
+        }
+    }
+
+    fun resetAllFilterChip() {
+        for(i in 0..adapter?.itemCount.orZero()) {
+            val viewHolder = findViewHolderForAdapterPosition(i)
+            if(viewHolder is CategoryFilterChipViewHolder) {
+                viewHolder.resetChip()
+            }
         }
     }
 }

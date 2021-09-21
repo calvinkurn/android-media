@@ -24,15 +24,18 @@ class CategoryFilterChipViewHolder(
     }
 
     override fun bind(data: CategoryFilterChip) {
-        setChipText(data)
+        setupFilterChip(data)
         setOnClickListener(data)
     }
 
-    private fun setChipText(data: CategoryFilterChip) {
+    fun resetChip() {
+        chipFilter?.chipType = ChipsUnify.TYPE_NORMAL
+    }
+
+    private fun setupFilterChip(data: CategoryFilterChip) {
         chipFilter?.run {
-            chipFilter?.chipText = data.title
-            chipFilter?.chipType = data.chipType
-            chipFilter?.requestLayout()
+            chipText = data.title
+            chipType = data.chipType
         }
     }
 
