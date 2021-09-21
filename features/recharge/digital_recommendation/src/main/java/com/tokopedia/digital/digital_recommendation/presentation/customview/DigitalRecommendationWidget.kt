@@ -58,6 +58,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             throw UninitializedPropertyAccessException("Lifecycle Owner is not Initialized")
         }
 
+        if (!::digitalRecommendationViewModel.isInitialized) {
+            throw UninitializedPropertyAccessException("View Model is not Initialized")
+        }
+
         observeLivedata()
         digitalRecommendationViewModel.fetchDigitalRecommendation()
     }
@@ -83,6 +87,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                         rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false)
                         rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data)
+                        rvDigitalRecommendation.show()
                     }
                 }
                 is Fail -> {
