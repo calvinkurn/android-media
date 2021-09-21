@@ -153,12 +153,15 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                     if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         it.collapsingToolbarBrandDetail.title = title
                         toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
+                        context?.let {
+                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                        }
                     } else if (verticalOffset == 0) {
                         it.collapsingToolbarBrandDetail.title = ""
                         toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
-                    }
-                    context?.let {
-                        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                        context?.let {
+                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                        }
                     }
                 }
             })
