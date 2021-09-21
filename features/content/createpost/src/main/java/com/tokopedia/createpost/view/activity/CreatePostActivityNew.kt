@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -91,8 +92,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     private fun isVideoFile(uri: Uri): Boolean {
-        val cR = contentResolver
-        return MimeType.isVideo(cR.getType(uri))
+        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString()
+        )
+        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            fileExtension.toLowerCase());
+        val slashIndex = mimeType?.indexOf("/") ?: 0
+        return mimeType?.substring(0, slashIndex) == MediaType.VIDEO
     }
 
     private fun initInjector() {

@@ -150,7 +150,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
 
-        var mContext:Context?=null
+        var mContext: Context? = null
 
         fun createRequestParams(mediumList: List<SubmitPostMedium>):
                 RequestParams {
