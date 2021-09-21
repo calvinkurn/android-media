@@ -11,9 +11,14 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.linkaccount.di.DaggerLinkAccountComponent
+import com.tokopedia.home_account.linkaccount.di.LinkAccountComponent
+import com.tokopedia.home_account.linkaccount.di.module.LinkAccountModule
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.BaseSimpleWebViewActivity
@@ -22,7 +27,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
  * Created by Yoris on 10/08/21.
  */
 
-class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
+class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<LinkAccountComponent> {
 
     companion object {
         const val KEY_URL = "webview_url"
@@ -69,6 +74,13 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
             }
             return null
         }
+    }
+
+    override fun getComponent(): LinkAccountComponent {
+        return DaggerLinkAccountComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .linkAccountModule(LinkAccountModule(this))
+            .build()
     }
 
     fun setToolbarTitle(title: String) {
