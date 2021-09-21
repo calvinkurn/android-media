@@ -29,7 +29,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
-    const val DEFAULT_STRING_RESOURCE = -1
+    private const val DEFAULT_STRING_RESOURCE = -1
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
 
@@ -182,6 +182,7 @@ object RepurchaseLayoutMapper {
             val filter = sortFilterList.firstOrNull { it.type == DATE_FILTER }
             val filterIndex = sortFilterList.indexOf(filter)
 
+            var titleFormat: Int? = null
             val chipType: String
             val title: Int = when(selectedFilter?.position) {
                 ALL_DATE_TRANSACTION_POSITION -> {
@@ -197,6 +198,7 @@ object RepurchaseLayoutMapper {
                     R.string.tokopedianow_date_filter_last_three_months_chip_and_item_bottomsheet_title
                 }
                 else -> {
+                    titleFormat = R.string.tokopedianow_date_filter_custom_date_chip_title
                     chipType = ChipsUnify.TYPE_SELECTED
                     DEFAULT_STRING_RESOURCE
                 }
@@ -205,7 +207,8 @@ object RepurchaseLayoutMapper {
             val updatedFilter = filter?.copy(
                 title = title,
                 selectedDateFilter = selectedFilter,
-                chipType = chipType
+                chipType = chipType,
+                titleFormat = titleFormat
             )
 
             updatedFilter?.let {

@@ -25,7 +25,6 @@ object RepurchaseSortFilterFactory {
             val dateFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_date_filter_chip_title,
                 type = RepurchaseSortFilterType.DATE_FILTER,
-                titleFormat = R.string.tokopedianow_date_filter_custom_date_chip_title,
                 selectedDateFilter = SelectedDateFilter()
             )
 

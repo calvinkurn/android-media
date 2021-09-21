@@ -25,6 +25,7 @@ class DateFilterViewHolder(
     companion object {
         private const val START_DATE = "start_date"
         private const val END_DATE = "end_date"
+        private const val DATE_FORMAT = "dd MMM yyyy"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_date_filter
@@ -87,7 +88,7 @@ class DateFilterViewHolder(
     }
 
     private fun convertCalendarToStringWithFormat(date: GregorianCalendar?): String {
-        return date?.let { it -> calendarToStringFormat(it, "dd MMM yyyy") }.toString()
+        return date?.let { it -> calendarToStringFormat(it, DATE_FORMAT) }.toString()
     }
 
     interface DateFilterViewHolderListener {

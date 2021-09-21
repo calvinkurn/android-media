@@ -40,6 +40,8 @@ class TokoNowDateFilterBottomSheet :
         private const val MIN_90_DAYS = -90
         private const val START_DATE = "start_date"
         private const val END_DATE = "end_date"
+        private const val DEFAULT_DATE = "2018-09-01"
+        private const val DATE_FORMAT = "yyyy-MM-dd"
 
         fun newInstance(): TokoNowDateFilterBottomSheet {
             return TokoNowDateFilterBottomSheet()
@@ -98,7 +100,7 @@ class TokoNowDateFilterBottomSheet :
             chosenStartDate = getGregorianCalendar(selectedFilter.startDate)
             chosenEndDate = getGregorianCalendar(selectedFilter.endDate)
         } else {
-            chosenStartDate = getGregorianCalendar("2018-09-01")
+            chosenStartDate = getGregorianCalendar(DEFAULT_DATE)
             chosenEndDate = GregorianCalendar()
         }
 
@@ -118,15 +120,15 @@ class TokoNowDateFilterBottomSheet :
                 titleRes = R.string.tokopedianow_date_filter_last_one_month_chip_and_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == LAST_ONE_MONTH_POSITION,
                 isLastItem = false,
-                startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS).toString(),
-                endDate = Date().toFormattedString("yyyy-MM-dd")
+                startDate = getCalculatedFormattedDate(DATE_FORMAT, MIN_30_DAYS).toString(),
+                endDate = Date().toFormattedString(DATE_FORMAT)
             ),
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_last_three_months_chip_and_item_bottomsheet_title,
                 isChecked = selectedFilter?.position == LAST_THREE_MONTHS_POSITION,
                 isLastItem = false,
-                startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_90_DAYS).toString(),
-                endDate = Date().toFormattedString("yyyy-MM-dd")
+                startDate = getCalculatedFormattedDate(DATE_FORMAT, MIN_90_DAYS).toString(),
+                endDate = Date().toFormattedString(DATE_FORMAT)
             ),
             DateFilterUiModel(
                 titleRes = R.string.tokopedianow_date_filter_custom_date_item_bottomsheet_title,
@@ -139,7 +141,7 @@ class TokoNowDateFilterBottomSheet :
     }
 
     private fun convertCalendarToStringWithFormat(date: GregorianCalendar?): String {
-        return date?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
+        return date?.let { it -> calendarToStringFormat(it, DATE_FORMAT) }.toString()
     }
 
     private fun showDatePicker(flag: String) {
@@ -151,7 +153,7 @@ class TokoNowDateFilterBottomSheet :
             if (flag.equals(START_DATE, true)) {
                 chosenEndDate?.let { maxDate = it }
                 chosenStartDate?.let { currDate = it }
-                minDate = getGregorianCalendar("2018-09-01")
+                minDate = getGregorianCalendar(DEFAULT_DATE)
 
             } else if (flag.equals(END_DATE, true)) {
                 chosenStartDate?.let { minDate = it }
