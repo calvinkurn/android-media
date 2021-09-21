@@ -121,6 +121,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
 
         private const val RV_TOP_POSITION = 0
+        private const val TICKER_FIRST_INDEX = 0
         private const val ADDITIONAL_POSITION = 1
     }
 
@@ -189,7 +190,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
 
@@ -1552,15 +1552,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
-        fun getTickerType(hexColor: String?): Int = when (hexColor) {
-            context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
-            else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
+            val tickerImpressHolders = mutableListOf<ImpressHolder>()
             val tickersData = tickers.map {
-                TickerData(it.title, it.message, getTickerType(it.color), true, it)
+                TickerData(it.title, it.message, getTickerType(it.color), true, it).also {
+                    tickerImpressHolders.add(ImpressHolder())
+                }
             }
 
             val adapter = TickerPagerAdapter(context, tickersData)
@@ -1581,8 +1579,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             })
 
-            addOnImpressionListener(tickerImpressHolder) {
-                tickers.firstOrNull()?.let { ticker ->
+            // Add impression listener on first page of ticker
+            addSellerHomeImpressionListener(
+                tickerImpressHolders.firstOrNull(),
+                tickers.firstOrNull()
+            )
+
+            // Add impression listener if ticker view pager swiped to another page
+            onTickerPageChangeListener = { pageIndex ->
+                if (pageIndex > TICKER_FIRST_INDEX) {
+                    addSellerHomeImpressionListener(
+                        tickerImpressHolders.getOrNull(pageIndex),
+                        tickers.getOrNull(pageIndex)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getTickerType(hexColor: String?): Int = when (hexColor) {
+        context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
+        else -> Ticker.TYPE_ANNOUNCEMENT
+    }
+
+    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
+                                                       ticker: TickerItemUiModel?) {
+        impressHolder?.let { holder ->
+            ticker?.let { ticker ->
+                addOnImpressionListener(holder) {
                     SellerHomeTracking.sendHomeTickerImpressionEvent(
                         ticker.id,
                         getTickerType(ticker.color)
