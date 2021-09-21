@@ -36,7 +36,6 @@ class PayLaterSimulationV2UseCase @Inject constructor(graphqlRepository: Graphql
     }
 
 
-    @Throws(ParseException::class)
     private fun getRequestParams(amount: Long): MutableMap<String, Any?> {
         return mutableMapOf("request" to mutableMapOf(PARAM_PRODUCT_AMOUNT to amount.toDouble()))
     }

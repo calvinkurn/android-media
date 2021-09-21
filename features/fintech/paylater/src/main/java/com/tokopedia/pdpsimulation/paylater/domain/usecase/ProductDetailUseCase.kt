@@ -33,7 +33,6 @@ class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         }
     }
 
-    @Throws(ParseException::class)
     private fun getRequestParams(productId: String): MutableMap<String, Any?> {
         val optionMap = mutableMapOf<String, Boolean>()
         optionMap["basic"] = true
