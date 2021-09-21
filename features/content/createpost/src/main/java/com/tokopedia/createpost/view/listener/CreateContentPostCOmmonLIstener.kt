@@ -1,6 +1,5 @@
 package com.tokopedia.createpost.view.listener
 
-import android.net.Uri
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 
 interface CreateContentPostCOmmonLIstener {
@@ -11,7 +10,6 @@ interface CreateContentPostCOmmonLIstener {
         mediaType: String,
     )
     fun updateHeader(header: HeaderViewModel)
-    fun launchProductTagFragment(data: ArrayList<Uri>?)
     fun openProductTagginPageOnPreviewMediaClick(position: Int)
     fun clickProductTagBubbleAnalytics(mediaType: String, productId: String)
 

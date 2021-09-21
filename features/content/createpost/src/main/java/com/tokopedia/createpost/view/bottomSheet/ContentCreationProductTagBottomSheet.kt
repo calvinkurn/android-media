@@ -13,6 +13,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.content_creation_product_tag_bottom_sheet.*
 
@@ -62,6 +63,14 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     }
 
     private fun onDeleteProduct(position: Int) {
+        view?.rootView?.let {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.layout_lvl6)
+            Toaster.build(it,
+                getString(R.string.feed_content_delete_toaster_text),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL).show()
+        }
+
         listener.deleteItemFromProductTagList(position,
             productData?.get(position)?.id.toString(),
             false,

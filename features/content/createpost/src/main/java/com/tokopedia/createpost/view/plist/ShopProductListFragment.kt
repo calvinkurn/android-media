@@ -26,6 +26,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
+    lateinit var sortListItems: List<ShopPagePListSortItem>
+
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
     var getImeiBS: ShopPListSortFilterBs? = null
     private val mAdapter: ShopProductListBaseAdapter by lazy {
@@ -69,10 +71,10 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         mAdapter.resetAdapter()
         mAdapter.startDataLoading()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
-
+        presenter.getSortData()
         view.cu_sort_chip.setChevronClickListener {
             createPostAnalytics.eventClickOnSortButton()
-            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this)
+            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)
             fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
         }
 
@@ -84,6 +86,23 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         }
 
     }
+    private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> {
+                }
+                is Success -> {
+                    sortListItems = it.data.sortData.result
+                }
+                is ErrorMessage -> {
+
+                }
+                else -> {
+
+                }
+            }
+        }
+    })
 
     private fun initListener() {
         if (view == null) {
@@ -94,6 +113,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         addSortValObserver()
         addProductValObserver()
         addBsObserver()
+        addSortListObserver()
     }
 
     private fun addListObserver() = presenter.productList.observe(this, Observer {

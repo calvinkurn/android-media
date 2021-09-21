@@ -20,7 +20,6 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
-import com.tokopedia.createpost.view.fragment.ImagePickerFragement
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
@@ -32,7 +31,6 @@ import com.tokopedia.imagepicker.common.model.MimeType
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.concurrent.TimeUnit
@@ -80,21 +78,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_post_name.text = header.title
     }
 
-    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
-        val createPostViewModel = CreatePostViewModel()
-        data?.forEach { uri ->
-            val type = if (isVideoFile(uri)) MediaType.VIDEO else MediaType.IMAGE
-            val mediaModel = MediaModel(path = uri.toString(), type = type)
-            createPostViewModel.fileImageList.add(mediaModel)
-        }
-        intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
-        intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
-        content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
-        if (!create_post_toolbar.isVisible)
-            create_post_toolbar?.visibility = View.VISIBLE
-        inflateFragment()
-    }
-
     override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
         (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().currentCorouselIndex =
             position
@@ -122,7 +105,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-        const val TYPE_OPEN_IMAGE_PICKER = "open_image_picker"
         fun createIntent(
             context: Context,
             createPostViewModel: CreatePostViewModel,
@@ -131,9 +113,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         ): Intent {
             val intent = Intent(context, CreatePostActivityNew::class.java)
 
-            if (isCreatePostPage)
-                intent.putExtra(PARAM_TYPE, TYPE_OPEN_IMAGE_PICKER)
-            else
                 intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
             intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
 
@@ -172,7 +151,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
 
         return when (intent.extras?.get(PARAM_TYPE)) {
-            TYPE_OPEN_IMAGE_PICKER -> ImagePickerFragement.createInstance(intent.extras ?: Bundle())
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
                 ?: Bundle())
             TYPE_CONTENT_PREVIEW_PAGE -> ContentCreateCaptionFragment.createInstance(intent.extras
@@ -196,11 +174,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_back_button.setOnClickListener {
             onBackPressed()
         }
-        if (intent.extras?.get(PARAM_TYPE) == TYPE_OPEN_IMAGE_PICKER) {
-            create_post_toolbar.visibility = View.GONE
-        } else {
-            create_post_toolbar.visibility = View.VISIBLE
-        }
+        create_post_toolbar.visibility = View.VISIBLE
+
         content_action_post_button.setOnClickListener {
             if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
                 createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)

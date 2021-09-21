@@ -47,6 +47,7 @@ import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -547,6 +548,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.hide()
         isFabExpanded = true
         fab_feed.setOnClickListener {
+            if (postProgressUpdateView?.isVisible == true)
+                updateVisibility(false)
             val authors = viewModel.feedContentForm.authors
             val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
             intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
@@ -692,6 +695,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun swipeOnPostUpdate() {
+        Toaster.build(requireView(),
+            getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_successful_toaster),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL).show()
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
             if (fragment is FeedPlusFragment) {
