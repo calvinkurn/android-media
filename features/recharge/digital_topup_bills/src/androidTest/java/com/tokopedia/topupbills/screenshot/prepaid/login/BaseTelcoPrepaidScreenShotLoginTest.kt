@@ -43,8 +43,6 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -126,25 +124,9 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         }
     }
 
-    // TODO: [Misael] replace ss coachmark
-    fun NEW_take_screenshot_coachmark_and_its_placement() {
+    fun take_screenshot_coachmark_and_its_placement() {
         findViewAndScreenShot(com.tokopedia.coachmark.R.id.container, generatePrefix(), "coachmark")
         onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close)).perform(click())
-    }
-
-    fun take_screenshot_coachmark_and_its_placement() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
-        }
-        onView(withText("Lanjut"))
-            .inRoot(RootMatchers.isPlatformPopup())
-            .perform(click());
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
-        }
-        onView(withText("Mengerti"))
-            .inRoot(RootMatchers.isPlatformPopup())
-            .perform(click());
     }
 
     fun take_screenshot_prabayar_category() {
