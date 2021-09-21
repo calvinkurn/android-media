@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommenda
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -101,12 +102,27 @@ class RecommendationViewHolder(
             )
 
             setupCta(element)
+            setTagNotification(element.tag)
             setupTooltip(tvShcRecommendationTitle, element)
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
             listener.showRecommendationWidgetCoachMark(itemView.containerShcRecommendation)
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagRecommendation.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagRecommendation.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 
