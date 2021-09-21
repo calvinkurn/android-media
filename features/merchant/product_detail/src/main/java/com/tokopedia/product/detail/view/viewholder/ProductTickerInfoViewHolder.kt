@@ -85,11 +85,6 @@ class ProductTickerInfoViewHolder(private val view: View,
     }
 
     private fun renderBlueTicker(generalTickerData: List<TickerDataResponse>) {
-        if (generalTickerData.isNotEmpty()) {
-            hideComponent()
-            return
-        }
-
         val tickerData = generalTickerData.map {
             TickerData(description = it.message,
                     type = Ticker.TYPE_ANNOUNCEMENT,
