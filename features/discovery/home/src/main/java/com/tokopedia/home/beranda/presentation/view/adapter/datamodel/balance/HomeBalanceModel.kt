@@ -77,36 +77,40 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        when (balanceType) {
-            TYPE_STATE_1 -> {
-                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-            }
-            TYPE_STATE_2 -> {
-                if (isGopayEligible == null || isGopayEligible == true) {
-                    balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+        if (isGopayEligible != null && isGopayEligible != null) {
+            when (balanceType) {
+                TYPE_STATE_1 -> {
                     balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
 
                     balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                } else {
+                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
+                }
+                TYPE_STATE_2 -> {
+                    if (isGopayEligible != null && isGopayEligible == true) {
+                        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+                        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+
+                        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+                    } else {
+                        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+                        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
+                        balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
+                        balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = resetDrawerItem(
+                            BALANCE_POSITION_FOURTH)
+                    }
+                }
+                TYPE_STATE_3 -> {
+                    balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+
                     balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
                     balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-                    balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = resetDrawerItem(
-                        BALANCE_POSITION_FOURTH)
                 }
             }
-            TYPE_STATE_3 -> {
-                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-            }
+        } else {
+            balanceDrawerItemModels.clear()
         }
     }
 
@@ -137,7 +141,7 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible == true) {
+                if (isGopayEligible != null && isGopayEligible == true) {
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
                 } else {
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
@@ -340,7 +344,7 @@ data class HomeBalanceModel(
     }
 
     private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
-        if (isGopayEligible == true) {
+        if (isGopayEligible != null && isGopayEligible == true) {
             val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
                 val type = getDrawerType(it.type)
                 it.mapToHomeBalanceItemModel(
@@ -451,7 +455,7 @@ data class HomeBalanceModel(
                 )
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible == true) {
+                if (isGopayEligible != null && isGopayEligible == true) {
                     itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },

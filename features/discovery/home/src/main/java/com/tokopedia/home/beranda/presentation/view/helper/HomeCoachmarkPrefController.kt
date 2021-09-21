@@ -122,13 +122,11 @@ fun setFalseNewTokopointCoachmarkShown(context: Context) {
 fun isP1HomeCoachmarkDone(
     context: Context,
     isUseInboxRollence: Boolean,
-    isUseWalletAppRollence: Boolean,
     isUseNavigationRollence: Boolean
 ): Boolean {
     var isDone = true
     if (
         (isUseInboxRollence && !isInboxCoachmarkShown(context)) ||
-        (isUseWalletAppRollence && !isWalletAppCoachmarkShown(context) && !isWalletApp2CoachmarkShown(context)) ||
         (isUseNavigationRollence && !isNavigationCoachmarkShown(context))) {
         isDone = false
     }

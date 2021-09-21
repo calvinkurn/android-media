@@ -153,11 +153,7 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
             balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
             drawerItemType = drawerItemType,
             state = state,
-            mainPageTitle = mainPageTitle,
-            balanceCoachmark = BalanceCoachmark(
-                title = "Title from response",
-                description = "Description from response"
-            )
+            mainPageTitle = mainPageTitle
     )
 }
 

@@ -881,39 +881,41 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean = false,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
-        if (!bottomSheetIsShowing && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
+        if (coachmark == null && !bottomSheetIsShowing && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
-                coachmark = CoachMark2(ctx)
                 coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
-                coachmark?.let {
-                    it.setOnDismissListener {
-                        coachMarkItem.forEach { item ->
-                            item.setCoachmarkShownPref()
-                        }
-                        showBalanceWidgetCoachmark(
-                            ctx,
-                            containsNewGopayAndTokopoints,
-                            tokopointsBalanceCoachmark
-                        )
-                    }
-                    //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-                    //will be removed along the coachmark removal in the future
-                    try {
-                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
-                            coachMarkIsShowing = true
-                            it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
-                        } else if (coachMarkItem.isEmpty()) {
+                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                //will be removed along the coachmark removal in the future
+                if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
+                    coachMarkIsShowing = true
+                    coachmark = CoachMark2(ctx)
+                    coachmark?.let {
+                        it.setOnDismissListener {
+                            coachMarkItem.forEach { item ->
+                                item.setCoachmarkShownPref()
+                            }
                             showBalanceWidgetCoachmark(
                                 ctx,
                                 containsNewGopayAndTokopoints,
                                 tokopointsBalanceCoachmark
                             )
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        coachMarkIsShowing = false
+                        try {
+                            it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            coachMarkIsShowing = false
+                        }
                     }
+                    coachmark
+                } else if (coachMarkItem.isEmpty()) {
+                    showBalanceWidgetCoachmark(
+                        ctx,
+                        containsNewGopayAndTokopoints,
+                        tokopointsBalanceCoachmark
+                    )
+                    return@let
                 }
             }
         }
@@ -927,8 +929,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isP1HomeCoachmarkDone(
                 context = ctx,
                 isUseInboxRollence = useNewInbox,
-                isUseNavigationRollence = isNavRevamp(),
-                isUseWalletAppRollence = isUsingWalletApp()
+                isUseNavigationRollence = isNavRevamp()
             )) {
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
@@ -2749,7 +2750,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         when (isVisibleToUser) {
             false -> {
                 if (coachMarkIsShowing) {
-                    coachmark?.dismiss()
+                    coachmark?.dismissCoachMark()
                 }
                 if (gopayCoachmarkIsShowing) {
                     coachmarkGopay?.dismiss()
