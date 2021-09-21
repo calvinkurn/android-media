@@ -8,21 +8,25 @@ import java.io.OutputStream
 object FileUtil {
 
     fun createFilePathFromUri(context: Context, uri: Uri): String {
-        var fileExtension = ""
-        fileExtension = getFileType(context.contentResolver.getType(uri) ?: "")
-        val childFileName = "del_" + "${System.currentTimeMillis()}" + ".$fileExtension"
-        val file = File(context.cacheDir, childFileName)
+        return try {
+            var fileExtension = ""
+            fileExtension = getFileType(context.contentResolver.getType(uri) ?: "")
+            val childFileName = "del_" + "${System.currentTimeMillis()}" + ".$fileExtension"
+            val file = File(context.cacheDir, childFileName)
 
-        val os: OutputStream? = file.outputStream()
-        val inputStream = context.contentResolver.openInputStream(uri)
-        if (os != null) {
-            inputStream?.copyTo(os)
+            val os: OutputStream? = file.outputStream()
+            val inputStream = context.contentResolver.openInputStream(uri)
+            if (os != null) {
+                inputStream?.copyTo(os)
+            }
+
+            inputStream?.close()
+            os?.close()
+
+            file.absolutePath
+        } catch (e: Exception) {
+            return ""
         }
-
-        inputStream?.close()
-        os?.close()
-
-        return file.absolutePath
     }
 
     private fun getFileType(mimeType: String): String {

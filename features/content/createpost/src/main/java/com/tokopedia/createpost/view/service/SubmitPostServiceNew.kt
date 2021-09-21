@@ -112,8 +112,13 @@ class SubmitPostServiceNew : JobIntentService() {
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
     private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
-        val firstImage = FileUtil.createFilePathFromUri(applicationContext,
-            Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+        val firstImage = ""
+        try {
+            FileUtil.createFilePathFromUri(applicationContext,
+                Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+        } catch (e: Exception) {
+            Timber.e("Exception")
+        }
         val maxCount = viewModel.completeImageList.size
         return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
