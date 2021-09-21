@@ -47,8 +47,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         PayLaterOfferPagerAdapter(childFragmentManager, 0)
     }
     var pdpSimulationCallback: PdpSimulationCallback? = null
-    var productAmount: Long = 0
 
+   private val productAmount: Long by lazy{
+      arguments?.getLong(PRODUCT_PRICE)?:0
+   }
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -269,7 +271,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         ): PayLaterOffersFragment {
             val detailFragment = PayLaterOffersFragment()
             detailFragment.pdpSimulationCallback = pdpSimulationCallback
-            detailFragment.productAmount = bundle.getLong(PRODUCT_PRICE)
+            detailFragment.arguments = bundle
             return detailFragment
         }
     }
