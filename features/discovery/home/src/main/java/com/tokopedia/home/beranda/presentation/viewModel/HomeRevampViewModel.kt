@@ -1207,7 +1207,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getTokopoint(){
-        if(getTokopointJob?.isActive == true) return
+        if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
                 val data = getTokopointListBasedOnElibility()
@@ -1241,7 +1241,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getTokocashBalance() {
-        if(getTokocashJob?.isActive == true) return
+        if(getTokocashJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
             updateHeaderViewModel(
@@ -1361,10 +1361,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getWalletBalanceData() {
+        if (getWalletBalanceJob?.isActive == true || !userSession.get().isLoggedIn) return
+
         //set loading to wallet item
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
-        launchCatchError(coroutineContext, block = {
+        getWalletBalanceJob = launchCatchError(coroutineContext, block = {
             walletAppAbTestCondition(
                 isUsingWalletApp = {
                     getHomeBalanceWalletAppData(updateView = true)

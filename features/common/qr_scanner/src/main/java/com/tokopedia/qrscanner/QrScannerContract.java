@@ -32,7 +32,7 @@ public interface QrScannerContract {
 
         void goToEventRedeemPage(String url);
 
-        boolean isFromPeduliLindungi();
+        boolean getRemoteConfigPeduliLindungi();
 
         String getCallbackUrlFromPeduliLindungi();
     }

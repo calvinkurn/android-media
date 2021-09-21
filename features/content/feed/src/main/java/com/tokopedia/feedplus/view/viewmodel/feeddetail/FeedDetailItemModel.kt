@@ -7,7 +7,7 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetail
 /**
  * @author by nisie on 5/18/17.
  */
-class FeedDetailItemModel(var productId: Int,
+class FeedDetailItemModel(var productId: String,
                           var name: String,
                           var price: String,
                           var priceOriginal: String,

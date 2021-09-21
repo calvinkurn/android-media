@@ -760,12 +760,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bottomSheet.clearAction()
                 bottomSheet.setCloseClickListener {
                     bottomSheet.dismiss()
+                    saveFirstViewNavigationFalse()
                 }
                 childFragmentManager.run {
                     bottomSheet.show(this, ONBOARDING_NAVIGATION_TAG)
                     bottomSheetIsShowing = true
                 }
-                saveFirstViewNavigationFalse()
             }
         }
     }
@@ -881,7 +881,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean = false,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
-        if (coachmark == null && !bottomSheetIsShowing && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
+        if (coachmark == null && checkNavigationOnboardingFinished() && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
@@ -1476,7 +1476,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bannerCarouselCallback?.resetImpression()
             }
         })
-        getHomeViewModel().setRollanceNavigationType(RollenceKey.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1884,6 +1883,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
                     )
                 }
+            } else {
+                showCoachMark(skipBalanceWidget = true)
             }
         }
     }

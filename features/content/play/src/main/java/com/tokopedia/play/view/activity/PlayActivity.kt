@@ -189,6 +189,10 @@ class PlayActivity : BaseActivity(),
         }
     }
 
+    override fun onPageSelected(position: Int) {
+        activeFragment?.setFragmentActive(position)
+    }
+
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
     }

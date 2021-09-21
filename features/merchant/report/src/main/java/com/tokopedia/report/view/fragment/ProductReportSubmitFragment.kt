@@ -14,11 +14,10 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -83,7 +82,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setOkOnClickListner(View.OnClickListener {
                         dismiss()
                         loading_view?.visible()
-                        viewModel.submitReport(productId.toIntOrNull() ?: 0,
+                        viewModel.submitReport(productId.toLongOrZero(),
                                 reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
                                 this@ProductReportSubmitFragment::onFailSubmit)
                         adapter.inputs
@@ -165,6 +164,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.PRODUCT_REPORT_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }

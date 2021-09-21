@@ -8,6 +8,7 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
@@ -25,6 +26,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCa
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,6 +80,12 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
 
+    @RelaxedMockK
+    lateinit var getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var bestSellerMapper: BestSellerMapper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -98,6 +106,8 @@ class OfficialStoreHomeViewModelTest {
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
                 getDisplayHeadlineAds,
+                getRecommendationUseCaseCoroutine,
+                bestSellerMapper,
                 CoroutineTestDispatchersProvider
         )
     }
@@ -579,7 +589,7 @@ class OfficialStoreHomeViewModelTest {
 
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+        return RecommendationItem(productId = productId.toLongOrZero(), isTopAds = isTopAds)
     }
 
     private fun <T> mockObservable(data: T): Observable<T> {

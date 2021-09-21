@@ -2,9 +2,9 @@ package com.tokopedia.home_account.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.ArrayList
-import com.tokopedia.navigation_common.model.*
-import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo
+import com.tokopedia.home_account.linkaccount.data.LinkStatusPojo
+import com.tokopedia.navigation_common.model.DebitInstantModel
+import com.tokopedia.navigation_common.model.ProfileModel
 
 /**
  * Created by Yoris Prayogo on 20/10/20.
@@ -12,10 +12,6 @@ import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo
  */
 
 data class UserAccountDataModel(
-
-        @SerializedName("wallet")
-        @Expose
-        var wallet: WalletModel = WalletModel(),
 
         @SerializedName("profile")
         @Expose
@@ -29,5 +25,7 @@ data class UserAccountDataModel(
         @Expose
         var isAffiliate: Boolean = false,
 
-        var shortcutResponse: ShortcutResponse = ShortcutResponse()
+        var shortcutResponse: ShortcutResponse = ShortcutResponse(),
+
+        var linkStatus: LinkStatusPojo = LinkStatusPojo()
 )
