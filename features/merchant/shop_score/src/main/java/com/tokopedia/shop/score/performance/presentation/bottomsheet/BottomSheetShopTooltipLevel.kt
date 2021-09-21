@@ -11,13 +11,12 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
-import com.tokopedia.shop.score.databinding.BottomsheetTooltipInformationLevelBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.adapter.CardTooltipLevelAdapter
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
@@ -36,10 +35,9 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private var rvLevelCard: RecyclerView? = null
     private var tvValueNextUpdate: Typography? = null
     private var containerCardIncomeInformation: ConstraintLayout? = null
+    private var loaderTooltipLevel: LoaderUnify? = null
 
     private val cardTooltipLevelAdapter by lazy { CardTooltipLevelAdapter() }
-
-    private val binding: BottomsheetTooltipInformationLevelBinding? by viewBinding()
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_information_level
 
@@ -93,6 +91,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         rvLevelCard = view.findViewById(R.id.rv_level_card)
         tvValueNextUpdate = view.findViewById(R.id.tv_value_next_update)
         containerCardIncomeInformation = view.findViewById(R.id.containerCardIncomeInformation)
+        loaderTooltipLevel = view.findViewById(R.id.loaderTooltipLevel)
     }
 
     private fun setRecyclerView() {
@@ -108,7 +107,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     private fun observeShopInfoLevel() {
         observe(shopPerformanceViewModel.shopInfoLevel) {
-            binding?.loaderTooltipLevel?.hide()
+            loaderTooltipLevel?.hide()
             val shopInfoLevelUiModel = ShopInfoLevelUiModel(
                 shopIncome = shopIncome,
                 productSold = productSold,
