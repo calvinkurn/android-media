@@ -130,7 +130,9 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "coachmark")
         }
-        onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close)).perform(click())
+        onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .perform(click())
     }
 
     fun take_screenshot_prabayar_category() {
@@ -179,9 +181,6 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_interaction_product_login() {
-        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
-        Thread.sleep(3000)
-
         // Pulsa
         findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(), "product_view_pulsa")
         findViewHolderAndScreenshot(R.id.telco_product_rv, 1, generatePrefix(), "product_item_pulsa")
