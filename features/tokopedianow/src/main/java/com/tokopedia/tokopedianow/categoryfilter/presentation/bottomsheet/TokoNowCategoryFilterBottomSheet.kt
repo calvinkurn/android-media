@@ -46,6 +46,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModel:  TokoNowCategoryFilterViewModel
 
+    private var filterChipViewList = mutableListOf<CategoryFilterChipView>()
     private var accordionFilter: AccordionUnify? = null
     private var btnApply: UnifyButton? = null
 
@@ -89,6 +90,9 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
 
     private fun setupActionButton() {
         setAction(getString(R.string.tokopedianow_text_reset)) {
+            filterChipViewList.forEach {
+                it.resetAllFilterChip()
+            }
             viewModel.clearSelectedFilter()
         }
     }
@@ -114,6 +118,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         observe(viewModel.categoryList) {
+            filterChipViewList.clear()
             it.data.forEach { category ->
                 val filterChipView = createFilterChipView(category)
 
@@ -126,6 +131,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
                 }
 
                 accordionFilter?.addGroup(item)
+                filterChipViewList.add(filterChipView)
             }
         }
 
