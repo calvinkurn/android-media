@@ -35,6 +35,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -275,7 +276,14 @@ class MiniCartWidget @JvmOverloads constructor(
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
+            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+            val pageSource = when (pageName) {
+                MiniCartAnalytics.Page.HOME_PAGE -> "minicart - tokonow - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "minicart - tokonow - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "minicart - tokonow category page"
+            }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                    .putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, pageSource)
         }
 
         context.startActivity(intent)
