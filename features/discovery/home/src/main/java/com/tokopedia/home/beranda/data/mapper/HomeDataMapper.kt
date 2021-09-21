@@ -38,7 +38,7 @@ class HomeDataMapper(
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
     }
 
-    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false): HomeDataModel{
+    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
@@ -47,6 +47,13 @@ class HomeDataMapper(
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
+        } else {
+            if (homeData.atfData?.dataList?.isEmpty() == true && haveCachedData ) {
+                throw IllegalStateException("Showing cache data because atf is error")
+            }
+            if (homeData.dynamicHomeChannel?.channels.isEmpty() == true && haveCachedData ) {
+                throw IllegalStateException("Showing cache data because dynamic channel is error")
+            }
         }
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(

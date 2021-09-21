@@ -1,11 +1,11 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.navigation_common.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.query.QueryHomeWallet
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.Dispatchers
