@@ -76,7 +76,7 @@ object TrackingConstant {
         "click widget milestone - higher level - minimize view"
     const val CLICK_WIDGET_MILESTONE_SHARE = "click widget milestone - share"
     const val IMPRESSION_TICKER = "impression ticker"
-    const val CLICK_TICKER_HYPERLINK = "impression ticker"
+    const val CLICK_TICKER_HYPERLINK = "click ticker - hyperlink"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
