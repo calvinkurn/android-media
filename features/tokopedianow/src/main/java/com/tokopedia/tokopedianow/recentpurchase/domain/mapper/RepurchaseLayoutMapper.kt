@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
-    private const val DEFAULT_STRING_RESOURCE = -1
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
 
@@ -200,7 +199,7 @@ object RepurchaseLayoutMapper {
                 else -> {
                     titleFormat = R.string.tokopedianow_date_filter_custom_date_chip_title
                     chipType = ChipsUnify.TYPE_SELECTED
-                    DEFAULT_STRING_RESOURCE
+                    R.string.tokopedianow_date_filter_all_date_transactions_chip_and_item_bottomsheet_title
                 }
             }
 
