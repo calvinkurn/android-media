@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
@@ -32,6 +30,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.model.productdetail.uidata.*
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
@@ -285,7 +284,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         activity?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
                     ?: "")
-            startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
+            startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }
     }
 }

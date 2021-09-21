@@ -1,5 +1,6 @@
 package com.tokopedia.home.explore.domain.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 public class LayoutRows implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     private int id;
     @SerializedName("name")

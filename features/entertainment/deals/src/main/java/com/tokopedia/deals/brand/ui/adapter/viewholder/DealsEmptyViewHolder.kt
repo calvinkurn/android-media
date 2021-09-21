@@ -5,9 +5,9 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.common.listener.EmptyStateListener
+import com.tokopedia.deals.databinding.ItemDealsCategoryEmptyBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_category_empty.view.*
 
 class DealsEmptyViewHolder(
         private val emptyStateListener: EmptyStateListener,
@@ -15,15 +15,17 @@ class DealsEmptyViewHolder(
 ): BaseViewHolder(itemView) {
 
     fun bind(empty: DealsEmptyDataView) {
-        with(itemView) {
-            txt_category_empty_title?.text = empty.title
-            txt_category_empty_description?.text = empty.desc
-            if (empty.isFilter) btn_category_empty_reset_filter.show()
-            else btn_category_empty_reset_filter.hide()
+        val binding = ItemDealsCategoryEmptyBinding.bind(itemView)
+        with(binding){
+            txtCategoryEmptyTitle?.text = empty.title
+            txtCategoryEmptyDescription?.text = empty.desc
+            if (empty.isFilter) btnCategoryEmptyResetFilter.show()
+            else btnCategoryEmptyResetFilter.hide()
 
-            btn_category_empty_reset_filter.setOnClickListener {
+            btnCategoryEmptyResetFilter.setOnClickListener {
                 emptyStateListener.resetFilter()
             }
+
         }
     }
 

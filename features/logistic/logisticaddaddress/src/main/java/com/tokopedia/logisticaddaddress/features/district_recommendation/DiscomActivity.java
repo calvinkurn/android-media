@@ -30,7 +30,7 @@ public class DiscomActivity extends BaseSimpleActivity
 
     private CheckoutAnalyticsChangeAddress analytics;
     private FusedLocationProviderClient fusedLocationClient;
-    private Boolean isLocalization;
+    private Boolean isLocalization = false;
 
     public static Intent newInstance(Activity activity, Token token, Boolean isLocalization) {
         Intent intent = new Intent(activity, DiscomActivity.class);
