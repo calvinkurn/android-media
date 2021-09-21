@@ -574,17 +574,17 @@ public class BranchWrapper implements WrapperInterface {
 
 
     private Boolean isBranchUtmSupportActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT, true);
     }
 
     private Boolean isBranchUtmOnlyBranchLinkActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK, false);
     }
 
-    private Boolean getBooleanValue(Context context, String key) {
+    private Boolean getBooleanValue(Context context, String key, boolean defaultValue) {
         if (remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(key);
+        return remoteConfig.getBoolean(key, defaultValue);
 
     }
 
@@ -604,7 +604,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
-        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING)) {
+        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING, true)) {
             new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
         }
     }
@@ -631,7 +631,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private long getRemoteConfigTimeOutValue(Context context, String key){
-        return getRemoteConfig(context).getLong(key);
+        return getRemoteConfig(context).getLong(key, 5000);
     }
 
     private RemoteConfig getRemoteConfig(Context context){

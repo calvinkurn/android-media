@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.data.model
 
 data class RestrictionEngineModel(
-        var productId : Int = 0,
         var status : String = "",
         var buttonLabel: String? = null,
         var voucherIconUrl: String? = null,
