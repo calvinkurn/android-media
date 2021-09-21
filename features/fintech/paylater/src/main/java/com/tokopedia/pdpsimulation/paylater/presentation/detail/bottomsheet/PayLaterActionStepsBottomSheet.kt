@@ -139,8 +139,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         btnRegister.setOnClickListener {
             sendClickEventAnalytics()
             if (actionUrl.isNotEmpty())
-                sendClickEventAnalytics()
-            openUrlWebView(actionUrl)
+                openUrlWebView(actionUrl)
         }
     }
 

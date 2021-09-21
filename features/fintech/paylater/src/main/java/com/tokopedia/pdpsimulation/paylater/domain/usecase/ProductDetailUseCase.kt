@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pdpsimulation.common.constants.GQL_GET_PRODUCT_DETAIL
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
-import java.text.ParseException
 import javax.inject.Inject
 
 @GqlQuery("ProductDetailQuery", GQL_GET_PRODUCT_DETAIL)

@@ -1,6 +1,5 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
-import android.net.ParseException
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
