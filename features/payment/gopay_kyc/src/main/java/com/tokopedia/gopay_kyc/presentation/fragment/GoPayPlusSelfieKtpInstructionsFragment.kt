@@ -8,7 +8,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
-import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
+import com.tokopedia.gopay_kyc.analytics.GoPayKycConstants
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import com.tokopedia.gopay_kyc.utils.ReviewCancelDialog
@@ -17,16 +18,6 @@ import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
 
     private val instructionStringResList = arrayListOf<Int>()
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            activity?.let {
-                ReviewCancelDialog.showReviewDialog(it,
-                    { openSelfieKtpCamera() },
-                    { (it as GoPayKycNavigationListener).exitKycFlow() }
-                )
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +40,22 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendAnalytics(
+            GoPayKycEvent.Impression.OpenScreenEvent(
+                GoPayKycConstants.ScreenNames.GOPAY_KYC_SELFIE_KTP_INSTRUCTION_PAGE
+            )
+        )
         initViews()
         setupOnBackPressed()
         takePhotoButton.setOnClickListener {
+            sendAnalytics(
+                GoPayKycEvent.Click.TakePhotoEvent(
+                    GoPayKycConstants.Label.SELFIE_KTP,
+                    GoPayKycConstants.ScreenNames.GOPAY_KYC_SELFIE_KTP_INSTRUCTION_PAGE
+                )
+            )
             openSelfieKtpCamera()
         }
-
     }
 
     private fun initViews() {
@@ -90,20 +91,46 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupOnBackPressed() {
-        activity?.let {
-            (it as GoPayKtpInstructionActivity).onBackPressedDispatcher.addCallback(
-                viewLifecycleOwner, backPressedCallback
-            )
-        }
-    }
-
     private fun openSelfieKtpCamera() {
         activity?.let { (it as GoPayKycNavigationListener).openSelfieKtpCameraScreen() }
     }
 
     override fun getScreenName() = null
     override fun initInjector() {}
+    private fun sendAnalytics(event: GoPayKycEvent) =
+        activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event) }
+
+    private fun setupOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
+    }
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val event =
+                GoPayKycEvent.Click.BackPressEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_SELFIE_KTP_INSTRUCTION_PAGE)
+            sendAnalytics(event)
+            activity?.let {
+                ReviewCancelDialog.showReviewDialog(it,
+                    {
+                        val event = GoPayKycEvent.Click.ConfirmOkDialogEvent(
+                            "",
+                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_INSTRUCTION_PAGE
+                        )
+                        sendAnalytics(event)
+                        openSelfieKtpCamera()
+                    },
+                    {
+                        val event = GoPayKycEvent.Click.ExitKycDialogEvent(
+                            "",
+                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_INSTRUCTION_PAGE
+                        )
+                        sendAnalytics(event)
+                        (it as GoPayKycNavigationListener).exitKycFlow()
+                    }
+                )
+            }
+        }
+    }
 
     companion object {
         fun newInstance() = GoPayPlusSelfieKtpInstructionsFragment()

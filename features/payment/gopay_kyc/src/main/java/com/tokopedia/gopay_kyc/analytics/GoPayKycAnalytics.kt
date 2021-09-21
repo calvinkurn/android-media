@@ -1,5 +1,6 @@
 package com.tokopedia.gopay_kyc.analytics
 
+import android.util.Log
 import com.tokopedia.gopay_kyc.di.GoPayKycScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -17,6 +18,10 @@ class GoPayKycAnalytics @Inject constructor(
 
     fun sendOpenScreenEvents() {
 
+    }
+
+    fun sentKycEvent(goPayKycEvent: GoPayKycEvent) {
+        Log.d("kyc", goPayKycEvent.toString())
     }
 
     fun sendActionClickEvents(action: String, pageSource: String, label: String = "") {

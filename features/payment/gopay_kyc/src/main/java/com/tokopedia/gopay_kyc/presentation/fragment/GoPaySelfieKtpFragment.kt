@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycConstants
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
@@ -34,6 +36,12 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
 
     private fun handleProceedButton() {
         proceedPhotoButton.setOnClickListener {
+            sendAnalytics(
+                GoPayKycEvent.Click.ConfirmPhotoEvent(
+                    GoPayKycConstants.Label.SELFIE_KTP,
+                    GoPayKycConstants.ScreenNames.GOPAY_KYC_SELFIE_KTP_INSTRUCTION_PAGE
+                )
+            )
             proceedToNextStep()
         }
     }

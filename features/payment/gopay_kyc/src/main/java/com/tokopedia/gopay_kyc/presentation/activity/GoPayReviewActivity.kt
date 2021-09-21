@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycAnalytics
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.bottomsheet.GoPayKycUploadFailedBottomSheet
@@ -19,10 +21,13 @@ import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycReviewListener
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
+import javax.inject.Inject
 
 class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent>,
     GoPayKycReviewListener, GoPayKycNavigationListener {
 
+    @Inject
+    lateinit var goPayKycAnalytics: dagger.Lazy<GoPayKycAnalytics>
     private var shouldOpenSuccessScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +40,7 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
     override fun getLayoutRes() = R.layout.activity_gopay_ktp_layout
     override fun getParentViewResourceID(): Int = R.id.kycFrameLayout
 
-    override fun getNewFragment() =
-        when {
+    override fun getNewFragment() = when {
             shouldOpenSuccessScreen -> {
                 shouldOpenSuccessScreen = false
                 GoPayUploadSuccessFragment.newInstance()
@@ -44,7 +48,6 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
             else -> GoPayReviewAndUploadFragment.newInstance(intent.extras)
 
         }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
@@ -87,9 +90,10 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
     private val kycComponent: GoPayKycComponent by lazy { initInjector() }
     override fun getComponent() = kycComponent
     override fun getScreenName() = null
+    override fun sendAnalytics(event: GoPayKycEvent) = goPayKycAnalytics.get().sentKycEvent(event)
 
-    override fun showKycFailedBottomSheet(ktpPath: String, selfieKtpPath: String) = GoPayKycUploadFailedBottomSheet
-        .show(ktpPath, selfieKtpPath,supportFragmentManager)
+    override fun showKycFailedBottomSheet(ktpPath: String, selfieKtpPath: String) =
+        GoPayKycUploadFailedBottomSheet.show(ktpPath, selfieKtpPath,supportFragmentManager)
 
     override fun openKtpCameraScreen() {
         startActivityForResult(

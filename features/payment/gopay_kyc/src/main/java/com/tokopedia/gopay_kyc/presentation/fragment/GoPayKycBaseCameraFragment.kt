@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycAnalytics
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKycActivity
@@ -44,6 +46,9 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
+    @Inject
+    lateinit var goPayKycAnalytics: dagger.Lazy<GoPayKycAnalytics>
+
     private val viewModel: GoPayKycViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(GoPayKycViewModel::class.java)
@@ -60,6 +65,10 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     protected var reviewPhotoLayout: Group? = null
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
+
+    // @Todo populate values
+    protected var pageSource: String = ""
+    protected var eventLabel: String = ""
 
     abstract fun setCaptureInstruction()
     abstract fun setVerificationInstruction()
@@ -87,13 +96,21 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            sendAnalytics(GoPayKycEvent.Click.BackPressEvent(pageSource))
+
             if (viewModel.canGoBack)
                 activity?.finish()
             else
                 ReviewCancelDialog.showReviewDialog(
                     requireContext(),
-                    { proceedToNextStep() },
-                    { exitKycFlow() }
+                    {
+                        sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(eventLabel, pageSource))
+                        proceedToNextStep()
+                    },
+                    {
+                        sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(eventLabel, pageSource))
+                        exitKycFlow()
+                    }
                 )
         }
     }
@@ -149,6 +166,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun reInitCamera() {
+        sendAnalytics(GoPayKycEvent.Click.ReTakePhotoEvent(eventLabel, pageSource))
         viewModel.canGoBack = true
         cameraView?.open()
         cameraLayout?.visible()
@@ -278,5 +296,5 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     override fun getScreenName() = null
     override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
-
+    protected fun sendAnalytics(event: GoPayKycEvent) = goPayKycAnalytics.get().sentKycEvent(event)
 }

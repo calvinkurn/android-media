@@ -10,16 +10,22 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycAnalytics
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusKtpInstructionsFragment
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusSelfieKtpInstructionsFragment
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
+import javax.inject.Inject
 
 class GoPayKtpInstructionActivity : BaseSimpleActivity(),
     HasComponent<GoPayKycComponent>,
     GoPayKycNavigationListener {
+
+    @Inject
+    lateinit var goPayKycAnalytics: dagger.Lazy<GoPayKycAnalytics>
 
     private val kycComponent: GoPayKycComponent by lazy { initInjector() }
     private var shouldOpenSelfieKtpScreen = false
@@ -28,6 +34,7 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(),
     private var selfieKtpPath = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        kycComponent.inject(this)
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setupOldToolbar()
@@ -97,6 +104,7 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(),
         startActivity(intent)
     }
 
+
     private fun setupOldToolbar() {
         ktpHeader.isShowBackButton = true
         toolbar = ktpHeader
@@ -111,6 +119,7 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(),
 
     override fun getScreenName() = null
     override fun getComponent() = kycComponent
+    override fun sendAnalytics(event: GoPayKycEvent) = goPayKycAnalytics.get().sentKycEvent(event)
 
     private fun initInjector() =
         DaggerGoPayKycComponent.builder()

@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.gopay_kyc.R
+import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
+import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycReviewListener
 import com.tokopedia.gopay_kyc.viewmodel.GoPayKycImageUploadViewModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -69,7 +71,9 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendImpressionEvent()
         retryUploadButton.setOnClickListener {
+            sentRetryEvent()
             retryUploadButton.isLoading = true
             viewModel.initiateGoPayKyc()
         }
@@ -84,6 +88,17 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         })
+    }
+
+    //@Todo provide params
+    private fun sendImpressionEvent() {
+        val event = GoPayKycEvent.Impression.KycFailedImpression("")
+        activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event) }
+    }
+
+    private fun sentRetryEvent() {
+        val event = GoPayKycEvent.Click.RetrySubmitEvent("")
+        activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event) }
     }
 
     private fun showKycSuccessScreen() =

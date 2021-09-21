@@ -25,8 +25,17 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:keepScreenOn="true"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="none"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="autoFocus"
+            app:cameraGrid="off"
+            app:cameraFlash="off"
+            app:cameraPlaySounds="true"
             app:cameraAudio="off"
-            app:cameraPlaySounds="true" />
+            app:cameraHdr="off"
+            app:cameraMode="picture"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/kycCutoutImage"
