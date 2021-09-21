@@ -67,6 +67,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
         private const val PARAM_PRODUCT = "product"
+        private const val PARAM_SHOP_NAME = "shop_name"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -452,6 +453,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun goToAttachProduct() {
             activity?.let{
                 val intent = RouteManager.getIntent(context, "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
+                intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
                 startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
             }
     }

@@ -121,6 +121,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     ) {
         updateHeader(feedContentForm.authors)
 
+        createPostModel.shopName = feedContentForm.authors.first().name
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage

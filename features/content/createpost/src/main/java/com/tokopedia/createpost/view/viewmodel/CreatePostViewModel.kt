@@ -19,7 +19,8 @@ data class CreatePostViewModel(
     val urlImageList: MutableList<MediaModel> = arrayListOf(),
     val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
     var defaultPlaceholder: String = "",
-    var currentCorouselIndex: Int = 0
+    var currentCorouselIndex: Int = 0,
+    var shopName: String = ""
 ) : Parcelable {
     val isEditState: Boolean
         get() = postId.isNotBlank()

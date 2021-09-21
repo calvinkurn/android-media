@@ -59,7 +59,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         initListener()
 
         if (arguments != null) {
-            presenter.getPageData(arguments?.getString("shopid"), arguments?.getString("source"))
+            presenter.getPageData(arguments?.getString(PARAM_SHOP_ID), arguments?.getString(
+                PARAM_SOURCE))
         }
     }
 
@@ -69,9 +70,15 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         view.recycler_view.adapter = mAdapter
 
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading()
+//        mAdapter.startDataLoading()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
         presenter.getSortData()
+        val shopName = arguments?.getString(PARAM_SHOP_NAME) ?: ""
+        val shopNamePlaceHolderText = String.format(
+            requireContext().getString(R.string.feed_product_page_search_bar_placeholder_text),
+            shopName)
+
+        view.sb_shop_product.searchBarPlaceholder = shopNamePlaceHolderText
         view.cu_sort_chip.setChevronClickListener {
             createPostAnalytics.eventClickOnSortButton()
             getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)
@@ -122,7 +129,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
                 is Loading -> {
                     mAdapter.resetAdapter()
                     mAdapter.notifyDataSetChanged()
-                    mAdapter.startDataLoading()
+//                    mAdapter.startDataLoading()
                 }
                 is Success -> {
                     mAdapter.onSuccess(it.data)
@@ -166,7 +173,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         )
 
     override fun onRetryPageLoad(pageNumber: Int) {
-        presenter.getPageData(arguments?.getString("shopid"), arguments?.getString("source"))
+        presenter.getPageData(arguments?.getString(PARAM_SHOP_ID), arguments?.getString(
+            PARAM_SHOP_NAME))
     }
 
     override fun onEmptyList(rawObject: Any) {
@@ -226,11 +234,15 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_DATA = 1
         private val CONTAINER_EMPTY = 2
         private val CONTAINER_ERROR = 3
+        private const val PARAM_SHOP_NAME = "shop_name"
+        private const val PARAM_SHOP_ID = "shopid"
+        private const val PARAM_SOURCE = "source"
 
-        fun newInstance(shopId: String, source: String): ShopProductListFragment {
+        fun newInstance(shopId: String, source: String, shopName: String): ShopProductListFragment {
             val bundle = Bundle()
-            bundle.putString("shopid", shopId)
-            bundle.putString("source", source)
+            bundle.putString(PARAM_SHOP_ID, shopId)
+            bundle.putString(PARAM_SOURCE, source)
+            bundle.putString(PARAM_SHOP_NAME, shopName)
             val fragment = ShopProductListFragment()
             fragment.arguments = bundle
             return fragment
