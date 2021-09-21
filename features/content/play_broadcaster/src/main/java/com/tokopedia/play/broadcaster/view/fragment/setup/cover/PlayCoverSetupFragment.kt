@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -37,6 +38,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupViewComponent
@@ -309,6 +311,30 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener {  }
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            "$customErrMessage. Kode Error: (${errCode})"
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
+    }
+
     private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
         if (toasterBottomMargin == 0) {
             val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
@@ -478,10 +504,10 @@ class PlayCoverSetupFragment @Inject constructor(
                             override fun onLoadCleared(placeholder: Drawable?) {}
                         })
             } catch (e: Throwable) {
-                showToaster(
-                        message = e.localizedMessage,
-                        type = Toaster.TYPE_ERROR,
-                        duration = Toaster.LENGTH_LONG
+                showErrorToaster(
+                    err = e,
+                    customErrMessage = e.localizedMessage,
+                    duration = Toaster.LENGTH_LONG
                 )
             }
         }
@@ -501,10 +527,7 @@ class PlayCoverSetupFragment @Inject constructor(
         coverSetupView.setLoading(false)
         coverCropView.setLoading(false)
 
-        showToaster(
-                message = e.localizedMessage,
-                type = Toaster.TYPE_ERROR
-        )
+        showErrorToaster(e)
     }
 
     //region observe

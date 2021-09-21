@@ -151,10 +151,9 @@ class PlaySearchResultFragment @Inject constructor(
                     } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
                 }
                 is PageResultState.Fail -> {
-                    etalaseSetupCoordinator.showToaster(
-                            message = it.state.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_LONG
+                    etalaseSetupCoordinator.showErrorToaster(
+                        err = it.state.error,
+                        duration = Toaster.LENGTH_LONG
                     )
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
                     scrollListener.setHasNextPage(true)

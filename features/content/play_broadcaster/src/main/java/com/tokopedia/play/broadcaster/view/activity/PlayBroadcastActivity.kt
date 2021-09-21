@@ -33,7 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -276,7 +276,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                     invalidatePerformanceData()
                     showLoading(false)
                     showToaster(
-                            message = result.error.localizedMessage,
+                            err = result.error,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = View.OnClickListener { result.onRetry() }
                     )
@@ -393,20 +393,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun showToaster(
-            message: String,
-            type: Int = Toaster.TYPE_ERROR,
-            duration: Int = Toaster.LENGTH_INDEFINITE,
-            actionLabel: String = "",
-            actionListener: View.OnClickListener = View.OnClickListener { }
+        err: Throwable,
+        duration: Int = Toaster.LENGTH_INDEFINITE,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         if (toasterBottomMargin == 0) {
             toasterBottomMargin = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
         }
 
-        findViewById<View>(android.R.id.content)?.showToaster(
-                message = message,
+        findViewById<View>(android.R.id.content)?.showErrorToaster(
+                err = err,
                 duration = duration,
-                type = type,
                 actionLabel = actionLabel,
                 actionListener = actionListener,
                 bottomMargin = toasterBottomMargin

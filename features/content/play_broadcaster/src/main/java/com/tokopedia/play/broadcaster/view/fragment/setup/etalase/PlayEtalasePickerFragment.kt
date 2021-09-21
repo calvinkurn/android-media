@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -286,6 +287,30 @@ class PlayEtalasePickerFragment @Inject constructor(
         tvInfo.show()
         psbSearch.show()
         flEtalaseFlow.show()
+    }
+
+    override fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String?,
+        duration: Int,
+        actionLabel: String,
+        actionListener: View.OnClickListener
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            "$customErrMessage. Kode Error: (${errCode})"
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }
 
     override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String, actionListener: View.OnClickListener) {

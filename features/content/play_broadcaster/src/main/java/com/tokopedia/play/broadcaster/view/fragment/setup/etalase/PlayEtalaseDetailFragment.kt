@@ -34,6 +34,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
@@ -231,6 +232,29 @@ class PlayEtalaseDetailFragment @Inject constructor(
         }
     }
 
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            "$customErrMessage. Kode Error: (${errCode})"
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel)
+    }
+
     private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
         if (toasterBottomMargin == 0) {
             val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
@@ -272,9 +296,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private fun onUploadFailed(e: Throwable?) {
         bottomActionView.setLoading(false)
-        e?.localizedMessage?.let {
-            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
-        }
+        e?.let { showErrorToaster(e) }
     }
 
     /**
