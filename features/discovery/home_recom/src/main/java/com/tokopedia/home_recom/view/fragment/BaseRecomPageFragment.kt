@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -257,6 +258,13 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         }
     }
 
+    fun hideSwipeLoading() {
+        swipeToRefresh?.let {
+            it.isEnabled = true
+            it.isRefreshing = false
+        }
+    }
+
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
         return null
     }
@@ -278,13 +286,6 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         swipeToRefresh = view.findViewById<View>(R.id.swipe_refresh_layout) as SwipeRefreshLayout
         swipeToRefresh?.let {
             it.setOnRefreshListener { onSwipeRefresh() }
-        }
-    }
-
-    private fun hideSwipeLoading() {
-        swipeToRefresh?.let {
-            it.isEnabled = true
-            it.isRefreshing = false
         }
     }
 
@@ -312,7 +313,11 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             activity?.let { actv ->
                 it.setupToolbarWithStatusBar(activity = actv, applyPadding = false, applyPaddingNegative = true)
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                viewLifecycleOwner.lifecycle.addObserver(it)
+            }
         }
+
     }
 
     private fun initChooseAddress() {

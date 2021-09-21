@@ -286,6 +286,7 @@ class InfiniteTokonowRecomFragment :
         viewModel.errorGetRecomData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 disableLoadMore()
+                hideSwipeLoading()
                 when {
                     it.isForceRefreshAndError -> {
                         showErrorSnackbar(it.errorThrowable)
