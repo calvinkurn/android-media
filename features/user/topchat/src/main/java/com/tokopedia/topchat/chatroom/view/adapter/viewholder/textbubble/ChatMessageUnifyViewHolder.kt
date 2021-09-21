@@ -268,5 +268,8 @@ class ChatMessageUnifyViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_chat_bubble_unify
+        const val TYPE_LEFT = 0
+        const val TYPE_RIGHT = 1
+        const val TYPE_RIGHT_BANNED = 2
     }
 }

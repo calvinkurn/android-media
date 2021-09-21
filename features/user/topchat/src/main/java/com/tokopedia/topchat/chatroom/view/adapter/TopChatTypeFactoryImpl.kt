@@ -28,7 +28,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedRightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
@@ -69,7 +68,7 @@ open class TopChatTypeFactoryImpl constructor(
         }
         val chat = visitables[position]
         return if (chat is MessageViewModel && chat.isSender && chat.isBanned()) {
-            ChatMessageViewHolder.TYPE_RIGHT_BANNED
+            ChatMessageUnifyViewHolder.TYPE_RIGHT_BANNED
         } else {
             default
         }
@@ -171,7 +170,7 @@ open class TopChatTypeFactoryImpl constructor(
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
-            ChatMessageViewHolder.TYPE_RIGHT_BANNED -> BannedRightChatMessageViewHolder.LAYOUT
+            ChatMessageUnifyViewHolder.TYPE_RIGHT_BANNED -> BannedRightChatMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
