@@ -66,7 +66,6 @@ import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
-import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointShimmerUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
@@ -282,7 +281,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     override fun onLinkingAccountClicked(isLinked: Boolean) {
         homeAccountAnalytic.trackClickLinkAccount()
         if(isLinked) {
-            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(

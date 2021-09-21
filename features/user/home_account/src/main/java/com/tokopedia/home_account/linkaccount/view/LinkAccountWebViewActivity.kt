@@ -2,6 +2,7 @@ package com.tokopedia.home_account.linkaccount.view
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -11,11 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.R
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import com.tokopedia.webview.WebViewHelper
 
 /**
  * Created by Yoris on 10/08/21.
@@ -27,35 +28,46 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
         const val KEY_URL = "webview_url"
         const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
 
+        const val QUERY_LD = "ld"
+        const val QUERY_PAGE = "page"
+        const val QUERY_APP_CLIENT_ID = "appClientId"
+
         fun newInstance(context: Context?, url: String?): Intent {
             val intent = Intent(context, LinkAccountWebViewActivity::class.java)
             intent.putExtra(KEY_URL, url)
             return intent
         }
 
-        private fun appendSuccessQuery(url: String): String  {
-            return "${url}&page=success"
-        }
-
-        fun getSuccessUrl(context: Context, redirectionApplink: String = ""): String {
-            return appendSuccessQuery(getLinkAccountUrl(context, redirectionApplink))
+        fun getSuccessUrl(uri: Uri): Uri {
+            return uri.buildUpon().appendQueryParameter(QUERY_PAGE, "success").build()
         }
 
         fun gotoSuccessPage(activity: FragmentActivity?, redirectionApplink: String) {
             activity?.run {
-                val i = newInstance(this, getSuccessUrl(this, redirectionApplink))
-                startActivityForResult(i, LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST)
+                try {
+                    val baseUrl = getLinkAccountUrl(redirectionApplink)
+                    if(baseUrl != null) {
+                        val i = newInstance(this, getSuccessUrl(baseUrl).toString())
+                        startActivityForResult(i, LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST)
+                    }
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                }
             }
         }
 
-        fun getLinkAccountUrl(context: Context, redirectionApplink: String): String {
-            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(BASE_URL, context)
-            if (finalUrl != null) {
-                finalUrl += "&ld=${redirectionApplink.encodeToUtf8()}"
-            } else {
-                finalUrl = "${BASE_URL}?ld=${redirectionApplink.encodeToUtf8()}"
+        fun getLinkAccountUrl(redirectionApplink: String): Uri? {
+            try {
+                val uri = Uri.parse(BASE_URL)
+                val clientID = TrackApp.getInstance().gtm.cachedClientIDString
+                return uri.buildUpon()
+                        .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
+                        .appendQueryParameter(QUERY_LD, redirectionApplink.encodeToUtf8())
+                        .build()
+            }catch (ex: Exception) {
+                ex.printStackTrace()
             }
-            return finalUrl
+            return null
         }
     }
 
@@ -109,9 +121,11 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        val redirection = intent.getStringExtra(PARAM_LD) ?: ApplinkConst.HOME
-        val mUrl = getLinkAccountUrl(this, redirection)
-        return LinkAccountWebviewFragment.newInstance(mUrl)
+        var url = intent.getStringExtra(KEY_URL) ?: ""
+        if(url.isEmpty()) {
+            val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
+            url = getLinkAccountUrl(redirection).toString()
+        }
+        return LinkAccountWebviewFragment.newInstance(url)
     }
-
 }
