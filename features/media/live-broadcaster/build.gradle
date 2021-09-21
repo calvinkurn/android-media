@@ -40,7 +40,7 @@ buildscript {
 }
 
 dependencies {
-    implementation files('libs/libstream-release.jar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
