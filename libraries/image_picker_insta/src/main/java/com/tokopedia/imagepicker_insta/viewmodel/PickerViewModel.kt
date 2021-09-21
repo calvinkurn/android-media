@@ -227,18 +227,18 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     }
 
     fun insertIntoGallery(asset: Asset) {
-        when (StorageUtil.WRITE_LOCATION) {
-            WriteStorageLocation.EXTERNAL -> {
-                launchCatchError(block = {
-                    val values = ContentValues()
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                    values.put(MediaStore.Images.Media.DATA, asset.assetPath)
-                    val uri = app.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-                }, onError = {
-                    it.printStackTrace()
-                })
-            }
-        }
+//        when (StorageUtil.WRITE_LOCATION) {
+//            WriteStorageLocation.EXTERNAL -> {
+//                launchCatchError(block = {
+//                    val values = ContentValues()
+//                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+//                    values.put(MediaStore.Images.Media.DATA, asset.assetPath)
+//                    val uri = app.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+//                }, onError = {
+//                    it.printStackTrace()
+//                })
+//            }
+//        }
     }
 
     override fun onCleared() {

@@ -36,7 +36,7 @@ class PhotoImporter:MediaImporter{
             file.absolutePath,
             StorageUtil.INTERNAL_FOLDER_NAME,
             Uri.fromFile(file),
-            file.lastModified()
+            createdDate = getCreateAtForInternalFile(file)
         )
     }
 
@@ -58,19 +58,13 @@ class PhotoImporter:MediaImporter{
     }
 
     override fun importMedia(context: Context): MediaImporterData {
-        val photoNames = SparseArray<String>()
         val photoCursor = CursorUtil.getPhotoCursor(context, "", null)
-        val photosOnPhone = SparseArray<JSONObject>()
-        val data = iteratePhotoCursor(photoCursor, photosOnPhone, photoNames)
+        val data = iteratePhotoCursor(photoCursor)
 
         return data
     }
 
-    protected fun iteratePhotoCursor(
-        cur: Cursor?,
-        photosOnPhone: SparseArray<JSONObject>,
-        photoNames: SparseArray<String>
-    ): MediaImporterData {
+    protected fun iteratePhotoCursor(cur: Cursor?): MediaImporterData {
         val photosList = arrayListOf<Asset>()
         val folders = hashSetOf<String>()
 
@@ -100,8 +94,6 @@ class PhotoImporter:MediaImporter{
 
                                 val dateLong = getDate(dateAdded, 0L, name)
                                 if (dateLong != 0L) {
-                                    photosOnPhone.put(index.toInt(), item)
-                                    photoNames.put(index.toInt(), name)
 
                                     val folderName: String = FileUtil.getFolderName(name)
                                     item.put(FOLDER_KEY, folderName)
@@ -109,13 +101,13 @@ class PhotoImporter:MediaImporter{
 
                                 val folderName = item[FOLDER_KEY] as String
                                 val photosData = PhotosData(
-                                    filePath = name,
-                                    folderName = folderName,
-                                    uri = ContentUris.withAppendedId(
+                                    assetPath = name,
+                                    folder = folderName,
+                                    contentUri = ContentUris.withAppendedId(
                                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                         index
                                     ),
-                                    _createdDate = dateLong
+                                    createdDate = dateLong
                                 )
                                 folders.add(folderName)
                                 photosList.add(photosData)

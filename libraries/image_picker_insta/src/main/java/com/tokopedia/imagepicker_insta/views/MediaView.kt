@@ -197,10 +197,7 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun createVideoItem(videoData: VideoData) {
-        //TODO Rahul remove dummy
-//        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
-//        val tmpUri = Uri.fromFile(tmpFile)
-        val tmpUri = videoData.uri
+        val tmpUri = videoData.contentUri
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)
         simpleExoPlayer?.playWhenReady = true

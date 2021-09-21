@@ -42,7 +42,7 @@ class VideoImporter : MediaImporter {
             file.absolutePath,
             StorageUtil.INTERNAL_FOLDER_NAME,
             Uri.fromFile(file),
-            file.lastModified(),
+            getCreateAtForInternalFile(file),
             getFormattedDurationText(duration),
             isVideoWithinLimit(duration)
         )
@@ -96,19 +96,12 @@ class VideoImporter : MediaImporter {
     }
 
     override fun importMedia(context: Context): MediaImporterData {
-        val videoNames = SparseArray<String>()
         val videoCursor = CursorUtil.getVideoCursor(context, "", null)
-        val videosOnPhone = SparseArray<JSONObject>()
-        val data = iterateVideoCursor(videoCursor, videosOnPhone, videoNames)
-
+        val data = iterateVideoCursor(videoCursor)
         return data
     }
 
-    protected fun iterateVideoCursor(
-        cur: Cursor?,
-        videosOnPhone: SparseArray<JSONObject>,
-        photoNames: SparseArray<String>
-    ): MediaImporterData {
+    protected fun iterateVideoCursor(cur: Cursor?): MediaImporterData {
         val videosList = arrayListOf<Asset>()
         val folders = hashSetOf<String>()
 
@@ -139,8 +132,6 @@ class VideoImporter : MediaImporter {
 
                                 val dateLong = getDate(dateAdded, 0L, name)
                                 if (dateLong != 0L) {
-                                    videosOnPhone.put(index.toInt(), item)
-                                    photoNames.put(index.toInt(), name)
 
                                     val folderName: String = FileUtil.getFolderName(name)
                                     item.put(PhotoImporter.FOLDER_KEY, folderName)
@@ -149,13 +140,13 @@ class VideoImporter : MediaImporter {
                                 val folderName = item[PhotoImporter.FOLDER_KEY] as String
 
                                 val videosData = VideoData(
-                                    filePath = name,
-                                    folderName = folderName,
-                                    uri = ContentUris.withAppendedId(
+                                    assetPath = name,
+                                    folder = folderName,
+                                    contentUri = ContentUris.withAppendedId(
                                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                                         index
                                     ),
-                                    _createdDate = dateLong,
+                                    createdDate = dateLong,
                                     durationText = getFormattedDurationText(duration),
                                     canBeSelected = isVideoWithinLimit(duration)
                                 )

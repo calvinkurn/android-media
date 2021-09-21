@@ -118,18 +118,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     fun openEditor() {
-        val assets = imageAdapter.selectedPositionMap.keys.map {
-            it.asset.assetPath
-        }
-        val assetList = ArrayList<String>(assets)
-        val intent = ImageEditorActivity.getIntent(
-            context,
-            ImageEditorBuilder(
-                assetList,
-                defaultRatio = ImageRatioType.RATIO_1_1
-            )
-        )
-        startActivityForResult(intent, EDITOR_REQUEST_CODE)
+//        val assets = imageAdapter.selectedPositionMap.keys.map {
+//            it.asset.assetPath
+//        }
+//        val assetList = ArrayList<String>(assets)
+//        val intent = ImageEditorActivity.getIntent(
+//            context,
+//            ImageEditorBuilder(
+//                assetList,
+//                defaultRatio = ImageRatioType.RATIO_1_1
+//            )
+//        )
+//        startActivityForResult(intent, EDITOR_REQUEST_CODE)
     }
 
     private fun initDagger() {

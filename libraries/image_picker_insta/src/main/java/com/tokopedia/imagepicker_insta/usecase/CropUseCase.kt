@@ -22,7 +22,7 @@ class CropUseCase @Inject constructor() {
                 if (asset is PhotosData) {
                     val drawable = Glide.with(context)
                         .asBitmap()
-                        .load(asset.uri)
+                        .load(asset.contentUri)
                         .apply(RequestOptions().override(it.value.bmpWidth!!,it.value.bmpHeight!!))
                         .submit()
                         .get()
