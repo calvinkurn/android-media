@@ -545,17 +545,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
-        val dummy = listOf(
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = "Misael"),
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = ""),
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = "Jessica"),
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = ""),
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = "Furqan"),
-            TopupBillsSeamlessFavNumberItem(clientNumber = "081208120821", clientName = "")
-        )
         seamlessFavNumberList.addAll(data.favoriteNumbers)
         postpaidClientNumberWidget.setFilterChipShimmer(false)
-        postpaidClientNumberWidget.setFavoriteNumber(dummy)
+        postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
     }
 

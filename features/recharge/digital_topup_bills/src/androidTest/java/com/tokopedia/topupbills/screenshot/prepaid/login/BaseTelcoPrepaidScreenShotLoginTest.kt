@@ -125,7 +125,9 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_coachmark_and_its_placement() {
-        findViewAndScreenShot(com.tokopedia.coachmark.R.id.container, generatePrefix(), "coachmark")
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "coachmark")
+        }
         onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close)).perform(click())
     }
 

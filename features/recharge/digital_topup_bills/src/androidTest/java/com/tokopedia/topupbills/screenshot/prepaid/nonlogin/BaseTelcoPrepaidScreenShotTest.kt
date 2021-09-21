@@ -86,8 +86,6 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     @Test
     fun screenshot() {
-        CommonTelcoActions.clientNumberWidget_clickClearBtn()
-        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_input_number()
