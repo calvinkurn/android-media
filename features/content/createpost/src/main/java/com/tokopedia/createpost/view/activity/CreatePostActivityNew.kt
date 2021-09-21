@@ -36,6 +36,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.content.ContentResolver
+import java.util.*
+
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
@@ -92,12 +95,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     private fun isVideoFile(uri: Uri): Boolean {
-        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString()
-        )
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-            fileExtension.toLowerCase());
-        val slashIndex = mimeType?.indexOf("/") ?: 0
-        return mimeType?.substring(0, slashIndex) == MediaType.VIDEO
+        val mimetype = uri.getMimeType(this);
+        return mimetype?.contains("video") ?: false
+    }
+
+    private fun Uri.getMimeType(context: Context): String? {
+        return when (scheme) {
+            ContentResolver.SCHEME_CONTENT -> context.contentResolver.getType(this)
+            else -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(toString()).toLowerCase(Locale.US)
+            )
+        }
     }
 
     private fun initInjector() {

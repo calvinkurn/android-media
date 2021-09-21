@@ -91,6 +91,13 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
             val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
                 ?: ""
+            if (videoUrl.contains(DEFAULT_RESOLUTION)) {
+                val videoUrlIcon = videoUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
+                if (firstTimeUpoad) {
+                    postUpdateProgressManager?.setFirstIcon(videoUrlIcon)
+                    firstTimeUpoad = false
+                }
+            }
             postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.videoID = videoId
