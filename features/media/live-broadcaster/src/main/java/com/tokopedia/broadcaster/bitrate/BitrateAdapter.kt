@@ -74,11 +74,13 @@ abstract class BitrateAdapter {
         if (checkDelay() == 0L || checkInterval() == 0L) return
         val checkNetwork: TimerTask = object : TimerTask() {
             override fun run() {
-                if (mStreamer == null || mConnectionId == null) return
-                val audioLost: Long = mStreamer!!.getAudioPacketsLost(mConnectionId!!)
-                var videoLost: Long = mStreamer!!.getVideoPacketsLost(mConnectionId!!)
-                videoLost += mStreamer!!.getUdpPacketsLost(mConnectionId!!)
-                check(audioLost, videoLost)
+                try {
+                    if (mStreamer == null || mConnectionId == null) return
+                    val audioLost: Long = mStreamer!!.getAudioPacketsLost(mConnectionId!!)
+                    var videoLost: Long = mStreamer!!.getVideoPacketsLost(mConnectionId!!)
+                    videoLost += mStreamer!!.getUdpPacketsLost(mConnectionId!!)
+                    check(audioLost, videoLost)
+                } catch (ignored: Exception) {}
             }
         }
         mCheckTimer = Timer()
