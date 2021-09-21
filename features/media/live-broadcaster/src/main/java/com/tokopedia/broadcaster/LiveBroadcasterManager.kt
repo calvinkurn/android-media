@@ -81,8 +81,13 @@ class LiveBroadcasterManager constructor(
         }
     }
 
-    override fun prepare(config: BroadcasterConfig?.() -> Unit) {
+    override fun prepare(config: BroadcasterConfig.() -> Unit) {
         mConfig = BroadcasterConfig().apply(config)
+        configureStreamer(mConfig)
+    }
+
+    override fun prepare(config: BroadcasterConfig?) {
+        if (config != null) mConfig = config
         configureStreamer(mConfig)
     }
 

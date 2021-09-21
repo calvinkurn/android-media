@@ -22,16 +22,82 @@ data class BroadcasterConfig(
     var audioRate: Int = 44100, // 44.1kHz
     var audioChannelCount: Int = 1,
     var audioSource: Int = 5,
-    var audioBitrate: Int = AudioConfig.calcBitRate(
-        audioRate,
-        audioChannelCount,
-        AudioConfig.AAC_PROFILE
-    ),
     var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
     var maxRetry: Int = 3,
     var reconnectDelay: Int = 3000,
     var bitrateMode: BitrateMode = BitrateMode.LadderAscend
 ) {
+
+    val audioBitrate: Int = AudioConfig.calcBitRate(
+        audioRate,
+        audioChannelCount,
+        AudioConfig.AAC_PROFILE
+    )
+
+    fun ingestUrl(value: String) = apply {
+        ingestUrl = value
+        return this
+    }
+
+    fun videoSize(width: Int, height: Int) = apply {
+        videoWidth = width
+        videoHeight = height
+        return this
+    }
+
+    fun fps(value: Float) = apply {
+        fps = value
+        return this
+    }
+
+    fun videoBitrate(value: Int) = apply {
+        videoBitrate = value * 1000
+        return this
+    }
+
+    fun audioRate(value: Int) = apply {
+        audioRate = value
+        return this
+    }
+
+    fun audioChannelCount(value: Int) = apply {
+        audioChannelCount = value
+        return this
+    }
+
+    fun audioSource(value: Int) = apply {
+        audioSource = value
+        return this
+    }
+
+    fun micAudio() = apply {
+        audioType = AudioType.MIC
+        return this
+    }
+
+    fun pcmAudio() = apply {
+        audioType = AudioType.PCM
+        return this
+    }
+
+    fun maxRetry(value: Int) = apply {
+        maxRetry = value
+        return this
+    }
+
+    fun reconnectDelay(value: Int) = apply {
+        reconnectDelay = value
+        return this
+    }
+
+    fun ladderAscend() = apply {
+        bitrateMode = BitrateMode.LadderAscend
+    }
+
+    fun logarithmicDescend() = apply {
+        bitrateMode = BitrateMode.LogarithmicDescend
+    }
+
     fun getVideoSize() = Streamer.Size(videoHeight, videoWidth)
 
     fun getAudioType(): AudioConfig.INPUT_TYPE {
