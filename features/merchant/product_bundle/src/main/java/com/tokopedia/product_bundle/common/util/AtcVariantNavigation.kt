@@ -18,24 +18,24 @@ object AtcVariantNavigation {
     fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant) {
         val saveButtonText = fragment.getString(R.string.action_save)
         val cartRedirections = AtcVariantHelper.generateSimpanCartRedirection(productVariant, saveButtonText)
-                ?: emptyMap()
+            ?: emptyMap()
 
         AtcVariantHelper.pdpToAtcVariant(
-                context = fragment.requireContext(),
-                productInfoP1 = DynamicProductInfoP1(),
-                warehouseId = "",
-                pdpSession = "",
-                isTokoNow = false,
-                isShopOwner = false,
-                productVariant = productVariant,
-                warehouseResponse = mapOf("" to WarehouseInfo()),
-                cartRedirection = cartRedirections,
-                miniCart = emptyMap(),
-                alternateCopy = emptyList(),
-                boData = null,
-                rates = null,
-                pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE,
-                restrictionData = null
+            context = fragment.requireContext(),
+            productInfoP1 = DynamicProductInfoP1(),
+            warehouseId = "",
+            pdpSession = "",
+            isTokoNow = false,
+            isShopOwner = false,
+            productVariant = productVariant,
+            warehouseResponse = mapOf("" to WarehouseInfo()),
+            cartRedirection = cartRedirections,
+            miniCart = emptyMap(),
+            alternateCopy = emptyList(),
+            boData = null,
+            rates = null,
+            restrictionData = null,
+            pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE
         ) { intent, resultCode ->
             when (resultCode) {
                 AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
