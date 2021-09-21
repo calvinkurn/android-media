@@ -18,8 +18,6 @@ data class GetRepurchaseProductListParam(
         private const val PARAM_PAGE = "page"
         private const val PARAM_CAT_IDS = "catIDs"
         private const val PARAM_DELIMITER = "&"
-
-        const val SORT_FREQUENTLY_BOUGHT = 2
     }
 
     fun generateQuery(): String {

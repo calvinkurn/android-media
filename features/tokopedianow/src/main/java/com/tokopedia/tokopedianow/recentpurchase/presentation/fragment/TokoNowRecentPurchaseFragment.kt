@@ -63,6 +63,8 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolde
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
+import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.view.decoration.RepurchaseGridItemDecoration
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.*
@@ -159,6 +161,7 @@ class TokoNowRecentPurchaseFragment:
         when (requestCode) {
             REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET -> onCategoryFilterActivityResult(data)
             REQUEST_CODE_SORT_FILTER_BOTTOMSHEET -> onSortFilterActivityResult(data)
+            REQUEST_CODE_DATE_FILTER_BOTTOMSHEET -> onDateFilterActivityResult(data)
         }
     }
 
@@ -280,7 +283,10 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onClickDateFilter() {
-
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.DATE_FILTER)
+        val selectedFilter = viewModel.getSelectedDateFilter()
+        intent.putExtra(EXTRA_SELECTED_DATE_FILTER, selectedFilter)
+        startActivityForResult(intent, REQUEST_CODE_DATE_FILTER_BOTTOMSHEET)
     }
 
     override fun onClickCategoryFilter() {
@@ -538,14 +544,18 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun onCategoryFilterActivityResult(data: Intent?) {
-        val selectedFilter = data
-            ?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
+        val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.applyCategoryFilter(selectedFilter)
     }
 
     private fun onSortFilterActivityResult(data: Intent?) {
         val selectedFilter = data?.getIntExtra(SORT_VALUE, FREQUENTLY_BOUGHT).orZero()
         viewModel.applySortFilter(selectedFilter)
+    }
+
+    private fun onDateFilterActivityResult(data: Intent?) {
+        val selectedFilter = data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)
+        viewModel.applyDateFilter(selectedFilter)
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {

@@ -10,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.DateUtil
+import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -25,6 +27,7 @@ class RepurchaseSortFilterViewHolder(
 
         private const val FIRST_ITEM_INDEX = 0
         private const val INACTIVE_SORT_FILTER = 0
+        private const val DATE_FORMAT = "d/M/yyyy"
     }
 
     private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
@@ -41,10 +44,17 @@ class RepurchaseSortFilterViewHolder(
     private fun addSortFilterItems(data: RepurchaseSortFilterUiModel) {
         data.sortFilterList.forEach {
             val selectedItems = it.selectedItem?.title.orEmpty()
+            val selectedDateFilter = it.selectedDateFilter
 
-            val title = if(selectedItems.isNotEmpty() && it.qtyFormat != null) {
+            val title = if(selectedItems.isNotEmpty() && it.titleFormat != null) {
                 val selectedFilterCount = selectedItems.count().orZero()
-                itemView.context.getString(it.qtyFormat, selectedFilterCount)
+                itemView.context.getString(it.titleFormat, selectedFilterCount)
+            } else if (selectedDateFilter != null && it.titleFormat != null) {
+                val startDate = DateUtil.getGregorianCalendar(selectedDateFilter.startDate)
+                val endDate = DateUtil.getGregorianCalendar(selectedDateFilter.endDate)
+                val startDateFormatted = calendarToStringFormat(startDate, DATE_FORMAT)
+                val endDateFormatted = calendarToStringFormat(endDate, DATE_FORMAT)
+                itemView.context.getString(it.titleFormat, startDateFormatted, endDateFormatted)
             } else {
                 getString(it.title)
             }

@@ -1,5 +1,8 @@
 package com.tokopedia.tokopedianow.recentpurchase.domain.mapper
 
+import TokoNowDateFilterBottomSheet.Companion.ALL_DATE_TRANSACTION_POSITION
+import TokoNowDateFilterBottomSheet.Companion.LAST_ONE_MONTH_POSITION
+import TokoNowDateFilterBottomSheet.Companion.LAST_THREE_MONTHS_POSITION
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -22,9 +25,11 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
+import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
+    private const val DEFAULT_STRING_RESOURCE = -1
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
 
@@ -141,15 +146,71 @@ object RepurchaseLayoutMapper {
 
             val filter = sortFilterList.firstOrNull { it.type == SORT }
             val filterIndex = sortFilterList.indexOf(filter)
-            val title = if (sort == FREQUENTLY_BOUGHT) {
-                R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet
+
+            val title : Int
+            val chipType: String
+
+            if (sort == FREQUENTLY_BOUGHT) {
+                title = R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet
+                chipType = ChipsUnify.TYPE_NORMAL
             } else {
-                R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet
+                title =R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet
+                chipType = ChipsUnify.TYPE_SELECTED
             }
+
             val updatedFilter = filter?.copy(
                 sort = sort,
-                title = title
+                title = title,
+                chipType = chipType
             )
+
+            updatedFilter?.let {
+                sortFilterList[filterIndex] = it
+                set(sortFilterIndex, sortFilter.copy(
+                    sortFilterList = sortFilterList
+                ))
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.setDateFilter(selectedFilter: SelectedDateFilter?) {
+        firstOrNull { it is RepurchaseSortFilterUiModel }?.let { item ->
+            val sortFilterIndex = indexOf(item)
+            val sortFilter = (item as RepurchaseSortFilterUiModel)
+            val sortFilterList = sortFilter.sortFilterList.toMutableList()
+
+            val filter = sortFilterList.firstOrNull { it.type == DATE_FILTER }
+            val filterIndex = sortFilterList.indexOf(filter)
+
+            var titleFormat: Int? = null
+            val chipType: String
+            val title: Int = when(selectedFilter?.position) {
+                ALL_DATE_TRANSACTION_POSITION -> {
+                    chipType = ChipsUnify.TYPE_NORMAL
+                    R.string.tokopedianow_date_filter_all_date_transactions_chip_and_item_bottomsheet_title
+                }
+                LAST_ONE_MONTH_POSITION -> {
+                    chipType = ChipsUnify.TYPE_SELECTED
+                    R.string.tokopedianow_date_filter_last_one_month_chip_and_item_bottomsheet_title
+                }
+                LAST_THREE_MONTHS_POSITION -> {
+                    chipType = ChipsUnify.TYPE_SELECTED
+                    R.string.tokopedianow_date_filter_last_three_months_chip_and_item_bottomsheet_title
+                }
+                else -> {
+                    titleFormat = R.string.tokopedianow_date_filter_custom_date_chip_title
+                    chipType = ChipsUnify.TYPE_SELECTED
+                    DEFAULT_STRING_RESOURCE
+                }
+            }
+
+            val updatedFilter = filter?.copy(
+                title = title,
+                selectedDateFilter = selectedFilter,
+                chipType = chipType,
+                titleFormat = titleFormat
+            )
+
             updatedFilter?.let {
                 sortFilterList[filterIndex] = it
                 set(sortFilterIndex, sortFilter.copy(

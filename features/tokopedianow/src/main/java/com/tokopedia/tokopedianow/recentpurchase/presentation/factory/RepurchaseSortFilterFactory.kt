@@ -5,7 +5,6 @@ import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayout
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
-import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseSortFilterFactory {
 
@@ -14,19 +13,19 @@ object RepurchaseSortFilterFactory {
             val sortFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_sort_chip_title,
                 type = RepurchaseSortFilterType.SORT,
-                sort = FREQUENTLY_BOUGHT,
-                chipType = ChipsUnify.TYPE_SELECTED
+                sort = FREQUENTLY_BOUGHT
             )
 
             val categoryFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_all_category_filter_chip_title,
-                qtyFormat = R.string.tokopedianow_repurchase_category_filter_chip_format,
+                titleFormat = R.string.tokopedianow_repurchase_category_filter_chip_format,
                 type = RepurchaseSortFilterType.CATEGORY_FILTER
             )
 
             val dateFilter = RepurchaseSortFilter(
                 title = R.string.tokopedianow_repurchase_date_filter_chip_title,
-                type = RepurchaseSortFilterType.DATE_FILTER
+                type = RepurchaseSortFilterType.DATE_FILTER,
+                selectedDateFilter = SelectedDateFilter()
             )
 
             add(sortFilter)

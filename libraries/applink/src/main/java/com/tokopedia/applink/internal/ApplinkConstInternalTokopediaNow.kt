@@ -21,6 +21,9 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowSortFilterActivity
     val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
 
+    //TokoNowDateFilterActivity
+    val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter"
+
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
