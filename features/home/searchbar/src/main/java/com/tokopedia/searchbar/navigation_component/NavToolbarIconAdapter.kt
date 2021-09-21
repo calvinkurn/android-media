@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -27,7 +26,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_animated.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
@@ -207,17 +205,17 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        val padding3 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_3)
-        val padding4 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_6)
+        val padding2 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_3)
+        val padding5 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_6)
 
         if (isLastPosition) {
-            iconImage.setPadding(padding3, 0, 0, 0)
+            iconImageContainer.setPadding(padding2, 0, 0, 0)
         } else {
             if(position == 0) {
-                iconImage.setPadding(padding4, 0, padding3, 0)
+                iconImageContainer.setPadding(padding5, 0, padding2, 0)
             }
             else {
-                iconImage.setPadding(padding3, 0, padding3, 0)
+                iconImageContainer.setPadding(padding2, 0, padding2, 0)
             }
         }
 
