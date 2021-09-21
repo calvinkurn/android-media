@@ -2665,14 +2665,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isMoveToWishlist) {
             message = String.format(getString(R.string.message_product_already_moved_to_wishlist), deletedCartIds.size)
             refreshWishlistAfterItemRemoveAndMoveToWishlist()
+        } else if (isFromEditBundle) {
+            message = getString(R.string.message_toaster_cart_change_bundle_success)
         }
 
-        if (!isFromEditBundle) {
-            if (isFromGlobalCheckbox) {
-                showToastMessageGreen(message)
-            } else {
-                showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
-            }
+        if (isFromGlobalCheckbox || isFromEditBundle) {
+            showToastMessageGreen(message)
+        } else {
+            showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
         val updateListResult = cartAdapter.removeProductByCartId(deletedCartIds)
