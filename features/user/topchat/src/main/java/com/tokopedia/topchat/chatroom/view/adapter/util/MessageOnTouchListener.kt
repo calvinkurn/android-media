@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
+import android.annotation.SuppressLint
 import android.text.Selection
 import android.text.Spannable
 import android.text.style.URLSpan
@@ -13,6 +14,7 @@ class MessageOnTouchListener(
     private val viewListener: ChatLinkHandlerListener
 ) : View.OnTouchListener {
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (v == null || event == null) return false
         val widget = v as? TextView ?: return false
@@ -43,6 +45,10 @@ class MessageOnTouchListener(
                         viewListener.isBranchIOLink(clickedUrl) -> {
                             viewListener.handleBranchIOLinkClick(clickedUrl)
                             notifyLinkHit(widget)
+                            return true
+                        }
+                        else -> {
+                            link[0].onClick(widget)
                             return true
                         }
                     }

@@ -15,9 +15,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seller_seamless_main_view"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_seamless_title"
@@ -36,10 +36,10 @@
 
         <include
             android:id="@+id/include"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             layout="@layout/item_account_with_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seller_seamless_title" />
 
@@ -49,10 +49,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:text="@string/button_direct_login"
-            app:unifyButtonSize="medium"
             app:layout_constraintEnd_toEndOf="@+id/include"
             app:layout_constraintStart_toStartOf="@+id/include"
-            app:layout_constraintTop_toBottomOf="@+id/include" />
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/seller_seamless_negative_btn"
@@ -60,11 +60,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/button_use_another_acc"
-            app:unifyButtonSize="medium"
             app:layout_constraintEnd_toEndOf="@id/seller_seamless_positive_btn"
             app:layout_constraintStart_toStartOf="@id/seller_seamless_positive_btn"
             app:layout_constraintTop_toBottomOf="@id/seller_seamless_positive_btn"
-            app:unifyButtonVariant="text"/>
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="text" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typography"

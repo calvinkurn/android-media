@@ -12,9 +12,11 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemRecommendat
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
 import kotlinx.android.synthetic.main.shop_feature_recommendation_section.view.*
 
-class SectionShopFeatureRecommendationViewHolder(view: View,
-                                                 private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener):
-        AbstractViewHolder<SectionShopRecommendationUiModel>(view) {
+class SectionShopFeatureRecommendationViewHolder(
+    view: View,
+    private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener
+) :
+    AbstractViewHolder<SectionShopRecommendationUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.shop_feature_recommendation_section
@@ -23,16 +25,21 @@ class SectionShopFeatureRecommendationViewHolder(view: View,
     private var itemFeatureRecommendationAdapter: ItemFeatureRecommendationAdapter? = null
 
     override fun bind(element: SectionShopRecommendationUiModel?) {
-        itemFeatureRecommendationAdapter = ItemFeatureRecommendationAdapter(itemRecommendationFeatureListener)
+        itemFeatureRecommendationAdapter =
+            ItemFeatureRecommendationAdapter(itemRecommendationFeatureListener)
         with(itemView) {
             rvShopScoreCreation?.apply {
-                if(itemDecorationCount.isZero()) {
+                if (itemDecorationCount.isZero()) {
                     addItemDecoration(ShopScoreItemDecoration())
                 }
                 adapter = itemFeatureRecommendationAdapter
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
         }
-        element?.recommendationShopList?.let { itemFeatureRecommendationAdapter?.setItemRecommendationList(it) }
+        element?.recommendationShopList?.let {
+            itemFeatureRecommendationAdapter?.setItemRecommendationList(
+                it
+            )
+        }
     }
 }

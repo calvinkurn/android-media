@@ -1,14 +1,17 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -26,6 +29,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
@@ -34,6 +38,8 @@ import kotlinx.android.synthetic.main.ent_search_detail_activity.*
 import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
 import kotlinx.android.synthetic.main.ent_search_fragment.recycler_viewParent
 import kotlinx.android.synthetic.main.ent_search_fragment.swipe_refresh_layout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -62,6 +68,8 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         fun newInstance() = EventCategoryFragment()
         val TAG = EventCategoryFragment::class.java.simpleName
         const val ENT_CATEGORY_PERFORMANCE = "et_event_category"
+
+        private const val DELAY_TIME = 200L
     }
 
 
@@ -160,11 +168,14 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
-                recycler_viewParent.addOnScrollListener(endlessScroll)
-                viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-            }.showRetrySnackbar()
+            lifecycleScope.launch {
+                delay(DELAY_TIME)
+                NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                    recycler_viewParent.addOnScrollListener(endlessScroll)
+                    viewModel.page = "1"
+                    viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+                }.showRetrySnackbar()
+            }
         })
     }
 

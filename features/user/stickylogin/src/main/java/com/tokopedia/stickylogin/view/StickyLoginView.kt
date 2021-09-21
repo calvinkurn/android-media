@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -28,13 +27,16 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_PROFILE_PICTURE
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
 import com.tokopedia.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
@@ -47,7 +49,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -301,6 +302,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             StickyLoginConstant.Page.SHOP -> {
                 sharedPref.getLong(KEY_LAST_SEEN_AT_SHOP, 0)
             }
+            StickyLoginConstant.Page.TOKONOW -> {
+                sharedPref.getLong(KEY_LAST_SEEN_AT_TOKONOW, 0)
+            }
         }
         return if (lastSeen > 0) lastSeen
         else 0
@@ -318,6 +322,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             }
             StickyLoginConstant.Page.SHOP -> {
                 sharedPref.edit().putLong(KEY_LAST_SEEN_AT_SHOP, inMinute).apply()
+            }
+            StickyLoginConstant.Page.TOKONOW -> {
+                sharedPref.edit().putLong(KEY_LAST_SEEN_AT_TOKONOW, inMinute).apply()
             }
         }
     }
@@ -342,6 +349,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             StickyLoginConstant.Page.SHOP -> {
                 remoteConfig.getBoolean(KEY_STICKY_LOGIN_REMINDER_SHOP, true)
             }
+            StickyLoginConstant.Page.TOKONOW -> {
+                remoteConfig.getBoolean(KEY_STICKY_LOGIN_REMINDER_TOKONOW, true)
+            }
         }
     }
 
@@ -355,6 +365,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             }
             StickyLoginConstant.Page.SHOP -> {
                 remoteConfig.getBoolean(KEY_STICKY_LOGIN_WIDGET_SHOP, true)
+            }
+            StickyLoginConstant.Page.TOKONOW -> {
+                remoteConfig.getBoolean(KEY_STICKY_LOGIN_WIDGET_TOKONOW, true)
             }
         }
     }

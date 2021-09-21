@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
@@ -33,6 +34,10 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
         verify (exactly = count) {
             getSearchFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
         }
+    }
+
+    override fun `Then assert empty result visitable list`(visitableList: List<Visitable<*>>) {
+
     }
 
     @Test

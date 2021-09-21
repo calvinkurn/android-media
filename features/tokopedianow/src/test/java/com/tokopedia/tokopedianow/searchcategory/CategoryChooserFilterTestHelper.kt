@@ -2,19 +2,26 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
+import io.mockk.CapturingSlot
+import io.mockk.every
+import io.mockk.slot
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryChooserFilterTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
+        private val getProductCountUseCase: UseCase<String>,
         private val callback: Callback,
 ) {
 
@@ -82,6 +89,20 @@ class CategoryChooserFilterTestHelper(
         baseViewModel.isL3FilterPageOpenLiveData.removeObserver(observer)
     }
 
+    fun `test get filter count success from category chooser`(mandatoryParams: Map<String, String>) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+        val successResponse = "10rb+"
+
+        `Given get product count API will be successful`(requestParamsSlot, successResponse)
+        `Given view setup from created until open category chooser`()
+
+        `When view get product count`()
+
+        `Then assert get product count query params`(mandatoryParams, chosenCategoryFilter, requestParams)
+        `Then assert product count live data`(successResponse)
+    }
+
     private fun `Given view setup from created until open category chooser`() {
         callback.`Given first page use case will be successful`()
         `Given view already created`()
@@ -91,6 +112,17 @@ class CategoryChooserFilterTestHelper(
 
         `Given view already open category chooser`(categoryL3QuickFilterDataView)
         `Given view choose option from category chooser`(categoryL3QuickFilterDataView)
+    }
+
+    private fun `Given get product count API will be successful`(
+            requestParamsSlot: CapturingSlot<RequestParams>,
+            successResponse: String,
+    ) {
+        every {
+            getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+            firstArg<(String) -> Unit>().invoke(successResponse)
+        }
     }
 
     private fun `Given view already open category chooser`(
@@ -103,6 +135,54 @@ class CategoryChooserFilterTestHelper(
             categoryL3QuickFilterDataView: SortFilterItemDataView
     ) {
         chosenCategoryFilter = categoryL3QuickFilterDataView.filter.options[2]
+    }
+
+    private fun `When view get product count`() {
+        baseViewModel.onViewGetProductCount(chosenCategoryFilter)
+    }
+
+    private fun `Then assert get product count query params`(
+            mandatoryParams: Map<String, String>,
+            chosenCategoryFilter: Option,
+            requestParams: RequestParams,
+    ) {
+        val chosenCategoryFilterKey = OptionHelper.getKeyRemoveExclude(chosenCategoryFilter)
+        val expectedGetProductCountParams =
+            mandatoryParams +
+                mapOf(chosenCategoryFilterKey to chosenCategoryFilter.value) +
+                mapOf(SearchApiConst.ROWS to 0)
+
+        val getProductCountParams = requestParams.parameters
+
+        expectedGetProductCountParams.forEach { (key, value) ->
+            val reason = "Get product count params key \"$key\" value is invalid"
+            assertThat(reason, getProductCountParams[key].toString(), shouldBe(value.toString()))
+        }
+    }
+
+    private fun `Then assert product count live data`(successResponse: String) {
+        assertThat(baseViewModel.productCountAfterFilterLiveData.value, shouldBe(successResponse))
+    }
+
+    fun `test get filter count failed from category chooser`(mandatoryParams: Map<String, String>) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+
+        `Given get product count API will fail`(requestParamsSlot)
+        `Given view setup from created until open category chooser`()
+
+        `When view get product count`()
+
+        `Then assert get product count query params`(mandatoryParams, chosenCategoryFilter, requestParams)
+        `Then assert product count live data`("0")
+    }
+
+    private fun `Given get product count API will fail`(requestParamsSlot: CapturingSlot<RequestParams>) {
+        every {
+            getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
+        }
     }
 
     fun `test apply filter from category chooser`() {
@@ -147,6 +227,38 @@ class CategoryChooserFilterTestHelper(
 
     private fun `When view dismiss L3 filter page`() {
         baseViewModel.onViewDismissL3FilterPage()
+    }
+
+    fun `test get filter count with exclude filter from category chooser`(
+        mandatoryParams: Map<String, String>
+    ) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+        val successResponse = "10rb+"
+
+        `Given get product count API will be successful`(requestParamsSlot, successResponse)
+        callback.`Given first page use case will be successful`()
+        `Given view already created`()
+
+        val categoryL3QuickFilterDataView =
+            baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
+
+        `Given view already open category chooser`(categoryL3QuickFilterDataView)
+        `Given view choose exclude category filter`(categoryL3QuickFilterDataView)
+
+        `When view get product count`()
+
+        `Then assert get product count query params`(mandatoryParams, chosenCategoryFilter, requestParams)
+        `Then assert product count live data`(successResponse)
+    }
+
+    private fun `Given view choose exclude category filter`(
+        categoryL3QuickFilterDataView: SortFilterItemDataView
+    ) {
+        chosenCategoryFilter = categoryL3QuickFilterDataView
+            .filter
+            .options
+            .find { it.key.contains(OptionHelper.EXCLUDE_PREFIX) }!!
     }
 
     interface Callback {

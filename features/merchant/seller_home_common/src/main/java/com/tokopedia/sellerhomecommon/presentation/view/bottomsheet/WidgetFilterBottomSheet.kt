@@ -37,7 +37,10 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
+        setStyle(
+            DialogFragment.STYLE_NORMAL,
+            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle
+        )
     }
 
     override fun onItemClick(item: WidgetFilterUiModel) {
@@ -48,10 +51,10 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
     }
 
     fun init(
-            context: Context,
-            @StringRes titleRes: Int,
-            widgetFilters: List<WidgetFilterUiModel>,
-            onItemClick: (WidgetFilterUiModel) -> Unit
+        context: Context,
+        @StringRes titleRes: Int,
+        widgetFilters: List<WidgetFilterUiModel>,
+        onItemClick: (WidgetFilterUiModel) -> Unit
     ): WidgetFilterBottomSheet {
         if (widgetFilterAdapter == null) {
             widgetFilterAdapter = WidgetFilterAdapter(widgetFilters, this)
@@ -59,7 +62,10 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
 
         setTitle(context.getString(titleRes))
         val inflater = LayoutInflater.from(context)
-        val child = inflater.inflate(R.layout.shc_widget_filter_bottom_sheet, LinearLayout(context), false)
+        val child = inflater.inflate(
+            R.layout.shc_widget_filter_bottom_sheet,
+            LinearLayout(context), false
+        )
         with(child) {
             rvShcWidgetFilter.layoutManager = LinearLayoutManager(context)
             rvShcWidgetFilter.adapter = widgetFilterAdapter

@@ -19,7 +19,7 @@
         android:layout_height="@dimen/layout_lvl1"
         app:corners="8"
         app:width_weight="0.7"
-        android:layout_marginTop="@dimen/travel_homepage_dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,9 +41,9 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/img"
-            android:layout_marginLeft="@dimen/travel_homepage_dp_12"
-            android:layout_marginStart="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl7"
@@ -51,9 +51,9 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/img"
-            android:layout_marginLeft="@dimen/travel_homepage_dp_12"
-            android:layout_marginStart="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/img_2"
@@ -69,9 +69,9 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/img_2"
-            android:layout_marginRight="@dimen/travel_homepage_dp_12"
-            android:layout_marginEnd="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl7"
@@ -79,9 +79,9 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/img_2"
-            android:layout_marginRight="@dimen/travel_homepage_dp_12"
-            android:layout_marginEnd="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            app:corners="8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -103,9 +103,9 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/img_3"
-            android:layout_marginLeft="@dimen/travel_homepage_dp_12"
-            android:layout_marginStart="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl7"
@@ -113,9 +113,9 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/img_3"
-            android:layout_marginLeft="@dimen/travel_homepage_dp_12"
-            android:layout_marginStart="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/img_4"
@@ -131,9 +131,9 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/img_4"
-            android:layout_marginRight="@dimen/travel_homepage_dp_12"
-            android:layout_marginEnd="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl7"
@@ -141,9 +141,9 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/img_4"
-            android:layout_marginRight="@dimen/travel_homepage_dp_12"
-            android:layout_marginEnd="@dimen/travel_homepage_dp_12"
-            app:corners="8"/>
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            app:corners="8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -166,12 +166,12 @@
             app:layout_constraintRight_toLeftOf="@+id/img_6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginLeft="@dimen/travel_homepage_dp_12"
-            android:layout_marginRight="@dimen/travel_homepage_dp_12"
-            android:layout_marginStart="@dimen/travel_homepage_dp_12"
-            android:layout_marginEnd="@dimen/travel_homepage_dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
             app:width_weight="0.6"
-            app:corners="8"/>
+            app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/img_6"

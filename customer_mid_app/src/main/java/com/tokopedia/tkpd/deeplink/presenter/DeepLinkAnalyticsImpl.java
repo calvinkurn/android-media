@@ -25,21 +25,11 @@ public class DeepLinkAnalyticsImpl implements DeepLinkAnalyticsPresenter {
 
     @Override
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri), isAmp);
-        campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(activity, campaign);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CAMPAIGN,
-                AppEventTracking.Category.CAMPAIGN,
-                AppEventTracking.Action.DEEPLINK,
-                campaignUri
-        ).getEvent());
+        TrackApp.getInstance().getGTM().sendCampaign(activity, campaignUri, screenName, isAmp);
     }
 
     public void processUTM(Activity activity, Uri applink) {
-        if (DeeplinkUTMUtils.isValidCampaignUrl(applink)) {
-            sendCampaignGTM(activity, applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER, false);
-        }
+        sendCampaignGTM(activity, applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER, false);
     }
 
 }

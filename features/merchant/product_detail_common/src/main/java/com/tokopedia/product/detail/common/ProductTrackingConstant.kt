@@ -10,11 +10,13 @@ object ProductTrackingConstant {
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
+        const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
     }
 
     object Tracking {
         const val KEY_SHOP_ID_SELLER = "shopId"
         const val KEY_SHOP_TYPE = "shopType"
+        const val KEY_SHOP_NAME = "shopName"
         const val KEY_PAGE_TYPE = "pageType"
         const val KEY_PRODUCT_ID_ = "productId"
         const val KEY_EVENT = "event"
@@ -34,6 +36,8 @@ object ProductTrackingConstant {
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
 
+        const val VALUE_BUSINESS_UNIT_SHARING = "sharingexperience"
+
         const val KEY_USER_ID_VARIANT = "userId"
 
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
@@ -48,6 +52,7 @@ object ProductTrackingConstant {
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_PRICE = "productPrice"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -82,6 +87,7 @@ object ProductTrackingConstant {
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
         const val SELECT_CONTENT = "select_content"
+        const val BUILDER_SHOP_ID = "shop_id:%s"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
@@ -99,6 +105,8 @@ object ProductTrackingConstant {
 
         const val CONTENT_TYPE = "product"
         const val BRANCH_QUANTITY ="1"
+
+
     }
     object Action {
         const val CLICK = "click"
@@ -133,10 +141,6 @@ object ProductTrackingConstant {
         const val ADD_WISHLIST_NON_LOGIN = "add wishlist - non logged in"
         const val CLICK_CHECK_WISHLIST = "click - check wishlist kamu"
         const val CLICK_SHOP_PAGE = "click - shop page link"
-        const val CLICK_SEE_ALL_MERCHANT_VOUCHER = "click - merchant voucher - see all"
-        const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
-        const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
-        const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
         const val CLICK_TOASTER_LIHAT_SUCCESS_ATC = "click - lihat on add to cart success toaster"
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
@@ -161,6 +165,10 @@ object ProductTrackingConstant {
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
+        const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
+
+        const val ACTION_CLICK_VARIANT = "click - pilih varian"
+        const val ACTION_CLICK_TOKOCABANG = "click - tokocabang hyperlink"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
@@ -183,7 +191,6 @@ object ProductTrackingConstant {
         const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"
 
         const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
-        const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
         const val VIEW_TICKER_OOS = "view - ticker on pdp"
         const val CLICK_BUTTON_OOS = "click - %s on pdp"
 
@@ -203,6 +210,10 @@ object ProductTrackingConstant {
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
 
         const val CLICK_VARIANT_QUANTITY_EDITOR = "click - quantity editor"
+
+        const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
+        const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
+        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
     }
 
 
@@ -225,7 +236,8 @@ object ProductTrackingConstant {
         const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
-
+        const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
+        const val EVENT_LABEL_FLOW_CHOOSE_VARIANT = "flow:%s;parent_id:%s;child_id:%s"
     }
 
     object Report {
@@ -271,4 +283,26 @@ object ProductTrackingConstant {
         const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
+    object ImpulsiveBanner{
+        const val IMPRESSION_BANNER = "impression on pdp 7 widget banner"
+        const val CLICK_BANNER = "click on pdp 7 widget banner"
+        const val EVENT_COMPONENT_IMPRESSION_BANNER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
+        const val EVENT_LAYOUT_IMPRESSION_BANNER = "layout:%s;catName:%s;catId:%s;"
+        const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
+        const val CREATIVE_NAME = "impulsive widget"
+    }
+
+    object RecomTokonow {
+
+        //recomatc
+        const val KEY_EVENT_ATC = "addToCart"
+        const val KEY_EVENT_PAGE_SOURCE = "pageSource"
+        const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
+        const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
+        const val KEY_EVENT_LABEL_ATC = "%s, %s" //recom title, chips value
+
+        // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
+        const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
+        const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
 }

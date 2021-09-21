@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment;
 
 import dagger.Component;
@@ -14,4 +15,5 @@ import dagger.Component;
 public interface DistrictRecommendationComponent {
     void inject(DiscomFragment discomFragment);
     void inject(DiscomBottomSheetFragment fragment);
+    void inject(DiscomBottomSheetRevamp discomBottomSheetRevamp);
 }

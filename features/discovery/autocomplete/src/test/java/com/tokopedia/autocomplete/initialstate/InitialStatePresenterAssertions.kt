@@ -1,6 +1,8 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
@@ -144,4 +146,21 @@ private fun CuratedCampaignDataView.assertCuratedCampaignDataView(expectedData: 
     productId shouldBe expected.itemId
     type shouldBe expected.type
     featureId shouldBe expectedData.featureId
+}
+
+internal fun `Then verify InitialStateChipWidgetDataView`(actualData: List<Visitable<*>>, expectedData: List<InitialStateData>, expectedDimension90: String = "") {
+    val actualInitialStateChipWidgetDataViewPosition = actualData.indexOfFirst { it is InitialStateChipWidgetTitleDataView } + 1
+    val expectedInitialStateChipWidgetDataPosition = expectedData.indexOfFirst { it.id == InitialStateData.INITIAL_STATE_LIST_CHIPS }
+
+    actualData[actualInitialStateChipWidgetDataViewPosition].shouldBeInstanceOf<InitialStateChipWidgetDataView>()
+
+    val initialStateChipWidgetDataView = actualData[actualInitialStateChipWidgetDataViewPosition] as InitialStateChipWidgetDataView
+    initialStateChipWidgetDataView.assertInitialStateChipWidgetDataView(expectedData[expectedInitialStateChipWidgetDataPosition], expectedDimension90)
+}
+
+private fun InitialStateChipWidgetDataView.assertInitialStateChipWidgetDataView(expectedData: InitialStateData, expectedDimension90: String) {
+    expectedData.items.forEachIndexed { index, expectedInitialStateChipWidget ->
+        val position = index + 1
+        list[index].assertBaseItemInitialStateSearch(expectedInitialStateChipWidget, expectedData.featureId, expectedData.header, position, expectedDimension90)
+    }
 }

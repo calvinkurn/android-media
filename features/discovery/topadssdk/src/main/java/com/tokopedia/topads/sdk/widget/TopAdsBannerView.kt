@@ -70,6 +70,8 @@ private const val NO_TEMPLATE = 0
 private const val SHOP_TEMPLATE = 1
 private const val DIGITAL_TEMPLATE = 2
 private const val LAYOUT_2 = 2
+private const val ITEM_3 = 3
+private const val ITEM_4 = 4
 
 class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var adsListener: TopAdsListener? = null
@@ -142,6 +144,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             } else if (cpmData != null) {
                 list?.visible()
+                list?.scrollToPosition(0)
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
                 (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 12.toPx(), 0, 0)
@@ -207,7 +210,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                     for (i in 0 until productCardModelList.size) {
-                        if (i < 3) {
+                        if (i < ITEM_3) {
                             val model = BannerShopProductViewModel(cpmData, productCardModelList[i],
                                     cpmData.cpm.cpmShop.products[i].applinks,
                                     cpmData.cpm.cpmShop.products[i].image.m_url,
@@ -224,11 +227,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             items.add(model)
                         }
                     }
-                    if (productCardModelList.size < 3) {
+                    if (productCardModelList.size < ITEM_3) {
                         items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
                     }
                 } else {
-                    repeat(3) { items.add(BannerProductShimmerViewModel()) }
+                    repeat(ITEM_3) { items.add(BannerProductShimmerViewModel()) }
                 }
                 bannerAdsAdapter?.setList(items)
             }
@@ -464,7 +467,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 if (data != null && data.cpm != null) {
                     if (data.cpm.cpmShop != null && isResponseValid(data)) {
                         renderViewCpmShop(context, data, data.applinks, data.adClickUrl)
-                    } else if (data.cpm.templateId == 4) {
+                    } else if (data.cpm.templateId == ITEM_4) {
                         renderViewCpmDigital(context, data.cpm)
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {

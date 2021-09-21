@@ -55,11 +55,18 @@ public interface LinkerConstants {
     int EVENT_PURCHASE_FLIGHT = 9;
     int EVENT_DIGITAL_HOMEPAGE = 10;
     int EVENT_DIGITAL_SCREEN_LAUNCH = 11;
+    int EVENT_SEARCH = 12;
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
     String KEY_DESKTOP_URL = "$desktop_url";
     String KEY_PAYMENT = "paymentID";
+    String KEY_ORDERID = "order_id";
+    String KEY_CURRENCY = "currency";
+    String KEY_SHIPPING_PRICE = "shipping_price";
+    String KEY_REVENUE = "revenue";
+    String KEY_EVENT = "event";
+    String EVENT_FB_FIRST_TXN = "marketplace_first_txn";
     String KEY_PRODUCTTYPE = "productType";
     String KEY_USERID = "userId";
     String KEY_OG_URL = "$og_url";
@@ -69,6 +76,8 @@ public interface LinkerConstants {
     String KEY_GA_CLIENT_ID = "$google_analytics_client_id";
     String KEY_NEW_BUYER = "new_buyer";
     String KEY_MONTHLY_NEW_BUYER = "monthly_new_buyer";
+    String KEY_GOOGLE_BUSINESS_VERTICAL = "google_business_vertical";
+    String KEY_ITEM_ID = "item_id";
 
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";
@@ -86,6 +95,8 @@ public interface LinkerConstants {
     String HOTEL_LABEL = "hotel";
     String PDP_LABEL = "pdp";
     String SHARE_LABEL = "Share";
+    String LABEL_RETAIL = "retail";
+    String LABEL_FLIGHT = "flight";
 
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;

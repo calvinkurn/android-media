@@ -8,7 +8,7 @@
     android:padding="@dimen/dp_8">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/pgLoader"
+        android:id="@+id/pg_loader"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:visibility="invisible"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imgStatus"
+        android:id="@+id/img_status"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
@@ -29,7 +29,7 @@
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -37,18 +37,18 @@
         android:textSize="@dimen/sp_16"
         android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgStatus"
+        app:layout_constraintStart_toEndOf="@+id/img_status"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Test Push Notification" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnAction"
+        android:id="@+id/btn_action"
         android:layout_width="@dimen/dp_88"
         android:layout_height="@dimen/dp_24"
         android:text="@string/btn_notif_test_play"
         android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txtTitle"
+        app:layout_constraintStart_toEndOf="@+id/txt_title"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
         tools:visibility="visible"

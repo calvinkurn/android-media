@@ -1,7 +1,12 @@
 package com.tokopedia.smartbills.analytics
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.*
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.EnhanceEccomerce.Companion.NONE
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.EnhanceEccomerce.Companion.SHOP_ID
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Event.Companion.EVENT_VALUE_CHECKOUT_PROGRESS
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Key.Companion.ITEMS
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -14,11 +19,12 @@ class SmartBillsAnalytics {
 
     var userId: String = ""
 
-    fun eventOpenScreen() {
+    fun eventOpenScreen(isSBMEmpty: Boolean, totalProduct: Int) {
         val loginStatus = if (userId.isEmpty()) "false" else "true"
         val mapOpenScreen = mutableMapOf(
                 Key.IS_LOGIN_STATUS to loginStatus,
-                Key.USER_ID to userId
+                Key.USER_ID to userId,
+                Key.PRODUCT_STATUS to "$isSBMEmpty - $totalProduct"
         )
         mapOpenScreen.putAll(ADDITIONAL_INFO_MAP)
 
@@ -125,31 +131,22 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int) {
-        val actionField = mapOf(EnhanceEccomerce.STEP to STEP_VALUE, EnhanceEccomerce.OPTION to OPTION_VALUE)
-        val ecommerce = with (EnhanceEccomerce) {
-            val products = createEcommerceProducts(selectedBills).map {
-                val map = it.toMutableMap()
-                map[QUANTITY] = 1
-                return@map map
-            }
-            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CHECKOUT, DataLayer.mapOf(
-                    ACTION_FIELD, actionField,
-                    PRODUCTS, ArrayList(products)
-            )))
+    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int, totalPrice: Int) {
+        val areAllBills = selectedBills.size == totalBillsCount
+        val dataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, EVENT_VALUE_CHECKOUT_PROGRESS)
+            putString(TrackAppUtils.EVENT_ACTION, if (areAllBills) Action.CLICK_BAYAR_FULL else Action.CLICK_BAYAR_PARTIAL)
+            putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
+            putString(TrackAppUtils.EVENT_LABEL, "${Label.BAYAR} - $totalBillsCount - ${selectedBills.size} - $totalPrice")
+            putString(Key.CURRENT_SITE, CURRENT_SITE_VALUE)
+            putString(Key.BUSINESS_UNIT, BUSINESS_UNIT_VALUE)
+            putString(Key.USER_ID, userId)
+            putString(EnhanceEccomerce.CHECKOUT_STEP, STEP_VALUE)
+            putString(EnhanceEccomerce.CHECKOUT_OPTION, OPTION_VALUE)
+            putParcelableArrayList(ITEMS, getProductBundle(selectedBills))
         }
 
-        val areAllBills = selectedBills.size == totalBillsCount
-        val map = TrackAppUtils.gtmData(
-                Event.CHECKOUT,
-                CATEGORY_SMART_BILLS,
-                if (areAllBills) Action.CLICK_BAYAR_FULL else Action.CLICK_BAYAR_PARTIAL,
-                "${Label.BAYAR} - $totalBillsCount - ${selectedBills.size}")
-        map[Key.USER_ID] = userId
-        map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
-        map.putAll(ADDITIONAL_INFO_MAP)
-        map.putAll(ecommerce)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(EVENT_VALUE_CHECKOUT_PROGRESS, dataLayer)
     }
 
     fun clickPayFailed(totalBillsCount: Int, selectedBillsCount: Int) {
@@ -250,6 +247,26 @@ class SmartBillsAnalytics {
         map[Key.USER_ID] = userId
         map.putAll(ADDITIONAL_INFO_MAP)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun getProductBundle(items: List<RechargeBills>): ArrayList<Bundle>{
+        val list = arrayListOf<Bundle>()
+        items.forEachIndexed { index, it ->
+            val itemBundle = Bundle().apply {
+                putString(EnhanceEccomerce.ITEM_NAME, it.productName)
+                putInt(EnhanceEccomerce.ITEM_ID, it.productID)
+                putString(EnhanceEccomerce.PRICE, it.amount.toString())
+                putString(EnhanceEccomerce.ITEM_BRAND, NONE)
+                putString(EnhanceEccomerce.ITEM_CATEGORY, it.categoryName)
+                putString(EnhanceEccomerce.ITEM_VARIANT, NONE)
+                putString(EnhanceEccomerce.QUANTITY, "1")
+                putString(EnhanceEccomerce.SHOP_ID, NONE)
+                putString(EnhanceEccomerce.SHOP_NAME, NONE)
+                putString(EnhanceEccomerce.SHOP_TYPE, NONE)
+            }
+            list.add(itemBundle)
+        }
+        return list
     }
 
     companion object {

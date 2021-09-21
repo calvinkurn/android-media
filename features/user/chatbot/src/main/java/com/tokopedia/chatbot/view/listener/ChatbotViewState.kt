@@ -67,4 +67,12 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideHelpfullOptions()
 
+    fun clearChatOnLoadChatHistory()
+
+    fun clearDuplicate(list: List<Visitable<*>>):ArrayList<Visitable<*>>
+
+    fun handleReplyBox(isEnable: Boolean)
+
+
+
 }

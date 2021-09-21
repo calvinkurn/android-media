@@ -4,13 +4,13 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeFavoritesBinding
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_favorites.view.*
 
 /**
  * @author by resakemal on 05/06/20.
@@ -21,21 +21,22 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: Recharge
         AbstractViewHolder<RechargeHomepageFavoriteModel>(itemView) {
 
     override fun bind(element: RechargeHomepageFavoriteModel) {
+        val bind = ViewRechargeHomeFavoritesBinding.bind(itemView)
         val section = element.section
-        with(itemView) {
+        with(bind) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_favorites_shimmering.hide()
+                viewRechargeHomeFavoritesShimmering.root.hide()
 
-                val layoutManager = GridLayoutManager(context, FAVORITES_SPAN_COUNT)
-                rv_recharge_home_favorites.layoutManager = layoutManager
-                recharge_home_favorites_container.show()
-                tv_recharge_home_favorites_title.text = section.title
-                rv_recharge_home_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
-                addOnImpressionListener(section) {
+                val layoutManager = GridLayoutManager(root.context, FAVORITES_SPAN_COUNT)
+                rvRechargeHomeFavorites.layoutManager = layoutManager
+                rechargeHomeFavoritesContainer.show()
+                tvRechargeHomeFavoritesTitle.text = section.title
+                rvRechargeHomeFavorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_recharge_home_favorites_shimmering.show()
+                viewRechargeHomeFavoritesShimmering.root.show()
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }

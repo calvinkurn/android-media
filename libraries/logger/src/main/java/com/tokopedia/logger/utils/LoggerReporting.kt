@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.logger.datasource.db.Logger
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Class to process the message that will be sent to scalyr/new relic
@@ -20,6 +21,7 @@ class LoggerReporting {
     var packageName: String? = null
     var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
+    var tagMapsEmbrace: HashMap<String, Tag> = hashMapOf()
 
     fun getProcessedMessage(priority: Priority, tag: String,
                             oriMessageMap: Map<String, String>,
@@ -37,6 +39,10 @@ class LoggerReporting {
         }
 
         tagMapsNewRelic[tagMapKey]?.let {
+            priorityTag = it.postPriority
+        }
+
+        tagMapsEmbrace[tagMapKey]?.let {
             priorityTag = it.postPriority
         }
 
@@ -144,6 +150,30 @@ class LoggerReporting {
                             .append(tagSplit[1])
                             .toString()
                     tagMapsNewRelic[tagKey] = Tag(getPriority(tagSplit[3]))
+                }
+            }
+        }
+    }
+
+    fun setPopulateTagMapsEmbrace(tags: List<String>?) {
+        tagMapsEmbrace.clear()
+        if (tags.isNullOrEmpty()) {
+            return
+        }
+        for (tag in tags) {
+            val tagSplit = tag.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
+            if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
+                continue
+            }
+            tagSplit[2].toDoubleOrNull()?.let {
+                val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
+                if (randomNumber <= it) {
+                    val tagKey = StringBuilder()
+                            .append(tagSplit[0])
+                            .append(DELIMITER_TAG_MAPS)
+                            .append(tagSplit[1])
+                            .toString()
+                    tagMapsEmbrace[tagKey] = Tag(getPriority(tagSplit[3]))
                 }
             }
         }

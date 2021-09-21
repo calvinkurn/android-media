@@ -41,19 +41,15 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
-import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -81,9 +77,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.GraphqlHelper;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -93,7 +87,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
@@ -115,7 +108,6 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
@@ -290,35 +282,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getAppComponent().ChuckerInterceptor();
     }
 
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
-                                                Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = getHomeClass();
-        mNotificationPass.title = notifTitle;
-        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        return mNotificationPass;
-    }
-
     private Intent getInboxReputationIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
-    }
-
-    public Intent getHomeIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.HOME);
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        return MainParentActivity.class;
     }
 
     @Override
@@ -620,12 +591,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
-
-    @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
         if(TextUtils.isEmpty(errorMessage)){
             SessionAnalytics.trackRefreshTokenSuccess();
@@ -636,28 +601,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);

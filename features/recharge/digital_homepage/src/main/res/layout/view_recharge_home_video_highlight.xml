@@ -21,10 +21,10 @@
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Unify_N700"
-            android:textSize="@dimen/heading_3"
+            android:textSize="@dimen/heading_4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3"
+            app:typographyType="heading_4"
             tools:text="Tonton Keseruannya" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -52,6 +52,7 @@
             android:visibility="visible"
             app:layout_constraintDimensionRatio="2:1"
             app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:ignore="contentDescription"
             tools:visibility="visible" />
 
         <LinearLayout

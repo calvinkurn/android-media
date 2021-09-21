@@ -80,6 +80,10 @@ class HomeRecommendationTypeFactoryImpl(
 
     override fun type(dataModel: RecommendationEmptyDataModel): Int = -1
 
+    override fun type(dataModel: RecommendationCPMDataModel): Int {
+        return RecommendationCPMViewHolder.LAYOUT
+    }
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder
@@ -87,13 +91,14 @@ class HomeRecommendationTypeFactoryImpl(
      * @param type the type of view
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when(type){
+        return when (type) {
             RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view, productInfoListener)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view, recommendationListener)
             TitleDataModel.LAYOUT -> TitleViewHolder(view, titleListener)
             RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
             RecommendationShimmeringViewHolder.LAYOUT -> RecommendationShimmeringViewHolder(view)
+            RecommendationCPMViewHolder.LAYOUT -> RecommendationCPMViewHolder(view, recommendationListener)
             else -> super.createViewHolder(view, type)
         }
     }

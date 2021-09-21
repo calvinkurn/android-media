@@ -16,7 +16,7 @@ data class VariantChild(
 
         @SerializedName("price")
         @Expose
-        val price: Float = 0f, //ex: 100000000
+        val price: Double = 0.0, //ex: 100000000
 
         @SerializedName("priceFmt")
         @Expose
@@ -33,6 +33,10 @@ data class VariantChild(
         @SerializedName("optionID")
         @Expose
         val optionIds: List<String> = listOf(),
+
+        @SerializedName("optionName")
+        @Expose
+        val optionName: List<String> = listOf(),
 
         @SerializedName("productName")
         @Expose
@@ -65,21 +69,39 @@ data class VariantChild(
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
 ) {
-    val finalMainPrice: Float
+    val finalMainPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.originalPrice ?: 0F
+                campaign.originalPrice ?: 0.0
             } else {
                 price
             }
         }
 
-    val finalPrice: Long
+    val finalPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.discountedPrice?.toLong() ?: 0L
+                campaign.discountedPrice ?: 0.0
             } else {
-                price.toLong()
+                price
+            }
+        }
+
+    val slashPriceDouble: Double
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.originalPrice ?: 0.0
+            } else {
+                0.0
+            }
+        }
+
+    val discountPercentage: String
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.discountedPercentage.toString()
+            } else {
+                ""
             }
         }
 
@@ -172,7 +194,16 @@ data class VariantStock(
 
         @SerializedName("maximumOrder")
         @Expose
-        val maximumOrder: String? = ""
+        val maximumOrder: String? = "",
+
+        @SerializedName("stockFmt")
+        @Expose
+        val stockFmt: String? = "", // Stock: 11 or >50
+
+        @SerializedName("stockCopy")
+        @Expose
+        val stockCopy: String? = ""
+
 )
 
 data class VariantCampaign(
@@ -186,7 +217,7 @@ data class VariantCampaign(
 
         @SerializedName("originalPrice")
         @Expose
-        val originalPrice: Float? = null,
+        val originalPrice: Double? = null,
 
         @SerializedName("originalPriceFmt")
         @Expose
@@ -198,7 +229,7 @@ data class VariantCampaign(
 
         @SerializedName("discountPrice")
         @Expose
-        val discountedPrice: Float? = 0f,
+        val discountedPrice: Double? = 0.0,
 
         @SerializedName("discountPriceFmt")
         @Expose

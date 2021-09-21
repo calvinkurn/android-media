@@ -1,10 +1,16 @@
 package com.tkpd.atcvariant.util
 
+import android.content.Intent
 import com.tkpd.atcvariant.data.uidata.*
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -26,6 +32,13 @@ import com.tokopedia.usecase.coroutines.Success
  */
 object AtcCommonMapper {
 
+    private const val KEY_COLOUR_VARIANT = "colour"
+    private const val KEY_VALUE_VARIANT = "value"
+    private const val KEY_HEX_VARIANT = "hex"
+    private const val KEY_ID_VARIANT = "id"
+    private const val KEY_SIZE_VARIANT = "size"
+    private const val DEFAULT_MIN_ORDER = 1
+
     fun generateAtcData(actionButtonCart: Int,
                         selectedChild: VariantChild?,
                         selectedWarehouse: WarehouseInfo?,
@@ -33,7 +46,7 @@ object AtcCommonMapper {
                         trackerAttributionPdp: String,
                         trackerListNamePdp: String,
                         categoryName: String,
-                        shippingMinPrice: Int,
+                        shippingMinPrice: Double,
                         userId: String,
                         isTokoNow: Boolean,
                         selectedStock: Int
@@ -50,7 +63,7 @@ object AtcCommonMapper {
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
-                    shippingPrice = shippingMinPrice
+                    shippingPrice = shippingMinPrice.roundToIntOrZero()
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
@@ -58,19 +71,24 @@ object AtcCommonMapper {
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                AddToCartOccRequestParams(
-                        productId = selectedChild?.productId ?: "",
-                        shopId = shopIdInt.toString(),
-                        quantity = selectedChild?.getFinalMinOrder().toString()
-                ).apply {
-                    warehouseId = selectedWarehouse?.id ?: ""
-                    attribution = trackerAttributionPdp
-                    listTracker = trackerListNamePdp
-                    productName = selectedChild?.name ?: ""
-                    category = categoryName
-                    price = selectedChild?.finalPrice?.toString() ?: ""
-                    this.userId = userId
-                }
+                AddToCartOccMultiRequestParams(
+                        carts = listOf(
+                                AddToCartOccMultiCartParam(
+                                        productId = selectedChild?.productId ?: "",
+                                        shopId = shopIdInt.toString(),
+                                        quantity = selectedChild?.getFinalMinOrder().toString()
+                                ).apply {
+                                    warehouseId = selectedWarehouse?.id ?: ""
+                                    attribution = trackerAttributionPdp
+                                    listTracker = trackerListNamePdp
+                                    productName = selectedChild?.name ?: ""
+                                    category = categoryName
+                                    price = selectedChild?.finalPrice?.toString() ?: ""
+                                }
+                        ),
+                        userId = userId,
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+                )
             }
             else -> {
                 AddToCartRequestParams().apply {
@@ -82,7 +100,7 @@ object AtcCommonMapper {
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
                     warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
-                    atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
@@ -99,25 +117,11 @@ object AtcCommonMapper {
      *
      * auto select will run if there is only 1 child left buyable
      */
-    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
-        val shouldAutoSelect = variantData?.autoSelectedOptionIds() ?: listOf()
-        return when {
-            isParent -> {
-                if (selectedChild == null) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
-            selectedChild?.isBuyable == true -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-            }
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-            }
-            else -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-            }
+    fun determineSelectedOptionIds(variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
+        return if (selectedChild == null) {
+            AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+        } else {
+            AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
         }
     }
 
@@ -166,7 +170,8 @@ object AtcCommonMapper {
 
         return listOf(cartTypeData?.availableButtons?.firstOrNull()?.copy(
                 cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
-                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
+                color = remindMeAlternateCopy?.color
+                        ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
                 text = remindMeAlternateCopy?.text ?: ProductDetailCommonConstant.TEXT_REMIND_ME
         ) ?: return null)
     }
@@ -176,8 +181,10 @@ object AtcCommonMapper {
                        initialSelectedVariant: MutableMap<String, String>,
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
-                       totalStock: Int,
-                       selectedQuantity: Int): List<AtcVariantVisitable>? {
+                       selectedQuantity: Int,
+                       shouldShowDeleteButton: Boolean,
+                       uspImageUrl: String,
+                       cashBackPercentage: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -187,7 +194,12 @@ object AtcCommonMapper {
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
+                        productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
+                        listOfVariantTitle = selectedChild?.optionName ?: listOf(),
+                        isTokoCabang = selectedProductFulfillment,
+                        uspImageUrl = uspImageUrl,
+                        cashBackPercentage = cashBackPercentage,
                         headerData = headerData.second)
         ).also {
             idCounter += 1
@@ -198,8 +210,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive),
-                        isTokoCabang = selectedProductFulfillment)
+                        emptyOrInactiveCopy = selectedChild?.stock?.stockCopy ?: "")
         ).also {
             idCounter += 1
         }
@@ -211,12 +222,25 @@ object AtcCommonMapper {
                         quantity = selectedQuantity,
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
                         maxOrder = selectedChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
+                        shouldShowDeleteButton = shouldShowDeleteButton,
                         shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
         }
 
         return result
+    }
+
+    fun updateDeleteButtonQtyEditor(oldList: List<AtcVariantVisitable>, value: Boolean): List<AtcVariantVisitable> {
+        return oldList.map {
+            if (it is VariantQuantityDataModel) {
+                val currentQuantity = it.quantity
+                //if value == false we need to reset quantity editor to 0
+                it.copy(shouldShowDeleteButton = value, quantity = if (!value) 0 else currentQuantity)
+            } else {
+                it
+            }
+        }
     }
 
     fun updateVisitable(oldList: List<AtcVariantVisitable>,
@@ -227,7 +251,8 @@ object AtcCommonMapper {
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
                         isTokoNow: Boolean,
-                        selectedQuantity: Int): List<AtcVariantVisitable> {
+                        selectedQuantity: Int,
+                        shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
 
         return oldList.map {
             when (it) {
@@ -235,14 +260,15 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive,
-                            isTokoCabang = selectedProductFulfillment)
+                            emptyOrInactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
                             quantity = selectedQuantity,
                             minOrder = selectedVariantChild?.getFinalMinOrder() ?: 0,
-                            maxOrder = selectedVariantChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
+                            maxOrder = selectedVariantChild?.getFinalMaxOrder()
+                                    ?: DEFAULT_ATC_MAX_ORDER,
+                            shouldShowDeleteButton = shouldShowDeleteButton,
                             shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {
@@ -251,7 +277,11 @@ object AtcCommonMapper {
                         it.copy(productImage = variantImage)
                     } else {
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first, headerData = headerData.second)
+                        it.copy(productImage = headerData.first,
+                                productId = selectedVariantChild?.productId ?: "",
+                                headerData = headerData.second,
+                                isTokoCabang = selectedProductFulfillment,
+                                listOfVariantTitle = selectedVariantChild?.optionName ?: listOf())
                     }
                 }
                 else -> {
@@ -267,6 +297,7 @@ object AtcCommonMapper {
                                  mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                                  atcMessage: String? = null,
                                  shouldRefreshPreviousPage: Boolean? = null,
+                                 isFollowShop: Boolean? = null,
                                  requestCode: Int? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -276,8 +307,60 @@ object AtcCommonMapper {
         if (parentProductId != null) result.parentProductId = parentProductId
         if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
+        if (isFollowShop != null) result.isFollowShop = isFollowShop
 
         return result
+    }
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: VariantChild?,
+            variantResp: ProductVariant?,
+            freeOngkirImgUrl: String
+    ) {
+        if (intent == null || productId == null) return
+        val variants = variantResp?.mapSelectedProductVariants(productId)
+        val productImageUrl = productInfo?.picture?.original ?: ""
+        val productName = productInfo?.name ?: ""
+        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
+        val priceBeforeDouble = productInfo?.slashPriceDouble ?: 0.0
+        val priceBefore = if (priceBeforeDouble > 0) {
+            priceBeforeDouble.getCurrencyFormatted()
+        } else {
+            ""
+        }
+        val dropPercentage = productInfo?.discountPercentage ?: ""
+        val productUrl = productInfo?.url ?: ""
+        val isActive = productInfo?.isBuyable ?: true
+        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
+        val productColorVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
+        val productColorHexVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_HEX_VARIANT) ?: ""
+        val productSizeVariant = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
+        val productColorVariantId = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
+        val productSizeVariantId = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
+        val productPreview = ProductPreview(
+                id = productId,
+                imageUrl = productImageUrl,
+                name = productName,
+                price = productPrice,
+                colorVariantId = productColorVariantId,
+                colorVariant = productColorVariant,
+                colorHexVariant = productColorHexVariant,
+                sizeVariantId = productSizeVariantId,
+                sizeVariant = productSizeVariant,
+                url = productUrl,
+                productFsIsActive = productFsIsActive,
+                productFsImageUrl = freeOngkirImgUrl,
+                priceBefore = priceBefore,
+                priceBeforeInt = priceBeforeDouble,
+                dropPercentage = dropPercentage,
+                isActive = isActive,
+                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER
+        )
+        val productPreviews = listOf(productPreview)
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
     /**
@@ -286,7 +369,6 @@ object AtcCommonMapper {
     private fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
         val headerData = ProductHeaderData(
-                productId = selectedChild?.productId ?: "",
                 productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
                 productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
@@ -294,8 +376,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
-                productName = selectedChild?.name ?: ""
+                productStockFmt = selectedChild?.stock?.stockFmt ?: ""
         )
         return productImage to headerData
     }

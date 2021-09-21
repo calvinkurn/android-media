@@ -6,10 +6,8 @@ import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.view.adapter.variantitem.AtcVariantContainerAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.product.detail.common.data.views.VariantItemDecorator
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -26,16 +24,12 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     private var variantContainerAdapter: AtcVariantContainerAdapter? = AtcVariantContainerAdapter(listener)
     private var rvVariant: RecyclerView? = view.findViewById(R.id.rv_variant_viewholder)
     private var txtEmptyStock: Typography? = view.findViewById(R.id.txt_variant_empty_stock)
-    private var txtTokoCabang: Typography? = view.findViewById(R.id.txt_variant_tokocabang)
 
     override fun bind(element: VariantComponentDataModel) {
         element.listOfVariantCategory?.let {
             rvVariant?.adapter = variantContainerAdapter
-            if (rvVariant?.itemDecorationCount == 0) {
-                rvVariant?.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_atc_variant)))
-            }
             rvVariant?.itemAnimator = null
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.setData(it)
         }
     }
@@ -43,17 +37,15 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     override fun bind(element: VariantComponentDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         element.listOfVariantCategory?.let {
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.variantContainerData = it
             variantContainerAdapter?.notifyItemRangeChanged(0, it.size, 1)
         }
     }
 
-    private fun renderTxt(element: VariantComponentDataModel) = with(view) {
-        txtTokoCabang?.showWithCondition(element.isTokoCabang)
-        val textColor = getHexColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
-        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label, textColor)).spannedString
-        txtEmptyStock?.showWithCondition(element.isEmptyStock)
+    private fun renderStockWording(element: VariantComponentDataModel) = with(view) {
+        txtEmptyStock?.text = HtmlLinkHelper(context, element.emptyOrInactiveCopy).spannedString
+        txtEmptyStock?.showWithCondition(element.emptyOrInactiveCopy.isNotEmpty())
     }
 
     private fun getHexColor(resColor: Int): String {

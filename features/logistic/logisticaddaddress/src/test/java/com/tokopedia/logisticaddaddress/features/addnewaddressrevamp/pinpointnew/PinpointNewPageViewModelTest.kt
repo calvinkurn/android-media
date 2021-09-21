@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,14 +73,14 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get AutoComplete Data Success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         pinpointNewPageViewModel.getAutoComplete("Setiabudi")
         verify { autoCompleteDataObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get AutoComplete Data Fail`() {
-        coEvery { repo.getAutoComplete(any()) } throws defaultThrowable
+        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
         pinpointNewPageViewModel.getAutoComplete("Setiabudi")
         verify { autoCompleteDataObserver.onChanged(match { it is Fail }) }
     }
@@ -110,6 +112,13 @@ class PinpointNewPageViewModelTest {
         coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictBoundaries(11986)
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `get save address` () {
+        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+        pinpointNewPageViewModel.setAddress(address)
+        Assert.assertEquals(pinpointNewPageViewModel.getAddress(), address)
     }
 
 }

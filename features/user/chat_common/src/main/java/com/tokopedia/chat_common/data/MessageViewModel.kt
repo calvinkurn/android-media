@@ -15,6 +15,9 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     var fraudStatus = 0
     var label: String = ""
 
+    var attachment: Any? = null
+        private set
+
     // TODO: remove later
     val dummyReplyBubbleMsg: String
     init {
@@ -25,7 +28,8 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
      * constructor for GQL response
      */
     constructor(
-            reply: Reply
+            reply: Reply,
+            attachment: Any? = null
     ) : super(
             messageId = reply.msgId.toString(),
             fromUid = reply.senderId.toString(),
@@ -44,12 +48,16 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
         blastId = reply.blastId
         fraudStatus = reply.fraudStatus
         label = reply.label
+        this.attachment = attachment
     }
 
     /**
-     * constructor for GQL response
+     * constructor for WS response
      */
-    constructor(pojo: ChatSocketPojo) : super(
+    constructor(
+        pojo: ChatSocketPojo,
+        attachment: Any? = null
+    ) : super(
             messageId = pojo.msgId.toString(),
             fromUid = pojo.fromUid,
             from = pojo.from,
@@ -65,6 +73,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
             source = pojo.source
     ) {
         label = pojo.label
+        this.attachment = attachment
     }
 
     constructor(
@@ -154,5 +163,9 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     fun hasLabel(): Boolean {
         return label.isNotEmpty()
+    }
+
+    fun hasAttachment(): Boolean {
+        return attachment != null
     }
 }

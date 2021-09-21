@@ -2,7 +2,6 @@ package com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder
 
 import android.annotation.SuppressLint
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -59,6 +58,10 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val dividerMinOrder = itemView.findViewById<View>(R.id.divider_min_order)
     val desc = itemView.findViewById<Typography>(R.id.snapshot_desc)
 
+    init {
+        measureScreenHeight()
+    }
+
     @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
         if (item.dataObject is GetOrderSnapshot) {
@@ -68,6 +71,12 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             renderDesc(item.dataObject)
         }
 
+    }
+
+    private fun measureScreenHeight() = with(itemView) {
+        val screenWidth = itemView.resources.displayMetrics.widthPixels
+        ivHeader.layoutParams.height = screenWidth
+        viewPager2.layoutParams.height = screenWidth
     }
 
     private fun renderHeader(dataObject: GetOrderSnapshot) {
@@ -113,7 +122,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     actionListener?.onSnapshotImgClicked(adapterPosition)
                 }
                 productImages.firstOrNull()?.imageUrl?.let {
-                    ImageHandler.loadImageFromUriFitCenter(itemView.context, ivHeader, Uri.parse(it))
+                    ivHeader.loadImage(it)
                 }
             }
         }

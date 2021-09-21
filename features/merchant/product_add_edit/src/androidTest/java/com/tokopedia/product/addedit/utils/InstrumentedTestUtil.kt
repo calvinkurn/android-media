@@ -6,7 +6,6 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_NAME
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_TABLE
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_9
@@ -17,13 +16,13 @@ object InstrumentedTestUtil {
 
     fun performDialogSecondaryClick() {
         Espresso.onView(CommonMatcher
-                .firstView(ViewMatchers.withId(R.id.dialog_btn_secondary)))
+                .firstView(ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)))
                 .perform(ViewActions.click())
     }
 
     fun performDialogPrimaryClick() {
         Espresso.onView(CommonMatcher
-                .firstView(ViewMatchers.withId(R.id.dialog_btn_primary)))
+                .firstView(ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_primary)))
                 .perform(ViewActions.click())
     }
 
@@ -48,7 +47,7 @@ object InstrumentedTestUtil {
                 .firstView(ViewMatchers.withId(id)))
                 .perform(ViewActions.scrollTo())
 
-        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(id))))
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(id))))
                 .perform(ViewActions.typeText(text), ViewActions.closeSoftKeyboard())
     }
 
@@ -57,20 +56,18 @@ object InstrumentedTestUtil {
     }
 
     fun deleteAllDraft() {
-        val db: SQLiteOpenHelper = object : SQLiteOpenHelper(
+        try {
+            val db = object : SQLiteOpenHelper(
                 InstrumentationRegistry.getInstrumentation().context,
                 DB_NAME,
                 null,
                 DB_VERSION_9
-        ) {
-            override fun onCreate(p0: SQLiteDatabase?) {}
-            override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
-        }
-
-        try {
-            val dbWrite1 = db.writableDatabase
-            dbWrite1.execSQL("DELETE FROM $DB_TABLE")
-            dbWrite1.close()
+            ) {
+                override fun onCreate(p0: SQLiteDatabase?) {}
+                override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
+            }.writableDatabase
+            db.execSQL("DELETE FROM $DB_TABLE")
+            db.close()
         } catch (e: Exception) { }
     }
 }

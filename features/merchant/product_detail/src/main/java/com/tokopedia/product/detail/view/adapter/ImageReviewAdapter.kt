@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
@@ -42,7 +42,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
 
         fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
             with(view) {
-                image_review.loadImageRounded(item.imageUrlThumbnail, 16f)
+                image_review.loadImageRounded(item.imageUrlThumbnail, ROUNDED_IMAGE_EDGES)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
                     txt_see_all.text = item.imageCount
@@ -54,7 +54,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     overlay_see_all.gone()
                     txt_see_all.gone()
                     setOnClickListener {
-                        onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel)
+                        onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel, item.rawImageCount ?: "")
                     }
                 }
             }
@@ -65,5 +65,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
         private const val TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER = 5
+        private const val ROUNDED_IMAGE_EDGES = 16f
     }
 }

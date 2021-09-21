@@ -11,12 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
-import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
@@ -124,8 +124,8 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
             val fragment = DigitalSearchNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             if (numberList.isNotEmpty()) {
                 bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             }

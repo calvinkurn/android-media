@@ -48,10 +48,13 @@ class WidgetRecommendationItemAdapter(
                 } else {
                     val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
                     tvShcRecommendationItem.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, width = dp24, height = dp24)
-                    setOnClickListener {
+                }
+
+                setOnClickListener {
+                    if (item.appLink.isNotBlank()) {
                         RouteManager.route(context, item.appLink)
-                        onItemClick(item)
                     }
+                    onItemClick(item)
                 }
             }
         }

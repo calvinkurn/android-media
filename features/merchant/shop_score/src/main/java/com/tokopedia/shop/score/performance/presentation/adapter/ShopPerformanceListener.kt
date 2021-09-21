@@ -1,6 +1,14 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
-interface ShopPerformanceListener {
+
+interface ShopPerformanceListener :
+    ItemPerformanceHeaderListener, ItemShopPerformanceListener,
+    ItemRMPotentialPMProListener, ItemPMPotentialPMProListener, ItemRegularMerchantListener,
+    ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
+    ItemStatusPowerMerchantListener, ItemStatusPowerMerchantProListener, SectionFaqListener,
+    ProtectedParameterListener, ItemTimerNewSellerListener, GlobalErrorListener
+
+interface ItemPerformanceHeaderListener {
     fun onTooltipLevelClicked(level: Long)
     fun onTooltipScoreClicked()
     fun onTickerClickedToPenaltyPage()
@@ -8,13 +16,21 @@ interface ShopPerformanceListener {
 }
 
 interface ItemShopPerformanceListener {
-    fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
-                                         identifierPerformanceDetail: String)
+    fun onItemClickedToDetailBottomSheet(
+        titlePerformanceDetail: String,
+        identifierPerformanceDetail: String
+    )
+
     fun onItemClickedToFaqClicked()
 }
 
-interface ItemPotentialPMProListener {
+interface ItemRMPotentialPMProListener {
     fun onGotoPMProPage()
+}
+
+interface ItemPMPotentialPMProListener {
+    fun onGotoBenefitPMPro()
+    fun onPMToPMProPage()
 }
 
 interface ItemRegularMerchantListener {
@@ -38,7 +54,6 @@ interface ItemStatusPowerMerchantListener {
 }
 
 interface ItemStatusPowerMerchantProListener {
-    fun onItemClickedPMProPage()
     fun onItemClickedGoToPMProActivation()
 }
 
@@ -51,8 +66,13 @@ interface ItemFaqListener {
     fun onArrowClicked(position: Int)
 }
 
+interface ProtectedParameterListener {
+    fun onProtectedParameterChevronClicked(protectedParameterDate: String)
+}
+
 interface ItemTimerNewSellerListener {
-    fun onBtnShopPerformanceToFaqClicked()
+    fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String)
+    fun onBtnLearnNowToFaqClicked()
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
     fun onWatchVideoClicked(videoId: String)
     fun onImpressBtnLearnPerformance()

@@ -1,0 +1,785 @@
+{
+  "data": {
+    "get_occ_multi_page": {
+      "error_message": [],
+      "status": "OK",
+      "data": {
+        "error_code": 0,
+        "pop_up_message": "Transaksi ini menggunakan alamat yang kamu pilih sebelumnya.",
+        "max_quantity": 999999,
+        "max_char_note": 144,
+        "messages": {
+          "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
+          "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",
+          "ErrorFieldRequired": "Jumlah harus diisi",
+          "ErrorProductAvailableStock": "Stok tersedia:{{value}}",
+          "ErrorProductAvailableStockDetail": "Harap kurangi jumlah barang",
+          "ErrorProductMaxQuantity": "Maks. pembelian barang ini {{value}} item, Kurangi pembelianmu, ya!",
+          "ErrorProductMinQuantity": "Min. pembelian produk ini {{value}} barang. Yuk, atur ulang pembelianmu."
+        },
+        "tickers": [],
+        "occ_main_onboarding": {
+          "force_show_coachmark": false,
+          "show_onboarding_ticker": false,
+          "onboarding_ticker": {
+            "title": "Baru!",
+            "message": "Cara lain belanja untuk 1 barang dan bisa bayar lebih cepat",
+            "image": "",
+            "show_coachmark_link_text": false,
+            "coachmark_link_text": "Selengkapnya"
+          },
+          "onboarding_coachmark": {
+            "skip_button_text": "Lewati",
+            "detail": [
+              {
+                "step": 1,
+                "title": "Pengiriman & Pembayaran jadi satu",
+                "message": "Alamat pengiriman & metode pembayaran yang biasa digunakan sudah otomatis jadi rekomendasi pilihan"
+              },
+              {
+                "step": 2,
+                "title": "Bebas atur rekomendasi",
+                "message": "Kamu bisa ubah alamat, durasi pengiriman........"
+              }
+            ],
+            "coachmark_type": 1
+          }
+        },
+        "group_shop_occ": [
+          {
+            "errors": [],
+            "shipment_information": {
+              "shop_location": "Jakarta Selatan",
+              "estimation": "Estimasi Tiba: 2 hari",
+              "free_shipping": {
+                "eligible": false,
+                "badge_url": ""
+              },
+              "free_shipping_extra": {
+                "eligible": false,
+                "badge_url": ""
+              },
+              "preorder": {
+                "is_preorder": true,
+                "duration": "Pre order 3 hari"
+              }
+            },
+            "errors_unblocking": [],
+            "is_disable_change_courier": false,
+            "auto_courier_selection": false,
+            "courier_selection_error": {
+              "title": "Pengiriman tidak tersedia.",
+              "description": "Berat belanjaanmu melebihi batas untuk satu kali pengiriman."
+            },
+            "bo_metadata": {
+              "bo_type": 3,
+              "bo_eligibilities": [
+                {
+                  "key": "is_tokonow",
+                  "value": "true"
+                }
+              ],
+              "additional_attributes": [
+                {
+                  "key": "is_tokonow",
+                  "value": "true"
+                }
+              ]
+            },
+            "shop": {
+              "shop_id": 479979,
+              "shop_alert_message": "FOR URGENCY NEEDS",
+              "is_tokonow": false,
+              "shop_ticker": "",
+              "maximum_weight_wording": "Oops, belanjaan TokoNOW! kamu terlalu berat {{weight}}kg untuk sekali pengiriman. Coba pilih lagi ya!",
+              "maximum_shipping_weight": 1000,
+              "user_id": 5511917,
+              "admin_ids": [],
+              "shop_name": "Aqua",
+              "shop_image": "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2018/1/11/479979/479979_d08f6bd9-94c3-46f8-a41c-46b35048c15c.jpg",
+              "shop_url": "https://staging.tokopedia.com/aqua",
+              "shop_status": 1,
+              "is_gold": 1,
+              "is_gold_badge": true,
+              "is_official": 1,
+              "is_free_returns": 0,
+              "gold_merchant": {
+                "is_gold": 0,
+                "is_gold_badge": false,
+                "gold_merchant_logo_url": ""
+              },
+              "shop_type_info": {
+                "shop_tier": 0,
+                "shop_grade": 0,
+                "badge": "",
+                "badge_svg": "",
+                "title": ""
+              },
+              "official_store": {
+                "is_official": 1,
+                "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+              },
+              "address_id": 2270,
+              "postal_code": "12910",
+              "latitude": "-6.221197900000001",
+              "longitude": "106.81941699999993",
+              "district_id": 2270,
+              "district_name": "",
+              "origin": 0,
+              "address_street": "",
+              "province_id": 0,
+              "city_id": 175,
+              "city_name": "Jakarta Selatan",
+              "province_name": "",
+              "country_name": "",
+              "is_allow_manage": false,
+              "shop_domain": "aqua",
+              "is_bridestory": false,
+              "shop_shipments": [
+                {
+                  "ship_id": 1,
+                  "ship_name": "JNE",
+                  "ship_code": "jne",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 6,
+                      "ship_prod_name": "YES",
+                      "ship_group_name": "",
+                      "ship_group_id": 0,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 2,
+                      "ship_prod_name": "OKE",
+                      "ship_group_name": "",
+                      "ship_group_id": 0,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 1,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "",
+                      "ship_group_id": 0,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ],
+                  "is_dropship_enabled": 0
+                },
+                {
+                  "ship_id": 4,
+                  "ship_name": "Pos Indonesia",
+                  "ship_code": "pos",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 10,
+                      "ship_prod_name": "Pos Kilat Khusus",
+                      "ship_group_name": "",
+                      "ship_group_id": 0,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ],
+                  "is_dropship_enabled": 0
+                }
+              ]
+            },
+            "cart_string": "480125-0-105",
+            "payment_profile": "TKPD_FLASH_OVO",
+            "toko_cabang": {
+              "message": "Dilayani TokoCabang",
+              "badge_url": "http://..."
+            },
+            "warehouse": {
+              "warehouse_id": 6987195,
+              "partner_id": 0,
+              "shop_id": 6778692,
+              "warehouse_name": "Shop Location",
+              "district_id": 2271,
+              "district_name": "Tebet",
+              "city_id": 175,
+              "city_name": "Jakarta Selatan",
+              "province_id": 13,
+              "province_name": "DKI Jakarta",
+              "status": 1,
+              "postal_code": "12870",
+              "is_default": 1,
+              "latlon": "-6.22810891137005,106.84549670666458",
+              "latitude": "-6.22810891137005",
+              "longitude": "106.84549670666458",
+              "email": "",
+              "address_detail": "Jalan Pal Batu 1, Kecamatan Tebet, 12870",
+              "country_name": "Indonesia",
+              "is_fulfillment": false,
+              "tkpd_preferred_logistic_spid": [],
+              "red_zone": false,
+              "message": ""
+            },
+            "cart_details": [
+              {
+                "products": [
+                  {
+                    "errors": [],
+                    "variant_description_detail": {
+                      "variant_name": [
+                        "blue",
+                        "23"
+                      ],
+                      "variant_description": "Varian: blue,23"
+                    },
+                    "product_information": [
+                      "Cashback 3%",
+                      "Harga Turun"
+                    ],
+                    "product_warning_message": "sisa 3",
+                    "product_alert_message": "FOR URGENCY NEEDS",
+                    "slash_price_label": "50%",
+                    "cart_id": 2838636113,
+                    "product_id": 15244708,
+                    "product_name": "tes varian 2 kombinasi A - , ",
+                    "product_alias": "tes-varian-2-kombinasi-a-be1c",
+                    "parent_id": 15244706,
+                    "variant": {
+                      "parent_id": 15244706,
+                      "is_parent": false,
+                      "is_variant": true,
+                      "children_id": [
+                        15244717,
+                        15244709,
+                        15244710,
+                        15244707,
+                        15244716,
+                        15244708
+                      ]
+                    },
+                    "sku": "tes-varian-2-kombinasi-a-be1c",
+                    "campaign_id": 0,
+                    "is_big_campaign": false,
+                    "product_price_fmt": "Rp20.000",
+                    "product_price": 20000,
+                    "product_original_price": 0,
+                    "product_price_original_fmt": "",
+                    "product_wholesale_price": 0,
+                    "is_slash_price": false,
+                    "category_id": 1774,
+                    "category": "Fashion Wanita / Atasan / Polo Shirt",
+                    "catalog_id": 0,
+                    "wholesale_price": [],
+                    "product_weight_fmt": "2000gr",
+                    "product_weight_actual": 2000,
+                    "product_weight_volume": 1900,
+                    "product_condition": 1,
+                    "product_status": 1,
+                    "product_url": "https://staging.tokopedia.com/aqua/tes-varian-2-kombinasi-a-be1c",
+                    "product_returnable": 0,
+                    "is_freereturns": 0,
+                    "free_returns": {
+                      "is_freereturns": 0,
+                      "free_returns_logo": ""
+                    },
+                    "is_preorder": 0,
+                    "product_cashback": "",
+                    "product_cashback_value": 0,
+                    "product_min_order": 1,
+                    "product_max_order": 999999,
+                    "product_rating": 0,
+                    "product_invenage_value": 9999,
+                    "product_switch_invenage": 1,
+                    "product_invenage_total": {
+                      "by_user": {
+                        "in_cart": 0,
+                        "last_stock_less_than": 0
+                      },
+                      "by_user_text": {
+                        "in_cart": "",
+                        "last_stock_less_than": "",
+                        "complete": ""
+                      },
+                      "is_counted_by_user": false,
+                      "by_product": {
+                        "in_cart": 0,
+                        "last_stock_less_than": 0
+                      },
+                      "by_product_text": {
+                        "in_cart": "",
+                        "last_stock_less_than": "",
+                        "complete": ""
+                      },
+                      "is_counted_by_product": false
+                    },
+                    "currency_rate": 1,
+                    "product_price_currency": 1,
+                    "product_image": {
+                      "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2019/2/20/5511917/5511917_f4e240fb-b848-4f76-9382-118f7ff8e0a6_700_700",
+                      "image_src_200_square": "https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2019/2/20/5511917/5511917_f4e240fb-b848-4f76-9382-118f7ff8e0a6_700_700",
+                      "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2019/2/20/5511917/5511917_f4e240fb-b848-4f76-9382-118f7ff8e0a6_700_700",
+                      "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2019/2/20/5511917/5511917_f4e240fb-b848-4f76-9382-118f7ff8e0a6_700_700"
+                    },
+                    "product_all_images": "[{\"file_name\":\"5511917_f4e240fb-b848-4f76-9382-118f7ff8e0a6_700_700\",\"file_path\":\"product-1/2019/2/20/5511917\",\"status\":2}]",
+                    "product_notes": "Yang warna hitam",
+                    "product_quantity": 1,
+                    "price_changes": {
+                      "changes_state": 0,
+                      "amount_difference": 0,
+                      "original_amount": 20000,
+                      "description": "Harga Normal"
+                    },
+                    "product_weight": 2000,
+                    "product_weight_unit_code": 1,
+                    "product_weight_unit_text": "gr",
+                    "last_update_price": 1583745081,
+                    "is_update_price": false,
+                    "product_preorder": {},
+                    "product_showcase": {
+                      "name": "hehe wkwk",
+                      "id": 1404974
+                    },
+                    "product_finsurance": 0,
+                    "product_shop_id": 479979,
+                    "is_wishlisted": true,
+                    "product_tracker_data": {
+                      "attribution": "none/other",
+                      "tracker_list_name": "none/other"
+                    },
+                    "is_ppp": false,
+                    "is_cod": true,
+                    "warehouse_id": 1880,
+                    "warehouses": {
+                      "1880": {
+                        "WarehouseID": 1880,
+                        "ProductPrice": 20000,
+                        "PriceCurrency": 1,
+                        "PriceCurrencyName": "IDR",
+                        "ProductPriceIDR": 20000,
+                        "LastUpdatePrice": {
+                          "UnixTime": 1583770281,
+                          "TimeFormat": ""
+                        },
+                        "ProductSwitchInvenage": 1,
+                        "ProductInvenageValue": 9999
+                      }
+                    },
+                    "is_parent": false,
+                    "is_campaign_error": false,
+                    "campaign_type_name": "",
+                    "hide_gimmick": false,
+                    "is_blacklisted": false,
+                    "categories": [
+                      {
+                        "category_id": 1758,
+                        "category_name": "Fashion Wanita"
+                      },
+                      {
+                        "category_id": 1768,
+                        "category_name": "Atasan"
+                      },
+                      {
+                        "category_id": 1774,
+                        "category_name": "Polo Shirt"
+                      }
+                    ],
+                    "free_shipping": {
+                      "eligible": false,
+                      "badge_url": ""
+                    },
+                    "free_shipping_extra": {
+                      "eligible": false,
+                      "badge_url": ""
+                    },
+                    "campaign_error_code": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "errors": [],
+        "profile_index_wording": "Pilihan 1",
+        "profile_recommendation_wording": "Rekomendasi Pilihan",
+        "profile": {
+          "address": {
+            "address_id": 0,
+            "receiver_name": "",
+            "address_name": "",
+            "address_street": "",
+            "district_id": 0,
+            "district_name": "",
+            "city_id": 0,
+            "city_name": "",
+            "province_id": 0,
+            "province_name": "",
+            "phone": "",
+            "longitude": "",
+            "latitude": "",
+            "geolocation": "",
+            "postal_code": "",
+            "status": 0,
+            "state": 0,
+            "state_detail": "",
+            "tokonow": {
+              "shop_id": 123,
+              "warehouse_id": 123
+            }
+          },
+          "payment": {
+            "enable": 1,
+            "active": 1,
+            "gateway_code": "OVOCASH",
+            "gateway_name": "OVO Cash",
+            "image": "",
+            "description": "",
+            "url": "",
+            "fee": 0,
+            "minimum_amount": 1,
+            "maximum_amount": 200000000,
+            "is_disable_pay_button": false,
+            "is_enable_next_button": false,
+            "flags": {
+              "pin": false
+            },
+            "wallet_amount": 0,
+            "metadata": "",
+            "mdr": 0,
+            "error_message": {
+              "message": "",
+              "button": {
+                "text": "",
+                "link": ""
+              }
+            },
+            "occ_revamp_error_message": {
+              "message": "",
+              "button": {
+                "text": "",
+                "action": ""
+              }
+            },
+            "credit_card": {
+              "number_of_cards": {
+                "available": 0,
+                "unavailable": 0,
+                "total": 0
+              },
+              "available_terms": [],
+              "bank_code": "",
+              "card_type": "",
+              "is_expired": true,
+              "tnc_info": ""
+            },
+            "ovo_additional_data": {
+              "ovo_activation": {
+                "is_required": true,
+                "button_title": "activate ovo",
+                "button_link": "",
+                "error_message": "",
+                "error_ticker": ""
+              },
+              "ovo_top_up": {
+                "is_required": "false",
+                "button_title": "Top-up",
+                "button_link": "",
+                "error_message": "Rp0. Silahkan top up",
+                "error_ticker": "",
+                "is_hide_digital": 0
+              },
+              "phone_number_registered": {
+                "is_required": false,
+                "button_title": "",
+                "button_link": "",
+                "error_message": "Masukkan no. Hp di halaman akun",
+                "error_ticker": "",
+                "is_hide_digital": 0
+              }
+            }
+          },
+          "shipment": {
+            "service_name": "",
+            "service_id": 0,
+            "service_duration": "",
+            "sp_id": 0,
+            "is_free_shipping_selected": false,
+            "recommendation_sp_id": 0,
+            "recommendation_service_id": 0
+          },
+          "onboarding_header_image": "",
+          "onboarding_header_message": "This is header message",
+          "onboarding_component": {
+            "header_title": "This is header title",
+            "body_image": "https://ecs.image.com",
+            "body_message": "This is body message....",
+            "info_component": {
+              "text": "This is info text...",
+              "link": "https://ecs.info.com"
+            }
+          }
+        },
+        "promo": {
+          "last_apply": {
+            "code": "200000",
+            "data": {
+              "global_success": true,
+              "success": true,
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Yay, kamu dapat diskon Rp10.000!"
+              },
+              "codes": [
+                "DISC10TOPED"
+              ],
+              "promo_code_id": 0,
+              "title_description": "Promo Testing Discount 10%",
+              "discount_amount": 10000,
+              "cashback_wallet_amount": 0,
+              "cashback_advocate_referral_amount": 0,
+              "invoice_description": "",
+              "is_coupon": 0,
+              "gateway_id": "",
+              "is_tokopedia_gerai": false,
+              "clashing_info_detail": {
+                "clash_message": "",
+                "clash_reason": "",
+                "is_clashed_promos": false,
+                "options": null
+              },
+              "tokopoints_detail": {
+                "conversion_rate": {
+                  "rate": 0,
+                  "points_coefficient": 0,
+                  "external_currency_coefficient": 0
+                }
+              },
+              "voucher_orders": [
+                {
+                  "code": "STACKCBMERCHANT",
+                  "success": true,
+                  "unique_id": "841188-0-447668-32509476",
+                  "order_id": 0,
+                  "shop_id": 12345,
+                  "is_po": 0,
+                  "duration": "0",
+                  "warehouse_id": 447668,
+                  "address_id": 32509476,
+                  "type": "merchant",
+                  "cashback_wallet_amount": 10000,
+                  "discount_amount": 0,
+                  "title_description": "STACKCBMERCHANT - utk test",
+                  "invoice_description": "",
+                  "message": {
+                    "state": "green",
+                    "color": "#ade3af",
+                    "text": "Kamu berpotensi dapat cashback sebesar Rp10.000 setelah pesanan selesai"
+                  },
+                  "benefit_details": [
+                    {
+                      "code": "STACKCBMERCHANT",
+                      "type": "",
+                      "order_id": 1,
+                      "unique_id": "841188-0-447668-32509476",
+                      "discount_amount": 0,
+                      "discount_details": null,
+                      "cashback_amount": 10000,
+                      "cashback_details": [
+                        {
+                          "amount_idr": 10000,
+                          "amount_points": 10000,
+                          "benefit_type": "cashback"
+                        }
+                      ],
+                      "promo_type": {
+                        "is_exclusive_shipping": false,
+                        "is_bebas_ongkir": false
+                      },
+                      "benefit_product_details": [
+                        {
+                          "product_id": 72857852,
+                          "cashback_amount": 0,
+                          "cashback_amount_idr": 0,
+                          "discount_amount": 0,
+                          "is_bebas_ongkir": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "benefit_summary_info": {
+                "final_benefit_text": "Total benefit anda: ",
+                "final_benefit_amount_str": "Rp20.000",
+                "final_benefit_amount": 20000,
+                "summaries": [
+                  {
+                    "section_name": "",
+                    "section_description": "",
+                    "description": "Total cashback: ",
+                    "type": "cashback",
+                    "amount_str": "Rp10.000",
+                    "amount": 10000,
+                    "details": [
+                      {
+                        "description": "Total Cashback OVO Points ",
+                        "type": "ovo_points",
+                        "amount_str": "Rp10.000",
+                        "amount": 10000,
+                        "section_name": "",
+                        "points": 10000,
+                        "points_str": ""
+                      }
+                    ]
+                  },
+                  {
+                    "section_name": "",
+                    "section_description": "",
+                    "description": "Total diskon: ",
+                    "type": "discount",
+                    "amount_str": "Rp10.000",
+                    "amount": 10000,
+                    "details": [
+                      {
+                        "description": "Total Diskon Barang ",
+                        "type": "product_discount",
+                        "amount_str": "Rp10.000",
+                        "amount": 10000,
+                        "section_name": "",
+                        "points": 0,
+                        "points_str": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              "benefit_details": [
+                {
+                  "code": "DISC10TOPED",
+                  "type": "",
+                  "order_id": 1,
+                  "unique_id": "841188-0-447668-32509476",
+                  "discount_amount": 5714,
+                  "discount_details": [
+                    {
+                      "amount": 5714,
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "cashback_amount": 0,
+                  "cashback_details": null,
+                  "promo_type": {
+                    "is_exclusive_shipping": false,
+                    "is_bebas_ongkir": false
+                  },
+                  "benefit_product_details": [
+                    {
+                      "product_id": 72857852,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": false
+                    }
+                  ]
+                },
+                {
+                  "code": "DISC10TOPED",
+                  "type": "",
+                  "order_id": 2,
+                  "unique_id": "951922-0-3961147-32509476",
+                  "discount_amount": 4286,
+                  "discount_details": [
+                    {
+                      "amount": 4286,
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "cashback_amount": 0,
+                  "cashback_details": null,
+                  "promo_type": {
+                    "is_exclusive_shipping": false,
+                    "is_bebas_ongkir": false
+                  },
+                  "benefit_product_details": [
+                    {
+                      "product_id": 51435326,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": false
+                    }
+                  ]
+                }
+              ],
+              "tracking_details": [
+                {
+                  "product_id": 72857852,
+                  "promo_codes_tracking": "DISC103RDPARTY|STACKCBMERCHANT1",
+                  "promo_details_tracking": "G:2:5714:green|M:1:10000:green"
+                },
+                {
+                  "product_id": 51435326,
+                  "promo_codes_tracking": "DISC103RDPARTY",
+                  "promo_details_tracking": "G:2:4286:green"
+                }
+              ],
+              "ticker_info": {
+                "unique_id": "",
+                "status_code": 0,
+                "message": ""
+              },
+              "additional_info": {
+                "message_info": {
+                  "message": "Kamu hemat Rp.20.000",
+                  "detail": "2 promo dipakai"
+                },
+                "error_detail": {
+                  "message": ""
+                },
+                "cart_empty_info": {
+                  "image_url": "http://image_url",
+                  "message": "Ada promo menunggumu, nih!",
+                  "detail": "Ayo belanja min. Rp100.000 untuk pakai promo promo global title"
+                },
+                "sp_ids": [
+                  1,
+                  6,
+                  18
+                ]
+              }
+            }
+          }
+        },
+        "kero_token": "Tokopedia+Kero:E6X9hly+qcg/K1QDjiD8LcxrN/A=",
+        "kero_discom_token": "Tokopedia+Kero:cJHx0eJeD+XoWxE5N35y92nJPcg=",
+        "kero_unix_time": 1584091195,
+        "prompt": {
+          "type": "dialog_box",
+          "title": "Maaf, pembayaran belum bisa dilanjutkan",
+          "description": "Barang yang kamu coba beli sebelum campaign mulai nggak bisa diproses. Yuk, coba beli ulang.",
+          "buttons": [
+            {
+              "text": "Coba Beli Lagi",
+              "link": "https://tokopedia.link/4DQwn808A7",
+              "action": "open",
+              "color": "primary"
+            }
+          ]
+        },
+        "customer_data": {
+          "id": 123,
+          "name": "test",
+          "email": "test@email.com",
+          "msisdn": "08123456789"
+        },
+        "payment_additional_data": {
+          "merchant_code": "tokopedia",
+          "profile_code": "TKPD_DEFAULT",
+          "signature": "asdfjdkhkjkdfhj",
+          "change_cc_link": "",
+          "callback_url": ""
+        },
+        "error_ticker": ""
+      }
+    }
+  }
+}

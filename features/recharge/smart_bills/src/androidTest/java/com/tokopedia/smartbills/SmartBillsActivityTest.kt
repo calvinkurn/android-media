@@ -75,6 +75,7 @@ class SmartBillsActivityTest {
         validate_onboarding()
         validate_bill_selection()
         validate_bill_detail()
+        validate_click_bayar()
         validate_tooltip()
         validate_refresh_action()
 
@@ -132,6 +133,18 @@ class SmartBillsActivityTest {
         onView(ViewMatchers.withText("13111516111")).check(ViewAssertions.matches(isDisplayed()))
         onView(ViewMatchers.withText("Rp 102.500")).check(ViewAssertions.matches(isDisplayed()))
         onView(withId(R.id.bottom_sheet_close)).perform(click())
+    }
+
+    private fun validate_click_bayar() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(2000)
+        val billCheckbox = onView(AllOf.allOf(
+                withId(R.id.cb_smart_bills_item),
+                ViewMatchers.hasSibling(ViewMatchers.withChild(ViewMatchers.withText("Air PDAM - ATB BATAM")))
+        ))
+        billCheckbox.perform(click())
+        Thread.sleep(2000)
+        onView(withId(R.id.btn_recharge_checkout_next)).perform(click())
     }
 
     private fun validate_refresh_action() {

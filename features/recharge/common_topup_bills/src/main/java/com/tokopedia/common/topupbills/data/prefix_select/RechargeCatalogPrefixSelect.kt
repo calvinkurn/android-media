@@ -1,11 +1,14 @@
 package com.tokopedia.common.topupbills.data.prefix_select
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
+@Parcelize
 data class RechargeCatalogPrefixSelect(
         @SerializedName("componentID")
         @Expose
@@ -31,8 +34,9 @@ data class RechargeCatalogPrefixSelect(
         @SerializedName("prefixes")
         @Expose
         val prefixes: List<RechargePrefix> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class RechargePrefix(
         @SerializedName("key")
         @Expose
@@ -43,8 +47,9 @@ data class RechargePrefix(
         @SerializedName("operator")
         @Expose
         val operator: TelcoOperator = TelcoOperator()
-)
+): Parcelable
 
+@Parcelize
 data class RechargeValidation(
         @SerializedName("id")
         @Expose
@@ -58,4 +63,4 @@ data class RechargeValidation(
         @SerializedName("rule")
         @Expose
         val rule: String = ""
-)
+): Parcelable

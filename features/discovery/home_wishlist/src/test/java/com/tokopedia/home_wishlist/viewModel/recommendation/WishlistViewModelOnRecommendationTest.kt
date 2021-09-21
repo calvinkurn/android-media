@@ -9,6 +9,7 @@ import com.tokopedia.home_wishlist.viewModel.givenGetImageData
 import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -132,7 +133,7 @@ class WishlistViewModelOnRecommendationTest {
         val childPositionCandidate = 3
         val wishlistedInitialState = false
         val mockErrorMessage = "OH YA"
-        val mockProductId = "33"
+        val mockProductId = 33L
 
         // Wishlist viewmodel
         wishlistViewModel = createWishlistViewModel(
@@ -166,7 +167,7 @@ class WishlistViewModelOnRecommendationTest {
                 listOf(
                         RecommendationItem(productId = 11),
                         RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = mockProductId, isWishlist = wishlistedInitialState),
                         RecommendationItem(productId = 44),
                         RecommendationItem(productId = 55)
                 )
@@ -215,7 +216,7 @@ class WishlistViewModelOnRecommendationTest {
         val parentPositionCandidate = 25
         val childPositionCandidate = 2
         val wishlistedInitialState = true
-        val mockProductId = "33"
+        val mockProductId = 33L
 
         // Wishlist viewmodel
 
@@ -250,7 +251,7 @@ class WishlistViewModelOnRecommendationTest {
                 listOf(
                         RecommendationItem(productId = 11),
                         RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = mockProductId, isWishlist = wishlistedInitialState),
                         RecommendationItem(productId = 44),
                         RecommendationItem(productId = 55)
                 )
@@ -300,7 +301,7 @@ class WishlistViewModelOnRecommendationTest {
         val childPositionCandidate = 2
         val wishlistedInitialState = true
         val mockErrorMessage = "OH YA"
-        val mockProductId = "33"
+        val mockProductId = 33L
 
         // Wishlist viewmodel
 
@@ -335,7 +336,7 @@ class WishlistViewModelOnRecommendationTest {
                 listOf(
                         RecommendationItem(productId = 11),
                         RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = mockProductId, isWishlist = wishlistedInitialState),
                         RecommendationItem(productId = 44),
                         RecommendationItem(productId = 55)
                 )

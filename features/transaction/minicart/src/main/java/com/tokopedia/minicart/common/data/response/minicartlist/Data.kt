@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.common.data.response.minicartlist
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 
 data class Data(
         @SerializedName("errors")
@@ -9,6 +10,8 @@ data class Data(
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
+        @SerializedName("beli_button_config")
+        val beliButtonConfig: BeliButtonConfig = BeliButtonConfig(),
         @SerializedName("header_title")
         val headerTitle: String = "",
         @SerializedName("shopping_summary")

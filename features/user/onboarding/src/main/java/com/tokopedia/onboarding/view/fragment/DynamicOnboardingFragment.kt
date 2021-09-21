@@ -84,23 +84,29 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_NEXT_PAGE -> {
                 activity?.let {
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    if (resultCode == Activity.RESULT_OK &&
-                            userSession.isLoggedIn &&
-                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
-                    ) {
-                        it.startActivities(arrayOf(intentHome, intentNewUser))
+
+                    if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn && data != null) {
+                        val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                        if (isSuccessRegister) {
+                            it.startActivities(arrayOf(intentHome, intentNewUser))
+                        } else {
+                            it.startActivity(intentHome)
+                        }
                     } else {
                         it.startActivity(intentHome)
                     }
                     it.finish()
                 }
+            }
+
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
             }
         }
     }
@@ -136,7 +142,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             postDelayed({
                 setCurrentItem(0, true)
                 visibility = View.VISIBLE
-            }, 10)
+            }, DELAY)
 
             pageDots?.setViewpager(this)
             registerOnPageChangeCallback(OnPageChangeListener())
@@ -292,6 +298,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         const val ARG_DYNAMIC_ONBAORDING_DATA = "dynamicOnabordingData"
 
         private const val REQUEST_NEXT_PAGE = 679
+        private const val DELAY = 10L
 
         fun createInstance(bundle: Bundle): DynamicOnboardingFragment {
             val fragment = DynamicOnboardingFragment()
