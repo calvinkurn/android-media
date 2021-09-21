@@ -836,7 +836,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             widgets.filterIsInstance<TableWidgetUiModel>().map {
                 val postFilter =
                     it.tableFilters.find { filter -> filter.isSelected }
-                    ?.value.orEmpty()
+                        ?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
             }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
@@ -1224,22 +1224,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 sahGlobalError?.gone()
                 emptyState?.showMessageExceptionError(throwable)
             }
-            GlobalError.PAGE_NOT_FOUND -> {
-                emptyState?.run {
-                    emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
-                    setTitle(throwable.message.orEmpty())
-                    setDescription("")
-                    setPrimaryCTAText("")
-                    visible()
-                }
-                sahGlobalError?.gone()
-            }
+            GlobalError.PAGE_NOT_FOUND -> showEmptyState()
             else -> {
                 sahGlobalError?.run {
                     setType(errorType)
                     visible()
                 }
                 emptyState?.gone()
+            }
+        }
+    }
+
+    private fun showEmptyState() {
+        recyclerView?.post {
+            val isLayoutEmpty = adapter.data.isEmpty()
+            if (isLayoutEmpty) {
+                emptyState?.run {
+                    if (isVisible) return@post
+                    emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
+                    setTitle(getString(R.string.sah_empty_layout_message))
+                    setDescription("")
+                    setPrimaryCTAText("")
+                    visible()
+                }
+                view?.sahGlobalError?.gone()
             }
         }
     }
@@ -1653,6 +1661,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
+
+        showEmptyState()
     }
 
     private fun checkLoadingWidgets() {
