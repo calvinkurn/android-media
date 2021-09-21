@@ -175,20 +175,23 @@ class PdpSimulationFragment : BaseDaggerFragment(),
      * @param data  is the product detail data
      */
     private fun showProductVariant(data: GetProductV3) {
-        if (data.variant.products.isNotEmpty() && data.variant.selections.isNotEmpty()) {
-            var combination = -1
-            for (i in data.variant.products.indices) {
-                if (productId == data.variant.products[i].productID) {
-                    combination = data.variant.products[i].combination[0] ?: -1
-                    break
+        data.variant?.let { variant ->
+            if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
+                var combination = -1
+                for (i in variant.products.indices) {
+                    if (productId == variant.products[i].productID) {
+                        combination = variant.products[i].combination[0] ?: -1
+                        break
+                    }
                 }
+                if (combination != -1)
+                    productDetail.productVariant.text =
+                        variant.selections[0].options[combination]?.value ?: ""
+            } else {
+                productDetail.productVariant.gone()
             }
-            if (combination != -1)
-                productDetail.productVariant.text =
-                    data.variant.selections[0].options[combination]?.value ?: ""
-        } else {
-            productDetail.productVariant.gone()
         }
+
     }
 
 

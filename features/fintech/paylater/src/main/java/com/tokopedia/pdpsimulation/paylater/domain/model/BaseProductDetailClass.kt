@@ -15,7 +15,7 @@ data class GetProductV3(
     @SerializedName("url") val url: String?,
     @SerializedName("price") val price: Double?,
     @SerializedName("pictures") val pictures: List<Pictures?>?,
-    @SerializedName("variant") val variant: Variant,
+    @SerializedName("variant") val variant: Variant?,
 ) : Parcelable
 
 @Parcelize
