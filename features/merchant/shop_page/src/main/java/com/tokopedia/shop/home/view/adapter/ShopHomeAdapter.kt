@@ -135,6 +135,7 @@ class ShopHomeAdapter(
                     it.widgetId == widgetId
                 }?.let {
                     it.data?.firstOrNull()?.youTubeVideoDetail = data
+                    it.isNewData = true
                 }
         submitList(newList)
     }
@@ -147,6 +148,7 @@ class ShopHomeAdapter(
                     newList.removeAt(index)
                 } else {
                     shopHomeVoucherUiModel.widgetState = WidgetState.FINISH
+                    shopHomeVoucherUiModel.isNewData = true
                     newList[index] = shopHomeVoucherUiModel
                 }
             }
@@ -190,6 +192,7 @@ class ShopHomeAdapter(
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.isNewData = true
         newList[position] = shopHomeCarousellProductUiModel
         submitList(newList)
     }
@@ -206,6 +209,8 @@ class ShopHomeAdapter(
                 it.id == productId
             }.onEach {
                 it.isWishList = isWishlist
+            }.also {
+                shopHomeCarousellProductUiModel.isNewData = true
             }
         }
         submitList(newList)
@@ -339,6 +344,7 @@ class ShopHomeAdapter(
                     }
                 }
                 it.showRemindMeLoading = false
+                nplCampaignUiModel.isNewData = true
             }
         }
         submitList(newList)
@@ -358,6 +364,7 @@ class ShopHomeAdapter(
         newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
                 it.showRemindMeLoading = true
+                nplCampaignUiModel.isNewData = true
             }
         }
         submitList(newList)
@@ -414,6 +421,7 @@ class ShopHomeAdapter(
             } else {
                 newList[position] = (newList[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel).apply {
                     widgetState = WidgetState.FINISH
+                    isNewData = true
                 }
             }
         }
@@ -434,6 +442,7 @@ class ShopHomeAdapter(
                 if (position >= 0 && position < newList.size) {
                     if(widgetContentData.value != null){
                         widgetContentData.value?.widgetState = WidgetState.FINISH
+                        widgetContentData.value?.isNewData = true
                         newList[position] = widgetContentData.value
                     } else {
                         newList.removeAt(position)
@@ -511,6 +520,7 @@ class ShopHomeAdapter(
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
+        newList.filterIsInstance<BaseShopHomeWidgetUiModel>().onEach { it.isNewData = false }
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
         currentRecyclerViewState?.let{

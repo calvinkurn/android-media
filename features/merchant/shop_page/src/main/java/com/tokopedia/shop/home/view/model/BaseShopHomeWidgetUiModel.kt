@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 abstract class BaseShopHomeWidgetUiModel: Visitable<ShopHomeAdapterTypeFactory>{
@@ -11,6 +10,7 @@ abstract class BaseShopHomeWidgetUiModel: Visitable<ShopHomeAdapterTypeFactory>{
     abstract val type :String
     abstract val header: Header
     var widgetState: WidgetState = WidgetState.INIT
+    var isNewData: Boolean = false
     var widgetMasterId = ""
     data class Header(
             val title: String = "",

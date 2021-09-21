@@ -13,9 +13,6 @@ class ShopPageHomeDiffUtilCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
-        if (isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)) {
-            return false
-        }
         if (isItemMatchWithUiModel<ShopHomeProductChangeGridSectionUiModel>(oldItem, newItem)) {
             return false
         }
@@ -30,7 +27,14 @@ class ShopPageHomeDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
+        val oldItem = oldItems.getOrNull(oldItemPosition)
+        val newItem = newItems.getOrNull(newItemPosition)
+        if(isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)){
+            val oldShopHomeWidgetData = oldItem as? BaseShopHomeWidgetUiModel
+            val newShopHomeWidgetData = newItem as? BaseShopHomeWidgetUiModel
+            return oldShopHomeWidgetData?.isNewData == false && newShopHomeWidgetData?.isNewData == false
+        }
+        return oldItem == newItem
     }
 
     override fun getOldListSize(): Int {
