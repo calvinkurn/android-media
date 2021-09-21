@@ -139,7 +139,7 @@ open class BaseChatViewModel constructor(
             withMsg(reply.message.censoredReply)
             withSource(reply.source)
             withLabel(reply.label)
-            withLocalId(reply.localId)
+            withOrGenerateLocalId(reply.localId)
             return self()
         }
 
@@ -218,6 +218,13 @@ open class BaseChatViewModel constructor(
         fun withReplyId(replyId: String): B {
             this.replyId = replyId
             return self()
+        }
+
+        fun withOrGenerateLocalId(localId: String): B {
+            val finalLocalId = if (localId.isEmpty()) {
+                IdentifierUtil.generateLocalId()
+            } else localId
+            return withLocalId(finalLocalId)
         }
 
         fun withLocalId(localId: String): B {
