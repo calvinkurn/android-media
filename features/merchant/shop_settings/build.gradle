@@ -1,8 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 buildscript {
     repositories {
         google()
@@ -63,6 +69,12 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.2.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.networkDependencies.retrofit
 }
 
 project.ext {
