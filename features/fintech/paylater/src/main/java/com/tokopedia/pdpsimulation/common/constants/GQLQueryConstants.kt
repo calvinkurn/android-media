@@ -115,8 +115,8 @@ const val GQL_CREDIT_CARD_BANK_LIST = """query {
 }"""
 
 
-const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}request: PaylaterGetSimulationV2Request!) {
-  paylater_getSimulationV2(request: ${'$'}request) {
+const val GQL_PAYLATER_SIMULATION_V2 = """query paylater_getSimulationV2(${'$'}request: PaylaterGetSimulationV2Request!) {
+  paylater_getSimulationV2(request: ${'$'}request) { 
     data {
       tenure
       text
@@ -136,7 +136,6 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         is_recommended_string
         tenure
         activation_status
-        account_status
         disable {
           status
           header
@@ -144,10 +143,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         } 
         cta {
           name
-          description_1
-          description_2
           web_url
-          ios_url
           android_url
           cta_type
           is_redirect_url
@@ -156,14 +152,12 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
         gateway_detail {
           gateway_id
           name
-          product_code
           is_active
           small_subheader
           subheader
           img_light_url
           img_dark_url
           faq_url
-          apply_url
           benefit {
             content
             is_highlight
@@ -184,7 +178,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
             notes
             steps
           }
-          tnc
+          
         }
       }
     } 

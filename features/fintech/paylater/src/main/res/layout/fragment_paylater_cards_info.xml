@@ -64,6 +64,7 @@
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_14"
+                        android:paddingTop="@dimen/unify_font_8"
                         app:layout_constraintBottom_toTopOf="@+id/tvSmallSubTitlePaylaterPartner"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"

@@ -36,10 +36,7 @@ data class Benefit(
 data class Cta(
 
     @SerializedName("name") val name: String?,
-    @SerializedName("description_1") val description_1: String?,
-    @SerializedName("description_2") val description_2: String?,
     @SerializedName("web_url") val web_url: String?,
-    @SerializedName("ios_url") val ios_url: String?,
     @SerializedName("android_url") val android_url: String?,
     @SerializedName("cta_type") val cta_type: Int?,
     @SerializedName("is_redirect_url") val is_redirect_url: Int?,
@@ -63,7 +60,6 @@ data class Detail(
     @SerializedName("is_recommended_string") val is_recommended_string: String?,
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("activation_status") val activation_status: Int?,
-    @SerializedName("account_status") val account_status: Int?,
     @SerializedName("disable") val disableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta?,
     @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?,
@@ -92,20 +88,17 @@ data class GatewayDetail(
 
     @SerializedName("gateway_id") val gateway_id: Int?,
     @SerializedName("name") val name: String?,
-    @SerializedName("product_code") val product_code: String?,
     @SerializedName("is_active") val is_active: Boolean?,
     @SerializedName("small_subheader") val smallSubHeader: String?,
     @SerializedName("subheader") val subheader: String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?,
     @SerializedName("faq_url") val faq_url: String?,
-    @SerializedName("apply_url") val apply_url: String?,
     @SerializedName("benefit") val benefit: List<Benefit?>?,
     @SerializedName("detail") val detail: List<SingleProductDetail?>?,
     @SerializedName("faq") val faq: List<Faq?>?,
     @SerializedName("how_to_use") val how_toUse: HowToUse?,
-    @SerializedName("how_to_apply") val how_toApply: HowToApply?,
-    @SerializedName("tnc") val tnc: List<String?>?
+    @SerializedName("how_to_apply") val how_toApply: HowToApply?
 ) : Parcelable
 
 @Parcelize
