@@ -304,6 +304,7 @@ class PlayViewModel @Inject constructor(
         get() {
             val castState = observableCastState.value ?: return false
             return castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
+                    && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)
         }
 
     private val isProductSheetInitialized: Boolean
@@ -1606,6 +1607,7 @@ class PlayViewModel @Inject constructor(
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
