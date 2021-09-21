@@ -2,9 +2,11 @@ package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -22,6 +24,8 @@ class MessageBubbleLayout : ViewGroup {
     private var showCheckMark = FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
     private val radiusMargin = 20f.toPx().toInt()
+
+    private var bodyMsgContainer: LinearLayout? = null
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -54,6 +58,16 @@ class MessageBubbleLayout : ViewGroup {
 
     fun bindReplyData(uiModel: Visitable<*>) {
         replyBubbleContainer?.bindReplyData(uiModel)
+    }
+
+    fun setMsgGravity(gravity: Int) {
+        val gravityAttr = when (gravity) {
+            Gravity.START -> LEFT_MSG_ORIENTATION
+            Gravity.END -> RIGHT_MSG_ORIENTATION
+            else -> DEFAULT_MSG_ORIENTATION
+        }
+        msgOrientation = gravityAttr
+        initReplyBubbleBackground()
     }
 
     private fun initConfig(context: Context?, attrs: AttributeSet?) {
@@ -92,6 +106,7 @@ class MessageBubbleLayout : ViewGroup {
     private fun initViewBinding() {
         fxChat = findViewById(R.id.fxChat)
         replyBubbleContainer = findViewById(R.id.cl_reply_container)
+        bodyMsgContainer = findViewById(R.id.ll_body_msg_container)
     }
 
     private fun initFlexboxChatLayout() {

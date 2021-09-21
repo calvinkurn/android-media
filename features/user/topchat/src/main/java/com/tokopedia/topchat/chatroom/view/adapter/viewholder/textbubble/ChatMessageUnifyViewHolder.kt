@@ -100,9 +100,7 @@ class ChatMessageUnifyViewHolder(
         bindClick()
         if (msg.isSender) {
             // Right msg
-            bindLayoutGravity(Gravity.END)
-            bindGravity(Gravity.END)
-            bindLayoutMsgGravity(Gravity.END)
+            bindMsgGravity(Gravity.END)
             paddingRightMsg()
             bindBackground(bgRight)
             ChatMessageViewHolderBinder.bindChatReadStatus(msg, fxChat)
@@ -111,9 +109,7 @@ class ChatMessageUnifyViewHolder(
             hide(headerInfo)
         } else {
             // Left msg
-            bindLayoutGravity(Gravity.START)
-            bindGravity(Gravity.START)
-            bindLayoutMsgGravity(Gravity.START)
+            bindMsgGravity(Gravity.START)
             paddingLeftMsg()
             bindBackground(bgLeft)
             bindMessageInfo(msg)
@@ -121,6 +117,13 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
+    }
+
+    private fun bindMsgGravity(gravity: Int) {
+        bindLayoutGravity(gravity)
+        bindGravity(gravity)
+        bindLayoutMsgGravity(gravity)
+        messageBubble?.setMsgGravity(gravity)
     }
 
     private fun bindReplyReference(msg: MessageViewModel) {
