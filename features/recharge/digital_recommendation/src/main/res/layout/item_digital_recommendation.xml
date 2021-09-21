@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/unify_space_4"
+    android:layout_marginEnd="@dimen/unify_space_4"
+    android:elevation="@dimen/unify_space_4"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/digital_recommendation_shimmering_card_size"
+        android:layout_height="@dimen/digital_recommendation_shimmering_card_size"
+        android:background="@drawable/bg_digital_recommendation_card"
+        android:padding="@dimen/unify_space_8">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgCategoryDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_R400"
+            android:textSize="@dimen/unify_font_10"
+            app:layout_constraintBottom_toBottomOf="@id/ivIconDigitalRecommendation"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIconDigitalRecommendation"
+            app:typographyType="heading_6"
+            tools:text="PAKET DATA" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivIconDigitalRecommendation"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:padding="@dimen/unify_space_4"
+            android:scaleType="fitXY"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_icon_tokopedia_care" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgNumberDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivIconDigitalRecommendation"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="080808080808" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgProductDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgNumberDigitalRecommendation"
+            app:typographyType="body_3"
+            tools:text="Indosat Combo 10GB Internet + 5GB Xtra" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgDiscountPercentageDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:background="@drawable/bg_digital_recommendation_discount_tag"
+            android:paddingLeft="@dimen/unify_space_4"
+            android:paddingTop="@dimen/unify_space_2"
+            android:paddingRight="@dimen/unify_space_4"
+            android:paddingBottom="@dimen/unify_space_2"
+            android:textColor="@color/Unify_R500"
+            app:layout_constraintBottom_toTopOf="@id/tgPriceDigitalRecommendation"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="20%" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgDiscountPriceDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintBottom_toBottomOf="@id/tgDiscountPercentageDigitalRecommendation"
+            app:layout_constraintLeft_toRightOf="@id/tgDiscountPercentageDigitalRecommendation"
+            app:layout_constraintTop_toTopOf="@id/tgDiscountPercentageDigitalRecommendation"
+            app:typographyType="small"
+            tools:text="Rp150.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgPriceDigitalRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/unify_font_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:typographyType="heading_6"
+            tools:text="Rp100.000" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
