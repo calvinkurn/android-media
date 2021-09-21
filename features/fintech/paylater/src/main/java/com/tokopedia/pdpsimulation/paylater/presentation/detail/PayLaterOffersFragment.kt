@@ -233,16 +233,16 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onPageSelectedByUser(it: Detail) {
-        if (!it.isInvoke) {
+    private fun onPageSelectedByUser(detail: Detail) {
+        if (!detail.isInvoke) {
             pdpSimulationCallback?.sendAnalytics(
                 PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
-                    it.gateway_detail?.name ?: "",
-                    it.cta?.name ?: "",
-                    it.tenure ?: 0
+                    detail.gateway_detail?.name ?: "",
+                    detail.cta?.name ?: "",
+                    detail.tenure ?: 0
                 )
             )
-            it.isInvoke = true
+            detail.isInvoke = true
         }
     }
 
