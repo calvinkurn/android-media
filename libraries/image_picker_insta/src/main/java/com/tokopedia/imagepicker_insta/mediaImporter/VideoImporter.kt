@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 class VideoImporter : MediaImporter {
 
     companion object {
-        val DURATION_MAX_LIMIT = 59
+        const val DURATION_MAX_LIMIT = 59
     }
 
     fun getViewMetaData(filePath: String, context: Context): VideoMetaData {
@@ -48,7 +48,7 @@ class VideoImporter : MediaImporter {
         )
     }
 
-    override fun importMediaFromInternalDir(context: Context): List<Asset> {
+    override suspend fun importMediaFromInternalDir(context: Context): List<Asset> {
         val directory = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         val videoDataList = arrayListOf<VideoData>()
         if (directory.isDirectory) {
@@ -95,7 +95,7 @@ class VideoImporter : MediaImporter {
 
     }
 
-    override fun importMedia(context: Context): MediaImporterData {
+    override suspend fun importMedia(context: Context): MediaImporterData {
         val videoCursor = CursorUtil.getVideoCursor(context, "", null)
         val data = iterateVideoCursor(videoCursor)
         return data
@@ -110,14 +110,14 @@ class VideoImporter : MediaImporter {
                 if (cur.moveToFirst()) {
                     val dateTakenIndex = cur.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)
                     val dateAddedIndex = cur.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)
-                    val path = cur.getColumnIndex(MediaStore.Video.Media.DATA)
+                    val pathIndex = cur.getColumnIndex(MediaStore.Video.Media.DATA)
                     val id = cur.getColumnIndex(MediaStore.Video.Media._ID)
                     val bytes = cur.getColumnIndex(MediaStore.Video.Media.SIZE)
                     val durationIndex = cur.getColumnIndex(MediaStore.Video.Media.DURATION)
                     do {
                         try {
                             val item = JSONObject()
-                            val name = cur.getString(path)
+                            val name = cur.getString(pathIndex)
                             val numBytes = cur.getLong(bytes)
                             val numBytesKB = numBytes / 1024 // skip videos below 10 KB in size
                             val index = cur.getLong(id)
@@ -126,7 +126,6 @@ class VideoImporter : MediaImporter {
                             //Set default values
                             item.put(PhotoImporter.FOLDER_KEY, "")
                             val dateAdded = cur.getLong(dateAddedIndex)
-                            val dateTaken = cur.getLong(dateTakenIndex)
 
                             if (numBytesKB > 10) {
 
@@ -155,7 +154,7 @@ class VideoImporter : MediaImporter {
                             }
 
                         } catch (e: JSONException) {
-                            e.printStackTrace()
+                            Timber.e(e)
                         }
 
                     } while (cur.moveToNext())

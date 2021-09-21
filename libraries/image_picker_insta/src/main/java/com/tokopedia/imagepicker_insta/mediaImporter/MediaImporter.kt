@@ -8,8 +8,8 @@ import timber.log.Timber
 import java.io.File
 
 interface MediaImporter {
-    fun importMedia(context: Context): MediaImporterData
-    fun importMediaFromInternalDir(context: Context): List<Asset>
+    suspend fun importMedia(context: Context): MediaImporterData
+    suspend fun importMediaFromInternalDir(context: Context): List<Asset>
 
     fun getCreateAtForInternalFile(file: File):Long{
         return file.lastModified()/1000L

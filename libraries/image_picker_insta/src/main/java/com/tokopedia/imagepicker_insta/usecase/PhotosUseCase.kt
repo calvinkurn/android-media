@@ -6,6 +6,9 @@ import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.util.StorageUtil
+import kotlinx.coroutines.async
+import kotlinx.coroutines.supervisorScope
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -45,10 +48,12 @@ class PhotosUseCase @Inject constructor() {
         if (imageAdapterDataList.isNotEmpty()) {
             tempFoldersList.add(
                 0,
-                FolderData(PhotoImporter.ALL,
+                FolderData(
+                    PhotoImporter.ALL,
                     getSubtitle(imageAdapterDataList.size),
                     imageAdapterDataList.first().asset.contentUri,
-                    imageAdapterDataList.size)
+                    imageAdapterDataList.size
+                )
             )
         }
         return tempFoldersList
@@ -73,47 +78,57 @@ class PhotosUseCase @Inject constructor() {
         })
     }
 
-    fun getAssetsFromMediaStorage(context: Context): MediaUseCaseData {
-        val photosData = photosImporter.importMedia(context)
-        val videosData = videosImporter.importMedia(context)
+    suspend fun getAssetsFromMediaStorage(context: Context): MediaUseCaseData {
+        return supervisorScope {
 
-        val combinedFoldersSet = (photosData.folderSet).toHashSet()
-        combinedFoldersSet.addAll(videosData.folderSet)
+            val internalPhotosAsync = async {
+                photosImporter.importMediaFromInternalDir(context)
+            }
+            val internalVideosAsync = async { videosImporter.importMediaFromInternalDir(context) }
 
-        val combinedAdapterDataList = ArrayList(photosData.imageAdapterDataList)
-        combinedAdapterDataList.addAll(videosData.imageAdapterDataList)
+            val photosAsync = async { photosImporter.importMedia(context) }
+            val videosAsync = async { videosImporter.importMedia(context) }
 
-        val combinedFolderDataList = getFolderDataListFromFolders(combinedFoldersSet, combinedAdapterDataList)
+            val internalMediaList = internalPhotosAsync.await()
+            internalMediaList.addAll(internalVideosAsync.await())
 
-        //Internal assets Logic
-        val internalMediaList = photosImporter.importMediaFromInternalDir(context)
-        internalMediaList.addAll(videosImporter.importMediaFromInternalDir(context))
+            val internalMediaAdapterDataList = internalMediaList.map {
+                ImageAdapterData(it)
+            }
 
-        val internalMediaAdapterDataList = internalMediaList.map {
-            ImageAdapterData(it)
-        }
+            val photosData = photosAsync.await()
 
-        if (internalMediaAdapterDataList.isNotEmpty()) {
-            combinedAdapterDataList.addAll(internalMediaAdapterDataList)
+            val videosData = videosAsync.await()
 
-            combinedFolderDataList.add(
-                FolderData(
-                    StorageUtil.INTERNAL_FOLDER_NAME,
-                    getSubtitle(internalMediaAdapterDataList.size),
-                    internalMediaList.first().contentUri,
-                    internalMediaAdapterDataList.size
+            val combinedFoldersSet = HashSet(photosData.folderSet)
+            combinedFoldersSet.addAll(videosData.folderSet)
+
+            val combinedAdapterDataList = ArrayList(photosData.imageAdapterDataList)
+            combinedAdapterDataList.addAll(videosData.imageAdapterDataList)
+
+            val combinedFolderDataList = getFolderDataListFromFolders(combinedFoldersSet, combinedAdapterDataList)
+
+            if (internalMediaAdapterDataList.isNotEmpty()) {
+                combinedAdapterDataList.addAll(internalMediaAdapterDataList)
+
+                combinedFolderDataList.add(
+                    FolderData(
+                        StorageUtil.INTERNAL_FOLDER_NAME,
+                        getSubtitle(internalMediaAdapterDataList.size),
+                        internalMediaList.first().contentUri,
+                        internalMediaAdapterDataList.size
+                    )
                 )
-            )
+            }
+            sortAdapterDataList(combinedAdapterDataList)
+
+            val mediaImporterData = MediaImporterData(combinedAdapterDataList, combinedFoldersSet)
+
+            val uriSet = HashSet<Uri>()
+            combinedAdapterDataList.forEach {
+                uriSet.add(it.asset.contentUri)
+            }
+            return@supervisorScope MediaUseCaseData(mediaImporterData, combinedFolderDataList, uriSet = uriSet)
         }
-
-        sortAdapterDataList(combinedAdapterDataList)
-
-        val mediaImporterData = MediaImporterData(combinedAdapterDataList, combinedFoldersSet)
-
-        val uriSet = HashSet<Uri>()
-        combinedAdapterDataList.forEach {
-            uriSet.add(it.asset.contentUri)
-        }
-        return MediaUseCaseData(mediaImporterData, combinedFolderDataList, uriSet = uriSet)
     }
 }

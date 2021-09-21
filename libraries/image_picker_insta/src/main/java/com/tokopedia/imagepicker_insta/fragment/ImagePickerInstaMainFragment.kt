@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -18,10 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.ImageRatioType
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
@@ -113,23 +109,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         if (!selectedUris.isNullOrEmpty()) {
             viewModel.getUriOfSelectedMedia(selectedMediaView.width, zoomImageAdapterDataMap)
         } else {
-            showToast("Select any media first", Toaster.TYPE_NORMAL)
+            showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
         }
-    }
-
-    fun openEditor() {
-//        val assets = imageAdapter.selectedPositionMap.keys.map {
-//            it.asset.assetPath
-//        }
-//        val assetList = ArrayList<String>(assets)
-//        val intent = ImageEditorActivity.getIntent(
-//            context,
-//            ImageEditorBuilder(
-//                assetList,
-//                defaultRatio = ImageRatioType.RATIO_1_1
-//            )
-//        )
-//        startActivityForResult(intent, EDITOR_REQUEST_CODE)
     }
 
     private fun initDagger() {
@@ -352,9 +333,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-//                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-                }
+                LiveDataResult.STATUS.LOADING -> { }
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     imageDataList.clear()
@@ -369,7 +348,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
                     if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
-//                        imageAdapter.clearSelectedItems()
 
                         if (!isMultiSelectEnable()) {
                             imageAdapter.clearSelectedItems()
@@ -389,17 +367,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                             tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
-//                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
                     } else {
-                        tvSelectedFolder.text = "No Media available"
-//                        showToast("No Media available",Toaster.TYPE_ERROR)
-                        Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
+                        tvSelectedFolder.text = getString(R.string.imagepicker_insta_no_media_available)
+                        showToast(getString(R.string.imagepicker_insta_no_media_available))
                     }
                     imageAdapter.notifyDataSetChanged()
                     rv.post { rv.scrollTo(0, 0) }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    showToast("Error", Toaster.TYPE_ERROR)
+                    tvSelectedFolder.text = getString(R.string.imagepicker_insta_utlam)
+                    showToast(getString(R.string.imagepicker_insta_utlam), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -413,11 +390,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     if (it.data != null) {
                         handleSuccessSelectedUri(it.data)
                     } else {
-                        showToast("Something went wrong", Toaster.TYPE_ERROR)
+                        showToast(getString(R.string.imagepicker_insta_smwr), Toaster.TYPE_ERROR)
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    showToast("Something went wrong", Toaster.TYPE_ERROR)
+                    showToast(getString(R.string.imagepicker_insta_smwr), Toaster.TYPE_ERROR)
                 }
             }
         })

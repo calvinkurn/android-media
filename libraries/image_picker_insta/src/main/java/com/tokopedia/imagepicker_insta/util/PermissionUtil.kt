@@ -20,52 +20,12 @@ object PermissionUtil {
     val CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE = 13
     val MIC_PERMISSION_REQUEST_CODE = 14
 
-    fun hasAllPermission(context: Context): Boolean {
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
-            when (StorageUtil.WRITE_LOCATION) {
-                WriteStorageLocation.EXTERNAL ->
-                    return hasArrayOfPermissions(
-                        context, arrayListOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA
-                        )
-                    )
-
-                else ->
-                    return hasArrayOfPermissions(
-                        context, arrayListOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA
-                        )
-                    )
-            }
-        } else {
-            return hasArrayOfPermissions(
-                context, arrayListOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                )
-            )
-        }
-    }
-
     fun hasArrayOfPermissions(context: Context, arrayOfPermissions: ArrayList<String>): Boolean {
         var hasAllPermissions = true
         arrayOfPermissions.forEach {
             hasAllPermissions = hasAllPermissions && ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
         return hasAllPermissions
-    }
-
-    fun requestReadPermission(activity: AppCompatActivity) {
-        if (!isReadPermissionGranted(activity)) {
-            ActivityCompat.requestPermissions(
-                activity, arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ), READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE
-            )
-        }
     }
 
     fun requestMicPermission(activity: AppCompatActivity) {
