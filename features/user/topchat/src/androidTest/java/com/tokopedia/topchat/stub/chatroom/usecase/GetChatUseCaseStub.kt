@@ -24,6 +24,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_replies_with_srw_change_address.json"
     private val broadcastCampaignLabelPath =
         "success_get_chat_with_broadcast_campaign.json"
+    private val chatWithSellerPath =
+        "success_get_chat_first_page_as_seller.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -31,20 +33,30 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    val defaultChatWithSellerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatWithSellerPath) { response ->
+            alterDateToToday(response)
+        }
+
     /**
-     * Broadcast response region below
-     * /====================/
+     * <!--- Start Broadcast responses --->
      */
     val defaultBroadcastCampaignLabel: GetExistingChatPojo
         get() = AndroidFileUtil.parse(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+    /**
+     * <!--- Stop Broadcast responses --->
+     */
 
     fun getBannerAttachmentId(response: GetExistingChatPojo): String {
         return response.chatReplies.list[0].chats[0].replies[0].attachment.id
     }
 
+    /**
+     * <!--- Start SRW responses --->
+     */
     val defaultChangeAddressResponse: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
             alterDateToToday(response)
@@ -112,6 +124,9 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+    /**
+     * <!--- Stop SRW responses --->
+     */
 
     private val chatReplies = "chatReplies"
     private val list = "list"
@@ -129,12 +144,6 @@ class GetChatUseCaseStub @Inject constructor(
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
     private val date = "date"
-
-    // broadcast campaign label
-    private val start_date = "start_date"
-    private val end_date = "end_date"
-    private val status_campaign = "status_campaign"
-    private val is_campaign = "is_campaign"
 
     private fun alterDateToToday(response: JsonObject) {
         val list = response.getAsJsonObject(chatReplies)
