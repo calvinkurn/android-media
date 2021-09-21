@@ -676,7 +676,7 @@ class PlayViewModel @Inject constructor(
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            ClickLikeAction -> handleClickLike()
+            ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             ClickCartAction -> handleClickCart()
         }
@@ -1533,17 +1533,22 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart()
             else -> {}
         }
     }
 
-    private fun handleClickLike() = needLogin(REQUEST_CODE_LOGIN_LIKE) {
+    private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
 
         fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
             val currentTotalLike = _channelReport.value.totalLike
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
             return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-                val totalLike = (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(0)
+                val totalLike =
+                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(
+                        0
+                    )
                 val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
                 totalLike to fmt
             } else {
@@ -1588,12 +1593,17 @@ class PlayViewModel @Inject constructor(
          * - New status can be UNLIKE or LIKE
          * - Send Data to BE via GQL
          */
-        fun handleClickLikeNonLive(onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
+        fun handleClickLikeNonLive(isFromLogin: Boolean, onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
+
             val likeInfo = _likeInfo.value
             if (likeInfo.status == PlayLikeStatus.Unknown) return
 
-            val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
-            _likeInfo.setValue { copy(status = newStatus) }
+            val newStatus = when {
+                isFromLogin -> PlayLikeStatus.Liked
+                likeInfo.status == PlayLikeStatus.Liked -> PlayLikeStatus.NotLiked
+                else -> PlayLikeStatus.Liked
+            }
+            _likeInfo.setValue { copy(status = newStatus, source = LikeSource.UserAction) }
 
             if (newStatus == PlayLikeStatus.Liked) {
                 viewModelScope.launch {
@@ -1637,7 +1647,7 @@ class PlayViewModel @Inject constructor(
         }
 
         if (channelType.isLive) handleClickLikeLive(newStatusHandler)
-        else handleClickLikeNonLive(newStatusHandler)
+        else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
     private fun handleClickShare() {
@@ -1656,7 +1666,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickCart() {
+    private fun handleClickCart() = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
         viewModelScope.launch {
             _uiEvent.emit(
                     OpenPageEvent(applink = ApplinkConst.CART)
@@ -1697,5 +1707,6 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
     }
 }
