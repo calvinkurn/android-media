@@ -19,7 +19,7 @@
             android:id="@+id/contentVideoPreviewImage"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerInside"
             app:unify_image_corner_radius="0"
             android:src="@color/transparent"
             app:layout_constraintLeft_toLeftOf="parent"

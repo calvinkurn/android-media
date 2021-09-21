@@ -47,7 +47,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         launchCatchError(block = {
             val variablesMain = java.util.HashMap<String, Any>()
             variablesMain["shopId"] = shopId!!
-            variablesMain["page"] = pageNumber
+            variablesMain["pageNumber"] = pageNumber
             variablesMain["perPage"] = 10
 
             if (!sort.isZero()) {
