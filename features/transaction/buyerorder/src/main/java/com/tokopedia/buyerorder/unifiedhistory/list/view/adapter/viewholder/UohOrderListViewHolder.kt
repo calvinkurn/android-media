@@ -28,11 +28,20 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             ImageHandler.loadImage(itemView.context, itemView.ic_uoh_vertical, item.dataObject.metadata.verticalLogo, null)
             itemView.tv_uoh_categories?.text = item.dataObject.metadata.verticalLabel
             itemView.tv_uoh_date?.text = item.dataObject.metadata.paymentDateStr
-            itemView.label_uoh_order?.text = item.dataObject.metadata.status.label
-            if (item.dataObject.metadata.status.bgColor.isNotEmpty()) {
-                itemView.label_uoh_order?.setLabelType(item.dataObject.metadata.status.bgColor)
+
+            itemView.label_uoh_order?.apply {
+                text = item.dataObject.metadata.status.label
+                unlockFeature = true
+                if (item.dataObject.metadata.status.textColor.isNotEmpty()) {
+                    val textColor = item.dataObject.metadata.status.textColor.replace("#", "").toInt(16) + -0x1000000
+                    setTextColor(textColor)
+                }
+
+                if (item.dataObject.metadata.status.bgColor.isNotEmpty()) {
+                    val bgColor = item.dataObject.metadata.status.bgColor.replace("#", "").toInt(16) + -0x1000000
+                    setBackgroundColor(bgColor)
+                }
             }
-            itemView.label_uoh_order?.fontColorByPass = item.dataObject.metadata.status.textColor
 
             if (item.dataObject.metadata.tickers.isNotEmpty()) {
                 itemView.ticker_info_inside_card?.visible()
