@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -13,8 +14,8 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.LoadingShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
-import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
-import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by Rafli Syam on 2020-03-09
@@ -35,7 +36,9 @@ class ShowcaseProductListAdapter(
     private var selectedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
     private var excludedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
     private var deletedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
-    private val fragmentView: View = parentFragmentView
+    private var counterProductChoosenImage: ImageUnify? = parentFragmentView.findViewById(R.id.product_choosen_image)
+    private var counterProductContainer: CardView? = parentFragmentView.findViewById(R.id.product_choosen_counter)
+    private var counterProductText: Typography? = parentFragmentView.findViewById(R.id.total_selected_product_counter)
     private val loadingModel = LoadingShowcaseProduct()
     private val viewListener: ShopShowcaseProductAddListener = listener
 
@@ -64,11 +67,11 @@ class ShowcaseProductListAdapter(
         val item = shopProductList[position]
         holder.bind(item)
         if (item is ShowcaseProduct) {
-            holder.itemView.parent_item_product_card.setOnClickListener {
+            holder.parentItemProductCardContainer?.setOnClickListener {
                 chooseProduct(holder, item)
             }
 
-            holder.itemView.card_checkbox.setOnClickListener {
+            holder.productCheckBox?.setOnClickListener {
                 chooseProduct(holder, item)
             }
         }
@@ -157,21 +160,21 @@ class ShowcaseProductListAdapter(
 
             // try catch to avoid ImageUnify crash on set image to product counter image
             try {
-                if(fragmentView.product_choosen_image?.context?.isValidGlideContext() == true) {
+                if(counterProductChoosenImage?.context?.isValidGlideContext() == true) {
                     ImageHandler.LoadImage(
-                            fragmentView.product_choosen_image,
+                            counterProductChoosenImage,
                             item.productImageUrl
                     )
                 }
             } catch (e : Throwable) {}
 
-            fragmentView.product_choosen_counter.visibility = View.VISIBLE
-            fragmentView.total_selected_product_counter.text = context.resources.getString(
+            counterProductContainer?.visibility = View.VISIBLE
+            counterProductText?.text = context.resources.getString(
                     R.string.chosen_product_counter_text,
                     getSelectedProductSize().toString()
             )
         } else {
-            fragmentView.product_choosen_counter.visibility = View.GONE
+            counterProductContainer?.visibility = View.GONE
         }
     }
 

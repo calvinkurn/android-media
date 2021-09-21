@@ -1,6 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.widget.CompoundButtonCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -10,7 +11,7 @@ import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.util.getCurrencyFormatted
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
-import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 /**
  * @author by Rafli Syam on 2020-03-09
@@ -18,8 +19,16 @@ import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
 
 class ShowcaseProductItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+    val parentItemProductCardContainer: LinearLayout? by lazy {
+        itemView.findViewById(R.id.parent_item_product_card)
+    }
+
+    val productCheckBox: CheckboxUnify? by lazy {
+        itemView.findViewById(R.id.card_checkbox)
+    }
+
     private val productCard: ProductCardListView by lazy {
-        itemView.findViewById<ProductCardListView>(R.id.product_card)
+        itemView.findViewById(R.id.product_card)
     }
 
     fun bind(element: BaseShowcaseProduct) {
@@ -37,15 +46,17 @@ class ShowcaseProductItemViewHolder(itemView: View): RecyclerView.ViewHolder(ite
     }
 
     fun renderCardState(element: ShowcaseProduct) {
-        itemView.card_checkbox.isChecked = element.ishighlighted
+        productCheckBox?.isChecked = element.ishighlighted
     }
 
     private fun skipCheckboxAnimation() {
         // temporary solution to avoid unify checkbox intermittent animation when scrolling recyclerview
-        val checkboxDrawable = CompoundButtonCompat.getButtonDrawable(itemView.card_checkbox)
-        if(checkboxDrawable != null) {
-            val checkboxAnimatedVectorDrawableCompat = checkboxDrawable as AnimatedVectorDrawableCompat
-            checkboxAnimatedVectorDrawableCompat.stop()
+        productCheckBox?.let {
+            val checkboxDrawable = CompoundButtonCompat.getButtonDrawable(it)
+            if(checkboxDrawable != null) {
+                val checkboxAnimatedVectorDrawableCompat = checkboxDrawable as AnimatedVectorDrawableCompat
+                checkboxAnimatedVectorDrawableCompat.stop()
+            }
         }
     }
 
