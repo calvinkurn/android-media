@@ -40,7 +40,7 @@ class GetUserRoleUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        params = GetUserRoleUseCase.createParam(12345)
+        params = GetUserRoleUseCase.createParam("12345")
         getUserRoleUseCase = GetUserRoleUseCase(gqlRepository)
     }
 
