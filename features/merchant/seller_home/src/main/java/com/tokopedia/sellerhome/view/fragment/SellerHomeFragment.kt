@@ -1552,6 +1552,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
+        fun getTickerType(hexColor: String?): Int = when (hexColor) {
+            context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
             val tickerImpressHolders = mutableListOf<ImpressHolder>()
@@ -1573,7 +1578,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     (itemData as? TickerItemUiModel)?.let {
                         SellerHomeTracking.sendHomeTickerCtaClickEvent(
                             it.id,
-                            getTickerType(it.color)
+                            it.type
                         )
                     }
                 }
@@ -1597,11 +1602,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun getTickerType(hexColor: String?): Int = when (hexColor) {
-        context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
-        else -> Ticker.TYPE_ANNOUNCEMENT
-    }
-
     private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
                                                        ticker: TickerItemUiModel?) {
         impressHolder?.let { holder ->
@@ -1609,7 +1609,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 addOnImpressionListener(holder) {
                     SellerHomeTracking.sendHomeTickerImpressionEvent(
                         ticker.id,
-                        getTickerType(ticker.color)
+                        ticker.type
                     )
                 }
             }
