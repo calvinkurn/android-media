@@ -25,7 +25,7 @@ class GetUserShopInfoUseCase @Inject constructor(
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos", "shopstats-limited"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link"]
                 }
               ) {
                 result {
@@ -41,6 +41,14 @@ class GetUserShopInfoUseCase @Inject constructor(
                     identifier
                     value
                     startTime
+                  }
+                  shopSnippetURL
+                  location
+                  branchLinkDomain
+                  shopCore {
+                    description
+                    tagLine
+                    url
                   }
                 }
               }

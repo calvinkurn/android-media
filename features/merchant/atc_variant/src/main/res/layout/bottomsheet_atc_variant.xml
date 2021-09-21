@@ -12,11 +12,18 @@
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/base_atc_btn"
+        app:layout_constraintBottom_toTopOf="@+id/rv_atc_var_bs_barrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/rv_atc_var_bs_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="shop_followers_container, base_atc_btn" />
 
     <include
         android:id="@+id/base_atc_btn"
@@ -25,6 +32,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <ViewStub
+        android:id="@+id/base_atc_variant_re_button"
+        android:inflatedId="@+id/shop_followers_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout="@layout/layout_button_npl_follow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
