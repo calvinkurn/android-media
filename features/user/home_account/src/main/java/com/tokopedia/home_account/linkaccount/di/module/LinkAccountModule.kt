@@ -8,6 +8,7 @@ import com.tokopedia.home_account.linkaccount.di.LinkAccountContext
 import com.tokopedia.home_account.linkaccount.di.LinkAccountScope
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
+import com.tokopedia.home_account.linkaccount.tracker.LinkAccountTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -51,5 +52,11 @@ import dagger.Provides
     @LinkAccountScope
     fun provideHomeAccountAnalytics(@LinkAccountContext context: Context, userSession: UserSessionInterface): HomeAccountAnalytics {
         return HomeAccountAnalytics(context, userSession)
+    }
+
+    @Provides
+    @LinkAccountScope
+    fun provideLinkAccountTracker(): LinkAccountTracker {
+        return LinkAccountTracker()
     }
 }
