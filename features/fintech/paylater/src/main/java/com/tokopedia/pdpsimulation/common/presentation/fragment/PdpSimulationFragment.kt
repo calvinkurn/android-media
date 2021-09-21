@@ -108,13 +108,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         payLaterViewModel.getProductDetail(productId = productId)
         payLaterViewPager.visible()
         when (paymentMode) {
-            is PayLater -> {
-                payLaterViewModel.getPayLaterAvailableDetail(productPrice)
-
-            }
-            is CreditCard -> {
-                creditCardViewModel.getCreditCardSimulationData(productPrice)
-            }
+            is PayLater -> payLaterViewModel.getPayLaterAvailableDetail(productPrice)
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
         }
     }
 
