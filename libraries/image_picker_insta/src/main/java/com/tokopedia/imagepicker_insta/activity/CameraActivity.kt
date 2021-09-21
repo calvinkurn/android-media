@@ -59,7 +59,7 @@ class CameraActivity : PermissionActivity() {
                 showPermissionFragment()
             } else {
                 if (supportFragmentManager.fragments.first() is NoPermissionFragment) {
-                    showCameraFeagment()
+                    showCameraFragment()
                 }
             }
         }
@@ -68,7 +68,7 @@ class CameraActivity : PermissionActivity() {
 
     private fun showFragment(requestPerm: Boolean = false) {
         if (PermissionUtil.hasCameraAndMicPermission(this)) {
-            showCameraFeagment()
+            showCameraFragment()
         } else {
             showPermissionFragment()
             if (requestPerm) {
@@ -77,7 +77,7 @@ class CameraActivity : PermissionActivity() {
         }
     }
 
-    private fun showCameraFeagment() {
+    private fun showCameraFragment() {
         supportFragmentManager.beginTransaction()
             .replace(container.id, CameraFragment())
             .commit()

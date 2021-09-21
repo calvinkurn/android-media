@@ -7,6 +7,7 @@ import android.hardware.camera2.CameraMetadata
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,9 @@ import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
+import com.otaliastudios.cameraview.size.Size
+import com.otaliastudios.cameraview.size.SizeSelector
+import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
@@ -33,6 +37,8 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 import java.io.File
+import java.util.*
+
 
 class CameraFragment : Fragment() {
 
@@ -47,7 +53,9 @@ class CameraFragment : Fragment() {
     lateinit var viewModel: CameraViewModel
     var sourceVideoFile: File? = null
     var cropVideoPath: String? = null
-    val handler = Handler()
+    val handler = Handler(Looper.getMainLooper())
+    val timer = Timer()
+    var isFlashOn = false
 
     val bitmapCallback = BitmapCallback {
         if (it != null) {
@@ -149,11 +157,24 @@ class CameraFragment : Fragment() {
         cameraView.mode = Mode.PICTURE
 
         cameraView.flash = Flash.OFF
+        isFlashOn = false
+
+        imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_off)
         cameraView.videoMaxDuration = CameraButton.MAX_VIDEO_RECORD_DURATION_IN_SECONDS * 1000
     }
 
     fun showToast(message: String, toasterType: Int) {
         (activity as? CameraActivity)?.showToast(message, toasterType)
+    }
+
+    private fun toggleFlash() {
+        if (isFlashOn) {
+            isFlashOn = false
+            imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_off)
+        } else {
+            isFlashOn = true
+            imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_on)
+        }
     }
 
     private fun setListeners() {
@@ -204,14 +225,7 @@ class CameraFragment : Fragment() {
         }
 
         imageFlash.setOnClickListener {
-            if (cameraView.flash == Flash.ON) {
-                cameraView.flash = Flash.OFF
-                imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_on)
-            } else {
-                cameraView.flash = Flash.ON
-                imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_off)
-            }
-
+            toggleFlash()
         }
 
         cameraView.setLifecycleOwner(viewLifecycleOwner)
@@ -224,18 +238,21 @@ class CameraFragment : Fragment() {
 
             override fun onPictureTaken(result: PictureResult) {
                 super.onPictureTaken(result)
+                disableFlashTorch()
                 Timber.d("${CameraUtil.LOG_TAG} picture taken:")
                 result.toBitmap(bitmapCallback)
             }
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
+                disableFlashTorch()
                 Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
                 cropVideo(result)
             }
 
             override fun onCameraError(exception: CameraException) {
                 super.onCameraError(exception)
+                disableFlashTorch()
                 Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
                 cameraButton.addTouchListener()
             }
@@ -318,6 +335,9 @@ class CameraFragment : Fragment() {
         try {
             context?.let {
                 val file = CameraUtil.createMediaFile(it, false, storeInCache = true)
+                if (isFlashOn) {
+                    enableFlashTorch()
+                }
                 cameraView.takeVideo(file)
             }
         } catch (th: Throwable) {
@@ -326,11 +346,64 @@ class CameraFragment : Fragment() {
     }
 
     fun stopRecordingVideo() {
+        disableFlashTorch()
         cameraView.stopVideo()
     }
 
+    fun enableFlashTorch() {
+        val isSupportFlashTorch = cameraView.cameraOptions?.supportedFlash?.contains(Flash.TORCH) == true
+        if (isSupportFlashTorch) {
+            cameraView.flash = Flash.TORCH
+        }
+    }
+
+    fun disableFlashTorch() {
+        if (cameraView.cameraOptions?.supportedFlash?.contains(Flash.TORCH) == true && isFlashOn) {
+            cameraView.flash = Flash.OFF
+        }
+
+    }
+
     fun capturePhoto() {
-        cameraView.takePictureSnapshot()
+
+        if (isFlashOn) {
+            enableFlashTorch()
+
+            timer.schedule(object : TimerTask() {
+                override fun run() {
+                    cameraView.takePictureSnapshot()
+                }
+            }, 2000L)
+        } else {
+            cameraView.takePictureSnapshot()
+        }
+    }
+
+    fun setPictureSize() {
+        val snapShotSize = cameraView.snapshotSize
+        if (snapShotSize != null) {
+            val width = SizeSelectors.minWidth(snapShotSize.width)
+            val height = SizeSelectors.minHeight(snapShotSize.height)
+            val dimensions = SizeSelectors.and(width, height) // Matches sizes bigger than 1000x2000.
+
+//            val ratio = SizeSelectors.aspectRatio(AspectRatio.of(1, 1), 0f) // Matches 1:1 sizes.
+
+
+//            val result = SizeSelectors.or(
+//                SizeSelectors.and(ratio, dimensions),  // Try to match both constraints
+//                ratio,  // If none is found, at least try to match the aspect ratio
+//                SizeSelectors.biggest() // If none is found, take the biggest
+//            )
+            cameraView.setPictureSize(object : SizeSelector {
+                override fun select(source: MutableList<Size>): MutableList<Size> {
+                    return source
+                }
+            })
+//            cameraView.setPictureSize(dimensions)
+//            cameraView.setPreviewStreamSize(dimensions)
+//            cameraView.size
+//            cameraView.setPictureSize(obj)
+        }
     }
 
 
@@ -343,6 +416,7 @@ class CameraFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        timer.cancel()
         mp4Composer?.cancel()
         cameraButton.stopCountDown()
     }
