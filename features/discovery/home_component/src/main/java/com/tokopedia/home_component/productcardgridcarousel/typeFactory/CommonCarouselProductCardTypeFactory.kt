@@ -7,12 +7,14 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEm
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 
 interface CommonCarouselProductCardTypeFactory: AdapterTypeFactory {
     fun type(cardDataModelCarousel: CarouselEmptyCardDataModel) : Int
     fun type(dataModel: CarouselProductCardDataModel) : Int
     fun type(dataModelCarousel: CarouselSeeMorePdpDataModel) : Int
     fun type(dataModel: CarouselFeaturedShopCardDataModel) : Int
+    fun type(dataModel: CarouselViewAllCardDataModel) : Int = 0
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

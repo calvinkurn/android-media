@@ -33,12 +33,6 @@ import io.embrace.android.embracesdk.Embrace;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    private native byte[] bytesFromJNI();
-
     @Override
     public void initConfigValues() {
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
@@ -78,11 +72,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
-    protected void loadSignatureLibrary() {
-        System.loadLibrary("native-lib");
-    }
-
-    @Override
     public String versionName() {
         return BuildConfig.VERSION_NAME;
     }
@@ -90,11 +79,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
-    }
-
-    @Override
-    protected byte[] getJniBytes() {
-        return bytesFromJNI();
     }
 
     @Override

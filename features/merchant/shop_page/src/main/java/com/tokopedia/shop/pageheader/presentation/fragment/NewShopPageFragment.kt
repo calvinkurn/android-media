@@ -50,7 +50,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -828,9 +828,10 @@ class NewShopPageFragment :
     }
 
     private fun getFollowStatus() {
+        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (shopPageFragmentHeaderViewHolder?.isFollowButtonPlaceHolderAvailable() == true) {
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
-            shopViewModel?.getFollowStatusData(shopId)
+            shopViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
         }
     }
 
@@ -2428,47 +2429,49 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    var shareString = getString(
-                        R.string.shop_page_share_text_with_link,
-                        shopPageHeaderDataModel?.shopName,
-                        linkerShareData?.shareContents
-                    )
-                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    // send gql tracker
-                    shareModel.socialMediaName?.let { name ->
-                        shopViewModel?.sendShopShareTracker(
-                            shopId,
-                            channel = when (shareModel) {
-                                is ShareModel.CopyLink -> {
-                                    ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                }
-                                is ShareModel.Others -> {
-                                    ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                }
-                                else -> name
-                            }
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                                R.string.shop_page_share_text_with_link,
+                                shopPageHeaderDataModel?.shopName,
+                                linkerShareData?.shareContents
                         )
-                    }
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shareModel) {
+                                        is ShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
 
-                    // send gtm tracker
-                    if(isGeneralShareBottomSheet) {
-                        shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    } else{
-                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    }
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        }
 
-                    //we have to check if we can move it inside the common function
-                    universalShareBottomSheet?.dismiss()
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError?) {}

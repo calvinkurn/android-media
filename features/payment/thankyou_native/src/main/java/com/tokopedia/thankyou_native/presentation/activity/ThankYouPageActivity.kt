@@ -241,8 +241,15 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 false)
         if(isNewNavigationEnabled) {
             getAbTestPlatform()?.let {
-                return (it.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-                        == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+                return (it.getString(
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV,
+                    RollenceKey.NAVIGATION_VARIANT_OLD
+                )
+                        == RollenceKey.NAVIGATION_VARIANT_REVAMP) || (it.getString(
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                    RollenceKey.NAVIGATION_VARIANT_OLD
+                )
+                        == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
             }
         }
         return false

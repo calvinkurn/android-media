@@ -8,6 +8,8 @@ import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightC
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationAttachmentViewHolder
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentButtonModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentModel
+import com.tokopedia.flight.databinding.ItemFlightCancellationAttachmentBinding
+import com.tokopedia.flight.databinding.ItemFlightCancellationAttachmentButtonBinding
 
 /**
  * @author by furqan on 20/07/2020
@@ -25,8 +27,18 @@ class FlightCancellationAttachmentAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
-                FlightCancellationAttachmentViewHolder.LAYOUT -> FlightCancellationAttachmentViewHolder(parent, interactionListener, showChangeButton)
-                FlightCancellationAttachmentButtonViewHolder.LAYOUT -> FlightCancellationAttachmentButtonViewHolder(parent, interactionListener)
+                FlightCancellationAttachmentViewHolder.LAYOUT -> {
+                    val binding = ItemFlightCancellationAttachmentBinding.bind(parent)
+                    FlightCancellationAttachmentViewHolder(
+                        binding,
+                        interactionListener,
+                        showChangeButton
+                    )
+                }
+                FlightCancellationAttachmentButtonViewHolder.LAYOUT -> {
+                    val binding = ItemFlightCancellationAttachmentButtonBinding.bind(parent)
+                    FlightCancellationAttachmentButtonViewHolder(binding, interactionListener)
+                }
                 else -> super.createViewHolder(parent, type)
             }
 
