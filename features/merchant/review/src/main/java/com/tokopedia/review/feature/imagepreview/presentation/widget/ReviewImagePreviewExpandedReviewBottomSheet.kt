@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
@@ -60,7 +61,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
 
     private fun setReview() {
         review?.apply {
-            text = reviewMessage
+            text = HtmlLinkHelper(context, reviewMessage).spannedString
             movementMethod = ScrollingMovementMethod()
             maxLines = Int.MAX_VALUE
         }
