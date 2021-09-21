@@ -33,6 +33,7 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
                     BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickBuyAgainProductQueryPath,
+                    BuyerOrderDetailTrackerValidationConstant.successBuyAgainProductQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonGiveReviewQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath)
