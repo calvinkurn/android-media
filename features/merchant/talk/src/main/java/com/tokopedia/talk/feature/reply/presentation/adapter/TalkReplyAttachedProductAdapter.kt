@@ -3,10 +3,11 @@ package com.tokopedia.talk.feature.reply.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.talk.R
+import com.tokopedia.talk.databinding.ItemTalkReplyAttachedProductAnswerBinding
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyAttachedProductViewHolder
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
-import com.tokopedia.talk.R
 
 class TalkReplyAttachedProductAdapter(
         private val attachedProductCardListener: AttachedProductCardListener,
@@ -17,7 +18,7 @@ class TalkReplyAttachedProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TalkReplyAttachedProductViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_talk_reply_attached_product_answer, parent, false)
-        return TalkReplyAttachedProductViewHolder(itemView)
+        return TalkReplyAttachedProductViewHolder(itemView, ItemTalkReplyAttachedProductAnswerBinding.bind(itemView))
     }
 
     override fun getItemCount(): Int {
