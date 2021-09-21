@@ -2,17 +2,16 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
-import com.tokopedia.topchat.common.getNext3Seconds
-import com.tokopedia.topchat.common.getNext6Hours
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
@@ -47,10 +46,9 @@ class GetChatUseCaseStub @Inject constructor(
     }
 
     val defaultChangeAddressResponse: GetExistingChatPojo
-        get() = AndroidFileUtil.parse(
-            changeAddressResponsePath,
-            GetExistingChatPojo::class.java
-        )
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            alterDateToToday(response)
+        }
 
     val srwChangeAddressCtaDisabled: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
@@ -130,12 +128,28 @@ class GetChatUseCaseStub @Inject constructor(
     private val name = "name"
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
+    private val date = "date"
 
     // broadcast campaign label
     private val start_date = "start_date"
     private val end_date = "end_date"
     private val status_campaign = "status_campaign"
     private val is_campaign = "is_campaign"
+
+    private fun alterDateToToday(response: JsonObject) {
+        val list = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(list)
+        list.forEach {
+            val chat = it.asJsonObject
+            chat.addProperty(date, getTodayDate())
+        }
+    }
+
+    private fun getTodayDate(): String {
+        val format = SimpleDateFormat(HeaderDateUiModel.DATE_FORMAT, Locale.ENGLISH)
+        val currentTime = Calendar.getInstance().time
+        return format.format(currentTime)
+    }
 
     private fun alterHeaderCtaButtonAttachment(
         listPosition: Int,
