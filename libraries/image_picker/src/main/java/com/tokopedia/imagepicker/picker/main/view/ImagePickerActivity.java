@@ -86,6 +86,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     private boolean isFinishEditting;
     private String imageTooLargeErrorMessage = "";
     private String pageSource = "Unknown Page";
+    private ArrayList<String> imagesFedIntoPicker;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -113,6 +114,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (savedInstanceState == null) {
             if (imagePickerBuilder.supportMultipleSelection()) {
                 selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
+                imagesFedIntoPicker = imagePickerBuilder.getInitialSelectedImagePathList()
                 imageDescriptionList = new ArrayList<>();
                 //create empty description for initial images
                 if (selectedImagePaths != null && selectedImagePaths.size() > 0) {
@@ -573,7 +575,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
-        intent.putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, selectedImagePaths);
+        intent.putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, imagesFedIntoPicker);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
 
