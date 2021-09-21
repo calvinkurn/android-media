@@ -111,7 +111,6 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         streamer?.release()
         mListener = null
         mBitrateAdapter = null
-        mHandler = null
         streamer = null
     }
 
