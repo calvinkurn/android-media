@@ -9,6 +9,7 @@ apply plugin: 'newrelic'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply plugin: 'kotlin-parcelize'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -365,6 +366,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.tokopatch)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {

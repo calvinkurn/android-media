@@ -138,7 +138,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         setLayoutOnToggle(true)
         showToastSuccess(typeBottomsheet)
         autoTopupStatus?.availableNominals?.let {
-            selectedItem = it[pos]
+            selectedItem = if (it.size < pos) it[0] else it[pos]
         }
         viewModel.saveSelection(auto_topup_status.isChecked, selectedItem)
         setupText()

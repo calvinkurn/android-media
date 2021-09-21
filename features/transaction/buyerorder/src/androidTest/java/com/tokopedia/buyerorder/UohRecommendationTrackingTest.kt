@@ -68,6 +68,7 @@ class UohRecommendationTrackingTest {
 
         runBot {
             loading()
+            hideKeyboard()
             scrollToRecommendationList()
             clickAtcRecommendation()
             clickRecommendationCard()

@@ -68,7 +68,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
-                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_toped_watermark));
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_logo_watermark));
                     tvEdit.setText(context.getString(R.string.watermark));
                     txtLabel.setVisibility(View.VISIBLE);
                     break;
