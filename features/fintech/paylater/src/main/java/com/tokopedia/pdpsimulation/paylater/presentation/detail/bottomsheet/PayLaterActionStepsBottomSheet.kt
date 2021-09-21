@@ -102,7 +102,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         else
             tickerPaylaterRegister.gone()
         initListeners()
-        setButtonType()
         setDefaultParams()
         initAdapter()
         setTitle(titleText)
@@ -126,14 +125,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     }
 
-    private fun setButtonType() {
-
-        btnRegister.buttonSize = UnifyButton.Size.SMALL
-        btnRegister.buttonType = UnifyButton.Type.ALTERNATE
-        btnRegister.buttonVariant = UnifyButton.Variant.GHOST
-        btnRegister.text = context?.getString(R.string.pay_later_action_find_more)
-
-    }
 
     private fun initListeners() {
         btnRegister.setOnClickListener {
