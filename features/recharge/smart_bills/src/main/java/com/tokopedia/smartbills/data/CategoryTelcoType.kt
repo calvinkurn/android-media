@@ -16,4 +16,10 @@ object CategoryTelcoType {
                 else -> TelcoComponentName.PRODUCT_PULSA
             }
         }
+
+        @JvmStatic
+        fun isCategoryPacketData(category: String?): Boolean {
+            val categoryId = category.toIntOrZero()
+            return categoryId == TelcoCategoryType.CATEGORY_PAKET_DATA
+        }
 }

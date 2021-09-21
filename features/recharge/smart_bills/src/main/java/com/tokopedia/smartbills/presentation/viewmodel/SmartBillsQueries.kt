@@ -63,6 +63,7 @@ object SmartBillsQueries {
                                 product_labels
                                 promo {
                                     id
+                                    new_price
                                 }
                                 desc
                             }

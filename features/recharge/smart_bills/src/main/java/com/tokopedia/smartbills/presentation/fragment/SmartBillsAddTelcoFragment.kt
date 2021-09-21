@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -379,7 +380,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun renderSelectedProduct(rechargeProduct: RechargeProduct){
         selectedProduct = rechargeProduct
-        selectedProduct?.attributes?.price?.let {
+        selectedProduct?.attributes?.desc?.let {
             text_field_sbm_product_nominal.textFieldInput.setText(it)
         }
     }
@@ -438,7 +439,17 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun showNominal(isShow: Boolean){
-        if (isShow && isPrepaid()) text_field_sbm_product_nominal.show()
+        if (isShow && isPrepaid()){
+            text_field_sbm_product_nominal.apply {
+                show()
+                textFieldWrapper.hint = if (CategoryTelcoType.isCategoryPacketData(categoryId)){
+                    resources.getString(R.string.smart_bills_add_bills_packet_data)
+                } else {
+                    resources.getString(R.string.smart_bills_add_bills_product_nominal_label)
+                }
+                textFieldInput.ellipsize = TextUtils.TruncateAt.END
+            }
+        }
         else text_field_sbm_product_nominal.hide()
     }
 
