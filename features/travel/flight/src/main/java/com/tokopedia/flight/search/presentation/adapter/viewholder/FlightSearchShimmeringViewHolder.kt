@@ -2,17 +2,17 @@ package com.tokopedia.flight.search.presentation.adapter.viewholder
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightSearchShimmeringBinding
 
 /**
  * @author by alvarisi on 12/22/17.
  */
-class FlightSearchShimmeringViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
-    private val linearLayout: LinearLayout = itemView.findViewById(R.id.flightSearchShimmering)
+class FlightSearchShimmeringViewHolder(val binding: ItemFlightSearchShimmeringBinding) : AbstractViewHolder<LoadingModel>(binding.root) {
+    private val linearLayout: LinearLayout = binding.flightSearchShimmering
 
     override fun bind(flightSearchViewModel: LoadingModel) {
         val inflater = itemView.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

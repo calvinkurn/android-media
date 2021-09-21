@@ -99,10 +99,12 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
                         token = InstrumentationRegistry.getInstrumentation().context
                                 .getString(com.tokopedia.keys.R.string.thanos_token_key),
                         data = testResult.map {
+                            val cassavaResult: Boolean = it.status == Status.SUCCESS
+
                             ValidationResultData(
                                     dataLayerId = it.id,
-                                    result = it.status == Status.SUCCESS,
-                                    errorMessage = it.errors
+                                    result = cassavaResult,
+                                    errorMessage = if (!cassavaResult) it.errors else ""
                             )
                         }.toList()
                 )

@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.util
 
+import android.text.SpannableString
+import android.text.Spanned
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 
 
@@ -12,4 +14,7 @@ class TestHtmlTextTransformer : HtmlTextTransformer {
         return input
     }
 
+    override fun transformWithStyle(input: String): Spanned {
+        return SpannableString(input)
+    }
 }

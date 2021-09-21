@@ -21,5 +21,6 @@ data class Channel(
         @Expose @SerializedName("galaxy_attribution") val galaxyAttribution: String = "",
         @Expose @SerializedName("persona") val persona: String = "",
         @Expose @SerializedName("category_persona") val categoryPersona: String = "",
-        @Expose @SerializedName("brand_id") val brandId: String = ""
+        @Expose @SerializedName("brand_id") val brandId: String = "",
+        @Expose @SerializedName("pageName") val pageName: String = "",
 ) : Parcelable

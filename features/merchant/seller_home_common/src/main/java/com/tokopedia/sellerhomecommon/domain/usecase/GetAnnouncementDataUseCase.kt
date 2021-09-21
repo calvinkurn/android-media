@@ -46,10 +46,7 @@ class GetAnnouncementDataUseCase(
                 dataKey: List<String>
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
-                DataKeyModel(
-                        key = it,
-                        jsonParams = "{}"
-                )
+                DataKeyModel(key = it)
             }
             putObject(DATA_KEYS, dataKeys)
         }
