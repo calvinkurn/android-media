@@ -96,7 +96,7 @@ class SubmitPostServiceNew : JobIntentService() {
     }
 
     private fun getFileAbsolutePath(path: String): String? {
-        return if (path.contains("content://") || path.startsWith("file://"))
+        return if (path.startsWith("file://"))
             Uri.parse(path).path
         else
             path
