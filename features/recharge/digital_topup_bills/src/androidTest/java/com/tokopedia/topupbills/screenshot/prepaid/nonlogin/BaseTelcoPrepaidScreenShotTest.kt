@@ -108,13 +108,13 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     fun take_screenshot_input_number() {
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget")
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget_filled")
     }
 
     fun take_screenshot_interaction_product_not_login() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(3000)
 
         // Pulsa

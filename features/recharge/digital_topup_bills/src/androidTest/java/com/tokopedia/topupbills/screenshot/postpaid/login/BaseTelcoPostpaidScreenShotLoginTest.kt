@@ -35,7 +35,10 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
+import com.tokopedia.topupbills.utils.CommonTelcoActions
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetNotDisplayed
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AllOf
@@ -136,9 +139,9 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
     }
 
     fun take_screenshot_enquiry_phone_number() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(ViewActions.click())
+        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.telco_buy_widget)).check(ViewAssertions.matches(IsNot.not(ViewMatchers.isDisplayed())))
+        pdp_validateBuyWidgetNotDisplayed()
         Espresso.onView(ViewMatchers.withId(R.id.telco_enquiry_btn))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
@@ -148,7 +151,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
             CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout_enquiry")
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.text_field_icon_close)).perform(ViewActions.click())
+        clientNumberWidget_clickClearBtn()
         Thread.sleep(2000)
     }
 

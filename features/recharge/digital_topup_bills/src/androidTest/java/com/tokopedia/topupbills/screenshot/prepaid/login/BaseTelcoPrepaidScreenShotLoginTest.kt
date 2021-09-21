@@ -37,12 +37,14 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.screenshot.prepaid.nonlogin.BaseTelcoPrepaidScreenShotTest
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
+import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -132,19 +134,19 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_prabayar_category() {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Pulsa"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Pulsa")
         Thread.sleep(1000)
         findViewAndScreenShot(R.id.telco_tab_layout, generatePrefix(), "tab_layout_pulsa")
         Thread.sleep(1000)
         findViewAndScreenShot(R.id.telco_product_view, generatePrefix(), "prabayar_pulsa")
 
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Paket Data"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Paket Data")
         Thread.sleep(1000)
         findViewAndScreenShot(R.id.telco_tab_layout, generatePrefix(), "tab_layout_paket_data")
         Thread.sleep(2000)
         findViewAndScreenShot(R.id.telco_product_view, generatePrefix(), "prabayar_paket_data")
 
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Roaming"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Roaming")
         Thread.sleep(1000)
         findViewAndScreenShot(R.id.telco_tab_layout, generatePrefix(), "tab_layout_roaming")
         Thread.sleep(2000)
@@ -177,7 +179,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_interaction_product_login() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(3000)
 
         // Pulsa
@@ -191,7 +193,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         findViewAndScreenShot(R.id.telco_buy_widget, generatePrefix(), "buy_widget")
 
         // Roaming
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Roaming"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Roaming")
 
         findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(), "product_view_roaming")
         findViewHolderAndScreenshot(R.id.telco_product_rv, 1, generatePrefix(), "product_item_roaming")
@@ -206,7 +208,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         findViewHolderAndScreenshot(R.id.telco_product_rv, 1, generatePrefix(), "product_item_roaming_clicked")
 
         // Paket Data
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Paket Data"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Paket Data")
 
         findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(), "product_view_paket_data")
         findViewHolderAndScreenshot(R.id.telco_product_rv, 1, generatePrefix(), "product_item_paket_data")
@@ -223,13 +225,13 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_recent_widget_login() {
-        onView(withId(R.id.text_field_icon_close)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
+        CommonTelcoActions.clientNumberWidget_clickClearBtn()
+        CommonTelcoActions.clientNumberWidget_validateText("")
 
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Transaksi Terakhir")
         findViewAndScreenShot(R.id.layout_widget, generatePrefix(), "transaksi_terakhir_view")
 
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        CommonTelcoActions.tabLayout_clickTabWithText("Promo")
         findViewAndScreenShot(R.id.layout_widget, generatePrefix(), "promo_view")
     }
 

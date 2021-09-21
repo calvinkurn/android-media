@@ -126,7 +126,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".*",
       "eventAction": "view favorite number chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -136,7 +136,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".*",
       "eventAction": "view favorite contact chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -146,7 +146,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".*",
       "eventAction": "click favorite number chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -156,7 +156,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".*",
       "eventAction": "click favorite contact chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     }
   ]
