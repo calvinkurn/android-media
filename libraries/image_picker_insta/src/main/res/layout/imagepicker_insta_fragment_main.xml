@@ -44,18 +44,22 @@
                 app:srcCompat="@drawable/imagepicker_insta_toolbar_icon" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_icon"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
                     android:text="@string/imagepicker_insta_post_sebagai"
                     android:textColor="@color/imagepicker_insta_toolbar_title"
                     app:typographyType="body_3"
@@ -63,9 +67,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/toolbar_subtitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-3dp"
+                    android:ellipsize="end"
+                    android:lines="1"
                     android:text="@string/imagepicker_insta_fellow_official"
                     app:typographyType="heading_4"
                     app:typographyWeight="bold" />
