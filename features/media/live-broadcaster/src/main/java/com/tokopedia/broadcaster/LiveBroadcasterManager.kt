@@ -52,6 +52,7 @@ class LiveBroadcasterManager constructor(
     var isPushStarted = false
 
     private val job = SupervisorJob()
+    private var hasPrepared = false
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.IO
@@ -82,13 +83,12 @@ class LiveBroadcasterManager constructor(
     }
 
     override fun prepare(config: BroadcasterConfig.() -> Unit) {
+        if (hasPrepared) error("the streamer already prepared")
+
         mConfig = BroadcasterConfig().apply(config)
         configureStreamer(mConfig)
-    }
 
-    override fun prepare(config: BroadcasterConfig?) {
-        if (config != null) mConfig = config
-        configureStreamer(mConfig)
+        hasPrepared = true
     }
 
     override fun setListener(listener: BroadcasterListener) {
