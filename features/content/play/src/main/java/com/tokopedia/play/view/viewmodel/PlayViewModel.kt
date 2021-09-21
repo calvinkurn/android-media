@@ -614,7 +614,7 @@ class PlayViewModel @Inject constructor(
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            ClickLikeAction -> handleClickLike()
+            ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             ClickCartAction -> handleClickCart()
         }
@@ -1400,15 +1400,22 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart()
             else -> {}
         }
     }
 
-    private fun handleClickLike() = needLogin(REQUEST_CODE_LOGIN_LIKE) {
+    private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
         val likeInfo = _likeInfo.value
         if (likeInfo.status == PlayLikeStatus.Unknown) return@needLogin
 
-        val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
+        val newStatus = when {
+            isFromLogin -> PlayLikeStatus.Liked
+            likeInfo.status == PlayLikeStatus.Liked -> PlayLikeStatus.NotLiked
+            else -> PlayLikeStatus.Liked
+        }
+
         _likeInfo.setValue {
             copy(status = newStatus, source = LikeSource.UserAction)
         }
@@ -1460,7 +1467,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickCart() {
+    private fun handleClickCart() = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
         viewModelScope.launch {
             _uiEvent.emit(
                     OpenPageEvent(applink = ApplinkConst.CART)
@@ -1504,5 +1511,6 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
     }
 }
