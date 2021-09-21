@@ -18,6 +18,12 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 buildscript {
     repositories {
         google()
@@ -31,6 +37,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
