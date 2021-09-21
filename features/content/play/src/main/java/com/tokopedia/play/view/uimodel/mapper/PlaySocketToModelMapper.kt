@@ -79,7 +79,7 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapMultipleLikeConfig(
         configs: List<MultipleLikeConfig>
-    ) : PlayMultipleLikesConfig {
+    ) : PlayLikeBubbleConfig {
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 

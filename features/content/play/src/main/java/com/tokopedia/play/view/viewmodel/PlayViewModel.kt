@@ -1133,7 +1133,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(
                 PreloadLikeBubbleIconEvent(
-                    _likeInfo.value.multiLikesConfig.self.bubbleMap.keys
+                    _likeInfo.value.likeBubbleConfig.bubbleMap.keys
                 )
             )
         }
@@ -1206,32 +1206,23 @@ class PlayViewModel @Inject constructor(
                 if (!channelType.isLive) return@withContext
 
                 val diffLike = totalLike - prevLike
-                viewModelScope.launch {
-                    val otherConfig = playSocketToModelMapper.mapMultipleLikeConfig(result.configuration)
-                    _likeInfo.setValue { copy(multiLikesConfig = otherConfig) }
+
+                if (diffLike >= LIKE_BURST_THRESHOLD) {
                     _uiEvent.emit(
-                        PreloadLikeBubbleIconEvent(
-                            urls = otherConfig.other.bubbleMap.keys
+                        ShowLikeBubbleEvent.Burst(
+                            LIKE_BURST_THRESHOLD,
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
                         )
                     )
-
-                    if (diffLike >= LIKE_BURST_THRESHOLD) {
-                        _uiEvent.emit(
-                            ShowLikeBubbleEvent.Burst(
-                                LIKE_BURST_THRESHOLD,
-                                reduceOpacity = true,
-                                config = _likeInfo.value.multiLikesConfig.other,
-                            )
+                } else if (diffLike > 0) {
+                    _uiEvent.emit(
+                        ShowLikeBubbleEvent.Single(
+                            diffLike.toInt(),
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
                         )
-                    } else if (diffLike > 0) {
-                        _uiEvent.emit(
-                            ShowLikeBubbleEvent.Single(
-                                diffLike.toInt(),
-                                reduceOpacity = true,
-                                config = _likeInfo.value.multiLikesConfig.other,
-                            )
-                        )
-                    }
+                    )
                 }
             }
             is TotalView -> {
@@ -1325,10 +1316,10 @@ class PlayViewModel @Inject constructor(
                     result.configuration
                 )
                 _likeInfo.setValue {
-                    copy(multiLikesConfig = config)
+                    copy(likeBubbleConfig = config)
                 }
                 viewModelScope.launch {
-                    _uiEvent.emit(PreloadLikeBubbleIconEvent(config.self.bubbleMap.keys))
+                    _uiEvent.emit(PreloadLikeBubbleIconEvent(config.bubbleMap.keys))
                 }
             }
         }
@@ -1576,7 +1567,7 @@ class PlayViewModel @Inject constructor(
                 _uiEvent.emit(ShowLikeBubbleEvent.Single(
                     count = 1,
                     reduceOpacity = false,
-                    config = _likeInfo.value.multiLikesConfig.self,
+                    config = _likeInfo.value.likeBubbleConfig,
                 ))
             }
 

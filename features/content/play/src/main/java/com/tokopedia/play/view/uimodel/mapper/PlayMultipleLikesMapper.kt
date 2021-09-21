@@ -4,7 +4,6 @@ import android.graphics.Color
 import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
-import com.tokopedia.play.view.uimodel.recom.PlayMultipleLikesConfig
 import javax.inject.Inject
 
 /**
@@ -13,7 +12,7 @@ import javax.inject.Inject
 @PlayScope
 class PlayMultipleLikesMapper @Inject constructor() {
 
-    fun mapMultipleLikeConfig(configs: List<MultipleLikeConfig>): PlayMultipleLikesConfig {
+    fun mapMultipleLikeConfig(configs: List<MultipleLikeConfig>): PlayLikeBubbleConfig {
         val bubbleMap = mutableMapOf<String, List<Int>>()
         configs.forEach { config ->
             val color = try {
@@ -28,10 +27,6 @@ class PlayMultipleLikesMapper @Inject constructor() {
 //                Color.parseColor(it)
 //            }
 //        )
-        val bubbleConfig = PlayLikeBubbleConfig(bubbleMap = bubbleMap)
-        return PlayMultipleLikesConfig(
-            self = bubbleConfig,
-            other = bubbleConfig,
-        )
+        return PlayLikeBubbleConfig(bubbleMap = bubbleMap)
     }
 }

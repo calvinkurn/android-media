@@ -14,10 +14,4 @@ data class TotalLike(
 
         @SerializedName("total_like_formatted")
         var totalLikeFormatted: String = "",
-
-        @SerializedName("channel_id")
-        val channelId: Long = 0L,
-
-        @SerializedName("configuration")
-        val configuration: List<MultipleLikeConfig> = emptyList(),
 )

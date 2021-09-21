@@ -81,7 +81,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         likeType = feedLikeParamResponse.likeType,
         status = PlayLikeStatus.Unknown,
         source = LikeSource.Network,
-        multiLikesConfig = mapMultipleLikeConfig(configs),
+        likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
     private fun mapChannelReportInfo() = PlayChannelReportUiModel()
@@ -119,7 +119,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapMultipleLikeConfig(
         configs: List<MultipleLikeConfig>
-    ) : PlayMultipleLikesConfig {
+    ) : PlayLikeBubbleConfig {
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 
