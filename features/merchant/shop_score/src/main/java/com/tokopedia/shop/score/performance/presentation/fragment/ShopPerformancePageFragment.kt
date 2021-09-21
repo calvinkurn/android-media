@@ -31,6 +31,8 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.common.plt.ShopPerformanceMonitoringContract
+import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -51,7 +53,7 @@ import kotlin.collections.ArrayList
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
-    ShopPerformanceListener {
+    ShopPerformanceListener, ShopPerformanceMonitoringContract {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -78,6 +80,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
+    private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
+
     private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
 
     private val coachMark by getInstanceCoachMark()
@@ -88,6 +92,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private var counterPenalty = 0L
     private var menu: Menu? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        shopScorePerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -363,6 +372,37 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             protectedParameterDate
         )
         bottomSheetProtectedParameter.show(childFragmentManager)
+    }
+
+    override fun stopPreparePerformancePageMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        rvShopPerformance?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                shopScorePerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                shopScorePerformanceMonitoringListener?.stopPerformanceMonitoring()
+                rvShopPerformance.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopScorePerformanceMonitoringListener? {
+        return if (context is ShopScorePerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
     }
 
     private fun setPageBackground() {
