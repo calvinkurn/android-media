@@ -3,7 +3,6 @@ package com.tokopedia.cart.bundle.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
@@ -114,6 +113,19 @@ object CartListPresenterCalculateSubTotalTest : Spek({
         }
         //endregion
 
+        //region First Item In Third Shop, bundling product
+        val firstProductThirdShop by memoized {
+            CartItemHolderData().apply {
+                isBundlingItem = true
+                bundleId = "123"
+                bundleGroupId = "123-abc"
+                bundlePrice = 50000
+                bundleQuantity = 2
+                quantity = 1
+            }
+        }
+        //endregion
+
         //region First Shop
         val firstShop by memoized {
             CartShopHolderData().apply {
@@ -130,12 +142,22 @@ object CartListPresenterCalculateSubTotalTest : Spek({
         }
         //endregion
 
+        //region Second Shop
+        val thirdShop by memoized {
+            CartShopHolderData().apply {
+                productUiModelList = arrayListOf(firstProductThirdShop)
+            }
+        }
+        //endregion
+
         val cartShops by memoized { arrayListOf(firstShop, secondShop) }
+        val cartShopsIncludingBundleItems by memoized { arrayListOf(firstShop, secondShop, thirdShop) }
 
         beforeEachTest {
             cartListPresenter.attachView(view)
         }
 
+/*
         Scenario("no item selected") {
 
             Given("cart data list") {
@@ -381,7 +403,41 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                 }
             }
         }
+*/
 
+        Scenario("bundling item selected") {
+
+            Given("check all items") {
+                firstProductFirstShop.isSelected = true
+                secondProductFirstShop.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstProductSecondShop.isSelected = true
+                secondProductSecondShop.isSelected = true
+                secondShop.isAllSelected = true
+
+                firstProductThirdShop.isSelected = true
+                thirdShop.isAllSelected = true
+            }
+
+            Given("cart data list") {
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShopsIncludingBundleItems.flatMap {
+                        it.productUiModelList
+                    }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShopsIncludingBundleItems)
+            }
+
+            Then("should have 4084 subtotal and 400 cashback") {
+                verify {
+                    view.renderDetailInfoSubTotal("12", 101684.0, false)
+                }
+            }
+        }
     }
 
 })
