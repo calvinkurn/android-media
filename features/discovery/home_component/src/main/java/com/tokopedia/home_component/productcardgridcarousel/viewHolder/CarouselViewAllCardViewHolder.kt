@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelViewAllCard
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.viewallcard.ViewAllCard
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_COLOR
+import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_INVERT
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_NORMAL
 
 /**
@@ -25,14 +27,14 @@ class CarouselViewAllCardViewHolder(
     private val card: ViewAllCard by lazy { view.findViewById(R.id.card_view_all_banner) }
 
     override fun bind(element: CarouselViewAllCardDataModel) {
-        val isGradientWhite = getGradientBackgroundViewAllWhite(element.channelViewAllCard.gradientColor)
-        when (element.channelViewAllCard.contentType) {
+        val isGradientWhite = getGradientBackgroundViewAllWhite(element.channelModel.channelViewAllCard.gradientColor)
+        when (element.channelModel.channelViewAllCard.contentType) {
             CONTENT_TITLE_AS_STRING -> renderTypeTitleAsString(element, isGradientWhite)
             CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isGradientWhite)
             CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isGradientWhite)
             else -> renderTypeTitleAsString(
                 CarouselViewAllCardDataModel(
-                    channelViewAllCard = ChannelViewAllCard(),
+                    channelModel = ChannelModel(id = "", groupId = ""),
                     listener = element.listener
                 ),
                 true
@@ -44,54 +46,81 @@ class CarouselViewAllCardViewHolder(
         card.cardView.foreground = itemView.context.getDrawable(outValue.resourceId)
 
         card.setOnClickListener {
-            element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)
+            element.listener.onSeeMoreCardClicked(applink = element.channelModel.channelHeader.applink, channel = channels)
         }
     }
 
     private fun renderTypeSingleImage(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
         card.imageDrawable = itemView.context.getDrawable(R.drawable.ic_graphic_element_green)
-        card.imageView.loadImage(element.channelViewAllCard.imageUrl)
-        card.description = element.channelViewAllCard.description
+        card.imageView.loadImage(element.channelModel.channelViewAllCard.imageUrl)
+        card.description = element.channelModel.channelViewAllCard.description
         card.setCta(itemView.context.getString(R.string.lihat_semua))
-        if(isGradientWhite) {
-            card.mode = MODE_NORMAL
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
-        }
-        else {
-            card.mode = MODE_COLOR
-            card.containerView.setGradientBackground(element.channelViewAllCard.gradientColor)
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+        if (element.channelModel.layout == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
+            if (element.channelModel.channelBanner.imageUrl.isEmpty()) { //channel background
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_INVERT
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
+        } else {
+            if (isGradientWhite) {
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_COLOR
+                card.containerView.setGradientBackground(element.channelModel.channelViewAllCard.gradientColor)
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
         }
     }
 
     private fun renderTypeTitleAsString(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
-        card.title = element.channelViewAllCard.title
-        card.description = element.channelViewAllCard.description
+        card.title = element.channelModel.channelViewAllCard.title
+        card.description = element.channelModel.channelViewAllCard.description
         card.setCta(itemView.context.getString(R.string.lihat_semua))
-        if(isGradientWhite) {
-            card.mode = MODE_NORMAL
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
-        }
-        else {
-            card.mode = MODE_COLOR
-            card.containerView.setGradientBackground(element.channelViewAllCard.gradientColor)
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+        if (element.channelModel.layout == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
+            if (element.channelModel.channelBanner.imageUrl.isEmpty()) { //channel background
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_INVERT
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
+        } else {
+            if (isGradientWhite) {
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_COLOR
+                card.containerView.setGradientBackground(element.channelModel.channelViewAllCard.gradientColor)
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
         }
     }
 
     private fun renderTypeTitleAsInteger(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
-        card.title = element.channelViewAllCard.title
-        card.description = element.channelViewAllCard.description
+        card.title = element.channelModel.channelViewAllCard.title
+        card.description = element.channelModel.channelViewAllCard.description
         card.isTitleNumberStyle = true
         card.setCta(itemView.context.getString(R.string.lihat_semua))
-        if(isGradientWhite) {
-            card.mode = MODE_NORMAL
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
-        }
-        else {
-            card.mode = MODE_COLOR
-            card.containerView.setGradientBackground(element.channelViewAllCard.gradientColor)
-            card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+        if (element.channelModel.layout == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
+            if (element.channelModel.channelBanner.imageUrl.isEmpty()) { //channel background
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_INVERT
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
+        } else {
+            if (isGradientWhite) {
+                card.mode = MODE_NORMAL
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
+            } else {
+                card.mode = MODE_COLOR
+                card.containerView.setGradientBackground(element.channelModel.channelViewAllCard.gradientColor)
+                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
+            }
         }
     }
 
