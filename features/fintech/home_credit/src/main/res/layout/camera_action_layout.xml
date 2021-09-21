@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@color/unify_N700_32">
+    tools:background="@color/Unify_N700_32">
 
     <LinearLayout
         android:id="@+id/ll_captured_image_action"
