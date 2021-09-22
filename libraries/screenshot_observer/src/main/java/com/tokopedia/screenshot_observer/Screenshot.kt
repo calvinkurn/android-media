@@ -19,12 +19,13 @@ import androidx.core.app.ActivityCompat
 import com.example.screenshot_observer.R
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
-                      protected open val toasterSellerListener: ToasterSellerListener? = null) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
+open class Screenshot @JvmOverloads constructor(
+    contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
+    protected open val toasterSellerListener: ToasterSellerListener? = null
+) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
@@ -32,7 +33,10 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
     private var currentActivity: Activity? = null
     private var savedUri: Uri? = null
     private var className: String = ""
-    private val requiredPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     init {
         mHandlerThread.start()
@@ -41,17 +45,21 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
         mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
     }
 
-    fun register() {
+    private fun register() {
         mContentResolver.registerContentObserver(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                true,
-                mContentObserver
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            true,
+            mContentObserver
         )
     }
 
     private fun allPermissionsGranted(activity: Activity): Boolean {
         for (permission in requiredPermissions) {
-            if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    activity,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
@@ -64,18 +72,19 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
         }
 
         val bottomSheetFeedback = BottomSheetUnify()
-        val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
-            btn_add_feedback.setOnClickListener {
-                listener?.onFeedbackClicked(uri, className, true)
-                bottomSheetFeedback.dismiss()
+        val viewBottomSheet =
+            View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
+                btn_add_feedback.setOnClickListener {
+                    listener?.onFeedbackClicked(uri, className, true)
+                    bottomSheetFeedback.dismiss()
+                }
+                btn_dismiss.setOnClickListener {
+                    bottomSheetFeedback.dismiss()
+                }
             }
-            btn_dismiss.setOnClickListener {
-                bottomSheetFeedback.dismiss()
-            }
-        }
 
-       bottomSheetFeedback.apply {
-           setChild(viewBottomSheet)
+        bottomSheetFeedback.apply {
+            setChild(viewBottomSheet)
         }
 
         val fm = (activity as AppCompatActivity).supportFragmentManager
@@ -115,9 +124,9 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
     }
 
     override fun onActivityResumed(activity: Activity) {
-        register()
         currentActivity = activity
         className = activity.localClassName
+        register()
     }
 
     override fun onScreenShotTaken(uri: Uri) {
@@ -172,7 +181,7 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
     companion object {
         private val FILE_NAME_PREFIX = "screenshot"
         private val PROJECTION = arrayOf(
-                MediaStore.Images.Media.DISPLAY_NAME
+            MediaStore.Images.Media.DISPLAY_NAME
         )
     }
 

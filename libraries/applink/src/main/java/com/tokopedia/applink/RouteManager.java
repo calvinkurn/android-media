@@ -183,6 +183,15 @@ public class RouteManager {
         }
     }
 
+    public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
+        boolean isFragmentInstalled = FragmentDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
+        if (isFragmentInstalled) {
+            return instantiateFragment(activity, classPathName, extras);
+        } else {
+            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+        }
+    }
+
     private static boolean isClassExist(String className) {
         try  {
             Class.forName(className);
@@ -348,9 +357,19 @@ public class RouteManager {
         return intent;
     }
 
+    /**
+     * return direct Home Intent.
+     * to getHome Intent from public function, use RouteManager.getIntent(context, ApplinkConst.HOME) instead.
+     */
     private static Intent getHomeIntent(Context context) {
         Intent intent = new Intent();
-        intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+        String packageName;
+        if (context == null) {
+            packageName = GlobalConfig.PACKAGE_APPLICATION;
+        } else {
+            packageName = context.getPackageName();
+        }
+        intent.setClassName(packageName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
         return intent;
     }
 

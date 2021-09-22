@@ -18,7 +18,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 open class ShopHomeProductViewHolder(
         itemView: View,
-        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?
+        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
+        private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     lateinit var productCard: ProductCardGridView
     protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
@@ -40,7 +41,7 @@ open class ShopHomeProductViewHolder(
         this.shopHomeProductViewModel = shopHomeProductViewModel
         productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
-                hasThreeDots = true,
+                hasThreeDots = isShowTripleDot,
                 shopHomeProductViewModel = shopHomeProductViewModel,
                 isWideContent = false
         ))

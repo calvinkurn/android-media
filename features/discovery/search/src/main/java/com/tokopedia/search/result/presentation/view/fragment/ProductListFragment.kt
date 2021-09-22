@@ -572,7 +572,13 @@ class ProductListFragment: BaseDaggerFragment(),
         productItemDataViews.add(item)
 
         trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId, userId)
+            SearchTracking.eventImpressionSearchResultProduct(
+                it,
+                dataLayerList,
+                eventLabel,
+                irisSessionId,
+                userId
+            )
         }
     }
 
@@ -753,6 +759,7 @@ class ProductListFragment: BaseDaggerFragment(),
             queryKey,
             getUserId(),
             irisSessionId,
+            item.topadsTag,
         )
     }
 
@@ -824,6 +831,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 item.position,
                 getUserId(),
                 item.dimension90,
+                item.topadsTag,
         )
     }
 
@@ -840,6 +848,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
+                item.topadsTag,
                 eventLabel,
                 filterSortParams,
                 userId,
