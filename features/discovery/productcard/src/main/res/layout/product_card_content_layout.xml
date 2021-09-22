@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
         tools:text="di Setelan anak laki-laki"
-        />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewGimmick"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/textCategoryBottom"
         tools:text="Best Seller"
         tools:textColor="@color/Unify_Y400"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageViewPdpView"
@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewGimmick"
         app:srcCompat="@drawable/ic_pdp_view"
-        tools:visibility="visible"/>
+        tools:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPdpView"
@@ -62,7 +62,7 @@
         app:typographyType="small"
         android:textColor="@color/Unify_N700_68"
         tools:text="989jt orang"
-        tools:visibility="visible"/>
+        tools:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewProductName"
@@ -92,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@id/textViewProductName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewCategory"
@@ -104,7 +104,7 @@
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Halal"
         tools:textColor="@color/Unify_G500"/>
 
@@ -120,7 +120,7 @@
         app:layout_constraintTop_toTopOf="@id/textViewCategory"
         app:layout_constraintBottom_toBottomOf="@id/textViewCategory"
         app:layout_constraintEnd_toStartOf="@id/textViewCostPerUnit"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewCostPerUnit"
@@ -134,7 +134,7 @@
         app:layout_constraintStart_toEndOf="@id/dividerCategory"
         app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Rp6.500/100 g"
         tools:textColor="@color/Unify_N700_68"/>
 
@@ -196,7 +196,7 @@
         app:labelType="general_light_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewSlashedPrice"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Cashback" />
 
     <ImageView
@@ -208,7 +208,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/labelPrice"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShopLocation"
@@ -228,7 +228,7 @@
         app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="body_3"
         tools:text="Town Location"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <View
         android:id="@+id/dividerFulfillment"
@@ -240,7 +240,7 @@
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
         app:layout_constraintTop_toTopOf="@id/imageShopBadge"
         app:layout_constraintBottom_toBottomOf="@id/imageShopBadge"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageFulfillment"
@@ -253,7 +253,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/dividerFulfillment"
         app:layout_constraintTop_toBottomOf="@id/labelPrice"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewFulfillment"
@@ -273,7 +273,7 @@
         app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="body_3"
         tools:text="TokoCabang"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/linearLayoutImageRating"
@@ -285,7 +285,7 @@
         android:layout_marginTop="@dimen/product_card_image_rating_star_margin_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewFulfillment"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/imageViewRating1"
@@ -352,7 +352,7 @@
         app:layout_constraintTop_toBottomOf="@id/textViewFulfillment"
         app:typographyType="body_3"
         tools:text="(60)"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewIntegrity"
@@ -366,7 +366,7 @@
         app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
         app:typographyType="body_3"
         tools:text="Terjual 122"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageSalesRatingFloat"
@@ -440,7 +440,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/salesRatingFloat"
         app:srcCompat="@drawable/product_card_ic_shop_rating"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShopRating"
@@ -455,7 +455,7 @@
         app:layout_constraintTop_toBottomOf="@id/salesRatingFloat"
         app:typographyType="body_3"
         tools:text="14.5 Rating Toko"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageFreeOngkirPromo"
@@ -470,7 +470,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageShopRating"
         tools:layout_width="67dp"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShipping"
@@ -481,7 +481,7 @@
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Ongkir Rp11 rb"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -494,7 +494,7 @@
         app:typographyType="small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewShipping"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Tiba 28 Feb - 1 Mar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
