@@ -242,7 +242,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortId = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
-                isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+                isNeedToReloadData = it.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -253,7 +253,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 //            sortId = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
-            needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+            needReloadData = savedInstanceState.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
             isShopPageProductSearchResultTrackerAlreadySent = savedInstanceState.getBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, false)
         }
@@ -1283,7 +1283,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
-                putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
+                putBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
                 putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection.orEmpty())
             }
