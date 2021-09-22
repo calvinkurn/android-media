@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="56dp">
+        tools:layout_height="@dimen/dp_56">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,8 +27,8 @@
                 android:id="@+id/toolbar_nav_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="11dp"
+                android:paddingStart="@dimen/dp_14"
+                android:paddingEnd="@dimen/dp_11"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -36,8 +36,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/toolbar_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/toolbar_nav_icon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -46,8 +46,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +69,7 @@
                     android:id="@+id/toolbar_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-3dp"
+                    android:layout_marginTop="@dimen/imagepicker_insta_dp_3_n"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@string/imagepicker_insta_fellow_official"
@@ -112,8 +112,8 @@
             android:id="@+id/image_fit_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/selected_image_view"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/imagepicker_insta_fit_center_icon" />
@@ -121,8 +121,8 @@
         <LinearLayout
             android:id="@+id/middle_section"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#ffffff"
+            android:layout_height="@dimen/dp_56"
+            android:background="@color/Unify_Static_White"
             android:gravity="center_vertical"
             android:orientation="horizontal"
 
@@ -136,8 +136,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingStart="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_selected_folder"
@@ -158,10 +158,10 @@
 
         <com.tokopedia.imagepicker_insta.views.ToggleImageView
             android:id="@+id/multi_select_toggle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/middle_section"
             app:srcCompat="@drawable/imagepicker_insta_ic_select_multiple_off" />
@@ -170,7 +170,7 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="#ffffff"
+            android:background="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
