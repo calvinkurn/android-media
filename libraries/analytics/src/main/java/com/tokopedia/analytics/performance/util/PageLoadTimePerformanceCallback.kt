@@ -25,6 +25,10 @@ open class PageLoadTimePerformanceCallback(
         var renderDuration: Long = 0,
         var performanceMonitoring: PerformanceMonitoring? = null
 ): PageLoadTimePerformanceInterface {
+    companion object {
+        private const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+    }
+
     var isPrepareDone = false
     var isNetworkDone = false
     var isRenderDone = false
@@ -211,9 +215,17 @@ open class PageLoadTimePerformanceCallback(
                 }
             }
         }
+        putFullyDrawnTrace(traceName)
+    }
 
+    private fun putFullyDrawnTrace(traceName: String) {
         try {
-            Trace.beginSection("reportFullyDrawn() for $traceName")
+            Trace.beginSection(
+                String.format(
+                    ANDROID_TRACE_FULLY_DRAWN,
+                    traceName
+                )
+            )
         } finally {
             Trace.endSection()
         }
