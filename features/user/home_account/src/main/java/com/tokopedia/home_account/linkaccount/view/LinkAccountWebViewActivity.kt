@@ -89,7 +89,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
     }
 
     fun setToolbarTitle(title: String) {
-        supportActionBar?.title = title
+        updateTitle(title)
     }
 
     fun showToolbar() {
@@ -144,5 +144,11 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
             url = getLinkAccountUrl(redirection).toString()
         }
         return LinkAccountWebviewFragment.newInstance(url)
+    }
+
+    override fun onBackPressed() {
+        (fragment as LinkAccountWebviewFragment).trackClickBackBtn()
+        (fragment as LinkAccountWebviewFragment).checkPageFinished()
+        super.onBackPressed()
     }
 }
