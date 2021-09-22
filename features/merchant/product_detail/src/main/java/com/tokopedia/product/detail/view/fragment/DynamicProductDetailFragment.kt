@@ -240,7 +240,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
-        binding.baseBtnFollow.run {
+        binding.baseBtnFollow.root.run {
             PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
         }
     }
@@ -2132,7 +2132,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val alreadyFollowShop = reData?.isEligible ?: true
         val shouldShowRe = !alreadyFollowShop && pdpUiUpdater?.shopCredibility?.isFavorite == false //show when user not follow the shop
         if (shouldShowRe && !viewModel.isShopOwner() && reData?.restrictionShopFollowersType() == true) {
-            val baseBtnFollow = binding.baseBtnFollow
+            val baseBtnFollow = binding.baseBtnFollow.root
             if (!baseBtnFollow.isShown) {
                 baseBtnFollow.translationY = 100.toPx().toFloat()
             }
@@ -3036,7 +3036,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun clickButtonWhenVariantTokonow(isVariant: Boolean) {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
-            DynamicProductDetailTracking.Click.eventClickOosButton(btn_buy_now.text.toString(), isVariant, viewModel.getDynamicProductInfoP1, viewModel.userId)
+            DynamicProductDetailTracking.Click.eventClickOosButton(
+                binding.partialLayoutButtonAction.btnBuyNow.text.toString(), isVariant,
+                viewModel.getDynamicProductInfoP1, viewModel.userId
+            )
             goToWishlist()
         } else {
             DynamicProductDetailTracking.Click.eventClickAtcToVariantBottomSheet(viewModel.getDynamicProductInfoP1?.basic?.productID
