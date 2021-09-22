@@ -18,10 +18,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.ImageHandler
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -139,7 +136,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            ImageHandler.LoadImage(image, imageUrl)
+            image.loadImageWithoutPlaceholder(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
             }
