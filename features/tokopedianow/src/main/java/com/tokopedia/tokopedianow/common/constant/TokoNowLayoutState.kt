@@ -7,7 +7,9 @@ import androidx.annotation.IntDef
     TokoNowLayoutState.SHOW,
     TokoNowLayoutState.LOADING,
     TokoNowLayoutState.HIDE,
-    TokoNowLayoutState.LOAD_MORE
+    TokoNowLayoutState.LOAD_MORE,
+    TokoNowLayoutState.EMPTY,
+    TokoNowLayoutState.UPDATE
 )
 annotation class TokoNowLayoutState {
     companion object {
@@ -15,5 +17,7 @@ annotation class TokoNowLayoutState {
         const val LOADING = 2
         const val HIDE = 3
         const val LOAD_MORE = 4
+        const val EMPTY = 6
+        const val UPDATE = 7
     }
 }

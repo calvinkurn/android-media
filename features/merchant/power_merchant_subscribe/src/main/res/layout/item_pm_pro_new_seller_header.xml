@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivPmProNewSellerHeader"
+        android:layout_width="@dimen/pm_spacing_156dp"
+        android:layout_height="@dimen/pm_spacing_156dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescPmProNewSellerHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="@string/desc_pm_pro_new_seller_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rvRequirePmProNewSellerHeader"
+        app:layout_constraintTop_toBottomOf="@id/ivPmProNewSellerHeader"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRequirePmProNewSellerHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvDescPmProNewSellerHeader"
+        app:layout_constraintStart_toStartOf="@id/tvDescPmProNewSellerHeader"
+        app:layout_constraintEnd_toEndOf="@id/tvDescPmProNewSellerHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_20"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_requirement_pm_pro_new_seller"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

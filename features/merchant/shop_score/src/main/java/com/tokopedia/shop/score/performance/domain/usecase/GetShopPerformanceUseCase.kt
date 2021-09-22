@@ -220,13 +220,10 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     .goldGetPMOSStatus.data
                 shopScoreWrapperResponse.goldGetPMOStatusResponse = powerMerchantResponse
             }
-
-        } catch (e: Throwable) {
-            if (e is SocketTimeoutException || e is UnknownHostException) {
-                throw IOException(e.message)
-            } else {
-                throw Exception(e.message)
-            }
+        } catch (e: IOException) {
+            throw IOException(e.message)
+        } catch (e: Exception) {
+            throw Exception(e.message)
         }
 
         return shopScoreWrapperResponse
