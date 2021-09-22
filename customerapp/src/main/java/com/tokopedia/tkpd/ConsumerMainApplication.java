@@ -19,6 +19,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.utils.permission.SlicePermission;
@@ -112,11 +114,25 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }
     }
 
+    private boolean checkForceLightMode() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+            return true;
+        }
+        return false;
+    }
+
     private void setupAppScreenMode() {
+
+        boolean isForceLightMode = checkForceLightMode();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
         int screenMode;
-        if (isDarkMode) {
+        if (isDarkMode && !isForceLightMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;
         } else {
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;
