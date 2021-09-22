@@ -11,6 +11,7 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -46,6 +47,7 @@ class HomeAccountUserViewModelTest {
     private val userPageAssetConfigUseCase = mockk<GetUserPageAssetConfigUseCase>(relaxed = true)
     private val homeAccountSaldoBalanceUseCase = mockk<HomeAccountSaldoBalanceUseCase>(relaxed = true)
     private val homeAccountTokopointsUseCase = mockk<HomeAccountTokopointsUseCase>(relaxed = true)
+    private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
 
     private val userPageAssetConfigObserver = mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
     private val saldoBalanceObserver = mockk<Observer<Result<Balance>>>(relaxed = true)
@@ -79,6 +81,7 @@ class HomeAccountUserViewModelTest {
                 homeAccountWalletBalanceUseCase,
                 homeAccountSafeSettingProfileUseCase,
                 homeAccountRecommendationUseCase,
+                topAdsImageViewUseCase,
                 userPageAssetConfigUseCase,
                 homeAccountSaldoBalanceUseCase,
                 homeAccountTokopointsUseCase,
