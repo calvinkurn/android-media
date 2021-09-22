@@ -29,6 +29,7 @@ object GoldMerchantUtil {
         }
     }
 
+
     fun getIsExistingSellerPastMonday(dateString: String): Boolean {
         return try {
             val simpleDateFormat =
