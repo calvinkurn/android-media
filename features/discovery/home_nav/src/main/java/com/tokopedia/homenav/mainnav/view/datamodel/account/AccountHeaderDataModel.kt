@@ -19,7 +19,6 @@ data class AccountHeaderDataModel(
      */
     var profileDataModel: ProfileDataModel = ProfileDataModel(),
     var profileMembershipDataModel: ProfileMembershipDataModel = ProfileMembershipDataModel(),
-    var profileOvoDataModel: ProfileOvoDataModel = ProfileOvoDataModel(),
     var profileSaldoDataModel: ProfileSaldoDataModel = ProfileSaldoDataModel(),
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
     var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel()
@@ -65,12 +64,6 @@ data class AccountHeaderDataModel(
         this.profileDataModel.userName = userName
         this.profileDataModel.isGetUserNameError = false
         this.loginState = loginState
-    }
-
-    fun setWalletData(ovo: String, point: String) {
-        this.profileOvoDataModel.ovoSaldo = ovo
-        this.profileOvoDataModel.ovoPoint = point
-        this.profileOvoDataModel.isGetOvoError = false
     }
 
     fun setSaldoData(saldo: String = "") {

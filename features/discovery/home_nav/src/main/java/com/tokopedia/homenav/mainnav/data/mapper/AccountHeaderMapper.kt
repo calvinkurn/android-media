@@ -2,7 +2,6 @@ package com.tokopedia.homenav.mainnav.data.mapper
 
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
-import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
@@ -18,7 +17,6 @@ class AccountHeaderMapper(
 ) {
 
     fun mapToHeaderModel(userPojo: UserPojo?,
-                         walletBalanceModel: WalletBalanceModel?,
                          tokopointsStatusFilteredPojo: TokopointsStatusFilteredPojo?,
                          saldoPojo: SaldoPojo?,
                          userMembershipPojo: MembershipPojo?,
@@ -42,11 +40,6 @@ class AccountHeaderMapper(
                             userImage = userPojo.profile.profilePicture,
                             loginState = loginState
                     )
-                }
-                walletBalanceModel?.let{
-                    data.setWalletData(
-                            ovo = it.cashBalance,
-                            point = it.pointBalance)
                 }
                 tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
                     data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
@@ -82,7 +75,7 @@ class AccountHeaderMapper(
                 data.profileSaldoDataModel.isGetSaldoError = isSaldoError
                 data.profileSellerDataModel.isGetShopError = isShopDataError
                 // extra case when tokopoint null and ab is false
-                if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.profileMembershipDataModel.isTokopointExternalAmountError){
+                if(data.profileMembershipDataModel.isTokopointExternalAmountError){
                     data.profileMembershipDataModel.isTokopointExternalAmountError = false
                 }
                 data.isCacheData = isCache
