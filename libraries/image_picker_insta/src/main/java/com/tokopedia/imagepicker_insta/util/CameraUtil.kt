@@ -22,9 +22,6 @@ import kotlin.collections.ArrayList
 
 object CameraUtil {
 
-    const val LOG_TAG = "INSTA_CAM"
-
-    val REQUEST_IMAGE_CAPTURE = 200
     fun openCamera(weakFragment: WeakReference<Fragment?>?, applinkToNavigateAfterMediaCapture: String?): String? {
         weakFragment?.get()?.let {
             if (applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
@@ -88,62 +85,6 @@ object CameraUtil {
         return file
     }
 
-
-    fun getVideoResolution(path: String?): Size? {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(path)
-        val width: Int = Integer.valueOf(
-            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-        )
-        val height: Int = Integer.valueOf(
-            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-        )
-        retriever.release()
-        val rotation: Int = getVideoRotation(path)
-        return if (rotation == 90 || rotation == 270) {
-            Size(height, width)
-        } else Size(width, height)
-    }
-
-    fun getVideoRotation(videoFilePath: String?): Int {
-        val mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(videoFilePath)
-        val orientation = mediaMetadataRetriever.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION
-        )
-        return Integer.valueOf(orientation)
-    }
-
-    private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?): String? {
-        var filePath: String? = null
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            weakFragment?.get()?.context?.let { context ->
-                takePictureIntent.resolveActivity(context.packageManager)?.also {
-                    // Create the File where the photo should go
-                    val photoFile: File? = try {
-                        createMediaFile(context)
-                    } catch (ex: IOException) {
-                        ex.printStackTrace()
-                        null
-                    }
-                    // Continue only if the File was successfully created
-                    photoFile?.also {
-                        val photoURI: Uri = FileProvider.getUriForFile(
-                            context,
-                            "${context.packageName}.provider",
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        weakFragment?.get()?.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                    }
-                    filePath = photoFile?.absolutePath
-                }
-            }
-
-        }
-        return filePath
-    }
 
     fun getIntentfromFileUris(fileUriList: ArrayList<Uri>):Intent{
         val intent = Intent()
