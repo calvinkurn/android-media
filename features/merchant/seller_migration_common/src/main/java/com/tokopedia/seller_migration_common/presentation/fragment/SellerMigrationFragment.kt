@@ -17,14 +17,12 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.databinding.FragmentBaseSellerFeatureBinding
 import com.tokopedia.seller_migration_common.databinding.FragmentSellerMigrationBinding
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureFragmentAdapter
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewListener {
