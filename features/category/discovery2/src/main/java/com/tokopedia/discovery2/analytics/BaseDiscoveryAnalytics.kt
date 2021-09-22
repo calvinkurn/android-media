@@ -21,7 +21,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
         return TrackApp.getInstance().gtm
     }
 
-    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {}
+    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {}
     open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID : String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}

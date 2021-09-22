@@ -49,9 +49,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         return EMPTY_STRING
     }
 
-    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {
+    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {
         if (banners.isNotEmpty()) {
-            banners.forEach { banner ->
+            banners.forEachIndexed { index, banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
                 val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
                         eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
@@ -63,7 +63,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                     hashMap[KEY_ID] = it.id ?: 0
                     hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
                     hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
-                    hashMap[KEY_POSITION] = componentPosition + 1
+                    hashMap[KEY_POSITION] = componentPosition?.plus(1)?:index+1
                 }
                 list.add(hashMap)
                 val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
