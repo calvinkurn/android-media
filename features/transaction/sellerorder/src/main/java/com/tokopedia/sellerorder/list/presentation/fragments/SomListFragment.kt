@@ -337,7 +337,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    protected var binding by autoClearedNullable<FragmentSomListBinding>()
+    protected var binding by autoClearedNullable<FragmentSomListBinding> {
+        somListBulkProcessOrderBottomSheet?.clearViewBinding()
+        orderRequestCancelBottomSheet?.clearViewBinding()
+        somOrderEditAwbBottomSheet?.clearViewBinding()
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob

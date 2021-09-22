@@ -193,7 +193,18 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
-    private var binding by autoClearedNullable<FragmentSomDetailBinding>()
+    private var binding by autoClearedNullable<FragmentSomDetailBinding> {
+        secondaryBottomSheet?.clearViewBinding()
+        orderRequestCancelBottomSheet?.clearViewBinding()
+        somRejectReasonBottomSheet?.clearViewBinding()
+        somProductEmptyBottomSheet?.clearViewBinding()
+        somShopClosedBottomSheet?.clearViewBinding()
+        bottomSheetCourierProblems?.clearViewBinding()
+        bottomSheetBuyerNoResponse?.clearViewBinding()
+        bottomSheetBuyerOtherReason?.clearViewBinding()
+        bottomSheetSetDelivered?.clearViewBinding()
+        bottomSheetChangeAwb?.clearViewBinding()
+    }
 
     companion object {
 
@@ -280,20 +291,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
         dismissBottomSheets()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        secondaryBottomSheet?.clearViewBinding()
-        orderRequestCancelBottomSheet?.clearViewBinding()
-        somRejectReasonBottomSheet?.clearViewBinding()
-        somProductEmptyBottomSheet?.clearViewBinding()
-        somShopClosedBottomSheet?.clearViewBinding()
-        bottomSheetCourierProblems?.clearViewBinding()
-        bottomSheetBuyerNoResponse?.clearViewBinding()
-        bottomSheetBuyerOtherReason?.clearViewBinding()
-        bottomSheetSetDelivered?.clearViewBinding()
-        bottomSheetChangeAwb?.clearViewBinding()
     }
 
     override fun onDestroy() {
