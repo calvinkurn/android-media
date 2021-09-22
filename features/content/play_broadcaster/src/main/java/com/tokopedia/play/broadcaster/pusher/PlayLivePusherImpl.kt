@@ -108,6 +108,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun release() {
+        pauseCalculateAdaptiveBitrate()
         streamer?.release()
         mListener = null
         mBitrateAdapter = null
