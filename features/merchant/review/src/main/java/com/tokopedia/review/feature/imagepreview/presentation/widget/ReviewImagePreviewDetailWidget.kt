@@ -9,6 +9,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -109,6 +110,15 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
 
     fun setVariantName(variantName: String) {
         basicInfo?.setVariantName(variantName)
+    }
+
+    fun setStats(
+        userStats: List<UserReviewStats>,
+        userId: String,
+        listener: ReviewBasicInfoListener,
+        isAnonymous: Boolean
+    ) {
+        basicInfo?.setStats(userStats, userId, listener, isAnonymous)
     }
 
 }

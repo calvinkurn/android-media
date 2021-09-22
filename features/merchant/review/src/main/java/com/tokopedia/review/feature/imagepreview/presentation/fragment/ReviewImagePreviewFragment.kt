@@ -386,6 +386,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 }
                 setLikeButtonImage(likeDislike.isLiked())
                 setVariantName(variantName)
+                setStats(userReviewStats, user.userID, this@ReviewImagePreviewFragment, isAnonymous)
             }
             setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
