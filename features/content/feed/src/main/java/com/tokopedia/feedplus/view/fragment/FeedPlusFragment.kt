@@ -36,7 +36,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -163,6 +165,7 @@ const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
 const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
 const val CLICK_SHOP_TOPADS = "click - shop - topads"
 const val CLICK_PRODUCT_TOPADS = "click - product - topads"
+const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
 class FeedPlusFragment : BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
@@ -1540,7 +1543,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorId: String,
         authorType: String,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        caption: String
     ) {
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed, authorId, isVideo)
@@ -1616,6 +1620,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed, authorId
                 )
             }
+            sheet.onEdit = {
+                openEditPostPage(caption, postId.toString())
+
+            }
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
@@ -1626,6 +1634,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             }
         }
+    }
+    private fun openEditPostPage(caption: String, postId: String) {
+        var createPostViewModel = CreatePostViewModel()
+        createPostViewModel.caption = caption
+        createPostViewModel.postId = postId
+        val intent = CreatePostActivityNew.createIntent(requireContext(), createPostViewModel,
+            TYPE_CONTENT_PREVIEW_PAGE)
+        startActivity(intent)
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {

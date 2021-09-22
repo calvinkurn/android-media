@@ -235,7 +235,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.deletable,
             feedXCard.followers,
             feedXCard.typename,
-            feedXCard.media.firstOrNull()?.type ?: ""
+            feedXCard.media.firstOrNull()?.type ?: "",
+            feedXCard.text
         )
     }
 
@@ -246,7 +247,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         deletable: Boolean,
         followers: FeedXFollowers,
         type: String,
-        mediaType: String
+        mediaType: String,
+        caption: String
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -374,8 +376,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 author.id,
                 authorType,
                 type,
-                isVideo
-            )
+                isVideo,
+                caption)
         }
     }
 
@@ -954,6 +956,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
             layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(feedXCard.products.isNotEmpty())
+
 
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())

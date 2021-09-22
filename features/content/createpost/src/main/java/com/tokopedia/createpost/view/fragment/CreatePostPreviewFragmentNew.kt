@@ -67,6 +67,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
         private const val PARAM_PRODUCT = "product"
+        private const val PARAM_SHOP_NAME = "shop_name"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -128,8 +129,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (getLatestTotalProductCount() < 5) {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
+            val imageWidth = ((mediaModel.imageView?.width))?.toFloat() ?: 0f
+            val imageHeight = ((mediaModel.imageView?.height))?.toFloat() ?: 0f
             createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
-                FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
+                FeedXMediaTagging(tagIndex = tagListSize,
+                    posX = 0.5f,
+                    posY = 0.5f,
+                    X = imageWidth/ 2,
+                    Y = imageHeight / 2))
             openProductTaggingScreen()
         } else {
             Toaster.build(requireView(),
@@ -446,6 +453,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun goToAttachProduct() {
             activity?.let{
                 val intent = RouteManager.getIntent(context, "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
+                intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
                 startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
             }
     }
