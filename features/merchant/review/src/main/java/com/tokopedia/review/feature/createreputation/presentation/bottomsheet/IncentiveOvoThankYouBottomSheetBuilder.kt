@@ -20,7 +20,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?,
         incentiveOvoListener: IncentiveOvoListener,
         trackerData: ThankYouBottomSheetTrackerData,
-        thankYouText: String
+        thankYouText: String,
+        thankYouImageUrl: String
     ): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
@@ -31,7 +32,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
             bottomSheetUnify,
             incentiveOvoListener,
             trackerData,
-            thankYouText
+            thankYouText,
+            thankYouImageUrl
         )
         return bottomSheetUnify
     }
@@ -42,7 +44,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         bottomSheet: BottomSheetUnify,
         incentiveOvoListener: IncentiveOvoListener,
         trackerData: ThankYouBottomSheetTrackerData,
-        thankYouText: String
+        thankYouText: String,
+        thankYouImageUrl: String
     ) {
         bottomSheet.run {
             view.apply {
@@ -72,7 +75,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
                         trackerData.productId,
                         trackerData.userId
                     )
-                    incentiveOvoSubmittedImage?.loadImage(productRevIncentiveOvoDomain?.productrevIncentiveOvo?.thankYouImage)
+                    incentiveOvoSubmittedImage?.loadImage(thankYouImageUrl)
                     incentiveOvoSubmittedTitle?.text = defaultTitle
                     incentiveOvoSubmittedSubtitle?.text = thankYouText
                     productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {

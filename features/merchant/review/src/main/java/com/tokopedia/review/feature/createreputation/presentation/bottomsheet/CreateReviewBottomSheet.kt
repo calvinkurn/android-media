@@ -113,6 +113,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var templatesSelectedCount = 0
     private var shouldShowThankYouBottomSheet = false
     private var thankYouBottomSheetText = ""
+    private var thankYouBottomSheetImageUrl = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -431,6 +432,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
         ovoDomain?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImageUrl = it.thankYouImage
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
@@ -1048,7 +1050,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     data,
                     this,
                     getThankYouBottomSheetTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImageUrl
                 )
             }
         }
