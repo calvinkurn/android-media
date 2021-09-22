@@ -187,7 +187,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         cardList.addAll(productDataList)
         if (cardList.size != 0) {
             if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
-                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
+                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink, listener = this))
             }
 
             adapter.submitList(cardList)
