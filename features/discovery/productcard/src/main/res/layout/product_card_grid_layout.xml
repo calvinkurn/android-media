@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageProduct"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewLabelCampaign"
@@ -60,7 +60,7 @@
             app:layout_constraintTop_toTopOf="@id/labelCampaignBackground"
             app:layout_constraintEnd_toEndOf="@id/labelCampaignBackground"
             app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelBestSeller"
@@ -73,7 +73,7 @@
             android:layout_marginTop="@dimen/product_card_label_best_seller_margintop"
             android:textColor="@color/Unify_N0"
             tools:text="# 1"
-            tools:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
             app:typographyType="small"
@@ -95,7 +95,7 @@
             app:layout_constraintStart_toEndOf="@id/labelBestSeller"
             app:typographyType="small"
             tools:text="Nomor 1 Kategory Anak"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/outOfStockOverlay"
