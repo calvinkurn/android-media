@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
@@ -48,8 +47,6 @@ class GetProfileDataUseCase @Inject constructor(
 
         return withContext(coroutineContext) {
             var userInfoData: UserPojo? = null
-
-            var ovoData: WalletBalanceModel? = null
             var saldoData: SaldoPojo? = null
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopData? = null
@@ -91,7 +88,7 @@ class GetProfileDataUseCase @Inject constructor(
             userMembershipData = (getUserMembershipCall.await()
                 .takeIf { it is Success } as? Success<MembershipPojo>)?.data
 
-            if (isABNewTokopoint()) tokopoint =
+            tokopoint =
                 (getTokopointCall.await()
                     .takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
 
@@ -101,19 +98,8 @@ class GetProfileDataUseCase @Inject constructor(
                 false
             }
 
-            if (!isEligibleForWalletApp) {
-                // check if tokopoint = 0 or null then follow old flow (fetch saldo)
-                if (tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull()
-                        .isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull()
-                        .isZero()
-                ) {
-                    ovoData = (getOvoCall.await()
-                        .takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                    tokopoint = null
-                }
-            } else {
+            if (isEligibleForWalletApp) {
                 walletAppData = try {
-                    ovoData = null
                     tokopoint = null
                     isWalletAppError = false
                     getWalletAppBalanceUseCase.executeOnBackground()
@@ -132,7 +118,6 @@ class GetProfileDataUseCase @Inject constructor(
 
             accountHeaderMapper.mapToHeaderModel(
                 userInfoData,
-                ovoData,
                 tokopoint,
                 saldoData,
                 userMembershipData,
