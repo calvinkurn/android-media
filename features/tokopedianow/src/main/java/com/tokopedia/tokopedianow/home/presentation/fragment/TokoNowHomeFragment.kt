@@ -254,8 +254,11 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onResume() {
         super.onResume()
-        checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart()
+        if (isChooseAddressWidgetDataUpdated()) {
+            onRefreshLayout()
+        } else {
+            getMiniCart()
+        }
         screenshotDetector?.start()
     }
 
@@ -1072,17 +1075,21 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
+        if (isChooseAddressWidgetDataUpdated()) {
+            updateCurrentPageLocalCacheModelData()
+        }
+    }
+
+    private fun isChooseAddressWidgetDataUpdated(): Boolean {
         localCacheModel?.let {
             context?.apply {
-                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                        this,
-                        it
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                    this,
+                    it
                 )
-                if (isUpdated) {
-                    updateCurrentPageLocalCacheModelData()
-                }
             }
         }
+        return false
     }
 
     private fun isChooseAddressWidgetShowed(): Boolean {
