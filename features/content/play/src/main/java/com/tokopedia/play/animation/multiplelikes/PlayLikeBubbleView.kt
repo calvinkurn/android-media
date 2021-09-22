@@ -345,7 +345,7 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         const val DECREASE_SHOT = -1
 
         const val DEFAULT_DELAY = 50L
-        const val SHOT_DISTANCE = 500
+        const val SHOT_DISTANCE = 750
         const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
         const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
         const val LOWER_BOUNCING_MULTIPLIER_X = 3
