@@ -303,8 +303,8 @@ class PlayViewModel @Inject constructor(
     val isCastAllowed: Boolean
         get() {
             val castState = observableCastState.value ?: return false
-            return castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
-                    && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)
+            return (castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
+                    && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
 
     private val isProductSheetInitialized: Boolean
