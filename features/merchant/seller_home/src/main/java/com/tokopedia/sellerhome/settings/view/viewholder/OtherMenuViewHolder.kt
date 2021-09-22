@@ -117,7 +117,6 @@ class OtherMenuViewHolder(
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
             setOnAnimationFinishedListener {
-                setShareButtonPosition()
                 hasShareButtonAnimationCompleted = true
             }
         }
@@ -409,25 +408,25 @@ class OtherMenuViewHolder(
     }
 
     private fun setBalanceSaldoLoading() {
-        balanceSaldoTextView?.invisible()
+        balanceSaldoTextView?.gone()
         errorLayoutSaldo?.gone()
         shimmerSaldo?.show()
     }
 
     private fun setBalanceTopadsLoading() {
-        balanceTopadsTopupView?.invisible()
+        balanceTopadsTopupView?.gone()
         errorLayoutTopads?.gone()
         shimmerTopads?.show()
     }
 
     private fun setBalanceSaldoFailed() {
-        balanceSaldoTextView?.invisible()
+        balanceSaldoTextView?.gone()
         errorLayoutSaldo?.show()
         shimmerSaldo?.gone()
     }
 
     private fun setBalanceTopadsFailed() {
-        balanceTopadsTopupView?.invisible()
+        balanceTopadsTopupView?.gone()
         errorLayoutTopads?.show()
         shimmerTopads?.gone()
     }

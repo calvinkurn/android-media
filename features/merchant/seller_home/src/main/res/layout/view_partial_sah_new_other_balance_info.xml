@@ -58,13 +58,14 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/shimmer_sah_new_other_balance_saldo"
                 android:layout_width="@dimen/sah_new_other_balance_info_shimmer_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/layout_lvl2"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_value"
-                app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_value"
+                app:layout_constraintTop_toBottomOf="@id/guideline_sah_new_other_saldo"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintVertical_bias="0.1"
                 app:corners="@integer/setting_shimmer_radius"/>
 
             <include
@@ -136,13 +137,14 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/shimmer_sah_new_other_topads"
                 android:layout_width="@dimen/sah_new_other_balance_info_shimmer_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/layout_lvl2"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/topads_topup_view_sah"
-                app:layout_constraintBottom_toBottomOf="@id/topads_topup_view_sah"
+                app:layout_constraintTop_toBottomOf="@id/guideline_sah_new_other_topads"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintVertical_bias="0.1"
                 app:corners="@integer/setting_shimmer_radius"/>
 
             <include
