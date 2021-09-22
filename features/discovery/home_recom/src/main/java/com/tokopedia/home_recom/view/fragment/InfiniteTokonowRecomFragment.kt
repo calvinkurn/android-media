@@ -237,7 +237,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.setMiniCartFromWidget(miniCartSimplifiedData)
+        getMiniCartData()
     }
 
     override fun onDestroy() {
