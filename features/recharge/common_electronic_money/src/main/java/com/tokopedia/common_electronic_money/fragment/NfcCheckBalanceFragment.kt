@@ -114,7 +114,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
                 onProcessTopupNow(getPassData(operatorId, issuerId))
             }
 
@@ -181,6 +181,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun getOperatorName(issuerId: Int): String {
         if (issuerId == ISSUER_ID_BRIZZI) {
             return OPERATOR_NAME_BRIZZI
+        } else if(issuerId == ISSUER_ID_TAP_CASH){
+            return OPERATOR_NAME_TAPCASH
         }
         return OPERATOR_NAME_EMONEY
     }
@@ -239,7 +241,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
 
         statusCloseBtn = SUCCESS_CLOSE_BTN
-        emoneyAnalytics.onShowLastBalance(emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
+        emoneyAnalytics.onShowLastBalance(operatorName, emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
                 emoneyInquiry.attributesEmoneyInquiry?.lastBalance,
                 userSession.userId, irisSessionId)
         emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
@@ -346,9 +348,11 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
+        const val ISSUER_ID_TAP_CASH = 3
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
+        const val OPERATOR_NAME_TAPCASH = "tapcash"
 
         const val ETOLL_CATEGORY_ID = "34"
 

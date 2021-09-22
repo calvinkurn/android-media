@@ -61,16 +61,16 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 action,
-                "")
+                operator)
         addComponentClickNFC(map,userId, irisSessionId)
     }
 
-    fun clickTopupEmoney(userId: String, irisSessionId: String) {
+    fun clickTopupEmoney(userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TOPUP,
-                "")
+                operatorName)
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
@@ -92,12 +92,12 @@ class EmoneyAnalytics {
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
-    fun onShowLastBalance(cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
+    fun onShowLastBalance(operatorName: String, cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.SUCCESS_CHECK_BALANCE,
-                "$cardNumber - $balance")
+                "$operatorName - $cardNumber - $balance")
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
