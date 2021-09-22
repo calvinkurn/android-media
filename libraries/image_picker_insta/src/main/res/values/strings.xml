@@ -10,7 +10,7 @@
     <string name="imagepicker_insta_akt_cam">Aktifkan akses kamera</string>
     <string name="imagepicker_insta_akt_mic">Aktifkan akses mikrofon</string>
     <string name="imagepicker_insta_akt_kam"><![CDATA[Aktifkan akses kamera & mikrofon]]></string>
-    <string name="imagepicker_insta_akt_sup_kamu">Supaya kamu bisa mengambil foto, video, dan membuat live streaming.></string>
+    <string name="imagepicker_insta_akt_sup_kamu">Supaya kamu bisa mengambil foto, video, dan membuat live streaming.</string>
     <string name="imagepicker_insta_loading"><![CDATA[Loading…]]></string>
     <string name="imagepicker_insta_no_media_available">No Media available</string>
     <string name="imagepicker_insta_utlam">Unable to load any media</string>
