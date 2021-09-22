@@ -52,6 +52,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
+import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -445,7 +446,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun onSuccessGetFirstRecommendationData(
         recommendation: RecommendationWidget,
-        tdnBanner: TopAdsImageViewModel
+        tdnBanner: TopAdsImageViewModel?
     ) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
@@ -464,7 +465,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     ) {
 
         list.forEachIndexed { index, recommendationItem ->
-            if (index == 4) adapter?.addItem(tdnBanner ?: "")
+            if (index == TDN_INDEX) tdnBanner?.let { adapter?.addItem(it) }
             adapter?.addItem(recommendationItem)
         }
         adapter?.notifyDataSetChanged()

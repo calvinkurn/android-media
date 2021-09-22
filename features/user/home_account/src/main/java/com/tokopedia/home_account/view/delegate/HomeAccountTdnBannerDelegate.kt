@@ -15,6 +15,7 @@ class HomeAccountTdnBannerDelegate :
     override fun onBindViewHolder(item: TopAdsImageViewModel, holder: TdnBannerViewHolder) {
         val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
         layoutParams.isFullSpan = true
+        holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TdnBannerViewHolder {

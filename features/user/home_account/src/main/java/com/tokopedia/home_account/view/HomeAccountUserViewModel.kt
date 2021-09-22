@@ -163,10 +163,17 @@ class HomeAccountUserViewModel @Inject constructor(
 
     }
 
-    private suspend fun getTdnBannerData(): TopAdsImageViewModel {
+    private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
         val queryParams =
-            topAdsImageViewUseCase.getQueryMap("", source = "16", "", 1, dimenId = 3, "")
-       return topAdsImageViewUseCase.getImageData(queryParams).first()
+            topAdsImageViewUseCase.getQueryMap(
+                AccountConstants.TDNBanner.EMPTY,
+                AccountConstants.TDNBanner.SOURCE,
+                AccountConstants.TDNBanner.EMPTY,
+                AccountConstants.TDNBanner.ADS_COUNT,
+                AccountConstants.TDNBanner.DIMEN_ID,
+                AccountConstants.TDNBanner.EMPTY
+            )
+       return topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
     }
 
     private suspend fun getRecommendationList(page: Int): RecommendationWidget {

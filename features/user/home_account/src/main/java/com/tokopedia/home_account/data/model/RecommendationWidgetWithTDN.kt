@@ -5,5 +5,5 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class RecommendationWidgetWithTDN(
     val recommendationWidget: RecommendationWidget,
-    val tdnBanner: TopAdsImageViewModel
+    val tdnBanner: TopAdsImageViewModel?
 )
