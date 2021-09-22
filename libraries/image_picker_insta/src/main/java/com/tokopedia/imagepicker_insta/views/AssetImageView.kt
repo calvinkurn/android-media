@@ -5,12 +5,15 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.net.Uri
+import android.os.Build
 import android.util.AttributeSet
+import android.util.Size
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.unifycomponents.toPx
+import timber.log.Timber
 
 open class AssetImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -56,7 +59,26 @@ open class AssetImageView @JvmOverloads constructor(
             .into(this)
     }
 
-    fun loadUriThumbnail(uri: Uri) {
+    fun loadUriThumbnail(uri: Uri, height: Int) {
+
+//        if (height < 1) {
+            loadGlideThumbnail(uri)
+//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            try {
+//                Glide.with(this)
+//                    .load(context.contentResolver.loadThumbnail(uri, Size(height, height), null))
+//                    .into(this)
+//            } catch (th: Throwable) {
+//                Timber.e(th)
+//                loadGlideThumbnail(uri)
+//            }
+//
+//        } else {
+//            loadGlideThumbnail(uri)
+//        }
+    }
+
+    fun loadGlideThumbnail(uri: Uri) {
         Glide.with(this)
             .load(uri)
             .thumbnail(0.33f)
@@ -64,8 +86,8 @@ open class AssetImageView @JvmOverloads constructor(
             .into(this)
     }
 
-    fun loadAssetThumbnail(asset: Asset) {
-        loadUriThumbnail(asset.contentUri)
+    fun loadAssetThumbnail(asset: Asset, height: Int) {
+        loadUriThumbnail(asset.contentUri, height)
     }
 
     fun removeAsset() {

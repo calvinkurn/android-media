@@ -57,8 +57,8 @@ class ToggleViewGroup @JvmOverloads constructor(
     fun loadAsset(asset: Asset){
         assetImageView.loadAsset(asset)
     }
-    fun loadAssetThumbnail(asset: Asset){
-        assetImageView.loadAssetThumbnail(asset)
+    fun loadAssetThumbnail(asset: Asset, height:Int){
+        assetImageView.loadAssetThumbnail(asset,height)
     }
 
     fun setChecked(isChecked:Boolean){

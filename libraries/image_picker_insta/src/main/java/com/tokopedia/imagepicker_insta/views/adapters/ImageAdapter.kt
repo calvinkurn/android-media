@@ -45,7 +45,7 @@ class ImageAdapter(
         return true
     }
 
-    fun addSelectedItem(data:ImageAdapterData){
+    fun addSelectedItem(data: ImageAdapterData) {
         selectedPositionMap[data] = selectedPositionMap.size + 1
     }
 
@@ -78,7 +78,7 @@ class ImageAdapter(
             holder.setData()
         } else if (holder is PhotosViewHolder) {
             val currentImageAdapterData = dataList[position]
-            holder.setData(currentImageAdapterData)
+            holder.setData(currentImageAdapterData, holder.itemView.layoutParams.height)
             holder.setChecked(selectedPositionMap[currentImageAdapterData], mainFragmentContract.isMultiSelectEnable())
 
             holder.itemView.setOnClickListener {
@@ -150,7 +150,7 @@ class ImageAdapter(
         }
     }
 
-    private fun notifyItems(){
+    private fun notifyItems() {
         val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
         val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
         (firstPos..lastPos).forEach { index ->
@@ -161,7 +161,7 @@ class ImageAdapter(
         }
     }
 
-    fun getListOfIndexWhichAreSelected():List<Int>{
+    fun getListOfIndexWhichAreSelected(): List<Int> {
         val list = arrayListOf<Int>()
         val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
         val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
@@ -192,7 +192,7 @@ class ImageAdapter(
 
     fun findPreviousSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
         var tempLowCount = 0
-        var key :ImageAdapterData? = null
+        var key: ImageAdapterData? = null
         for ((k, v) in selectedPositionMap) {
             if (v < circleCount && v > tempLowCount) {
                 tempLowCount = v
@@ -204,7 +204,7 @@ class ImageAdapter(
 
     fun findNextSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
         var tempHighCount = selectedPositionMap.size + 1
-        var key :ImageAdapterData?= null
+        var key: ImageAdapterData? = null
         for ((k, v) in selectedPositionMap) {
             if (v > circleCount && v < tempHighCount) {
                 tempHighCount = v
@@ -227,14 +227,9 @@ class ImageAdapter(
                 //Remove previously selected item
                 val rangeList = getListOfIndexWhichAreSelected()
                 selectedPositionMap.clear()
-                if(!rangeList.isNullOrEmpty()){
+                if (!rangeList.isNullOrEmpty()) {
                     notifyItemChanged(rangeList.first())
                 }
-//                   selectedPositionMap.clear()
-//                val previouslySelectedItemPosition = selectedPositionMap.keys.first()
-//                unSelectItem(previouslySelectedItemPosition)
-//                notifyItemChanged(previouslySelectedItemPosition)
-//                notifyItems()
             }
             addSelectedItem(position)
             holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())

@@ -22,8 +22,8 @@ class VideosViewHolder(videoView: View) : PhotosViewHolder(videoView) {
 
     val tvDuration = videoView.findViewById<Typography>(R.id.tv_duration)
 
-    override fun setData(imageAdapterData: ImageAdapterData) {
-        super.setData(imageAdapterData)
+    override fun setData(imageAdapterData: ImageAdapterData, contentHeight: Int) {
+        super.setData(imageAdapterData, contentHeight)
         tvDuration.text = (imageAdapterData.asset as? VideoData)?.durationText
     }
 }

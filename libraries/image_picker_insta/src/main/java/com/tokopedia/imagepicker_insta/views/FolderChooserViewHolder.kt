@@ -24,7 +24,6 @@ class FolderChooserViewHolder(listItemView: View):RecyclerView.ViewHolder(listIt
     fun setData(data:FolderData){
         tvFolderName.text = data.folderTitle
         tvSubtitle.text = data.folderSubtitle
-        image.loadUriThumbnail(data.thumbnailUri)
-
+        image.loadUriThumbnail(data.thumbnailUri,0)
     }
 }

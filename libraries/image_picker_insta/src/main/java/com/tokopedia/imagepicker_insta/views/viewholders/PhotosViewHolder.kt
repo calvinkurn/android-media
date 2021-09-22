@@ -31,7 +31,7 @@ open class PhotosViewHolder(photoView: View) : RecyclerView.ViewHolder(photoView
         }
     }
 
-    open fun setData(imageAdapterData: ImageAdapterData) {
-        assetView.loadAssetThumbnail(imageAdapterData.asset)
+    open fun setData(imageAdapterData: ImageAdapterData, contentHeight: Int) {
+        assetView.loadAssetThumbnail(imageAdapterData.asset, contentHeight)
     }
 }
