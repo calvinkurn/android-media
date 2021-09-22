@@ -10,7 +10,7 @@ class PriceSuggestionSuggestedPriceGetUseCase @Inject constructor(
         repository: GraphqlRepository): GraphqlUseCase<PriceSuggestionSuggestedPriceGetResponse>(repository) {
 
     companion object {
-        const val PARAM_PRODUCT_ID = "productId"
+        const val PARAM_PRODUCT_ID = "id"
         private val query =
                 """
                 query PriceSuggestionSuggestedPriceGet(${'$'}id: String) {
