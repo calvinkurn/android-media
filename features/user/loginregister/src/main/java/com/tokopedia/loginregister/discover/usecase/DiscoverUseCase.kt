@@ -18,7 +18,16 @@ open class DiscoverUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: String): DiscoverPojo {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), getParams(params))
     }
 
+    private fun getParams(
+        type: String
+    ): Map<String, Any> = mapOf(
+        PARAM_TYPE to type
+    )
+
+    companion object {
+        private const val PARAM_TYPE = "type"
+    }
 }
