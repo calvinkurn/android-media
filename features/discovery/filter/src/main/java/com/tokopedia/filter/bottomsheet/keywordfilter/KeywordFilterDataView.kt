@@ -82,7 +82,7 @@ internal class KeywordFilterDataView(
     private fun isContainedInOriginalKeyword(sanitizeKeyword: String) =
         originalKeyword
             .split(" ")
-            .contains(sanitizeKeyword)
+            .any { it.equals(sanitizeKeyword, ignoreCase = true) }
 
     private fun isExistsAsNegativeKeyword(sanitizeKeyword: String) =
         itemList.map { it.negativeKeyword }.contains(sanitizeKeyword)

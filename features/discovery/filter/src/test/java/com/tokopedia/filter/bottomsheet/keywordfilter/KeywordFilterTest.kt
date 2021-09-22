@@ -137,15 +137,15 @@ internal class KeywordFilterTest {
     }
 
     @Test
-    fun `addKeyword cannot add word contained in original keyword`() {
+    fun `addKeyword cannot add word contained in original keyword (ignore case)`() {
         val dataView = KeywordFilterDataView(
             filter = "keywordfilter/keyword-filter-multiword-main-keyword.json".jsonToObject(),
         )
 
-        dataView.addKeyword("tv")
+        dataView.addKeyword("TV")
 
-        dataView.itemList.size shouldBe 0
         assertThat(error, instanceOf(IsOriginalKeyword::class.java))
+        dataView.itemList.size shouldBe 0
     }
 
     @Test
