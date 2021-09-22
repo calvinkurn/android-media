@@ -726,6 +726,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun showUniversalShareBottomSheet(storageImageUrl: String) {
+        universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@OtherMenuFragment)
             setUtmCampaignData(
@@ -744,7 +745,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             activity?.supportFragmentManager?.let { fm ->
                 shareBottomSheet.run {
                     imageSaved(storageImageUrl)
-                    show(fm, this)
+                    show(fm, this@OtherMenuFragment)
 
                     NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
                         userSession.shopId, userSession.userId
