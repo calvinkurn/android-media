@@ -37,6 +37,8 @@ import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayout
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
@@ -554,7 +556,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         miniCartSimplifiedData = miniCart
         layoutList.updateProductATCQuantity(miniCart)
-        layoutList.updateDeletedATCQuantity(miniCart)
+        layoutList.updateDeletedATCQuantity(miniCart, PRODUCT_REPURCHASE)
+        layoutList.updateDeletedATCQuantity(miniCart, PRODUCT_RECOMMENDATION)
     }
 
     private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {

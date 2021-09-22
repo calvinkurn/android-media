@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.*
@@ -27,6 +28,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -254,7 +256,11 @@ class TokoNowRecentPurchaseFragment:
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        // TO-DO :
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            recomItem.productId.toString(),
+        )
     }
 
     override fun onATCNonVariantRecommendationCarouselItem(
@@ -264,7 +270,11 @@ class TokoNowRecentPurchaseFragment:
         recommendationCarouselPosition: Int,
         quantity: Int
     ) {
-        // TO-DO :
+        if (userSession.isLoggedIn) {
+            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, recomItem.shopId.toString())
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     override fun onAddVariantRecommendationCarouselItem(
@@ -272,7 +282,10 @@ class TokoNowRecentPurchaseFragment:
         data: RecommendationCarouselData,
         recomItem: RecommendationItem
     ) {
-        // TO-DO :
+        val productId = recomItem.productId.toString()
+        val shopId = recomItem.shopId.toString()
+
+        openATCVariantBottomSheet(productId, shopId)
     }
 
     override fun onClickSortFilter() {
@@ -702,6 +715,20 @@ class TokoNowRecentPurchaseFragment:
             isEnabled = true
             isRefreshing = false
         }
+    }
+
+    private fun openATCVariantBottomSheet(productId: String, shopId: String) {
+        val context = context ?: return
+
+        AtcVariantHelper.goToAtcVariant(
+            context = context,
+            productId = productId,
+            pageSource = SOURCE,
+            isTokoNow = true,
+            shopId = shopId,
+            trackerCdListName = "",
+            startActivitResult = this::startActivityForResult,
+        )
     }
 
     private fun createProductCardListener(): RepurchaseProductCardListener {
