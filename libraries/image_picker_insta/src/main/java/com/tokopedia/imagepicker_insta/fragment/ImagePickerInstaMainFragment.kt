@@ -27,6 +27,7 @@ import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -72,7 +73,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity, hasReadPermission(), menu) { proceedNextStep() }
+        MenuManager.addCustomMenu(activity, hasReadPermission(), menu) {
+            proceedNextStep()
+            TrackerProvider.tracker?.onNextButtonClick()
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -88,6 +92,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
                 proceedNextStep()
+                TrackerProvider.tracker?.onNextButtonClick()
                 return true
             }
         }
@@ -205,6 +210,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
         val toolbarNavIcon: AppCompatImageView = v.findViewById(R.id.toolbar_nav_icon)
         toolbarNavIcon.setOnClickListener {
+            TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
 
@@ -312,6 +318,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun handleOnCameraIconTap() {
         openCamera()
+        TrackerProvider.tracker?.onCameraButtonFromPickerClick()
     }
 
     override fun showToast(message: String, toasterType: Int) {
@@ -333,7 +340,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
-                LiveDataResult.STATUS.LOADING -> { }
+                LiveDataResult.STATUS.LOADING -> {
+                }
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     imageDataList.clear()

@@ -3,12 +3,12 @@ package com.tokopedia.imagepicker_insta.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import androidx.annotation.IntRange
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.models.BundleData
+import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 
 class ImagePickerInstaActivity : PermissionActivity() {
@@ -104,17 +104,12 @@ class ImagePickerInstaActivity : PermissionActivity() {
         if (!applinkForBackNavigation.isNullOrEmpty()) {
             RouteManager.route(this, applinkForBackNavigation)
         }
+        TrackerProvider.removeTracker()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-//        when(keyCode){
-//            KeyEvent.KEYCODE_VOLUME_DOWN->{
-//                getAttachedFragment()?.onVolumeDown()
-//            }
-//            KeyEvent.KEYCODE_VOLUME_UP->{
-//                getAttachedFragment()?.onVolumeUp()
-//            }
-//        }
-        return super.onKeyDown(keyCode, event)
+    override fun onBackPressed() {
+        super.onBackPressed()
+        TrackerProvider.tracker?.onBackButtonFromPicker()
+        TrackerProvider.removeTracker()
     }
 }

@@ -43,7 +43,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
     implementation 'com.github.MasayukiSuda:Mp4Composer-android:v0.4.1'
-//    implementation rootProject.ext.miscDependencies.zoomHeler
     implementation 'com.otaliastudios:zoomlayout:1.8.0'
     implementation projectOrAar(rootProject.ext.features.medialoader)
 

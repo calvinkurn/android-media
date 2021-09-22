@@ -19,7 +19,6 @@ class CameraViewHolder(val listItemView: View, val onCameraIconClick:Function0<U
         }
     }
 
-    val imageImage = itemView.findViewById<AppCompatImageView>(R.id.item_view_image_camera)
     fun setData() {
         listItemView.setOnClickListener {
             onCameraIconClick.invoke()

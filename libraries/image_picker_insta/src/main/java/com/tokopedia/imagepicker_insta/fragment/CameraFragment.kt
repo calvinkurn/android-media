@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
+import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
@@ -193,6 +194,7 @@ class CameraFragment : Fragment() {
             override fun onClick() {
                 cameraView.mode = Mode.PICTURE
                 capturePhoto()
+                TrackerProvider.tracker?.onRecordButtonClick()
             }
 
             override fun onLongClickStart() {
@@ -204,6 +206,7 @@ class CameraFragment : Fragment() {
 
             override fun onLongClickEnd() {
                 stopRecordingVideo()
+                TrackerProvider.tracker?.onRecordButtonClick()
             }
         }
 
