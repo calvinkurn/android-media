@@ -45,6 +45,8 @@ data class Url(
         val PLAY: String,
         val WS_PLAY: String,
         val HUB: String,
-        val PCIDSS_CREDIT_CARD: String
+        val PCIDSS_CREDIT_CARD: String,
+        val GOJEK_OTP: String,
+        val GOPAY_PIN: String
 )
 
