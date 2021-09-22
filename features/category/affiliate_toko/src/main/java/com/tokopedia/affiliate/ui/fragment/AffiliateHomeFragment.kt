@@ -150,11 +150,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
-            affiliatePerformance.getAffiliateItemsPerformanceList.data?.sectionData?.let { sectionData ->
+            affiliatePerformance.getAffiliateItemsPerformanceList?.data?.sectionData?.let { sectionData ->
                 affiliate_products_count.text = getString(R.string.affiliate_product_count, sectionData.itemTotalCount.toString())
                 if (sectionData.items?.isNotEmpty() == true) {
                     for (product in sectionData.items!!) {
-                        adapter.addElement(AffiliateSharedProductCardsModel(product))
+                        product?.let {
+                            adapter.addElement(AffiliateSharedProductCardsModel(product))
+                        }
                     }
                 } else {
                     showNoAffiliate()

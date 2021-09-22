@@ -1,7 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Validate: String = """query validateAffiliateUserStatus(${"$"}email : String!)
-{
+const val GQL_Affiliate_Validate: String = """query validateAffiliateUserStatus(${"$"}email : String!){
   validateAffiliateUserStatus(email: ${"$"}email) {
     Data {
       Status

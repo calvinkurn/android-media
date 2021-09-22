@@ -6,14 +6,14 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
-import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatus
+import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val affiliateValidateUseCase: AffiliateValidateUserStatus,
+        private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
         private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
@@ -25,7 +25,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             progressBar.value = false
-            validateUserdata.value = affiliateValidateUseCase.validateUserStatus(userSessionInterface.email)
+            validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             progressBar.value = false
             it.printStackTrace()

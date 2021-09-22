@@ -5,7 +5,7 @@ import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Validate
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 
-class AffiliateValidateUserStatus @Inject constructor(
+class AffiliateValidateUserStatusUseCase @Inject constructor(
         private val repository: AffiliateRepository) {
 
     private fun createRequestParams(email: String): HashMap<String, Any> {
