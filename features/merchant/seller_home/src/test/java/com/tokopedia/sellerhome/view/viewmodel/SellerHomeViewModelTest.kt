@@ -741,7 +741,7 @@ class SellerHomeViewModelTest {
 
             viewModel.getMilestoneWidgetData(dataKeys)
 
-            coVerify {
+            verify {
                 getMilestoneDataUseCase.params = any()
             }
 
