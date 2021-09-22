@@ -726,6 +726,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun showUniversalShareBottomSheet(storageImageUrl: String) {
+        universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@OtherMenuFragment)
             setUtmCampaignData(
