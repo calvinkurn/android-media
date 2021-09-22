@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cal
 
 import android.content.res.Resources
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -45,7 +47,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
         calendarWidgetItemViewModel.components.let {
             setView(it.properties?.calendarLayout)
+            Log.d("niranjan ${adapterPosition}", adapterPosition.toString())
             it.data?.firstOrNull()?.apply {
+                Log.d("niranjan ${adapterPosition}", this.textDate.toString())
                 setUpCalendar(this)
             }
         }
@@ -79,6 +83,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setUpCalendar(dataItem: DataItem) {
         val calendarParent: ConstraintLayout = itemView.findViewById(R.id.calendar_parent)
+        val calendarExpiredAlpha: View = itemView.findViewById(R.id.calendar_expired_alpha)
         val calendarDateAlpha: View = itemView.findViewById(R.id.calendar_date_alpha)
         val calendarDate: Typography = itemView.findViewById(R.id.calendar_date)
         val calendarTitleImage: ImageUnify = itemView.findViewById(R.id.calendar_title_image)
@@ -87,6 +92,14 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
         dataItem.apply {
+            if(Utils.isSaleOver(endDate?: "")){
+                calendarExpiredAlpha.show()
+                calendarButton.isEnabled = false
+                calendarButton.text = itemView.context.getString(R.string.discovery_button_expired)
+            } else {
+                calendarExpiredAlpha.hide()
+                calendarButton.isEnabled = true
+            }
             calendarDate.text = textDate
             if (!boxColor.isNullOrEmpty() && boxColor != BLACK) {
                 calendarDateAlpha.show()
