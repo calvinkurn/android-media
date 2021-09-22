@@ -205,19 +205,19 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        val padding2 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_3)
-        val padding5 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_6)
-
-        if (isLastPosition) {
-            iconImageContainer.setPadding(padding2, 0, 0, 0)
-        } else {
-            if(position == 0) {
-                iconImageContainer.setPadding(padding5, 0, padding2, 0)
-            }
-            else {
-                iconImageContainer.setPadding(padding2, 0, padding2, 0)
-            }
-        }
+//        val padding2 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_3)
+//        val padding5 = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_6)
+//
+//        if (isLastPosition) {
+//            iconImageContainer.setPadding(padding2, 0, 0, 0)
+//        } else {
+//            if(position == 0) {
+//                iconImageContainer.setPadding(padding5, 0, padding2, 0)
+//            }
+//            else {
+//                iconImageContainer.setPadding(padding2, 0, padding2, 0)
+//            }
+//        }
 
         iconImageContainer.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
