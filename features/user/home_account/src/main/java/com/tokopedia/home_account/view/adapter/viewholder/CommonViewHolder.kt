@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.home_account_item_common.view.*
  * Created by Yoris Prayogo on 16/10/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : BaseViewHolder(itemView) {
+class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) :
+    BaseViewHolder(itemView) {
 
     fun bind(common: CommonDataView) {
         with(itemView) {
@@ -24,7 +25,11 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : 
                 account_user_item_common_icon?.setImage(common.icon)
             }
             if (common.urlIcon.isNotEmpty()) {
-                ImageHandler.loadImageFit2(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)
+                ImageHandler.loadImageFit2(
+                    account_user_item_common_icon.context,
+                    account_user_item_common_icon,
+                    common.urlIcon
+                )
             }
 
             itemView.setOnClickListener {
@@ -48,7 +53,11 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : 
                     account_user_item_common_body?.text = common.body
                     account_user_item_common_switch?.isChecked = common.isChecked
                     account_user_item_common_switch?.setOnCheckedChangeListener { _, isChecked ->
-                        listener.onSwitchChanged(common, isChecked, account_user_item_common_switch)
+                        listener.onSwitchChanged(
+                            common,
+                            isChecked,
+                            account_user_item_common_switch
+                        )
                     }
                 }
                 else -> {
@@ -61,7 +70,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : 
 
     private fun setupLabel(common: CommonDataView) {
         val label: Label? = itemView.findViewById(R.id.account_user_label)
-        if(common.labelText.isNotEmpty()) {
+        if (common.labelText.isNotEmpty()) {
             label?.setLabel(common.labelText)
             label?.show()
         } else {

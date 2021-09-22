@@ -55,7 +55,7 @@ class WholesaleActivity : BaseSimpleActivity() {
     }
 
     fun showData() {
-        val productWholesalePrices = intent.getParcelableArrayListExtra<Wholesale>(KEY_WHOLESALE_DATA)
+        val productWholesalePrices = intent.getParcelableArrayListExtra(KEY_WHOLESALE_DATA) ?: ArrayList<Wholesale>()
         wholesaleAdapter!!.setData(productWholesalePrices)
     }
 

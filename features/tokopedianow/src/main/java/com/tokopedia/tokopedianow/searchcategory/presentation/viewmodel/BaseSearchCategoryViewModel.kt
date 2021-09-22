@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -51,8 +52,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -242,11 +245,14 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun isABTestNavigationRevamp() =
             getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
+                || getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP2
 
     private fun getNavigationExpVariant() =
             abTestPlatformWrapper
                     .getABTestRemoteConfig()
-                    ?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
+                    ?.getString(NAVIGATION_EXP_TOP_NAV, abTestPlatformWrapper
+                    .getABTestRemoteConfig()
+                    ?.getString(NAVIGATION_EXP_TOP_NAV2, NAVIGATION_VARIANT_OLD))
 
     open fun onViewCreated() {
         val shopId = chooseAddressData?.shop_id ?: ""
@@ -335,6 +341,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
         appendChooseAddressParams(tokonowQueryParam)
+        appendUniqueIdParam(tokonowQueryParam)
     }
 
     private fun appendDeviceParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -358,6 +365,10 @@ abstract class BaseSearchCategoryViewModel(
             tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
         if (chooseAddressData.warehouse_id.isNotEmpty())
             tokonowQueryParam[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
+    }
+
+    protected open fun appendUniqueIdParam(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam[SearchApiConst.UNIQUE_ID] = getUniqueId()
     }
 
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -602,7 +613,7 @@ abstract class BaseSearchCategoryViewModel(
             if (product.childs.isEmpty())
                 NonVariantATCDataView(
                         minQuantity = product.minOrder,
-                        maxQuantity = product.stock,
+                        maxQuantity = product.maxOrder,
                         quantity = getProductNonVariantQuantity(product.id)
                 )
             else null
@@ -871,9 +882,10 @@ abstract class BaseSearchCategoryViewModel(
     open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
 
-        viewModelScope.launch {
-            updateMiniCartInBackground(miniCartSimplifiedData)
-        }
+        viewModelScope.launchCatchError(
+            block = { updateMiniCartInBackground(miniCartSimplifiedData) },
+            onError = { }
+        )
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -1354,6 +1366,10 @@ abstract class BaseSearchCategoryViewModel(
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
     )
+
+    private fun getUniqueId() =
+        if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
+        else AuthHelper.getMD5Hash(userSession.deviceId)
 
     companion object {
         const val NO_VARIANT_PARENT_PRODUCT_ID = "0"

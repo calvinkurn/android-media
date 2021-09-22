@@ -19,12 +19,25 @@ class DataViewMapper @Inject constructor(
         private val userSession: UserSessionInterface
 ) {
 
-    fun mapToProfileDataView(accountDataModel: UserAccountDataModel): ProfileDataView {
+    fun mapToProfileDataView(accountDataModel: UserAccountDataModel, isEnableLinkAccount: Boolean = false): ProfileDataView {
+        var linkStatus = false
+        var isShowLinkAccount = false
+
+        if (accountDataModel.linkStatus.linkStatus.isNotEmpty()) {
+            linkStatus = accountDataModel.linkStatus.linkStatus[0].status == "linked"
+        }
+
+        if(isEnableLinkAccount || linkStatus) {
+            isShowLinkAccount = true
+        }
+
         return ProfileDataView(
-                name = accountDataModel.profile.fullName,
-                phone = userSession.phoneNumber,
-                email = userSession.email,
-                avatar = accountDataModel.profile.profilePicture,
+            name = accountDataModel.profile.fullName,
+            phone = userSession.phoneNumber,
+            email = userSession.email,
+            avatar = accountDataModel.profile.profilePicture,
+            isLinked = linkStatus,
+            isShowLinkStatus = isShowLinkAccount
         )
     }
 

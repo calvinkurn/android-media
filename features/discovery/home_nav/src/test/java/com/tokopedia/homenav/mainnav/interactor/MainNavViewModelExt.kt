@@ -9,7 +9,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase

@@ -8,11 +8,15 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -27,20 +31,22 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
-        private val userSession: UserSessionInterface,
-        private val accountPref: AccountPreference,
-        private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
-        private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-        private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
-        private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
-        private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
-        private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-        private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
-        private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatchers
+    @Named(SessionModule.SESSION_MODULE)
+    private val userSession: UserSessionInterface,
+    private val accountPref: AccountPreference,
+    private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
+    private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
+    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
+    private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
+    private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
+    private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
+    private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
+    private val getLinkStatusUseCase: GetLinkStatusUseCase,
+    private val getPhoneUseCase: GetUserProfile,
+    private val walletPref: WalletPref,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
@@ -79,11 +85,27 @@ class HomeAccountUserViewModel @Inject constructor(
     val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
         get() = _balanceAndPoint
 
+    private val _phoneNo = MutableLiveData<String>()
+    val phoneNo: LiveData<String> get() = _phoneNo
+
     private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
     val walletEligible: LiveData<Result<WalletappWalletEligibility>>
         get() = _walletEligible
 
     var internalBuyerData: UserAccountDataModel? = null
+
+    fun refreshPhoneNo() {
+        launchCatchError(block = {
+            val profile = getPhoneUseCase(RequestParams.EMPTY)
+            val phone = profile.profileInfo.phone
+            if (phone.isNotEmpty()) {
+                userSession.phoneNumber = phone
+                _phoneNo.postValue(phone)
+            }
+        }, onError = {
+            _phoneNo.postValue("")
+        })
+    }
 
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
@@ -107,9 +129,17 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
+    private suspend fun getLinkStatus(): LinkStatusResponse {
+        val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
+        return getLinkStatusUseCase(params)
+    }
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+            val linkStatus = getLinkStatus()
+            accountModel.linkStatus = linkStatus.response
+
             withContext(dispatcher.main) {
                 internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)
@@ -142,14 +172,15 @@ class HomeAccountUserViewModel @Inject constructor(
 
     }
 
-    private fun getRecommendationList(page: Int): RecommendationWidget {
-        val params = getRecommendationUseCase.getRecomParams(
-                page,
-                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
-                AKUN_PAGE,
-                emptyList()
+    private suspend fun getRecommendationList(page: Int): RecommendationWidget {
+        val recommendationParams = GetRecommendationRequestParam(
+            pageNumber = page,
+            xSource = DEFAULT_VALUE_X_SOURCE,
+            pageName = AKUN_PAGE,
+            productIds = emptyList(),
+            xDevice = DEFAULT_VALUE_X_DEVICE
         )
-        return getRecommendationUseCase.createObservable(params).toBlocking().first()[0]
+        return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
     fun getCentralizedUserAssetConfig(entryPoint: String) {
@@ -240,6 +271,9 @@ class HomeAccountUserViewModel @Inject constructor(
 
     companion object {
         private const val AKUN_PAGE = "account"
+
+        private const val DEFAULT_VALUE_X_SOURCE = "recom_widget"
+        private const val DEFAULT_VALUE_X_DEVICE = "android"
 
         private const val GOPAY_PARTNER_CODE = "PEMUDA"
         private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"

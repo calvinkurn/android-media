@@ -73,8 +73,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -82,6 +84,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -101,8 +104,10 @@ private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
+private const val EXP_NAME2 = NAVIGATION_EXP_TOP_NAV2
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val VARIANT_REVAMP2 = NAVIGATION_VARIANT_REVAMP2
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
 const val SCREENSHOT_SHARE_SHEET = 2
@@ -152,6 +157,7 @@ class DiscoveryFragment :
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
     private var isManualScroll = true
@@ -206,6 +212,18 @@ class DiscoveryFragment :
         initToolbar(view)
         initChooseAddressWidget(view)
         initView(view)
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this, addFragmentLifecycleObserver = true)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     private fun initChooseAddressWidget(view: View) {
@@ -215,7 +233,13 @@ class DiscoveryFragment :
     }
 
     private fun initToolbar(view: View) {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        showOldToolbar = !(RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            EXP_NAME,
+            VARIANT_OLD
+        ).equals(VARIANT_REVAMP, true) ||
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, VARIANT_OLD)
+                    .equals(VARIANT_REVAMP2, true)
+                )
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
@@ -608,7 +632,7 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -968,7 +992,6 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -988,7 +1011,6 @@ class DiscoveryFragment :
         }
         getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent, isManualScroll)
         openScreenStatus = false
-        UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
@@ -1058,11 +1080,17 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -1073,7 +1101,10 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return EMPTY_STRING
+        return if((context as DiscoveryActivity).isFromCategory())
+                (context as DiscoveryActivity).getPageIdentifier()
+            else
+                EMPTY_STRING
     }
 
     private fun fetchUserLatestAddressData() {

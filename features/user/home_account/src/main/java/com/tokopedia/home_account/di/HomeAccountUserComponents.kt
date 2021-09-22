@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
+import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
@@ -17,7 +18,7 @@ import dagger.Component
     HomeAccountUserUsecaseModules::class,
     HomeAccountUserViewModelModules::class,
     HomeAccountUserQueryModules::class,
-    RecommendationModule::class,
+    RecommendationCoroutineModule::class,
     SessionModule::class], dependencies = [BaseAppComponent::class])
 interface HomeAccountUserComponents {
     fun inject(view: HomeAccountUserFragment?)

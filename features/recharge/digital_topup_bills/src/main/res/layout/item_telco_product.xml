@@ -19,10 +19,10 @@
             android:id="@+id/telco_label_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:visibility="gone"
             tools:visibility="visible"
-            tools:labelTitle="Eksklusif" />
+            tools:labelTitle="Traktiran Pengguna Baru" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/telco_prepaid_title_product"
@@ -30,8 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/telco_label_product"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
@@ -95,7 +94,7 @@
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/product_promo_price"
+            android:layout_alignTop="@+id/telco_product_promo_price"
             android:layout_alignBottom="@+id/telco_product_price"
             android:gravity="center_vertical"
             android:lines="1"

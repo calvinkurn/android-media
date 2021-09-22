@@ -3,27 +3,17 @@ package com.tokopedia.play.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.domain.PostLikeUseCase
-import com.tokopedia.play.view.uimodel.recom.PlayLikeParamInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayInteractionViewModel @Inject constructor(
-        private val postLikeUseCase: PostLikeUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
@@ -34,19 +24,5 @@ class PlayInteractionViewModel @Inject constructor(
                 if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
                 else LoginStateEvent.InteractionAllowed(event)
         )
-    }
-
-    fun doLikeUnlike(likeParamInfo: PlayLikeParamInfoUiModel, shouldLike: Boolean) {
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(
-                        contentId = likeParamInfo.contentId.toLongOrZero(),
-                        contentType = likeParamInfo.contentType.orZero(),
-                        likeType = likeParamInfo.likeType.orZero(),
-                        action = shouldLike
-                )
-                postLikeUseCase.executeOnBackground()
-            }
-        }) {}
     }
 }

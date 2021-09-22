@@ -71,6 +71,8 @@ object AccountConstants {
             const val CATEGORY_ACCOUNT_BUYER = "akun saya pembeli"
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
             const val CATEGORY_SETTING_PAGE = "setting page"
+            const val CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK = "account page setting - gojek"
+            const val CATEGORY_ACCOUNT_PAGE_SETTING_LINK = "akun saya pembeli"
             const val CATEGORY_FUNDS_AND_INVESTMENT_PAGE = "dana and investasi page"
         }
 
@@ -90,6 +92,12 @@ object AccountConstants {
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
+            const val ACTION_CLICK_LINK_ACC_GOJEK = "click link account to gojek"
+            const val ACTION_CLICK_SETTING_LINK_ACC = "click on application setting section"
+            const val ACTION_CLICK_BACK = "click on button back"
+            const val ACTION_CLICK_LINK_ACC = "click hubungkan akun"
+            const val ACTION_CLICK_ACC_GOJEK = "click account gojek connected"
+            const val ACTION_CLICK_HELP_LINK_ACC = "click help page to unlink gojek account"
             const val ACTION_CLICK_ON_KONTEN_GAGAL = "click on konten gagal ditampilkan coba lagi"
             const val ACTION_CLICK_ON_TOKOPEDIA_PAY_LIHAT_SEMUA = "click on tokopedia pay - lihat semua"
             const val ACTION_CLICK_ON = "click on "
@@ -126,6 +134,7 @@ object AccountConstants {
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
             const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+            const val LABEL_CONNECTED_ACC = "Akun yang terhubung"
             const val LABEL_RETRY = "coba lagi"
             const val LABEL_CONNECT = "sambungkan"
             const val LABEL_ACTIVATE = "aktivasi"
@@ -200,6 +209,7 @@ object AccountConstants {
         const val SETTING_QUALITY_SETTING = 49
         const val SETTING_DARK_MODE = 50
         const val SETTING_VIEW_ALL_BALANCE = 51
+        const val SETTING_LINK_ACCOUNT = 51
     }
 
     object KEY {

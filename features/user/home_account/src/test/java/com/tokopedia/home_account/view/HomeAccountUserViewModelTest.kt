@@ -9,7 +9,7 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -148,10 +148,10 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Successfully get recommendation first page`() {
-        val expectedResult = mutableListOf(RecommendationWidget())
+        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
         coEvery {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns expectedResult
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
 
         viewModel.getFirstRecommendation()
 
@@ -165,10 +165,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation load more`() {
         val testPage = 2
-        val expectedResult = mutableListOf(RecommendationWidget())
+        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
         coEvery {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns expectedResult
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
 
         viewModel.getRecommendation(testPage)
 
@@ -181,9 +181,9 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Failed to get first recommendation`() {
-        val expectedResult = Throwable()
+        val expectedResult = mockk<Throwable>(relaxed = true)
         coEvery {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking()
+            homeAccountRecommendationUseCase.getData(any())
         } throws expectedResult
 
         viewModel.getFirstRecommendation()
@@ -198,9 +198,9 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Failed to get more recommendation`() {
         val testPage = 2
-        val expectedResult = Throwable()
+        val expectedResult = mockk<Throwable>(relaxed = true)
         coEvery {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking()
+            homeAccountRecommendationUseCase.getData(any())
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)
@@ -210,6 +210,76 @@ class HomeAccountUserViewModelTest {
         }
         print(viewModel.getRecommendationData.value)
         Assert.assertEquals((viewModel.getRecommendationData.value as Fail).throwable, expectedResult)
+    }
+
+    @Test
+    fun `Failed get user page asset config`() {
+        viewModel.userPageAssetConfig.observeForever(userPageAssetConfigObserver)
+        coEvery { userPageAssetConfigUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+
+        viewModel.getUserPageAssetConfig()
+
+        verify { userPageAssetConfigObserver.onChanged(any<Fail>()) }
+        assert(viewModel.userPageAssetConfig.value is Fail)
+
+        val result = viewModel.userPageAssetConfig.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get saldo balance`() {
+        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
+        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } returns successGetSaldoBalanceResponse
+
+        viewModel.getSaldoBalance()
+
+        verify { saldoBalanceObserver.onChanged(any<Success<Balance>>()) }
+        assert(viewModel.saldoBalance.value is Success)
+
+        val result = viewModel.saldoBalance.value as Success<Balance>
+        assert(result.data == successGetSaldoBalanceResponse.data)
+    }
+
+    @Test
+    fun `Failed get saldo balance`() {
+        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
+        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+
+        viewModel.getSaldoBalance()
+
+        verify { saldoBalanceObserver.onChanged(any<Fail>()) }
+        assert(viewModel.saldoBalance.value is Fail)
+
+        val result = viewModel.saldoBalance.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get tokopoints`() {
+        viewModel.tokopoints.observeForever(tokopointsObserver)
+        coEvery { homeAccountTokopointsUseCase(Unit) } returns successGetTokopointsResponse
+
+        viewModel.getTokopoints()
+
+        verify { tokopointsObserver.onChanged(any<Success<PointDataModel>>()) }
+        assert(viewModel.tokopoints.value is Success)
+
+        val result = viewModel.tokopoints.value as Success<PointDataModel>
+        assert(result.data == successGetTokopointsResponse.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
+    }
+
+    @Test
+    fun `Failed get tokopoints`() {
+        viewModel.tokopoints.observeForever(tokopointsObserver)
+        coEvery { homeAccountTokopointsUseCase(Unit) } coAnswers { throw throwableResponse }
+
+        viewModel.getTokopoints()
+
+        verify { tokopointsObserver.onChanged(any<Fail>()) }
+        assert(viewModel.tokopoints.value is Fail)
+
+        val result = viewModel.tokopoints.value as Fail
+        assertEquals(throwableResponse, result.throwable)
     }
 
     @Test
