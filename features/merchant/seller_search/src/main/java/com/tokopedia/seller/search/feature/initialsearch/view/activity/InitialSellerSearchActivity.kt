@@ -80,7 +80,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         super.onBackPressed()
         SellerSearchTracking.clickBackButtonSearchEvent(
             userId,
-            globalSearchView?.binding?.searchBarView?.searchBarTextField?.text?.trim().toString()
+            globalSearchView?.binding?.searchBarView?.searchBarTextField?.text?.trim().toString().orEmpty()
         )
     }
 
