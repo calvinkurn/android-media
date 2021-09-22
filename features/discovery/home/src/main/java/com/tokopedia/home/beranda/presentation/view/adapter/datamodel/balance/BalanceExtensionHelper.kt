@@ -16,6 +16,8 @@ const val selectedWallet = "PEMUDA"
 const val WALLET_CODE_GOPAY = "PEMUDA"
 const val WALLET_CODE_GOPAY_POINTS = "PEMUDAPOINTS"
 const val defaultActivationCta = "Sambungkan"
+private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
+private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
@@ -169,16 +171,16 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel?
             if (gopayBalance?.amountFmt?.isEmpty() == true) {
                 HomeServerLogger.logWarning(
                     type = HomeServerLogger.TYPE_WALLET_BALANCE_EMPTY,
-                    throwable = MessageErrorException("Wallet app is linked but gopay balance return empty"),
-                    reason = "Wallet app is linked but gopay balance return empty",
+                    throwable = MessageErrorException(ERROR_GOPAY_EMPTY),
+                    reason = ERROR_GOPAY_EMPTY,
                     data = selectedBalance.walletName
                 )
                 return null
             } else if (gopayPointsBalance?.amountFmt?.isEmpty() == true) {
                 HomeServerLogger.logWarning(
                     type = HomeServerLogger.TYPE_WALLET_POINTS_EMPTY,
-                    throwable = MessageErrorException("Wallet app is linked but gopay points return empty"),
-                    reason = "Wallet app is linked but gopay points return empty",
+                    throwable = MessageErrorException(ERROR_GOPAY_POINTS_EMPTY),
+                    reason = ERROR_GOPAY_POINTS_EMPTY,
                     data = selectedBalance.walletName
                 )
                 return null

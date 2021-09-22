@@ -413,11 +413,11 @@ class BalanceAdapter(
                 if (animationJob == null || animationJob?.isActive == false) {
                     animationJob = launch {
                         alternateDrawerItem?.forEach { alternateItem ->
-                            delay(1000)
+                            delay(DRAWER_DELAY_ANIMATION)
                             renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
-                            delay(1000)
+                            delay(DRAWER_DELAY_ANIMATION)
                         }
-                        delay(1000)
+                        delay(DRAWER_DELAY_ANIMATION)
                         element?.let {
                             element?.let { renderItemAnimation(it, slideDirection = DIRECTION_DOWN) }
                         }
@@ -576,6 +576,7 @@ class BalanceAdapter(
             private const val KUPON_SAYA_URL_PATH = "kupon-saya"
             private const val DIRECTION_UP = 0
             private const val DIRECTION_DOWN = 1
+            private const val DRAWER_DELAY_ANIMATION = 1000L
         }
     }
 }
