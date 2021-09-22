@@ -20,6 +20,7 @@ import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -27,10 +28,14 @@ import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
 import timber.log.Timber
 import java.io.InterruptedIOException
+import java.lang.NullPointerException
 import java.net.SocketException
 import java.net.UnknownHostException
+import java.security.NoSuchAlgorithmException
 import java.util.*
 import javax.inject.Inject
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLHandshakeException
 
 class GraphqlCloudDataStore @Inject constructor(
         private val api: GraphqlApiSuspend,
@@ -89,7 +94,19 @@ class GraphqlCloudDataStore @Inject constructor(
                 }
                 result = getResponse(requests.toMutableList())
             } catch (e: Throwable) {
-                if (e !is UnknownHostException &&
+                if (e is SSLHandshakeException) {
+                    var tls: String
+                    var cipherSuites: String =""
+                    try {
+                        tls = Arrays.toString(SSLContext.getDefault().defaultSSLParameters.protocols)
+                        cipherSuites = Arrays.toString(SSLContext.getDefault().defaultSSLParameters.cipherSuites)
+                    } catch (e: NoSuchAlgorithmException) {
+                        tls = "Failed to get ssl"
+                    } catch (e: NullPointerException) {
+                        tls = "Got null on ssl"
+                    }
+                    logGqlErrorSsl("kt",  requests.toString(), e, tls, cipherSuites)
+                } else if (e !is UnknownHostException &&
                         e !is SocketException &&
                         e !is InterruptedIOException &&
                         e !is ConnectionShutdownException &&

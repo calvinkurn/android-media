@@ -4,7 +4,6 @@ import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import timber.log.Timber
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
@@ -17,6 +16,11 @@ object LoggingUtils {
     @JvmStatic
     fun logGqlError(classType: String, request: String, throwable: Throwable) {
         ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
+    fun logGqlErrorSsl(classType: String, request: String, throwable: Throwable, tls: String, cipherSuites: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(), "tls" to tls, "cipher" to cipherSuites))
     }
 
     @JvmStatic
