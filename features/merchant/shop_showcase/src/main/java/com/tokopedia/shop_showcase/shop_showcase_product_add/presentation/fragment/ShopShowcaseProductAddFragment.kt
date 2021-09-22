@@ -80,7 +80,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var _binding: FragmentShopShowcaseProductAddBinding? = null
-    private val binding get() = _binding!!
     private var productSelectedCounter: CardView? = null
     private var emptyState: EmptyStateUnify? = null
     private var searchBar: SearchBarUnify? = null
@@ -175,7 +174,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentShopShowcaseProductAddBinding.inflate(inflater, container, false).apply {
+        val binding = FragmentShopShowcaseProductAddBinding.inflate(inflater, container, false).apply {
             productChoosenCounterText = totalSelectedProductCounter
             productChoosenContainer = productChoosenCounter
             productCounterChoosenImage = productChoosenImage
@@ -202,6 +201,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        _binding = binding
         return binding.root
     }
 

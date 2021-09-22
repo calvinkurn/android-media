@@ -99,7 +99,6 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
     private var _binding: FragmentShopShowcaseListOldBinding? = null
-    private val binding get() = _binding!!
     private var buttonAddEtalase: UnifyButton? = null
     private var searchbarShowcaseList: SearchBarUnify? = null
     private var loader: LoaderUnify? = null
@@ -201,7 +200,7 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentShopShowcaseListOldBinding.inflate(inflater, container, false).apply {
+        val binding = FragmentShopShowcaseListOldBinding.inflate(inflater, container, false).apply {
             headerUnify = showcaseListToolbar
             headerLayoutShowcaseList = headerLayout
             globalErrorShowcaseList = globalError
@@ -218,6 +217,7 @@ class ShopShowcaseListFragmentOld : BaseDaggerFragment(), ShopShowcaseManagement
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = shopShowcaseListAdapter
 
+        _binding = binding
         return binding.root
     }
 

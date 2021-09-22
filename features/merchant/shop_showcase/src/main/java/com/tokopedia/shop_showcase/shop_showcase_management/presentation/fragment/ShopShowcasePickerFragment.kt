@@ -123,7 +123,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var selectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
     private var preSelectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
     private var _binding: FragmentShopShowcasePickerBinding? = null
-    private val binding get() = _binding!!
     private var rvPicker: RecyclerView? = null
     private var headerLayoutShowcasePicker: CardView? = null
     private var headerUnify: HeaderUnify? = null
@@ -169,7 +168,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentShopShowcasePickerBinding.inflate(inflater, container, false).apply {
+        val binding = FragmentShopShowcasePickerBinding.inflate(inflater, container, false).apply {
             rvPicker = rvListEtalasePicker
             headerLayoutShowcasePicker = headerLayout
             searchBarShowcasePicker = searchbar
@@ -189,6 +188,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 }
             }
         }
+
+        _binding = binding
         return binding.root
     }
 

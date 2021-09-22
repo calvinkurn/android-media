@@ -97,7 +97,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private var showcaseName: String? = ""
     private var appendedProductMapper = AppendedProductMapper()
     private var deletedProductMapper = DeletedProductMapper()
-    private val binding get() = _binding!!
 
     private val shopShowcaseAddViewModel: ShopShowcaseAddViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopShowcaseAddViewModel::class.java)
@@ -150,7 +149,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentShopShowcaseAddBinding.inflate(inflater, container, false).apply {
+        val binding = FragmentShopShowcaseAddBinding.inflate(inflater, container, false).apply {
             loaderUnify = loaderUnifyAddShowcase
             productCounter = productChoosenCounter
             counterProductImage = productChoosenImage
@@ -176,6 +175,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 }
             }
         }
+        _binding = binding
         return binding.root
     }
 

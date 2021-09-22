@@ -58,7 +58,6 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
     private var _binding: FragmentReorderShowcaseBinding? = null
-    private val binding get() = _binding!!
     private var headerUnify: HeaderUnify? = null
     private var headerLayoutReorderShowcase: CardView? = null
     private var loader: LoaderUnify? = null
@@ -101,7 +100,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentReorderShowcaseBinding.inflate(inflater, container, false).apply {
+        val binding = FragmentReorderShowcaseBinding.inflate(inflater, container, false).apply {
             headerUnify = showcaseListToolbar
             headerLayoutReorderShowcase = headerLayout
             recyclerView = rvListShowcase
@@ -111,6 +110,8 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         shopShowcaseListReorderAdapter = ShopShowcaseListReorderAdapter(this, this)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = shopShowcaseListReorderAdapter
+
+        _binding = binding
         return binding.root
     }
 
