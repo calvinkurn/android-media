@@ -1,51 +1,55 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}affiliateID: String!){
-  searchAffiliate(affiliateID: ${"$"}affiliateID) {
+const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [String]!){
+  searchAffiliate(filter: ${"$"}filter) {
     data {
       status
       error {
+        errorType
+        title
         message
-        cta_image {
-          desktop
-          mobile
-          ios
-          android
+        errorImage {
+          DesktopURL
+          MobileURL
+          AndroidURL
+          IosURL
         }
-        error_cta {
-          cta_text
-          cta_color
-          cta_type
-          cta_link {
-            desktop
-            mobile
-            android
-            ios
+        errorStatus
+        errorCta {
+          ctaText
+          ctaType
+          ctaAction
+          ctaLink {
+            DesktopURL
+            MobileURL
+            AndroidURL
+            IosURL
           }
         }
       }
       cards {
         id
-        has_more
+        hasMore
         title
         items {
           title
           image {
-            desktop
-            mobile
-            android
-            ios
+            DesktopURL
+            MobileURL
+            AndroidURL
+            IosURL
           }
           additionalInformation {
             htmlText
             type
             color
           }
+          cardUrl
           commission {
-            amountFormatted
             amount
-            percentageFormatted
+            amountFormatted
             percentage
+            percentageFormatted
           }
           footer {
             footerType
@@ -55,8 +59,9 @@ const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}affiliat
           rating
           status {
             messages {
-               title
-               description
+              title
+              description
+              messageType
             }
             isLinkGenerationAllowed
           }

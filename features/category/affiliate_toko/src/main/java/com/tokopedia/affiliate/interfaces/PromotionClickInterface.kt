@@ -4,5 +4,5 @@ import com.tokopedia.affiliate.model.AffiliateSearchData
 
 interface PromotionClickInterface {
     fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String)
-    fun onButtonClick(errorCta  : AffiliateSearchData.Error.ErrorCta?)
+    fun onButtonClick(errorCta  : AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?)
 }

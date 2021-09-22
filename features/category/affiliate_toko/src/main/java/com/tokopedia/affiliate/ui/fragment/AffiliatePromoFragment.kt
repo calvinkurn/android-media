@@ -74,7 +74,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         promotion_recycler_view.adapter = adapter
         product_link_et.run {
             setRelatedView(dim_layer)
-            setDoneAction { affiliatePromoViewModel.getSearch(editText.text.toString()) }
+            setDoneAction {
+                affiliatePromoViewModel.getSearch(editText.text.toString())
+            }
         }
         promo_navToolbar.run {
             setIcon(
@@ -107,8 +109,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
         affiliatePromoViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
-                if (visibility)
+                if (visibility) {
+                    hideAllElements()
                     promo_affiliate_progress_view?.show()
+                }
                 else
                     promo_affiliate_progress_view?.gone()
             }
@@ -126,9 +130,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
             adapter.clearAllElements()
-            if (affiliateSearchData.status == 0) {
+            if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
                 showData(true)
-                if (affiliateSearchData.error?.errorStatus == 0) {
+                if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
                     view?.rootView?.let {
                         Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
                                 Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
@@ -140,11 +144,11 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
                             "",userSessionInterface.userId)
                 } else {
-                    affiliateSearchData.error?.let {
+                    affiliateSearchData.searchAffiliate?.data?.error?.let {
                         adapter.addElement(AffiliatePromotionErrorCardModel(it))
                     }
                     var errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
-                    when (affiliateSearchData.error?.errorStatus){
+                    when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus){
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
                                 errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
@@ -159,10 +163,12 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             "",userSessionInterface.userId)
                 }
             } else {
-                affiliateSearchData.cards?.items?.firstOrNull()?.let {
+                affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
                     showData(false)
-                    affiliateSearchData.cards.items.forEach {
-                        adapter.addElement(AffiliatePromotionCardModel(it))
+                    items.forEach {
+                        it?.let {
+                            adapter.addElement(AffiliatePromotionCardModel(it))
+                        }
                     }
                     AffiliateAnalytics.sendEvent(
                             AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
@@ -183,6 +189,12 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     private fun showDefaultState(){
         promotion_card_title.hide()
         error_group.show()
+        promotion_recycler_view.hide()
+    }
+
+    private fun hideAllElements(){
+        promotion_card_title.hide()
+        error_group.hide()
         promotion_recycler_view.hide()
     }
 
@@ -213,7 +225,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 
-    override fun onButtonClick(errorCta: AffiliateSearchData.Error.ErrorCta?) {
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
         if(errorCta?.ctaAction == AffiliatePromotionErrorCardItemVH.ACTION_REDIRECT){
             errorCta.ctaLink?.androidUrl?.let {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it))

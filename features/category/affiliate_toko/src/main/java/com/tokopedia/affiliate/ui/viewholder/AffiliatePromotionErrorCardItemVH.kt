@@ -42,7 +42,7 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
             itemView.findViewById<DeferredImageView>(R.id.error_image_deffered).run { show() }
         }else {
             itemView.findViewById<ImageUnify>(R.id.error_image).run { show()
-                loadImageWithoutPlaceholder(element.error.errorImage?.android ?: "")
+                loadImageWithoutPlaceholder(element.error.errorImage?.androidURL ?: "")
             }
             itemView.findViewById<DeferredImageView>(R.id.error_image_deffered).run { invisible() }
         }
@@ -54,9 +54,9 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
         if(buttonIds.size >= element.error.errorCta?.size ?: 0){
             element.error.errorCta?.forEachIndexed { index, errorCta ->
                 itemView.findViewById<UnifyButton>(buttonIds[index]).apply {
-                    text = errorCta.ctaText
+                    text = errorCta?.ctaText
                     visibility = View.VISIBLE
-                    when(errorCta.ctaType){
+                    when(errorCta?.ctaType){
                         BUTTON_GHOST -> {
                             buttonVariant = UnifyButton.Variant.GHOST
                             buttonType = UnifyButton.Type.ALTERNATE

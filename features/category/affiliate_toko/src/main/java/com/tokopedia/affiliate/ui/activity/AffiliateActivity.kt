@@ -18,6 +18,8 @@ import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import android.view.WindowManager
 
 import android.view.Window
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.webview.BaseSessionWebViewFragment
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
@@ -58,7 +60,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         when(position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance())
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
-            HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance())
+            HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
         return true
     }

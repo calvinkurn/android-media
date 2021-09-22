@@ -21,7 +21,7 @@ class AffiliatePromoViewModel  @Inject constructor(
         progressBar.value =  true
         launchCatchError(block = {
             affiliateSearchData.value =
-                    affiliateSearchUseCase.affiliateSearchWithLink(userSessionInterface.userId, arrayListOf(productLink))
+                    affiliateSearchUseCase.affiliateSearchWithLink(arrayListOf(productLink))
             progressBar.value = false
         }, onError = {
             progressBar.value = false

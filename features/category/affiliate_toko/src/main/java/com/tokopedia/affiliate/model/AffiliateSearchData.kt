@@ -5,97 +5,149 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class AffiliateSearchData(
-        @SerializedName("status") val status : Int?,
-        @SerializedName("cards") val cards : Cards?,
-        @SerializedName("error") val error : Error?
+    @SerializedName("searchAffiliate")
+    var searchAffiliate: SearchAffiliate?
 ) {
+    @Keep
+    data class SearchAffiliate(
+        @SerializedName("data")
+        var `data`: Data?
+    ) {
+        @Keep
+        data class Data(
+            @SerializedName("cards")
+            var cards: List<Card?>?,
+            @SerializedName("error")
+            var error: Error?,
+            @SerializedName("status")
+            var status: Int?
+        ) {
+            @Keep
+            data class Card(
+                @SerializedName("hasMore")
+                var hasMore: Boolean?,
+                @SerializedName("id")
+                var id: String?,
+                @SerializedName("items")
+                var items: List<Item?>?,
+                @SerializedName("title")
+                var title: String?
+            ) {
+                @Keep
+                data class Item(
+                    @SerializedName("additionalInformation")
+                    var additionalInformation: List<AdditionalInformation?>?,
+                    @SerializedName("cardUrl")
+                    var cardUrl: String?,
+                    @SerializedName("commission")
+                    var commission: Commission?,
+                    @SerializedName("footer")
+                    var footer: List<Footer?>?,
+                    @SerializedName("image")
+                    var image: Image?,
+                    @SerializedName("rating")
+                    var rating: Int?,
+                    @SerializedName("status")
+                    var status: Status?,
+                    @SerializedName("title")
+                    var title: String?
+                ) {
+                    @Keep
+                    data class AdditionalInformation(
+                        @SerializedName("color")
+                        var color: String?,
+                        @SerializedName("htmlText")
+                        var htmlText: String?,
+                        @SerializedName("type")
+                        var type: Int?
+                    )
 
-    data class Cards (
-            @SerializedName("id") val id : String?,
-            @SerializedName("has_more") val has_more : Boolean?,
-            @SerializedName("title") val title : String?,
-            @SerializedName("items") val items : List<Items>?
-    ){
-        data class Items (
-                @SerializedName("id") val id : String?,
-                @SerializedName("title") val title : String?,
-                @SerializedName("image") val image : Image?,
-                @SerializedName("additionalInformation") val additionalInformation : List<AdditionalInformation>?,
-                @SerializedName("commission") val commission : Commission?,
-                @SerializedName("footer") val footer : List<Footer>?,
-                @SerializedName("rating") val rating : Double?,
-                @SerializedName("status") val status : Status?
-        ){
+                    @Keep
+                    data class Commission(
+                        @SerializedName("amount")
+                        var amount: Int?,
+                        @SerializedName("amountFormatted")
+                        var amountFormatted: String?,
+                        @SerializedName("percentage")
+                        var percentage: Int?,
+                        @SerializedName("percentageFormatted")
+                        var percentageFormatted: String?
+                    )
 
-            data class Image (
-                    @SerializedName("desktop") val desktop : String?,
-                    @SerializedName("mobile") val mobile : String?,
-                    @SerializedName("ios") val ios : String?,
-                    @SerializedName("android") val android : String?
-            )
+                    @Keep
+                    data class Footer(
+                        @SerializedName("footerIcon")
+                        var footerIcon: String?,
+                        @SerializedName("footerText")
+                        var footerText: String?,
+                        @SerializedName("footerType")
+                        var footerType: Int?
+                    )
 
-            data class Commission (
-                    @SerializedName("amountFormatted") val amountFormatted : String?,
-                    @SerializedName("amount") val amount : Int?,
-                    @SerializedName("percentageFormatted") val percentageFormatted : String?,
-                    @SerializedName("percentage") val percentage : Int?
-            )
+                    @Keep
+                    data class Image(
+                        @SerializedName("AndroidURL")
+                        var androidURL: String?,
+                        @SerializedName("DesktopURL")
+                        var desktopURL: String?,
+                        @SerializedName("IosURL")
+                        var iosURL: String?,
+                        @SerializedName("MobileURL")
+                        var mobileURL: String?
+                    )
 
-            data class AdditionalInformation (
-                    @SerializedName("htmlText") val htmlText : String?,
-                    @SerializedName("type") val type : Int?,
-                    @SerializedName("color") val color : String?
-            ){
-                override fun equals(other: Any?): Boolean {
-                    return other is AdditionalInformation && type == other.type
-                }
-
-                override fun hashCode(): Int {
-                    return type ?: super.hashCode()
+                    @Keep
+                    data class Status(
+                        @SerializedName("isLinkGenerationAllowed")
+                        var isLinkGenerationAllowed: Boolean?,
+                        @SerializedName("messages")
+                        var messages: List<Any?>?
+                    )
                 }
             }
 
-            data class Footer (
-                    @SerializedName("footerType") val footerType : Int?,
-                    @SerializedName("footerIcon") val footerIcon : String?,
-                    @SerializedName("footerText") val footerText : String?
-            ){
-                override fun equals(other: Any?): Boolean {
-                    return other is Footer && footerType == other.footerType
+            @Keep
+            data class Error(
+                @SerializedName("errorCta")
+                var errorCta: List<ErrorCta?>?,
+                @SerializedName("errorImage")
+                var errorImage: ErrorImage?,
+                @SerializedName("errorStatus")
+                var errorStatus: Int?,
+                @SerializedName("errorType")
+                var errorType: Int?,
+                @SerializedName("message")
+                var message: String?,
+                @SerializedName("title")
+                var title: String?
+            ) {
+                data class ErrorCta (
+                        @SerializedName("ctaText") val ctaText : String?,
+                        @SerializedName("ctaType") val ctaType : Int?,
+                        @SerializedName("ctaAction") val ctaAction : Int?,
+                        @SerializedName("ctaLink") val ctaLink : CtaLink?,
+                ){
+
+                    data class CtaLink (
+                            @SerializedName("DesktopURL") val desktopUrl : String?,
+                            @SerializedName("MobileURL") val mobileUrl : String?,
+                            @SerializedName("IosURL") val iosUrl : String?,
+                            @SerializedName("                \"AndroidURL\": \"\",\n") val androidUrl : String?
+                    )
                 }
 
-                override fun hashCode(): Int {
-                    return footerType ?: super.hashCode()
-                }
+                @Keep
+                data class ErrorImage(
+                    @SerializedName("AndroidURL")
+                    var androidURL: String?,
+                    @SerializedName("DesktopURL")
+                    var desktopURL: String?,
+                    @SerializedName("IosURL")
+                    var iosURL: String?,
+                    @SerializedName("MobileURL")
+                    var mobileURL: String?
+                )
             }
-
-            data class Status (
-                    @SerializedName("isLinkGenerationAllowed") val isLinkGenerationAllowed : Boolean?
-            )
-        }
-    }
-
-    data class Error (
-            @SerializedName("errorType") var errorType : Int?,
-            @SerializedName("title") var title : String?,
-            @SerializedName("message") var message : String?,
-            @SerializedName("errorStatus") var errorStatus : Int?,
-            @SerializedName("errorImage") val errorImage : Cards.Items.Image?,
-            @SerializedName("errorCta") val errorCta : List<ErrorCta>?
-    ){
-        data class ErrorCta (
-                @SerializedName("ctaText") val ctaText : String?,
-                @SerializedName("ctaType") val ctaType : Int?,
-                @SerializedName("ctaAction") val ctaAction : Int?,
-                @SerializedName("ctaLink") val ctaLink : CtaLink?,
-        ){
-
-            data class CtaLink (
-                    @SerializedName("desktop") val desktopUrl : String?,
-                    @SerializedName("mobile") val mobileUrl : String?,
-                    @SerializedName("ios") val iosUrl : String?,
-                    @SerializedName("android") val androidUrl : String?
-            )
         }
     }
 }

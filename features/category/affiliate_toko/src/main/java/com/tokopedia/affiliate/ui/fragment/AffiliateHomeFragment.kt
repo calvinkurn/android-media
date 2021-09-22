@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -145,8 +146,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 affiliateHomeViewModel.getAffiliatePerformance()
             }else {
                 validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it))
+                    activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }
+                activity?.finish()
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
