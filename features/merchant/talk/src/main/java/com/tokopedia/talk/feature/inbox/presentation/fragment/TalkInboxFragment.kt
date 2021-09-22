@@ -38,8 +38,6 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.databinding.FragmentTalkInboxBinding
-import com.tokopedia.talk.databinding.FragmentTalkInboxContainerBinding
-import com.tokopedia.talk.databinding.FragmentTalkWriteBinding
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
@@ -59,6 +57,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
@@ -112,8 +111,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var _binding: FragmentTalkInboxBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentTalkInboxBinding>()
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
@@ -289,14 +287,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentTalkInboxBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentTalkInboxBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

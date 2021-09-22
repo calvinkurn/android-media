@@ -1,7 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.fragment
 
 import android.app.Activity
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -29,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -36,6 +36,8 @@ import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_TYPE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
+import com.tokopedia.talk.common.utils.FirebaseLogger
+import com.tokopedia.talk.databinding.FragmentTalkReplyBinding
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
@@ -45,6 +47,7 @@ import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
+import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyTemplateAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
@@ -52,16 +55,12 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyPr
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
-import com.tokopedia.talk.R
-import com.tokopedia.talk.common.utils.FirebaseLogger
-import com.tokopedia.talk.databinding.FragmentTalkReplyBinding
-import com.tokopedia.talk.databinding.FragmentTalkWriteBinding
-import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyTemplateAdapter
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>,
@@ -102,8 +101,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     @Inject
     lateinit var viewModel: TalkReplyViewModel
 
-    private var _binding: FragmentTalkReplyBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentTalkReplyBinding>()
 
     private var questionId = ""
     private var shopId = ""
@@ -146,14 +144,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentTalkReplyBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentTalkReplyBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

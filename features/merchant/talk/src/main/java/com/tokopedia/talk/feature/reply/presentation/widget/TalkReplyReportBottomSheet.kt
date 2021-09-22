@@ -9,6 +9,7 @@ import com.tokopedia.talk.common.constants.TalkConstants.COMMENT_ID
 import com.tokopedia.talk.databinding.WidgetTalkReportBottomSheetBinding
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReplyBottomSheetClickedListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoCleared
 
 class TalkReplyReportBottomSheet : BottomSheetUnify() {
 
@@ -34,7 +35,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
             }
             this.onReplyBottomSheetClickedListener = onReplyBottomSheetClickedListener
             val view = View.inflate(context, R.layout.widget_talk_report_bottom_sheet, null)
-            _binding = WidgetTalkReportBottomSheetBinding.bind(view)
+            binding = WidgetTalkReportBottomSheetBinding.bind(view)
             setChild(view)
         }
     }
@@ -45,8 +46,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
     private var allowEdit = false
     private var onReplyBottomSheetClickedListener: OnReplyBottomSheetClickedListener? = null
 
-    private var _binding: WidgetTalkReportBottomSheetBinding? = null
-    private val binding: WidgetTalkReportBottomSheetBinding get() = _binding!!
+    private var binding: WidgetTalkReportBottomSheetBinding by autoCleared<WidgetTalkReportBottomSheetBinding> {  }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getDataFromArguments()

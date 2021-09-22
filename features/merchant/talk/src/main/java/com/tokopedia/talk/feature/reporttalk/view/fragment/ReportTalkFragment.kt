@@ -30,6 +30,7 @@ import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiMode
 import com.tokopedia.talk.feature.reporttalk.view.viewmodel.ReportTalkViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 /**
@@ -53,8 +54,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
 
     lateinit var reportTalkAdapter: ReportTalkAdapter
 
-    private var _binding: FragmentReportTalkBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentReportTalkBinding>()
 
     var talkId: String = ""
     var commentId: String = ""
@@ -79,8 +79,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        _binding = FragmentReportTalkBinding.inflate(inflater, container, false)
+                              savedInstanceState: Bundle?): View {
+        binding = FragmentReportTalkBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -235,7 +235,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
             KeyboardHandler.DropKeyboard(this, binding.reason)
         }
         super.onDestroyView()
-        _binding = null
     }
 
     private fun observeLiveDatas() {

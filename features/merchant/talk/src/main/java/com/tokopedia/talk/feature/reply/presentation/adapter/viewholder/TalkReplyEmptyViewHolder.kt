@@ -34,7 +34,7 @@ class TalkReplyEmptyViewHolder(
         with(binding) {
             talkReplyEmptyContainer.setBackgroundColor(
                 ContextCompat.getColor(
-                    itemView.context,
+                    root.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )

@@ -44,6 +44,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class TalkWriteFragment : BaseDaggerFragment(),
@@ -83,8 +84,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var cacheManager: SaveInstanceCacheManager? = null
 
-    private var _binding: FragmentTalkWriteBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentTalkWriteBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +105,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         observeCategories()
         observeSubmitFormResult()
         observeTextFieldState()
-        _binding = FragmentTalkWriteBinding.inflate(inflater, container, false)
+        binding = FragmentTalkWriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -196,11 +196,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
         removeObservers(viewModel.categoryChips)
         removeObservers(viewModel.submitFormResult)
         super.onDestroy()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun initView() {

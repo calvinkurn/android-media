@@ -31,10 +31,10 @@ class TalkInboxOldViewHolder(
             setQuestion(content, isMasked)
             setNotification(isUnread)
             setCountAndDate(totalAnswer, lastReplyTime, element.isSellerView)
-            itemView.addOnImpressionListener(element.impressHolder) {
+            binding.root.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
-            itemView.setOnClickListener {
+            binding.root.setOnClickListener {
                 talkInboxViewHolderListener.onInboxItemClicked(null, element, adapterPosition)
             }
         }
@@ -43,12 +43,12 @@ class TalkInboxOldViewHolder(
     private fun setProductThumbnail(productThumbnail: String) {
         with(binding) {
             if(productThumbnail.isEmpty()) {
-            talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_deleted_talk_placeholder))
-                talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(root.context, R.drawable.ic_deleted_talk_placeholder))
+                talkInboxProductName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
@@ -102,7 +102,7 @@ class TalkInboxOldViewHolder(
                     }
                 }
             }
-            talkInboxDate.text = itemView.context.getString(R.string.inbox_date_old, date)
+            talkInboxDate.text = root.context.getString(R.string.inbox_date_old, date)
         }
 
     }

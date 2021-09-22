@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.databinding.FragmentTalkInboxContainerBinding
-import com.tokopedia.talk.databinding.FragmentTalkWriteBinding
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
@@ -23,9 +22,11 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerA
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>, TalkInboxListener {
+class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>,
+    TalkInboxListener {
 
     companion object {
         const val SELLER_TAB_INDEX = 0
@@ -42,22 +43,20 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     @Inject
     lateinit var talkInboxTracking: TalkInboxTracking
 
-    private var _binding: FragmentTalkInboxContainerBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentTalkInboxContainerBinding>()
 
     private var sellerUnreadCount = 0L
     private var buyerUnreadCount = 0L
     private var isFirstTimeEnterPage = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentTalkInboxContainerBinding.inflate(inflater, container, false)
+        binding = FragmentTalkInboxContainerBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun getScreenName(): String {
@@ -71,9 +70,9 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     override fun getComponent(): TalkInboxContainerComponent? {
         return activity?.run {
             DaggerTalkInboxContainerComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -87,10 +86,12 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     override fun updateUnreadCounter(sellerUnread: Long, buyerUnread: Long) {
         sellerUnreadCount = sellerUnread
-        binding.talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread.toInt() else HIDE_TAB_COUNTER)
+        binding.talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)
+            ?.setCounter(if (sellerUnread > 0) sellerUnread.toInt() else HIDE_TAB_COUNTER)
         buyerUnreadCount = buyerUnread
-        binding.talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread.toInt() else HIDE_TAB_COUNTER)
-        if(isFirstTimeEnterPage) {
+        binding.talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)
+            ?.setCounter(if (buyerUnread > 0) buyerUnread.toInt() else HIDE_TAB_COUNTER)
+        if (isFirstTimeEnterPage) {
             isFirstTimeEnterPage = false
             when {
                 buyerUnreadCount > 0 && sellerUnreadCount == 0L -> {
@@ -116,7 +117,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         tabTitles.forEach {
             binding.talkInboxTabs.addNewTab(it)
         }
-        binding.talkInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        binding.talkInboxViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 binding.talkInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
             }
@@ -125,7 +127,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun setupTabLayout() {
         binding.talkInboxTabs.customTabMode = TabLayout.MODE_FIXED
-        binding.talkInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.talkInboxTabs.tabLayout.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 //No Op
             }
@@ -148,8 +151,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun getFragmentList(): List<Fragment> {
         return listOf(
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab(), this),
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab(), this)
+            TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab(), this),
+            TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab(), this)
         )
     }
 
@@ -160,10 +163,20 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     }
 
     private fun trackTabChange(position: Int) {
-        if(position == SELLER_TAB_INDEX) {
-            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_OLD, userSession.userId, userSession.shopId, sellerUnreadCount)
+        if (position == SELLER_TAB_INDEX) {
+            talkInboxTracking.eventClickTab(
+                TalkInboxTab.SHOP_OLD,
+                userSession.userId,
+                userSession.shopId,
+                sellerUnreadCount
+            )
         } else {
-            talkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
+            talkInboxTracking.eventClickTab(
+                TalkInboxTab.BUYER_TAB,
+                userSession.userId,
+                userSession.shopId,
+                buyerUnreadCount
+            )
         }
     }
 

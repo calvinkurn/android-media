@@ -48,7 +48,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     override fun bind(element: TalkReplyUiModel) {
-        binding.talkReplyContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        binding.talkReplyContainer.setBackgroundColor(ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         element.answer.apply {
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
             showDisplayName(userName, userId, isSeller, element.shopId)
@@ -104,12 +104,12 @@ class TalkReplyViewHolder(view: View,
     private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion: Boolean) = with(binding) {
         when {
             isSeller -> {
-                replySellerLabel.text = itemView.context.getString(R.string.reading_seller_label)
+                replySellerLabel.text = binding.root.context.getString(R.string.reading_seller_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
                 replySellerLabel.show()
             }
             isMyQuestion -> {
-                replySellerLabel.text = itemView.context.getString(R.string.reading_your_question_label)
+                replySellerLabel.text = binding.root.context.getString(R.string.reading_your_question_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREY)
                 replySellerLabel.show()
             }
@@ -120,7 +120,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun addBulletPointToDate(date: String): String {
-        return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
+        return String.format(binding.root.context.getString(R.string.talk_formatted_date), date)
     }
 
     private fun showAnswer(answer: String, isMasked: Boolean, isSeller: Boolean, maskedContent: String, allowUnmask: Boolean) {
@@ -226,6 +226,6 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun getColorString(color: Int): String {
-        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
+        return "#${Integer.toHexString(ContextCompat.getColor(binding.root.context, color))}"
     }
 }
