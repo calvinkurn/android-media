@@ -13,8 +13,8 @@ class PriceSuggestionSuggestedPriceGetUseCase @Inject constructor(
         const val PARAM_PRODUCT_ID = "productId"
         private val query =
                 """
-                query PriceSuggestionSuggestedPriceGet(${'$'}productId: Int!) {
-                  PriceSuggestionSuggestedPriceGet(productID: ${'$'}productId) {
+                query PriceSuggestionSuggestedPriceGet(${'$'}id: String) {
+                  PriceSuggestionSuggestedPriceGet(id: ${'$'}id) {
                     productId
                     suggestedPrice
                     suggestedPriceMax
@@ -33,7 +33,7 @@ class PriceSuggestionSuggestedPriceGetUseCase @Inject constructor(
     }
 
     fun setParamsProductId(productId: Long) {
-        requestParams.putLong(PARAM_PRODUCT_ID, productId)
+        requestParams.putString(PARAM_PRODUCT_ID, productId.toString())
         setRequestParams(requestParams.parameters)
     }
 }
