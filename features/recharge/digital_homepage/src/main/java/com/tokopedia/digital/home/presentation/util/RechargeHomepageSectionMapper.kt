@@ -160,11 +160,12 @@ object RechargeHomepageSectionMapper {
         return null
     }
 
-    private fun getDynamicLegoBannerModel(section: RechargeHomepageSections.Section): DynamicLegoBannerDataModel {
+    private fun getDynamicLegoBannerModel(section: RechargeHomepageSections.Section): DynamicLegoBannerDataModel? {
+        if (section.items.size < 3) return null
+
         val (imageCount, layoutConfig) = when {
             section.items.size >= 6 -> 6 to DynamicChannelLayout.LAYOUT_6_IMAGE
-            section.items.size >= 3 -> 3 to DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
-            else -> 2 to DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE
+            else -> 3 to DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
         }
         return DynamicLegoBannerDataModel(ChannelModel(
                 section.id,
