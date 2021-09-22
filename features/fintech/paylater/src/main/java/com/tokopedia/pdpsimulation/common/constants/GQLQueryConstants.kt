@@ -1,56 +1,5 @@
 package com.tokopedia.pdpsimulation.common.constants
 
-const val GQL_PAY_LATER_PRODUCT_DETAIL = """query {
-	paylater_getActiveProduct {
-    product {
-      id
-      name
-      subheader
-      gateway_code
-      img_light_url
-      img_dark_url
-      benefit {
-        content
-        is_highlight
-      }
-      faq {
-        question
-        answer
-      }
-      faq_url
-      how_to_use {
-        notes
-        steps
-      }
-      how_to_apply {
-        notes
-        steps
-      }
-      is_able_apply
-      how_to_action_url
-    }
-  }
-}"""
-
-const val GQL_PAY_LATER_APPLICATION_STATUS = """query getUserApplicationStatus{
-  creditapplication_getUserApplicationStatus{
-      tkp_user_id
-     	application_detail{
-        id
-        gateway_name
-        gateway_code
-        application_status
-        expiration_date
-        app_status_content {
-          email
-          subheader
-          phone_number
-          pop_up_detail
-          additional_info
-        }
-      }
-    }
-}"""
 
 const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Float){
   cc_fetchpdpcreditcardsimulation(Amount: ${'$'}Amount) {
