@@ -66,13 +66,11 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
 
-    // @Todo populate values
-    protected var pageSource: String = ""
-    protected var eventLabel: String = ""
-
     abstract fun setCaptureInstruction()
     abstract fun setVerificationInstruction()
     abstract fun proceedToNextStep()
+    abstract fun getPageSource(): String
+    abstract fun getKycType(): String
 
     private val cameraListener = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
@@ -96,7 +94,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            sendAnalytics(GoPayKycEvent.Click.BackPressEvent(pageSource))
+            sendAnalytics(GoPayKycEvent.Click.BackPressEvent(getPageSource()))
 
             if (viewModel.canGoBack)
                 activity?.finish()
@@ -104,11 +102,11 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
                 ReviewCancelDialog.showReviewDialog(
                     requireContext(),
                     {
-                        sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(eventLabel, pageSource))
+                        sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(getKycType(), getPageSource()))
                         proceedToNextStep()
                     },
                     {
-                        sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(eventLabel, pageSource))
+                        sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(getKycType(), getPageSource()))
                         exitKycFlow()
                     }
                 )
@@ -166,7 +164,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun reInitCamera() {
-        sendAnalytics(GoPayKycEvent.Click.ReTakePhotoEvent(eventLabel, pageSource))
+        sendAnalytics(GoPayKycEvent.Click.ReTakePhotoEvent(getKycType(), getPageSource()))
         viewModel.canGoBack = true
         cameraView?.open()
         cameraLayout?.visible()

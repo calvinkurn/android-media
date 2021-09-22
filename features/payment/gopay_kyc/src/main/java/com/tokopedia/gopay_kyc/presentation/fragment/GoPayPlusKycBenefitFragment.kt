@@ -41,6 +41,7 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
         override fun handleOnBackPressed() {
             val event = GoPayKycEvent.Click.BackPressEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_BENEFIT_PAGE)
             sendAnalytics(event)
+            activity?.finish()
         }
     }
 
@@ -99,7 +100,6 @@ class GoPayPlusKycBenefitFragment : BaseDaggerFragment() {
         val event =
             GoPayKycEvent.Click.UpgradeKycEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_BENEFIT_PAGE)
         sendAnalytics(event)
-        context?.let { it.startActivity(GoPayKtpInstructionActivity.getIntent(it)) }
         viewModel.checkKycStatus()
     }
 

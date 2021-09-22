@@ -21,6 +21,7 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
         override fun handleOnBackPressed() {
             val event = GoPayKycEvent.Click.BackPressEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE)
             sendAnalytics(event)
+            activity?.finish()
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {

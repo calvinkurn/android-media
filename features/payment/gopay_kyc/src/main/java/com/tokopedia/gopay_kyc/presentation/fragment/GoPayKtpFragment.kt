@@ -78,6 +78,9 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
             getString(R.string.gopay_kyc_ktp_capture_verification_text)
     }
 
+    override fun getKycType() = GoPayKycConstants.Label.KTP
+    override fun getPageSource() = GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_KTP_PAGE
+
     override fun proceedToNextStep() {
         val intent = Intent().apply { putExtra(KTP_IMAGE_PATH, getCapturedImagePath()) }
         activity?.setResult(RESULT_OK, intent)

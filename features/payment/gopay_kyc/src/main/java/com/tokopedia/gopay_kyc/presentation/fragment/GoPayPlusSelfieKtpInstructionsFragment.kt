@@ -114,7 +114,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
                     {
                         val event = GoPayKycEvent.Click.ConfirmOkDialogEvent(
                             "",
-                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_INSTRUCTION_PAGE
+                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_CAPTURE_PAGE
                         )
                         sendAnalytics(event)
                         openSelfieKtpCamera()
@@ -122,7 +122,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : BaseDaggerFragment() {
                     {
                         val event = GoPayKycEvent.Click.ExitKycDialogEvent(
                             "",
-                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_INSTRUCTION_PAGE
+                            GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_CAPTURE_PAGE
                         )
                         sendAnalytics(event)
                         (it as GoPayKycNavigationListener).exitKycFlow()

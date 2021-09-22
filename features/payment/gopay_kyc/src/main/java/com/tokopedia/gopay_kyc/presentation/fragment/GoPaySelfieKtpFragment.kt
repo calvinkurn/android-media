@@ -90,6 +90,8 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
         activity?.finish()
     }
 
+    override fun getKycType() = GoPayKycConstants.Label.SELFIE_KTP
+    override fun getPageSource() = GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_CAPTURE_PAGE
 
     override fun getScreenName() = null
 
