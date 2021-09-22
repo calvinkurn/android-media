@@ -80,7 +80,6 @@ class HomeAccountUserViewModelTest {
             centralizedUserAssetConfigUseCase,
             balanceAndPointUseCase,
             tokopointsBalanceAndPointUseCase,
-            saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
             walletEligibleUseCase,
             walletPref,
@@ -377,7 +376,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Success get tokopoint balance and point`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetBalanceAndPointResponse
+        coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetTokopointBalanceAndPointResponse
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
 
@@ -385,7 +384,7 @@ class HomeAccountUserViewModelTest {
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
 
         val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
-        assert(result.data == successGetBalanceAndPointResponse.data)
+        assert(result.data == successGetTokopointBalanceAndPointResponse.data)
     }
 
     @Test
@@ -394,34 +393,6 @@ class HomeAccountUserViewModelTest {
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
-
-        verify { balanceAndPointOvserver.onChanged(any()) }
-        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
-
-        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
-        assertEquals(throwableResponse, result.throwable)
-    }
-
-    @Test
-    fun `Success get saldo balance`() {
-        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { saldoBalanceUseCase(Unit) } returns successGetBalanceAndPointResponse
-
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
-
-        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
-        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
-
-        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
-        assert(result.data == successGetBalanceAndPointResponse.data)
-    }
-
-    @Test
-    fun `Failed get saldo balance`() {
-        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
-
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
 
         verify { balanceAndPointOvserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -508,6 +479,10 @@ class HomeAccountUserViewModelTest {
         private val successGetBalanceAndPointResponse: BalanceAndPointDataModel = FileUtil.parse(
             "/success_get_balance_and_point.json",
             BalanceAndPointDataModel::class.java
+        )
+        private val successGetTokopointBalanceAndPointResponse: TokopointsBalanceDataModel = FileUtil.parse(
+            "/success_get_tokopoint_balance_and_point.json",
+            TokopointsBalanceDataModel::class.java
         )
         private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
             "/success_get_wallet_eligible.json",

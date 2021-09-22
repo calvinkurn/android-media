@@ -94,7 +94,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             walletUiModel.isActive,
             walletUiModel.isFailed
         )
-        if (walletUiModel.isFailed) {
+        if (walletUiModel.isFailed && walletUiModel.id != AccountConstants.WALLET.SALDO) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
             viewModel.getBalanceAndPoint(walletUiModel.id)
         } else if (!walletUiModel.applink.isEmpty()) {
