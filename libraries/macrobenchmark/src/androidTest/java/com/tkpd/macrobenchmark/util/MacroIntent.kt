@@ -19,7 +19,7 @@ object MacroIntent {
 
         fun getHomeIntent(): Intent {
             val intent = Intent()
-            intent.data = Uri.parse("tokopedia://home")
+            intent.data = Uri.parse("tokopedia-android-internal://home/navigation")
             return intent
         }
 

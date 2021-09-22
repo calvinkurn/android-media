@@ -2,7 +2,6 @@ package com.tkpd.macrobenchmark.test.home
 
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
@@ -38,7 +37,6 @@ class HomeStartupBenchmark(private val startupMode: StartupMode) {
     @Test
     fun macroBenchmarkHomeLaunchTime() {
         benchmarkRule.measureStartup(
-            profileCompiled = false,
             startupMode = startupMode,
             iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments())) {
             MacroIntent.Home.getHomeIntent()
