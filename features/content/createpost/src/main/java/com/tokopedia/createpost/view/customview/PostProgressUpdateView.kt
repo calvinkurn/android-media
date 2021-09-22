@@ -45,8 +45,9 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mCreatePostViewModel = createPostViewModel
     }
 
-    fun setFirstIcon(productImage: String) {
-        postIcon?.setImageUrl(productImage)
+    fun setFirstIcon(productImage: String?) {
+        if (productImage != null)
+            postIcon?.setImageUrl(productImage)
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
@@ -64,6 +65,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.text = context.getString(R.string.feed_content_progress_bar_failed_text)
         processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
+            mPostUpdateSwipe?.onRetryCLicked()
             retryPostingOnFeed(draftId)
         }
     }
@@ -97,6 +99,15 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == true
                 ) {
+                    processingText?.text =
+                        context.getString(R.string.feed_content_progress_bar_text)
+                    processingText?.setTextColor(ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                    progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                    retryText?.gone()
+                    setFirstIcon(null)
+                    setProgressUpdate(0, 0)
+
                     mPostUpdateSwipe?.swipeOnPostUpdate()
                 } else if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == false
@@ -172,6 +183,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     interface PostUpdateSwipe {
         fun updateVisibility(flag: Boolean)
         fun swipeOnPostUpdate()
+        fun onRetryCLicked()
     }
 
 }

@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.content.ContentResolver
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import java.util.*
 
 
@@ -79,7 +80,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun updateHeader(header: HeaderViewModel) {
         content_post_avatar.loadImageCircle(header.avatar)
         content_post_avatar.showWithCondition(header.avatar.isNotBlank())
-        content_post_name.text = header.title
+        content_post_name.text = MethodChecker.fromHtml(header.title)
     }
 
     override fun openProductTagginPageOnPreviewMediaClick(position: Int) {

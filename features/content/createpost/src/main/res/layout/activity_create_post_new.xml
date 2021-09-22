@@ -48,6 +48,7 @@
                 android:gravity="center_vertical"
                 android:includeFontPadding="false"
                 android:text="@string/feed_content_post_sebagai"
+                android:lines="1"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="body_3"
                 tools:text="Post Sebagai" />
@@ -56,6 +57,8 @@
                 android:id="@+id/content_post_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
                 android:includeFontPadding="false"
                 android:textColor="@color/Unify_NN950"
                 app:typographyType="heading_4"
