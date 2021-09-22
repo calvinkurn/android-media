@@ -169,14 +169,17 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            if (viewHolder == null) {
-                viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
-            }
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
         }
         observeLiveData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewHolder?.setInitialAnimationStates()
     }
 
     override fun onResume() {

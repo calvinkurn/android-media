@@ -123,16 +123,15 @@ class OtherMenuViewHolder(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        hasInitialAnimationCompleted = false
-        hasShareButtonAnimationCompleted = false
-    }
-
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         setInitialValues()
         balanceTopadsTopupView?.stopAnimation()
+    }
+
+    fun setInitialAnimationStates() {
+        hasInitialAnimationCompleted = false
+        hasShareButtonAnimationCompleted = false
     }
 
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
