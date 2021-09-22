@@ -109,7 +109,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun trackClickBackBtn() {
-        if(getUrl().contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP)) {
+        if(getWebView().url?.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP) == true) {
             analytics.trackClickBtnBack()
         }
     }
