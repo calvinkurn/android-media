@@ -189,16 +189,20 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
-        val queryParams =
-            topAdsImageViewUseCase.getQueryMap(
-                AccountConstants.TDNBanner.EMPTY,
-                AccountConstants.TDNBanner.SOURCE,
-                AccountConstants.TDNBanner.EMPTY,
-                AccountConstants.TDNBanner.ADS_COUNT,
-                AccountConstants.TDNBanner.DIMEN_ID,
-                AccountConstants.TDNBanner.EMPTY
-            )
-        return topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        return try {
+            val queryParams =
+                topAdsImageViewUseCase.getQueryMap(
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.SOURCE,
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.ADS_COUNT,
+                    AccountConstants.TDNBanner.DIMEN_ID,
+                    AccountConstants.TDNBanner.EMPTY
+                )
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        }catch (t: Throwable){
+            null
+        }
     }
 
     private fun checkIsAffiliate(): Boolean {
