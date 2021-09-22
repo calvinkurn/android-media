@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.resources.DarkModeUtils.isDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
@@ -45,6 +45,7 @@ class LottieBottomNavbar : LinearLayout {
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
+    private var isDarkMode = context.isDarkMode()
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -219,7 +220,7 @@ class LottieBottomNavbar : LinearLayout {
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
 
-            val animName = if (!isDarkMode(context)) bottomMenu.animName else bottomMenu.animDarkName
+            val animName = if (!isDarkMode) bottomMenu.animName else bottomMenu.animDarkName
             if (!isDeviceAnimationDisabled()) {
                 animName?.let {
                     icon.setAnimation(animName)
@@ -262,7 +263,7 @@ class LottieBottomNavbar : LinearLayout {
                     if (selectedItem != index) {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
-                        val animNameSelected = if (!isDarkMode(context)) bottomMenuSelected.animName else bottomMenuSelected.animDarkName
+                        val animNameSelected = if (!isDarkMode) bottomMenuSelected.animName else bottomMenuSelected.animDarkName
 
                         bottomMenuSelected.imageEnabledName?.let {
                             iconPlaceholder.setImageResource(it)
@@ -274,7 +275,7 @@ class LottieBottomNavbar : LinearLayout {
                     } else {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
-                        val animToEnabledNameSelected = if (!isDarkMode(context)) bottomMenuSelected.animToEnabledName else bottomMenuSelected.animDarkToEnabledName
+                        val animToEnabledNameSelected = if (!isDarkMode) bottomMenuSelected.animToEnabledName else bottomMenuSelected.animDarkToEnabledName
 
                         bottomMenuSelected.imageName?.let {
                             iconPlaceholder.setImageResource(it)
@@ -387,7 +388,7 @@ class LottieBottomNavbar : LinearLayout {
         if (iconList[selectedItem?:0].second) {
             val pair = iconList[selectedItem?:0]
             pair.first.cancelAnimation()
-            val animToEnabledName = if (!isDarkMode(context))
+            val animToEnabledName = if (!isDarkMode)
                 menu[selectedItem?:0].animToEnabledName else menu[selectedItem?:0].animDarkToEnabledName
             animToEnabledName?.let {
                 pair.first.setAnimation(it)
