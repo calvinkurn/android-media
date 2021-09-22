@@ -197,7 +197,9 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.filter { isActive.get() || it is AllowedWhenInactiveEvent }
+        get() = _uiEvent
+            .filter { isActive.get() || it is AllowedWhenInactiveEvent }
+            .map { if (it is AllowedWhenInactiveEvent) it.event else it }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -616,7 +618,7 @@ class PlayViewModel @Inject constructor(
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
-            ClickCartAction -> handleClickCart()
+            ClickCartAction -> handleClickCart(isFromLogin = false)
         }
     }
 
@@ -1401,7 +1403,7 @@ class PlayViewModel @Inject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
-            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart()
+            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             else -> {}
         }
     }
@@ -1467,10 +1469,11 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickCart() = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
+    private fun handleClickCart(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
         viewModelScope.launch {
+            val event = OpenPageEvent(applink = ApplinkConst.CART)
             _uiEvent.emit(
-                    OpenPageEvent(applink = ApplinkConst.CART)
+                 if (isFromLogin) AllowedWhenInactiveEvent(event) else event
             )
         }
     }
