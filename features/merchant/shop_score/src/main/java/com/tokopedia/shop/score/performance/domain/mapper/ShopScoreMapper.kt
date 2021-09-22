@@ -964,17 +964,18 @@ class ShopScoreMapper @Inject constructor(
     private fun getIsShowPopupEndTenure(shopAge: Long): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
             val calendar = Calendar.getInstance(getLocale())
-            if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX) {
-                calendar.getIsRangeCurrentWeekAfterMonday()
+            if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
+            ) {
+                calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
             } else if (shopAge > SHOP_AGE_NINETY_SIX &&
                 shopAge <= (SHOP_AGE_NINETY_SIX + calendar.getNNextDaysPopupEndTenure())
             ) {
-                calendar.getIsRangeCurrentWeekAfterMonday()
+                calendar.getIsRangeCurrentWeekFromMonday()
             } else false
         } else false
     }
 
-    private fun Calendar.getIsRangeCurrentWeekAfterMonday(): Boolean {
+    private fun Calendar.getIsRangeCurrentWeekFromMonday(): Boolean {
         return if (this.get(Calendar.DAY_OF_WEEK) >= Calendar.MONDAY) {
             this.get(Calendar.DAY_OF_WEEK) in Calendar.MONDAY..Calendar.SATURDAY
         } else {
