@@ -370,7 +370,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun initView() {
         binding?.let {
             it.ivHotelHomepageLocation.run {
-                setImageDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N400)))
+                setImageDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION_FILLED, ContextCompat.getColor(context, R.color.hotel_dms_icon_color)))
             }
             it.ivHotelHomepageBackground.loadImage(HOMEPAGE_BG_IMAGE_URL)
             checkCheckInAndCheckOutDate()
