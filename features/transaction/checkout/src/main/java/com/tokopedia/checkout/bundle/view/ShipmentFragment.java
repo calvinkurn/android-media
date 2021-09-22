@@ -1941,7 +1941,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             // If there's no recommendation, user choose courier manually
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
             List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
-            onChangeShippingCourier(recipientAddressModel, shipmentCartItemModel, cartItemPosition);
+            onChangeShippingCourier(recipientAddressModel, shipmentCartItemModel, cartItemPosition, shippingCourierUiModels);
         } else {
             if (recommendedCourier.isUsePinPoint()
                     && (recipientAddressModel.getLatitude() == null ||
@@ -2032,7 +2032,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                                 int cartItemPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint) {
+                                 int cartItemPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint, List<ShippingCourierUiModel> shippingCourierList) {
         sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId(), isCod);
         if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
@@ -2041,6 +2041,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             setPinpoint(cartItemPosition);
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData, true);
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierList);
+            }
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
             checkCourierPromo(courierItemData, cartItemPosition);
         }
@@ -2129,9 +2132,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onChangeShippingCourier(RecipientAddressModel recipientAddressModel,
                                         ShipmentCartItemModel shipmentCartItemModel,
-                                        int cartPosition) {
+                                        int cartPosition,
+                                        List<ShippingCourierUiModel> selectedShippingCourierUiModels) {
         if (shipmentLoadingIndex == -1) {
-            List<ShippingCourierUiModel> shippingCourierUiModels = shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels();
+            List<ShippingCourierUiModel> shippingCourierUiModels;
+            if (selectedShippingCourierUiModels != null) {
+                shippingCourierUiModels = selectedShippingCourierUiModels;
+            } else {
+                shippingCourierUiModels = shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels();
+            }
             sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel);
             if (shippingCourierUiModels == null || shippingCourierUiModels.size() == 0 &&
                     shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel.getOrderNumber()) != null) {
