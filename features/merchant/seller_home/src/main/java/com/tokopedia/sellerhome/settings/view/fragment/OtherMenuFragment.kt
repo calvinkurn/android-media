@@ -169,7 +169,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
+            if (viewHolder == null) {
+                viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
+            }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
@@ -353,7 +355,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun getIsShopShareReady(): Boolean = shopShareInfo != null
-
 
     override fun onScrollToTop() {
         viewHolder?.scrollToTop()
@@ -703,9 +704,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
         if (shareInfo != null) {
-            if (shopShareInfo == null) {
-                viewHolder?.runShareButtonAnimation()
-            }
+            viewHolder?.runShareButtonAnimation()
             shopShareInfo = shareInfo
         }
     }

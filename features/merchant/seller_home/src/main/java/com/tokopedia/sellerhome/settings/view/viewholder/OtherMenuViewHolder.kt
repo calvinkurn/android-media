@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -116,9 +117,16 @@ class OtherMenuViewHolder(
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
             setOnAnimationFinishedListener {
+                setShareButtonPosition()
                 hasShareButtonAnimationCompleted = true
             }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        hasInitialAnimationCompleted = false
+        hasShareButtonAnimationCompleted = false
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -206,9 +214,13 @@ class OtherMenuViewHolder(
     }
 
     fun runShareButtonAnimation() {
-        if (hasInitialAnimationCompleted && !hasShareButtonAnimationCompleted) {
+        if (hasInitialAnimationCompleted) {
+            if (hasShareButtonAnimationCompleted) {
+                setShareButtonPosition()
+            } else {
+                motionLayoutAnimator?.animateShareButtonSlideIn()
+            }
             showShareButtons()
-            motionLayoutAnimator?.animateShareButtonSlideIn()
         }
     }
 
@@ -485,6 +497,26 @@ class OtherMenuViewHolder(
             show()
             setOnClickListener {
                 listener.onShareButtonClicked()
+            }
+        }
+    }
+
+    /**
+     * Set correct position of share button, in case the animation is not working
+     */
+    private fun setShareButtonPosition() {
+        shareButtonImage?.show()
+        contentMotionLayout?.let {
+            val constraintSet = ConstraintSet().apply {
+                clone(it)
+            }
+            shareButtonImage?.id?.let { shareButtonId ->
+                constraintSet.connect(
+                    shareButtonId,
+                    ConstraintSet.END,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.END
+                )
             }
         }
     }
