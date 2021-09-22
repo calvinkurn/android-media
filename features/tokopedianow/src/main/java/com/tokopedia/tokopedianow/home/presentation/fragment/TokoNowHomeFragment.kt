@@ -86,7 +86,6 @@ import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -745,9 +744,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome?.post {
-                    rvHome?.submitProduct(it.data)
-                }
+                showHomeLayout(it.data)
             }
         }
 
