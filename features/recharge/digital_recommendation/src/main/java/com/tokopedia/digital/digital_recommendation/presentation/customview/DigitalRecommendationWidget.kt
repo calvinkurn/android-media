@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
@@ -30,7 +29,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     var listener: Listener? = null
 
-    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var digitalRecommendationViewModel: DigitalRecommendationViewModel
@@ -39,7 +38,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         showLoading()
     }
 
-    fun setViewModelFactory(viewModelFactory: ViewModelFactory) {
+    fun setViewModelFactory(viewModelFactory: ViewModelProvider.Factory) {
         this.viewModelFactory = viewModelFactory
         digitalRecommendationViewModel = ViewModelProvider(context as Fragment, viewModelFactory)
                 .get(DigitalRecommendationViewModel::class.java)
@@ -62,6 +61,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             throw UninitializedPropertyAccessException("View Model is not Initialized")
         }
 
+        showLoading()
         observeLivedata()
         digitalRecommendationViewModel.fetchDigitalRecommendation()
     }
