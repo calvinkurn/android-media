@@ -66,13 +66,9 @@ class CameraFragment : Fragment() {
         }
     }
     val mp4ComposerListener = object : Mp4Composer.Listener {
-        override fun onProgress(progress: Double) {
-            Timber.d("NOOB, onProgess: $progress")
-        }
+        override fun onProgress(progress: Double) {}
 
-        override fun onCurrentWrittenVideoTime(timeUs: Long) {
-            Timber.d("NOOB, onCurrentWrittenVideoTime: $timeUs")
-        }
+        override fun onCurrentWrittenVideoTime(timeUs: Long) {}
 
         override fun onCompleted() {
             handler.post {
@@ -81,7 +77,6 @@ class CameraFragment : Fragment() {
 
             viewModel.deleteFile(sourceVideoFile)
 
-            Timber.d("NOOB, onCompleted")
             if (!cropVideoPath.isNullOrEmpty()) {
                 (activity as? CameraActivity)?.exitActivityOnSuccess(Uri.parse(cropVideoPath))
             } else {
@@ -95,7 +90,6 @@ class CameraFragment : Fragment() {
                 loader.visibility = View.GONE
                 showToast("Cropping Video cancelled", Toaster.TYPE_ERROR)
             }
-            Timber.d("NOOB, onCanceled")
             viewModel.deleteFile(sourceVideoFile)
             (activity as? CameraActivity)?.exitActivityOnError()
         }
@@ -108,23 +102,16 @@ class CameraFragment : Fragment() {
 
             viewModel.deleteFile(sourceVideoFile)
             (activity as? CameraActivity)?.exitActivityOnError()
-            exception?.printStackTrace()
-            Timber.e("NOOB, ${exception?.message} ")
+            Timber.e(exception)
 
         }
     }
     val mp4ComposerLogger = object : Logger {
-        override fun debug(tag: String?, message: String?) {
-//            Timber.d("NOOB, Logger $message")
-        }
+        override fun debug(tag: String?, message: String?) {}
 
-        override fun error(tag: String?, message: String?, error: Throwable?) {
-            Timber.e("NOOB, Logger $message")
-        }
+        override fun error(tag: String?, message: String?, error: Throwable?) {}
 
-        override fun warning(tag: String?, message: String?) {
-            Timber.w("NOOB, Logger $message")
-        }
+        override fun warning(tag: String?, message: String?) {}
     }
     var mp4Composer: Mp4Composer? = null
 
@@ -239,21 +226,19 @@ class CameraFragment : Fragment() {
             override fun onPictureTaken(result: PictureResult) {
                 super.onPictureTaken(result)
                 disableFlashTorch()
-                Timber.d("${CameraUtil.LOG_TAG} picture taken:")
                 result.toBitmap(bitmapCallback)
             }
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
                 disableFlashTorch()
-                Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
                 cropVideo(result)
             }
 
             override fun onCameraError(exception: CameraException) {
                 super.onCameraError(exception)
+                Timber.e(exception)
                 disableFlashTorch()
-                Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
                 cameraButton.addTouchListener()
             }
 
@@ -276,7 +261,6 @@ class CameraFragment : Fragment() {
 
             val destinationPath = CameraUtil.createMediaFile(ctx, false).absolutePath
             cropVideoPath = destinationPath
-            Timber.d("NOOB, Cropped Video : $cropVideoPath")
 
             val fillModeCustomItem = FillModeCustomItem(
                 cameraView.scaleX,
@@ -378,34 +362,6 @@ class CameraFragment : Fragment() {
             cameraView.takePictureSnapshot()
         }
     }
-
-    fun setPictureSize() {
-        val snapShotSize = cameraView.snapshotSize
-        if (snapShotSize != null) {
-            val width = SizeSelectors.minWidth(snapShotSize.width)
-            val height = SizeSelectors.minHeight(snapShotSize.height)
-            val dimensions = SizeSelectors.and(width, height) // Matches sizes bigger than 1000x2000.
-
-//            val ratio = SizeSelectors.aspectRatio(AspectRatio.of(1, 1), 0f) // Matches 1:1 sizes.
-
-
-//            val result = SizeSelectors.or(
-//                SizeSelectors.and(ratio, dimensions),  // Try to match both constraints
-//                ratio,  // If none is found, at least try to match the aspect ratio
-//                SizeSelectors.biggest() // If none is found, take the biggest
-//            )
-            cameraView.setPictureSize(object : SizeSelector {
-                override fun select(source: MutableList<Size>): MutableList<Size> {
-                    return source
-                }
-            })
-//            cameraView.setPictureSize(dimensions)
-//            cameraView.setPreviewStreamSize(dimensions)
-//            cameraView.size
-//            cameraView.setPictureSize(obj)
-        }
-    }
-
 
     private fun cropBitmap(srcBitmap: Bitmap) {
         context?.let {

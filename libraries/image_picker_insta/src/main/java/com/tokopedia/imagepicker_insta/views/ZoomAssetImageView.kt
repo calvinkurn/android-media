@@ -42,47 +42,12 @@ class ZoomAssetImageView @JvmOverloads constructor(
                         it.bmpWidth = bmp.width
                     }
                 }
-                createTempBitmap(engine)
-//                print("J")
             }
 
             override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
                 //Do nothing
             }
         })
-    }
-
-    fun createTempBitmap(engine: ZoomEngine) {
-        val bmp = (drawable as? BitmapDrawable)?.bitmap
-        if (bmp != null) {
-            val matrixArray = FloatArray(9)
-            engine.matrix.getValues(matrixArray)
-            val translationX = matrixArray[Matrix.MTRANS_X].toInt()     //91
-            val translationY = matrixArray[Matrix.MTRANS_Y].toInt() //-311
-
-            val x = if (translationX > 0) 0 else -translationX
-            val y = if (translationY > 0) 0 else -translationY
-            val left: Int = (x / matrixArray[Matrix.MSCALE_X]).toInt()
-            val top: Int = (y / matrixArray[Matrix.MSCALE_Y]).toInt()
-            var newWidth: Int = (width / matrixArray[Matrix.MSCALE_X]).toInt()
-            var newHeight: Int = newWidth
-
-            if (top == 0) {
-                newHeight = bmp.height
-            }
-
-            //vertical image
-            if (left == 0) {
-                newHeight = (bmp.height / matrixArray[Matrix.MSCALE_Y]).toInt()
-                newWidth = bmp.width
-            }
-
-            //INVALID
-            if ((left + newWidth > bmp.width) || top + newHeight > bmp.height) return
-
-//            val dstBmp = Bitmap.createBitmap(bmp, left, top, newWidth, newHeight)
-            Timber.d("cropped bmp")
-        }
     }
 
     fun centerCrop() {
@@ -111,7 +76,6 @@ class ZoomAssetImageView @JvmOverloads constructor(
     }
 
     fun centerInside() {
-//        engine.zoomTo(1f, true)
         engine.moveTo(1f, 0f,0f,true)
     }
 
