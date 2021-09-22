@@ -1,6 +1,5 @@
 package com.tokopedia.gopay_kyc.domain.usecase
 
-import android.util.Log
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
 import com.tokopedia.common.network.util.RestConstant
 import com.tokopedia.gopay_kyc.domain.data.KycDocument

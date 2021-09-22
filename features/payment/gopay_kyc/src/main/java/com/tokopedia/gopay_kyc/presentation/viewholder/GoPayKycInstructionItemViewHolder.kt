@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.gopay_kyc.R
 import kotlinx.android.synthetic.main.gopay_kyc_general_item_layout.view.*
 import kotlinx.android.synthetic.main.gopay_kyc_ktp_instruction_item_layout.view.*
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class GoPayKycInstructionItemViewHolder(
     val context: Context,
@@ -21,6 +23,10 @@ class GoPayKycInstructionItemViewHolder(
         instructionView.apply {
             layoutParams = this@GoPayKycInstructionItemViewHolder.layoutParams
             goPayKycBulletInstruction.text = context.getString(instruction)
+            if (context.isDarkMode())
+                goPayKtpBullet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_gopay_bullet_dot_white))
+            else
+                goPayKtpBullet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_gopay_bullet_dot_black))
         }
         return instructionView
     }

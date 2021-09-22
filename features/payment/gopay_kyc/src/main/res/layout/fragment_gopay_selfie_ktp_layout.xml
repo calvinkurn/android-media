@@ -63,7 +63,7 @@
         android:layout_marginBottom="@dimen/go_pay_kyc_dp_40"
         android:gravity="center"
         tools:text="Test Instructions"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/cameraControls"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -1,10 +1,15 @@
 package com.tokopedia.gopay_kyc.viewmodel
 
+import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.otaliastudios.cameraview.BitmapCallback
+import com.otaliastudios.cameraview.CameraUtils
 import com.tokopedia.gopay_kyc.domain.data.KycStatusData
 import com.tokopedia.gopay_kyc.domain.data.KycStatusResponse
 import com.tokopedia.gopay_kyc.domain.usecase.CheckKycStatusUseCase
 import com.tokopedia.gopay_kyc.domain.usecase.SaveCaptureImageUseCase
+import com.tokopedia.usecase.coroutines.Result
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -20,6 +25,8 @@ class GoPayKycViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val checkKycStatusUseCase = mockk<CheckKycStatusUseCase>(relaxed = true)
     private val saveCaptureImageUseCase = mockk<SaveCaptureImageUseCase>(relaxed = true)
+    private val loadingObserver: Observer<Boolean> = mockk(relaxed = true)
+
     private val dispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: GoPayKycViewModel
 
@@ -29,6 +36,7 @@ class GoPayKycViewModelTest {
     @Before
     fun setUp() {
         viewModel = GoPayKycViewModel(checkKycStatusUseCase, saveCaptureImageUseCase, dispatcher)
+        viewModel.isUpgradeLoading.observeForever(loadingObserver)
     }
 
     @Test
@@ -37,10 +45,10 @@ class GoPayKycViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.checkKycStatus()
-        /*verify {
-            viewModel.isUpgradeLoading.postValue(true)
-            viewModel.isUpgradeLoading.postValue(false)
-        }*/
+        verifyOrder {
+            loadingObserver.onChanged(true)
+            loadingObserver.onChanged(false)
+        }
     }
 
     @Test
@@ -50,10 +58,10 @@ class GoPayKycViewModelTest {
             firstArg<(KycStatusResponse) -> Unit>().invoke(data)
         }
         viewModel.checkKycStatus()
-        /*verifyOrder {
-            viewModel.isUpgradeLoading.postValue(true)
-            viewModel.isUpgradeLoading.postValue(false)
-        }*/
+        verifyOrder {
+            loadingObserver.onChanged(true)
+            loadingObserver.onChanged(false)
+        }
     }
 
     @Test
@@ -65,22 +73,21 @@ class GoPayKycViewModelTest {
         viewModel.checkKycStatus()
         assert(viewModel.kycEligibilityStatus.value?.isEligible == data.kycStatusData.isEligible)
     }
-
+/*
     @Test
-    fun `Execute processAndSaveImage `() {
-       /* mockkStatic(BitmapFactory::class)
-        val data = ByteArray(2)
-        val captureCallback = slot<(Bitmap) -> Unit>()
-        every { BitmapFactory.decodeByteArray(any(), any(), any(), any()) } returns null
+    fun `Execute processAndSaveImage`() {
+        mockkStatic(CameraUtils::class)
+        val image = ByteArray(2)
 
-        every { CameraUtils.decodeBitmap(data, 10, 10, captureCallback) } answers {
-            captureCallback.captured.invoke()
+        every { CameraUtils.decodeBitmap(image, 1, 1) {} } answers {
+            (args[3] as BitmapCallback).onBitmapReady(null)
         }
-        coEvery { saveCaptureImageUseCase.parseAndSaveCapture(any(), any(), any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+
+        viewModel.processAndSaveImage(image, 1, 1, 1)
+
+        verify {
+            CameraUtils.decodeBitmap(image, 1,1) { }
         }
-        viewModel.processAndSaveImage(data, 10, 10, 1)
-        assert(viewModel.captureErrorLiveData.value is Throwable)*/
-    }
+    }*/
 
 }

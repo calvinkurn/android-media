@@ -22,7 +22,7 @@
         android:layout_width="@dimen/unify_space_32"
         android:layout_height="@dimen/unify_space_32"
         android:layout_marginEnd="@dimen/unify_space_8"
-        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="CAMERA_SWITCH"
         app:layout_constraintBottom_toBottomOf="@+id/cameraShutterImage"
         app:layout_constraintEnd_toEndOf="parent"

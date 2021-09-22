@@ -4,11 +4,8 @@ import com.tokopedia.gopay_kyc.domain.GQL_INITIATE_KYC
 import com.tokopedia.gopay_kyc.domain.data.InitiateKycGqlResponse
 import com.tokopedia.gopay_kyc.domain.data.InitiateKycResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
 @GqlQuery("InitiateKycQuery", GQL_INITIATE_KYC)
