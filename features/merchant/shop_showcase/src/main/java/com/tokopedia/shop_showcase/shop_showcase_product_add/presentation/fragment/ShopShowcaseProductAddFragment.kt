@@ -38,12 +38,12 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapte
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
 import javax.inject.Inject
 
 /**
@@ -127,6 +127,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private val headerLayout: CardView? by lazy {
         view?.findViewById<CardView>(R.id.header_layout)
+    }
+
+    private val loader: LoaderUnify? by lazy {
+        view?.findViewById(R.id.loaderUnify)
     }
 
     /**
@@ -361,8 +365,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun observeFetchingState(view: View?) {
         observe(showcaseProductAddViewModel.fetchingState) {
-            if(it) showFetchingProgress(view)
-            else hideFetchingProgress(view)
+            if(it) showFetchingProgress()
+            else hideFetchingProgress()
         }
     }
 
@@ -382,15 +386,15 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         showcaseProductListAdapter?.showLoadingProgress()
     }
 
-    private fun showFetchingProgress(view: View?) {
+    private fun showFetchingProgress() {
         emptyState?.invisible()
-        view?.loaderUnify?.visible()
-        view?.rv_showcase_add_product?.gone()
+        loader?.visible()
+        recyclerViewProductList?.gone()
     }
 
-    private fun hideFetchingProgress(view: View?) {
-        view?.loaderUnify?.gone()
-        view?.rv_showcase_add_product?.visible()
+    private fun hideFetchingProgress() {
+        loader?.gone()
+        recyclerViewProductList?.visible()
     }
 
     private fun hideLoadingProgress() {
