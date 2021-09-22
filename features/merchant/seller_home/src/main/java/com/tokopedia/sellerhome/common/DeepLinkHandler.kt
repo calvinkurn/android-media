@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.common
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -53,7 +52,7 @@ object DeepLinkHandler {
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST) -> {
                 val uri = intent.data
                 val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                val filterOrderType = uri?.getQueryParameter(AppLinkMapperSellerHome.FILTER_ORDER_TYPE).toIntOrZero()
+                val filterOrderType = uri?.getQueryParameter(AppLinkMapperSellerHome.FILTER_ORDER_TYPE) ?: "0"
                 callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword, filterOrderType))
             }
 
