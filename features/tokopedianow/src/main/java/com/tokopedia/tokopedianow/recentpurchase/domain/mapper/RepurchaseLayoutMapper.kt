@@ -29,6 +29,9 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 object RepurchaseLayoutMapper {
 
+    const val PRODUCT_REPURCHASE = "product_repurchase"
+    const val PRODUCT_RECOMMENDATION = "product_recom"
+
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
 
@@ -232,29 +235,59 @@ object RepurchaseLayoutMapper {
                 miniCartItem.quantity
             }
             updateProductQuantity(productId, quantity)
+            updateProductRecomQuantity(productId, quantity)
         }
     }
 
-    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData) {
-        val productList = filterIsInstance<RepurchaseProductUiModel>()
-        val cartProductIds = miniCart.miniCartItems.map { it.productId }
-        val deletedProducts = productList.filter { it.id !in cartProductIds }
-        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
+        when (type) {
+            PRODUCT_REPURCHASE -> {
+                val productList = filterIsInstance<RepurchaseProductUiModel>()
+                val cartProductIds = miniCart.miniCartItems.map { it.productId }
+                val deletedProducts = productList.filter { it.id !in cartProductIds }
+                val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
-        deletedProducts.forEach { model ->
-            val productId = model.id
-            val parentId = model.parentId
+                deletedProducts.forEach { model ->
+                    val productId = model.id
+                    val parentId = model.parentId
 
-            if (parentId != DEFAULT_PARENT_ID) {
-                val miniCartItemsWithSameParentId = variantGroup[parentId]
-                val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
-                if (totalQuantity == DEFAULT_QUANTITY) {
-                    updateProductQuantity(productId, DEFAULT_QUANTITY)
-                } else {
-                    updateProductQuantity(productId, totalQuantity)
+                    if (parentId != DEFAULT_PARENT_ID) {
+                        val miniCartItemsWithSameParentId = variantGroup[parentId]
+                        val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+                        if (totalQuantity == DEFAULT_QUANTITY) {
+                            updateProductQuantity(productId, DEFAULT_QUANTITY)
+                        } else {
+                            updateProductQuantity(productId, totalQuantity)
+                        }
+                    } else {
+                        updateProductQuantity(productId, DEFAULT_QUANTITY)
+                    }
                 }
-            } else {
-                updateProductQuantity(productId, DEFAULT_QUANTITY)
+            }
+            PRODUCT_RECOMMENDATION -> {
+                firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
+                    val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
+                    val cartProductIds = miniCart.miniCartItems.map { it.productId }
+                    val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
+                    val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+
+                    deletedProducts.forEach { model ->
+                        val productId = model.productId.toString()
+                        val parentId = model.parentID.toString()
+
+                        if (parentId != DEFAULT_PARENT_ID) {
+                            val miniCartItemsWithSameParentId = variantGroup[parentId]
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
+                            } else {
+                                updateProductRecomQuantity(productId, totalQuantity)
+                            }
+                        } else {
+                            updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
+                        }
+                    }
+                }
             }
         }
     }
@@ -275,6 +308,27 @@ object RepurchaseLayoutMapper {
                 }
             }
             set(index, it.copy(productCard = productCard))
+        }
+    }
+
+    private fun MutableList<Visitable<*>>.updateProductRecomQuantity(productId: String, quantity: Int) {
+        firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
+            val index = indexOf(uiModel)
+            val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
+            val recommendationData = layoutUiModel.carouselData.recommendationData.copy()
+            recommendationData.recommendationItemList.firstOrNull { it.productId.toString() == productId }?.let {
+                it.quantity = quantity
+            }
+            set(
+                index = index,
+                element = TokoNowRecommendationCarouselUiModel(
+                    carouselData = layoutUiModel.carouselData.copy(
+                        recommendationData = recommendationData
+                    ),
+                    id = layoutUiModel.id,
+                    pageName = layoutUiModel.pageName
+                )
+            )
         }
     }
 
