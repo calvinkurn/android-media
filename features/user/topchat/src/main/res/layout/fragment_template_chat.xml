@@ -65,11 +65,10 @@
                 <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/switch_chat_template"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/layout_lvl4"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:checked="false"
-                    android:gravity="right"
                     tools:checked="true" />
 
             </RelativeLayout>
