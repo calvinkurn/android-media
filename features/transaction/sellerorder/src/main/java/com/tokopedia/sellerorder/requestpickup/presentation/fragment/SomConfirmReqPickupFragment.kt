@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,7 +35,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 /**
@@ -69,7 +68,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
     }
 
-    private var binding by autoClearedNullable<FragmentSomConfirmReqPickupBinding>()
+    private val binding by viewBinding(FragmentSomConfirmReqPickupBinding::bind)
 
     companion object {
         private const val ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA = "Error when get confirm request pickup layout data."
@@ -94,8 +93,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSomConfirmReqPickupBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.fragment_som_confirm_req_pickup, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

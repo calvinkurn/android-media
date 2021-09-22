@@ -13,7 +13,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.FragmentSomDetailLogisticInfoBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLogisticInfoAdapter
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
 
@@ -32,7 +32,7 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
     private var cacheManager: SaveInstanceCacheManager? = null
     private var cacheObjectId = ""
 
-    private var binding by autoClearedNullable<FragmentSomDetailLogisticInfoBinding>()
+    private val binding by viewBinding(FragmentSomDetailLogisticInfoBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +52,7 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSomDetailLogisticInfoBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.fragment_som_detail_logistic_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

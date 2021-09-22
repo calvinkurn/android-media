@@ -40,8 +40,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 /**
@@ -73,7 +72,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         false
     }
 
-    private var binding by viewBinding<FragmentSomConfirmShippingBinding>()
+    private val binding by viewBinding(FragmentSomConfirmShippingBinding::bind)
 
     companion object {
         private const val ERROR_CONFIRM_SHIPPING = "Error when confirm shipping."

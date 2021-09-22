@@ -16,7 +16,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.FragmentSomContainerBinding
 import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
 import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
     companion object {
@@ -38,7 +38,7 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
         private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
     }
 
-    private var binding by autoClearedNullable<FragmentSomContainerBinding>()
+    private val binding by viewBinding(FragmentSomContainerBinding::bind)
 
     private var somListFragment: SomListFragment? = null
     private var somDetailFragment: SomDetailFragment? = null
@@ -46,8 +46,7 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
     override fun getScreenName(): String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSomContainerBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.fragment_som_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

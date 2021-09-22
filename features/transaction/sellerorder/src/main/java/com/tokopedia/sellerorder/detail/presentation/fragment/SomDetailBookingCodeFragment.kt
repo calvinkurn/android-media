@@ -22,7 +22,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.databinding.FragmentSomBookingCodeBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 /**
  * Created by fwidjaja on 2019-11-27.
@@ -39,7 +39,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     val BARCODE_WIDTH = 256
     val BARCODE_HEIGHT = 61
 
-    private var binding by autoClearedNullable<FragmentSomBookingCodeBinding>()
+    private val binding by viewBinding(FragmentSomBookingCodeBinding::bind)
 
     companion object {
         @JvmStatic
@@ -62,8 +62,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSomBookingCodeBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.fragment_som_booking_code, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
