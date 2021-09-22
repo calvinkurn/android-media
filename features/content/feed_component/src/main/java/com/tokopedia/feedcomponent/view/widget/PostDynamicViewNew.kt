@@ -956,7 +956,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
             layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(feedXCard.products.isNotEmpty())
+            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(feedXCard.tags.isNotEmpty())
 
 
             if (handlerAnim == null)
