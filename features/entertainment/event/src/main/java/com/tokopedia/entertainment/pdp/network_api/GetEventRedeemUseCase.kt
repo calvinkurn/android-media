@@ -10,8 +10,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 class GetEventRedeemUseCase @Inject
-constructor(private val repository:
-) : RestRequestUseCase(repository) {
+constructor(private val repository: RestRepository) : RestRequestUseCase(repository) {
 
     var url : String = ""
 
