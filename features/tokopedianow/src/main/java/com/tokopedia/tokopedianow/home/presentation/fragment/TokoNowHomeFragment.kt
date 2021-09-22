@@ -288,6 +288,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
+            miniCartWidget?.hideCoachMark()
         }
         viewModelTokoNow.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
@@ -522,6 +523,7 @@ class TokoNowHomeFragment: Fragment(),
             viewModelTokoNow.getProductRecomOoc()
         }
         miniCartWidget?.hide()
+        miniCartWidget?.hideCoachMark()
         setupPadding(false)
     }
 
@@ -913,6 +915,7 @@ class TokoNowHomeFragment: Fragment(),
             hideStickyLogin()
         } else {
             miniCartWidget?.hide()
+            miniCartWidget?.hideCoachMark()
         }
     }
 
