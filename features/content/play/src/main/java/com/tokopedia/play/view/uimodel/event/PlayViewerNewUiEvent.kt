@@ -7,8 +7,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 /**
  * Created by jegul on 29/06/21
  */
-interface AllowedWhenInactiveEvent
-
 sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
@@ -60,4 +58,13 @@ sealed class UiString {
 
     data class Resource(@StringRes val resource: Int) : UiString()
     data class Text(val text: String) : UiString()
+}
+
+data class AllowedWhenInactiveEvent(
+    val event: PlayViewerNewUiEvent
+) : PlayViewerNewUiEvent() {
+
+    init {
+        require(event !is AllowedWhenInactiveEvent)
+    }
 }
