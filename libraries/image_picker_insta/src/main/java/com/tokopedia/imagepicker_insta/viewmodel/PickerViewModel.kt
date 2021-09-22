@@ -137,8 +137,6 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         })
     }
 
-    fun insertIntoGallery(asset: Asset) {}
-
     override fun onCleared() {
         super.onCleared()
         fileObserver?.startWatching()

@@ -506,7 +506,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun addAssetToGallery(asset: Asset) {
-        viewModel.insertIntoGallery(asset)
+        //Do nothing
     }
 
     private fun addToCurrnetDisplayedList(imageAdapterData: ImageAdapterData) {

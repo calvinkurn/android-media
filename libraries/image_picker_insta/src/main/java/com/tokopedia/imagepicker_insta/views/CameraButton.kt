@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -23,7 +24,7 @@ class CameraButton @JvmOverloads constructor(
     lateinit var progressBar: ProgressBar
     lateinit var imageCapture: AppCompatImageView
     var countDownTimer: CountDownTimer? = null
-    val longPressHandler = android.os.Handler()
+    val longPressHandler = android.os.Handler(Looper.getMainLooper())
     var longTimeMillis = 0L
     val ANIMATION_DURATION = 300L
     var cameraButtonListener: CameraButtonListener?=null
@@ -34,7 +35,7 @@ class CameraButton @JvmOverloads constructor(
     }
 
 
-    private val cameraButtonTouchListener = OnTouchListener { v:View, event:MotionEvent ->
+    private val cameraButtonTouchListener = OnTouchListener { _:View, event:MotionEvent ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 imageCaptureAction = event.action

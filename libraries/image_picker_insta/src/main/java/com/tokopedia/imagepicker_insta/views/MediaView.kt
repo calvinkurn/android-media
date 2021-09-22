@@ -90,7 +90,7 @@ class MediaView @JvmOverloads constructor(
     }
 
     private fun setListeners() {
-        playerView.setOnTouchListener { v, event ->
+        playerView.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
             return@setOnTouchListener true
         }
