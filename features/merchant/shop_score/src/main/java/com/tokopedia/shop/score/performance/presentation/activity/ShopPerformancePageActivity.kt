@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.activity
 
 import android.content.Context
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,6 +32,11 @@ class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerfo
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
         SplitCompat.installActivity(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startPerformanceMonitoring()
     }
 
     override fun startPerformanceMonitoring() {

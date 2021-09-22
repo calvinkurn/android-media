@@ -112,6 +112,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         setPageBackground()
         setupActionBar()
@@ -768,6 +770,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             hideLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
                     val headerShopPerformanceUiModel =
