@@ -1352,6 +1352,7 @@ class DiscoveryFragment :
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
+        discoveryViewModel.miniCartSimplifiedData = miniCartSimplifiedData
         syncWithCart(miniCartSimplifiedData)
     }
 
