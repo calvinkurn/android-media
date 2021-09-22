@@ -17,6 +17,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.databinding.FragmentBaseSellerFeatureBinding
 import com.tokopedia.seller_migration_common.databinding.FragmentSellerMigrationBinding
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureFragmentAdapter
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
@@ -24,6 +25,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewListener {
 
@@ -81,7 +83,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     private var fragmentAdapter: SellerFeatureFragmentAdapter? = null
     private val userSession by lazy { UserSession(context) }
 
-    private var binding by autoClearedNullable<FragmentSellerMigrationBinding>()
+    private val binding by viewBinding(FragmentSellerMigrationBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,8 +94,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSellerMigrationBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.fragment_seller_migration, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
