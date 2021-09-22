@@ -338,6 +338,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun setObservers() {
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
+        imageMultiSelect.toggleCallback = { isMultiSelect->
+            if(isMultiSelect){
+                imageFitCenter.visibility = View.GONE
+            }else{
+                imageFitCenter.visibility = View.VISIBLE
+            }
+        }
+
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
