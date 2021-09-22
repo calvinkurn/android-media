@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.login.helper
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Context
 import android.view.View
 import android.widget.EditText
 import androidx.test.espresso.Espresso.onView
@@ -18,8 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.loginregister.common.Event
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.Matcher
@@ -65,13 +63,6 @@ class LoginTestHelper {
 
     fun GtmLogDBSource.finishTest() {
         deleteAll().subscribe()
-    }
-
-    fun validate(gtmLogDbSource: GtmLogDBSource,
-                 targetContext: Context,
-                 fileName: String) {
-        assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-                hasAllSuccess())
     }
 
     companion object {
