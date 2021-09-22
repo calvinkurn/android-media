@@ -714,7 +714,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     productId,
                     getUserId()
                 )
-            })
+            },
+            DialogUnify.HORIZONTAL_ACTION
+        )
         CreateReviewTracking.eventViewDialog(
             CreateReviewDialogType.CreateReviewSendRatingOnlyDialog,
             title,
@@ -742,7 +744,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     productId,
                     getUserId()
                 )
-            })
+            },
+            DialogUnify.HORIZONTAL_ACTION
+        )
         CreateReviewTracking.eventViewDialog(
             CreateReviewDialogType.CreateReviewUnsavedDialog,
             title,
@@ -760,7 +764,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             getString(R.string.review_edit_dialog_exit),
             { dismiss() },
             getString(R.string.review_form_dismiss_form_dialog_stay),
-            {})
+            {},
+            DialogUnify.HORIZONTAL_ACTION
+        )
     }
 
     private fun showDialog(
@@ -769,10 +775,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         primaryCtaText: String,
         primaryCtaAction: () -> Unit,
         secondaryCtaText: String,
-        secondaryCtaAction: () -> Unit
+        secondaryCtaAction: () -> Unit,
+        orientation: Int = DialogUnify.VERTICAL_ACTION
     ) {
         context?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            DialogUnify(it, orientation, DialogUnify.NO_IMAGE).apply {
                 setTitle(title)
                 setDescription(description)
                 setPrimaryCTAText(primaryCtaText)
