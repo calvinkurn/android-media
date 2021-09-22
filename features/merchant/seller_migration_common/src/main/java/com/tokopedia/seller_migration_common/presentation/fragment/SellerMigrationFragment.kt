@@ -23,7 +23,7 @@ import com.tokopedia.seller_migration_common.presentation.util.touchlistener.Sel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewListener {
 
@@ -81,7 +81,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     private var fragmentAdapter: SellerFeatureFragmentAdapter? = null
     private val userSession by lazy { UserSession(context) }
 
-    private val binding by viewBinding<FragmentSellerMigrationBinding>()
+    private var binding by autoClearedNullable<FragmentSellerMigrationBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +92,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_seller_migration, container, false)
+        binding = FragmentSellerMigrationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
