@@ -9,8 +9,7 @@ import com.tokopedia.talk.databinding.ItemTalkReplyEmptyStateBinding
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
 
 class TalkReplyEmptyViewHolder(
-    view: View,
-    private val binding: ItemTalkReplyEmptyStateBinding
+    view: View
 ) : AbstractViewHolder<TalkReplyEmptyModel>(view) {
 
     companion object {
@@ -20,6 +19,8 @@ class TalkReplyEmptyViewHolder(
         const val TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL =
             "https://ecs7.tokopedia.net/android/others/talk_reply_empty_state.png"
     }
+
+    private val binding: ItemTalkReplyEmptyStateBinding = ItemTalkReplyEmptyStateBinding.bind(view)
 
     override fun bind(element: TalkReplyEmptyModel) {
         if (element.isMyQuestion) {

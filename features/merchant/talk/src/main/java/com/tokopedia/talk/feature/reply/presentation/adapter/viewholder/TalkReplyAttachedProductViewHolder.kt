@@ -10,9 +10,10 @@ import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 
 class TalkReplyAttachedProductViewHolder(
-    view: View,
-    private val binding: ItemTalkReplyAttachedProductAnswerBinding
+    view: View
 ) : RecyclerView.ViewHolder(view) {
+
+    private val binding = ItemTalkReplyAttachedProductAnswerBinding.bind(view)
 
     fun bind(
         attachedProduct: AttachedProduct,

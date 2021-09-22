@@ -15,14 +15,15 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TalkInboxViewHolder(
         view: View,
-        private val talkInboxViewHolderListener: TalkInboxViewHolderListener,
-        private val binding: ItemTalkInboxBinding
+        private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
         const val DELETED_PRODUCT_PLACEHOLDER = "https://ecs7.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
         val LAYOUT = R.layout.item_talk_inbox
     }
+
+    private val binding: ItemTalkInboxBinding = ItemTalkInboxBinding.bind(view)
 
     override fun bind(element: TalkInboxUiModel) {
         with(element.inboxDetail) {

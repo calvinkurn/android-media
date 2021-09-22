@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.databinding.*
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.*
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.*
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
@@ -43,28 +42,19 @@ class TalkReplyAdapterTypeFactory(
                 parent,
                 attachedProductCardListener,
                 onKebabClickedListener,
-                threadListener,
-                ItemTalkReplyBinding.bind(parent)
+                threadListener
             )
-            TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(
-                parent,
-                ItemTalkReplyEmptyStateBinding.bind(parent)
-            )
-            TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(
-                parent,
-                ItemTalkReplyAnswerCountBinding.bind(parent)
-            )
+            TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
+            TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
             TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(
                 parent,
                 onKebabClickedListener,
                 talkReplyHeaderListener,
-                threadListener,
-                ItemTalkReplyHeaderBinding.bind(parent)
+                threadListener
             )
             TalkReplyProductHeaderViewHolder.LAYOUT -> TalkReplyProductHeaderViewHolder(
                 parent,
-                talkReplyProductHeaderListener,
-                ItemTalkReplyProductHeaderBinding.bind(parent)
+                talkReplyProductHeaderListener
             )
             else -> super.createViewHolder(parent, type)
         }

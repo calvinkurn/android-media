@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
-import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk.R
 import com.tokopedia.talk.databinding.ItemTalkReadingBinding
+import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
+import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.unifycomponents.Label
 
 class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
@@ -18,10 +18,9 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         val LAYOUT = R.layout.item_talk_reading
     }
 
-    private var itemTalkReadingBinding: ItemTalkReadingBinding? = null
+    private val itemTalkReadingBinding: ItemTalkReadingBinding = ItemTalkReadingBinding.bind(view)
 
     override fun bind(element: TalkReadingUiModel) {
-        itemTalkReadingBinding = ItemTalkReadingBinding.bind(itemView)
         element.question.apply {
             itemView.setOnClickListener { threadListener.onThreadClicked(questionID) }
             showInquirerName(userName, state.isYours)
@@ -48,44 +47,44 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun showInquirerProfilePicture(inquirerThumbnail: String) {
         if(inquirerThumbnail.isNotEmpty()) {
-            itemTalkReadingBinding?.readingInquirerProfilePicture?.apply {
+            itemTalkReadingBinding.readingInquirerProfilePicture.apply {
                 loadImage(inquirerThumbnail)
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingInquirerProfilePicture?.hide()
+            itemTalkReadingBinding.readingInquirerProfilePicture.hide()
         }
     }
 
     private fun showInquirerName(inquirerName: String, isMyQuestion: Boolean) {
         if(isMyQuestion) {
-            itemTalkReadingBinding?.readingInquirerYouLabel?.show()
+            itemTalkReadingBinding.readingInquirerYouLabel.show()
         } else {
-            itemTalkReadingBinding?.readingInquirerYouLabel?.hide()
+            itemTalkReadingBinding.readingInquirerYouLabel.hide()
         }
         if(inquirerName.isNotEmpty()) {
-            itemTalkReadingBinding?.readingInquirerName?.apply{
+            itemTalkReadingBinding.readingInquirerName.apply{
                 text = inquirerName
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingInquirerName?.hide()
+            itemTalkReadingBinding.readingInquirerName.hide()
         }
     }
 
     private fun showInquiryDate(date: String) {
         if(date.isNotEmpty()) {
-            itemTalkReadingBinding?.readingInquiryDate?.apply {
+            itemTalkReadingBinding.readingInquiryDate.apply {
                 text = date
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingInquiryDate?.hide()
+            itemTalkReadingBinding.readingInquiryDate.hide()
         }
     }
 
     private fun showQuestionWithCondition(isMasked: Boolean, content: String, maskedContent: String, questionId: String) {
-        itemTalkReadingBinding?.readingInquiry?.apply {
+        itemTalkReadingBinding.readingInquiry.apply {
             text = if(isMasked) {
                 isEnabled = false
                 maskedContent
@@ -100,7 +99,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     private fun showMaskedAnswer(maskedContent: String, questionId: String) {
-        itemTalkReadingBinding?.apply {
+        itemTalkReadingBinding.apply {
             readingRespondentAnswer.apply {
                 text = maskedContent
                 isEnabled = false
@@ -110,41 +109,41 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     private fun showNoAnswersText() {
-        itemTalkReadingBinding?.readingNoAnswersText?.show()
+        itemTalkReadingBinding.readingNoAnswersText.show()
         hideOtherElements()
     }
 
     private fun hideNoAnswersText() {
-        itemTalkReadingBinding?.apply {
+        itemTalkReadingBinding.apply {
             readingNoAnswersText.hide()
         }
     }
 
     private fun showProfilePicture(userThumbNail: String) {
         if(userThumbNail.isNotEmpty()) {
-            itemTalkReadingBinding?.readingRespondentProfilePicture?.apply {
+            itemTalkReadingBinding.readingRespondentProfilePicture.apply {
                 loadImage(userThumbNail)
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingRespondentProfilePicture?.hide()
+            itemTalkReadingBinding.readingRespondentProfilePicture.hide()
         }
     }
 
     private fun showDisplayName(userName: String) {
         if(userName.isNotEmpty()) {
-            itemTalkReadingBinding?.readingRespondentDisplayName?.apply{
+            itemTalkReadingBinding.readingRespondentDisplayName.apply{
                 text = userName
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingRespondentDisplayName?.hide()
+            itemTalkReadingBinding.readingRespondentDisplayName.hide()
         }
     }
 
     private fun showAnswer(answer: String, questionId: String) {
         if(answer.isNotEmpty()) {
-            itemTalkReadingBinding?.readingRespondentAnswer?.apply {
+            itemTalkReadingBinding.readingRespondentAnswer.apply {
                 isEnabled = true
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
@@ -153,23 +152,23 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingRespondentAnswer?.hide()
+            itemTalkReadingBinding.readingRespondentAnswer.hide()
         }
     }
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemTalkReadingBinding?.readingRespondentResponseDate?.apply {
+            itemTalkReadingBinding.readingRespondentResponseDate.apply {
                 text = date
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingRespondentResponseDate?.hide()
+            itemTalkReadingBinding.readingRespondentResponseDate.hide()
         }
     }
 
     private fun showLabelWithCondition(isSeller: Boolean, isYours: Boolean) {
-        itemTalkReadingBinding?.apply {
+        itemTalkReadingBinding.apply {
             when {
                 isSeller -> {
                     readingRespondentSellerLabel.apply {
@@ -196,7 +195,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
-            itemTalkReadingBinding?.readingSeeOtherAnswers?.apply {
+            itemTalkReadingBinding.readingSeeOtherAnswers.apply {
                 text = String.format(context.getString(R.string.reading_other_answers), answersToShow)
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
@@ -204,12 +203,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 show()
             }
         } else {
-            itemTalkReadingBinding?.readingSeeOtherAnswers?.hide()
+            itemTalkReadingBinding.readingSeeOtherAnswers.hide()
         }
     }
 
     private fun hideOtherElements() {
-        itemTalkReadingBinding?.apply {
+        itemTalkReadingBinding.apply {
             readingRespondentAnswer.hide()
             readingRespondentProfilePicture.hide()
             readingRespondentDisplayName.hide()

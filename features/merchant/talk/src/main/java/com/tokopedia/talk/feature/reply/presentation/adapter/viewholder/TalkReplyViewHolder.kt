@@ -29,14 +29,15 @@ import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
                           private val onKebabClickedListener: OnKebabClickedListener,
-                          private val threadListener: ThreadListener,
-                          private val binding: ItemTalkReplyBinding
+                          private val threadListener: ThreadListener
 ) : AbstractViewHolder<TalkReplyUiModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
         const val IN_VIEWHOLDER = true
     }
+
+    private val binding: ItemTalkReplyBinding = ItemTalkReplyBinding.bind(view)
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
         if (isMarkNotFraud) {

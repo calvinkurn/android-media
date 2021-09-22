@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.databinding.ItemTalkInboxBinding
-import com.tokopedia.talk.databinding.ItemTalkInboxOldBinding
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.BaseTalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxLoadingViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxOldViewHolder
@@ -35,8 +33,8 @@ class TalkInboxAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkInboxOldViewHolder.LAYOUT -> TalkInboxOldViewHolder(parent, talkInboxViewHolderListener, ItemTalkInboxOldBinding.bind(parent))
-            TalkInboxViewHolder.LAYOUT -> TalkInboxViewHolder(parent, talkInboxViewHolderListener, ItemTalkInboxBinding.bind(parent))
+            TalkInboxOldViewHolder.LAYOUT -> TalkInboxOldViewHolder(parent, talkInboxViewHolderListener)
+            TalkInboxViewHolder.LAYOUT -> TalkInboxViewHolder(parent, talkInboxViewHolderListener)
             TalkInboxLoadingViewHolder.LAYOUT -> TalkInboxLoadingViewHolder(parent)
             TalkInboxUnifiedLoadingViewHolder.LAYOUT -> TalkInboxUnifiedLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)

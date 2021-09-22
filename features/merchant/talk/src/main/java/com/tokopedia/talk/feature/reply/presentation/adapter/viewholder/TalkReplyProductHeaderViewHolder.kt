@@ -15,14 +15,15 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyP
 
 class TalkReplyProductHeaderViewHolder(
     view: View,
-    private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener,
-    private val binding: ItemTalkReplyProductHeaderBinding
+    private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener
 ) : AbstractViewHolder<TalkReplyProductHeaderModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_product_header
         const val STOCK_THRESHOLD = 5
     }
+
+    private val binding = ItemTalkReplyProductHeaderBinding.bind(view)
 
     override fun bind(element: TalkReplyProductHeaderModel) {
         with(element) {

@@ -27,14 +27,15 @@ import com.tokopedia.unifyprinciples.Typography
 class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
                                 private val talkReplyHeaderListener: TalkReplyHeaderListener,
-                                private val threadListener: ThreadListener,
-                                private val binding: ItemTalkReplyHeaderBinding
+                                private val threadListener: ThreadListener
 ) :
         AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_header
     }
+
+    private val binding = ItemTalkReplyHeaderBinding.bind(view)
 
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {

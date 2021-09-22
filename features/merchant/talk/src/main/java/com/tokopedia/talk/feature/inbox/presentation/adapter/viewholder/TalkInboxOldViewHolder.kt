@@ -15,13 +15,14 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TalkInboxOldViewHolder(
         view: View,
-        private val talkInboxViewHolderListener: TalkInboxViewHolderListener,
-        private val binding: ItemTalkInboxOldBinding
+        private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxOldUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_inbox_old
     }
+
+    private val binding: ItemTalkInboxOldBinding = ItemTalkInboxOldBinding.bind(view)
 
     override fun bind(element: TalkInboxOldUiModel) {
         with(element.inboxDetail) {

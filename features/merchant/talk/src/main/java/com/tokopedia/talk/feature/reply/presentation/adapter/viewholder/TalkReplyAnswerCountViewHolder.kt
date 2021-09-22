@@ -7,13 +7,14 @@ import com.tokopedia.talk.databinding.ItemTalkReplyAnswerCountBinding
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
 
 class TalkReplyAnswerCountViewHolder(
-    view: View,
-    private val binding: ItemTalkReplyAnswerCountBinding
+    view: View
 ) : AbstractViewHolder<TalkReplyAnswerCountModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_answer_count
     }
+
+    private val binding = ItemTalkReplyAnswerCountBinding.bind(view)
 
     override fun bind(element: TalkReplyAnswerCountModel) {
         binding.talkReplyTotalAnswers.text =
