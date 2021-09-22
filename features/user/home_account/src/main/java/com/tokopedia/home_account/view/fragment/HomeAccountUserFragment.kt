@@ -684,11 +684,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
         memberAdapter?.addItems(mappedMember)
-        memberAdapter?.notifyDataSetChanged()
-        adapter?.notifyDataSetChanged()
     }
 
     private fun onFailedGetShortcutGroup(throwable: Throwable) {
+        setDefaultMemberTitle()
         displayMemberLocalLoad(true)
     }
 
@@ -696,7 +695,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         viewModel.getShortcutData()
     }
 
+    private fun setDefaultMemberTitle() {
+        memberTitle?.text = getString(R.string.default_member_title)
+        adapter?.notifyItemChanged(0)
+    }
+
     private fun onFailedGetBuyerAccount() {
+        setDefaultMemberTitle()
         displayMemberLocalLoad(true)
         displayBalanceAndPointLocalLoad(true)
         onFailGetData()
