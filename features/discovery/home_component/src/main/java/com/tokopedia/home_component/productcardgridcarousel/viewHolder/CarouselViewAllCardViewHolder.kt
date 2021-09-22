@@ -5,7 +5,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelViewAllCard
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
