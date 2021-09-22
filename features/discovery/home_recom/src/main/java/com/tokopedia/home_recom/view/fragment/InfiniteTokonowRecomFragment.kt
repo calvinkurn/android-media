@@ -272,7 +272,7 @@ class InfiniteTokonowRecomFragment :
         viewModel.miniCartData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 recomPageUiUpdater.updateRecomWithMinicartData(it)
-                updateUi()
+                if (recomPageUiUpdater.dataList.size != 0) updateUi()
             }
         })
         viewModel.minicartWidgetUpdater.observe(viewLifecycleOwner, Observer {

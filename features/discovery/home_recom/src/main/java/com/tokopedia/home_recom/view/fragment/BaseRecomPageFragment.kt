@@ -290,7 +290,6 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         }
     }
 
-
     fun isWarehouseIdEmpty(): Boolean {
         val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         localAddress?.let {
