@@ -45,7 +45,7 @@ class LottieBottomNavbar : LinearLayout {
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
-    private var isDarkMode = context.isDarkMode()
+    private var isDarkMode = context?.isDarkMode() ?: false
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
