@@ -15,15 +15,15 @@ import javax.inject.Inject
  */
 class DigitalRecommendationViewModel @Inject constructor(
         private val digitalRecommendationUseCase: DigitalRecommendationUseCase,
-        private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     private val _digitalRecommendationItems = MutableLiveData<Result<List<DigitalRecommendationModel>>>()
     val digitalRecommendationItems: LiveData<Result<List<DigitalRecommendationModel>>>
         get() = _digitalRecommendationItems
 
     fun fetchDigitalRecommendation() {
-        launch(dispatcher.io) {
+        launch {
             _digitalRecommendationItems.postValue(digitalRecommendationUseCase.execute())
         }
     }
