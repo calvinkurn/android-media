@@ -17,7 +17,9 @@ object CreateReviewImageMapper {
     fun removeImageFromList(image: BaseImageReviewUiModel, originalImages: MutableList<String>): MutableList<String> {
         val imageToRemove = image as? ImageReviewUiModel
         imageToRemove?.let {
-            return originalImages.filter { originalImage -> originalImage != it.imageUrl }.toMutableList()
+            return originalImages.filter { originalImage ->
+                (originalImage != it.imageUrl || originalImage != it.fullImageUrl)
+            }.toMutableList()
         }
         return originalImages
     }
