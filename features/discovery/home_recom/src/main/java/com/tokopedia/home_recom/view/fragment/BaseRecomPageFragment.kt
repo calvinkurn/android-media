@@ -47,7 +47,10 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by yfsx on 30/08/21.
@@ -64,12 +67,10 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     private lateinit var root: ConstraintLayout
     private var swipeToRefresh: SwipeRefreshLayout? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var trackingQueue: TrackingQueue? = null
+    private lateinit var userSession: UserSessionInterface
 
     private var isNewNavigation = false
-
-    private val ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
-    private val ROLLANCE_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
-    private val ROLLANCE_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
 
     private var errorToaster: Snackbar? = null
 
@@ -315,6 +316,24 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     fun showErrorSnackbar(throwable: Throwable) {
         showToastError(throwable)
+    }
+
+    fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
+    }
+
+    fun getUserSession(): UserSessionInterface {
+        if (!::userSession.isInitialized) {
+            activity?.let {
+                userSession = UserSession(it)
+            }
+        }
+        return userSession
     }
 
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {

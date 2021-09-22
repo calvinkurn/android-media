@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.RecomPageChooseAddressWidgetCallback
+import com.tokopedia.home_recom.analytics.InfiniteRecomTracker
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.listener.RecomPageListener
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
@@ -41,6 +42,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import java.util.HashMap
 import javax.inject.Inject
 
 /**
@@ -191,10 +193,12 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId) as HashMap<String, Any>)
         goToPDP(item.productId.toString(), item.position)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
+        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemImpression(item, getUserSession().userId) as HashMap<String, Any>)
     }
 
     override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
@@ -317,7 +321,7 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.atcRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                //send tracker atc
+                getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
             }, {})
         })
         viewModel.atcRecomTokonowResetCard.observe(viewLifecycleOwner, Observer {
