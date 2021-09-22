@@ -3,8 +3,8 @@ package com.tokopedia.digital.digital_recommendation.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +40,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     fun setViewModelFactory(viewModelFactory: ViewModelProvider.Factory) {
         this.viewModelFactory = viewModelFactory
-        digitalRecommendationViewModel = ViewModelProvider(context as Fragment, viewModelFactory)
+        digitalRecommendationViewModel = ViewModelProvider(context as AppCompatActivity, viewModelFactory)
                 .get(DigitalRecommendationViewModel::class.java)
     }
 
