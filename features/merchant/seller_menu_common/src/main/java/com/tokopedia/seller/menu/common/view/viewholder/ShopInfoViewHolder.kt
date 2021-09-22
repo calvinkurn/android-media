@@ -138,7 +138,7 @@ class ShopInfoViewHolder(
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         with(itemView) {
-            if (uiModel.shopAge < SHOP_AGE_SIXTY || uiModel.shopScore < 0) {
+            if (uiModel.shopScore < 0) {
                 shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
                 shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 shopScoreMaxLabel?.hide()
@@ -217,7 +217,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -227,13 +227,16 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
             is ShopType.OfficialStore -> {
                 itemView?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
+                    }
                 }
             }
 
@@ -243,7 +246,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
 
@@ -254,7 +257,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -264,7 +267,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -274,7 +277,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }

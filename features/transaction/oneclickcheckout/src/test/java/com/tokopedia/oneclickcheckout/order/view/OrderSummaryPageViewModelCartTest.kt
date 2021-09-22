@@ -18,6 +18,8 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
+import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -963,5 +965,58 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(activationData, orderSummaryPageViewModel.getActivationData())
+    }
+
+    @Test
+    fun `Get Occ Cart Success With Afpb is true then get tenor list fee`() {
+        // Given
+        val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
+        val paymentCreditCard = OrderPayment(creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
+        val response = OrderData(payment = paymentCreditCard)
+        val creditCardTenorListData = CreditCardTenorListData(tenorList = listOf(
+            TenorListData(type = "FULL", amount = 8500F, bank = "014", fee = 1500F, rate = 0F)))
+        val ccTenorListRequest = mapOf("INPUT" to CreditCardTenorListRequest("", 123,
+            52000.0, 5000.0, "TKPD_DEFAULT", 0.0, listOf(CartDetailsItem(1, 45000F))))
+
+        every { userSessionInterface.userId } returns "123"
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        every { creditCardTenorListUseCase.generateParam(any())} returns ccTenorListRequest
+        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.adjustAdminFee()
+
+        // Then
+        assertEquals(paymentCreditCard, orderSummaryPageViewModel.orderPayment.value)
+        assertEquals(OccGlobalEvent.AdjustAdminFeeSuccess(creditCardTenorListData), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Afpb get tenor list fee error`() {
+        // Given
+        val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
+        val paymentCreditCard = OrderPayment(creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
+        val response = OrderData(payment = paymentCreditCard)
+        val creditCardTenorListData = CreditCardTenorListData(errorMsg = "Invalid Siggy(00)")
+        val ccTenorListRequest = mapOf("INPUT" to CreditCardTenorListRequest("", 123,
+            52000.0, 5000.0, "TEST_DEFAULT", 0.0, listOf(CartDetailsItem(1, 45000F))))
+
+        every { userSessionInterface.userId } returns "123"
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        every { creditCardTenorListUseCase.generateParam(any())} returns ccTenorListRequest
+        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.adjustAdminFee()
+
+        // Then
+        assertEquals(paymentCreditCard, orderSummaryPageViewModel.orderPayment.value)
+        assertEquals(OccGlobalEvent.AdjustAdminFeeError, orderSummaryPageViewModel.globalEvent.value)
     }
 }

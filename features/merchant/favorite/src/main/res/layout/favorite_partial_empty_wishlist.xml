@@ -42,16 +42,17 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl2"/>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_login"
         android:layout_width="@dimen/favorite_button_width"
         android:layout_height="wrap_content"
-        app:buttonCompatType="primary"
-        app:buttonCompatSize="medium"
-        android:textAllCaps="false"
-        android:text="@string/favorite_empty_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl5"/>
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:text="@string/favorite_empty_button"
+        android:textAllCaps="false"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>
