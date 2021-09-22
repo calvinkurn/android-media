@@ -160,7 +160,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         private const val ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION = -0.25f
 
         private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1f
-        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.65f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
     }
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
