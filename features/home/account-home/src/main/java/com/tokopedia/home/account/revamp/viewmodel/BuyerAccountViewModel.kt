@@ -3,11 +3,11 @@ package com.tokopedia.home.account.revamp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
@@ -169,8 +169,11 @@ class BuyerAccountViewModel @Inject constructor (
             )
 
             val data = getRecommendationUseCase.createObservable(params).toBlocking().single()
-            val tdnData = getTdnBannerData()
-            val recommendationDataWithTdn = RecommendationWidgetWithTDN(data[0],tdnData)
+            var tdnData: TopAdsImageViewModel? = null
+            if (data.firstOrNull()?.recommendationItemList?.size ?: 0 >= AccountConstants.TDNBanner.TDN_INDEX) {
+                tdnData = getTdnBannerData()
+            }
+            val recommendationDataWithTdn = RecommendationWidgetWithTDN(data[0], tdnData)
             if (isFirstData) {
                 _firstRecommendation.postValue(Success(recommendationDataWithTdn))
             } else {

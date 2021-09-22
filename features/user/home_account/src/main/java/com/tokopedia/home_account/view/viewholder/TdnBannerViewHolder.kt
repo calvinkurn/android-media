@@ -7,6 +7,8 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_RADIUS
 import com.tokopedia.home_account.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class TdnBannerViewHolder(itemView: View) : BaseViewHolder(itemView) {
@@ -19,6 +21,12 @@ class TdnBannerViewHolder(itemView: View) : BaseViewHolder(itemView) {
                     RouteManager.route(itemView.context, applink)
                 }
 
+            })
+
+            tdnBanner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    ImpresionTask(this@TdnBannerViewHolder.javaClass.canonicalName).execute(viewUrl)
+                }
             })
             tdnBanner.loadImage(element, TDN_RADIUS)
         }

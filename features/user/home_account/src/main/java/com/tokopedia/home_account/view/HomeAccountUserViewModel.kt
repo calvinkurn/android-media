@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
@@ -146,7 +147,10 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getRecommendation(page: Int) {
         launchCatchError(Dispatchers.IO, block = {
             val recommendationWidget = getRecommendationList(page)
-            val tdnBanner = getTdnBannerData()
+            var tdnBanner: TopAdsImageViewModel? = null
+            if (recommendationWidget.recommendationItemList.size >= TDN_INDEX) {
+                tdnBanner = getTdnBannerData()
+            }
             val data = RecommendationWidgetWithTDN(recommendationWidget, tdnBanner)
             if (checkFirstPage(page)) {
                 _firstRecommendationData.postValue(Success(data))

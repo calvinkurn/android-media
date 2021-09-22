@@ -8,6 +8,8 @@ import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.viewmodel.TdnBannerViewModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class TdnBannerViewHolder(itemView: View) : AbstractViewHolder<TdnBannerViewModel>(itemView) {
@@ -18,13 +20,18 @@ class TdnBannerViewHolder(itemView: View) : AbstractViewHolder<TdnBannerViewMode
 
     override fun bind(element: TdnBannerViewModel) {
         with(itemView) {
-            val tdnBanner =
-                this.findViewById<TopAdsImageView>(com.tokopedia.home_account.R.id.accountHomeTdnBanner)
+            val tdnBanner = this.findViewById<TopAdsImageView>(com.tokopedia.home_account.R.id.accountHomeTdnBanner)
             tdnBanner.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                 override fun onTopAdsImageViewClicked(applink: String?) {
                     RouteManager.route(itemView.context, applink)
                 }
 
+            })
+
+            tdnBanner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener{
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    ImpresionTask(this@TdnBannerViewHolder.javaClass.canonicalName).execute(viewUrl)
+                }
             })
             tdnBanner.loadImage(element.topAdsImageViewModel, AccountConstants.TDNBanner.TDN_RADIUS)
         }
