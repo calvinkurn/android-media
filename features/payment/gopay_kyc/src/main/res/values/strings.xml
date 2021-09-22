@@ -15,6 +15,7 @@
     <string name="gopay_kyc_payback_benefit_title_text">Jaminan saldo GoPay kembali</string>
     <string name="gopay_kyc_payback_benefit_description_text">Perlingungan ekstra buat saldomu</string>
     <string name="gopay_kyc_take_ktp_text">Ambil Foto e-KTP</string>
+    <string name="gopay_kyc_check_ktp_title">Cek Foto e-KTP Kamu</string>
     <string name="gopay_kyc_ktp_text">e-KTP</string>
     <string name="gopay_kyc_ktp_description_text">Khusus warga negara Indonesia</string>
     <string name="gopay_kyc_ktp_change_text">Ubah</string>
@@ -36,6 +37,7 @@
     <string name="gopay_kyc_selfie_plus_ktp_text">Selfie + e-KTP</string>
     <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan KTP</string>
     <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan e-KTP</string>
+    <string name="gopay_kyc_selfie_ktp_check_title">Cek Selfie dengan e-KTP</string>
     <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan e-KTP, ya</string>
     <string name="gopay_kyc_selfie_ktp_description_text">Digunakan untuk verifikasi identitas diri</string>
     <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang e-KTP</string>

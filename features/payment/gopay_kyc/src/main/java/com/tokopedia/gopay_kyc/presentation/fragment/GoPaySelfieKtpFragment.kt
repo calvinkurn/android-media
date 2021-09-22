@@ -14,7 +14,11 @@ import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.*
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.camera
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.capturedImage
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.gopayCameraLayout
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.kycHeader
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.photoInstructionTV
 import kotlinx.android.synthetic.main.gopay_camera_action_layout.*
 
 class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
@@ -47,6 +51,7 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
     }
 
     private fun initViews() {
+        kycHeader.title = getString(R.string.gopay_kyc_selfie_take_ktp_text)
         cameraView = camera
         cameraView?.facing = Facing.FRONT
         cameraView?.zoom = 0f
@@ -65,8 +70,11 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
 
         val params = photoInstructionTV.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = calculatedMargin.toInt()
+        params.leftMargin = context?.pxToDp(TEXT_MARGIN)?.toInt() ?: 0
+        params.rightMargin = context?.pxToDp(TEXT_MARGIN)?.toInt() ?: 0
         photoInstructionTV.layoutParams = params
         setCaptureInstruction()
+        kycHeader.setNavigationOnClickListener { handleBackPressNavigation() }
     }
 
     override fun setCaptureInstruction() {
@@ -92,11 +100,14 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
 
     override fun getKycType() = GoPayKycConstants.Label.SELFIE_KTP
     override fun getPageSource() = GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_SELFIE_CAPTURE_PAGE
-
+    override fun changeHeaderTitle() {
+        kycHeader.title = getString(R.string.gopay_kyc_selfie_ktp_check_title)
+    }
     override fun getScreenName() = null
 
     companion object {
         const val HEIGHT_RATIO_CUTOUT = 496 / 640f
+        const val TEXT_MARGIN = 16
 
         fun newInstance() = GoPaySelfieKtpFragment()
     }

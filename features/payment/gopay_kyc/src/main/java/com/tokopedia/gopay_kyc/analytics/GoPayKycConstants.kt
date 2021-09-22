@@ -45,7 +45,7 @@ object GoPayKycConstants {
         }
     }
 
-    interface ScreenNames {
+    internal interface ScreenNames {
         companion object {
             const val GOPAY_DASHBOARD = "Gopay Dashboard"
             const val GOPAY_KYC_BENEFIT_PAGE = "Gopay Plus Page"

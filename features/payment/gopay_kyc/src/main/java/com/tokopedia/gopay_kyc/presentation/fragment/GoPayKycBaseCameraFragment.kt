@@ -71,6 +71,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
     abstract fun proceedToNextStep()
     abstract fun getPageSource(): String
     abstract fun getKycType(): String
+    abstract fun changeHeaderTitle()
 
     private val cameraListener = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
@@ -94,22 +95,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            sendAnalytics(GoPayKycEvent.Click.BackPressEvent(getPageSource()))
-
-            if (viewModel.canGoBack)
-                activity?.finish()
-            else
-                ReviewCancelDialog.showReviewDialog(
-                    requireContext(),
-                    {
-                        sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(getKycType(), getPageSource()))
-                        proceedToNextStep()
-                    },
-                    {
-                        sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(getKycType(), getPageSource()))
-                        exitKycFlow()
-                    }
-                )
+            handleBackPressNavigation()
         }
     }
 
@@ -122,8 +108,8 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
             resetCapture()
         })
         viewModel.captureErrorLiveData.observe(viewLifecycleOwner, {
-            hideCameraProp()
             resetCapture()
+            reInitCamera()
         })
     }
 
@@ -181,6 +167,7 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         cameraControlLayout?.gone()
         reviewPhotoLayout?.visible()
         setVerificationInstruction()
+        changeHeaderTitle()
     }
 
     fun initListeners() {
@@ -249,6 +236,24 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
 
     private fun setupOnBackPressed() {
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
+    }
+
+    protected fun handleBackPressNavigation() {
+        sendAnalytics(GoPayKycEvent.Click.BackPressEvent(getPageSource()))
+        if (viewModel.canGoBack)
+            activity?.finish()
+        else
+            ReviewCancelDialog.showReviewDialog(
+                requireContext(),
+                {
+                    sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(getKycType(), getPageSource()))
+                    proceedToNextStep()
+                },
+                {
+                    sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(getKycType(), getPageSource()))
+                    exitKycFlow()
+                }
+            )
     }
 
     private fun exitKycFlow() {

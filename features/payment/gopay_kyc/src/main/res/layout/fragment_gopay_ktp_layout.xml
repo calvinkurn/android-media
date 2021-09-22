@@ -52,6 +52,14 @@
             app:unify_image_corner_radius="0"
             app:unify_image_type="rect" />
 
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/kycHeader"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_transparent_mode="true"
+            />
+
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography

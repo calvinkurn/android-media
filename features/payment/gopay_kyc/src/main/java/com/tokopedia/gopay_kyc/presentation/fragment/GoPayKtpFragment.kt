@@ -14,7 +14,11 @@ import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.KTP_IMAGE_PATH
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
-import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.*
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.camera
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.capturedImage
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.gopayCameraLayout
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.kycHeader
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.photoInstructionTV
 import kotlinx.android.synthetic.main.gopay_camera_action_layout.*
 
 class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
@@ -47,6 +51,7 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
     }
 
     private fun initViews() {
+        kycHeader.title = getString(R.string.gopay_kyc_take_ktp_text)
         cameraView = camera
         cameraView?.facing = Facing.BACK
         cameraView?.zoom = 0f
@@ -64,8 +69,11 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
 
         val params = photoInstructionTV.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = calculatedMargin.toInt()
+        params.leftMargin = context?.pxToDp(GoPaySelfieKtpFragment.TEXT_MARGIN)?.toInt() ?: 0
+        params.rightMargin = context?.pxToDp(GoPaySelfieKtpFragment.TEXT_MARGIN)?.toInt() ?: 0
         photoInstructionTV.layoutParams = params
         setCaptureInstruction()
+        kycHeader.setNavigationOnClickListener { handleBackPressNavigation() }
     }
 
     override fun setCaptureInstruction() {
@@ -80,7 +88,9 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
 
     override fun getKycType() = GoPayKycConstants.Label.KTP
     override fun getPageSource() = GoPayKycConstants.ScreenNames.GOPAY_KYC_REVIEW_KTP_PAGE
-
+    override fun changeHeaderTitle() {
+        kycHeader.title = getString(R.string.gopay_kyc_check_ktp_title)
+    }
     override fun proceedToNextStep() {
         val intent = Intent().apply { putExtra(KTP_IMAGE_PATH, getCapturedImagePath()) }
         activity?.setResult(RESULT_OK, intent)
