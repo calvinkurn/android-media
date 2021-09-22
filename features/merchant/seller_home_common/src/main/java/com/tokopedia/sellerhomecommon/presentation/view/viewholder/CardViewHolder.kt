@@ -10,6 +10,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
 
 /**
@@ -86,6 +87,8 @@ class CardViewHolder(
             }
         }
 
+        setTagNotification(element.tag)
+
         if (!isShown) return
 
         with(itemView) {
@@ -132,6 +135,20 @@ class CardViewHolder(
                     loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
                 CardDataUiModel.State.NORMAL -> gone()
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagCard.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagCard.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
