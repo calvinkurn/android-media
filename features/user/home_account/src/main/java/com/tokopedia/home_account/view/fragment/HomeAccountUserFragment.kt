@@ -645,8 +645,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
         memberAdapter?.addItems(mappedMember)
-        memberAdapter?.notifyDataSetChanged()
-        adapter?.notifyDataSetChanged()
     }
 
     private fun onFailedGetShortcutGroup(throwable: Throwable) {
