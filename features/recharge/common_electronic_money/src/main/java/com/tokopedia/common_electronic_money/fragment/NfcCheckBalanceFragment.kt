@@ -125,7 +125,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         tapETollCardView.setListener(object : TapETollCardView.OnTapEtoll {
             override fun tryAgainTopup(issuerId: Int) {
-                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId, operatorName)
             }
 
             override fun goToHome() {
@@ -203,7 +203,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             tapCashWriteFailed: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
-        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId, operatorName)
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.hide()
@@ -264,14 +264,15 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    protected fun showLoading() {
+    protected fun showLoading(operatorNameFromIssuer: String) {
+        operatorName = operatorNameFromIssuer
         emoneyAnalytics.openScreenReadingCardNFC(operatorName, userSession.userId, irisSessionId)
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.showLoading()
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showLoading()
-            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId)
+            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId, operatorName)
         }
     }
 
