@@ -11,9 +11,9 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object InfiniteRecomTracker : BaseTrackerConst() {
 
     private const val IMPRESSION_ACTION_INFINITE_RECOM_ITEM = "impression - tokonow product recommendation"
-    private const val IMPRESSION_CATEGORY_INFINITE_RECOM_ITEM = "infinite recommendation tokonow"
+    private const val IMPRESSION_CATEGORY_INFINITE_RECOM_ITEM = "tokonow product detail page"
     private const val CLICK_ACTION_INFINITE_RECOM_ITEM = "click - tokonow product recommendation"
-    private const val CLICK_CATEGORY_INFINITE_RECOM_ITEM = "infinite recommendation tokonow"
+    private const val CLICK_CATEGORY_INFINITE_RECOM_ITEM = "tokonow product detail page"
     private const val BU_RECOM = "tokopediamarketplace"
     private const val CURRENTSITE_RECOM = "tokopediamarketplace"
     private const val KEY_PRODUCT_ID = "product_id"
