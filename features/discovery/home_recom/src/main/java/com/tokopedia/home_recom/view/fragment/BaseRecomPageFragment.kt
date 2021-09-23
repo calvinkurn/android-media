@@ -86,7 +86,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     protected abstract fun setDefaultPageTitle(): String
 
-    protected abstract fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener
+    protected abstract fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener?
 
     protected abstract fun shouldPageImplementChooseAddress(): Boolean
 
@@ -383,15 +383,15 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             activity?.let { actv ->
                 it.setupToolbarWithStatusBar(activity = actv, applyPadding = false, applyPaddingNegative = true)
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                viewLifecycleOwner.lifecycle.addObserver(it)
-            }
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
 
     }
 
     private fun initChooseAddress() {
-        chooseAddressWidget?.bindChooseAddress(onChooseAddressImplemented())
+        onChooseAddressImplemented()?.let {
+            chooseAddressWidget?.bindChooseAddress(it)
+        }
     }
 
     private fun initMiniCartWidget() {

@@ -13,6 +13,11 @@ class RecomPageChooseAddressWidgetCallback(
         val listener: RecomPageListener,
         val fragment: Fragment
 ) : ChooseAddressWidget.ChooseAddressWidgetListener {
+    companion object {
+        const val LOCALIZING_HOST_FRAGMENT = "recom infinite tokonow"
+        const val LOCALIZING_HOST_TRACKING_DATA = "recom infinite tokonow page"
+    }
+
     override fun onLocalizingAddressUpdatedFromWidget() {
         listener.onChooseAddressUpdated()
     }
@@ -34,11 +39,11 @@ class RecomPageChooseAddressWidgetCallback(
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return "recom infinite tokonow"
+        return LOCALIZING_HOST_FRAGMENT
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return "recom infinite tokonow page"
+        return LOCALIZING_HOST_TRACKING_DATA
     }
 
     override fun onLocalizingAddressLoginSuccess() {

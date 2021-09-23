@@ -12,6 +12,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.asFail
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.asSuccess
 import com.tokopedia.home_recom.util.RecomPageConstant.TEXT_ERROR
+import com.tokopedia.home_recom.util.RecomPageConstant.X_SOURCE_RECOM
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -66,14 +67,20 @@ class InfiniteRecomViewModel @Inject constructor(
     private val _atcRecomTokonow = MutableLiveData<Result<String>>()
     val atcRecomTokonow: LiveData<Result<String>> get() = _atcRecomTokonow
 
-    private val _atcRecomTokonowSendTracker = MutableLiveData<Result<RecommendationItem>>()
+    private val _atcRecomTokonowSendTracker = SingleLiveEvent<Result<RecommendationItem>>()
     val atcRecomTokonowSendTracker: LiveData<Result<RecommendationItem>> get() = _atcRecomTokonowSendTracker
+
+    private val _deleteCartRecomTokonowSendTracker = SingleLiveEvent<Result<RecommendationItem>>()
+    val deleteCartRecomTokonowSendTracker: LiveData<Result<RecommendationItem>> get() = _deleteCartRecomTokonowSendTracker
 
     private val _atcRecomTokonowResetCard = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowResetCard: LiveData<RecommendationItem> get() = _atcRecomTokonowResetCard
 
     private val _atcRecomTokonowNonLogin = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowNonLogin: LiveData<RecommendationItem> get() = _atcRecomTokonowNonLogin
+
+    private val _minicartError = SingleLiveEvent<Throwable>()
+    val minicartError: LiveData<Throwable> get() = _minicartError
 
     private val _refreshMiniCartDataTrigger = SingleLiveEvent<Boolean>()
     val refreshMiniCartDataTrigger: LiveData<Boolean> get() = _refreshMiniCartDataTrigger
@@ -115,7 +122,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 pageNumber = pageNumber,
                 productIds = listOf(productId),
                 pageName = pageName,
-                xSource = "recom_widget",
+                xSource = X_SOURCE_RECOM,
                 queryParam = queryParam)
     }
 
@@ -172,16 +179,9 @@ class InfiniteRecomViewModel @Inject constructor(
             _miniCartData.postValue(data.toMutableMap())
             _minicartWidgetUpdater.postValue(result)
         }) {
+            _minicartError.postValue(it)
         }
     }
-
-    fun setMiniCartFromWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val data = miniCartSimplifiedData.miniCartItems.associateBy({ it.productId }) {
-            it
-        }
-        _miniCartData.postValue(data.toMutableMap())
-    }
-
     fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
@@ -209,7 +209,10 @@ class InfiniteRecomViewModel @Inject constructor(
                             ?: result.data.message.firstOrNull()
                     onFailedATCRecomTokonow(MessageErrorException(error ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(result.data.message.first(), false, recomItem)
+                    updateMiniCartAfterATCRecomTokonow(
+                            message = result.data.message.first(),
+                            isDeleteCart = false,
+                            recomItem = recomItem)
                 }
             }
         }) {
@@ -232,7 +235,10 @@ class InfiniteRecomViewModel @Inject constructor(
                         ?: result.status), recomItem)
             } else {
                 recomItem.cartId = result.data.cartId
-                updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
+                updateMiniCartAfterATCRecomTokonow(
+                        message = result.data.message.first(),
+                        isAtc = true,
+                        recomItem = recomItem)
             }
         }) {
             onFailedATCRecomTokonow(it, recomItem)
@@ -253,7 +259,8 @@ class InfiniteRecomViewModel @Inject constructor(
                     onFailedATCRecomTokonow(MessageErrorException(result.error.firstOrNull()
                             ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
+                    updateMiniCartAfterATCRecomTokonow(
+                            message = result.data.message, recomItem = recomItem)
                 }
             }
         }) {
@@ -262,11 +269,16 @@ class InfiniteRecomViewModel @Inject constructor(
 
     }
 
-    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
+    private fun updateMiniCartAfterATCRecomTokonow(
+            message: String,
+            isAtc: Boolean = false,
+            isDeleteCart: Boolean = false,
+            recomItem: RecommendationItem = RecommendationItem()) {
         _atcRecomTokonow.value = message.asSuccess()
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
-        }
+        } else if (isDeleteCart)
+            _deleteCartRecomTokonowSendTracker.value = recomItem.asSuccess()
         _refreshMiniCartDataTrigger.value = true
     }
 

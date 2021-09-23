@@ -33,15 +33,12 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -155,8 +152,11 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun setShopId(): String {
-        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        return localAddress?.shop_id ?: ""
+        context?.let {
+            val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
+            return localAddress?.shop_id ?: ""
+        }
+        return ""
     }
 
     override fun setImplementingFragment(): Fragment {
@@ -193,7 +193,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId) as HashMap<String, Any>)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId) as HashMap<String, Any>)
         goToPDP(item.productId.toString(), item.position)
     }
 
@@ -207,7 +207,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductTokonowVariantClicked(recomItem: RecommendationItem, adapterPosition: Int) {
-        requireContext().let {
+        context?.let {
             AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = recomItem.productId.toString(),
@@ -232,8 +232,11 @@ class InfiniteTokonowRecomFragment :
         chooseAddressWidget?.gone()
     }
 
-    override fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener {
-        return RecomPageChooseAddressWidgetCallback(context = requireContext(), listener = this, fragment = this)
+    override fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener? {
+        context?.let {
+            return RecomPageChooseAddressWidgetCallback(context = it, listener = this, fragment = this)
+        }
+        return null
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -252,6 +255,8 @@ class InfiniteTokonowRecomFragment :
         viewModel.atcRecomTokonowNonLogin.removeObservers(this)
         viewModel.refreshMiniCartDataTrigger.removeObservers(this)
         viewModel.minicartWidgetUpdater.removeObservers(this)
+        viewModel.deleteCartRecomTokonowSendTracker.removeObservers(this)
+        viewModel.minicartError.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -321,7 +326,12 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.atcRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
+            }, {})
+        })
+        viewModel.deleteCartRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
+            data.doSuccessOrFail({
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomRemoveFromCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
             }, {})
         })
         viewModel.atcRecomTokonowResetCard.observe(viewLifecycleOwner, Observer {
@@ -336,6 +346,9 @@ class InfiniteTokonowRecomFragment :
         viewModel.refreshMiniCartDataTrigger.observe(viewLifecycleOwner, Observer {
             getMiniCartData()
         })
+        viewModel.minicartError.observe(viewLifecycleOwner, Observer {
+            showErrorSnackbar(it)
+        })
     }
 
     private fun updateUi() {
@@ -343,12 +356,9 @@ class InfiniteTokonowRecomFragment :
     }
 
     private fun getMiniCartData() {
-        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-//        /**
-//         * any changes and result from miniCartWidget.updateData, will call
-//         * @see onCartItemsUpdated
-//         */
-//        miniCartWidget?.updateData(listOf(localAddress?.shop_id ?: ""))
-        viewModel.getMiniCart(localAddress?.shop_id ?: "")
+        context?.let {
+            val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
+            viewModel.getMiniCart(localAddress?.shop_id ?: "")
+        }
     }
 }

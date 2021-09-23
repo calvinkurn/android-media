@@ -13,10 +13,6 @@ data class FirstLoadDataModel(
         val name: String = ""
 ) : HomeRecommendationDataModel, ImpressHolder() {
 
-    companion object {
-
-    }
-
     override fun name(): String = name
 
     override fun equalsWith(newData: HomeRecommendationDataModel): Boolean = newData is RecommendationEmptyDataModel

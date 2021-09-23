@@ -34,9 +34,10 @@ data class RecommendationCarouselDataModel(
     override fun equalsWith(newData: HomeRecommendationDataModel): Boolean {
         var isRecomItemSame = true
         if (products.size == (newData as RecommendationCarouselDataModel).products.size) {
-            for (i in 0 until products.size) {
+            loop@ for (i in 0 until products.size) {
                 if (!products[i].equalsWith(newData.products[i])) {
                     isRecomItemSame = false
+                    break@loop
                 }
             }
         }
