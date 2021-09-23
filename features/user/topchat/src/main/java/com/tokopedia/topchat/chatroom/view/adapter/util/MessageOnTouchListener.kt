@@ -47,10 +47,6 @@ class MessageOnTouchListener(
                             notifyLinkHit(widget)
                             return true
                         }
-                        else -> {
-                            link[0].onClick(widget)
-                            return true
-                        }
                     }
                 } else {
                     Selection.setSelection(

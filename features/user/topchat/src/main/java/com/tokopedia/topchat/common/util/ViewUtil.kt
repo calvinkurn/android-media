@@ -151,7 +151,6 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
-        stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         if (pressedDrawable != null) {
             stateDrawable.addState(

@@ -53,33 +53,8 @@ class ChatMessageUnifyViewHolder(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
 
-    // Left Background bubble
-    private val bgLeft = ViewUtil.generateBackgroundWithShadow(
-        fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        R.dimen.dp_topchat_0,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_topchat_2,
-        R.dimen.dp_topchat_1,
-        Gravity.CENTER
-    )
-
-    // Right Background bubble
-    private val bgRight = ViewUtil.generateBackgroundWithShadow(
-        fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_0,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_topchat_2,
-        R.dimen.dp_topchat_1,
-        Gravity.CENTER
-    )
+    private val bgLeft = generateLeftBg()
+    private val bgRight = generateRightBg()
 
     override fun bind(msg: MessageViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -117,6 +92,62 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
+    }
+
+    private fun generateRightBg(): Drawable? {
+        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = R.color.topchat_dms_right_button_pressed,
+            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_0,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER
+        )
+        return ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_0,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER,
+            pressedDrawable = pressedBackground
+        )
+    }
+
+    private fun generateLeftBg(): Drawable? {
+        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = R.color.topchat_dms_left_button_pressed,
+            topLeftRadius = R.dimen.dp_topchat_0,
+            topRightRadius = R.dimen.dp_topchat_20,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER
+        )
+        return ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            topLeftRadius = R.dimen.dp_topchat_0,
+            topRightRadius = R.dimen.dp_topchat_20,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER,
+            pressedDrawable = pressedBackground
+        )
     }
 
     private fun bindMsgGravity(gravity: Int) {
