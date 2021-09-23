@@ -275,7 +275,7 @@ class PlayActivity : BaseActivity(),
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     Log.d("<INTENT>", "checking isTaskRoot")
-                    if (isTaskRoot) {
+                    if (isTaskRoot || viewModel.source.key == "") {
                         Log.d("<INTENT>", "isTaskRoot")
                         val intent = RouteManager.getIntent(
                             this,
