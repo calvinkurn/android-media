@@ -14,10 +14,11 @@ import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstVoucherBottomsheetLayoutBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.centralized_promo_first_voucher_bottomsheet_layout.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
@@ -25,8 +26,6 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     companion object {
         @JvmStatic
         fun createInstance(context: Context) = FirstVoucherBottomSheetFragment().apply {
-            val view = View.inflate(context, R.layout.centralized_promo_first_voucher_bottomsheet_layout, null)
-            setChild(view)
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
     }
@@ -48,18 +47,23 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
     }
 
+    private val binding by viewBinding<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.addOnImpressionListener(impressHolder) {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
         }
         super.onViewCreated(view, savedInstanceState)
+        binding?.let {
+            setChild(it.root)
+        }
     }
 
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun initView() {
@@ -68,14 +72,14 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             dismiss()
         }
 
-        firstVoucherRecyclerView?.run {
+        binding?.firstVoucherRecyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             val itemList = FirstVoucherDataSource.getFirstVoucherInfoItems()
             adapter = FirstVoucherAdapter(itemList)
         }
 
-        firstVoucherButton?.setOnClickListener {
+        binding?.firstVoucherButton?.setOnClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
             RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
             this.dismiss()
