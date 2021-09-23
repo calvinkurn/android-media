@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 -dontwarn com.otaliastudios.zoom.**
 -keep class com.otaliastudios.zoom.*{ *; }
+-dontwarn module-info
