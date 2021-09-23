@@ -493,7 +493,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             balanceAndPointUiModel.isActive,
             balanceAndPointUiModel.isFailed
         )
-        if (balanceAndPointUiModel.isFailed) {
+        if (balanceAndPointUiModel.isFailed && balanceAndPointUiModel.id != AccountConstants.WALLET.SALDO) {
             balanceAndPointAdapter?.changeItemToShimmer(
                 UiModelMapper.getBalanceAndPointShimmerUiModel(
                     balanceAndPointUiModel

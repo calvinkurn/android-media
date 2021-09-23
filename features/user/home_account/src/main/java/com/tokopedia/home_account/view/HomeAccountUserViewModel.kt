@@ -30,16 +30,15 @@ import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
     @Named(SessionModule.SESSION_MODULE)
-        private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface,
     private val accountPref: AccountPreference,
     private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
     private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-    private val  setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
     private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
-    private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
     private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
@@ -191,20 +190,21 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
+    fun getBalanceAndPoint(walletId: String) {
+        launchCatchError(context=dispatcher.main, block = {
         launchCatchError(block = {
             if(walletId == AccountConstants.WALLET.TOKOPOINT) {
                 val result = getTokopointsBalanceAndPointUseCase(Unit)
                 setBalanceAndPointValue(result.data, walletId)
             } else {
-                getOtherBalanceAndPoint(walletId, assetConfig)
+                getOtherBalanceAndPoint(walletId)
             }
         }, onError = {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
         })
     }
 
-    private suspend fun getOtherBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
+    private suspend fun getOtherBalanceAndPoint(walletId: String) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
@@ -214,19 +214,6 @@ class HomeAccountUserViewModel @Inject constructor(
             }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
-            }
-            AccountConstants.WALLET.SALDO -> {
-                BalanceAndPointDataModel().apply {
-                    assetConfig?.let {
-                        this.data.id = assetConfig.id
-                        this.data.title = assetConfig.title
-                        this.data.subtitle = assetConfig.subtitle
-                        this.data.icon = assetConfig.icon
-                        this.data.applink = assetConfig.applink
-                        this.data.weblink = assetConfig.weblink
-                        this.data.isActive = assetConfig.isActive
-                    }
-                }
             }
             AccountConstants.WALLET.CO_BRAND_CC -> {
                 getCoBrandCCBalanceAndPointUseCase(Unit)
