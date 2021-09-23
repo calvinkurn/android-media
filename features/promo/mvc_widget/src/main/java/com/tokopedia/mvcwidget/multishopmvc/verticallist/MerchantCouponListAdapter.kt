@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.Tracker
 import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
 import com.tokopedia.mvcwidget.multishopmvc.data.*
+import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import java.util.*
 import kotlin.collections.HashMap
@@ -92,7 +92,7 @@ class MerchantCouponListAdapter(
             val promotions = HashMap<String, Any>()
             promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
             sendTopadsImpression(holder.itemView.context, items[holder.adapterPosition].AdInfo)
-            Tracker.viewMVCCoupon(eventLabel, promotions ,source)
+            MvcTracker().viewMVCCoupon(eventLabel, promotions ,source)
         }
     }
 

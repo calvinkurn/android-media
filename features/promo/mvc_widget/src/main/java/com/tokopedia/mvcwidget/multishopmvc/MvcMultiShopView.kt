@@ -15,16 +15,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.Tracker
-import com.tokopedia.mvcwidget.Tracker.Event.CLICK_COUPON_TITLE
-import com.tokopedia.mvcwidget.Tracker.Event.CLICK_PRODUCT_CARD
-import com.tokopedia.mvcwidget.Tracker.Event.CLICK_SHOP_NAME
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
-import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
-import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponListAdapter
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_COUPON_TITLE
+import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_PRODUCT_CARD
+import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_SHOP_NAME
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
@@ -222,7 +220,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         @MvcSource mvcSource: Int
     ) {
         sendTopadsClick(this.context, adInfo)
-        Tracker.mvcMultiShopCardClick(
+        MvcTracker().mvcMultiShopCardClick(
             shopName,
             eventAction,
             mvcSource,

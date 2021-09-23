@@ -20,12 +20,13 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.mvcwidget.*
-import com.tokopedia.mvcwidget.MvcSource.Companion.DEFAULT
-import com.tokopedia.mvcwidget.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
 import com.tokopedia.mvcwidget.customview.MerchantRewardToolbar
 import com.tokopedia.mvcwidget.di.components.MvcComponent
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceConstant
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
+import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
+import com.tokopedia.mvcwidget.views.MvcMultiShopContract
 import com.tokopedia.promoui.common.dpToPx
 import kotlinx.android.synthetic.main.mvc_layout_multishop_merchat_coupon_list.*
 import kotlinx.android.synthetic.main.mvc_notfound_error.*
