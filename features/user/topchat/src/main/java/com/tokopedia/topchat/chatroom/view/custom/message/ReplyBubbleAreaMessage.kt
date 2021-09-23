@@ -3,8 +3,7 @@ package com.tokopedia.topchat.chatroom.view.custom.message
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.BaseChatViewModel
 
 abstract class ReplyBubbleAreaMessage : ConstraintLayout {
 
@@ -23,13 +22,6 @@ abstract class ReplyBubbleAreaMessage : ConstraintLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    fun bindReplyData(uiModel: Visitable<*>) {
-        when (uiModel) {
-            is MessageViewModel -> bindMessageReplyData(uiModel)
-            else -> throw IllegalStateException("Unsupported UiModel reply bubble")
-        }
-    }
-
-    protected open fun bindMessageReplyData(messageUiModel: MessageViewModel) {}
+    open fun bindReplyData(uiModel: BaseChatViewModel) {}
 
 }

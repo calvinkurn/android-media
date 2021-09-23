@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 
 class TextReplyBubbleAreaMessage : ReplyBubbleAreaMessage {
@@ -41,9 +42,10 @@ class TextReplyBubbleAreaMessage : ReplyBubbleAreaMessage {
         desc = findViewById(R.id.tp_reply_msg)
     }
 
-    override fun bindMessageReplyData(messageUiModel: MessageViewModel) {
-        setTitle(messageUiModel.from)
-        setReplyMsg(messageUiModel.message)
+    override fun bindReplyData(uiModel: BaseChatViewModel) {
+        setTitle(uiModel.from)
+        setReplyMsg(uiModel.message)
+        show()
     }
 
     private fun setTitle(title: String) {

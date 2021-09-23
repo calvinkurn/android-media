@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
@@ -56,7 +56,7 @@ class MessageBubbleLayout : ViewGroup {
         initViewLayout()
     }
 
-    fun bindReplyData(uiModel: Visitable<*>) {
+    fun bindReplyData(uiModel: BaseChatViewModel) {
         replyBubbleContainer?.bindReplyData(uiModel)
     }
 
