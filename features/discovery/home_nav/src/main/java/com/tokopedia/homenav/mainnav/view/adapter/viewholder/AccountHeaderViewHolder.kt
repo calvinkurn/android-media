@@ -80,7 +80,8 @@ class AccountHeaderViewHolder(itemView: View,
         private const val ANIMATION_DURATION_MS: Long = 300
         private const val GREETINGS_DELAY = 1000L
 
-        private const val DEFAULT_BALANCE_VALUE = "0"
+        private const val DEFAULT_BALANCE_VALUE = "Rp0"
+        private const val DEFAULT_BALANCE_POINTS_VALUE = "0 Coins"
     }
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
@@ -236,7 +237,7 @@ class AccountHeaderViewHolder(itemView: View,
                     if (profileSaldo.saldo.isEmpty()) {
                         sectionSaldo.gone()
                     } else {
-                        tvSaldo.text = profileSaldo.saldo
+                        tvSaldo.text = itemView.context.getString(R.string.account_saldo_fmt, profileSaldo.saldo)
                         sectionSaldo.visible()
                     }
                 }
@@ -272,18 +273,11 @@ class AccountHeaderViewHolder(itemView: View,
                     element.profileWalletAppDataModel.let { walletAppModel ->
                         when {
                             walletAppModel.isWalletAppLinked -> {
-                                if (walletAppModel.gopayBalance.isEmpty()
-                                        && walletAppModel.gopayPointsBalance.isEmpty()) {
-                                    /**
-                                     * Handle wallet app error state
-                                     */
-                                    tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
-                                    btnTryAgain.visible()
-                                    usrOvoBadge.gone()
-                                    usrOvoBadgeShimmer.visible()
+                                if(walletAppModel.gopayBalance.isEmpty() && walletAppModel.gopayPointsBalance.isEmpty()) {
+                                    sectionWallet.gone()
                                 } else {
                                     val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
-                                    val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_VALUE
+                                    val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_POINTS_VALUE
 
                                     tvOvo.text = String.format(
                                         itemView.context.getString(R.string.mainnav_wallet_app_format),
@@ -335,6 +329,9 @@ class AccountHeaderViewHolder(itemView: View,
                         /**
                          * Handling tokopoint error state
                          */
+                    } else if (element.profileMembershipDataModel.tokopointExternalAmount.isEmpty()
+                        && element.profileMembershipDataModel.tokopointPointAmount.isEmpty()) {
+                        sectionWallet.gone()
                     } else if (element.profileMembershipDataModel.isTokopointExternalAmountError) {
                             tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
                             usrOvoBadge.clearImage()
@@ -406,14 +403,6 @@ class AccountHeaderViewHolder(itemView: View,
                     tvShopNotif.gone()
                 }
             }
-        }
-    }
-
-    private fun renderOvoText(ovoString: String, pointString: String): String {
-        return if (ovoString.isNotEmpty()) {
-            itemView.context.getString(R.string.text_ovo_saldo, ovoString, pointString)
-        } else {
-            ""
         }
     }
 

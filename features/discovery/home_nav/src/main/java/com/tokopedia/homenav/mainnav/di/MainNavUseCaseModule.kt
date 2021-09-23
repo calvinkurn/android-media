@@ -143,26 +143,20 @@ class MainNavUseCaseModule {
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
-            getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
             getSaldoUseCase: GetSaldoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
-            userSession: UserSessionInterface,
-            @ApplicationContext context: Context,
             getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
             getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
                 getUserInfoUseCase = userInfoUseCase,
-                getOvoUseCase = getWalletBalanceUseCase,
                 getSaldoUseCase = getSaldoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
-                userSession = userSession,
-                context = context,
                 getWalletEligibilityUseCase = getWalletEligibilityUseCase,
                 getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
         )
