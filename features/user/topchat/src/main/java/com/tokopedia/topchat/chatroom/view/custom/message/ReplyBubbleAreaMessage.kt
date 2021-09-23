@@ -3,9 +3,11 @@ package com.tokopedia.topchat.chatroom.view.custom.message
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 
@@ -13,6 +15,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private var title: TextView? = null
     private var desc: TextView? = null
+    private var closeBtn: ImageView? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -41,12 +44,28 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     private fun initViewBinding() {
         title = findViewById(R.id.tp_reply_from)
         desc = findViewById(R.id.tp_reply_msg)
+        closeBtn = findViewById(R.id.iv_rb_close)
     }
 
-    fun bindReplyData(uiModel: BaseChatViewModel) {
+    fun bindReplyData(
+        uiModel: BaseChatViewModel,
+        enableCloseButton: Boolean = false
+    ) {
         setTitle(uiModel.from)
         setReplyMsg(uiModel.message)
+        updateCloseButtonState(enableCloseButton)
         show()
+    }
+
+    private fun updateCloseButtonState(enableCloseButton: Boolean) {
+        if (enableCloseButton) {
+            closeBtn?.show()
+            closeBtn?.setOnClickListener {
+                hide()
+            }
+        } else {
+            closeBtn?.hide()
+        }
     }
 
     private fun setTitle(title: String) {

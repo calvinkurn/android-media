@@ -2354,7 +2354,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg
         ) { _, _ ->
-            replyCompose?.bindReplyData(msg)
+            replyCompose?.bindReplyData(msg, true)
         }
         return bs.show(getSupportChildFragmentManager(), "CHAT_BUBBLE_MENU")
     }
