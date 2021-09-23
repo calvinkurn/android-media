@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
  * @author by furqan on 20/09/2021
  */
 @Parcelize
-class DigitalRecommendationTrackingModel(
+data class DigitalRecommendationTrackingModel(
         val typeName: String = "",
         val businessUnit: String = "",
         val categoryId: String = "",

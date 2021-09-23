@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ import javax.inject.Inject
  */
 class DigitalRecommendationViewModel @Inject constructor(
         private val digitalRecommendationUseCase: DigitalRecommendationUseCase,
+        private val userSessionInterface: UserSessionInterface,
         dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -27,5 +29,9 @@ class DigitalRecommendationViewModel @Inject constructor(
             _digitalRecommendationItems.postValue(digitalRecommendationUseCase.execute())
         }
     }
+
+    fun getUserId(): String =
+            if (userSessionInterface.userId.isNotEmpty()) userSessionInterface.userId
+            else "0"
 
 }

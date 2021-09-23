@@ -10,8 +10,9 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 /**
  * @author by furqan on 20/09/2021
  */
-class DigitalRecommendationAdapter(private val recommendationItems: List<DigitalRecommendationModel>)
-    : RecyclerView.Adapter<DigitalRecommendationViewHolder>() {
+class DigitalRecommendationAdapter(private val recommendationItems: List<DigitalRecommendationModel>,
+                                   private val actionListener: DigitalRecommendationViewHolder.DigitalRecommendationItemActionListener
+) : RecyclerView.Adapter<DigitalRecommendationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalRecommendationViewHolder {
         val binding = ItemDigitalRecommendationBinding.inflate(
@@ -19,7 +20,7 @@ class DigitalRecommendationAdapter(private val recommendationItems: List<Digital
                 parent,
                 false
         )
-        return DigitalRecommendationViewHolder(binding)
+        return DigitalRecommendationViewHolder(binding, actionListener)
     }
 
     override fun onBindViewHolder(holder: DigitalRecommendationViewHolder, position: Int) {

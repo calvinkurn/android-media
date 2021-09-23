@@ -14,7 +14,7 @@ import io.mockk.mockk
 import org.junit.Test
 
 class
-BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
+BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getBuyerOrderDetail should success when use case return expected data`() {
         val expectedParams = GetBuyerOrderDetailParams(orderId = orderId, paymentId = paymentId, cart = cart)
@@ -258,6 +258,24 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         createFailedBuyerOrderDetailResult()
         val returnedShopType = viewModel.getShopType()
         assert(returnedShopType == 0)
+    }
+
+    @Test
+    fun `getCategoryId should return category id when getBuyerOrderDetail result is success`() {
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productList } returns listOf(product)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId == "10")
+    }
+
+    @Test
+    fun `getCategoryId should return 0 shop type when getBuyerOrderDetail result is fail`() {
+        createFailedBuyerOrderDetailResult()
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId == "0")
     }
 
     @Test

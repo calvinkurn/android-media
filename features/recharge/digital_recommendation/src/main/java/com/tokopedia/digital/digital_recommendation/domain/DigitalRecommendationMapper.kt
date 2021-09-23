@@ -4,6 +4,7 @@ import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationRe
 import com.tokopedia.digital.digital_recommendation.data.TrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 
 /**
  * @author by furqan on 20/09/2021
@@ -27,7 +28,13 @@ class DigitalRecommendationMapper {
                                 productName = item.subtitle,
                                 clientNumber = item.label1,
                                 applink = item.appLink,
-                                tracking = transform(item.trackingData)
+                                tracking = transform(item.trackingData),
+                                type = if (item.trackingData.itemLabel.isNotEmpty()) {
+                                    when (item.trackingData.itemLabel) {
+                                        TYPE_PRODUCT_RECOMMENDATION -> DigitalRecommendationType.PRODUCT
+                                        else -> DigitalRecommendationType.CATEGORY
+                                    }
+                                } else DigitalRecommendationType.CATEGORY
                         )
                 )
             }

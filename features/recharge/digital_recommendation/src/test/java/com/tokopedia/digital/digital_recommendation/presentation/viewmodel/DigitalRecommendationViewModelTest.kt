@@ -4,10 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -26,13 +29,14 @@ class DigitalRecommendationViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val digitalRecommendationUseCase: DigitalRecommendationUseCase = mockk()
+    private val userSession: UserSessionInterface = mockk()
     private val dispatcher = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: DigitalRecommendationViewModel
 
     @Before
     fun setUp() {
-        viewmodel = DigitalRecommendationViewModel(digitalRecommendationUseCase, dispatcher)
+        viewmodel = DigitalRecommendationViewModel(digitalRecommendationUseCase, userSession, dispatcher)
     }
 
     @Test
@@ -72,7 +76,8 @@ class DigitalRecommendationViewModelTest {
                                 "dummy item type",
                                 "dummy operator id",
                                 "dummy product id"
-                        )
+                        ),
+                        DigitalRecommendationType.CATEGORY
                 )
         ))
 
@@ -98,6 +103,30 @@ class DigitalRecommendationViewModelTest {
         assertEquals(dataIndexZero.tracking.itemType, "dummy item type")
         assertEquals(dataIndexZero.tracking.operatorId, "dummy operator id")
         assertEquals(dataIndexZero.tracking.productId, "dummy product id")
+    }
+
+    @Test
+    fun getUserId() {
+        // given
+        every { userSession.userId } returns "123"
+
+        // when
+        val userId = viewmodel.getUserId()
+
+        // then
+        assertEquals(userId, "123")
+    }
+
+    @Test
+    fun getEmptyUserId() {
+        // given
+        every { userSession.userId } returns ""
+
+        // when
+        val userId = viewmodel.getUserId()
+
+        // then
+        assertEquals(userId, "0")
     }
 
 }

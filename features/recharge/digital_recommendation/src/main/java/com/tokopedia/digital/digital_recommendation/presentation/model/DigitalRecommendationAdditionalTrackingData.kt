@@ -1,0 +1,14 @@
+package com.tokopedia.digital.digital_recommendation.presentation.model
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+/**
+ * @author by furqan on 24/09/2021
+ */
+@Parcelize
+data class DigitalRecommendationAdditionalTrackingData(
+        var userType: String = "0",
+        var widgetPosition: Int = 0,
+        var pgCategory: String = ""
+) : Parcelable

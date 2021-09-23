@@ -4,16 +4,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.ItemDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 /**
  * @author by furqan on 17/09/2021
  */
-class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommendationBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommendationBinding,
+                                      private val actionListener: DigitalRecommendationItemActionListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: DigitalRecommendationModel) {
         renderCategoryName(element)
@@ -23,9 +26,12 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
 
         if (element.applink.isNotEmpty()) {
             binding.root.setOnClickListener {
+                actionListener.onItemClicked(element, adapterPosition)
                 RouteManager.route(binding.root.context, element.applink)
             }
         }
+
+        actionListener.onItemBinding(element, adapterPosition)
     }
 
     private fun renderCategoryName(element: DigitalRecommendationModel) {
@@ -47,6 +53,14 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         } else {
             binding.tgProductDigitalRecommendation.show()
             binding.tgProductDigitalRecommendation.text = element.productName.trim()
+            when (element.type) {
+                DigitalRecommendationType.PRODUCT -> {
+                    binding.tgProductDigitalRecommendation.setWeight(Typography.REGULAR)
+                }
+                DigitalRecommendationType.CATEGORY -> {
+                    binding.tgProductDigitalRecommendation.setWeight(Typography.BOLD)
+                }
+            }
         }
     }
 
@@ -63,5 +77,10 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             binding.tgNumberDigitalRecommendation.text = element.clientNumber.trim()
             binding.tgProductDigitalRecommendation.maxLines = 2
         }
+    }
+
+    interface DigitalRecommendationItemActionListener {
+        fun onItemBinding(element: DigitalRecommendationModel, position: Int)
+        fun onItemClicked(element: DigitalRecommendationModel, position: Int)
     }
 }

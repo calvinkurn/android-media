@@ -38,7 +38,8 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailS
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationNavigator
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -96,7 +97,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator, this, digitalRecommendationNavigator)
+        BuyerOrderDetailTypeFactory(this, navigator, this, digitalRecommendationData)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -107,8 +108,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
-    private val digitalRecommendationNavigator: DigitalRecommendationNavigator by lazy {
-        DigitalRecommendationNavigator(viewModelFactory, viewLifecycleOwner)
+    private val digitalRecommendationData: DigitalRecommendationData by lazy {
+        DigitalRecommendationData(viewModelFactory, viewLifecycleOwner,
+                DigitalRecommendationAdditionalTrackingData(
+                        userType = "0",
+                        widgetPosition = 2,
+                        pgCategory = viewModel.getCategoryId()
+                ))
     }
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)

@@ -1,0 +1,15 @@
+package com.tokopedia.digital.digital_recommendation.utils
+
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+
+/**
+ * @author by furqan on 22/09/2021
+ */
+class DigitalRecommendationData(
+        val viewModelFactory: ViewModelProvider.Factory,
+        val lifecycleOwner: LifecycleOwner,
+        val additionalTrackingData: DigitalRecommendationAdditionalTrackingData
+) {
+}

@@ -1,6 +1,8 @@
 package com.tokopedia.digital.digital_recommendation.presentation.customview
 
 import android.content.Context
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.DigitalRecommendationAdapter
+import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
  * @author by furqan on 20/09/2021
  */
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : ConstraintLayout(context, attrs, defStyleAttr) {
+    : ConstraintLayout(context, attrs, defStyleAttr), DigitalRecommendationViewHolder.DigitalRecommendationItemActionListener {
 
     private var binding: LayoutDigitalRecommendationBinding =
             LayoutDigitalRecommendationBinding.inflate(
@@ -33,9 +39,43 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var digitalRecommendationViewModel: DigitalRecommendationViewModel
+    private lateinit var digitalRecommendationAnalytics: DigitalRecommendationAnalytics
+
+    private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
 
     init {
         showLoading()
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        super.onSaveInstanceState()
+        return Bundle().apply {
+            putParcelable(SAVED_ADDITIONAL_TRACK_DATA, additionalTrackingData)
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        state?.let {
+            val bundle = it as Bundle
+            additionalTrackingData = bundle.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
+        }
+    }
+
+    override fun onItemBinding(element: DigitalRecommendationModel, position: Int) {
+        additionalTrackingData?.let {
+            digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
+                    element, it, position, digitalRecommendationViewModel.getUserId()
+            )
+        }
+    }
+
+    override fun onItemClicked(element: DigitalRecommendationModel, position: Int) {
+        additionalTrackingData?.let {
+            digitalRecommendationAnalytics.clickDigitalRecommendationItems(
+                    element, it, position, digitalRecommendationViewModel.getUserId()
+            )
+        }
     }
 
     fun setViewModelFactory(viewModelFactory: ViewModelProvider.Factory) {
@@ -46,6 +86,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     fun setLifecycleOwner(lifecycleOwner: LifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner
+    }
+
+    fun setAdditionalData(additionalTrackingData: DigitalRecommendationAdditionalTrackingData) {
+        this.additionalTrackingData = additionalTrackingData
     }
 
     fun build() {
@@ -60,6 +104,8 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         if (!::digitalRecommendationViewModel.isInitialized) {
             throw UninitializedPropertyAccessException("View Model is not Initialized")
         }
+
+        digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
 
         showLoading()
         observeLivedata()
@@ -86,7 +132,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                         tgDigitalRecommendationTitle.show()
                         rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false)
-                        rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data)
+                        rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data, this@DigitalRecommendationWidget)
                         rvDigitalRecommendation.show()
                     }
                 }
@@ -100,6 +146,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     interface Listener {
         fun onFetchFailed(throwable: Throwable)
+    }
+
+    companion object {
+        private const val SAVED_ADDITIONAL_TRACK_DATA = "SAVED_ADDITIONAL_TRACK_DATA"
     }
 
 }

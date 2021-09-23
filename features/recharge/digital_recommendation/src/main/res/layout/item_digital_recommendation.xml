@@ -11,8 +11,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/digital_recommendation_shimmering_card_size"
-        android:layout_height="@dimen/digital_recommendation_shimmering_card_size"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_digital_recommendation_card"
+        android:minHeight="@dimen/digital_recommendation_card_min_height"
         android:padding="@dimen/unify_space_8">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -73,6 +74,7 @@
             android:paddingRight="@dimen/unify_space_4"
             android:paddingBottom="@dimen/unify_space_2"
             android:textColor="@color/Unify_R500"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/tgPriceDigitalRecommendation"
             app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="small"
@@ -85,6 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_4"
             android:textColor="@color/Unify_N700_32"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tgDiscountPercentageDigitalRecommendation"
             app:layout_constraintLeft_toRightOf="@id/tgDiscountPercentageDigitalRecommendation"
             app:layout_constraintTop_toTopOf="@id/tgDiscountPercentageDigitalRecommendation"
@@ -98,6 +101,7 @@
             android:layout_marginBottom="@dimen/unify_space_4"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/unify_font_14"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="heading_6"
