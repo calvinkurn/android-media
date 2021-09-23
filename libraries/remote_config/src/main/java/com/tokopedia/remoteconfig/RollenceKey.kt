@@ -5,7 +5,12 @@ object RollenceKey {
     //    Shop Page
     const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
+    const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
+    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
     const val AB_TEST_SHOP_REVIEW = "review_shop"
     const val OLD_REVIEW_SHOP = "old_review_shop"
@@ -15,10 +20,6 @@ object RollenceKey {
     const val HAMPERS_AB_TEST_KEY = "hampers_android"
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
-
-    const val KEY_NEW_NOTFICENTER = "NotifCenter_New"
-    const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
-    const val VARIANT_NEW_NOTFICENTER = "NotifCenter_New"
 
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
@@ -56,6 +57,7 @@ object RollenceKey {
 
     const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
     const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
+    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -66,8 +68,11 @@ object RollenceKey {
 
 
     //Recommendation page section
-    const val RECOM_PAGE_CPM_EXP = "ShopAdsIM2"
+    const val RECOM_PAGE_CPM_EXP = "ShopAdsIM3"
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
+
+    //TAPCASH
+    const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
 }

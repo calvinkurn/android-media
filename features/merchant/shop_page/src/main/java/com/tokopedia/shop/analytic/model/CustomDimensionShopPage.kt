@@ -1,5 +1,6 @@
 package com.tokopedia.shop.analytic.model
 
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 /**

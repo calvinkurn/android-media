@@ -24,6 +24,9 @@ import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -118,7 +121,7 @@ class OfficialHomeContainerFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
-        startOfficialStorePerformanceMonitoring()
+        startOfficialStorePerformanceMonitoring(savedInstanceState)
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
@@ -141,6 +144,9 @@ class OfficialHomeContainerFragment
         init(view)
         observeOfficialCategoriesData()
         fetchOSCategory()
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
 
     override fun onDestroy() {
@@ -241,7 +247,19 @@ class OfficialHomeContainerFragment
     }
 
     private fun fetchOSCategory() {
-        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false),
+                onCacheStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCacheStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE)
+                },
+                onCloudStartLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                },
+                onCloudStopLoad = {
+                    officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD)
+                })
     }
 
     private fun observeOfficialCategoriesData() {
@@ -451,9 +469,11 @@ class OfficialHomeContainerFragment
         } else null
     }
 
-    private fun startOfficialStorePerformanceMonitoring(){
-        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
-        officialStorePerformanceMonitoringListener = null
+    private fun startOfficialStorePerformanceMonitoring(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(KEY_PERFORMANCE_PREPARING_OS_CONTAINER)
+        }
     }
 
     private fun chooseAddressAbTestCondition(

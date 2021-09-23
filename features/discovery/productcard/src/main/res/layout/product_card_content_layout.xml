@@ -13,15 +13,13 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700"
-        android:gravity="start|center_vertical"
+        android:gravity="start|top"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/product_card_label_best_seller_category_bottom_margin_bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        tools:text="di Setelan anak laki-laki"
-        />
+        tools:text="di Setelan anak laki-laki" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewGimmick"

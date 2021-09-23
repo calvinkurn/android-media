@@ -10,7 +10,10 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
@@ -22,8 +25,12 @@ private const val initialStateWith5DataSeeMoreRecentSearch = "autocomplete/initi
 internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private val isSuccessful = true
+    private val deleteRecentSearchRequestParams = slot<RequestParams>()
 
-    private fun `Test Delete Recent Search Data`(initialStateData: List<InitialStateData>, item: BaseItemInitialStateSearch) {
+    private fun `Test Delete Recent Search Data`(
+        initialStateData: List<InitialStateData>,
+        item: BaseItemInitialStateSearch
+    ) {
         `Given view already get initial state`(initialStateData)
 
         `Given delete recent search API will return data`()
@@ -44,7 +51,9 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify deleteRecentSearch API is called`() {
-        verify { deleteRecentSearchUseCase.execute(any(), any()) }
+        verify {
+            deleteRecentSearchUseCase.execute(capture(deleteRecentSearchRequestParams), any())
+        }
     }
 
     private fun `Then verify initial state view called deleteRecentSearch`() {

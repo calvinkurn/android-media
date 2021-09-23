@@ -173,19 +173,19 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
     private fun initReplyViewState(element: ReviewProductModelContent) {
         if (element.isReplyOpened) {
             seeReplyText.text = context.getText(R.string.close_reply)
-            replyArrow.rotation = 180f
+            replyArrow.rotation = REPLY_ARROW_ROTATION_OPEN
             replyReviewLayout.visibility = View.VISIBLE
             viewListener.onSmoothScrollToReplyView(adapterPosition)
         } else {
             seeReplyText.text = context.getText(R.string.see_reply)
-            replyArrow.rotation = 0f
+            replyArrow.rotation = REPLY_ARROW_ROTATION_CLOSE
             replyReviewLayout.visibility = View.GONE
         }
     }
 
     private fun getReview(review: String?): Spanned {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
-            val moreDescription = "<font color='#${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400) + 0x00ffffff)}'>Selengkapnya</font>"
+            val moreDescription = "<font color='#${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400) + MORE_DESCRIPTION_HEX_COUNTER)}'>Selengkapnya</font>"
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
             MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
@@ -249,6 +249,9 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         const val WIB = "WIB"
         private const val MENU_REPORT = 102
         private const val MENU_DELETE = 103
+        private const val REPLY_ARROW_ROTATION_OPEN = 180f
+        private const val REPLY_ARROW_ROTATION_CLOSE = 0f
+        private const val MORE_DESCRIPTION_HEX_COUNTER = 0x00ffffff
     }
 
     init {

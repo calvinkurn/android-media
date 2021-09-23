@@ -54,7 +54,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             productCardModel.shouldShowAddToCartNonVariantQuantity() ->
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
-            productCardModel.hasAddToCartButton ->
+            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
                 buttonAddToCart?.configureButtonAddToCart()
 
             else ->
@@ -72,7 +72,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun addToCartNonVariantClick(productCardModel: ProductCardModel) {
         val nonVariant = productCardModel.nonVariant ?: return
-        val newValue = nonVariant.minQuantity
+        val newValue = nonVariant.minQuantityFinal
 
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
@@ -194,8 +194,8 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
-        this.maxValue = nonVariant.maxQuantity
-        this.minValue = nonVariant.minQuantity
+        this.maxValue = nonVariant.maxQuantityFinal
+        this.minValue = nonVariant.minQuantityFinal
 
         val quantity = nonVariant.quantity
         if (quantity > 0)
@@ -207,8 +207,8 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
         val inputQuantity = editText.text.toString().toIntOrZero()
 
-        addButton.isEnabled = inputQuantity < nonVariant.maxQuantity
-        subtractButton.isEnabled = inputQuantity > nonVariant.minQuantity
+        addButton.isEnabled = inputQuantity < nonVariant.maxQuantityFinal
+        subtractButton.isEnabled = inputQuantity > nonVariant.minQuantityFinal
 
         editorChangeQuantity(inputQuantity)
     }
@@ -217,8 +217,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             nonVariant: ProductCardModel.NonVariant
     ) {
         val userQuantity = editText.text.toString().replace(".", "").toIntOrZero()
-        val quantityRange = nonVariant.minQuantity..nonVariant.maxQuantity
-        val coercedQuantity = userQuantity.coerceIn(quantityRange)
+        val coercedQuantity = userQuantity.coerceIn(nonVariant.quantityRange)
         val coercedQuantityString = coercedQuantity.toString()
 
         editText.setText(coercedQuantityString, TextView.BufferType.EDITABLE)

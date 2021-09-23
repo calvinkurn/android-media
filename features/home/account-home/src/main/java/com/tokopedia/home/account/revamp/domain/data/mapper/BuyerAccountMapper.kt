@@ -48,7 +48,7 @@ class BuyerAccountMapper @Inject constructor(
         val model = BuyerViewModel()
         items.add(getBuyerProfile(accountDataModel))
         items.add(getTokopediaPayModel(accountDataModel))
-        items.addAll(getModel(context, accountDataModel, remoteConfig, useUoh()))
+        items.addAll(getModel(context, accountDataModel, remoteConfig))
         model.items = items
 
         return model
@@ -180,18 +180,6 @@ class BuyerAccountMapper @Inject constructor(
             tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text.toEmptyStringIfNull()
             tokopediaPayViewModel.amountLeft = accountDataModel.wallet.balance.toEmptyStringIfNull()
             tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.applink.toEmptyStringIfNull()
-        }
-    }
-
-    private fun useUoh(): Boolean {
-        return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-
-            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-            return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
-
-        } catch (e: Exception) {
-            true
         }
     }
 }

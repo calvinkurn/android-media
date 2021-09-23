@@ -119,9 +119,15 @@ data class ProductCardModel (
 
     data class NonVariant(
             val quantity: Int = 0,
-            val minQuantity: Int = 0,
-            val maxQuantity: Int = 0,
-    )
+            private val minQuantity: Int = 0,
+            private val maxQuantity: Int = 0,
+    ) {
+        val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
+        val maxQuantityFinal = maxOf(maxQuantity, this.minQuantityFinal)
+
+        val quantityRange: IntRange
+            get() = minQuantityFinal..maxQuantityFinal
+    }
 
     fun shouldShowAddToCartNonVariantQuantity(): Boolean {
         return nonVariant?.quantity == 0
