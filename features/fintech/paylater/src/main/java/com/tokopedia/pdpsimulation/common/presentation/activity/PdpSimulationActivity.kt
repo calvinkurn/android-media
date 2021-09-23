@@ -79,7 +79,8 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
      * This method is to restart the activity
      */
     private fun restartActivity()
-    {  val intent = intent
+    {
+        val intent = intent
         finish()
         startActivity(intent)
     }
@@ -88,12 +89,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
             REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn) {
-                    Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
+                if (userSession.isLoggedIn)
                     restartActivity()
-                }
                 else
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
+                    finish()
             }
         }
     }

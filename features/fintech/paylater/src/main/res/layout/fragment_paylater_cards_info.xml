@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/Unify_N0"
     android:layout_height="wrap_content">
 
 
@@ -24,6 +25,7 @@
         android:layout_marginStart="@dimen/unify_space_4"
         android:layout_marginTop="@dimen/unify_space_2"
         app:card_type="border"
+
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -52,7 +54,8 @@
                         android:layout_marginTop="@dimen/unify_space_12"
                         android:scaleType="centerInside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tvTitlePaymentPartner"
+                        app:layout_constraintBottom_toBottomOf="@id/tvSubTitlePaylaterPartner"
                         tools:src="@tools:sample/avatars" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -60,15 +63,14 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
-                        android:layout_marginTop="@dimen/unify_space_2"
+                        android:layout_marginTop="@dimen/unify_space_24"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_14"
-                        android:paddingTop="@dimen/unify_font_8"
                         app:layout_constraintBottom_toTopOf="@+id/tvSmallSubTitlePaylaterPartner"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
-                        app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed"
                         app:typographyType="body_1"
                         app:typographyWeight="bold"
