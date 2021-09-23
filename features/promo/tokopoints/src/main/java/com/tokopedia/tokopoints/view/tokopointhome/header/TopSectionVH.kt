@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -10,14 +11,19 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,12 +37,20 @@ import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.MetadataItem
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
 import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.tokopoints.view.util.isDarkMode
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.webview.KEY_TITLEBAR
 
 class TopSectionVH(
     itemView: View,
@@ -48,7 +62,6 @@ class TopSectionVH(
     private var dynamicAction: DynamicItemActionView? = null
     private var mTextMembershipLabel: TextView? = null
     private var mTargetText: TextView? = null
-    private var mTextMembershipValueBottom: TextView? = null
     private var mTextMembershipValue: TextView? = null
     private var mImgBackground: ImageView? = null
     private var mValueMembershipDescription: String? = null
@@ -58,6 +71,13 @@ class TopSectionVH(
     private var savingDesc: TextView? = null
     private var cardContainer: ConstraintLayout? = null
     private var containerUserSaving: ConstraintLayout? = null
+    private var containerStatusMatching: View? = null
+    private var cardStatusMatching: CardUnify? = null
+    private var confettiAnim: LottieAnimationView? = null
+    private var timerTextView: Typography? = null
+    private var statusMatchingTimer: TimerUnifySingle? = null
+    private var parentStatusMatching : ConstraintLayout ? =null
+    private var ivStatusBackground: AppCompatImageView? = null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -74,13 +94,25 @@ class TopSectionVH(
         savingDesc = itemView.findViewById(R.id.tv_saving_desc)
         cardContainer = itemView.findViewById(R.id.container_saving)
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
+        containerStatusMatching = itemView.findViewById(R.id.status_matching_container)
+        cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
+        confettiAnim = itemView.findViewById(R.id.confetti_lottie)
+        timerTextView = itemView.findViewById(R.id.timer_text_view)
+        statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
+        ivStatusBackground = itemView.findViewById(R.id.iv_gojek)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
-        if (model.userSavingResponse?.userSaving!=null){
-        model.userSavingResponse.userSaving.let {
+        model.userSavingResponse?.userSaving?.let {
             containerUserSaving?.show()
             renderUserSaving(it)
-        }}
+        }
+        model.rewardTickerResponse?.let {
+            if (!it.rewardsTickerList?.tickerList.isNullOrEmpty()) {
+                containerStatusMatching?.show()
+                cardStatusMatching?.show()
+                renderStatusMatchingView(it.rewardsTickerList?.tickerList)
+            }
+        }
     }
 
     private fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
@@ -116,7 +148,6 @@ class TopSectionVH(
         }
 
         ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.profilePicture)
-        mTextMembershipValueBottom?.text = mValueMembershipDescription
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -284,6 +315,100 @@ class TopSectionVH(
                     AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
             )
         }
+    }
+
+    private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
+        if (itemView.context.isDarkMode()) {
+            ivStatusBackground?.setImageResource(R.drawable.bg_statusmatching_dark)
+        } else {
+            ivStatusBackground?.setImageResource(R.drawable.bg_statusmatching_light)
+        }
+        containerStatusMatching?.setOnClickListener {
+            rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
+                if (url.isNotEmpty()) {
+                    val intent = RouteManager.getIntent(
+                        itemView.context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    )
+                    intent.putExtra(KEY_TITLEBAR, false)
+                    itemView.context.startActivity(intent)
+                }
+                AnalyticsTrackerUtil.sendEvent(
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_STATUSMATCHING_ON_REWARDS, "",
+                    AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
+                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+                )
+            }
+        }
+        playAnimation()
+        val metadata = rewardTickerResponse?.get(0)?.metadata?.get(0)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            timerTextView?.text = Html.fromHtml(metadata?.text?.content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            timerTextView?.text = Html.fromHtml(metadata?.text?.content)
+        }
+        if(metadata?.isShowTime == true){
+            setContainerWithTimer()
+            setTimer(metadata)
+        }
+        AnalyticsTrackerUtil.sendEvent(
+            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
+            AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
+            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+        )
+    }
+
+    private fun setTimer(metadata: MetadataItem?){
+        statusMatchingTimer?.timer?.cancel()
+        statusMatchingTimer?.targetDate = convertSecondsToHrMmSs(metadata?.timeRemainingSeconds?:0L)
+        statusMatchingTimer?.apply {
+            timerTextWidth = TimerUnifySingle.TEXT_WRAP
+            timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+            onFinish = {
+                hideStatusMatching()
+            }
+            onTick = {
+                metadata?.timeRemainingSeconds = it / 1000
+            }
+        }
+    }
+
+    private fun setContainerWithTimer(){
+        statusMatchingTimer?.show()
+        parentStatusMatching = itemView.findViewById(R.id.container_statusmatching)
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(parentStatusMatching)
+        constraintSet.connect(
+            R.id.timer_text_view,
+            ConstraintSet.TOP,
+            R.id.countdown_status,
+            ConstraintSet.BOTTOM,
+            0
+        )
+        constraintSet.applyTo(parentStatusMatching)
+
+        val layoutParamsTextView = timerTextView?.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsTextView.topMargin = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+        timerTextView?.layoutParams = layoutParamsTextView
+
+        val layoutParams = cardStatusMatching?.layoutParams
+        layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        cardStatusMatching?.layoutParams = layoutParams
+    }
+
+    private fun playAnimation(){
+        confettiAnim?.repeatCount = ValueAnimator.INFINITE
+        confettiAnim?.playAnimation()
+    }
+
+     private fun hideStatusMatching() {
+         cardStatusMatching?.hide()
+         containerStatusMatching?.hide()
     }
 
     interface CardRuntimeHeightListener {
