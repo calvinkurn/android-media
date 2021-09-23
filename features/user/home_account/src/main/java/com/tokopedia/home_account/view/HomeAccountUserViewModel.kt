@@ -185,7 +185,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getCentralizedUserAssetConfig(entryPoint: String) {
-        launchCatchError(context = dispatcher.main, block = {
+        launchCatchError(block = {
             val result = getCentralizedUserAssetConfigUseCase(entryPoint)
             _centralizedUserAssetConfig.value = Success(result.data)
         }, onError = {
@@ -194,7 +194,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getBalanceAndPoint(walletId: String, assetConfig: AssetConfig? = null) {
-        launchCatchError(context=dispatcher.main, block = {
+        launchCatchError(block = {
             if(walletId == AccountConstants.WALLET.TOKOPOINT) {
                 val result = getTokopointsBalanceAndPointUseCase(Unit)
                 setBalanceAndPointValue(result.data, walletId)
@@ -249,7 +249,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getGopayWalletEligible() {
-        launchCatchError(context=dispatcher.main, block = {
+        launchCatchError(block = {
             val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
             val result = getWalletEligibleUseCase(params)
 
