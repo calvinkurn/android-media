@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.sse
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
@@ -38,12 +37,8 @@ class PlayChannelSSEImpl @Inject constructor(
             .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
             .build()
 
-        Log.d("<SSE>", "URL : $url")
-
         sse = OkSse().newServerSentEvent(request, object: ServerSentEvent.Listener {
-            override fun onOpen(sse: ServerSentEvent, response: Response) {
-                Log.d("<SSE>", "onOpen")
-            }
+            override fun onOpen(sse: ServerSentEvent, response: Response) { }
 
             override fun onMessage(
                 sse: ServerSentEvent,
@@ -51,16 +46,12 @@ class PlayChannelSSEImpl @Inject constructor(
                 event: String,
                 message: String
             ) {
-                Log.d("<SSE>", "onMessage: event: $event - message: $message")
                 sseFlow.tryEmit(SSEAction.Message(SSEResponse(event = event, message = message)))
             }
 
-            override fun onComment(sse: ServerSentEvent, comment: String) {
-                Log.d("<SSE>", "onComment: $comment")
-            }
+            override fun onComment(sse: ServerSentEvent, comment: String) { }
 
             override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                Log.d("<SSE>", "onRetryTime")
                 return true
             }
 
@@ -69,17 +60,14 @@ class PlayChannelSSEImpl @Inject constructor(
                 throwable: Throwable,
                 response: Response?
             ): Boolean {
-                Log.d("<SSE>", "onRetryError")
                 return true
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                Log.d("<SSE>", "onClosed")
                 sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request? {
-                Log.d("<SSE>", "onPreRetry")
                 return request
             }
         })

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -265,18 +264,12 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {
-        Log.d("<INTENT>", "pathSegments: ${intent.data?.pathSegments?.joinToString()}")
         val fragment = activeFragment
-        Log.d("<INTENT>", "enter onBackPressed()")
         if (fragment is PlayFragment) {
-            Log.d("<INTENT>", "is PlayFragment")
             if (!fragment.onBackPressed()) {
-                Log.d("<INTENT>", "!fragment.onBackPressed()")
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    Log.d("<INTENT>", "checking isTaskRoot")
                     if (isTaskRoot || viewModel.source.key == "") {
-                        Log.d("<INTENT>", "isTaskRoot")
                         val intent = RouteManager.getIntent(
                             this,
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW, "${TokopediaUrl.getInstance().WEB}$PLAY_CHANNEL_LIST_PATH?$PLAY_CHANNEL_LIST_QUERY")
@@ -284,14 +277,12 @@ class PlayActivity : BaseActivity(),
                         startActivity(intent)
                         finish()
                     } else {
-                        Log.d("<INTENT>", "no TaskRoot")
                         fragment.setResultBeforeFinish()
                         supportFinishAfterTransition()
                     }
                 }
             }
         } else {
-            Log.d("<INTENT>", "super.onBackPressed()")
             super.onBackPressed()
         }
     }
