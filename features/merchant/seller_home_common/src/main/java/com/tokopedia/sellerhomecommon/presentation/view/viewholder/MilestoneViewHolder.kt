@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiM
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.shc_milestone_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_milestone_widget_loading.view.*
@@ -59,6 +60,7 @@ class MilestoneViewHolder(
             tvTitleMilestoneWidget.text = data.title
             tvDescMilestoneWidget.text = data.subTitle
             tvProgressTitleMilestoneWidget.text = data.milestoneProgress.description
+            setTagNotification(element.tag)
 
             val milestoneValueFmt = data.milestoneProgress.percentageFormatted.parseAsHtml()
             tvProgressValueMilestoneWidget.text = milestoneValueFmt
@@ -85,6 +87,20 @@ class MilestoneViewHolder(
             addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
                 setupMilestoneList(element)
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagMilestone.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagMilestone.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }

@@ -9,7 +9,6 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        jcenter()
         google()
     }
     dependencies {
@@ -21,6 +20,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
