@@ -79,7 +79,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
 
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+    var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd

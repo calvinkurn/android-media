@@ -618,6 +618,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
         miniCartWidget?.showWithCondition(isVisible == true)
+        if (!isVisible()) miniCartWidget?.hideCoachMark()
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {

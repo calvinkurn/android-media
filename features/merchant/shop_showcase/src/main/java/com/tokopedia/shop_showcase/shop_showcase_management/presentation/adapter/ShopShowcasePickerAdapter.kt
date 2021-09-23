@@ -1,7 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -16,7 +15,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-import kotlinx.android.synthetic.main.shop_showcase_item_picker.view.*
 
 class ShopShowcasePickerAdapter(
         private val listener: PickerClickListener,
@@ -72,13 +70,13 @@ class ShopShowcasePickerAdapter(
     inner class ShopShowcasePickerViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val btnRadioPicker: RadioButtonUnify? by lazy {
-            itemView.btn_radio_showcase_picker
+            itemView.findViewById(R.id.btn_radio_showcase_picker)
         }
         private val btnCheckboxPicker: CheckboxUnify? by lazy {
-            itemView.btn_checkbox_showcase_picker
+            itemView.findViewById(R.id.btn_checkbox_showcase_picker)
         }
         private val tvShowcaseName: TextView? by lazy {
-            itemView.tv_showcase_name
+            itemView.findViewById(R.id.tv_showcase_name)
         }
 
         fun bind(item: ShopEtalaseModel) {
@@ -132,7 +130,7 @@ class ShopShowcasePickerAdapter(
                 tvShowcaseName?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
-                tvShowcaseName?.setTextColor(androidx.core.content.ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
                 tvShowcaseName?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }
