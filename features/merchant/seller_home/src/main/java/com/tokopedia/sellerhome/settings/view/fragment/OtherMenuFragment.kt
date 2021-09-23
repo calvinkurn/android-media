@@ -171,6 +171,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         context?.let {
             viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
+        viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
         }
@@ -504,24 +505,28 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeSaldoBalance() {
         viewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceSaldoData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onSaldoBalanceRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceSaldoData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
             }
         }
     }
 
     private fun observeKreditTopads() {
         viewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceTopadsData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onKreditTopAdsRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceTopadsData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
             }
         }
     }

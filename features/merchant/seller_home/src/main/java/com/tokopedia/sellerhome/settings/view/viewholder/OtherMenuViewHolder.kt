@@ -99,13 +99,6 @@ class OtherMenuViewHolder(
     private val topadsImpressHolder = ImpressHolder()
     private val shopAvatarImpressHolder = ImpressHolder()
 
-    init {
-        initView()
-        setupView()
-        setupClickListener()
-        registerLifecycleOwner()
-    }
-
     override fun onInitialAnimationCompleted() {
         hasInitialAnimationCompleted = true
         if (listener.getIsShopShareReady()) {
@@ -126,6 +119,13 @@ class OtherMenuViewHolder(
     fun onResume() {
         setInitialValues()
         balanceTopadsTopupView?.stopAnimation()
+    }
+
+    fun setInitialLayouts() {
+        initView()
+        setupView()
+        setupClickListener()
+        registerLifecycleOwner()
     }
 
     fun setInitialAnimationStates() {
@@ -390,7 +390,7 @@ class OtherMenuViewHolder(
                 NewOtherMenuTracking.sendEventImpressionSaldoBalance()
             }
         }
-        errorLayoutSaldo?.gone()
+        errorLayoutSaldo?.invisible()
         shimmerSaldo?.gone()
     }
 
@@ -403,30 +403,30 @@ class OtherMenuViewHolder(
             }
             listener.onTopadsValueSet()
         }
-        errorLayoutTopads?.gone()
+        errorLayoutTopads?.invisible()
         shimmerTopads?.gone()
     }
 
     private fun setBalanceSaldoLoading() {
-        balanceSaldoTextView?.gone()
-        errorLayoutSaldo?.gone()
+        balanceSaldoTextView?.invisible()
+        errorLayoutSaldo?.invisible()
         shimmerSaldo?.show()
     }
 
     private fun setBalanceTopadsLoading() {
-        balanceTopadsTopupView?.gone()
-        errorLayoutTopads?.gone()
+        balanceTopadsTopupView?.invisible()
+        errorLayoutTopads?.invisible()
         shimmerTopads?.show()
     }
 
     private fun setBalanceSaldoFailed() {
-        balanceSaldoTextView?.gone()
+        balanceSaldoTextView?.invisible()
         errorLayoutSaldo?.show()
         shimmerSaldo?.gone()
     }
 
     private fun setBalanceTopadsFailed() {
-        balanceTopadsTopupView?.gone()
+        balanceTopadsTopupView?.invisible()
         errorLayoutTopads?.show()
         shimmerTopads?.gone()
     }
