@@ -49,30 +49,34 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/snapshot_bundling_info"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/snapshot_dimen_36dp"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/ticker_info"
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/snapshot_bundling_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="@id/snapshot_bundling_name"
+            app:layout_constraintBottom_toBottomOf="@id/snapshot_bundling_name"
+            tools:src="@tools:sample/avatars"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/snapshot_bundling_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/snapshot_dimen_10dp"
+            android:layout_marginTop="@dimen/snapshot_dimen_10dp"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toEndOf="@id/snapshot_bundling_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:typographyType="heading_6"
+            app:typographyType="heading_3"
             tools:text="Paket Hemat"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
