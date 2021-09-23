@@ -592,8 +592,8 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             val arrayFilterString = viewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, true))
-                else itemMenus.add(TopchatItemMenu(title, false))
+                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, _hasCheck = true))
+                else itemMenus.add(TopchatItemMenu(title))
             }
 
             val title = getString(R.string.menu_chat_filter)
