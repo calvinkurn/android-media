@@ -47,7 +47,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
         }
     }
 
