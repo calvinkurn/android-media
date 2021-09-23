@@ -53,6 +53,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun setProgressUpdate(progress: Int, maxCount: Int) {
         if (maxCount != 0)
             progressBar?.setValue((progress / maxCount) * 100, true)
+        else
+            progressBar?.setValue(progress, true)
     }
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
@@ -100,20 +102,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == true
                 ) {
-                    processingText?.text =
-                        context.getString(R.string.feed_content_progress_bar_text)
-                    processingText?.setTextColor(ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                    progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
-                    retryText?.gone()
-                    setFirstIcon(null)
-                    setProgressUpdate(0, 0)
-
                     mPostUpdateSwipe?.swipeOnPostUpdate()
                 } else if (intent.action == BROADCAST_SUBMIT_POST_NEW
                     && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == false
                 ) {
-                    intent.extras?.getString(DRAFT_ID,"")?.let { handleFailedState(it) }
+                    intent.extras?.getString(DRAFT_ID, "")?.let { handleFailedState(it) }
                 }
             }
         }
@@ -142,6 +135,16 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 }
             }
         }
+    }
+    fun resetProgressBarState(){
+        processingText?.text =
+            context.getString(R.string.feed_content_progress_bar_text)
+        processingText?.setTextColor(ContextCompat.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+        retryText?.gone()
+        setFirstIcon("")
+        setProgressUpdate(0, 0)
     }
 
     fun registerBroadcastReceiver() {

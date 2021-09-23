@@ -11,8 +11,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopProductListFragment.newInstance(intent.getStringExtra("shopid") ?: "",
-            intent.getStringExtra("source") ?: "",
+        return ShopProductListFragment.newInstance(intent.getStringExtra(PARAM_SHOP_ID) ?: "",
+            intent.getStringExtra(PARAM_SOURCE) ?: "",
             intent.getStringExtra(
                 PARAM_SHOP_NAME) ?: "")
     }
@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
     companion object {
         const val PRODUCT_PAGE_TITLE = "Tag Produk"
         private const val PARAM_SHOP_NAME = "shop_name"
-        private const val REQUEST_CODE_LOGIN = 1
+        private const val PARAM_SHOP_ID = "shopid"
+        private const val PARAM_SOURCE = "source"
     }
 }

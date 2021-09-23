@@ -189,16 +189,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         content_back_button.setOnClickListener {
-            KeyboardHandler.hideSoftKeyboard(this)
-            if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState) {
-                createPostAnalytics.eventClickBackOnPreviewPage()
-                finish()
-            }else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview){
-                createPostAnalytics.eventClickBackOnProductTaggingPage()
-                clickContinueOnTaggingPage()
-                isOpenedFromPreview = false
-            }
-            else
+
                 onBackPressed()
         }
         create_post_toolbar.visibility = View.VISIBLE
@@ -221,8 +212,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
 
     override fun onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this)
 
-        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE) {
+        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState) {
+            createPostAnalytics.eventClickBackOnPreviewPage()
+            finish()
+        }else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview){
+            createPostAnalytics.eventClickBackOnProductTaggingPage()
+            clickContinueOnTaggingPage()
+            isOpenedFromPreview = false
+        }
+        else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE) {
 
             createPostAnalytics.eventClickBackOnProductTaggingPage()
 
@@ -244,9 +244,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             dialog.show()
         } else {
             createPostAnalytics.eventClickBackOnPreviewPage()
-            supportFragmentManager.popBackStack()
             content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
+            inflateFragment()
 
         }
 

@@ -70,7 +70,6 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         view.recycler_view.adapter = mAdapter
 
         mAdapter.resetAdapter()
-//        mAdapter.startDataLoading()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
         presenter.getSortData()
         val shopName = arguments?.getString(PARAM_SHOP_NAME) ?: ""
@@ -87,6 +86,11 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
         view.sb_shop_product.searchBarTextField.afterTextChanged {
             mAdapter.filter.filter(it)
+        }
+        view.sb_shop_product.searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                createPostAnalytics.eventClickOnSearchBar()
+
         }
         view.sb_shop_product.searchBarTextField.setOnClickListener {
             createPostAnalytics.eventClickOnSearchBar()
@@ -129,7 +133,6 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
                 is Loading -> {
                     mAdapter.resetAdapter()
                     mAdapter.notifyDataSetChanged()
-//                    mAdapter.startDataLoading()
                 }
                 is Success -> {
                     mAdapter.onSuccess(it.data)
@@ -225,8 +228,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
 
     override fun getScreenName(): String {
-        // TODO("Not yet implemented")
-        return ""
+        return SCREEN_NAME
     }
 
     companion object {
@@ -234,6 +236,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_DATA = 1
         private val CONTAINER_EMPTY = 2
         private val CONTAINER_ERROR = 3
+        private val SCREEN_NAME = "Product Tag Listing"
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_ID = "shopid"
         private const val PARAM_SOURCE = "source"
