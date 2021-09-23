@@ -17,9 +17,11 @@ class ToggleImageView @JvmOverloads constructor(
 
     @DrawableRes
     var offDrawableId: Int? = null
+    var toggleCallback:Function1<Boolean,Unit>?=null
 
     fun toggle(isChecked: Boolean) {
         this.isChecked = isChecked
+        toggleCallback?.invoke(isChecked)
 
         if (isChecked) {
             setImageResource(onDrawableId)

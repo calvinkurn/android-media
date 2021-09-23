@@ -28,7 +28,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /**
  * created by rival on 07/11/19
@@ -121,10 +120,10 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             }
         }
 
-        findViewById<TouchViewPager>(com.tokopedia.imagepreview.R.id.viewPager)?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+        findViewById<TouchViewPager>(com.tokopedia.imagepreview.R.id.viewPager)?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
-                val swipeDirection = if(lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
+                val swipeDirection = if (lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
                 imagePreviewTracking.onImageSwipe(productId, swipeDirection, position)
                 lastPosition = position
             }
@@ -264,7 +263,8 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                 imageDesc: ArrayList<String>? = null,
                 position: Int = 0,
                 title: String? = null,
-                description: String? = null): Intent {
+                description: String? = null,
+                disableDownload: Boolean = true): Intent {
             val intent = Intent(context, ImagePreviewPdpActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)
@@ -275,6 +275,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             bundle.putString(SHOP_ID, shopId)
             bundle.putString(PRODUCT_ID, productId)
             bundle.putBoolean(IS_WISHLISTED, isWishlisted)
+            bundle.putBoolean(DISABLE_DOWNLOAD, disableDownload)
             intent.putExtras(bundle)
             return intent
         }
