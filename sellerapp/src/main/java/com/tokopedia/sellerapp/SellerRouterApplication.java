@@ -69,7 +69,6 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -438,7 +437,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
-        if (DeviceScreenInfo.isTablet(CoreNetworkApplication.context)) {
+        if (DeviceScreenInfo.isTablet(context)) {
             if (orderId != null && orderId.trim().length() > 0) {
                 bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
             }
