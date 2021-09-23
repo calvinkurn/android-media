@@ -260,7 +260,6 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         initInboxAbTest();
-        initNotifcenterOnNewInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -292,19 +291,6 @@ public class MainParentActivity extends BaseActivity implements
             useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             ).equals(RollenceKey.VARIANT_NEW_INBOX) && isNewNavigation;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initNotifcenterOnNewInboxAbTest() {
-        try {
-            useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .getString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_OLD_NOTFICENTER
-                    ).equals(RollenceKey.VARIANT_NEW_NOTFICENTER);
         } catch (Exception e) {
             e.printStackTrace();
         }

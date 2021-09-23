@@ -791,24 +791,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                        onClickReasonRating(element.replyTimeNano.toString()))
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this)
             }
-        }
-    }
-
-    private fun onClickReasonRating(timestamp: String): (String) -> Unit {
-        return {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED, it)
-            (viewState as ChatbotViewState).onClickReasonRating()
-            presenter.sendReasonRating(messageId, it, timestamp, onError(),
-                    onSuccessSendReasonRating())
-        }
-    }
-
-    private fun onSuccessSendReasonRating(): (String) -> Unit {
-        return {
-            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 

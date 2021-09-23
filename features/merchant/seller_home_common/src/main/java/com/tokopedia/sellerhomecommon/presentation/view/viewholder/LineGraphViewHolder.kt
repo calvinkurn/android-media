@@ -15,12 +15,12 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -64,6 +64,7 @@ class LineGraphViewHolder(
         tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
 
         setupTooltip(element)
+        setTagNotification(element.tag)
     }
 
     private fun openAppLink(element: LineGraphWidgetUiModel) {
@@ -169,6 +170,20 @@ class LineGraphViewHolder(
                 }
             } else {
                 animateHideEmptyState()
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagLineGraph.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagLineGraph.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
