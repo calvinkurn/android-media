@@ -14,7 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>) {
 
-    fun appendFirstData(listOfData: List<HomeRecommendationDataModel>) {
+    fun appendFirstRecomData(listOfData: List<HomeRecommendationDataModel>) {
         dataList = mutableListOf()
         listOfData.forEach {
             when (it) {
@@ -24,7 +24,7 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
     }
 
-    fun appendNextData(listOfData: List<HomeRecommendationDataModel>) {
+    fun appendNextRecomData(listOfData: List<HomeRecommendationDataModel>) {
         listOfData.forEach {
             when (it) {
                 is RecommendationItemDataModel -> dataList.add(it)
