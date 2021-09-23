@@ -48,7 +48,7 @@ class ProductMiniSocialProofStockViewHolder(
                 }
                 hideLoading()
                 setAdapterData(element)
-                view.addOnImpressionListener(element.impressHolder) {
+                addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }

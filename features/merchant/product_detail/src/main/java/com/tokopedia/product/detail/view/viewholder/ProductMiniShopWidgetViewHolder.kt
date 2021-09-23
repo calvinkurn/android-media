@@ -50,7 +50,7 @@ class ProductMiniShopWidgetViewHolder(
         shopLocation?.text = element.shopLocation
 
         hideLoading()
-        view.addOnImpressionListener(element.impressHolder) {
+        addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(componentTracker)
         }
     }

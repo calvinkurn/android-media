@@ -48,7 +48,7 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 }
                 hideLoading()
                 setAdapterData(element)
-                view.addOnImpressionListener(element.impressHolder) {
+                addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }

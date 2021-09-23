@@ -34,7 +34,7 @@ class ProductMediaViewHolder(private val view: View,
             }
 
             element.shouldRefreshViewPagger = false
-            view.addOnImpressionListener(element.impressHolder) {
+            addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
         }

@@ -141,6 +141,6 @@ class ProductDiscussionMostHelpfulViewHolder(private val view: View,
 
     private fun getComponentTrackData(
         element: ProductDiscussionMostHelpfulDataModel
-    ) = ComponentTrackDataModel(element.type, element.name,adapterPosition + 1)
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
 }
