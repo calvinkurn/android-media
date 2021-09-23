@@ -28,6 +28,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
 
         itemView.findViewById<UnifyButton>(R.id.buttonNotify)?.run {
             visibility = View.VISIBLE
+            buttonVariant = UnifyButton.Variant.GHOST
             text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
                 promotionClickInterface?.onPromotionClick( "",
@@ -35,6 +36,10 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
                         "")
+            }
+            if(element?.promotionItem?.status?.isLinkGenerationAllowed == false){
+                buttonType = UnifyButton.Type.ALTERNATE
+                setOnClickListener(null)
             }
         }
     }

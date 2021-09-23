@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
@@ -18,7 +19,8 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 
-class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
+class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener,
+        AffiliateBottomNavBarInterface {
 
     private lateinit var affiliateVM: AffiliateViewModel
 
@@ -52,7 +54,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun menuClicked(position: Int, id: Int): Boolean {
         when(position) {
-            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance())
+            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
@@ -94,5 +96,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         const val HOME_MENU = 0
         const val PROMO_MENU = 1
         const val HELP_MENU = 2
+    }
+
+    override fun selectItem(position: Int, id: Int) {
+        affiliateBottomNavigation?.setSelected(position)
     }
 }

@@ -30,8 +30,8 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
         const val ERROR_STATUS_NOT_ELIGIBLE = 2
         const val ERROR_NON_PM_OS = 3
 
+        const val ACTION_REDIRECT = 0
         const val ACTION_RESET = 1
-        const val ACTION_REDIRECT = 2
     }
 
     override fun bind(element: AffiliatePromotionErrorCardModel) {

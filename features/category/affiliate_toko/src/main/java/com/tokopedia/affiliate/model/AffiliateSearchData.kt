@@ -101,8 +101,17 @@ data class AffiliateSearchData(
                         @SerializedName("isLinkGenerationAllowed")
                         var isLinkGenerationAllowed: Boolean?,
                         @SerializedName("messages")
-                        var messages: List<Any?>?
-                    )
+                        var messages: List<Messages?>?
+                    ){
+                        data class Messages(
+                                @SerializedName("title")
+                                var title: String?,
+                                @SerializedName("description")
+                                var description: String?,
+                                @SerializedName("messageType")
+                                var messageType: Int?,
+                        )
+                    }
                 }
             }
 
@@ -132,7 +141,7 @@ data class AffiliateSearchData(
                             @SerializedName("DesktopURL") val desktopUrl : String?,
                             @SerializedName("MobileURL") val mobileUrl : String?,
                             @SerializedName("IosURL") val iosUrl : String?,
-                            @SerializedName("                \"AndroidURL\": \"\",\n") val androidUrl : String?
+                            @SerializedName("AndroidURL") val androidUrl : String?
                     )
                 }
 

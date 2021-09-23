@@ -15,11 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.affiliate_toko.R
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -28,11 +23,18 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
+import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -41,7 +43,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface {
@@ -53,15 +55,17 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
-
+    private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
 
     companion object {
-        fun getFragmentInstance(): Fragment {
-            return AffiliateHomeFragment()
+        fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
+            return AffiliateHomeFragment().apply {
+                bottomNavBarClickListener = affiliateBottomNavBarClickListener
+            }
         }
     }
 
@@ -117,6 +121,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
+                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
             }
         }
     }

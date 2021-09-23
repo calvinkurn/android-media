@@ -18,12 +18,16 @@ class AffiliatePromotionProductCard  {
         RATING(2)
     }
 
+    enum class MessageType(val type : Int){
+        OVERLAY_IMAGE_TYPE(1)
+    }
+
     companion object {
 
-        const val LABEL_POSITION = "category"
-        const val LABEL_TYPE = "status"
-        const val LABEL_COLOR = "transparentBlack"
-        const val LABEL_COLOR_COMMISSION = "textGreen"
+        private const val LABEL_POSITION = "category"
+        private const val LABEL_TYPE = "status"
+        private const val LABEL_COLOR = "transparentBlack"
+        private const val LABEL_COLOR_COMMISSION = "textGreen"
 
         fun toAffiliateProductModel(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item) : ProductCardModel{
             return ProductCardModel(
@@ -35,7 +39,7 @@ class AffiliatePromotionProductCard  {
                     labelGroupList = arrayListOf(
                             ProductCardModel.LabelGroup(LABEL_POSITION,
                             getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),LABEL_COLOR_COMMISSION),
-                            ProductCardModel.LabelGroup(LABEL_TYPE,"Toko Tidak Aktif", LABEL_COLOR)),
+                            ProductCardModel.LabelGroup(LABEL_TYPE, getMessageDataFromType(item,MessageType.OVERLAY_IMAGE_TYPE), LABEL_COLOR)),
                     shopBadgeList = arrayListOf(ProductCardModel.ShopBadge(getFooterDataFromType(item,FooterType.SHOP)?.footerIcon?.isNotEmpty() == true,
                             getFooterDataFromType(item,FooterType.SHOP)?.footerIcon ?: "")),
                     shopLocation = getFooterDataFromType(item,FooterType.SHOP)?.footerText ?: "",
@@ -51,6 +55,11 @@ class AffiliatePromotionProductCard  {
 
         private fun getFooterDataFromType(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item,type : FooterType) : AffiliateSearchData.SearchAffiliate.Data.Card.Item.Footer?{
             return (item.footer?.find{ it?.footerType == type.type})
+        }
+
+        private fun getMessageDataFromType(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item, type : MessageType) : String{
+            val data = (item.status?.messages?.find{ it?.messageType == type.type})?.title
+            return if (data?.isNotEmpty() == true){ data }else { "" }
         }
     }
 }
