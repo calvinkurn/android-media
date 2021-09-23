@@ -93,9 +93,9 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
-        setupAppScreenMode();
         Embrace.getInstance().start(this);
         super.onCreate();
+        setupAppScreenMode();
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -118,24 +118,33 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
         if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+            Log.d("ForceLightMode", "remote config force light true");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
             return true;
         }
+        Log.d("ForceLightMode", "remote config force light false");
         return false;
     }
 
     private void setupAppScreenMode() {
 
         boolean isForceLightMode = checkForceLightMode();
+        if (isForceLightMode) {
+            Log.d("ForceLightMode", "forced to light");
+        } else {
+            Log.d("ForceLightMode", "not forced");
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
         int screenMode;
         if (isDarkMode && !isForceLightMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;
+            Log.d("ForceLightMode", "set dark mode");
         } else {
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;
+            Log.d("ForceLightMode", "set light mode");
         }
         AppCompatDelegate.setDefaultNightMode(screenMode);
     }
