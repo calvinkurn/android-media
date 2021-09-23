@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/calendar_parent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_220"
+    android:background="@color/Unify_N0">
 
     <View
         android:id="@+id/calendar_expired_alpha"
@@ -46,23 +48,25 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/calendar_title_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendar_date" />
+        app:layout_constraintTop_toBottomOf="@id/calendar_date"
+        app:layout_constraintBottom_toTopOf="@id/calendar_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/calendar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendar_title_image"
+        app:layout_constraintBottom_toTopOf="@id/calendar_desc"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Title max 25 characters" />
@@ -72,29 +76,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendar_title"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="Description maximum 30 character" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/calendar_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/calendar_desc" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/calendar_button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
+        android:layout_height="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/calendar_image"
+        app:layout_constraintRight_toRightOf="@id/calendar_image"
         app:unifyButtonSize="medium"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"

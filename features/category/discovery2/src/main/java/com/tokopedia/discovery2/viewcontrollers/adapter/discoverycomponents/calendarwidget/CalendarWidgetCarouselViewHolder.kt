@@ -6,29 +6,27 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.Calendar.CAROUSEL
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 
 class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel
     private var calendarCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.calendar_rv)
-    private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private var linearLayoutManager: LinearLayoutManager =
+        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
 
     init {
         calendarCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        mDiscoveryRecycleAdapter.setHasStableIds(true)
+        mDiscoveryRecycleAdapter.setHasStableIds(false)
         calendarCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 
@@ -76,12 +74,13 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
-            calendarWidgetCarouselViewModel.getCalendarLoadState().observe(it, { errorState->
+            calendarWidgetCarouselViewModel.getCalendarLoadState().observe(it, { errorState ->
                 if (errorState)
                     handleErrorState()
             })
         }
     }
+
     private fun handleErrorState() {
         addShimmer()
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
@@ -93,6 +92,7 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
         calendarWidgetCarouselViewModel.resetComponent()
         calendarWidgetCarouselViewModel.fetchProductCarouselData()
     }
+
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {

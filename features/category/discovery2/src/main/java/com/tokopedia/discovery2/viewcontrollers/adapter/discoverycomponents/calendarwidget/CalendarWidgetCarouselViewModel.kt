@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
@@ -55,7 +56,7 @@ class CalendarWidgetCarouselViewModel(
 
     fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (components.properties?.calendarType?.equals("dynamic") == true)
+            if (components.properties?.calendarType?.equals(Constant.Calendar.DYNAMIC) == true)
                 calenderWidgetUseCase.loadFirstPageComponents(
                     components.id,
                     components.pageEndPoint,

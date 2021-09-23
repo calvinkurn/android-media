@@ -119,11 +119,9 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     }
                 }
             }
+            ComponentNames.CalendarWidgetGrid.componentName,
             ComponentNames.CalendarWidgetCarousel.componentName -> {
                 listComponents.add(component)
-                if(component.properties?.calendarLayout == "grid"){
-                    component.name = ComponentNames.CalendarWidgetGrid.componentName
-                }
                 if(component.properties?.calendarType.equals("dynamic")
                     && component.properties?.calendarLayout.equals("grid"))
                     listComponents.addAll(parseProductVerticalList(component))

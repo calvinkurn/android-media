@@ -2,15 +2,13 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cal
 
 import android.content.res.Resources
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewStub
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -35,10 +33,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
     companion object {
         const val BLACK = "#000000"
-        const val CAROUSEL = "carousel"
-        const val SINGLE = "single"
-        const val DOUBLE = "double"
-        const val TRIPLE = "triple"
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -47,9 +41,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
         calendarWidgetItemViewModel.components.let {
             setView(it.properties?.calendarLayout)
-            Log.d("niranjan ${adapterPosition}", adapterPosition.toString())
             it.data?.firstOrNull()?.apply {
-                Log.d("niranjan ${adapterPosition}", this.textDate.toString())
                 setUpCalendar(this)
             }
         }
@@ -57,7 +49,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setView(calendarLayout: String?) {
         when (calendarLayout) {
-            SINGLE -> {
+            Calendar.SINGLE -> {
                 calendarCardUnify.removeAllViews()
                 calendarCardUnify.addView(LayoutInflater.from(itemView.context).inflate(R.layout.discovery_calendar_single_layout_item, calendarCardUnify, false))
             }
@@ -70,15 +62,28 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setLayoutWidth(calendarLayout: String?) {
+        val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val width = Resources.getSystem().displayMetrics.widthPixels
         val layoutParams = calendarCardUnify.layoutParams
-        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        val imageLayoutParams = calendarImage.layoutParams
         when (calendarLayout) {
-            CAROUSEL -> layoutParams.width = (width / 2.5).roundToInt()
-            DOUBLE -> layoutParams.width = (width / 2)
-            TRIPLE -> layoutParams.width = (width / 3)
+            Calendar.CAROUSEL -> {
+                layoutParams.width = (width / 2.5).roundToInt()
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_240)
+            }
+            Calendar.DOUBLE -> {
+                layoutParams.width = (width / 2)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
+            }
+            Calendar.TRIPLE -> {
+                layoutParams.width = (width / 3)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_220)
+            }
         }
+        imageLayoutParams.width = layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+        imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
         calendarCardUnify.layoutParams = layoutParams
+        calendarImage.layoutParams = imageLayoutParams
     }
 
     private fun setUpCalendar(dataItem: DataItem) {
@@ -92,6 +97,16 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
         dataItem.apply {
+            calendarImage.loadImage(imageUrl)
+            if (!titleLogoUrl.isNullOrEmpty()) {
+                calendarTitle.hide()
+                calendarTitleImage.show()
+                calendarTitleImage.loadImage(titleLogoUrl)
+            } else {
+                calendarTitle.show()
+                calendarTitle.text = title
+                calendarTitleImage.hide()
+            }
             if(Utils.isSaleOver(endDate?: "")){
                 calendarExpiredAlpha.show()
                 calendarButton.isEnabled = false
@@ -113,17 +128,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 )
             }
-            if (!titleLogoUrl.isNullOrEmpty()) {
-                calendarTitle.hide()
-                calendarTitleImage.loadImage(titleLogoUrl)
-                calendarTitleImage.show()
-            } else {
-                calendarTitle.show()
-                calendarTitle.text = title
-                calendarTitleImage.hide()
-            }
             calendarDesc.text = description
-            calendarImage.loadImage(imageUrl)
         }
     }
 
