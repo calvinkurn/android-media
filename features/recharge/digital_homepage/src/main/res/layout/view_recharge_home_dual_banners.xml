@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3" />
+            app:typographyType="heading_4" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/view_recharge_home_dual_banners_image_1"

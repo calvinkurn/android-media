@@ -32,6 +32,7 @@ import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.databinding.FragmentHotelRoomDetailBinding
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity.Companion.ROOM_DETAIL_SCREEN_NAME
@@ -48,7 +49,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
@@ -63,6 +64,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomDetailViewModel: HotelRoomDetailViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelRoomDetailBinding>()
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -126,12 +129,14 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     }
                 }
             }
-            room_detail_button.isEnabled = true
+            binding?.roomDetailButton?.isEnabled = true
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_room_detail, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelRoomDetailBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -172,15 +177,16 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupCollapsingToolbar() {
-        (activity as HotelRoomDetailActivity).setSupportActionBar(room_detail_detail_toolbar)
+        val toolbar = binding?.roomDetailDetailToolbar
+        (activity as HotelRoomDetailActivity).setSupportActionBar(toolbar)
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val navIcon = room_detail_detail_toolbar.navigationIcon
+        val navIcon = binding?.roomDetailDetailToolbar?.navigationIcon
         navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
-        room_detail_collapsing_toolbar.title = ""
-        room_detail_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+        binding?.roomDetailCollapsingToolbar?.title = ""
+        binding?.roomDetailAppBarLayout?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
 
@@ -189,11 +195,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
+                    binding?.roomDetailCollapsingToolbar?.title = hotelRoom.roomInfo.name
                     navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
-                    room_detail_collapsing_toolbar.title = " "
+                    binding?.roomDetailCollapsingToolbar?.title = " "
                     navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
@@ -207,10 +213,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
             val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
 
-            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0, 5))
-            else room_detail_images.setImages(roomImageUrls300)
+            if (roomImageUrls300.size >= 5) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, 5))
+            else binding?.roomDetailImages?.setImages(roomImageUrls300)
 
-            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
+            binding?.roomDetailImages?.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
@@ -218,53 +224,53 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
             }
         }
-        room_detail_images.buildView()
+        binding?.roomDetailImages?.buildView()
     }
 
     private fun setupRoomHeader() {
-        tv_room_detail_title.text = hotelRoom.roomInfo.name
-        tv_room_detail_occupancy.text = getString(R.string.hotel_room_detail_header_occupancy,
+        binding?.tvRoomDetailTitle?.text = hotelRoom.roomInfo.name
+        binding?.tvRoomDetailOccupancy?.text = getString(R.string.hotel_room_detail_header_occupancy,
                 hotelRoom.occupancyInfo.occupancyText)
-        tv_room_detail_size.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
+        binding?.tvRoomDetailSize?.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
 
-        room_detail_header_facilities.removeAllViews()
+        binding?.roomDetailHeaderFacilities?.removeAllViews()
         context?.run {
 
             if (hotelRoom.breakfastInfo.breakFast.isNotEmpty()) {
                 val breakfastTextView = FacilityTextView(this)
                 breakfastTextView.setIconAndText(hotelRoom.breakfastInfo.iconUrl, hotelRoom.breakfastInfo.breakFast)
-                room_detail_header_facilities.addView(breakfastTextView)
+                binding?.roomDetailHeaderFacilities?.addView(breakfastTextView)
             }
 
             if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
                 val refundableTextView = FacilityTextView(this)
                 refundableTextView.setIconAndText(hotelRoom.refundInfo.iconUrl, hotelRoom.refundInfo.refundStatus)
-                room_detail_header_facilities.addView(refundableTextView)
+                binding?.roomDetailHeaderFacilities?.addView(refundableTextView)
             }
         }
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
-            tv_room_detail_count.visibility = View.VISIBLE
-            tv_room_detail_count.text = getString(R.string.hotel_room_room_left_text,
+            binding?.tvRoomDetailCount?.visibility = View.VISIBLE
+            binding?.tvRoomDetailCount?.text = getString(R.string.hotel_room_room_left_text,
                     Integer.toString(hotelRoom.numberRoomLeft))
         }
     }
 
     private fun setupRoomPayAtHotel() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
-            pay_at_hotel_container.visibility = View.VISIBLE
+            binding?.payAtHotelContainer?.visibility = View.VISIBLE
 
             val iconId = if (hotelRoom.creditCardInfo.isCCRequired)
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
-            pay_at_hotel_icon.setBackgroundResource(iconId)
+            binding?.payAtHotelIcon?.setBackgroundResource(iconId)
 
             val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.header
                     + "\n" + hotelRoom.creditCardInfo.creditCardInfo)
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            pay_at_hotel_title.text = hotelRoom.isDirectPaymentString
-            pay_at_hotel_desc.text = spannableString
+            binding?.payAtHotelTitle?.text = hotelRoom.isDirectPaymentString
+            binding?.payAtHotelDesc?.text = spannableString
         }
     }
 
@@ -280,23 +286,23 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             }
             spannableStringBuilder.delete(spannableStringBuilder.length - 2, spannableStringBuilder.length)
 
-            room_detail_cancellation.setTitleAndDescription(getString(R.string.hotel_room_detail_cancellation), spannableStringBuilder)
-            room_detail_cancellation.truncateDescription = false
-            room_detail_cancellation.buildView()
+            binding?.roomDetailCancellation?.setTitleAndDescription(getString(R.string.hotel_room_detail_cancellation), spannableStringBuilder)
+            binding?.roomDetailCancellation?.truncateDescription = false
+            binding?.roomDetailCancellation?.buildView()
         }
     }
 
     private fun setupRoomTax() {
         if (hotelRoom.taxes.isNotEmpty()) {
-            room_detail_tax.setTitleAndDescription(getString(R.string.hotel_room_detail_tax), hotelRoom.taxes)
-            room_detail_tax.buildView()
+            binding?.roomDetailTax?.setTitleAndDescription(getString(R.string.hotel_room_detail_tax), hotelRoom.taxes)
+            binding?.roomDetailTax?.buildView()
         }
     }
 
     private fun setupRoomDeposit() {
         if (hotelRoom.depositInfo.isNeedDeposit) {
-            room_detail_deposit.setTitleAndDescription(getString(R.string.hotel_room_detail_deposit), hotelRoom.depositInfo.depositText)
-            room_detail_deposit.buildView()
+            binding?.roomDetailDeposit?.setTitleAndDescription(getString(R.string.hotel_room_detail_deposit), hotelRoom.depositInfo.depositText)
+            binding?.roomDetailDeposit?.buildView()
         }
     }
 
@@ -319,60 +325,64 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             previewFacilitiesString = previewFacilitiesString.dropLast(1)
             fullFacilitiesString = fullFacilitiesString.dropLast(1)
 
-            room_detail_facilities.setTitleAndDescription(getString(R.string.hotel_room_detail_facilities), previewFacilitiesString)
-            room_detail_facilities.info_more.visibility = View.VISIBLE
-            room_detail_facilities.infoViewListener = object : InfoTextView.InfoViewListener {
-                override fun onMoreClicked() {
-                    room_detail_facilities.info_desc.text = fullFacilitiesString
-                    room_detail_facilities.resetMaxLineCount()
-                    room_detail_facilities.invalidate()
+            binding?.let {
+                it.roomDetailFacilities.setTitleAndDescription(getString(R.string.hotel_room_detail_facilities), previewFacilitiesString)
+                it.roomDetailFacilities.info_more.visibility = View.VISIBLE
+                it.roomDetailFacilities.infoViewListener = object : InfoTextView.InfoViewListener {
+                    override fun onMoreClicked() {
+                        it.roomDetailFacilities.info_desc.text = fullFacilitiesString
+                        it.roomDetailFacilities.resetMaxLineCount()
+                        it.roomDetailFacilities.invalidate()
+                    }
                 }
+                it.roomDetailFacilities.truncateDescription = false
+                it.roomDetailFacilities.descriptionLineCount = ROOM_FACILITY_DEFAULT_COUNT
+                it.roomDetailFacilities.buildView()
             }
-            room_detail_facilities.truncateDescription = false
-            room_detail_facilities.descriptionLineCount = ROOM_FACILITY_DEFAULT_COUNT
-            room_detail_facilities.buildView()
         }
     }
 
     private fun setupRoomDescription() {
         if (hotelRoom.roomInfo.description.isNotEmpty()) {
-            room_detail_description.setTitleAndDescription(getString(R.string.hotel_room_detail_description), hotelRoom.roomInfo.description)
-            room_detail_description.buildView()
+            binding?.roomDetailDescription?.setTitleAndDescription(getString(R.string.hotel_room_detail_description), hotelRoom.roomInfo.description)
+            binding?.roomDetailDescription?.buildView()
         }
     }
 
     private fun setupRoomBreakfast() {
         if (hotelRoom.breakfastInfo.mealPlan.isNotEmpty()) {
-            room_detail_breakfast.setTitleAndDescription(getString(R.string.hotel_room_detail_breakfast), hotelRoom.breakfastInfo.mealPlan)
-            room_detail_breakfast.buildView()
+            binding?.roomDetailBreakfast?.setTitleAndDescription(getString(R.string.hotel_room_detail_breakfast), hotelRoom.breakfastInfo.mealPlan)
+            binding?.roomDetailBreakfast?.buildView()
         }
     }
 
     private fun setupRoomExtraBed() {
         if (hotelRoom.extraBedInfo.content.isNotEmpty()) {
-            room_detail_extra_bed.setTitleAndDescription(getString(R.string.hotel_room_detail_extra_bed), hotelRoom.extraBedInfo.content)
-            room_detail_extra_bed.buildView()
+            binding?.roomDetailExtraBed?.setTitleAndDescription(getString(R.string.hotel_room_detail_extra_bed), hotelRoom.extraBedInfo.content)
+            binding?.roomDetailExtraBed?.buildView()
         }
     }
 
     private fun setupRoomPrice() {
-        if (hotelRoom.roomPrice.deals.tagging.isNotEmpty()) {
-            room_detail_tagging.show()
-            room_detail_tagging.text = hotelRoom.roomPrice.deals.tagging
-        } else room_detail_tagging.hide()
+        binding?.let {
+            if (hotelRoom.roomPrice.deals.tagging.isNotEmpty()) {
+                it.roomDetailTagging.show()
+                it.roomDetailTagging.text = hotelRoom.roomPrice.deals.tagging
+            } else it.roomDetailTagging.hide()
 
-        tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
-        room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
-        room_detail_button.isEnabled = true
-        room_detail_button.setOnClickListener {
-            progressDialog.show()
-            if (userSessionInterface.isLoggedIn) {
-                room_detail_button.isEnabled = false
-                trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
+            it.tvRoomDetailPrice.text = hotelRoom.roomPrice.roomPrice
+            it.roomDetailButton.text = getString(R.string.hotel_room_list_choose_room_button)
+            it.roomDetailButton.isEnabled = true
+            it.roomDetailButton.setOnClickListener {_ ->
+                progressDialog.show()
+                if (userSessionInterface.isLoggedIn) {
+                    it.roomDetailButton.isEnabled = false
+                    trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
                         ROOM_DETAIL_SCREEN_NAME)
-                roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
-            } else {
-                navigateToLoginPage()
+                    roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
+                } else {
+                    navigateToLoginPage()
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoEmptyViewHold
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoItemViewHolder
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 
-class BidInfoAdapterTypeFactoryImpl(private var actionDelete: (pos: Int) -> Unit, private var editBudget: (pos: Int) -> Unit, private var editType: (pos: Int) -> Unit) : BindInfoAdapterTypeFactory {
+class BidInfoAdapterTypeFactoryImpl(private var actionDelete: (pos: Int) -> Unit, private var editBudget: (pos: Int, budget: String) -> Unit, private var editType: (pos: Int) -> Unit) : BindInfoAdapterTypeFactory {
 
     override fun type(model: BidInfoEmptyViewModel): Int {
         return BidInfoEmptyViewHolder.LAYOUT

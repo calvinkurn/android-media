@@ -127,6 +127,11 @@
 
     <string name="shop_product_search_title_empty_state">Produk lain di Toko ini</string>
 
+    <string name="shop_product_showcase_empty_state_title">Oops, belum ada produk di etalase ini</string>
+    <string name="shop_product_showcase_empty_state_desc">Cek Etalase lainnya, ya.</string>
+
+    <string name="shop_product_showcase_empty_state_btn_primary">Kembali</string>
+
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
     <string name="shop_info_default_produk_title">Produk</string>
@@ -189,7 +194,6 @@
 
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
-    <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
     <string name="shop_search_product_in_shop_name">di %1s</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>

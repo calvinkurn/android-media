@@ -24,8 +24,8 @@ import kotlin.collections.set
  */
 
 const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
-               query topadsDashboardGroupProducts(${'$'}queryInput: topadsDashboardGroupProductsInputType!) {
-  topadsDashboardGroupProducts(queryInput: ${'$'}queryInput) {
+               query topadsDashboardGroupProductsV2(${'$'}queryInput: topadsDashboardGroupProductsInputTypeV2!) {
+  topadsDashboardGroupProductsV2(queryInput: ${'$'}queryInput) {
     separate_statistic
        meta {
               page {
@@ -75,11 +75,11 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(val userSession: User
         return tempRequest
     }
 
-    fun setParams(groupId: Int?, page: Int,  search: String, sort: String, status: Int?, startDate: String, endDate: String, type: String = ""): RequestParams {
+    fun setParams(groupId: Int?, page: Int,  search: String, sort: String, status: Int?, startDate: String, endDate: String, type: String = "", goalId : Int = 0): RequestParams {
 
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
+        queryMap[ParamObject.SHOP_id] = userSession.shopId
         queryMap[ParamObject.GROUP] = groupId
         queryMap[ParamObject.SORT] = sort
         queryMap[ParamObject.PAGE] = page
@@ -88,6 +88,7 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(val userSession: User
         queryMap[ParamObject.KEYWORD] = search
         queryMap[ParamObject.STATUS] = status
         queryMap[ParamObject.TYPE] = type
+        queryMap[ParamObject.GOAL_ID] = goalId
         requestParams.putAll(mapOf(QUERY_INPUT to queryMap))
         return requestParams
     }

@@ -28,7 +28,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
@@ -204,9 +203,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore, it.data.shopAge)
+                is Success -> showShopInfo(SettingResponseState.SettingSuccess(it.data.shopInfo), it.data.shopScore, it.data.shopAge)
                 is Fail -> {
-                    showShopInfo(SettingError)
+                    showShopInfo(SettingError(it.throwable))
                     ShopScoreReputationErrorLogger.logToCrashlytic(ShopScoreReputationErrorLogger.SHOP_INFO_SETTING_ERROR, it.throwable)
                 }
             }
@@ -244,12 +243,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Long = 0, shopAge: Long = 0) {
+    private fun <T : Any> showShopInfo(settingResponseState: SettingResponseState<T>, shopScore: Long = 0, shopAge: Long = 0) {
         when (settingResponseState) {
-            is SettingSuccess -> {
-                if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState, shopScore, shopAge)
-                    sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
+            is SettingResponseState.SettingSuccess<T> -> {
+                val data = settingResponseState.data
+                if (data is SettingShopInfoUiModel) {
+                    adapter.showShopInfo(data, shopScore, shopAge)
+                    sellerMenuTracker.sendEventViewShopAccount(data)
                 }
             }
             is SettingLoading -> {

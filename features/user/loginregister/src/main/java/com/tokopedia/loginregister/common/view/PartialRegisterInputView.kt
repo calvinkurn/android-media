@@ -31,6 +31,7 @@ import com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by alvinatin on 11/06/18.
@@ -38,13 +39,13 @@ import com.tokopedia.unifycomponents.UnifyButton
 class PartialRegisterInputView : BaseCustomView {
     var wrapperEmailPhone: TkpdHintTextInputLayout? = null
     var etInputEmailPhone: AutoCompleteTextView? = null
-    var tvMessage: TextView? = null
-    var tvError: TextView? = null
+    var tvMessage: Typography? = null
+    var tvError: Typography? = null
     var btnAction: UnifyButton? = null
     var emailExtension: EmailExtension? = null
     var wrapperPassword: TextFieldUnify? = null
-    var btnForgotPassword: TextView? = null
-    var btnChange: TextView? = null
+    var btnForgotPassword: Typography? = null
+    var btnChange: Typography? = null
     var registerAnalytics = RegisterAnalytics()
     private var isExtensionSelected = false
     private var listener: PartialRegisterInputViewListener? = null

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -34,16 +35,9 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion
 import com.tokopedia.entertainment.pdp.adapter.EventPDPParentPackageAdapter
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
-import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.entertainment.pdp.data.EventPDPTicket
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
-import com.tokopedia.entertainment.pdp.data.PackageItem
-import com.tokopedia.entertainment.pdp.data.PackageV3
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
@@ -60,6 +54,7 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -68,6 +63,8 @@ import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -171,7 +168,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         this.PRODUCT_PRICE = getTotalPrice(hashItemMap).toString()
 
         if (getTotalQuantity(hashItemMap) > EMPTY_QTY) {
-            setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
+            val price = if(getTotalPrice(hashItemMap) != ZERO_PRICE) getRupiahFormat(getTotalPrice(hashItemMap)) else getString(R.string.ent_free_price)
+            setTotalPrice(price)
             showViewBottom(AMOUNT_TICKET > EMPTY_QTY)
         } else {
             showViewBottom(false)
@@ -206,6 +204,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
     }
 
+    private fun loadData(){
+        swipe_refresh_layout.isRefreshing = true
+        loadInitialData()
+    }
+
     @SuppressLint("InflateParams")
     private fun setupBottomSheet(listActiveDates: List<String>) {
         if (startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()) {
@@ -223,8 +226,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
-                        activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
-                        selectedDate = (date.time / 1000L).toString()
+                        activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DATE_TICKET)
+                        selectedDate = (date.time / DATE_MULTIPLICATION).toString()
                         bottomSheets.dismiss()
                         PACKAGES_ID = ""
                         AMOUNT_TICKET = EMPTY_QTY
@@ -314,10 +317,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
-                showViewBottom(false)
-                loadInitialData()
-            }.showRetrySnackbar()
+            showErrorState(it, false)
+        })
+
+        viewModel.errorVerify.observe(viewLifecycleOwner, Observer {
+            showErrorState(it, true)
         })
 
         viewModel.productDetailEntity.observe(viewLifecycleOwner, Observer {
@@ -345,6 +349,23 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         })
     }
 
+    private fun showErrorState(throwable: Throwable, isVerify: Boolean){
+        swipe_refresh_layout.isRefreshing = false
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        lifecycleScope.launch {
+            delay(DELAY_TIME)
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
+                showViewBottom(false)
+                loadData()
+            }.showRetrySnackbar()
+        }
+        if(!isVerify) {
+            renderList(listOf())
+            activity?.txtUbah?.visibility = View.GONE
+            activity?.loaderUbah?.visibility = View.GONE
+        }
+    }
+
     private fun showViewBottom(state: Boolean) {
         viewBottom?.visibility = if (state) View.VISIBLE else View.GONE
         containerEventBottom?.visibility = if (state) View.VISIBLE else View.GONE
@@ -365,7 +386,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         return DateFormatUtils.getFormattedDate(date, DATE_TICKET)
     }
 
-    private fun getTodayDates(): String = (Date().time / 1000L).toString()
+    private fun getTodayDates(): String = (Date().time / DATE_MULTIPLICATION).toString()
 
     override fun getSelectedDate(): String {
         return selectedDate
@@ -489,10 +510,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             }
         }
 
-        val EMPTY_VALUE = "-"
-        val EMPTY_QTY = 0
-        val REQUEST_CODE_LOGIN = 100
-        const val DATE_MULTIPLICATION = 1000
+        const val EMPTY_QTY = 0
+        const val ZERO_PRICE = 0
+        const val REQUEST_CODE_LOGIN = 100
+        const val DATE_MULTIPLICATION = 1000L
+        const val DELAY_TIME = 200L
         const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"
         const val GMT = "GMT+7"

@@ -47,7 +47,9 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderView()
+        if(::cancellationDetail.isInitialized){
+            renderView()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,7 +204,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     private fun hidePassengerInfo() {
         isPassengerInfoShowed = false
         recycler_view_data_passenger.visibility = View.GONE
-        image_expendable_passenger.rotation = 180f
+        image_expendable_passenger.rotation = IMAGE_ROTATION
     }
 
     private fun showPassengerInfo() {
@@ -215,6 +217,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
 
         private const val JOURNEY_TITLE_FONT_SIZE = 16F
         private const val NOTES_MAX_LINES = 5
+        private const val IMAGE_ROTATION = 180f
 
         fun createInstance(savedInstanceCacheManagerId: String): FlightOrderCancellationDetailFragment =
                 FlightOrderCancellationDetailFragment().also {

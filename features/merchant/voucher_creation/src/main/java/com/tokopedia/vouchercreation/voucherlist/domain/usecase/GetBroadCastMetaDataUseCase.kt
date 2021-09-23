@@ -33,7 +33,7 @@ class GetBroadCastMetaDataUseCase @Inject constructor(
         private val query = """
             query GetBroadCastMetaData {
               chatBlastSellerMetadata {
-                quota
+                promo
                 status
               }
             }

@@ -41,8 +41,8 @@ class EmptyProductViewHolder(
     private val globalSearchButton: UnifyButton? = itemView.findViewById(
             R.id.tokonowEmptyProductGlobalSearchButton
     )
-    private val changeKeywordButton: UnifyButton? = itemView.findViewById(
-            R.id.tokonowEmptyProductChangeKeyword
+    private val exploreTokopediaNowButton: UnifyButton? = itemView.findViewById(
+            R.id.tokonowEmptyProductExploreTokopediaNow
     )
 
     private val layoutManager = ChipsLayoutManager
@@ -99,14 +99,14 @@ class EmptyProductViewHolder(
     private fun bindGoToGlobalSearchButton(hasActiveFilter: Boolean) {
         globalSearchButton?.showWithCondition(!hasActiveFilter)
         globalSearchButton?.setOnClickListener {
-            emptyProductListener.onGoToGlobalSearch()
+            emptyProductListener.onFindInTokopediaClick()
         }
     }
 
     private fun bindChangeKeywordButton(hasActiveFilter: Boolean) {
-        changeKeywordButton?.showWithCondition(!hasActiveFilter)
-        changeKeywordButton?.setOnClickListener {
-            emptyProductListener.onChangeKeywordButtonClick()
+        exploreTokopediaNowButton?.showWithCondition(!hasActiveFilter)
+        exploreTokopediaNowButton?.setOnClickListener {
+            emptyProductListener.goToTokopediaNowHome()
         }
     }
 

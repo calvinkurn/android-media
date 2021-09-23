@@ -26,12 +26,10 @@ object FlightErrorUtil {
     }
 
     fun getErrorIdAndTitleFromFlightError(context: Context, t: Throwable): Pair<Int, String> {
-        val type = object : TypeToken<List<Map<String, Any>>>() {}.type
-        val flightErrorList = Gson().fromJson<List<Map<String, Any>>>(t.message, type)
         var errorId = 0
-        return if (flightErrorList.isNotEmpty()) {
-            val flightError = flightErrorList[0]
-
+        return try {
+            val type = object : TypeToken<Map<String, Any>>() {}.type
+            val flightError = Gson().fromJson<Map<String, Any>>(t.message, type)
             if (flightError.containsKey(KEY_ID)) {
                 errorId = try {
                     flightError[KEY_ID].toString().toInt()
@@ -44,10 +42,10 @@ object FlightErrorUtil {
             if (flightError.containsKey(KEY_TITLE)) {
                 Pair(errorId, flightError[KEY_TITLE].toString())
             } else {
-                Pair(errorId, "Terjadi kesalahan. Ulangi beberapa saat lagi")
+                Pair(errorId, ErrorHandler.getErrorMessage(context, t))
             }
-        } else {
-            Pair(errorId, "Terjadi kesalahan. Ulangi beberapa saat lagi")
+        } catch (e: Exception) {
+            Pair(errorId, ErrorHandler.getErrorMessage(context, t))
         }
     }
 

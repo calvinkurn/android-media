@@ -40,7 +40,7 @@ class GetSaldoUseCase @Inject constructor(
         private val query = getQuery()
         private fun getQuery(): String {
 
-            return """query {
+            return """query getHomeNavSaldo {
                     balance {
                         buyer_hold
                         buyer_hold_fmt

@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class RangePrice(
         @SerializedName("min_price")
         @Expose
-        val minPrice: Int = 0,
+        val minPrice: Double = 0.0,
 
         @SerializedName("max_price")
         @Expose
-        val maxPrice: Int = 0
+        val maxPrice: Double = 0.0
 )
 
 data class ETD(
@@ -68,7 +68,7 @@ data class Texts(
 data class Price(
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Double = 0.0,
 
         @SerializedName("formatted_price")
         @Expose
@@ -96,7 +96,7 @@ data class COD(
 
         @SerializedName("cod_price")
         @Expose
-        val price: Int = 0,
+        val price: Double = 0.0,
 
         @SerializedName("formatted_price")
         @Expose

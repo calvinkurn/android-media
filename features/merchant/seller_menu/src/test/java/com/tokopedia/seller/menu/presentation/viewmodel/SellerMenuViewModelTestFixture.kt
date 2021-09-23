@@ -115,7 +115,6 @@ open class SellerMenuViewModelTestFixture {
     protected fun createShopSettingsResponse(
             totalFollowers: Long = 35000,
             topAdsBalance: Float = 2000f,
-            isAutoTopUp: Boolean = true,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active
     ): Pair<PartialSettingResponse, PartialSettingResponse> {
@@ -128,8 +127,7 @@ open class SellerMenuViewModelTestFixture {
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
                 OthersBalance(),
-                topAdsBalance,
-                isAutoTopUp
+                topAdsBalance
         )
 
         return Pair(shopInfoResponse, topAdsInfoResponse)
@@ -138,7 +136,6 @@ open class SellerMenuViewModelTestFixture {
     protected fun createShopInfoUiModel(
             totalFollowers: Long = 35000,
             topAdsBalance: Float = 2000f,
-            isAutoTopUp: Boolean = true,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
             shopScore: Long = 70,
@@ -153,8 +150,7 @@ open class SellerMenuViewModelTestFixture {
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
                 OthersBalance(),
-                topAdsBalance,
-                isAutoTopUp
+                topAdsBalance
         )
 
         return ShopInfoUiModel(SettingShopInfoUiModel(

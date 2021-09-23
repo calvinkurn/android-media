@@ -95,7 +95,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
-            presenter.processDeepLinkAction(uriData);
+            presenter.processDeepLinkAction(this, uriData);
         }
     }
 

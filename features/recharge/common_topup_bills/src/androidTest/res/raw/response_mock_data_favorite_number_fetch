@@ -1,0 +1,118 @@
+[
+  {
+    "data": {
+      "rechargeFetchFavoriteNumber": {
+        "client_number": "",
+        "operator_id": 0,
+        "product_id": 0,
+        "category_id": 0,
+        "list": [
+          {
+            "client_number": "0811111111111",
+            "operator_id": 12,
+            "product_id": 70,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "081212341234",
+            "operator_id": 12,
+            "product_id": 70,
+            "category_id": 1,
+            "label": "Tes",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "08121111112",
+            "operator_id": 12,
+            "product_id": 68,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "081359860949",
+            "operator_id": 12,
+            "product_id": 70,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "081511030993",
+            "operator_id": 17,
+            "product_id": 3019,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "081908878591",
+            "operator_id": 5,
+            "product_id": 32,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "081911111111",
+            "operator_id": 5,
+            "product_id": 1137,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "087786807105",
+            "operator_id": 5,
+            "product_id": 31,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "087889514776",
+            "operator_id": 5,
+            "product_id": 30,
+            "category_id": 1,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png"
+          },
+          {
+            "client_number": "0811111111111",
+            "operator_id": 12,
+            "product_id": 4722,
+            "category_id": 2,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
+          },
+          {
+            "client_number": "08121111111",
+            "operator_id": 12,
+            "product_id": 316,
+            "category_id": 2,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
+          },
+          {
+            "client_number": "081211111111",
+            "operator_id": 12,
+            "product_id": 316,
+            "category_id": 2,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
+          },
+          {
+            "client_number": "081911111111",
+            "operator_id": 5,
+            "product_id": 2700,
+            "category_id": 2,
+            "label": "",
+            "icon_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png"
+          }
+        ]
+      }
+    }
+  }
+]

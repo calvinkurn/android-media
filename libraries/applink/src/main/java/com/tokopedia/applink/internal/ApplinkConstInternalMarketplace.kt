@@ -57,8 +57,14 @@ object ApplinkConstInternalMarketplace {
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
+    // ReadReviewActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // ReadReviewActivity
+    const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
+
+    // ReviewProductActivity, "x_prd_nm" = productName
+    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
 
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
@@ -86,8 +92,11 @@ object ApplinkConstInternalMarketplace {
 
     const val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
-    // ImageReviewGalleryActivity
+    // ReviewGalleryActivity
     const val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
+
+    // ImageReviewGalleryActivity
+    const val IMAGE_REVIEW_GALLERY_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery-old"
 
     //ShopOpenRoutingActivity
     const val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"

@@ -24,8 +24,21 @@ open class BaseSuggestionDataView(
         var trackingCode: String = "",
         var discountPercentage: String = "",
         var originalPrice: String = "",
-        var dimension90: String = ""
+        var dimension90: String = "",
+        var childItems: List<ChildItem> = listOf()
 ): ImpressHolder() {
+
+    data class ChildItem(
+            val template: String = "",
+            val type: String = "",
+            val applink: String = "",
+            val url: String = "",
+            val title: String = "",
+            val searchTerm: String = "",
+            val dimension90: String = "",
+            val position: Int = 0
+    )
+
     fun hasSlashedPrice(): Boolean {
         return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()
     }

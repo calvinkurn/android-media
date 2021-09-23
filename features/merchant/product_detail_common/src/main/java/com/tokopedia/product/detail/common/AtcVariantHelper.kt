@@ -9,9 +9,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.aggregator.SimpleBasicInfo
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -46,24 +49,17 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
-                        isFreeOngkir: Boolean,
                         isShopOwner: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
                         miniCart: Map<String, MiniCartItem>?,
                         alternateCopy: List<AlternateCopy>?,
+                        boData: BebasOngkir?,
+                        rates: List<P2RatesEstimate>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
-
-        val categoryName = productInfoP1.basic.category.detail.map {
-            it.name
-        }.joinToString("/", postfix = "/ ${productInfoP1.basic.category.id}")
-
-        val categoryId = productInfoP1.basic.category.detail.map {
-            it.id
-        }.joinToString("/")
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
@@ -71,22 +67,24 @@ object AtcVariantHelper {
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
-                isFreeOngkir = isFreeOngkir,
                 isShopOwner = isShopOwner,
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,
                         nearestWarehouse = warehouseResponse,
-                        alternateCopy = alternateCopy ?: listOf()
+                        alternateCopy = alternateCopy ?: listOf(),
+                        rates = rates ?: listOf(),
+                        simpleBasicInfo = SimpleBasicInfo(
+                                shopID = productInfoP1.basic.shopID,
+                                shopName = productInfoP1.basic.shopName,
+                                category = productInfoP1.basic.category
+                        ),
+                        shopType = productInfoP1.shopTypeString,
+                        boData = boData ?: BebasOngkir()
                 ),
-                shopTypeString = productInfoP1.shopTypeString,
-                miniCartData = miniCart,
-                categoryName = categoryName,
-                categoryId = categoryId,
-                isTradein = productInfoP1.data.isTradeIn,
-                minimumShippingPrice = productInfoP1.basic.getDefaultOngkirInt(),
                 shopId = productInfoP1.basic.shopID,
-                shopName = productInfoP1.basic.shopName
+                miniCartData = miniCart,
+                minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 

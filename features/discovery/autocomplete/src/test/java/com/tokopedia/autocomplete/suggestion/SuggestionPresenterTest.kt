@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.*
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
+import com.tokopedia.autocomplete.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
@@ -124,6 +125,9 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[4].shouldBeSuggestionTitleDataView()
         visitableList[5].shouldBeSuggestionDoubleLineDataView(true)
         visitableList[6].shouldBeSuggestionDoubleLineDataView(true)
+        visitableList[7].shouldBeSuggestionTitleDataView()
+        visitableList[8].shouldBeSuggestionChipWidgetDataView()
+        visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
@@ -147,6 +151,11 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                 }
                 is SuggestionDoubleLineDataDataView -> {
                     visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
+                    expectedPosition++
+                }
+                is SuggestionChipWidgetDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_CHIP_WIDGET, expectedItem, dimension90)
+                    visitable.assertSuggestionChipWidgetDataView(expectedItem.suggestionChildItems)
                     expectedPosition++
                 }
             }

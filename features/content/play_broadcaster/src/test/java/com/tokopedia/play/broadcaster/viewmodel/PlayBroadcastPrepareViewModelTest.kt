@@ -13,13 +13,13 @@ import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -46,6 +46,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
 
@@ -71,7 +72,8 @@ class PlayBroadcastPrepareViewModelTest {
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         dataStore = PlayBroadcastDataStoreImpl(mockSetupDataStore)
 

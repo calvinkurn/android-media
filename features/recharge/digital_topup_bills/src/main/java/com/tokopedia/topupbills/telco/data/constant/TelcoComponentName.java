@@ -13,6 +13,7 @@ import java.lang.annotation.RetentionPolicy;
         TelcoComponentName.PRODUCT_PAKET_DATA,
         TelcoComponentName.PRODUCT_PASCABAYAR,
         TelcoComponentName.PROMO,
+        TelcoComponentName.SPECIAL_PROMO_MCCM,
         TelcoComponentName.RECENTS})
 @Retention(RetentionPolicy.SOURCE)
 public @interface TelcoComponentName {
@@ -21,5 +22,6 @@ public @interface TelcoComponentName {
     String PRODUCT_PAKET_DATA = "Paket Data";
     String PRODUCT_PASCABAYAR = "Pascabayar";
     String PROMO = "Promo";
+    String SPECIAL_PROMO_MCCM = "special promo";
     String RECENTS = "Transaksi Terakhir";
 }

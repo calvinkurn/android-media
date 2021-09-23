@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/parent_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/product_tag_dot"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:visibility="invisible"
+        android:src="@drawable/ic_product_tag_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/feed_product_tag_dot"
+        tools:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/product_tag_top_pointer"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/unify_space_8"
+        android:visibility="invisible"
+        android:src="@drawable/ic_feed_up"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_expanded_card"
+        android:contentDescription="@string/feed_product_tag_up"
+        tools:visibility="visible"
+        />
+    <ImageView
+        android:id="@+id/product_tag_bottom_pointer"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/unify_space_8"
+        android:visibility="invisible"
+        android:src="@drawable/ic_feed_down"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_tag_expanded_card"
+        android:contentDescription="@string/feed_product_tag_down"
+        tools:visibility="visible"
+        />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_tag_expanded_card"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_52"
+        android:visibility="invisible"
+        android:alpha="0.9"
+        android:maxWidth="@dimen/dp_180"
+        app:cardBackgroundColor="@color/Unify_NN900"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_9"
+                android:paddingEnd="@dimen/dp_8"
+                android:maxWidth="@dimen/dp_145"
+                android:ellipsize="marquee"
+                android:layout_marginStart="@dimen/dp_8"
+                android:singleLine="true"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Fellow - Stagg EKG Electric Pour Over Kett"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_slashed_price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                android:singleLine="true"
+                android:textColor="@color/Unify_NN400"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/product_name_text"
+                app:layout_constraintTop_toBottomOf="@id/product_name_text"
+                tools:visibility="visible"
+                tools:text="Rp2.750.000"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                android:singleLine="true"
+                android:textColor="@color/Unify_NN400"
+                app:layout_constraintBottom_toBottomOf="@id/product_slashed_price_text"
+                app:layout_constraintStart_toEndOf="@id/product_slashed_price_text"
+                app:layout_constraintTop_toTopOf="@id/product_slashed_price_text"
+                tools:text="Rp2.750.000"
+                />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/product_arrow"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_12"
+                app:icon_color_light_enable="@color/Unify_N0"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/product_name_text"
+                app:unify_image_type="circle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,53 +1,50 @@
 {
-  "tokopointsDrawerList": {
-    "offFlag": false,
-    "drawerList": [
-      {
-        "type": "",
-        "iconImageURL": "",
-        "redirectURL": "",
-        "redirectAppLink": "",
-        "sectionContent": []
-      },
-      {
-        "type": "",
-        "iconImageURL": "",
-        "redirectURL": "",
-        "redirectAppLink": "",
-        "sectionContent": []
-      },
-      {
-        "type": "TokoPoints",
-        "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/05/kupon-sayaxxxhdpi.png",
-        "redirectURL": "https://www.tokopedia.com/rewards",
-        "redirectAppLink": "tokopedia://rewards",
-        "sectionContent": [
-          {
-            "type": "text",
-            "textAttributes": {
-              "text": "Rp1.000.000",
-              "color": "#31353B",
-              "isBold": true
+  "tokopointsStatusFiltered": {
+    "resultStatus": {
+      "code": "200",
+      "status": "OK",
+      "message": [
+        "Success"
+      ]
+    },
+    "statusFilteredData": {
+      "points": {
+        "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
+        "pointsAmount": 400,
+        "pointsAmountStr": "400 Points",
+        "externalCurrencyAmount": 4000,
+        "externalCurrencyAmountStr": "Rp4.000",
+        "pointsSection": {
+          "redirectURL": "https://www.tokopedia.com/points-center",
+          "redirectAppLink": "tokopedia://webview?url=https://www.tokopedia.com/points-center",
+          "sectionContent": [
+            {
+              "type": "text",
+              "textAttributes": {
+                "text": "Rp4.000",
+                "color": "#31353B",
+                "isBold": true
+              },
+              "tagAttributes": {
+                "text": "",
+                "backgroundColor": ""
+              }
             },
-            "tagAttributes": {
-              "text": "",
-              "backgroundColor": ""
+            {
+              "type": "text",
+              "textAttributes": {
+                "text": "(400 Points)",
+                "color": "#adadad",
+                "isBold": false
+              },
+              "tagAttributes": {
+                "text": "",
+                "backgroundColor": ""
+              }
             }
-          },
-          {
-            "type": "text",
-            "textAttributes": {
-              "text": "(100.000 Points)",
-              "color": "#31353B",
-              "isBold": false
-            },
-            "tagAttributes": {
-              "text": "",
-              "backgroundColor": ""
-            }
-          }
-        ]
+          ]
+        }
       }
-    ]
+    }
   }
 }

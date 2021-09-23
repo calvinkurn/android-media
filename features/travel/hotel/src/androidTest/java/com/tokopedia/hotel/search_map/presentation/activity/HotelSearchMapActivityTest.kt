@@ -50,7 +50,7 @@ class HotelSearchMapActivityTest {
             setupGraphqlMockResponse(HotelSearchMockResponseConfig())
             val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchMapFragment.PREFERENCES_NAME)
             localCacheHandler.apply {
-                putBoolean(HotelSearchMapFragment.SHOW_COACH_MARK_KEY, false)
+                putBoolean(HotelSearchMapFragment.SHOW_COACH_MARK_KEY, true)
                 applyEditor()
             }
         }

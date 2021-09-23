@@ -79,20 +79,33 @@ data class Category(
         @SerializedName("title")
         @Expose
         val title: String = ""
-){
-        data class Detail(
-                @SerializedName("breadcrumbUrl")
-                @Expose
-                val breadcrumbUrl: String = "",
+) {
 
-                @SerializedName("id")
-                @Expose
-                val id: String = "",
+    fun getCategoryNameFormatted(): String {
+        return detail.map {
+            it.name
+        }.joinToString("/", postfix = "/ ${id}")
+    }
 
-                @SerializedName("name")
-                @Expose
-                val name: String = ""
-        )
+    fun getCategoryIdFormatted(): String {
+        return detail.map {
+            it.id
+        }.joinToString("/")
+    }
+
+    class Detail(
+            @SerializedName("breadcrumbUrl")
+            @Expose
+            val breadcrumbUrl: String = "",
+
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = ""
+    )
 }
 
 data class TxStatsDynamicPdp(

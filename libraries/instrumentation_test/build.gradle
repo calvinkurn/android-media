@@ -12,8 +12,6 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://maven.google.com" }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {

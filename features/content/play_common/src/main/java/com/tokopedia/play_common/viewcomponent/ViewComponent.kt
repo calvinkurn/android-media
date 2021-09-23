@@ -8,6 +8,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 
 /**
@@ -43,6 +44,10 @@ abstract class ViewComponent(
 
     open fun hide() {
         rootView.hide()
+    }
+
+    open fun invisible() {
+        rootView.invisible()
     }
 
     open fun isShown(): Boolean = rootView.visibility == View.VISIBLE

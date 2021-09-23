@@ -18,7 +18,7 @@ class PhoneCodePickerActivity : BaseSimpleActivity(), HasComponent<TravelCountry
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.hasExtra(EXTRA_TITLE) && intent.getStringExtra(EXTRA_TITLE).isNotEmpty()) {
+        if (intent.hasExtra(EXTRA_TITLE) && intent.getStringExtra(EXTRA_TITLE)?.isNotEmpty() == true) {
             updateTitle(intent.getStringExtra(EXTRA_TITLE))
         }
     }

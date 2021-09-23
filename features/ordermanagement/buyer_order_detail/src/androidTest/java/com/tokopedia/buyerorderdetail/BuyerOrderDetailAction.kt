@@ -144,7 +144,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun waitUntilToolbarChatIconVisible() {
-        waitUntilViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        waitUntilViewVisible(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
@@ -192,7 +192,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickToolbarChatIcon() {
-        clickView(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        clickView(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun clickSeeDetail() {
@@ -254,6 +254,7 @@ class BuyerOrderDetailAction {
                 BuyerOrderDetailTrackerValidationConstant.cartString,
                 BuyerOrderDetailTrackerValidationConstant.orderId,
                 BuyerOrderDetailTrackerValidationConstant.paymentId))
+        Thread.sleep(5000)
     }
 
     fun blockAllIntent() {

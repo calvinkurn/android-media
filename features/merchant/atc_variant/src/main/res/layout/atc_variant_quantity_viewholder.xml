@@ -20,17 +20,30 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_desc_quantity"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ic_variant_delete_quantity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_static_quantity"
         app:typographyType="body_3"
-        tools:text="Maks. pembelian 1 buah"
+        tools:text="Maks. pembelian 1 buah buah buah buah buah"
         tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_variant_delete_quantity"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="24dp"
+        app:icon_name="DELETE"
+        app:layout_constraintBottom_toBottomOf="@+id/qty_variant_stock"
+        app:layout_constraintEnd_toStartOf="@+id/qty_variant_stock"
+        app:layout_constraintTop_toTopOf="@+id/qty_variant_stock" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_variant_stock"

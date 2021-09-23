@@ -13,8 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.net.URLDecoder
 
@@ -42,7 +43,7 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
     private fun fetchRemoteConfig() {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(RegisterInitialFragment.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
         }
     }
 
@@ -71,15 +72,15 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
         })
-        startActivityForResult(intent, RegisterInitialFragment.REQUEST_ADD_PIN)
+        startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_PIN)
     }
 
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                    RegisterInitialFragment.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                    LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
-                    RegisterInitialFragment.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
         }
     }
 

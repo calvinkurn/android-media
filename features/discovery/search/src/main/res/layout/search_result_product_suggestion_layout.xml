@@ -8,7 +8,7 @@
     android:background="@color/Unify_N0"
     android:textColor="@color/Unify_N700_96"
     android:lineSpacingExtra="@dimen/suggestion_text_view_extra_line_spacing"
-    android:paddingTop="@dimen/dp_6"
+    android:paddingTop="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_8"

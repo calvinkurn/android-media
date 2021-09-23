@@ -61,6 +61,7 @@ class SomListBulkProcessOrderBottomSheet(
                 findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = true
                 preventDismiss()
                 listener?.onBulkProcessOrderButtonClicked()
+                findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = false
             }
         }
     }

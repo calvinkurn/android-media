@@ -104,7 +104,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
     fun getAttachments(): List<FlightCancellationAttachmentModel> = attachmentModelList
 
     fun onSuccessChangeAttachment(filePath: String) {
-        if (validateAttachment(filePath)) {
+        if (validateAttachment(filePath) && attachmentModelList.isNotEmpty() && attachmentModelList.size > editedAttachmentPosition) {
             val attachmentModel = attachmentModelList[editedAttachmentPosition]
             attachmentModel.filepath = filePath
             attachmentModel.filename = Uri.parse(filePath).lastPathSegment ?: ""

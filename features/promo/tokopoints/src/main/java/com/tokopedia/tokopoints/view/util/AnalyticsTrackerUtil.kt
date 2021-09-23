@@ -333,8 +333,8 @@ object AnalyticsTrackerUtil {
             const val CREATIVE = "creative"
             const val USERID = "userId"
             const val PROMOTIONS = "promotions"
-            const val BUSINESSUNIT = " buyer growth platform"
             const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
+            const val BUSINESSUNIT = "tokopoints"
             const val CURRENTSITE = " tokopediamarketplace"
             const val ITEM_LIST = "item_list"
             const val ITEMS = "impressions"
@@ -357,6 +357,7 @@ object AnalyticsTrackerUtil {
             const val ITEM_VARIANT="item_variant"
             const val PRICE = "price"
             const val FREEONGKIR = "bebas ongkir"
+            const val KUPON_ITEMNAME = "tokopoints/kupon-saya - p%s - promo list"
         }
     }
 

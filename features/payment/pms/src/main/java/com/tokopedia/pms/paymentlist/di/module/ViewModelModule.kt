@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.pms.bankaccount.viewmodel.ChangeBankAccountViewModel
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaViewModel
+import com.tokopedia.pms.howtopay.ui.viewmodel.HowToPayViewModel
 import com.tokopedia.pms.paymentlist.viewmodel.PaymentListViewModel
 import dagger.Binds
 import dagger.Module
@@ -31,5 +32,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChangeBankAccountViewModel::class)
     internal abstract fun bindsChangeBankAccountViewModel(viewModel: ChangeBankAccountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HowToPayViewModel::class)
+    internal abstract fun howToPayViewModel(viewModel: HowToPayViewModel): ViewModel
 
 }

@@ -7,18 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery.getEventHistory
 import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchLocation
+import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
@@ -26,19 +27,15 @@ import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListV
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
-import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         SearchEventListViewHolder.SearchEventListListener,
@@ -46,9 +43,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 {
 
     lateinit var searchadapter:SearchEventAdapter
+
     @Inject
-    lateinit var factory : EventSearchViewModelFactory
-    lateinit var viewModel : EventSearchViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(EventSearchViewModel::class.java) }
+
     lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
@@ -69,14 +70,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.ent_search_fragment, container,false)
+        return inflater.inflate(R.layout.ent_search_fragment, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
         activity?.run {
-            viewModel = ViewModelProviders.of(this, factory).get(EventSearchViewModel::class.java)
             viewModel.resources = resources
         }
     }
@@ -119,15 +119,25 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
-        viewModel.errorReport.observe(viewLifecycleOwner, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){ getData() }.showRetrySnackbar()})
+        viewModel.errorReport.observe(viewLifecycleOwner,
+                Observer {
+                    lifecycleScope.launch {
+                        delay(DELAY_TIME)
+                        NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                            getData(CacheType.ALWAYS_CLOUD)
+                        }.showRetrySnackbar()
+                    }
+                }
+        )
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
+        swipe_refresh_layout.isRefreshing = true
         if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
             viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
         } else{
-            viewModel.getHistorySearch(cacheType, getEventHistory())
+            viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
         }
     }
 
@@ -141,18 +151,17 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(p0.toString().isEmpty()){
-                    if(job.isActive) job.cancel()
+            override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (keyword.toString().isEmpty()) {
+                    if (job.isActive) job.cancel()
                     viewModel.cancelRequest()
-                    viewModel.getHistorySearch(CacheType.CACHE_FIRST,getEventHistory())
-                }
-                else{
-                    if(job.isActive) job.cancel()
+                    viewModel.getHistorySearch(CacheType.CACHE_FIRST, getEventHistory(), userSession.isLoggedIn)
+                } else {
+                    if (job.isActive) job.cancel()
                     job = launch {
-                        delay(200)
-                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(p0.toString())
-                        viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST,getEventSearchLocation())
+                        delay(DELAY_TIME)
+                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(keyword.toString())
+                        viewModel.getSearchData(keyword.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
                     }
                 }
             }
@@ -163,7 +172,9 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         get() = Dispatchers.Main + Job()
 
     override fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion, listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>, position: Int) {
-        EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position+1, userSession.userId)
+        RouteManager.route(context, event.app_url)
+        EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position + 1, userSession.userId)
+        activity?.finish()
     }
 
     override fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) {
@@ -177,6 +188,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     override fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion, listsLocation: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
         EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
                 listsLocation, position, userSession.userId)
+        activity?.finish()
     }
 
     companion object{
@@ -184,6 +196,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         val TAG = EventSearchFragment::class.java.simpleName
 
         const val ENT_SEARCH_PERFORMANCE = "et_event_search"
+        private const val DELAY_TIME = 200L
     }
 
 }

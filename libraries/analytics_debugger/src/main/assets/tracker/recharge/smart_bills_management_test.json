@@ -3,18 +3,19 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": ".*",
       "businessUnit": "top up and tagihan",
       "clientId": ".*",
-      "currentSite": "tokopediaDigitalRecharge",
-      "isLoggedInStatus": "true|false",
-      "appsflyerId": ".*",
-      "theme": ".*",
-      "shopId": ".*",
+      "appsflyerId": "none",
+      "productStatus": ".+ - .+",
       "screenName": "/initial-sbm-page",
-      "event": "openScreen",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "networkSpeed": ".*",
+      "currentSite": "tokopediaDigitalRecharge",
+      "isLoggedInStatus": "true",
+      "theme": "light",
+      "shopId": ".*",
+      "event": "openScreen"
     },
     {
       "event": "clickSmartBill",
