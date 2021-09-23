@@ -9,6 +9,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -97,7 +98,7 @@ class InstallmentDetailBottomSheet {
         for (i in creditCardTenorListData.tenorList.lastIndex downTo 0) {
             val viewInstallmentDetailItem = ItemInstallmentDetailBinding.inflate(inflater)
             val installmentAfpb = creditCardTenorListData.tenorList[i]
-            if (installmentAfpb.type.equals(CC_TYPE_TENOR_FULL, true)) {
+            if (installmentAfpb.type.equals(PAYMENT_CC_TYPE_TENOR_FULL, true)) {
                 viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
                 viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.amount.toDouble(), false).removeDecimalSuffix()
             } else {
@@ -115,7 +116,7 @@ class InstallmentDetailBottomSheet {
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.fee.toDouble(), false).removeDecimalSuffix())
                 if (installmentAfpb.type.isNotEmpty()) {
-                    if (installmentAfpb.type == CC_TYPE_TENOR_FULL) {
+                    if (installmentAfpb.type == PAYMENT_CC_TYPE_TENOR_FULL) {
                         viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.term == 0
                     } else {
                         viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.term == installmentAfpb.type.toInt()
@@ -138,7 +139,7 @@ class InstallmentDetailBottomSheet {
 
     private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
         var intTerm = 0
-        if (tenor.type != CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
+        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
         return OrderPaymentInstallmentTerm(
             term = intTerm,
             isEnable = !tenor.disable,
@@ -225,7 +226,5 @@ class InstallmentDetailBottomSheet {
 
         private const val ROTATION_DEFAULT = 0f
         private const val ROTATION_REVERSE = 180f
-
-        private const val CC_TYPE_TENOR_FULL = "FULL"
     }
 }

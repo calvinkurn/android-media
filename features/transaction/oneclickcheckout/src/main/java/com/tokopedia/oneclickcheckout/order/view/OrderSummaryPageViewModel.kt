@@ -9,9 +9,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.PAYMENT_GATEWAY_CC
+import com.tokopedia.oneclickcheckout.common.*
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
@@ -755,12 +753,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
 
                 val newOrderPayment = orderPayment.value
-                val selectedTerm = newOrderPayment.creditCard.selectedTerm
+                var selectedTerm = newOrderPayment.creditCard.selectedTerm
                 if (!isSuccess) {
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
 
                     if (selectedTerm != null) {
                         selectedTerm.isError = true
+                    }
+                } else {
+                    if (newGlobalEvent is OccGlobalEvent.AdjustAdminFeeSuccess) {
+                        newGlobalEvent.ccData.tenorList.forEach { tenor ->
+                            if (tenor.type == PAYMENT_CC_TYPE_TENOR_FULL) {
+                                selectedTerm = mapAfpbToInstallmentTerm(tenor)
+                            }
+                        }
                     }
                 }
                 orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
@@ -769,6 +775,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = newGlobalEvent
             }
         }
+    }
+
+    private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
+        var intTerm = 0
+        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
+        return OrderPaymentInstallmentTerm(
+            term = intTerm,
+            isEnable = !tenor.disable,
+            fee = tenor.fee.toDouble(),
+            monthlyAmount = tenor.amount.toDouble()
+        )
     }
 
     fun resetFlagGetTenorList() {

@@ -13,3 +13,5 @@ const val PAYMENT_LISTING_URL = "PaymentListingUrl"
 const val OCC_OVO_ACTIVATION_URL = "OccOvoActivationUrl"
 
 const val PAYMENT_GATEWAY_CC = "CREDITCARD"
+
+const val PAYMENT_CC_TYPE_TENOR_FULL = "FULL"
