@@ -114,8 +114,7 @@ abstract class BaseTelcoPrepaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_product_not_login() {
-        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
         // Pulsa
         CommonActions.findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(),

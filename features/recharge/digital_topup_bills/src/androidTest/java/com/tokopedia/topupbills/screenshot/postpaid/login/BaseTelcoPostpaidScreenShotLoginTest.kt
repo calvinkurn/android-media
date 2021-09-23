@@ -22,7 +22,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -35,7 +34,6 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetNotDisplayed
@@ -95,7 +93,6 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
     @Test
     fun screenshot() {
-        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_enquiry_phone_number()
