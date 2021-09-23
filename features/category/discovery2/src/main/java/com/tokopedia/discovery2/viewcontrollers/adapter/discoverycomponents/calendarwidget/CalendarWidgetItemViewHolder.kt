@@ -56,9 +56,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             else -> {
                 calendarCardUnify.removeAllViews()
                 calendarCardUnify.addView(LayoutInflater.from(itemView.context).inflate(R.layout.discovery_calendar_multiple_layout_item, calendarCardUnify, false))
+                setLayoutWidth(calendarLayout)
             }
         }
-        setLayoutWidth(calendarLayout)
     }
 
     private fun setLayoutWidth(calendarLayout: String?) {
