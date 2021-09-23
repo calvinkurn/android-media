@@ -30,9 +30,9 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     /**
      * Custom
      */
-    private val defaultSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
-    private var sizeList = listOf(defaultSize to defaultSize)
-    private var sizeMultiplyList = mutableListOf<Float>()
+    private val defaultSize = resources.getDimensionPixelSize(R.dimen.play_like_bubble_original_size)
+    private val sizeList = listOf(defaultSize to defaultSize)
+    private val sizeMultiplyList = listOf(0.3f)
     private var shot = 0
     private var dot: Drawable? = null
 
@@ -40,8 +40,8 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
      * Config
      */
     private var maxShot = 30
-    private var sizeType = PlayLikeBubbleSize.MULTIPLY
-    private val duration = 1500L
+    private var sizeType = PlayLikeBubbleSize.EXACT
+    private val duration = ANIMATION_DURATION_IN_MS
 //    private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
     private var blurOpacity: Float = 0.5F
@@ -59,13 +59,7 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
 
         type.recycle()
 
-        setDefaultSizeList()
         setDefaultDotList()
-    }
-
-    private fun setDefaultSizeList() {
-        sizeMultiplyList.add(0.3f)
-        sizeMultiplyList.add(0.2f)
     }
 
     private fun setDefaultDotList() {
@@ -82,17 +76,6 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
 
     fun setBouncing(isBouncing: Boolean) {
         this.isBouncing = isBouncing
-    }
-
-    fun setSizeList(sizeList: List<Pair<Int, Int>>) {
-        sizeType = PlayLikeBubbleSize.EXACT
-        this.sizeList = sizeList
-    }
-
-    fun setSizeMultiplyList(sizeMultiplyList: List<Float>) {
-        sizeType = PlayLikeBubbleSize.MULTIPLY
-        this.sizeMultiplyList.clear()
-        this.sizeMultiplyList.addAll(sizeMultiplyList)
     }
 
     fun setDot(dot: Drawable) {
@@ -142,7 +125,7 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         if(shot < maxShot) {
             val chosenBubble = bubbleList.random()
             val icon = chosenBubble.icon
-            val sizeMultiply = sizeMultiplyList[(0 until sizeMultiplyList.size).random()]
+            val sizeMultiply = sizeMultiplyList.random()
             val size = sizeList.random()
 
             val dimension = when(sizeType) {
@@ -276,6 +259,11 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
             if(value <= threshold) {
                 alpha -= FADE_OUT_MULTIPLIER
                 image.alpha = alpha
+
+                if (image.scaleX > 0f) {
+                    image.scaleX = image.scaleX - SCALING_UP_MULTIPLIER
+                    image.scaleY = image.scaleY - SCALING_UP_MULTIPLIER
+                }
             }
 
             /**
@@ -352,6 +340,8 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         const val UPPER_BOUNCING_MULTIPLIER_X = 8
         const val UPPER_LIMIT_RANDOM_X_POSITION = 50
         const val FADE_OUT_MULTIPLIER = 0.05F
-        const val SCALING_UP_MULTIPLIER = 0.1F
+        const val SCALING_UP_MULTIPLIER = 0.05F
+
+        private const val ANIMATION_DURATION_IN_MS = 2500L
     }
 }
