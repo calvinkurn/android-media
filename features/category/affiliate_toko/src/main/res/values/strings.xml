@@ -11,7 +11,10 @@
     <string name="tag_badge_textview">badgeTextView</string>
     <string name="affiliate_choose_product">Pilih produknya dulu, ya!</string>
     <string name="affiliate_choose_product_description">Kamu bisa pilih produk yang sesuai dengan personamu sebelum mulai dipromosikan.</string>
-    <string name="affiliate_hai_ana_sal">☀️ Selamat siang!</string>
+    <string name="affiliate_morning">Halo, Selamat pagi!</string>
+    <string name="affiliate_noon">Halo, Selamat siang!</string>
+    <string name="affiliate_afternoon">Halo, Selamat sore!</string>
+    <string name="affiliate_night">Halo, Selamat malam!</string>
     <string name="affiliate_promote_affiliatw">Promosikan Produk Affiliate</string>
     <string name="affiliate_promoted_products">Produk yang dipromosikan</string>
     <string name="affiliate_where_to_promote">Mau promosikan di mana?</string>

@@ -32,7 +32,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:text="@string/affiliate_hai_ana_sal"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintLeft_toRightOf="@id/product_image"
             app:layout_constraintRight_toRightOf="parent"

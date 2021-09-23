@@ -26,21 +26,20 @@
         android:layout_height="@dimen/dp_48"
         android:layout_margin="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_navToolbar"
-        />
+        app:layout_constraintTop_toBottomOf="@id/home_navToolbar" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/hai_ana_sal"
+        android:id="@+id/affiliate_greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="@dimen/dp_16"
-        android:text="@string/affiliate_hai_ana_sal"
         app:layout_constraintBottom_toTopOf="@id/user_name"
         app:layout_constraintLeft_toRightOf="@id/user_image"
         app:layout_constraintTop_toTopOf="@id/user_image"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="@string/affiliate_morning" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/user_name"
@@ -52,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="@id/user_image"
         app:layout_constraintLeft_toRightOf="@id/user_image"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hai_ana_sal"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_greeting"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Ana Putri" />
@@ -92,12 +91,12 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_promoted_products"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/unify_space_48"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_promoted_products">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/products_rv"
             android:layout_width="match_parent"

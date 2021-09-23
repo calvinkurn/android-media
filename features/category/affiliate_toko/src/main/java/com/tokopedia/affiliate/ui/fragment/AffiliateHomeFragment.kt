@@ -90,6 +90,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         } else {
             affiliateHomeViewModel.getAffiliateValidateUser()
         }
+        setAffiliateGreeting()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         products_rv.layoutManager = layoutManager
@@ -108,6 +109,15 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
         sendScreenEvent()
+    }
+
+    private fun setAffiliateGreeting() {
+        affiliate_greeting.text = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            in 6..10 -> getString(R.string.affiliate_morning)
+            in 11..15 -> getString(R.string.affiliate_noon)
+            in 16..18 -> getString(R.string.affiliate_afternoon)
+            else ->getString(R.string.affiliate_night)
+        }
     }
 
     private fun showNoAffiliate() {
