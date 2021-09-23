@@ -6,14 +6,19 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldUnify2(context,attrs) {
 
     private var relatedView : View? = null
     private var editState = false
+    private var affiliateLinkTextFieldInterface : AffiliateLinkTextFieldInterface? = null
+
     init {
         labelText.hide()
         textInputLayout.isHelperTextEnabled = false
@@ -36,6 +41,10 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
             editingState(false)
         }
         this.relatedView = relatedView
+    }
+
+    fun setEventListener(listener : AffiliateLinkTextFieldInterface){
+        affiliateLinkTextFieldInterface = listener
     }
 
     fun setDoneAction(action : () -> Unit){
@@ -63,6 +72,7 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
     fun editingState(state : Boolean){
         this.editState = state
         if(state){
+            affiliateLinkTextFieldInterface?.onEditState(true)
             relatedView?.show()
             showKeyboard(editText)
         }else {
@@ -79,4 +89,8 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
             super.dispatchKeyEventPreIme(event)
         }
     }
+}
+
+interface AffiliateLinkTextFieldInterface{
+    fun onEditState(state : Boolean)
 }

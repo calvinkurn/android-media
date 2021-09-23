@@ -18,12 +18,12 @@ import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.AffiliateSearchData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextFieldInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionErrorCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -39,7 +39,7 @@ import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface {
+class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface , AffiliateLinkTextFieldInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -77,6 +77,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
             setDoneAction {
                 affiliatePromoViewModel.getSearch(editText.text.toString())
             }
+            setEventListener(this@AffiliatePromoFragment)
         }
         promo_navToolbar.run {
             setIcon(
@@ -234,5 +235,13 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
             showDefaultState()
             product_link_et.editingState(true)
         }
+    }
+
+    override fun onEditState(state: Boolean) {
+        AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
+                AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
+                "",userSessionInterface.userId)
     }
 }

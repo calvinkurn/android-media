@@ -185,6 +185,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                         }
                     }
                     adapter.setElement(list)
+                    adapter.setElement(list)
                     loadMoreTriggerListener?.updateStateAfterGetData()
                 } else {
                     showNoAffiliate()
