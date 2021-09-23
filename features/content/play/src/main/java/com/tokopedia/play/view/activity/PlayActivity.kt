@@ -265,6 +265,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {
+        Log.d("<INTENT>", "pathSegments: ${intent.data?.pathSegments?.joinToString()}")
         val fragment = activeFragment
         Log.d("<INTENT>", "enter onBackPressed()")
         if (fragment is PlayFragment) {
