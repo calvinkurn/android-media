@@ -255,4 +255,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
+
+    public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
 }
