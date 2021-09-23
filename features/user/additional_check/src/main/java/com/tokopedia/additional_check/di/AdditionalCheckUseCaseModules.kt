@@ -1,13 +1,12 @@
 package com.tokopedia.additional_check.di
 
+import com.google.android.datatransport.runtime.dagger.Module
+import com.google.android.datatransport.runtime.dagger.Provides
 import com.tokopedia.additional_check.data.GetObjectPojo
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import dagger.Module
-import dagger.Provides
-
 
 @Module
 class AdditionalCheckUseCaseModules {
