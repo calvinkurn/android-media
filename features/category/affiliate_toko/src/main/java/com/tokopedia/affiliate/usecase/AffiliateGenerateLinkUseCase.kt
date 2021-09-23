@@ -13,7 +13,7 @@ class AffiliateGenerateLinkUseCase @Inject constructor(
         return  mapOf<String,Any>(PARAM_INPUT to GenerateLinkRequest.Input(arrayListOf(id),
                 arrayListOf(GenerateLinkRequest.Input.Link(
                         PARAM_PDP,
-                        "https://staging.tokopedia.com/newshopaja/jersey-mantap-asik",
+                        url ?: "",
                         identifier ?: "",
                         0
                 ))))

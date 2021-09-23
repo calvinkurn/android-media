@@ -43,19 +43,23 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         arguments?.let {
             state = it.getInt(STATE)
         }
-        if(state == STATE_HOW_TO_PROMOTE){
-            setTitle(getString(R.string.affiliate_how_to_promote))
-            steps.add(getString(R.string.affiliate_how_to_get_link))
-            steps.add(getString(R.string.affiliate_how_to_get_link_1))
-            steps.add(getString(R.string.affiliate_how_to_get_link_2))
-            steps.add(getString(R.string.affiliate_how_to_get_link_3))
-            steps.add(getString(R.string.affiliate_how_to_get_link_4))
-        }else if(state == STATE_PRODUCT_INACTIVE) {
-            setTitle(getString(R.string.affiliate_product_inactive))
-            steps.add(getString(R.string.affiliate_product_inactive_text))
-        }else {
-            setTitle(getString(R.string.affiliate_beta_info))
-            steps.add(getString(R.string.affiliate_beta_info_text))
+        when (state) {
+            STATE_HOW_TO_PROMOTE -> {
+                setTitle(getString(R.string.affiliate_how_to_promote))
+                steps.add(getString(R.string.affiliate_how_to_get_link))
+                steps.add(getString(R.string.affiliate_how_to_get_link_1))
+                steps.add(getString(R.string.affiliate_how_to_get_link_2))
+                steps.add(getString(R.string.affiliate_how_to_get_link_3))
+                steps.add(getString(R.string.affiliate_how_to_get_link_4))
+            }
+            STATE_PRODUCT_INACTIVE -> {
+                setTitle(getString(R.string.affiliate_product_inactive))
+                steps.add(getString(R.string.affiliate_product_inactive_text))
+            }
+            else -> {
+                setTitle(getString(R.string.affiliate_beta_info))
+                steps.add(getString(R.string.affiliate_beta_info_text))
+            }
         }
         steps.add("")
         contentView?.findViewById<LinearLayout>(R.id.affiliate_parent_linear)?.let { linearLayout ->

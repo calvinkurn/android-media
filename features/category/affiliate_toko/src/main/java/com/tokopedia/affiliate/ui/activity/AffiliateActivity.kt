@@ -6,20 +6,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
-import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
-import android.view.WindowManager
-
-import android.view.Window
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.webview.BaseSessionWebViewFragment
+import com.tokopedia.affiliate_toko.R
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
@@ -30,8 +26,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val w: Window = window
-        //w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         initBottomNavigationView()
     }
 

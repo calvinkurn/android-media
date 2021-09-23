@@ -17,7 +17,7 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
     init {
         labelText.hide()
         textInputLayout.isHelperTextEnabled = false
-        editText.setOnFocusChangeListener { v, hasFocus ->
+        editText.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus)
                 editingState(true)
         }
@@ -72,11 +72,11 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
     }
 
     override fun dispatchKeyEventPreIme(event: KeyEvent?): Boolean {
-        if (editState && event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (editState && event?.keyCode == KeyEvent.KEYCODE_BACK) {
             editingState(false)
-            return true
+            true
         }else {
-            return super.dispatchKeyEventPreIme(event)
+            super.dispatchKeyEventPreIme(event)
         }
     }
 }

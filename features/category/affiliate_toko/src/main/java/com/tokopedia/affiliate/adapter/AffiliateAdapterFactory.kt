@@ -10,9 +10,9 @@ import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
 class AffiliateAdapterFactory(
-        var shareButtonInterface: ShareButtonInterface? = null,
+        private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
-        var promotionClickInterface : PromotionClickInterface? = null)
+        private var promotionClickInterface : PromotionClickInterface? = null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

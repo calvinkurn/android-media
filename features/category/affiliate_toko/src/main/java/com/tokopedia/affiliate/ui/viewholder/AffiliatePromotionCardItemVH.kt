@@ -32,7 +32,8 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             setOnClickListener {
                 promotionClickInterface?.onPromotionClick( "",
                         element?.promotionItem?.title ?: "",
-                        element?.promotionItem?.image?.androidURL ?:"","",
+                        element?.promotionItem?.image?.androidURL ?:"",
+                        element?.promotionItem?.cardUrl ?: "",
                         "")
             }
         }

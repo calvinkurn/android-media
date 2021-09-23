@@ -228,7 +228,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
         if(errorCta?.ctaAction == AffiliatePromotionErrorCardItemVH.ACTION_REDIRECT){
             errorCta.ctaLink?.androidUrl?.let {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it))
+                RouteManager.route(context, String.format("%s?url=%s", it))
             }
         }else {
             showDefaultState()

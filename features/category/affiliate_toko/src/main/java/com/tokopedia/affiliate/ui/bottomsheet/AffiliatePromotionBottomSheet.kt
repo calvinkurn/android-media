@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -26,6 +25,7 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
+import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster

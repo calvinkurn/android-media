@@ -10,7 +10,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -21,6 +24,7 @@ import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
@@ -42,11 +46,15 @@ import javax.inject.Inject
 
 class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface {
 
+    private var totalItemsCount: Int? = 0
+
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
+
+    private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
@@ -62,6 +70,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         setObservers()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.affiliate_home_fragment_layout, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,7 +89,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         products_rv.layoutManager = layoutManager
+        loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         products_rv.adapter = adapter
+        loadMoreTriggerListener?.let { products_rv.addOnScrollListener(it) }
         user_name.text = affiliateHomeViewModel.getUserName()
         home_navToolbar.run {
             setIcon(
@@ -108,8 +121,12 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.affiliate_home_fragment_layout, container, false)
+    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                affiliateHomeViewModel.getAffiliatePerformance(page)
+            }
+        }
     }
 
     private fun setObservers() {
@@ -143,7 +160,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
-                affiliateHomeViewModel.getAffiliatePerformance()
+                affiliateHomeViewModel.getAffiliatePerformance(page = 0)
             }else {
                 validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -154,12 +171,16 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
             affiliatePerformance.getAffiliateItemsPerformanceList?.data?.sectionData?.let { sectionData ->
                 affiliate_products_count.text = getString(R.string.affiliate_product_count, sectionData.itemTotalCount.toString())
+                totalItemsCount = sectionData.itemTotalCount
                 if (sectionData.items?.isNotEmpty() == true) {
+                    val list : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
                     for (product in sectionData.items!!) {
                         product?.let {
-                            adapter.addElement(AffiliateSharedProductCardsModel(product))
+                            list.add(AffiliateSharedProductCardsModel(product))
                         }
                     }
+                    adapter.setElement(list)
+                    loadMoreTriggerListener?.updateStateAfterGetData()
                 } else {
                     showNoAffiliate()
                 }
@@ -212,7 +233,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(productId , productName,productImage,productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
+            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }
