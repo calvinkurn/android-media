@@ -809,4 +809,13 @@ class TestMainNavViewModel {
         }
     }
 
+    @Test
+    fun `Test default complaint position`() {
+        val defaultComplainPosition = 10
+        viewModel = createViewModel()
+        viewModel.getMainNavData(false)
+        val result = viewModel.findComplainModelPosition()
+        Assert.assertEquals(defaultComplainPosition, result)
+    }
+
 }
