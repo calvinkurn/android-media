@@ -269,7 +269,8 @@
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 
     <string name="title_shop_performance_become_existing_seller">Performa Tokomu akan efektif berlaku setelah 90 hari bergabung, di %s</string>
-    <string name="desc_shop_performance_timer_after_first_monday">Kamu sudah dapat proyeksi Performa Toko dan akan efektif berlaku setelah 90 hari, di %s</string>
+    <string name="desc_shop_performance_timer_after_first_monday_tenure">Kamu sudah dapat proyeksi Performa Toko dan akan efektif berlaku setelah 90 hari, di %s</string>
+    <string name="desc_shop_performance_timer_after_first_monday">Kamu sudah dapat proyeksi Performa Toko dan efektif berlaku setelah 90 hari, di %s. Pelajari dulu, yuk!</string>
 
     <string name="shop_performance_learn">Pelajari Sekarang</string>
     <string name="title_tv_watch">Tonton Video</string>

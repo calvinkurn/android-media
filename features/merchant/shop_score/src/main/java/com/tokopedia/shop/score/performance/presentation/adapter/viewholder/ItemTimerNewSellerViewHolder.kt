@@ -36,10 +36,17 @@ class ItemTimerNewSellerViewHolder(
                     element?.effectiveDateText.orEmpty()
                 )
             } else {
-                getString(
-                    R.string.desc_shop_performance_timer_after_first_monday,
-                    element?.effectiveDateText.orEmpty()
-                )
+                if (element?.isTenureDate == true) {
+                    getString(
+                        R.string.desc_shop_performance_timer_after_first_monday_tenure,
+                        element.effectiveDateText
+                    )
+                } else {
+                    getString(
+                        R.string.desc_shop_performance_timer_after_first_monday,
+                        element?.effectiveDateText.orEmpty()
+                    )
+                }
             }
         }
 
