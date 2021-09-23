@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -188,7 +187,7 @@ class TokoNowHomeFragment: Fragment(),
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
-    private var scrollStateMap = mutableMapOf<Int, Parcelable?>()
+    private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var stickyLoginView: StickyLoginView? = null
     private var hasEducationalInformationAppeared = false
 
@@ -399,11 +398,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
-        scrollStateMap[adapterPosition] = scrollState
+        carouselScrollState[adapterPosition] = scrollState
     }
 
     override fun getScrollState(adapterPosition: Int): Parcelable? {
-        return scrollStateMap[adapterPosition]
+        return carouselScrollState[adapterPosition]
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -599,7 +598,7 @@ class TokoNowHomeFragment: Fragment(),
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
-        scrollStateMap.clear()
+        carouselScrollState.clear()
         loadLayout()
         isRefreshed = true
     }
