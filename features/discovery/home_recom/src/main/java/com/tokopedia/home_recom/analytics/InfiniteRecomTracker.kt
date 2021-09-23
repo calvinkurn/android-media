@@ -41,6 +41,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
     private const val CURRENCY_DEFAULT_VALUE = "IDR"
     private const val VALUE_NONE_OTHER = "none / other"
     private const val KEY_ADD = "add"
+    private const val KEY_REMOVE = "remove"
     private const val KEY_DIMENSION_40 = "dimension40"
     private const val KEY_DIMENSION_45 = "dimension45"
     private const val VALUE_INFINITE_RECOM = "infinite recom"
@@ -106,6 +107,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendEventLabel(String.format(RecomTokonow.KEY_EVENT_LABEL_ATC, recomItem.name, ""))
         trackerBuilder.appendBusinessUnit(BU_RECOM)
         trackerBuilder.appendCurrentSite(CURRENTSITE_RECOM)
+        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, recomItem.productId)
         trackerBuilder.appendCustomKeyValue(KEY_USER_ID_VARIANT, userId)
         trackerBuilder.appendCustomKeyValue(RecomTokonow.KEY_EVENT_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         trackerBuilder.appendCustomKeyValue(KEY_ECOMMERCE, DataLayer.mapOf(
@@ -143,7 +145,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendCustomKeyValue(RecomTokonow.KEY_EVENT_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         trackerBuilder.appendCustomKeyValue(KEY_ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
-                KEY_ADD, DataLayer.mapOf(
+                KEY_REMOVE, DataLayer.mapOf(
                 PRODUCTS, DataLayer.listOf(
                 DataLayer.mapOf(
                         BRAND, VALUE_NONE_OTHER,
