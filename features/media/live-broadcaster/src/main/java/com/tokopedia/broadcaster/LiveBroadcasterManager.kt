@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
-import android.view.SurfaceView
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
@@ -20,6 +19,7 @@ import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.CameraConfig
@@ -95,7 +95,7 @@ class LiveBroadcasterManager constructor(
         mListener = listener
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {
+    override fun startPreview(surfaceView: SurfaceAspectRatioView) {
         if (streamer == null) createStreamer(surfaceView)
         safeStartPreview()
     }
@@ -279,7 +279,7 @@ class LiveBroadcasterManager constructor(
         // ignored
     }
 
-    private fun createStreamer(surfaceView: SurfaceView) {
+    private fun createStreamer(surfaceView: SurfaceAspectRatioView) {
         val context = surfaceView.context
         val builder = StreamerGLBuilder()
 
@@ -291,7 +291,7 @@ class LiveBroadcasterManager constructor(
 
         // configure camera
         builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        builder.setSurface(surfaceView.holder.surface)
+        builder.setSurface(surfaceView.surfaceHolder.surface)
         builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
 
         val activeCamera = mAvailableCameras.firstOrNull {

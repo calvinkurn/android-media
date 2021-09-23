@@ -2,11 +2,11 @@ package com.tokopedia.broadcaster
 
 import android.content.Context
 import android.os.Handler
-import android.view.SurfaceView
-import com.tokopedia.broadcaster.listener.BroadcasterListener
-import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.listener.BroadcasterListener
+import com.tokopedia.broadcaster.state.BroadcasterState
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 
 interface LiveBroadcaster {
     val ingestUrl: String
@@ -17,7 +17,7 @@ interface LiveBroadcaster {
     fun init(context: Context, handler: Handler)
     fun prepare(config: BroadcasterConfig.() -> Unit)
     fun setListener(listener: BroadcasterListener)
-    fun startPreview(surfaceView: SurfaceView)
+    fun startPreview(surfaceView: SurfaceAspectRatioView)
     fun stopPreview()
     fun switchCamera()
     fun start(url: String)
