@@ -35,7 +35,7 @@ class MainNavFragmentGopayNotEligibleWithTokopointsAbOffUiTest {
             InstrumentationAuthHelper.clearUserSession()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             setupGraphqlMockResponse(MainNavMockNotEligibleResponseConfig())
-            setupAbTestRemoteConfig(tokopointRollence = false)
+            setupAbTestRemoteConfig()
             super.beforeActivityLaunched()
         }
     }

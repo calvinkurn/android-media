@@ -25,6 +25,10 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
+import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
+import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
+import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOKOMEMBER
+import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
@@ -34,8 +38,11 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.NotificationUnify
 
-
-class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
+class TopSectionVH(
+    itemView: View,
+    private val cardRuntimeHeightListener: CardRuntimeHeightListener,
+    private val toolbarItemList: Any?
+) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
     private var dynamicAction: DynamicItemActionView? = null
@@ -119,45 +126,56 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     }
 
     private fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
+        val mapOfIdtoPosition:HashMap<Int,Int> = HashMap()
 
         if (dataList != null && dataList.isNotEmpty()) {
             for (i in dataList.indices) {
-                dynamicAction?.setLayoutVisibility(View.VISIBLE, i)
-                dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
-                dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
-                dataList[i]?.iconImageURL?.let { dynamicAction?.setLayoutIcon(it, i) }
+                mapOfIdtoPosition.put(dataList[i]?.id ?: 0, i)
+                dynamicAction?.setLayoutVisibility(View.VISIBLE, dataList[i]?.id ?: 0)
+                dataList[i]?.let { dynamicAction?.setLayoutText(it.cta?.text ?: "", it.id ?: 0) }
+                dataList[i]?.let { dynamicAction?.setLayoutIcon(it.iconImageURL ?: "", it.id ?: 0) }
                 if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
-                    dataList[i]?.counter?.counterStr?.let { dynamicAction?.setLayoutNotification(it, i) }
+                    dataList[i]?.let {
+                        dynamicAction?.setLayoutNotification(
+                            it.counter?.counterStr ?: "", it.id ?: 0)
+                    }
                 } else {
-                    dynamicAction?.hideNotification(i)
+                    dynamicAction?.hideNotification(dataList[i]?.id ?: 0)
                     dataList[i]?.counter?.isShowCounter = false
                 }
-
                 if (dataList[i]?.counterTotal?.isShowCounter!!) {
-                    dataList[i]?.counterTotal?.counterStr?.let { dynamicAction?.setLayoutLabel(it, i) }
+                    dataList[i]?.let {
+                        dynamicAction?.setLayoutLabel(
+                            it.counterTotal?.counterStr ?: "", it.id ?: 0)
+                    }
+                }
+            }
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
+                    dataList[mapOfIdtoPosition?.get(TOKOMEMBER)?:0]?.cta?.let {
+                        hideNotification(mapOfIdtoPosition?.get(TOKOMEMBER)?:0, dataList[mapOfIdtoPosition?.get(TOKOMEMBER)?:0])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOKOMEMBER)
+                    }
+                }
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_topquest)?.setOnClickListener {
+                    dataList[mapOfIdtoPosition?.get(TOPQUEST)?:0]?.cta?.let {
+                        hideNotification(mapOfIdtoPosition?.get(TOPQUEST)?:0, dataList[mapOfIdtoPosition?.get(TOPQUEST)?:0])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOPQUEST)
+                    }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
-                    dataList[0]?.cta?.let {
-                        hideNotification(0, dataList[0])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 0)
-                    }
-                }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
-                    dataList[1]?.cta?.let {
-                        hideNotification(1, dataList[1])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 1)
-                    }
-                }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
-                    dataList[2]?.cta?.let {
-                        hideNotification(2, dataList[2])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 2)
+                    dataList[mapOfIdtoPosition?.get(KUPON)?:0]?.cta?.let {
+                        hideNotification(mapOfIdtoPosition?.get(KUPON)?:0, dataList[mapOfIdtoPosition?.get(KUPON)?:0])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, KUPON)
                     }
                 }
 
-                dynamicAction?.setVisibilityDivider(View.VISIBLE, i)
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_bbo)?.setOnClickListener {
+                    dataList[mapOfIdtoPosition?.get(BBO)?:0]?.cta?.let {
+                        hideNotification(mapOfIdtoPosition?.get(BBO)?:0, dataList[mapOfIdtoPosition?.get(BBO)?:0])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, BBO)
+                    }
+                }
             }
-        }
     }
 
     inline fun View.doOnLayout(crossinline action: (view: View) -> Unit) {

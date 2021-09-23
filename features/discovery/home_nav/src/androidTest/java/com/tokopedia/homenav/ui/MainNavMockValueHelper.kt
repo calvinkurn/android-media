@@ -30,18 +30,5 @@ object MainNavMockValueHelper {
     //response_success_mock_mainnav_profile
     const val MOCK_VALUE_USERNAME = "Devara Magician"
 
-    fun setupAbTestRemoteConfig(
-        tokopointRollence: Boolean = true) {
-        if (tokopointRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.EXPERIMENT_NAME_TOKOPOINT,
-                RollenceKey.EXPERIMENT_NAME_TOKOPOINT
-            )
-        } else {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.EXPERIMENT_NAME_TOKOPOINT,
-                ""
-            )
-        }
-    }
+    fun setupAbTestRemoteConfig() {}
 }
