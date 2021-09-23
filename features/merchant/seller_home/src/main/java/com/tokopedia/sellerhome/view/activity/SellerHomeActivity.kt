@@ -38,7 +38,6 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.*
-import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
@@ -55,8 +54,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import com.tokopedia.utils.view.binding.internal.MethodType
-import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -119,7 +116,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
-    private var binding: ActivitySahSellerHomeBinding? by viewBinding(MethodType.Inflate)
+    private var binding: ActivitySahSellerHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -272,14 +269,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setContentView() {
-        if (binding == null) {
-            binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
-                setContentView(root)
-            }
-        } else {
-            binding?.let {
-                setContentView(it.root)
-            }
+        binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
+            setContentView(root)
         }
     }
 

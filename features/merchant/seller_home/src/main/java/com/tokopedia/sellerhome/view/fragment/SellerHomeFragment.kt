@@ -92,8 +92,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.view.binding.internal.MethodType
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -194,7 +193,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
-    private var binding: FragmentSahBinding? by viewBinding(MethodType.Inflate)
+    private var binding by autoClearedNullable<FragmentSahBinding>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -228,7 +227,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        binding = FragmentSahBinding.inflate(inflater, container, false)
+        binding = FragmentSahBinding.inflate(layoutInflater, container, false)
         return binding?.root
     }
 
