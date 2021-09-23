@@ -178,11 +178,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observeLiveData()
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewHolder?.setInitialAnimationStates()
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.getAllOtherMenuData()

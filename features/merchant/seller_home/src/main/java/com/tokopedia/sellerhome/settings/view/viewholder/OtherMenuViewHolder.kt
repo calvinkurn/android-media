@@ -103,16 +103,13 @@ class OtherMenuViewHolder(
         hasInitialAnimationCompleted = true
         if (listener.getIsShopShareReady()) {
             showShareButtons()
+            hasShareButtonAnimationCompleted = false
             motionLayoutAnimator?.animateShareButtonSlideIn()
         }
     }
 
     override fun onShareButtonAnimationCompleted() {
-        balanceTopadsTopupView?.run {
-            setOnAnimationFinishedListener {
-                hasShareButtonAnimationCompleted = true
-            }
-        }
+        hasShareButtonAnimationCompleted = true
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -126,11 +123,6 @@ class OtherMenuViewHolder(
         setupView()
         setupClickListener()
         registerLifecycleOwner()
-    }
-
-    fun setInitialAnimationStates() {
-        hasInitialAnimationCompleted = false
-        hasShareButtonAnimationCompleted = false
     }
 
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
@@ -216,6 +208,7 @@ class OtherMenuViewHolder(
             if (hasShareButtonAnimationCompleted) {
                 setShareButtonPosition()
             } else {
+                hasShareButtonAnimationCompleted = false
                 motionLayoutAnimator?.animateShareButtonSlideIn()
             }
             showShareButtons()
@@ -309,6 +302,7 @@ class OtherMenuViewHolder(
 
     private fun setupContentAnimator() {
         motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
+            hasInitialAnimationCompleted = false
             it.animateInitialSlideIn()
         }
     }
