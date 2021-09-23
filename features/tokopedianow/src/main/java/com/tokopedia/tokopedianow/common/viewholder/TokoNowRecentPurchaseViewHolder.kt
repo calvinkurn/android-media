@@ -129,10 +129,4 @@ class TokoNowRecentPurchaseViewHolder(
         val scrollState = tokoNowView?.getScrollState(adapterPosition)
         linearLayoutManager?.onRestoreInstanceState(scrollState)
     }
-
-    fun submitList(data: TokoNowRecentPurchaseUiModel?) {
-        data?.productList?.let {
-            adapter.submitList(it)
-        }
-    }
 }
