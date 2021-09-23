@@ -6,12 +6,13 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 /**
  * Created by Yoris on 26/08/21.
  */
 
-class GetUserProfile (private val repository: GraphqlRepository)
+class GetUserProfile @Inject constructor(private val repository: GraphqlRepository)
     : CoroutineUseCase<RequestParams, ProfilePojo>(Dispatchers.IO) {
 
     override suspend fun execute(params: RequestParams): ProfilePojo {

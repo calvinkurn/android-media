@@ -31,7 +31,23 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
-        checkOverrideUrl(url)
+        when {
+            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
+                // Finish activity from webview
+                return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
+            }
+            url.contains(GOJEK_LINK, ignoreCase = true) -> {
+                // Check for gojek.link url
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+                activity?.finish()
+                return true
+            }
+            else -> {
+                // Default is hidden
+                hideToolbar()
+            }
+        }
         return super.shouldOverrideUrlLoading(webview, url)
     }
 
@@ -59,25 +75,6 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 (activity as LinkAccountWebViewActivity).setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
             }
             else -> { hideToolbar() }
-        }
-    }
-
-    fun checkOverrideUrl(url: String) {
-        when {
-            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
-                // Finish activity from webview
-                activity?.finish()
-            }
-            url.contains(GOJEK_LINK, ignoreCase = true) -> {
-                // Check for gojek.link url
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
-                activity?.finish()
-            }
-            else -> {
-                // Default is hidden
-                hideToolbar()
-            }
         }
     }
 
@@ -116,7 +113,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     companion object {
         const val KEY_URL = "url"
-        const val GOJEK_LINK = "https://gojek.link/"
+        const val GOJEK_LINK = "https://gojek.link"
         const val BACK_BTN_APPLINK = "tokopedia://back"
 
         fun newInstance(url: String): BaseSessionWebViewFragment {

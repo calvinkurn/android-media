@@ -13,7 +13,6 @@ import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -26,7 +25,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -101,10 +99,10 @@ class HomeAccountUserViewModel @Inject constructor(
             val phone = profile.profileInfo.phone
             if (phone.isNotEmpty()) {
                 userSession.phoneNumber = phone
-                _phoneNo.postValue(phone)
+                _phoneNo.value = phone
             }
         }, onError = {
-            _phoneNo.postValue("")
+            _phoneNo.value = ""
         })
     }
 
