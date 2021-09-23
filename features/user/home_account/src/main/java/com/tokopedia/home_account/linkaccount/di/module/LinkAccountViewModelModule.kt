@@ -20,7 +20,6 @@ import dagger.multibindings.IntoMap
 
     @Binds
     @IntoMap
-    @LinkAccountScope
     @ViewModelKey(LinkAccountViewModel::class)
     internal abstract fun bindLinkAccountViewModel(
             viewModel: LinkAccountViewModel
