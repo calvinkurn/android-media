@@ -80,19 +80,18 @@ class SubmitPostServiceNew : JobIntentService() {
 
         submitPostUseCase.execute(
             SubmitPostUseCaseNew.createRequestParams(
-            viewModel.postId,
-            viewModel.authorType,
-            viewModel.token,
-            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-            else userSession.shopId,
-            viewModel.caption,
-//            (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
-
-             viewModel.completeImageList.map {
-                 getFileAbsolutePath(it.path)!! to it.type },
-            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-            else viewModel.productIdList, viewModel.completeImageList
-        ), getSubscriber())
+                viewModel.postId,
+                viewModel.authorType,
+                viewModel.token,
+                if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                else userSession.shopId,
+                viewModel.caption,
+                viewModel.completeImageList.map {
+                    getFileAbsolutePath(it.path)!! to it.type
+                },
+                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                else viewModel.productIdList, viewModel.completeImageList
+            ), getSubscriber())
     }
 
     private fun getFileAbsolutePath(path: String): String? {

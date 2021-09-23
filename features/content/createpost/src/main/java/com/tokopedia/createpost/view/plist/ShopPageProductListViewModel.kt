@@ -24,6 +24,17 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     private var sortPosition: Int? = 0
     private var soruce: String? = "shop_product"
 
+    companion object {
+
+        const val PARAM_SHOP_ID = "shopId"
+        const val PARAM_QUERY = "query"
+        const val PARAM_STATUS = "status"
+        const val PARAM_DEVICE = "device"
+        const val PARAM_SOURCE = "source"
+        const val PARAM_DEVICE_VALUE_ANDROID = "android"
+        const val PARAM_SOURCE_VALUE = "shop_product"
+    }
+
     fun getPageData(shopId: String?, source: String?, sort: String = "") {
         this.shopId = shopId
         this.soruce = source
@@ -55,7 +66,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
             }
 
             val request = GraphqlRequest(
-                getQ(),
+                getShopProductQuery(),
                 GetShopProduct::class.java,
                 variablesMain,
                 false
@@ -76,20 +87,19 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     fun getSortData() {
         launchCatchError(block = {
             val variablesMain = java.util.HashMap<String, Any>()
-            variablesMain["shopId"] = shopId!!
-            variablesMain["query"] = ""
-            variablesMain["status"] = 1
-            variablesMain["device"] = "android"
-            variablesMain["source"] = "shop_product"
+            variablesMain[PARAM_SHOP_ID] = shopId.orEmpty()
+            variablesMain[PARAM_QUERY] = ""
+            variablesMain[PARAM_STATUS] = 1
+            variablesMain[PARAM_DEVICE] = PARAM_DEVICE_VALUE_ANDROID
+            variablesMain[PARAM_SOURCE] = PARAM_SOURCE_VALUE
             val request = GraphqlRequest(
-                getQSort(),
+                getSortProductQuery(),
                 ShopPlIstSortingListBase::class.java,
                 variablesMain,
                 false
             )
             gqlSort.clearRequest()
             gqlSort.addRequest(request)
-            //gqlSort.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(5000).build())
             val response =
                 gqlSort.executeOnBackground()
                     .getData<ShopPlIstSortingListBase>(ShopPlIstSortingListBase::class.java)
@@ -99,86 +109,85 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         }
     }
 
-    fun getQSort(): String {
-        return "query shopSortingOptions(\$shopId: String!, \$status: Int!, \$query: String!, \$device: String!, \$source: String!) {\n" +
-                "\n" +
-                "  shopSortingOptions(input: {shopID: \$shopId, status: \$status, query: \$query, device: \$device, source: \$source}) {\n" +
-                "    result {\n" +
-                "      name\n" +
-                "      value\n" +
-                "    }\n" +
-                "    error {\n" +
-                "      message\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
-    }
+    private fun getSortProductQuery() =
+         """query shopSortingOptions(${'$'}shopId: String!, ${'$'}status: Int!, ${'$'}query: String!,${'$'}device: String!, ${'$'}source: String!) {        
+                    shopSortingOptions(input: {shopID: ${'$'}shopId, status: ${'$'}status, query: ${'$'}query, device: ${'$'}device, source:${'$'}source}) {       
+                      result {       
+                        name       
+                        value       
+                      }       
+                      error {       
+                        message       
+                      }       
+                    }       
+                  }"""
 
-    fun getQ(): String {
-        return "query GetShopProduct(\$sort: Int,\$shopId: String!, \$pageNumber: Int!, \$perPage: Int!) {\n" +
-                "  GetShopProduct(shopID: \$shopId, filter: {sort:\$sort, page: \$pageNumber, perPage: \$perPage}) {\n" +
-                "    status\n" +
-                "    errors\n" +
-                "    totalData\n" +
-                "    links {\n" +
-                "      prev\n" +
-                "      next\n" +
-                "    }\n" +
-                "    data {\n" +
-                "      product_id\n" +
-                "      name\n" +
-                "      price {\n" +
-                "        text_idr\n" +
-                "      }\n" +
-                "      primary_image {\n" +
-                "        resize300\n" +
-                "      }\n" +
-                "      flags {\n" +
-                "        isPreorder\n" +
-                "        isWholesale\n" +
-                "        isWishlist\n" +
-                "        isSold\n" +
-                "      }\n" +
-                "      campaign {\n" +
-                "        hide_gimmick\n" +
-                "        is_active\n" +
-                "        is_upcoming\n" +
-                "        discounted_percentage\n" +
-                "        original_price_fmt\n" +
-                "        discounted_price_fmt\n" +
-                "        start_date\n" +
-                "        end_date\n" +
-                "        stock_sold_percentage\n" +
-                "      }\n" +
-                "      label {\n" +
-                "        color_hex\n" +
-                "        content\n" +
-                "      }\n" +
-                "      label_groups {\n" +
-                "        position\n" +
-                "        title\n" +
-                "        type\n" +
-                "        url\n" +
-                "      }\n" +
-                "      badge {\n" +
-                "        title\n" +
-                "        image_url\n" +
-                "      }\n" +
-                "      stats {\n" +
-                "        reviewCount\n" +
-                "        rating\n" +
-                "        viewCount\n" +
-                "      }\n" +
-                "      cashback {\n" +
-                "        cashback\n" +
-                "        cashback_amount\n" +
-                "      }\n" +
-                "      freeOngkir {\n" +
-                "        isActive\n" +
-                "        imgURL\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n"
-    }
+
+    private fun getShopProductQuery() =
+        """query GetShopProduct(${'$'}sort: Int,${'$'}shopId: String!, ${'$'}pageNumber: Int!, ${'$'}perPage: Int!) {
+            GetShopProduct(shopID: ${'$'}shopId, filter: {sort:${'$'}sort, page: ${'$'}pageNumber, perPage: ${'$'}perPage}) {
+            status
+            errors
+            totalData
+            links {
+                prev
+                next
+            }
+            data {
+                product_id
+                name
+                price {
+                    text_idr
+                }
+                primary_image {
+                    resize300
+                }
+                flags {
+                    isPreorder
+                    isWholesale
+                    isWishlist
+                    isSold
+                }
+                campaign {
+                    hide_gimmick
+                    is_active
+                    is_upcoming
+                    discounted_percentage
+                    original_price_fmt
+                    discounted_price_fmt
+                    start_date
+                    end_date
+                    stock_sold_percentage
+                }
+                label {
+                    color_hex
+                    content
+                }
+                label_groups {
+                    position
+                    title
+                    type
+                    url
+                }
+                badge {
+                    title
+                    image_url
+                }
+                stats {
+                    reviewCount
+                    rating
+                    viewCount
+                }
+                cashback {
+                    cashback
+                    cashback_amount
+                }
+                freeOngkir {
+                    isActive
+                    imgURL
+                }
+            }
+        }
+        } """
+
 }

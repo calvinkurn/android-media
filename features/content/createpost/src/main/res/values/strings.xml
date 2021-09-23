@@ -79,5 +79,6 @@
     <string name="feed_content_no_product_sheet_body">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
     <string name="feed_content_product_list_page_error">Gagal memuat produk. Silakan ulangi.</string>
     <string name="feed_product_page_search_bar_placeholder_text">Cari produk di %s </string>
+    <string name="feed_product_page_filter_title">Urutkan</string>
 
 </resources>

@@ -114,7 +114,7 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: 
     })
 
     private fun initLayout() {
-        setTitle("Urutkan")
+        context?.getString(R.string.feed_product_page_filter_title)?.let { setTitle(it) }
         isDragable = false
         isHideable = true
         isKeyboardOverlap = false
