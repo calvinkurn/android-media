@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -33,6 +34,9 @@ class ProductMediaViewHolder(private val view: View,
             }
 
             element.shouldRefreshViewPagger = false
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 

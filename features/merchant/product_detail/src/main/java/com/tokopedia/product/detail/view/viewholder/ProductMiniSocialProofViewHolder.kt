@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -47,6 +48,9 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 }
                 hideLoading()
                 setAdapterData(element)
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
             }
         }
     }

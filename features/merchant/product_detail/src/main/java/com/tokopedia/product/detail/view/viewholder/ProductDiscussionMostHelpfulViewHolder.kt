@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 
-class ProductDiscussionMostHelpfulViewHolder(view: View,
+class ProductDiscussionMostHelpfulViewHolder(private val view: View,
                                              private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
@@ -55,6 +56,10 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
                     hideEmptyState()
                     hideShimmer()
                     hideLocalLoad()
+                }
+            }.also {
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
                 }
             }
         }
@@ -133,5 +138,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     private fun hideLocalLoad() {
         itemView.productDiscussionLocalLoadLayout.hide()
     }
+
+    private fun getComponentTrackData(
+        element: ProductDiscussionMostHelpfulDataModel
+    ) = ComponentTrackDataModel(element.type, element.name,adapterPosition + 1)
 
 }
