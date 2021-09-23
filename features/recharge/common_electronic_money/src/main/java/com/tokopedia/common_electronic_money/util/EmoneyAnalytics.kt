@@ -103,7 +103,7 @@ class EmoneyAnalytics {
 
     fun onShowErrorTracking(userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
+                Event.VIEW_NFC,
                 Category.DIGITAL_NFC,
                 Action.FAILED_UPDATE_BALANCE,
                 operatorName)
@@ -112,7 +112,7 @@ class EmoneyAnalytics {
 
     fun onShowErrorTrackingNFCNotSupproted(userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
+                Event.VIEW_NFC,
                 Category.DIGITAL_NFC,
                 Action.FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT,
                 "")
@@ -200,6 +200,7 @@ class EmoneyAnalytics {
     interface Event {
         companion object {
             const val CLICK_NFC = "clickNFC"
+            const val VIEW_NFC = "viewNFCIris"
             const val OPEN_SCREEN = "openScreen"
             const val GENERAL_EVENT = "digitalGeneralEvent"
         }
