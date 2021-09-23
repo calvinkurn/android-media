@@ -21,30 +21,29 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
                                            private val binding: ItemDealsBrandDetailBinding) :
             RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
-            with(itemView) {
-                with(binding) {
-                    imgItemBrandDetail.loadImage(product.imageApp)
-                    tgItemTitleBrandDetail.text = product.title
-                    tgItemValidDate.text = DateFormatUtils.getFormattedDate(product.maxEndDate.toString(), DATE_FORMAT)
-                    tgItemPriceBrandDetail.text = product.price
-                    if (product.savingPercentage.isNotEmpty()) {
-                        labelItemPercentageBrandDetail.text = product.savingPercentage
-                        tgSlashPriceBrandDetail.apply {
-                            val rupiahResult = resources.getString(R.string.deals_brand_detail_item_slash_price,
-                                    CurrencyFormatHelper.convertToRupiah(product.mrp.toString()))
-                            text = rupiahResult
-                            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                        }
-                    } else {
-                        labelItemPercentageBrandDetail.gone()
-                        tgSlashPriceBrandDetail.gone()
+            with(binding) {
+                imgItemBrandDetail.loadImage(product.imageApp)
+                tgItemTitleBrandDetail.text = product.title
+                tgItemValidDate.text = DateFormatUtils.getFormattedDate(product.maxEndDate.toString(), DATE_FORMAT)
+                tgItemPriceBrandDetail.text = product.price
+                if (product.savingPercentage.isNotEmpty() && !product.savingPercentage.startsWith(ZERO_PERCENT)) {
+                    labelItemPercentageBrandDetail.text = product.savingPercentage
+                    tgSlashPriceBrandDetail.apply {
+                        val rupiahResult = resources.getString(R.string.deals_brand_detail_item_slash_price,
+                                CurrencyFormatHelper.convertToRupiah(product.mrp.toString()))
+                        text = rupiahResult
+                        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     }
+                } else {
+                    labelItemPercentageBrandDetail.gone()
+                    tgSlashPriceBrandDetail.gone()
                 }
-                setOnClickListener {
+
+                root.setOnClickListener {
                     callback.clickProduct(position, product)
                 }
 
-                addOnImpressionListener(product){
+                root.addOnImpressionListener(product) {
                     callback.impressionProduct(position, product)
                 }
             }
@@ -66,6 +65,7 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
 
     companion object {
         const val DATE_FORMAT = "dd MMM yyyy"
+        const val ZERO_PERCENT = "0%"
     }
 
     interface DealsBrandDetailCallback {

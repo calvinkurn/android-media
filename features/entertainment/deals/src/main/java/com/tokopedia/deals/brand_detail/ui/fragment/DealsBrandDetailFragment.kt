@@ -303,7 +303,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     private fun showToaster(throwable: Throwable) {
         context?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
-            view?.let {
+            binding?.root?.let {
                 Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.deals_error_reload), View.OnClickListener {
                     showShimmering()

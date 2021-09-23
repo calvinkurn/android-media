@@ -10,7 +10,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_image_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_128"
+        android:layout_height="@dimen/layout_lvl9"
         app:corners="16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -18,9 +18,9 @@
     
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/loader_image_icon"
-        android:layout_width="@dimen/unify_space_96"
-        android:layout_height="@dimen/unify_space_96"
-        android:layout_marginTop="@dimen/unify_space_64"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        android:layout_marginTop="@dimen/layout_lvl7"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
