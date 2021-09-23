@@ -41,17 +41,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/hai_ana_sal"
+                android:id="@+id/affiliate_greeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="@dimen/dp_16"
-                android:text="@string/affiliate_hai_ana_sal"
                 app:layout_constraintBottom_toTopOf="@id/user_name"
                 app:layout_constraintLeft_toRightOf="@id/user_image"
                 app:layout_constraintTop_toTopOf="@id/user_image"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="reguler"
+                tools:text="@string/affiliate_morning"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/user_name"
@@ -63,7 +63,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/user_image"
                 app:layout_constraintLeft_toRightOf="@id/user_image"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/hai_ana_sal"
+                app:layout_constraintTop_toBottomOf="@id/affiliate_greeting"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 tools:text="Ana Putri" />
