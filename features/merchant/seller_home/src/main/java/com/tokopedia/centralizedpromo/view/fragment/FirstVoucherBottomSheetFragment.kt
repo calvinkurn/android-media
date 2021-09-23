@@ -1,8 +1,9 @@
 package com.tokopedia.centralizedpromo.view.fragment
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,19 +19,20 @@ import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstVoucherBottomsh
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(context: Context) = FirstVoucherBottomSheetFragment().apply {
+        fun createInstance() = FirstVoucherBottomSheetFragment().apply {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
     }
 
     private val impressHolder: ImpressHolder = ImpressHolder()
+    private var binding by autoClearedNullable<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -47,16 +49,23 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
     }
 
-    private val binding by viewBinding<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = CentralizedPromoFirstVoucherBottomsheetLayoutBinding.inflate(inflater)
+        binding?.let {
+            setChild(it.root)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.addOnImpressionListener(impressHolder) {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
         }
         super.onViewCreated(view, savedInstanceState)
-        binding?.let {
-            setChild(it.root)
-        }
     }
 
     private fun initInjector() {

@@ -41,8 +41,7 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.internal.MethodType
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -96,13 +95,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter as? MenuSettingAdapter
     }
 
-    private val binding: FragmentMenuSettingBinding? by viewBinding(MethodType.Inflate)
+    private var binding by autoClearedNullable<FragmentMenuSettingBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentMenuSettingBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -237,7 +237,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(
             Intent.EXTRA_TEXT,
-            resources.getString(R.string.msg_share_apps).toString() + "\n" + urlPlayStore
+            resources.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
         )
         sendIntent.type = "text/plain"
         activity?.startActivity(

@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_on_going_promo
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemOnGoingPromoBinding
-import com.tokopedia.utils.view.binding.viewBinding
 
 class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
 
@@ -19,10 +18,12 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
         val RES_LAYOUT = centralized_promo_item_on_going_promo
     }
 
-    private val binding by viewBinding<CentralizedPromoItemOnGoingPromoBinding>()
+    private val binding by lazy {
+        CentralizedPromoItemOnGoingPromoBinding.bind(itemView)
+    }
 
     override fun bind(element: OnGoingPromoUiModel) {
-        binding?.run {
+        binding.run {
             tvOnGoingPromoTitle.text = element.title
             tvOnGoingPromoStatus.text = element.status.text
             tvOnGoingPromoCount.text = element.status.count.toString()
@@ -33,7 +34,7 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
     }
 
     private fun initListeners(element: OnGoingPromoUiModel) {
-        binding?.run {
+        binding.run {
             tvOnGoingPromoTitle.setOnClickListener {
                 onStatusClicked(
                     element.status.url,

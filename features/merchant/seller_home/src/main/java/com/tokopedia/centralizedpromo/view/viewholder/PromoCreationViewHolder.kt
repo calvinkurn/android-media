@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemPromoCreationBinding
-import com.tokopedia.utils.view.binding.viewBinding
 
 class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
 
@@ -22,10 +21,12 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         val RES_LAYOUT = centralized_promo_item_promo_creation
     }
 
-    private val binding by viewBinding<CentralizedPromoItemPromoCreationBinding>()
+    private val binding by lazy {
+        CentralizedPromoItemPromoCreationBinding.bind(itemView)
+    }
 
     override fun bind(element: PromoCreationUiModel) {
-        binding?.run {
+        binding.run {
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
             tvRecommendedPromoDescription.text = element.description
