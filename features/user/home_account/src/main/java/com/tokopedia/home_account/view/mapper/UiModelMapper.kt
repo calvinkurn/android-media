@@ -83,6 +83,17 @@ object UiModelMapper {
                         "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
                     }
                 }
+                AccountConstants.WALLET.GOPAYLATER -> {
+                    if (walletappGetAccountBalance.subtitle.equals(
+                            AccountConstants.WALLET.GOPAYLATER,
+                            ignoreCase = true
+                        )
+                    ) {
+                        walletappGetAccountBalance.title
+                    } else {
+                        "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
+                    }
+                }
                 AccountConstants.WALLET.TOKOPOINT -> {
                     "${walletappGetAccountBalance.title} ${walletappGetAccountBalance.subtitle}"
                 }
