@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -347,17 +346,16 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.getReviewTemplates(productId)
     }
 
-    private fun observeGetForm() {
-        createReviewViewModel.getReputationDataForm.observe(viewLifecycleOwner, Observer {
+    private fun observeGetForm() =
+        createReviewViewModel.getReputationDataForm.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetReviewForm(it.data)
                 is Fail -> onErrorGetReviewForm(it.throwable)
             }
         })
-    }
 
     private fun observeIncentive() {
-        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
@@ -367,7 +365,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeTemplates() {
-        createReviewViewModel.reviewTemplates.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.reviewTemplates.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
@@ -376,7 +374,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeSubmitReview() {
-        createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, {
             when (it) {
                 is com.tokopedia.review.common.data.Success -> {
                     onSuccessSubmitReview()
@@ -392,13 +390,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeButtonState() {
-        createReviewViewModel.submitButtonState.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.submitButtonState.observe(viewLifecycleOwner, {
             submitButton?.isEnabled = it
         })
     }
 
     private fun observeProgressBarState() {
-        createReviewViewModel.progressBarState.observe(viewLifecycleOwner, Observer {
+        createReviewViewModel.progressBarState.observe(viewLifecycleOwner, {
             progressBar?.setProgressBarValue(it)
         })
     }
@@ -763,10 +761,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         showDialog(
             getString(R.string.review_form_incentives_exit_dialog_title),
             getString(R.string.review_form_incentives_exit_dialog_body),
-            getString(R.string.review_edit_dialog_exit),
-            { dismiss() },
             getString(R.string.review_form_dismiss_form_dialog_stay),
             {},
+            getString(R.string.review_edit_dialog_exit),
+            { dismiss() },
             DialogUnify.HORIZONTAL_ACTION
         )
     }
@@ -1029,7 +1027,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     @SuppressLint("ClickableViewAccessibility")
     private fun View.setCustomTouchListener() {
-        this.setOnTouchListener { v, event ->
+        this.setOnTouchListener { _, _ ->
             clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
         }
@@ -1119,7 +1117,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun handleOnBackPressed() {
-        dialog?.setOnKeyListener { _, keyCode, event ->
+        dialog?.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 handleDismiss()
                 true
