@@ -154,10 +154,12 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Successfully get recommendation first page`() {
-        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
+        val recommendationData = mockk<RecommendationWidget>(relaxed = true)
         coEvery {
             homeAccountRecommendationUseCase.getData(any())
-        } returns listOf(expectedResult)
+        } returns listOf(recommendationData)
+
+        val expectedResult = RecommendationWidgetWithTDN(recommendationData,null)
 
         viewModel.getFirstRecommendation()
 

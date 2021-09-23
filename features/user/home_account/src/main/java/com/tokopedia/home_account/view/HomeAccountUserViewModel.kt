@@ -148,7 +148,7 @@ class HomeAccountUserViewModel @Inject constructor(
         launchCatchError(Dispatchers.IO, block = {
             val recommendationWidget = getRecommendationList(page)
             var tdnBanner: TopAdsImageViewModel? = null
-            if (recommendationWidget.recommendationItemList.size >= TDN_INDEX) {
+            if (recommendationWidget.recommendationItemList.size >= TDN_INDEX && checkFirstPage(page)) {
                 tdnBanner = getTdnBannerData()
             }
             val data = RecommendationWidgetWithTDN(recommendationWidget, tdnBanner)

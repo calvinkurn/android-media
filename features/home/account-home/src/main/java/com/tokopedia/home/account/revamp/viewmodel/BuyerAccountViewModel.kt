@@ -170,7 +170,7 @@ class BuyerAccountViewModel @Inject constructor (
 
             val data = getRecommendationUseCase.createObservable(params).toBlocking().single()
             var tdnData: TopAdsImageViewModel? = null
-            if (data.firstOrNull()?.recommendationItemList?.size ?: 0 >= AccountConstants.TDNBanner.TDN_INDEX) {
+            if (data.firstOrNull()?.recommendationItemList?.size ?: 0 >= AccountConstants.TDNBanner.TDN_INDEX && isFirstData) {
                 tdnData = getTdnBannerData()
             }
             val recommendationDataWithTdn = RecommendationWidgetWithTDN(data[0], tdnData)
