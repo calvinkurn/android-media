@@ -84,7 +84,7 @@
                 android:layout_marginEnd="@dimen/dp_4"
                 android:layout_toEndOf="@+id/label_bundle_slash_price_percentage"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="body_3"
                 tools:text="Rp300.000"
                 tools:visibility="visible" />
@@ -201,12 +201,13 @@
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/layout_product_price"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_toEndOf="@+id/iu_image_product"
             app:flexWrap="wrap"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
             tools:visibility="visible">
@@ -238,7 +239,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="body_3"
                 tools:text="Rp300.000"
                 tools:visibility="visible" />

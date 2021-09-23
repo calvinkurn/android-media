@@ -105,9 +105,9 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun renderProductPrice(cartItem: CartItemModel) {
         mTvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.price.toLong(), false).removeDecimalSuffix()
         val dp4 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_4)
-        val dp10 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_10)
         if (cartItem.originalPrice > 0) {
             mTvProductPrice.setPadding(0, dp4, 0, 0)
+            mTvProductOriginalPrice.setPadding(0, dp4, 0, 0)
             mTvProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false).removeDecimalSuffix()
             mTvProductOriginalPrice.paintFlags = mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             mTvProductOriginalPrice.visibility = View.VISIBLE

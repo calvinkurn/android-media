@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="body_3"
                 tools:text="Rp300.000"
                 tools:visibility="visible" />
@@ -200,7 +200,7 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_toEndOf="@id/iv_product_image"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_product_price"
                 app:layout_constraintStart_toEndOf="@+id/tv_product_price"
                 app:layout_constraintTop_toTopOf="@+id/tv_product_price"
