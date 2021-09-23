@@ -94,4 +94,6 @@
     <string name="mainnav_wallet_app_format">%s • %s</string>
     <string name="mainnav_tokopoint_format">%s (%s)</string>
     <string name="mainnav_general_error">Gagal Memuat</string>
+
+    <string name="account_saldo_fmt">Saldo %s</string>
 </resources>

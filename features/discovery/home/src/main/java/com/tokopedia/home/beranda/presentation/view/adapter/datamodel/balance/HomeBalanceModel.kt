@@ -131,7 +131,7 @@ data class HomeBalanceModel(
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData) }
         homeHeaderWalletAction?.let { mapWallet(homeHeaderWalletAction) }
         pendingCashBackData?.let { mapPendingCashback(homeHeaderWalletAction, pendingCashBackData) }
-        walletAppData?.let { mapWalletApp(walletAppData) }
+        walletAppData?.let { mapWalletApp(walletAppData, isGopayEligible?:false) }
     }
 
     fun mapErrorTokopoints() {
@@ -410,10 +410,10 @@ data class HomeBalanceModel(
         else -> null
     }
 
-    private fun mapWalletApp(walletAppData: WalletAppData?) {
+    private fun mapWalletApp(walletAppData: WalletAppData?, isGopayEligible: Boolean = false) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
-                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
+                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, isGopayEligible = isGopayEligible)
             if (selectedBalance != null) {
                 selectedBalance.let { balance ->
                     flagStateCondition(

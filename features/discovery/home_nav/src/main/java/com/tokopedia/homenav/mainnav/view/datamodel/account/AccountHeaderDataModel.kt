@@ -114,8 +114,12 @@ data class AccountHeaderDataModel(
         val gopayPoints =
             selectedBalance?.balance?.find { it.walletCode == WALLET_CODE_PEMUDA_POINTS }
         this.profileWalletAppDataModel.walletAppImageUrl = selectedBalance?.iconUrl ?: ""
-        this.profileWalletAppDataModel.gopayBalance = gopayBalance?.amountFmt ?: ""
-        this.profileWalletAppDataModel.gopayPointsBalance = gopayPoints?.amountFmt ?: ""
+        if (gopayBalance?.amount != 0) {
+            this.profileWalletAppDataModel.gopayBalance = gopayBalance?.amountFmt ?: ""
+        }
+        if (gopayPoints?.amount != 0) {
+            this.profileWalletAppDataModel.gopayPointsBalance = gopayPoints?.amountFmt ?: ""
+        }
         this.profileWalletAppDataModel.walletAppActivationCta = selectedBalance?.globalMenuText?.id ?: ""
         this.profileWalletAppDataModel.isWalletAppLinked = selectedBalance?.isLinked ?: false
     }
