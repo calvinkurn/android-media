@@ -98,10 +98,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -113,13 +110,14 @@ import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -138,6 +136,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
+        ShopHomeShowcaseListWidgetListener,
         InterfaceShopPageClickScrollToTop {
 
     companion object {
@@ -237,7 +236,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
+        val userSession = UserSession(context)
+        val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
+        ShopHomeAdapterTypeFactory(
+                listener =  this,
+                onMerchantVoucherListWidgetListener = this,
+                shopHomeEndlessProductListener= this,
+                shopHomeCarouselProductListener= this,
+                shopProductEtalaseListViewHolderListener= this,
+                shopHomeCampaignNplWidgetListener= this,
+                shopProductChangeGridSectionListener= this,
+                playWidgetCoordinator = playWidgetCoordinator,
+                isShowTripleDot = !_isMyShop,
+                shopHomeShowcaseListWidgetListener = this
+        )
     }
 
     private val widgetDeleteDialogContainer by lazy {
@@ -263,6 +276,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var isLoadInitialData = false
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
+    private var globalErrorShopPage: GlobalError? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -336,6 +350,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         getRecyclerView(view)?.let {
             it.clearOnScrollListeners()
             it.layoutManager = staggeredGridLayoutManager
@@ -347,6 +362,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         isLoadInitialData = true
+    }
+
+    private fun initView() {
+        globalErrorShopPage = view?.findViewById(R.id.globalError_shopPage)
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -430,9 +449,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun loadInitialData() {
         shopHomeAdapter.clearAllElements()
-        recycler_view?.visible()
-        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        globalError_shopPage.hide()
+        getRecyclerView(view)?.visible()
+        recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
+        globalErrorShopPage?.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
@@ -828,14 +847,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
         if (throwable is MessageErrorException) {
-            globalError_shopPage.setType(GlobalError.SERVER_ERROR)
+            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
         } else {
-            globalError_shopPage.setType(GlobalError.NO_CONNECTION)
+            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
         }
-        globalError_shopPage.visible()
-        recycler_view?.hide()
+        globalErrorShopPage?.visible()
+        getRecyclerView(view)?.hide()
 
-        globalError_shopPage.setOnClickListener {
+        globalErrorShopPage?.setOnClickListener {
             loadInitialData()
         }
     }
@@ -981,7 +1000,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         shopRef
                 )
 
-                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
             }
             REQUEST_CODE_SORT -> {
@@ -1020,11 +1039,35 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun scrollToEtalaseTitlePosition() {
-        recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+        getRecyclerView(view)?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
                 0
         )
+    }
+
+    override fun onShowcaseListWidgetItemClicked(showcaseItem: ShopHomeShowcaseListItemUiModel, position: Int) {
+        shopPageHomeTracking.clickShowcaseListWidgetItem(
+                showcaseItem,
+                position,
+                customDimensionShopPage,
+                userId
+        )
+        val intent = ShopProductListResultActivity.createIntent(
+                activity,
+                shopId,
+                "",
+                showcaseItem.id,
+                "",
+                "",
+                shopRef
+        )
+        intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+        startActivity(intent)
+    }
+
+    override fun onShowcaseListWidgetItemImpression(showcaseItem: ShopHomeShowcaseListItemUiModel, position: Int) {
+        shopPageHomeTracking.onImpressionShowcaseListWidgetItem(showcaseItem, position, customDimensionShopPage, userId)
     }
 
     override fun onDisplayItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
@@ -2020,7 +2063,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
                     // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
                 }
                 startActivity(showcaseIntent)
             }
@@ -2164,7 +2207,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun scrollToTop() {
         isClickToScrollToTop = true
-        recycler_view?.scrollToPosition(0)
+        getRecyclerView(view)?.scrollToPosition(0)
     }
 
     override fun isShowScrollToTopButton(): Boolean {

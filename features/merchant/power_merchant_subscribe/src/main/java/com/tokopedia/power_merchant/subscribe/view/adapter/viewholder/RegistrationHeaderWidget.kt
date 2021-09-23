@@ -41,15 +41,11 @@ class RegistrationHeaderWidget(
         tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
             setOnExpandChanged(isExpanded, element)
         }
-        tvPmHeaderTerms.setEligibility(getPmEligibilityStatus(element))
+        tvPmHeaderTerms.setTermStatus(getPmEligibilityStatus(element))
     }
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
-        return if (element.selectedPmType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
-            element.shopInfo.isEligiblePmPro
-        } else {
-            element.shopInfo.isEligiblePm
-        }
+        return element.registrationTerms.all { it.isChecked }
     }
 
     private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = with(itemView) {

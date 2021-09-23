@@ -1,47 +1,33 @@
 package com.tokopedia.buyerorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.atc_common.domain.model.response.AtcMultiData
-import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
 import com.tokopedia.buyerorder.detail.data.DataEmail
-import com.tokopedia.buyerorder.detail.data.Detail
-import com.tokopedia.buyerorder.detail.data.DetailsData
-import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.SendEventEmail
-import com.tokopedia.buyerorder.detail.data.Title
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RechargeFavoriteRecommendationList
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.PersonalizedItems
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
-import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase
-import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase
-import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
 import rx.Subscriber
 import java.lang.reflect.Type
-import org.mockito.ArgumentMatchers.*
 
 /**
  * Created by fwidjaja on 18/11/20.
@@ -52,24 +38,14 @@ class OrderListDetailPresenterTest {
     val rule = InstantTaskExecutorRule()
 
     val view: OrderListDetailContract.View = mockk(relaxed = true)
-    val listMsgSuccess = listOf("success")
     private lateinit var orderListDetailPresenter: OrderListDetailPresenter
     val actionButtonListPojo = ActionButtonList()
-
-    @RelaxedMockK
-    lateinit var finishOrderGqlUseCase: FinishOrderGqlUseCase
 
     @RelaxedMockK
     lateinit var setActionButtonUseCase: SetActionButtonUseCase
 
     @RelaxedMockK
     lateinit var sendEventNotificationUseCase: SendEventNotificationUseCase
-
-    @RelaxedMockK
-    lateinit var addToCartMultiLegacyUseCase: AddToCartMultiLegacyUseCase
-
-    @RelaxedMockK
-    lateinit var buyerGetRecommendationUseCase: BuyerGetRecommendationUseCase
 
     @RelaxedMockK
     lateinit var orderDetailsUseCase: GraphqlUseCase
@@ -80,58 +56,13 @@ class OrderListDetailPresenterTest {
     @RelaxedMockK
     lateinit var viewOrderListDetail: OrderListDetailContract.ActionInterface
 
-    @RelaxedMockK
-    lateinit var gson: Gson
-
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        orderListDetailPresenter = OrderListDetailPresenter(orderDetailsUseCase, finishOrderGqlUseCase,
-                addToCartMultiLegacyUseCase, userSessionInterface, setActionButtonUseCase,
-                sendEventNotificationUseCase, buyerGetRecommendationUseCase)
+        orderListDetailPresenter = OrderListDetailPresenter(
+            orderDetailsUseCase, userSessionInterface, setActionButtonUseCase,
+            sendEventNotificationUseCase)
         orderListDetailPresenter.attachView(view)
-    }
-
-    // finish_order_gql
-    @Test
-    fun finishOrderGql_shouldReturnSuccess() {
-        //given
-        every {
-            finishOrderGqlUseCase.execute(any())
-        } answers {
-            firstArg<Subscriber<UohFinishOrder.Data>>().onStart()
-            firstArg<Subscriber<UohFinishOrder.Data>>().onCompleted()
-            firstArg<Subscriber<UohFinishOrder.Data>>().onNext(UohFinishOrder.Data(UohFinishOrder.Data.FinishOrderBuyer(success = 1, message = listMsgSuccess)))
-        }
-
-        //when
-        orderListDetailPresenter.finishOrderGql("", "", "", "")
-
-        //then
-        verify { finishOrderGqlUseCase.execute(any()) }
-        verify { view.showSuccessMessage(listMsgSuccess[0]) }
-    }
-
-    // add_to_cart_multi_legacy
-    @Test
-    fun addToCartMulti_shouldReturnSuccess() {
-        //given
-        every { userSessionInterface.userId } returns "0"
-
-        every {
-            addToCartMultiLegacyUseCase.execute(any())
-        } answers {
-            firstArg<Subscriber<AtcMultiData>>().onStart()
-            firstArg<Subscriber<AtcMultiData>>().onCompleted()
-            firstArg<Subscriber<AtcMultiData>>().onNext(AtcMultiData(AtcMultiData.AtcMulti(errorMessage = "", status = "", buyAgainData = AtcMultiData.AtcMulti.BuyAgainData(success = 1, message = listMsgSuccess))))
-        }
-
-        //when
-        orderListDetailPresenter.onBuyAgainItems("", listOf(), "", "")
-
-        //then
-        verify { addToCartMultiLegacyUseCase.execute(any()) }
-        verify { view.showSuccessMessageWithAction(listMsgSuccess[0]) }
     }
 
     // getActionButtonGql
@@ -191,26 +122,6 @@ class OrderListDetailPresenterTest {
         // verify { view.showSuccessMessageWithAction(dataResponse.data.message) }
     }
 
-    // buyer_get_recommendation
-    @Test
-    fun buyerGetRecommendation_shouldReturnSuccess() {
-        //given
-        every {
-            buyerGetRecommendationUseCase.execute(any())
-        } answers {
-            firstArg<Subscriber<RecommendationResponse>>().onStart()
-            firstArg<Subscriber<RecommendationResponse>>().onCompleted()
-            firstArg<Subscriber<RecommendationResponse>>().onNext(RecommendationResponse(RechargeFavoriteRecommendationList(title = "test")))
-        }
-
-        //when
-        orderListDetailPresenter.getRecommendation("")
-
-        //then
-        verify { buyerGetRecommendationUseCase.execute(any()) }
-        verify { view.setRecommendation(RecommendationResponse(RechargeFavoriteRecommendationList(title = "test"))) }
-    }
-
     // get_order_detail
     @Test
     fun orderDetail_shouldReturnSuccess() {
@@ -229,7 +140,7 @@ class OrderListDetailPresenterTest {
         }
 
         //when
-        orderListDetailPresenter.setOrderDetailsContent("", "", "", "", "", "")
+        orderListDetailPresenter.setOrderDetailsContent("", "", "")
 
         //then
         verify { orderDetailsUseCase.execute(any()) }

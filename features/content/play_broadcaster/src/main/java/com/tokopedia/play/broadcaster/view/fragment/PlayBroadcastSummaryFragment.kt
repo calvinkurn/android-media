@@ -195,7 +195,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     summaryInfoView.showError { it.onRetry() }
                     analytic.viewErrorOnReportPage(
                             channelId = parentViewModel.channelId,
-                            titleChannel = parentViewModel.title,
+                            titleChannel = parentViewModel.channelTitle,
                             errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                     )
                 }

@@ -10,8 +10,6 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.Campaign
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 
-
-
 class CampaignGreenView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {

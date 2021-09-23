@@ -34,8 +34,8 @@ private const val CLICK_HAPUS = "click - hapus iklan group ads"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int, strategy: String) -> Unit),
-                               private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
+                               private var editDone: ((groupId: String, strategy: String) -> Unit),
+                               private var onClickItem: ((id: String, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
