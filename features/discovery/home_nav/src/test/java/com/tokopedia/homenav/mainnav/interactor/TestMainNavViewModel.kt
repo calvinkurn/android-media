@@ -810,12 +810,41 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Test default complaint position`() {
-        val defaultComplainPosition = 10
-        viewModel = createViewModel()
+    fun `test when show coachmark complain with correct position for logged in user first time`() {
+        val defaultPositionComplaintNotFound = -1
+
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        every { userSession.hasShop() } returns true
+        viewModel = createViewModel(userSession = userSession)
+
         viewModel.getMainNavData(false)
-        val result = viewModel.findComplainModelPosition()
-        Assert.assertEquals(defaultComplainPosition, result)
+        val complainPosition = viewModel.findComplainModelPosition()
+        Assert.assertNotEquals(defaultPositionComplaintNotFound, complainPosition)
+    }
+
+    @Test
+    fun `test when show coachmark all transaction with correct position`() {
+        val indexDefaultAllTransaction = 1
+        val pageSource = "Other page"
+
+        viewModel = createViewModel()
+        viewModel.setPageSource(pageSource)
+
+        val allTransactionPosition = viewModel.findAllTransactionModelPosition()
+        Assert.assertNotEquals(indexDefaultAllTransaction, allTransactionPosition)
+    }
+
+    @Test
+    fun `test when coachmark all transaction will not show for specific page`() {
+        val indexDefaultAllTransaction = 1
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME
+
+        viewModel = createViewModel()
+        viewModel.setPageSource(pageSource)
+
+        val allTransactionPosition = viewModel.findAllTransactionModelPosition()
+        Assert.assertEquals(indexDefaultAllTransaction, allTransactionPosition)
     }
 
 }
