@@ -1,11 +1,14 @@
 package com.tkpd.atcvariant.view
 
+import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -16,7 +19,21 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private val btnBuy = view.findViewById<UnifyButton>(R.id.btn_buy_variant)
     private val btnAtc = view.findViewById<UnifyButton>(R.id.btn_atc_variant)
+    private val btnChat = view.findViewById<UnifyButton>(R.id.btn_chat_variant)
+
     private var isShopOwner: Boolean = false
+    val shadowDrawable: Drawable? by lazy {
+        view.generateBackgroundWithShadow(
+                backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                elevation = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
+                shadowRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
+                shadowGravity = Gravity.TOP)
+    }
 
     var visibility: Boolean = false
         set(value) {
@@ -28,6 +45,11 @@ class PartialAtcButtonView private constructor(val view: View,
 
     companion object {
         fun build(_view: View, _buttonListener: PartialAtcButtonListener) = PartialAtcButtonView(_view, _buttonListener)
+    }
+
+    init {
+        view.background = shadowDrawable
+        btnChat.generateTopchatButtonPdp()
     }
 
     fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
@@ -59,6 +81,15 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private fun renderCartRedirectionButton(cartRedirectionData: CartTypeData?) {
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
+        val unavailableButton = cartRedirectionData?.unavailableButtons ?: listOf()
+
+        btnChat?.run {
+            shouldShowWithAction(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton) {
+                setOnClickListener {
+                    buttonListener.onChatButtonClick()
+                }
+            }
+        }
 
         btnBuy.run {
             val firstButton = availableButton.firstOrNull()
@@ -142,6 +173,8 @@ class PartialAtcButtonView private constructor(val view: View,
                 buttonListener.addToCartClick(text.toString())
             }
         }
+
+        btnChat.show()
     }
 
     private fun showNoStockButton() {
@@ -151,12 +184,14 @@ class PartialAtcButtonView private constructor(val view: View,
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_DISABLE)
         }
 
+        btnChat.show()
         btnAtc.hide()
     }
 }
 
 interface PartialAtcButtonListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
+    fun onChatButtonClick()
 
     //Listener for fallback button
     fun addToCartClick(buttonText: String)

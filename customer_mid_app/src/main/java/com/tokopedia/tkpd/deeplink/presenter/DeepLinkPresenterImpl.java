@@ -1,13 +1,17 @@
 package com.tokopedia.tkpd.deeplink.presenter;
 
+import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
+import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
@@ -28,11 +32,9 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -50,7 +52,6 @@ import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.net.MalformedURLException;
@@ -63,12 +64,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import timber.log.Timber;
-
-import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
-import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
-import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 
 /**
@@ -782,7 +777,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepage(Bundle defaultBundle) {
-        Intent intent = new Intent(context, ((com.tokopedia.core.TkpdCoreRouter) context.getApplication()).getHomeClass());
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -796,7 +791,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepageHot(Bundle bundle) {
-        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
         intent.putExtras(bundle);
@@ -849,32 +844,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void processAFlistener() {
-        AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
-            @Override
-            public void onConversionDataSuccess(Map<String, Object> map) {
-                if (map.size() > 0) {
-                    if (map.get("link") != null) {
-                        String oriUri = map.get("link").toString();
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri), false);
-                    }
-                }
-            }
-
-            @Override
-            public void onConversionDataFail(String s) {
-
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {
-
-            }
-
-            @Override
-            public void onAttributionFailure(String s) {
-
-            }
-        });
     }
 
     @Override

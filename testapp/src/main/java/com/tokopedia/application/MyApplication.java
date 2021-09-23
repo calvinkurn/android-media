@@ -146,37 +146,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public Class<?> getDeeplinkClass() {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getHomeIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
         return null;
     }
 

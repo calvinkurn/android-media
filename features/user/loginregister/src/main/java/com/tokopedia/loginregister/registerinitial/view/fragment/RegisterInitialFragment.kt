@@ -261,6 +261,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
         if (isSmartLogin) {
+            showProgressBar()
             activity?.let {
                 if (isPending) {
                     val intent =  registerInitialRouter.goToVerification(email = email, otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE, context = requireContext())
@@ -479,6 +480,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onSuccessCheckOvoAcc(checkOvoResponse: CheckOvoResponse) {
+        dismissProgressBar()
         checkOvoResponse?.data?.run {
             if (isAllow) {
                 if (isRegistered) {
@@ -495,6 +497,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     fun doRegisterCheck() {
+        showProgressBar()
         phoneNumber?.run {
             registerInitialViewModel.registerCheck(removeSymbolPhone(this))
         }
@@ -552,6 +555,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onErrorCheckovoAcc(throwable: Throwable) {
+        dismissProgressBar()
         doRegisterCheck()
     }
 
@@ -587,6 +591,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onFailedGetProvider(throwable: Throwable) {
         dismissLoadingDiscover()
+        dismissProgressBar()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
@@ -618,6 +623,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onFailedGetFacebookCredential(throwable: Throwable) {
+        dismissProgressBar()
         if (isAdded && activity != null) {
             throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
         }
@@ -668,6 +674,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
+        dismissProgressBar()
         if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
@@ -740,6 +747,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
+        dismissProgressBar()
         when (registerCheckData.registerType) {
             LoginConstants.LoginType.PHONE_TYPE -> {
                 registerAnalytics.trackClickPhoneSignUpButton()
@@ -747,6 +755,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
                 } else if (registerCheckData.isShowRegisterOvo && useOvoRegister()) {
+                    showProgressBar()
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 } else {
                     showProceedWithPhoneDialog(registerCheckData.view)
@@ -783,6 +792,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
+        dismissProgressBar()
         val messageError = ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
         partialRegisterInputView.onErrorValidate(messageError)
@@ -796,6 +806,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onFailedActivateUser(throwable: Throwable) {
+        dismissProgressBar()
         throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
@@ -816,6 +827,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onFailedReloginAfterSQ(validateToken: String, throwable: Throwable) {
+        dismissProgressBar()
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
             registerInitialViewModel.reloginAfterSQ(validateToken)
@@ -853,6 +865,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.let {
             callbackManager.onActivityResult(requestCode, resultCode, data)
+            dismissProgressBar()
 
             when(requestCode) {
                 RegisterConstants.Request.REQUEST_LOGIN_GOOGLE -> { onActivityResultLoginGoogle(data) }
@@ -1074,6 +1087,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun onActionPartialClick(id: String) {
+        showProgressBar()
         registerAnalytics.trackClickSignUpButton()
         if (Patterns.PHONE.matcher(id).matches()) {
             setTempPhoneNumber(id)
@@ -1105,6 +1119,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onRegisterFacebookClick() {
         activity?.let {
+            showProgressBar()
             bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
@@ -1118,6 +1133,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onRegisterGoogleClick() {
         activity?.let {
+            showProgressBar()
             bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
@@ -1153,6 +1169,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onErrorRegister(errorMessage: String) {
+        dismissProgressBar()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         registerAnalytics.trackErrorRegister(errorMessage.removeErrorCode(), userSession.loginMethod)
     }
@@ -1227,6 +1244,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         val dialog = ProceedWithPhoneDialog.createDialog(context, phone)
         registerAnalytics.trackClickPhoneSignUpButton()
         dialog?.setPrimaryCTAClickListener {
+            showProgressBar()
             registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
@@ -1450,6 +1468,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showPopupErrorAkamai() {
+        dismissProgressBar()
         PopupErrorDialog.showPopupErrorAkamai(context)
     }
 
@@ -1482,7 +1501,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun initTermPrivacyView() {
         context?.let {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
             termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)
             termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), PRIVACY_POLICY_START_SIZE, PRIVACY_POLICY_END_SIZE, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)

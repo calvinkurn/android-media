@@ -22,6 +22,9 @@ interface DigitalTopupEventTracking {
             const val VALUE_ITEMS = "items"
             const val VALUE_PROMOTIONS = "promotions"
             const val VALUE_ITEM_LIST = "item_list"
+
+            const val REGULAR_PRODUCT = "regular product"
+            const val SPECIAL_PROMO = "special product promo"
         }
     }
 
@@ -33,6 +36,7 @@ interface DigitalTopupEventTracking {
             const val PROMO_CLICK = "promoClick"
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
+
             const val VIEW_ITEM = "view_item"
             const val VIEW_ITEM_LIST = "view_item_list"
             const val SELECT_CONTENT = "select_content"
@@ -79,6 +83,9 @@ interface DigitalTopupEventTracking {
             const val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
             const val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
             const val IMPRESSION_FILTER_CLUSTER = "impression filter cluster"
+
+            const val VIEW_SPECIAL_PRODUCT_PROMO = "view special product promo"
+            const val CLICK_SPECIAL_PRODUCT_PROMO = "click special product promo"
         }
     }
 

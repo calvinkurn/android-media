@@ -716,6 +716,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     bottomSheetIsShowing = false
                     adapter?.currentList?.let {
                         showCoachmarkWithDataValidation(it)
+                        saveFirstViewNavigationFalse()
                     }
                 }
 
@@ -724,12 +725,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bottomSheet.clearAction()
                 bottomSheet.setCloseClickListener {
                     bottomSheet.dismiss()
+                    saveFirstViewNavigationFalse()
                 }
                 childFragmentManager.run {
                     bottomSheet.show(this, ONBOARDING_NAVIGATION_TAG)
                     bottomSheetIsShowing = true
                 }
-                saveFirstViewNavigationFalse()
             }
         }
     }
@@ -798,7 +799,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(skipBalanceWidget: Boolean = false) {
-        if (!bottomSheetIsShowing) {
+        if (checkNavigationOnboardingFinished()) {
             context?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachmark = CoachMark2(it)
@@ -1247,7 +1248,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bannerCarouselCallback?.resetImpression()
             }
         })
-        getHomeViewModel().setRollanceNavigationType(RollenceKey.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1635,6 +1635,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 } else {
                     showCoachMark(skipBalanceWidget = true)
                 }
+            } else {
+                showCoachMark(skipBalanceWidget = true)
             }
         }
     }

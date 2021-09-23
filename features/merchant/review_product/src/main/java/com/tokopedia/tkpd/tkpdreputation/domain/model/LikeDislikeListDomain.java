@@ -6,19 +6,19 @@ package com.tokopedia.tkpd.tkpdreputation.domain.model;
 
 public class LikeDislikeListDomain {
 
-    private int reviewId;
+    private Long reviewId;
     private int totalLike;
     private int totalDislike;
     private int likeStatus;
 
-    public LikeDislikeListDomain(int reviewId, int totalLike, int totalDislike, int likeStatus) {
+    public LikeDislikeListDomain(Long reviewId, int totalLike, int totalDislike, int likeStatus) {
         this.reviewId = reviewId;
         this.totalLike = totalLike;
         this.totalDislike = totalDislike;
         this.likeStatus = likeStatus;
     }
 
-    public int getReviewId() {
+    public Long getReviewId() {
         return reviewId;
     }
 
