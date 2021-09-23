@@ -42,7 +42,6 @@
             android:layout_height="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_pp_bundling"
             app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifyprinciples.Typography

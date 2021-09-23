@@ -38,5 +38,7 @@ data class BundleDetail(
         @SerializedName("edit_bundle_applink")
         val editBundleApplink: String = "",
         @SerializedName("slash_price_label")
-        val slashPriceLabel: String = ""
+        val slashPriceLabel: String = "",
+        @SerializedName("bundle_icon_url")
+        val bundleIconUrl: String = ""
 )

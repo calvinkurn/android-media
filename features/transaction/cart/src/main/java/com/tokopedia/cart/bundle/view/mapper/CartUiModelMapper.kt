@@ -338,6 +338,7 @@ object CartUiModelMapper {
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel
                 bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
                 editBundleApplink = cartDetail.bundleDetail.editBundleApplink
+                bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
                 bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                     CartItemHolderData.BUNDLING_ITEM_HEADER
                 } else if (cartDetail.products.lastOrNull()?.productId == productId) {

@@ -115,6 +115,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography customTickerAction;
 
     private ConstraintLayout productBundlingInfo;
+    private ImageUnify imageBundle;
     private Typography textBundleTitle;
     private Typography textBundlePrice;
     private Typography textBundleSlashPrice;
@@ -257,6 +258,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
         customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
         productBundlingInfo = itemView.findViewById(R.id.product_bundling_info);
+        imageBundle = itemView.findViewById(R.id.image_bundle);
         textBundleTitle = itemView.findViewById(R.id.text_bundle_title);
         textBundlePrice = itemView.findViewById(R.id.text_bundle_price);
         textBundleSlashPrice = itemView.findViewById(R.id.text_bundle_slash_price);
@@ -642,6 +644,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int bottomMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_8);
 
         if (cartItemModel.isBundlingItem()) {
+            if (!TextUtils.isEmpty(cartItemModel.getBundleIconUrl())) {
+                ImageHandler.loadImage2(imageBundle, cartItemModel.getBundleIconUrl(), R.drawable.ic_loading_placeholder);
+            }
             ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
             tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
             vBundlingProductSeparator.setVisibility(View.VISIBLE);

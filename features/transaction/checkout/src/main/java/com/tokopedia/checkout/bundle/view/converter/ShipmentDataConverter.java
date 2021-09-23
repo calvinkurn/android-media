@@ -356,6 +356,7 @@ public class ShipmentDataConverter {
         cartItemModel.setBundleSlashPriceLabel(product.getBundleSlashPriceLabel());
         cartItemModel.setBundleOriginalPrice(product.getBundleOriginalPrice());
         cartItemModel.setBundleQuantity(product.getBundleQuantity());
+        cartItemModel.setBundleIconUrl(product.getBundleIconUrl());
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;

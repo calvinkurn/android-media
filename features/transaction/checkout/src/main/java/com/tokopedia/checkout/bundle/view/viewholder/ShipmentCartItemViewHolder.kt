@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -32,6 +33,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFor
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var shipmentItemListener: ShipmentItemListener? = null
     private val productBundlingInfo: ConstraintLayout = itemView.findViewById(R.id.product_bundling_info)
+    private val imageBundle: ImageUnify = itemView.findViewById(R.id.image_bundle)
     private val textBundleTitle: Typography = itemView.findViewById(R.id.text_bundle_title)
     private val textBundlePrice: Typography = itemView.findViewById(R.id.text_bundle_price)
     private val textBundleSlashPrice: Typography = itemView.findViewById(R.id.text_bundle_slash_price)
@@ -202,6 +204,10 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val productInfoLayoutParams = rlProductInfo.layoutParams as MarginLayoutParams
         val bottomMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
+            if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
+                ImageHandler.loadImage2(imageBundle, cartItemModel.bundleIconUrl, R.drawable.ic_loading_placeholder)
+            }
+
             ivProductImageLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
             tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
             vBundlingProductSeparator.visibility = View.VISIBLE

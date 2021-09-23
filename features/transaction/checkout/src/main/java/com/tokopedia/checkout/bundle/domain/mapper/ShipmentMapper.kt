@@ -250,6 +250,7 @@ class ShipmentMapper @Inject constructor() {
                         bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel
                         bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
                         bundleQuantity = cartDetail.bundleDetail.bundleQty
+                        bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
                     } else {
                         isBundlingItem = false
                         bundleId = "0"

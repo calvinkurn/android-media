@@ -317,6 +317,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                     actionListener?.onEditBundleClicked(data)
                 }
             }
+
+            if (data.bundleIconUrl.isNotBlank()) {
+                imageBundle.loadImage(data.bundleIconUrl)
+                imageBundle.show()
+            } else {
+                imageBundle.gone()
+            }
         }
     }
 

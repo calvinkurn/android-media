@@ -183,6 +183,7 @@ fun getQueryCartRevampV3(): String {
                       bundle_type
                       edit_app_link
                       slash_price_label
+                      bundle_icon_url
                     }
                     products {
                       checkbox_state
@@ -431,6 +432,7 @@ fun getQueryCartRevampV3(): String {
                       bundle_type
                       edit_app_link
                       slash_price_label
+                      bundle_icon_url
                     }
                     products {
                       checkbox_state

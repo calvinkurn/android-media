@@ -163,6 +163,7 @@ fun getQueryShipmentAddressFormV3(): String {
                       bundle_status
                       bundle_type                     
                       slash_price_label
+                      bundle_icon_url
                     }
                     products {
                       errors

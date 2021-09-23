@@ -64,4 +64,5 @@ data class CartItemModel(
         var bundleSlashPriceLabel: String = "",
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
+        var bundleIconUrl: String = ""
 ) : Parcelable
