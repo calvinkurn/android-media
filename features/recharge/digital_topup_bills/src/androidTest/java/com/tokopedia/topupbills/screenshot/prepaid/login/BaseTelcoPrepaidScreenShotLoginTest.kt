@@ -101,7 +101,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         Thread.sleep(3000)
 
         take_screenshot_visible_screen()
-        take_screenshot_coachmark_and_its_placement()
+//        take_screenshot_coachmark_and_its_placement()
         take_screenshot_filter_chip()
         take_screenshot_prabayar_category()
         take_screenshot_interaction_product_login()
