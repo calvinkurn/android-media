@@ -85,7 +85,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.editText.setText("")
             inputNumberField.isInputError = false
             inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
-            hideErrorInputNumber()
+            clearErrorState()
             imgOperator.hide()
             listener.onClickClearInput()
         }
@@ -233,13 +233,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
-    private fun hideErrorInputNumber() {
-        inputNumberField.run {
-            setMessage("")
-            isInputError = false
-        }
-    }
-
     fun setInputNumber(inputNumber: String) {
         inputNumberField.editText.setText(formatPrefixClientNumber(inputNumber))
     }
@@ -257,7 +250,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         ImageHandler.LoadImage(imgOperator, url)
         ImageHandler.LoadImage(imgOperatorResult, url)
         imgOperator.visibility = View.VISIBLE
-        hideErrorInputNumber()
+        clearErrorState()
     }
 
     fun setVisibleResultNumber(show: Boolean) {

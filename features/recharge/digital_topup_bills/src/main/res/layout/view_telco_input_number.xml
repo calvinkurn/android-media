@@ -38,8 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spacing_lvl5"
             android:layout_marginEnd="@dimen/spacing_lvl8"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="@id/telco_field_input_number"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/telco_field_input_number"
             tools:ignore="contentDescription" />
