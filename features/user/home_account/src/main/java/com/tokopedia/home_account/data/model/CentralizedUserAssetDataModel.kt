@@ -1,39 +1,38 @@
 package com.tokopedia.home_account.data.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CentralizedUserAssetDataModel(
-    @SerializedName("GetCentralizedUserAssetConfig") @Expose
+    @SerializedName("GetCentralizedUserAssetConfig")
     val data: CentralizedUserAssetConfig = CentralizedUserAssetConfig()
 )
 
 data class CentralizedUserAssetConfig(
-    @SerializedName("asset_config_vertical") @Expose
+    @SerializedName("asset_config_vertical")
     val assetConfigVertical: List<AssetConfig> = listOf(),
-    @SerializedName("asset_config_horizontal") @Expose
+    @SerializedName("asset_config_horizontal")
     val assetConfigHorizontal: List<AssetConfig> = listOf(),
-    @SerializedName("asset_config") @Expose
+    @SerializedName("asset_config")
     val assetConfig: List<AssetConfig> = listOf(),
 )
 
 data class AssetConfig(
-    @SerializedName("id") @Expose
+    @SerializedName("id")
     val id: String = "",
-    @SerializedName("title") @Expose
+    @SerializedName("title")
     val title: String = "",
-    @SerializedName("subtitle") @Expose
+    @SerializedName("subtitle")
     val subtitle: String = "",
-    @SerializedName("subtitle_color") @Expose
+    @SerializedName("subtitle_color")
     val subtitleColor: String = "",
-    @SerializedName("applink") @Expose
+    @SerializedName("applink")
     val applink: String = "",
-    @SerializedName("weblink") @Expose
+    @SerializedName("weblink")
     val weblink: String = "",
-    @SerializedName("icon") @Expose
+    @SerializedName("icon")
     val icon: String = "",
-    @SerializedName("is_active") @Expose
+    @SerializedName("is_active")
     val isActive: Boolean = false,
-    @SerializedName("hide_title") @Expose
+    @SerializedName("hide_title")
     val hide_title: Boolean = false
 )
