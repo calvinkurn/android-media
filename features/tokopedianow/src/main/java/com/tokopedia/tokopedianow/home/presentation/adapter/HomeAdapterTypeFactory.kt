@@ -84,7 +84,7 @@ class HomeAdapterTypeFactory(
                 DynamicLegoBannerViewHolder(view, listener, null)
             }
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
-            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
+            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener, tokoNowListener)
             // endregion
             else -> super.createViewHolder(view, type)
         }

@@ -16,12 +16,14 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter
 import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
 import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowRecentPurchaseViewHolder(
     itemView: View,
-    private val listener: TokoNowProductCardListener?
+    private val productCardListener: TokoNowProductCardListener?,
+    private val tokoNowView: TokoNowView? = null
 ) : AbstractViewHolder<TokoNowRecentPurchaseUiModel>(itemView) {
 
     companion object {
@@ -33,9 +35,10 @@ class TokoNowRecentPurchaseViewHolder(
     private var tvTitle: Typography? = null
     private var layoutShimmering: View? = null
     private var rvProduct: RecyclerView? = null
+    private var linearLayoutManager: LinearLayoutManager? = null
 
     private val adapter by lazy {
-        TokoNowProductCardAdapter(TokoNowProductCardAdapterTypeFactory(listener))
+        TokoNowProductCardAdapter(TokoNowProductCardAdapterTypeFactory(productCardListener))
     }
 
     init {
@@ -53,6 +56,7 @@ class TokoNowRecentPurchaseViewHolder(
             }
             TokoNowLayoutState.SHOW -> {
                 initView(data)
+                restoreScrollState()
                 hideShimmering()
                 showAllView()
             }
@@ -64,7 +68,9 @@ class TokoNowRecentPurchaseViewHolder(
         tvTitle?.setType(Typography.HEADING_4)
         rvProduct?.apply {
             adapter = this@TokoNowRecentPurchaseViewHolder.adapter
-            layoutManager = createLinearLayoutManager()
+            linearLayoutManager = createLinearLayoutManager()
+            layoutManager = linearLayoutManager
+            addOnScrollListener(createScrollListener())
         }
         adapter.submitList(data.productList)
     }
@@ -107,6 +113,21 @@ class TokoNowRecentPurchaseViewHolder(
                 )
             }
         }
+    }
+
+    private fun createScrollListener(): RecyclerView.OnScrollListener {
+        return  object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val scrollState = linearLayoutManager?.onSaveInstanceState()
+                tokoNowView?.saveScrollState(adapterPosition, scrollState)
+            }
+        }
+    }
+
+    private fun restoreScrollState() {
+        val scrollState = tokoNowView?.getScrollState(adapterPosition)
+        linearLayoutManager?.onRestoreInstanceState(scrollState)
     }
 
     fun submitList(data: TokoNowRecentPurchaseUiModel?) {
