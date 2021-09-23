@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -101,6 +102,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
 
         take_screenshot_visible_screen()
         take_screenshot_coachmark_and_its_placement()
+        take_screenshot_filter_chip()
         take_screenshot_prabayar_category()
         take_screenshot_interaction_product_login()
         take_screenshot_interaction_interactive_header()
@@ -133,6 +135,16 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close))
             .inRoot(RootMatchers.isPlatformPopup())
             .perform(click())
+    }
+
+    fun take_screenshot_filter_chip() {
+        findViewAndScreenShot(R.id.telco_filter_chip, generatePrefix(), "filter_chip")
+        CommonTelcoActions.clientNumberWidget_clickFilterChip_withText("Tokopedia")
+        CommonTelcoActions.clientNumberWidget_validateText("081232323239")
+        Thread.sleep(1000)
+        onView(withId(R.id.telco_filter_chip)).perform(ViewActions.swipeLeft())
+        Thread.sleep(1000)
+        findViewAndScreenShot(R.id.telco_filter_chip, generatePrefix(), "filter_chip_end")
     }
 
     fun take_screenshot_prabayar_category() {
