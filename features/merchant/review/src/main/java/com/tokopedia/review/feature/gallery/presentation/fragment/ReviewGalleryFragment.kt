@@ -325,7 +325,7 @@ class ReviewGalleryFragment :
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
             reviewGalleryUiModel = reviewGalleryUiModel.copy(
-                imageUrl = this.thumbnailURL,
+                imageUrl = this.fullsizeURL,
                 fullImageUrl = this.fullsizeURL,
                 attachmentId = this.attachmentId
             )
