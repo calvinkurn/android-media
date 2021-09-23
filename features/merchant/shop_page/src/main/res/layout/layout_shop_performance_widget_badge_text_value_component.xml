@@ -31,7 +31,7 @@
         app:layout_constraintLeft_toRightOf="@id/image_first_line"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="@integer/header_text_first_line_size"
         tools:text="4.8" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -42,7 +42,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_first_line"
         app:layout_constraintRight_toRightOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="@integer/header_text_second_line_size"
         tools:text="Jam operasi toko adasd das das a s" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

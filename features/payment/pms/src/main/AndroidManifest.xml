@@ -34,7 +34,7 @@
             android:label="@string/payment_title_activity_howtopay"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:name=".howtopay_native.ui.activity.HowToPayActivity" >
+            android:name=".howtopay.ui.activity.HowToPayActivity" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

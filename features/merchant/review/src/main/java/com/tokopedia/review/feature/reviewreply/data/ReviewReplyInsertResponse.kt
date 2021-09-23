@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reviewreply.data
 import com.google.gson.annotations.SerializedName
 
 data class ReviewReplyInsertResponse(
-        @SerializedName("inboxReviewInsertReviewResponse")
+        @SerializedName("inboxReviewInsertReviewResponseV2")
         val inboxReviewInsertReviewResponse: InboxReviewInsertReviewResponse = InboxReviewInsertReviewResponse()
 ) {
     data class InboxReviewInsertReviewResponse(

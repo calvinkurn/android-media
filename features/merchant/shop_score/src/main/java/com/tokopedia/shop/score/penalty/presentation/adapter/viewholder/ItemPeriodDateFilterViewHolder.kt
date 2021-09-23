@@ -8,7 +8,10 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter.
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
 import kotlinx.android.synthetic.main.item_detail_penalty_period_date_filter.view.*
 
-class ItemPeriodDateFilterViewHolder(view: View, private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener): AbstractViewHolder<ItemPeriodDetailPenaltyUiModel>(view) {
+class ItemPeriodDateFilterViewHolder(
+    view: View,
+    private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener
+) : AbstractViewHolder<ItemPeriodDetailPenaltyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_detail_penalty_period_date_filter
@@ -16,7 +19,8 @@ class ItemPeriodDateFilterViewHolder(view: View, private val itemPeriodDateFilte
 
     override fun bind(element: ItemPeriodDetailPenaltyUiModel?) {
         with(itemView) {
-            tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
+            tvPeriodDetailPenalty?.text =
+                getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
 
             ic_detail_penalty_filter?.setOnClickListener {
                 itemPeriodDateFilterListener.onDateClick()

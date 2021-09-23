@@ -56,7 +56,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)) {
-            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
+            val resultProcessReqPickup = data.getParcelableExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) ?: SomProcessReqPickup.Data.MpLogisticRequestPickup()
             val message = resultProcessReqPickup.listMessage.firstOrNull { it.isNotBlank() }.orEmpty()
             showCommonToaster(message)
             shouldRefreshOrderList = true

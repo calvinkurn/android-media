@@ -11,8 +11,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelhomepage.destination.model.*
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

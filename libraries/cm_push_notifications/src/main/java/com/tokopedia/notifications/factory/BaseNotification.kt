@@ -271,6 +271,18 @@ abstract class BaseNotification internal constructor(
         builder.setVibrate(vibratePattern)
     }
 
+    fun loadBitmap(url: String?) : Bitmap?{
+        return try {
+            Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .submit(imageWidth, imageHeight)
+                .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+        }catch (e : Exception){
+            null
+        }
+    }
+
     override fun getBitmap(url: String?): Bitmap {
         return try {
             Glide.with(context)

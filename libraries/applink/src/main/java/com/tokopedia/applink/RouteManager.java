@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -349,7 +350,13 @@ public class RouteManager {
 
     private static Intent getHomeIntent(Context context) {
         Intent intent = new Intent();
-        intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+        String packageName;
+        if (context == null) {
+            packageName = GlobalConfig.PACKAGE_APPLICATION;
+        } else {
+            packageName = context.getPackageName();
+        }
+        intent.setClassName(packageName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
         return intent;
     }
 
@@ -447,5 +454,9 @@ public class RouteManager {
         }
     }
 
+    public static Intent getSplashScreenIntent(Context context){
+        PackageManager pm = context.getPackageManager();
+        return pm.getLaunchIntentForPackage(context.getPackageName());
+    }
 
 }

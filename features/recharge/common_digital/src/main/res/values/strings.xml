@@ -3,4 +3,8 @@
 
     <string name="digital_common_title_empty_stock">Stok Habis</string>
     <string name="digital_common_prompt_phone">Nomor Ponsel</string>
+    <string name="digital_common_grpc_error_msg">grpc timeout</string>
+    <string name="digital_common_grpc_full_page_title">Oops, ada kendala koneksi</string>
+    <string name="digital_common_grpc_full_page_desc">Mungkin server kami sibuk atau internet kamu ada masalah. Coba lagi, yuk.</string>
+    <string name="digital_common_grpc_toaster">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
 </resources>

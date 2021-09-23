@@ -44,7 +44,7 @@
             android:name="com.tokopedia.tokopedianow.search.presentation.view.TokoNowSearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
-            android:windowSoftInputMode="adjustNothing"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
@@ -63,7 +63,7 @@
             android:name="com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
-            android:windowSoftInputMode="adjustNothing"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>

@@ -17,6 +17,7 @@ import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import java.util.*
 
@@ -37,9 +38,8 @@ class PackageParentViewHolder(
                 if (isExpanded) {
                     val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(R.id.rv_accordion_expandable)
                     for (i in 0 until rvTicketItem.childCount) {
-                        val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
-                                as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
-                        vh.resetQuantities()
+                        val adapter = rvTicketItem.adapter
+                        adapter?.notifyItemChanged(i)
                     }
                 }
                 onBindItemTicketListener.resetPackage()
@@ -73,11 +73,15 @@ class PackageParentViewHolder(
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
         }
 
-        val subtitle = when (isRecommendation) {
+        var subtitle = when (isRecommendation) {
             true -> Html.fromHtml("${getString(R.string.ent_pdp_available_date_label)}  " +
                         "<b>${DateUtils.dateToString(Date(value.dates[0].toLong() * SECOND_IN_MILIS),
                         DateUtils.DEFAULT_VIEW_FORMAT)}</b>")
             false -> Html.fromHtml("${getString(R.string.ent_checkout_price_expand)} <b>$salesPrice </b>")
+        }
+
+        if(value.salesPrice.toIntOrZero() == ZERO_PRICE){
+            subtitle = Html.fromHtml("<b>${getString(R.string.ent_free_price)} </b>")
         }
 
         return AccordionDataUnify(
@@ -106,5 +110,7 @@ class PackageParentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket
+
+        const val ZERO_PRICE = 0
     }
 }

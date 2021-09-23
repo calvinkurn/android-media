@@ -15,20 +15,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers.Main
 
 /**
  * @author by nisie on 10/10/18.
  */
 @Module
 class HomeAccountUserModules(val context: Context) {
-
-    @HomeAccountUserScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher {
-        return Main
-    }
 
     @Provides
     @HomeAccountUserContext

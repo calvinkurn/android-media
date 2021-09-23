@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
@@ -13,12 +12,12 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.sear
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
-import dagger.Lazy as daggerLazy
 
 internal open class SearchShopDataViewTestFixtures {
 
@@ -34,9 +33,9 @@ internal open class SearchShopDataViewTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val shopCpmViewModelMapper = shopViewModelMapperModule.provideShopCpmViewModelMapper()
     protected val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
-
+    protected val defaultKeyword = "samsung"
     protected val searchShopParameterCommon = mapOf(
-            SearchApiConst.Q to "samsung",
+            SearchApiConst.Q to defaultKeyword,
             SearchApiConst.OFFICIAL to true
     )
 
@@ -51,13 +50,13 @@ internal open class SearchShopDataViewTestFixtures {
         return SearchShopViewModel(
                 CoroutineTestDispatchersProvider,
                 parameter,
-                daggerLazy { searchShopFirstPageUseCase },
-                daggerLazy { searchShopLoadMoreUseCase },
-                daggerLazy { getDynamicFilterUseCase },
-                daggerLazy { getShopCountUseCase },
-                daggerLazy { shopCpmViewModelMapper },
-                daggerLazy { shopViewModelMapper },
-                daggerLazy { userSession }
+                { searchShopFirstPageUseCase },
+                { searchShopLoadMoreUseCase },
+                { getDynamicFilterUseCase },
+                { getShopCountUseCase },
+                { shopCpmViewModelMapper },
+                { shopViewModelMapper },
+                { userSession }
         )
     }
 

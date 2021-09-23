@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
+import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
@@ -80,6 +81,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
                 mapVariantParam(variantInputModel),
+                mapCPLData(shipmentInputModel.cplModel),
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }
@@ -104,6 +106,12 @@ class EditProductInputMapper @Inject constructor() {
                     mapSizeChart(variantInputModel.sizecharts)
             )
         }
+    }
+
+    private fun mapCPLData(cpl: CPLModel): CPLData {
+        return CPLData(
+            cpl.shipmentServicesIds
+        )
     }
 
     private fun mapVariantSelections(selections: List<SelectionInputModel>) = selections.map {

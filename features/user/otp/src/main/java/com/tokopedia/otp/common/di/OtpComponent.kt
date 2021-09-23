@@ -33,4 +33,5 @@ interface OtpComponent {
     fun inject(fragment: InactivePushNotifFragment)
     fun inject(fragment: LoginByQrFragment)
     fun inject(fragment: LoginByQrResultFragment)
+    fun inject(fragment: WhatsappNotRegisteredFragment)
 }

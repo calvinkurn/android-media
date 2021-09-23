@@ -8,13 +8,20 @@ interface ShopPerformanceListener {
 }
 
 interface ItemShopPerformanceListener {
-    fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
-                                         identifierPerformanceDetail: String)
+    fun onItemClickedToDetailBottomSheet(
+        titlePerformanceDetail: String,
+        identifierPerformanceDetail: String
+    )
+
     fun onItemClickedToFaqClicked()
 }
 
-interface ItemPotentialPMProListener {
+interface ItemRMPotentialPMProListener {
     fun onGotoPMProPage()
+}
+
+interface ItemPMPotentialPMProListener {
+    fun onGotoBenefitPMPro()
 }
 
 interface ItemRegularMerchantListener {
@@ -38,7 +45,6 @@ interface ItemStatusPowerMerchantListener {
 }
 
 interface ItemStatusPowerMerchantProListener {
-    fun onItemClickedPMProPage()
     fun onItemClickedGoToPMProActivation()
 }
 

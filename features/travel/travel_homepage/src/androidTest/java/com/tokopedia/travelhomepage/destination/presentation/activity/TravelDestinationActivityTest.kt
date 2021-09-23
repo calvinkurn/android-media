@@ -18,8 +18,6 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationSummaryViewHolder
-import com.tokopedia.travelhomepage.homepage.presentation.activity.TravelHomepageActivityTest
-import kotlinx.android.synthetic.main.layout_travel_destination_article.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -172,7 +172,6 @@ class SellerHomeUseCaseModule {
             getShopBadgeUseCase: GetShopBadgeUseCase,
             getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
             getUserShopInfoUseCase: GetUserShopInfoUseCase,
-            topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
             topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
             dispatchers: CoroutineDispatchers
     ): GetAllShopInfoUseCase {
@@ -182,7 +181,6 @@ class SellerHomeUseCaseModule {
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
                 getUserShopInfoUseCase,
-                topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,
                 dispatchers
         )

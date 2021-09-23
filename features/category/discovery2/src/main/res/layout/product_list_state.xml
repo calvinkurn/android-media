@@ -118,6 +118,22 @@
             app:layout_constraintLeft_toRightOf="@id/horizontal_image_empty_state"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/horizontal_title_tv"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/horizontal_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginHorizontal="@dimen/dp_15"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"
+            android:text="@string/discovery_filter_reset"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontal_decription_tv"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

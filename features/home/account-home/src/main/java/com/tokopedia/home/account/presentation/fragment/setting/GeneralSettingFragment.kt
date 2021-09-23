@@ -64,6 +64,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -542,7 +543,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
             Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }

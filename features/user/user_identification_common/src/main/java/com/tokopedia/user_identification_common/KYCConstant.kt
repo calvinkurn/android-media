@@ -41,5 +41,7 @@ interface KYCConstant {
         const val USER_EXIT = -9
         const val KYC_AB_KEYWORD = "Liveness Detection 2"
         const val QUERY_GET_KYC_PROJECT_INFO = "get_kyc_project_info"
+        const val HOME_CREDIT_PROJECT_ID = "16"
+        const val CO_BRAND_PROJECT_ID = "18"
     }
 }

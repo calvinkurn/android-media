@@ -21,8 +21,8 @@ class FlightCancellationReviewActivity : BaseSimpleActivity(),
     private lateinit var cancellationWrapperModel: FlightCancellationWrapperModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        invoiceId = intent.getStringExtra(EXTRA_INVOICE_ID)
-        cancellationWrapperModel = intent.getParcelableExtra(EXTRA_CANCEL_WRAPPER)
+        invoiceId = intent.getStringExtra(EXTRA_INVOICE_ID) ?: ""
+        cancellationWrapperModel = intent.getParcelableExtra(EXTRA_CANCEL_WRAPPER) ?: FlightCancellationWrapperModel()
 
         super.onCreate(savedInstanceState)
 

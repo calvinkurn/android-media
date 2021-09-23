@@ -4,18 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.data.DbPushNotificationMapper;
 import com.tokopedia.core.gcm.data.PushNotificationDataStore;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.database.PushNotificationDao;
-import com.tokopedia.core.gcm.database.model.DbPushNotification;
-import com.tokopedia.core.gcm.domain.PushNotification;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.util.PasswordGenerator;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.device.info.DeviceInfo;
 
 import rx.Observable;
 
@@ -29,12 +23,10 @@ import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_ERROR;
 public class DiskPushNotificationDataStore implements PushNotificationDataStore {
     private final Context mContext;
     private final PushNotificationDao pushNotificationDao;
-    private final DbPushNotificationMapper dbPushNotificationMapper;
 
     public DiskPushNotificationDataStore(Context context) {
         mContext = context;
         pushNotificationDao = CoreLegacyDbFlowDatabase.getInstance(context).pushNotificationDao();
-        dbPushNotificationMapper = new DbPushNotificationMapper();
     }
 
     @Override
@@ -46,7 +38,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         return Observable.just(true).map(aBoolean -> {
             DeviceRegistrationDataResponse response = new DeviceRegistrationDataResponse();
             response.setStatusCode(REGISTRATION_STATUS_ERROR);
-            response.setDeviceRegistration(PasswordGenerator.getAppId(mContext));
+            response.setDeviceRegistration(DeviceInfo.getUUID(mContext));
             response.setStatusMessage(REGISTRATION_MESSAGE_ERROR);
             return response;
         });
@@ -60,39 +52,10 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     }
 
     @Override
-    public Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant) {
-        List<DbPushNotification> data;
-        if (ascendant) {
-            data = pushNotificationDao.getDataByCategoryOrderAsc(category);
-        } else {
-            data = pushNotificationDao.getDataByCategoryOrderDesc(category);
-        }
-        return Observable.just(data)
-                .map(dbPushNotificationMapper::transform)
-                .onErrorReturn(throwable -> new ArrayList<>());
-    }
-
-    @Override
     public Observable<Boolean> deleteSavedPushNotification() {
         return Observable.just(true).map(aBoolean -> {
             pushNotificationDao.drop();
             return true;
         }).onErrorReturn(throwable -> false);
-    }
-
-    @Override
-    public Observable<String> savePushNotification(String category, String response, String customIndex, String serverId) {
-        DbPushNotification dbPushNotification = new DbPushNotification();
-        dbPushNotification.setCategory(category);
-        dbPushNotification.setResponse(response);
-        dbPushNotification.setCustomIndex(customIndex);
-        dbPushNotification.setServerId(serverId);
-        return Observable
-                .just(dbPushNotification)
-                .map(dbPushNotification1 -> {
-                    pushNotificationDao.insert(dbPushNotification1);
-                    return dbPushNotification1.getCategory();
-                })
-                .onErrorReturn(throwable -> null);
     }
 }

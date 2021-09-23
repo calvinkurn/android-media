@@ -6,6 +6,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -23,16 +25,27 @@ class HomeTickerViewHolder(
         const val PREFIX_LINK = "tokopedia"
     }
 
+    private var closeBtn: AppCompatImageButton? = null
+    private var ticker: Ticker? = null
+
+    init {
+        closeBtn = itemView.findViewById(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
+        ticker = itemView.findViewById(R.id.ticker_announcement)
+    }
+
     override fun bind(data: HomeTickerUiModel) {
-        val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
-        val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
-        closeBtn.setOnClickListener {
-            listener?.onTickerDismissed()
-        }
-        ticker.post {
-            val adapter = TickerPagerAdapter(itemView.context, data.tickers)
-            adapter.setPagerDescriptionClickEvent(this)
-            ticker.addPagerView(adapter, data.tickers)
+        if(data.tickers.isNotEmpty()) {
+            ticker?.post {
+                closeBtn?.setOnClickListener {
+                    listener?.onTickerDismissed(data.id)
+                }
+                val adapter = TickerPagerAdapter(itemView.context, data.tickers)
+                adapter.setPagerDescriptionClickEvent(this)
+                ticker?.addPagerView(adapter, data.tickers)
+                itemView.show()
+            }
+        } else {
+            itemView.hide()
         }
     }
 
@@ -47,6 +60,6 @@ class HomeTickerViewHolder(
     }
 
     interface HomeTickerListener {
-        fun onTickerDismissed()
+        fun onTickerDismissed(id: String)
     }
 }

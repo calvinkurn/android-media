@@ -343,13 +343,19 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickCuratedCampaignCard(String userId, String label, String type) {
+    public static void eventClickCuratedCampaignCard(
+            String userId,
+            String label,
+            String type,
+            String campaignCode
+    ) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_INITIAL_STATE + " - /",
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_CURATED_CAMPAIGN + " - " + type,
                         EVENT_LABEL, label,
+                        CAMPAIGN_CODE, campaignCode,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId
@@ -357,12 +363,19 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void impressedCuratedCampaign(Iris iris, String userId, String label, String type) {
+    public static void impressedCuratedCampaign(
+            Iris iris,
+            String userId,
+            String label,
+            String type,
+            String campaignCode
+    ) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, AutocompleteEventTracking.Event.VIEW_TOP_NAV_IRIS,
                 EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_INITIAL_STATE + " - /",
                 EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_CURATED_CAMPAIGN + " - " + type,
                 EVENT_LABEL, label,
+                CAMPAIGN_CODE, campaignCode,
                 BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                 CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
@@ -463,6 +476,20 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
+
+    public static void eventClickChipSuggestion(String label, String pageSource) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_CHIP_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }

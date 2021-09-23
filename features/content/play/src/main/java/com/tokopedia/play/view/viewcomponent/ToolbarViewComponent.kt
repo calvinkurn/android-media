@@ -12,9 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.state.PlayCartCount
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -49,64 +48,56 @@ class ToolbarViewComponent(
         rlCart.setOnClickListener {
             listener.onCartButtonClicked(this)
         }
+
+        tvFollow.setOnClickListener {
+            listener.onFollowButtonClicked(this)
+        }
+
+        tvPartnerName.setOnClickListener {
+            listener.onPartnerNameClicked(this)
+        }
+
+        ivCopyLink.setOnClickListener {
+            listener.onCopyButtonClicked(this)
+        }
     }
 
     fun hideActionMore() {
         ivMore.hide()
     }
 
-    fun setPartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
-        tvPartnerName.text = partnerInfo.basicInfo.name
-        setFollowStatus(partnerInfo.isFollowed)
-
-        if (!partnerInfo.isFollowable) {
-            tvFollow.setOnClickListener {}
-        } else {
-            tvFollow.setOnClickListener {
-                if (partnerInfo.isFollowed) {
-                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.UnFollow)
-                } else {
-                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.Follow)
-                }
-                partnerInfo.isFollowed = !partnerInfo.isFollowed
-            }
-        }
-
-        if (partnerInfo.basicInfo.name.isEmpty() || partnerInfo.basicInfo.name.isBlank()) clPartner.hide()
+    fun setPartnerName(name: String) {
+        if (name.isEmpty() || name.isBlank()) clPartner.hide()
         else {
             clPartner.show()
-            if (!partnerInfo.isFollowable) groupFollowable.hide()
-            else groupFollowable.show()
-
-            tvPartnerName.setOnClickListener {
-                listener.onPartnerNameClicked(this, partnerInfo.basicInfo.id, partnerInfo.basicInfo.type)
-            }
+            tvPartnerName.text = name
         }
     }
 
-    fun setFollowStatus(shouldFollow: Boolean) {
-        tvFollow.text = getString(
-                if (shouldFollow) R.string.play_following
-                else R.string.play_follow
-        )
+
+    fun setFollowStatus(followStatus: PlayPartnerFollowStatus) {
+        if (followStatus is PlayPartnerFollowStatus.Followable) {
+            tvFollow.text = getString(
+                    if (followStatus.isFollowing) R.string.play_following
+                    else R.string.play_follow
+            )
+            groupFollowable.show()
+        } else {
+            groupFollowable.hide()
+        }
     }
 
-    fun setCartInfo(cartUiModel: PlayCartInfoUiModel) {
-        if (cartUiModel.shouldShow) rlCart.show() else rlCart.gone()
-        if (cartUiModel.count > 0) {
+    fun setCartCount(count: PlayCartCount) {
+        if (count is PlayCartCount.Show) {
+            tvBadgeCart.text = count.countText
             tvBadgeCart.show()
-            tvBadgeCart.text =  if (cartUiModel.count > 99) getString(R.string.play_mock_cart) else cartUiModel.count.toString()
         } else {
             tvBadgeCart.invisible()
         }
     }
 
-    fun setShareInfo(shareInfoUiModel: PlayShareInfoUiModel) {
-        setIsShareable(shareInfoUiModel.shouldShow)
-
-        ivCopyLink.setOnClickListener {
-            listener.onCopyButtonClicked(this, shareInfoUiModel.content)
-        }
+    fun showCart(shouldShow: Boolean) {
+        if (shouldShow) rlCart.show() else rlCart.gone()
     }
 
     fun setIsShareable(isShow: Boolean) {
@@ -116,9 +107,9 @@ class ToolbarViewComponent(
     interface Listener {
         fun onBackButtonClicked(view: ToolbarViewComponent)
         fun onMoreButtonClicked(view: ToolbarViewComponent)
-        fun onFollowButtonClicked(view: ToolbarViewComponent, partnerId: Long, action: PartnerFollowAction)
-        fun onPartnerNameClicked(view: ToolbarViewComponent, partnerId: Long, type: PartnerType)
+        fun onFollowButtonClicked(view: ToolbarViewComponent)
+        fun onPartnerNameClicked(view: ToolbarViewComponent)
         fun onCartButtonClicked(view: ToolbarViewComponent)
-        fun onCopyButtonClicked(view: ToolbarViewComponent, content: String)
+        fun onCopyButtonClicked(view: ToolbarViewComponent)
     }
 }

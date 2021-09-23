@@ -5,6 +5,7 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.vouchergame.R
@@ -46,10 +47,19 @@ class VoucherGameDetailAdapter(val context: Context,
     }
 
     fun showGetListError(e: Throwable) {
-        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
-            showLoading()
-            loaderListener.loadData()
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder().build())
+        val errorNetworkModel = ErrorNetworkModel()
+
+        errorNetworkModel.run {
+            errorMessage = errMsg
+            subErrorMessage = "${context.getString(com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+            onRetryListener = ErrorNetworkModel.OnRetryListener {
+                showLoading()
+                loaderListener.loadData()
+            }
         }
+        setErrorNetworkModel(errorNetworkModel)
+        showErrorNetwork()
     }
 
     fun setSelectedProduct(position: Int) {

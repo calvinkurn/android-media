@@ -50,7 +50,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
             showComponent()
             setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
-        } else if (element.isOos()) {
+        } else if (element.isOos() && !element.isProductParent) {
             showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis), element.impressHolder)
         } else if (element.isProductInactive()) {
@@ -74,7 +74,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 addImpressionListener(statusMessage, statusTitle, impressHolder)
             }
             ShopStatusDef.CLOSED -> {
-                val openDate = closedInfo?.closeDetail?.openDateUnix.toDateId("EEEE, dd MMM yyyy")
+                val openDate = closedInfo?.closeDetail?.openDateUnixUtc.toDateId("EEEE, dd MMM yyyy")
                 val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_close)
                 addImpressionListener(statusMessage, statusTitle, impressHolder)

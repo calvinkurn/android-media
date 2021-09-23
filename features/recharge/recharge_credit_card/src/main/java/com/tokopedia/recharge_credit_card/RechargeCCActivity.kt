@@ -3,11 +3,18 @@ package com.tokopedia.recharge_credit_card
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
+import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
+import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_recharge_cc.*
+import javax.inject.Inject
 
 /*
  * applink production = tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc
@@ -16,7 +23,13 @@ import kotlinx.android.synthetic.main.activity_recharge_cc.*
  * for activating staging, dont forget change base url on submit PCIDSS
  */
 
-class RechargeCCActivity : BaseSimpleActivity() {
+class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponent> {
+
+    @Inject
+    lateinit var creditCardAnalytics: CreditCardAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getNewFragment(): Fragment? {
         val bundle = intent.extras
@@ -47,6 +60,7 @@ class RechargeCCActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSecureWindowFlag()
+        component.inject(this)
 
         toolbar_credit_card.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
         toolbar_credit_card.rightIcons?.let {
@@ -56,12 +70,26 @@ class RechargeCCActivity : BaseSimpleActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        sendAnalyticsOpenScreen()
+    }
+
+    private fun sendAnalyticsOpenScreen() {
+        creditCardAnalytics.openCCScreen()
+    }
+
     private fun setSecureWindowFlag() {
         if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
             runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
         }
     }
 
+    override fun getComponent(): RechargeCCComponent {
+        return DaggerRechargeCCComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+    }
 
     companion object {
         private const val PARAM_MENU_ID = "menu_id"

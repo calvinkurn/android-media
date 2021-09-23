@@ -73,6 +73,10 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                   }
                   max_char_note
                   header_title
+                  beli_button_config {
+                    button_type
+                    button_wording
+                  }
                   shopping_summary {
                     total_wording
                     total_value
