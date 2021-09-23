@@ -10,7 +10,6 @@ class OtherMenuContentAnimator(
 
     companion object {
         private const val INITIAL_ANIM_DURATION = 600
-        private const val SHARE_ANIM_DURATION = 300
     }
 
     private var onAnimationCompleted: (() -> Unit)? = null
@@ -43,23 +42,8 @@ class OtherMenuContentAnimator(
         }
     }
 
-    fun animateShareButtonSlideIn() {
-        motionLayout?.run {
-            setTransition(
-                R.id.constraint_sah_new_other_share_start,
-                R.id.constraint_sah_new_other_share_end
-            )
-            setTransitionDuration(SHARE_ANIM_DURATION)
-            onAnimationCompleted = {
-                listener.onShareButtonAnimationCompleted()
-            }
-            transitionToEnd()
-        }
-    }
-
     interface Listener {
         fun onInitialAnimationCompleted()
-        fun onShareButtonAnimationCompleted()
     }
 
 }

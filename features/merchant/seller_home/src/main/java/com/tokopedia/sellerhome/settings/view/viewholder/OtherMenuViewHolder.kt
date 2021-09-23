@@ -39,6 +39,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTy
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
 import com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment
@@ -90,10 +91,10 @@ class OtherMenuViewHolder(
 
     private var motionLayoutAnimator: OtherMenuContentAnimator? = null
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
+    private var shareButtonAnimator: OtherMenuShareButtonAnimator? = null
     private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
 
     private var hasInitialAnimationCompleted = false
-    private var hasShareButtonAnimationCompleted = false
 
     private val saldoImpressHolder = ImpressHolder()
     private val topadsImpressHolder = ImpressHolder()
@@ -103,13 +104,8 @@ class OtherMenuViewHolder(
         hasInitialAnimationCompleted = true
         if (listener.getIsShopShareReady()) {
             showShareButtons()
-            hasShareButtonAnimationCompleted = false
-            motionLayoutAnimator?.animateShareButtonSlideIn()
+            animateShareButton()
         }
-    }
-
-    override fun onShareButtonAnimationCompleted() {
-        hasShareButtonAnimationCompleted = true
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -205,13 +201,7 @@ class OtherMenuViewHolder(
 
     fun runShareButtonAnimation() {
         if (hasInitialAnimationCompleted) {
-            if (hasShareButtonAnimationCompleted) {
-                setShareButtonPosition()
-            } else {
-                hasShareButtonAnimationCompleted = false
-                motionLayoutAnimator?.animateShareButtonSlideIn()
-            }
-            showShareButtons()
+            animateShareButton()
         }
     }
 
@@ -269,6 +259,7 @@ class OtherMenuViewHolder(
         setupRecyclerView()
         setupSecondaryInfoAdapter()
         setupScrollHeaderAnimator()
+        setupShareButtonAnimator()
         setupContentAnimator()
     }
 
@@ -304,6 +295,12 @@ class OtherMenuViewHolder(
         motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
             hasInitialAnimationCompleted = false
             it.animateInitialSlideIn()
+        }
+    }
+
+    private fun setupShareButtonAnimator() {
+        shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
+            it.setInitialButtonState()
         }
     }
 
@@ -478,6 +475,13 @@ class OtherMenuViewHolder(
         setBalanceTopadsLoading()
     }
 
+    private fun animateShareButton() {
+        if (shareButtonAnimator?.isShareButtonShowing() != true) {
+            shareButtonAnimator?.animateShareButtonSlideIn()
+        }
+        showShareButtons()
+    }
+
     private fun showShareButtons() {
         shareButtonImage?.run {
             show()
@@ -489,26 +493,6 @@ class OtherMenuViewHolder(
             show()
             setOnClickListener {
                 listener.onShareButtonClicked()
-            }
-        }
-    }
-
-    /**
-     * Set correct position of share button, in case the animation is not working
-     */
-    private fun setShareButtonPosition() {
-        shareButtonImage?.show()
-        contentMotionLayout?.let {
-            val constraintSet = ConstraintSet().apply {
-                clone(it)
-            }
-            shareButtonImage?.id?.let { shareButtonId ->
-                constraintSet.connect(
-                    shareButtonId,
-                    ConstraintSet.END,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.END
-                )
             }
         }
     }
