@@ -39,8 +39,8 @@ class PayLaterViewModel @Inject constructor(
 
 
     fun getPayLaterAvailableDetail(price: Long) {
+        idlingResourceProvider?.increment()
         paylaterGetSimulationV2usecase.cancelJobs()
-
         paylaterGetSimulationV2usecase.getPayLaterProductDetails(
             ::onAvailableDetailSuccess,
             ::onAvailableDetailFail,
@@ -72,10 +72,12 @@ class PayLaterViewModel @Inject constructor(
 
 
     private fun onAvailableDetailFail(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _payLaterOptionsDetailLiveData.value = Fail(throwable)
     }
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
+        idlingResourceProvider?.decrement()
         paylaterGetSimulation?.let {
             _payLaterOptionsDetailLiveData.value = Success(it)
         }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -299,6 +300,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setUIIfDisable(data: Detail) {
         disableVisibilityGroup.gone()
         tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        if(tvSmallSubTitlePaylaterPartner.isVisible)
+            tvSmallSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         interestText.text = data.disableDetail?.description ?: ""
         simulasiHeading.text = data.disableDetail?.header ?: ""
     }
