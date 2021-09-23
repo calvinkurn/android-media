@@ -28,7 +28,7 @@
     <string name="telco_reset_filter">Reset</string>
     <string name="telco_save_filter">Simpan</string>
     <string name="telco_content_desc_content_book">contact book</string>
-    <string name="digital_client_label">Nomor Telepon</string>
+    <string name="digital_client_label">Nama Kontak atau Nomor Telepon</string>
     <string name="telco_pick_product">Beli</string>
     <string name="digital_client_filter_chip_see_all">Lihat Semua</string>
     <string name="digital_client_filter_chip_coachmark_title">Ini nomor yang sering kamu isi &#9757;</string>
