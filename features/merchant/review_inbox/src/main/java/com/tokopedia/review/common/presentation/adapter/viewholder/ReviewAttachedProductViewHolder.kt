@@ -28,7 +28,7 @@ class ReviewAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view
             reviewHistoryAttachedImage.loadImage(attachedImageUrl)
             setOnClickListener {
                 reviewHistoryItemListener?.trackAttachedImageClicked(productId, feedbackId)
-                reviewAttachedImagesClickListener.onAttachedImagesClicked(productName, attachedImages, adapterPosition)
+                reviewAttachedImagesClickListener.onAttachedImagesClicked(productName, attachedImages, adapterPosition - 1)
             }
         }
     }
