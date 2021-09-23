@@ -136,6 +136,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
+            image.layout(0,0,0,0)
             image.loadImageFitCenter(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
