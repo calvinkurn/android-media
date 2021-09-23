@@ -73,6 +73,7 @@ class ChatMessageUnifyViewHolder(
         bindAttachment(msg)
         bindMargin(msg)
         bindClick()
+        bindLongClick(msg)
         if (msg.isSender) {
             // Right msg
             bindMsgGravity(Gravity.END)
@@ -91,6 +92,13 @@ class ChatMessageUnifyViewHolder(
             bindHeaderInfo(msg)
             hide(fxChat?.checkMark)
             hide(header)
+        }
+    }
+
+    private fun bindLongClick(msg: MessageViewModel) {
+        fxChat?.setOnLongClickListener {
+            commonListener.showMsgMenu(msg)
+            true
         }
     }
 

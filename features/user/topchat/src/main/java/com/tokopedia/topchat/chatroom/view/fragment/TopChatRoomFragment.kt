@@ -213,6 +213,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
+
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
     /**
@@ -2344,6 +2345,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 changeAddressStack.pop()
             }
         }
+    }
+
+    override fun showMsgMenu(msg: BaseChatViewModel) {
+        val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
+            context, msg
+        ) { _, _ ->
+
+        }
+        return bs.show(getSupportChildFragmentManager(), "CHAT_BUBBLE_MENU")
     }
 
     companion object {
