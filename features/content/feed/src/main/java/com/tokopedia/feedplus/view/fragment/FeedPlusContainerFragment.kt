@@ -703,6 +703,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
         mInProgress = false
+        postProgressUpdateView?.unregisterBroadcastReceiver()
+        postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         activity?.intent?.putExtra("show_posting_progress_bar", false)
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)

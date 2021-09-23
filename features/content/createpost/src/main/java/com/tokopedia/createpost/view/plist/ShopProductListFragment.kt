@@ -88,6 +88,11 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         view.sb_shop_product.searchBarTextField.afterTextChanged {
             mAdapter.filter.filter(it)
         }
+        view.sb_shop_product.searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                createPostAnalytics.eventClickOnSearchBar()
+
+        }
         view.sb_shop_product.searchBarTextField.setOnClickListener {
             createPostAnalytics.eventClickOnSearchBar()
         }

@@ -53,6 +53,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun setProgressUpdate(progress: Int, maxCount: Int) {
         if (maxCount != 0)
             progressBar?.setValue((progress / maxCount) * 100, true)
+        else
+            progressBar?.setValue(progress, true)
     }
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
