@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_NN0">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/midGuideline"
@@ -31,6 +31,7 @@
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
+        app:card_type="border"
         app:layout_constraintEnd_toEndOf="@+id/midGuideline"
         app:layout_constraintStart_toStartOf="@id/kycReviewTitle"
         app:layout_constraintTop_toBottomOf="@id/kycReviewTitle">
@@ -38,7 +39,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/unify_space_4">
+            android:paddingBottom="@dimen/unify_space_4"
+            android:background="@color/Unify_NN0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/goPayKycKtpTitle"
@@ -99,6 +101,7 @@
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
+        app:card_type="border"
         app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
         app:layout_constraintStart_toStartOf="@id/midGuideline"
         app:layout_constraintTop_toBottomOf="@id/kycReviewTitle">
@@ -106,9 +109,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/unify_space_4">
+            android:paddingBottom="@dimen/unify_space_4"
+            android:background="@color/Unify_NN0">
 
-            <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/goPayKtpSelfieTitle"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"

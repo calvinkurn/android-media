@@ -10,6 +10,7 @@ import com.tokopedia.gopay_kyc.domain.data.KycStatusResponse
 import com.tokopedia.gopay_kyc.domain.usecase.CheckKycStatusUseCase
 import com.tokopedia.gopay_kyc.domain.usecase.SaveCaptureImageUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class GoPayKycViewModel @Inject constructor(
@@ -19,12 +20,13 @@ class GoPayKycViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     var isCameraOpen = false
-    var canGoBack = true
     var mCapturingPicture = false
+    var canGoBack = true // canGoBack is true for review screen and false for capture screen
 
     val cameraImageResultLiveData = MutableLiveData<CameraImageResult>()
     val captureErrorLiveData = MutableLiveData<Throwable>()
     val kycEligibilityStatus = MutableLiveData<KycStatusData>()
+    val errorLiveData = MutableLiveData<Throwable>()
     val isUpgradeLoading = MutableLiveData<Boolean>()
 
     fun getCapturedImagePath() = cameraImageResultLiveData.value?.finalCameraResultPath ?: ""
@@ -79,10 +81,12 @@ class GoPayKycViewModel @Inject constructor(
         isUpgradeLoading.postValue(false)
         if (kycStatusResponse.code == CODE_SUCCESS)
             kycEligibilityStatus.postValue(kycStatusResponse.kycStatusData)
+        else onKycStatusFail(IllegalStateException(ILLEGAL_STATE))
     }
 
     private fun onKycStatusFail(throwable: Throwable) {
         isUpgradeLoading.postValue(false)
+        errorLiveData.postValue(throwable)
     }
 
     override fun onCleared() {
@@ -93,5 +97,6 @@ class GoPayKycViewModel @Inject constructor(
 
     companion object {
         const val CODE_SUCCESS = "SUCCESS"
+        const val ILLEGAL_STATE = "Peningkatan versi gagal. Silakan coba lagi"
     }
 }

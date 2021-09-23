@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_NN0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/benefitCL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

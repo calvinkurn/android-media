@@ -7,7 +7,7 @@ import com.tokopedia.gopay_kyc.di.module.ViewModelModule
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayReviewActivity
 import com.tokopedia.gopay_kyc.presentation.bottomsheet.GoPayKycUploadFailedBottomSheet
-import com.tokopedia.gopay_kyc.presentation.fragment.GoPayKycBaseCameraFragment
+import com.tokopedia.gopay_kyc.presentation.fragment.base.GoPayKycBaseCameraFragment
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayPlusKycBenefitFragment
 import com.tokopedia.gopay_kyc.presentation.fragment.GoPayReviewAndUploadFragment
 import dagger.Component

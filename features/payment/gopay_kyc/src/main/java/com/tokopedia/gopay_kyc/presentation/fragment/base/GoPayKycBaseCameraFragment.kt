@@ -1,4 +1,4 @@
-package com.tokopedia.gopay_kyc.presentation.fragment
+package com.tokopedia.gopay_kyc.presentation.fragment.base
 
 import android.Manifest
 import android.annotation.TargetApi
@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.analytics.GoPayKycAnalytics
+import com.tokopedia.gopay_kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.di.GoPayKycComponent
 import com.tokopedia.gopay_kyc.domain.data.CameraImageResult
@@ -42,7 +43,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
+abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -93,15 +94,8 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            handleBackPressNavigation()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupOnBackPressed()
         viewModel.cameraImageResultLiveData.observe(viewLifecycleOwner, {
             context?.let { context -> loadImageFromBitmap(context, it) }
             hideCameraProp()
@@ -160,7 +154,9 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         setCaptureInstruction()
     }
 
+    // open review screen to either proceed with captured photo or retake again
     private fun hideCameraProp() {
+        sendAnalytics(GoPayKycEvent.Impression.OpenScreenEvent(getPageSource()))
         viewModel.canGoBack = false
         cameraView?.close()
         capturedImageView?.visible()
@@ -234,28 +230,6 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
-    }
-
-    protected fun handleBackPressNavigation() {
-        sendAnalytics(GoPayKycEvent.Click.BackPressEvent(getPageSource()))
-        if (viewModel.canGoBack)
-            activity?.finish()
-        else
-            ReviewCancelDialog.showReviewDialog(
-                requireContext(),
-                {
-                    sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(getKycType(), getPageSource()))
-                    proceedToNextStep()
-                },
-                {
-                    sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(getKycType(), getPageSource()))
-                    exitKycFlow()
-                }
-            )
-    }
-
     private fun exitKycFlow() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.GOPAY_KYC)
@@ -295,6 +269,25 @@ abstract class GoPayKycBaseCameraFragment : BaseDaggerFragment() {
         hideLoading()
         cameraView?.close()
         super.onDestroy()
+    }
+
+    override fun sendOpenScreenGopayEvent() {}
+    override fun handleBackPressForGopay() {
+        sendAnalytics(GoPayKycEvent.Click.BackPressEvent(getPageSource()))
+        if (viewModel.canGoBack)
+            activity?.finish()
+        else
+            ReviewCancelDialog.showReviewDialog(
+                requireContext(),
+                {
+                    sendAnalytics(GoPayKycEvent.Click.ConfirmOkDialogEvent(getKycType(), getPageSource()))
+                    proceedToNextStep()
+                },
+                {
+                    sendAnalytics(GoPayKycEvent.Click.ExitKycDialogEvent(getKycType(), getPageSource()))
+                    exitKycFlow()
+                }
+            )
     }
 
     override fun getScreenName() = null

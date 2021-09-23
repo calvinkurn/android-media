@@ -85,10 +85,4 @@ class GoPayKycAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
-  /*  private fun sendAuthenticateEvent(map: MutableMap<String, Any>) {
-        map[GoPayKycConstants.KEY_BUSINESS_UNIT] = GoPayKycConstants.VALUE_BUSINESS_UNIT
-        map[GoPayKycConstants.KEY_CURRENT_SITE] = GoPayKycConstants.VALUE_CURRENT_SITE
-        map[GoPayKycConstants.KEY_USER_ID] = userSession.get().userId
-        map[GoPayKycConstants.KEY_LOGGED_IN_STATUS] = userSession.get().isLoggedIn
-    }*/
 }

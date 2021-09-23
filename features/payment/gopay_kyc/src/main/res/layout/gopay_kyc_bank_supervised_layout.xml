@@ -9,6 +9,8 @@
         android:id="@+id/privacyImage"
         android:layout_width="@dimen/go_pay_kyc_dp_20"
         android:layout_height="@dimen/go_pay_kyc_dp_20"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:icon_name="POLICY_PRIVACY"/>

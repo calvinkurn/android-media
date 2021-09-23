@@ -49,6 +49,7 @@ class GoPayKycViewModelTest {
             loadingObserver.onChanged(true)
             loadingObserver.onChanged(false)
         }
+        assert(viewModel.errorLiveData.value is Throwable)
     }
 
     @Test
@@ -62,6 +63,7 @@ class GoPayKycViewModelTest {
             loadingObserver.onChanged(true)
             loadingObserver.onChanged(false)
         }
+        assert(viewModel.errorLiveData.value is Throwable)
     }
 
     @Test
@@ -73,21 +75,5 @@ class GoPayKycViewModelTest {
         viewModel.checkKycStatus()
         assert(viewModel.kycEligibilityStatus.value?.isEligible == data.kycStatusData.isEligible)
     }
-/*
-    @Test
-    fun `Execute processAndSaveImage`() {
-        mockkStatic(CameraUtils::class)
-        val image = ByteArray(2)
-
-        every { CameraUtils.decodeBitmap(image, 1, 1) {} } answers {
-            (args[3] as BitmapCallback).onBitmapReady(null)
-        }
-
-        viewModel.processAndSaveImage(image, 1, 1, 1)
-
-        verify {
-            CameraUtils.decodeBitmap(image, 1,1) { }
-        }
-    }*/
 
 }

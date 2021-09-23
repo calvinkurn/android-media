@@ -12,6 +12,7 @@ import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay_kyc.presentation.activity.GoPayCameraKtpActivity.Companion.KTP_IMAGE_PATH
+import com.tokopedia.gopay_kyc.presentation.fragment.base.GoPayKycBaseCameraFragment
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.*
@@ -69,7 +70,7 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
         params.rightMargin = context?.pxToDp(GoPaySelfieKtpFragment.TEXT_MARGIN)?.toInt() ?: 0
         photoInstructionTV.layoutParams = params
         setCaptureInstruction()
-        kycHeader.setNavigationOnClickListener { handleBackPressNavigation() }
+        kycHeader.setNavigationOnClickListener { handleBackPressForGopay() }
     }
 
     override fun setCaptureInstruction() {

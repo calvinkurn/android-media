@@ -78,7 +78,7 @@ class SaveCaptureImageUseCase @Inject constructor(
                 }
             }
         } catch (e: Throwable) {
-
+            throw e
         }
         return null
     }
@@ -98,6 +98,7 @@ class SaveCaptureImageUseCase @Inject constructor(
                     out.flush()
                     out.close()
                 } catch (e: Exception) {
+                    throw e
                 }
             }
         }

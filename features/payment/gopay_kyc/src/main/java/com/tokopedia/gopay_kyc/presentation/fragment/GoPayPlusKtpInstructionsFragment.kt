@@ -4,26 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay_kyc.analytics.GoPayKycEvent
+import com.tokopedia.gopay_kyc.presentation.fragment.base.GoPayKycBaseFragment
 import com.tokopedia.gopay_kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayKycInstructionItemViewHolder
 import kotlinx.android.synthetic.main.fragment_gopay_ktp_instructions_layout.*
 
-class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
+class GoPayPlusKtpInstructionsFragment : GoPayKycBaseFragment() {
 
     private val instructionStringResList = arrayListOf<Int>()
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            val event = GoPayKycEvent.Click.BackPressEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE)
-            sendAnalytics(event)
-            activity?.finish()
-        }
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         populateInstructions()
@@ -46,12 +39,9 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        val event = GoPayKycEvent.Impression.OpenScreenEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE)
-        sendAnalytics(event)
         takePhotoButton.setOnClickListener {
             openKtpCamera()
         }
-        setUpOnBackPressed()
     }
 
     private fun initViews() {
@@ -84,13 +74,11 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setUpOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, backPressedCallback)
-    }
-
     private fun openKtpCamera() {
-        val event = GoPayKycEvent.Click.TakePhotoEvent(GoPayKycConstants.Label.KTP,
-            GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE)
+        val event = GoPayKycEvent.Click.TakePhotoEvent(
+            GoPayKycConstants.Label.KTP,
+            GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE
+        )
         sendAnalytics(event)
         activity?.let { (it as GoPayKycNavigationListener).openKtpCameraScreen() }
     }
@@ -98,10 +86,20 @@ class GoPayPlusKtpInstructionsFragment : BaseDaggerFragment() {
     override fun getScreenName() = null
     override fun initInjector() {}
     private fun sendAnalytics(event: GoPayKycEvent) =
-        activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event)}
+        activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event) }
+
+    override fun handleBackPressForGopay() {
+        val event =
+            GoPayKycEvent.Click.BackPressEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE)
+        sendAnalytics(event)
+        activity?.finish()
+    }
+
+    override fun sendOpenScreenGopayEvent() {
+        sendAnalytics(GoPayKycEvent.Impression.OpenScreenEvent(GoPayKycConstants.ScreenNames.GOPAY_KYC_INSTRUCTION_PAGE))
+    }
 
     companion object {
-
         fun newInstance() = GoPayPlusKtpInstructionsFragment()
     }
 }
