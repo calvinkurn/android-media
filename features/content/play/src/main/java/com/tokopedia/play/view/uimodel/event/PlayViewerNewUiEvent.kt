@@ -6,8 +6,6 @@ import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 /**
  * Created by jegul on 29/06/21
  */
-interface AllowedWhenInactiveEvent
-
 sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
@@ -37,4 +35,11 @@ sealed class UiString {
     data class Text(val text: String) : UiString()
 }
 
-private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 500L
+data class AllowedWhenInactiveEvent(
+    val event: PlayViewerNewUiEvent
+) : PlayViewerNewUiEvent() {
+
+    init {
+        require(event !is AllowedWhenInactiveEvent)
+    }
+}
