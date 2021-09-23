@@ -21,7 +21,7 @@ class GetUserRoleUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<String> {
         val gqlRequest = GraphqlRequest(QUERY, GetUserRoleModel::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetUserRoleModel::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetUserRoleModel>()

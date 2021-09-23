@@ -115,7 +115,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         if (isShopOwner) requests.addAll(listOf(topAdsShopRequest, topAdsManageRequest)) else requests.addAll(listOf(shopFollowRequest))
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+            val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
 
             if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true) {
                 p2Login.isWishlisted = gqlResponse.getData<WishlistStatus>(WishlistStatus::class.java)
