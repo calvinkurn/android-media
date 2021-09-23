@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.data.source.cloud.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -60,7 +61,10 @@ data class CurrentPmGradeModel(
         @SerializedName("image_badge_url")
         val imgBadgeUrl: String? = "",
         @SerializedName("image_badge_background_mobile_url")
-        val backgroundUrl: String? = ""
+        val backgroundUrl: String? = "",
+        @Expose
+        @SerializedName("shop_level")
+        val shopLevel: String? = ""
 )
 
 data class PMGradeBenefitModel(

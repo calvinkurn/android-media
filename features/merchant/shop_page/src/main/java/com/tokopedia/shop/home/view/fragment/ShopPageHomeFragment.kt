@@ -1000,7 +1000,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         shopRef
                 )
 
-                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
             }
             REQUEST_CODE_SORT -> {
@@ -1062,7 +1062,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 "",
                 shopRef
         )
-        intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+        intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
         startActivity(intent)
     }
 
@@ -2063,7 +2063,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
                     // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
                 }
                 startActivity(showcaseIntent)
             }
