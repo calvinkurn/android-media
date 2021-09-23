@@ -17,7 +17,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 
 class HomeProductRecomViewHolder(
     itemView: View,
-    private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null
 ): AbstractViewHolder<HomeProductRecomUiModel>(itemView), RecommendationCarouselWidgetListener {
 
@@ -101,18 +101,18 @@ class HomeProductRecomViewHolder(
             pageSource = SOURCE,
             isTokoNow = true,
             shopId = recomItem.shopId.toString(),
-            startActivitResult = (tokoNowListener?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
+            startActivitResult = (tokoNowView?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
         )
     }
 
     private fun setOnScrollListener() {
         productRecom.setScrollListener { scrollState ->
-            tokoNowListener?.saveScrollState(adapterPosition, scrollState)
+            tokoNowView?.saveScrollState(adapterPosition, scrollState)
         }
     }
 
     private fun restoreScrollState() {
-        val scrollState = tokoNowListener?.getScrollState(adapterPosition)
+        val scrollState = tokoNowView?.getScrollState(adapterPosition)
         productRecom.restoreScrollState(scrollState)
     }
 
