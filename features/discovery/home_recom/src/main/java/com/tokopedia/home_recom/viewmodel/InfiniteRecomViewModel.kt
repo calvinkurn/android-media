@@ -211,7 +211,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 } else {
                     updateMiniCartAfterATCRecomTokonow(
                             message = result.data.message.first(),
-                            isDeleteCart = false,
+                            isDeleteCart = true,
                             recomItem = recomItem)
                 }
             }

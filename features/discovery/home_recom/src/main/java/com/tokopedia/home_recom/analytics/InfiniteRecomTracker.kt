@@ -73,7 +73,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
     }
 
     fun eventRecomItemClick(recomItem: RecommendationItem, userId: String): Map<String, Any> {
-        val trackerBuilder = BaseTrackerBuilder().constructBasicProductView(
+        val trackerBuilder = BaseTrackerBuilder().constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventAction = CLICK_ACTION_INFINITE_RECOM_ITEM,
                 eventCategory = CLICK_CATEGORY_INFINITE_RECOM_ITEM,
