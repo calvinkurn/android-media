@@ -284,13 +284,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.show()
 
         if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
-            activity?.intent?.putExtra("show_posting_progress_bar", false)
-            updateVisibility(true)
-            postProgressUpdateView?.registerBroadcastReceiver()
-            postProgressUpdateView?.registerBroadcastReceiverProgress()
+            if (!mInProgress) {
+                postProgressUpdateView?.resetProgressBarState()
+                updateVisibility(true)
+                mInProgress = true
+                postProgressUpdateView?.registerBroadcastReceiver()
+                postProgressUpdateView?.registerBroadcastReceiverProgress()
+            }
         } else {
             updateVisibility(false)
-
         }
     }
 
@@ -700,6 +702,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
+        mInProgress = false
+        activity?.intent?.putExtra("show_posting_progress_bar", false)
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
             if (fragment is FeedPlusFragment) {
