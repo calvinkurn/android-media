@@ -28,6 +28,15 @@
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/notifTagPieChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toTopOf="@id/tvPieChartTitle"
+            app:layout_constraintBottom_toBottomOf="@id/tvPieChartTitle"
+            app:layout_constraintStart_toEndOf="@id/tvPieChartTitle"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPieChartValue"
             android:layout_width="wrap_content"

@@ -14,6 +14,7 @@ data class ChannelModel(
         val channelHeader: ChannelHeader = ChannelHeader(),
         val channelBanner: ChannelBanner = ChannelBanner(),
         val channelConfig: ChannelConfig = ChannelConfig(),
+        val channelViewAllCard: ChannelViewAllCard = ChannelViewAllCard(),
         val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
         val channelGrids: List<ChannelGrid>  = listOf(),
         val name : String = "",

@@ -260,7 +260,6 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         initInboxAbTest();
-        initNotifcenterOnNewInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -297,19 +296,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void initNotifcenterOnNewInboxAbTest() {
-        try {
-            useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .getString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_OLD_NOTFICENTER
-                    ).equals(RollenceKey.VARIANT_NEW_NOTFICENTER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
         if (userSession.get().isLoggedIn()) {
@@ -323,7 +309,6 @@ public class MainParentActivity extends BaseActivity implements
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
-        moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_REVIEW);

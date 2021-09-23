@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -57,41 +59,75 @@ object BuyerOrderDetailTracker {
         return this
     }
 
+    private fun MutableMap<String, Any>.appendUserId(userId: String): MutableMap<String, Any> {
+        put(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_USER_ID, userId)
+        return this
+    }
+
+    private fun Bundle.appendUserId(userId: String): Bundle {
+        putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_USER_ID, userId)
+        return this
+    }
+
+    private fun Bundle.appendProductIds(products: List<ProductListUiModel.ProductUiModel>): Bundle {
+        putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_ID, products.joinToString(separator = BuyerOrderDetailTrackerConstant.SEPARATOR_COMMA) { it.productId })
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendOrderListDetailMarker(): MutableMap<String, Any> {
+        put(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40, BuyerOrderDetailTrackerConstant.MARKER_ORDER_LIST_DETAIL_MARKETPLACE)
+        return this
+    }
+
+    private fun Map<String, Any>.sendGeneralEvent() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(this)
+    }
+
+    private fun Bundle.sendEnhancedEcommerce(eventName: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
+    }
+
     private fun Bundle.appendBuyAgainProductEE(
-            products: List<ProductListUiModel.ProductUiModel>,
-            cartId: String,
-            shopId: String,
-            shopName: String,
-            shopType: Int
+        products: List<ProductListUiModel.ProductUiModel>,
+        atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,
+        shopId: String,
+        shopName: String,
+        shopType: String
     ): Bundle {
-        val productsPayload = products.map {
+        val productsPayload = products.map { product ->
             Bundle().apply {
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID, it.categoryId)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, cartId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID, product.categoryId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40, BuyerOrderDetailTrackerConstant.MARKER_ORDER_LIST_DETAIL_MARKETPLACE)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, atcResult.find { it.productId.toString() == product.productId }?.cartId.orZero().toString())
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_BRAND, "")
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY, it.category)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID, it.productId)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME, it.productName)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY, product.category)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID, product.productId)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME, product.productName)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_VARIANT, "")
-                putDouble(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRICE, it.price)
-                putInt(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_QUANTITY, it.quantity)
+                putDouble(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRICE, product.price)
+                putInt(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_QUANTITY, product.quantity)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_ID, shopId)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_NAME, shopName)
-                putInt(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_TYPE, shopType)
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_TYPE, shopType)
             }
         }
         putParcelableArrayList(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS_ITEMS, ArrayList(productsPayload))
         return this
     }
 
-    private fun eventGeneralBuyerOrderDetail(eventAction: String, orderStatusCode: String, orderId: String) {
-        val payload = mutableMapOf<String, Any>().appendGeneralEventData(
-                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
-                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
-                eventAction = eventAction,
-                eventLabel = "$orderStatusCode${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}$orderId"
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE).appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
-        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
+    private fun eventGeneralBuyerOrderDetail(
+        eventAction: String,
+        orderStatusCode: String,
+        orderId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = eventAction,
+            eventLabel = "$orderStatusCode${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}$orderId"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .sendGeneralEvent()
     }
 
     fun eventClickSeeOrderHistoryDetail(orderStatusCode: String, orderId: String) {
@@ -156,26 +192,39 @@ object BuyerOrderDetailTracker {
     }
 
     fun eventClickBuyAgain(
-            products: List<ProductListUiModel.ProductUiModel>,
-            orderId: String,
-            cartId: String,
-            shopId: String,
-            shopName: String,
-            shopType: Int,
-            userId: String
+        orderId: String,
+        userId: String
     ) {
-        val payload = Bundle().apply {
-            appendGeneralEventData(
-                    eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART,
-                    eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
-                    eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN,
-                    eventLabel = orderId)
-            appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE)
-            appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
-            appendBuyAgainProductEE(products, cartId, shopId, shopName, shopType)
-            putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_ID, products.joinToString(separator = BuyerOrderDetailTrackerConstant.SEPARATOR_COMMA) { it.productId })
-            putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_USER_ID, userId)
-        }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART, payload)
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN,
+            eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_ATTEMPT_BUY_AGAIN} $orderId"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun eventSuccessATC(
+        products: List<ProductListUiModel.ProductUiModel>,
+        atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,
+        orderId: String,
+        shopId: String,
+        shopName: String,
+        shopType: String,
+        userId: String
+    ) {
+        Bundle().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS,
+            eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_BUY_AGAIN_SUCCESS} $orderId"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendBuyAgainProductEE(products, atcResult, shopId, shopName, shopType)
+            .appendProductIds(products)
+            .appendUserId(userId)
+            .sendEnhancedEcommerce(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART)
     }
 }

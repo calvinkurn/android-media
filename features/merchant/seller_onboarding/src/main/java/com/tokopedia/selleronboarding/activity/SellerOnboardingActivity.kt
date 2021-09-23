@@ -20,14 +20,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
-import com.tokopedia.selleronboarding.model.BaseSliderUiModel
-import com.tokopedia.selleronboarding.model.SobSliderHomeUiModel
-import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
-import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
-import com.tokopedia.selleronboarding.model.SobSliderStatisticsUiModel
-import com.tokopedia.selleronboarding.model.SobSliderPromoUiModel
+import com.tokopedia.selleronboarding.databinding.ActivitySobOnboardingBinding
+import com.tokopedia.selleronboarding.model.*
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
-import kotlinx.android.synthetic.main.activity_sob_onboarding.*
 import kotlin.math.abs
 
 /**
@@ -60,10 +55,12 @@ class SellerOnboardingActivity : BaseActivity() {
             SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
         )
     }
+    private var binding: ActivitySobOnboardingBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sob_onboarding)
+        binding = ActivitySobOnboardingBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         setWhiteStatusBar()
         setupViewsTopMargin()
@@ -72,30 +69,32 @@ class SellerOnboardingActivity : BaseActivity() {
         setupSliderItems()
         setupButtonClickListener()
 
-        pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
+        binding?.pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
     }
 
     @SuppressLint("WrongConstant")
     private fun setupSlider() {
-        sobViewPager?.offscreenPageLimit = OFF_SCREEN_PAGE_LIMIT
-        sobViewPager?.adapter = sobAdapter
-        sobViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding?.sobViewPager?.run {
+            offscreenPageLimit = OFF_SCREEN_PAGE_LIMIT
+            adapter = sobAdapter
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
 
-                setSlideIndicator(position)
-                setPreviousButtonVisibility(position)
-                updateNextButtonState(position)
-                updateHeaderBackground(position)
-            }
-        })
+                    setSlideIndicator(position)
+                    setPreviousButtonVisibility(position)
+                    updateNextButtonState(position)
+                    updateHeaderBackground(position)
+                }
+            })
+        }
     }
 
     private fun updateHeaderBackground(position: Int) {
         try {
             val slideItem = slideItems[position]
-            imgSobHeader?.loadImage(slideItem.headerResBg)
+            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
         } catch (e: IndexOutOfBoundsException) {
             //do nothing
         }
@@ -105,10 +104,10 @@ class SellerOnboardingActivity : BaseActivity() {
         val compositeTransformer = CompositePageTransformer()
         compositeTransformer.addTransformer { page, position ->
             val viewObserver = page.findViewById<View>(R.id.viewObserver)
-            val r = TRANSFORMER_SCALE_MULTIPLIER - abs(position)
+            val scrollPos = TRANSFORMER_SCALE_MULTIPLIER - abs(position)
             val absPos = abs(position)
-            viewObserver.scaleX = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
-            viewObserver.scaleY = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
+            viewObserver.scaleX = OBSERVER_DEF_SCALE_XY + scrollPos * OBSERVER_SCALE_XY_MULTIPLIER
+            viewObserver.scaleY = OBSERVER_DEF_SCALE_XY + scrollPos * OBSERVER_SCALE_XY_MULTIPLIER
             viewObserver.translationY = (absPos * VIEW_OBSERVER_Y_TRANSLATION)
             when {
                 (position <= TRANSFORMER_FULL_PAGE_POSITION) -> {
@@ -119,69 +118,79 @@ class SellerOnboardingActivity : BaseActivity() {
                 else -> viewObserver.alpha = VIEW_OBSERVER_ALPHA
             }
         }
-        sobViewPager?.setPageTransformer(compositeTransformer)
+        binding?.sobViewPager?.setPageTransformer(compositeTransformer)
     }
 
     private fun updateNextButtonState(position: Int) {
         val isLastSlide = position == SLIDER_LAT_INDEX
         if (isLastSlide) {
-            btnSobNext?.text = getString(R.string.sob_login)
+            binding?.btnSobNext?.text = getString(R.string.sob_login)
         } else {
-            btnSobNext?.text = getString(R.string.sob_next)
+            binding?.btnSobNext?.text = getString(R.string.sob_next)
         }
     }
 
     private fun setPreviousButtonVisibility(position: Int) {
-        val shouldShowButton = position != SLIDER_FIRST_INDEX
-        if (shouldShowButton) {
-            if (btnSobPrev?.isVisible == false) {
-                val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popin)
-                btnSobPrev?.startAnimation(animation)
+        binding?.run {
+            val shouldShowButton = position != SLIDER_FIRST_INDEX
+            if (shouldShowButton) {
+                if (!btnSobPrev.isVisible) {
+                    val animation = AnimationUtils.loadAnimation(
+                        this@SellerOnboardingActivity,
+                        R.anim.anim_sob_popin
+                    )
+                    btnSobPrev.startAnimation(animation)
+                }
+            } else {
+                if (btnSobPrev.isVisible) {
+                    val animation = AnimationUtils.loadAnimation(
+                        this@SellerOnboardingActivity,
+                        R.anim.anim_sob_popout
+                    )
+                    btnSobPrev.startAnimation(animation)
+                }
             }
-        } else {
-            if (btnSobPrev?.isVisible == true) {
-                val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popout)
-                btnSobPrev?.startAnimation(animation)
-            }
+            btnSobPrev.isVisible = shouldShowButton
         }
-        btnSobPrev?.isVisible = shouldShowButton
     }
 
     private fun setSlideIndicator(position: Int) {
-        pageIndicatorSob?.setCurrentIndicator(position)
+        binding?.pageIndicatorSob?.setCurrentIndicator(position)
         SellerOnboardingV2Analytic.sendEventImpressionOnboarding(getPositionViewPager())
     }
 
     private fun setupButtonClickListener() {
-        btnSobNext?.setOnClickListener {
-            val lastSlideIndex = slideItems.size.minus(1)
-            val isLastSlide = sobViewPager?.currentItem == lastSlideIndex
-            if (isLastSlide) {
-                goToLoginPage()
-                SellerOnboardingV2Analytic.sendEventClickGetIn()
-            } else {
-                moveToNextSlide()
-                SellerOnboardingV2Analytic.sendEventClickNextPage(getPositionViewPager())
+        binding?.run {
+            btnSobNext.setOnClickListener {
+                val lastSlideIndex = slideItems.size.minus(1)
+                val isLastSlide = sobViewPager.currentItem == lastSlideIndex
+                if (isLastSlide) {
+                    goToLoginPage()
+                    SellerOnboardingV2Analytic.sendEventClickGetIn()
+                } else {
+                    moveToNextSlide()
+                    SellerOnboardingV2Analytic.sendEventClickNextPage(getPositionViewPager())
+                }
             }
-        }
 
-        btnSobPrev?.setOnClickListener {
-            moveToPreviousSlide()
-        }
-        tvSobSkip?.setOnClickListener {
-            SellerOnboardingV2Analytic.sendEventClickSkipPage(getPositionViewPager())
-            goToLoginPage()
+            btnSobPrev.setOnClickListener {
+                moveToPreviousSlide()
+            }
+            tvSobSkip.setOnClickListener {
+                SellerOnboardingV2Analytic.sendEventClickSkipPage(getPositionViewPager())
+                goToLoginPage()
+            }
         }
     }
 
     private fun moveToPreviousSlide() {
-        val currentPosition = sobViewPager?.currentItem.orZero()
-        sobViewPager.setCurrentItem(currentPosition.minus(1), true)
+        val currentPosition = binding?.sobViewPager?.currentItem.orZero()
+        binding?.sobViewPager?.setCurrentItem(currentPosition.minus(ADDITIONAL_INDEX), true)
     }
 
     private fun moveToNextSlide() {
-        val currentPosition = sobViewPager?.currentItem.orZero()
-        sobViewPager?.setCurrentItem(currentPosition.plus(1), true)
+        val currentPosition = binding?.sobViewPager?.currentItem.orZero()
+        binding?.sobViewPager?.setCurrentItem(currentPosition.plus(ADDITIONAL_INDEX), true)
     }
 
     private fun goToLoginPage() {
@@ -203,7 +212,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setupViewsTopMargin() {
         val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
-        val btnSkipLp = tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
+        val btnSkipLp = binding?.tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
         btnSkipLp?.let { lp ->
             val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)
             lp.setMargins(
@@ -214,7 +223,7 @@ class SellerOnboardingActivity : BaseActivity() {
             )
         }
 
-        val viewPagerLp = sobViewPager.layoutParams as? ViewGroup.MarginLayoutParams
+        val viewPagerLp = binding?.sobViewPager?.layoutParams as? ViewGroup.MarginLayoutParams
         viewPagerLp?.let { lp ->
             val viewPagerTopMargin = lp.topMargin.plus(statusBarHeight)
             lp.setMargins(
@@ -226,5 +235,7 @@ class SellerOnboardingActivity : BaseActivity() {
         }
     }
 
-    private fun getPositionViewPager(): Int = sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
+    private fun getPositionViewPager(): Int {
+        return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
+    }
 }
