@@ -162,6 +162,7 @@ class ShopHomeViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
+                gqlShopPageGetHomeType.isFromCacheFirst = false
                 gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
                         shopId.toIntOrZero()
                 )

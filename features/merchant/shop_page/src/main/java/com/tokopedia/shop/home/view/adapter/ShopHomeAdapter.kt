@@ -173,6 +173,7 @@ class ShopHomeAdapter(
             if (isShowLoadingMore) {
                 newList.add(loadingMoreModel)
             } else {
+                newList.clear()
                 newList.add(loadingModel)
             }
             submitList(newList)

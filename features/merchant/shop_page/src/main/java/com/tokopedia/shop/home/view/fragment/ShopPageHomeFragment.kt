@@ -509,7 +509,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        shopHomeAdapter.clearAllElements()
+        shopHomeAdapter.showLoading()
         getRecyclerView(view)?.visible()
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
@@ -2084,7 +2084,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
-        shopHomeAdapter.showLoading()
+        shopHomeAdapter.addProductGridListPlaceHolder()
         endlessRecyclerViewScrollListener.resetState()
         getProductList(1)
     }
@@ -2243,8 +2243,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
-        shopHomeAdapter.clearAllElements()
-        showLoading()
+        shopHomeAdapter.showLoading()
         viewModel?.getShopPageHomeWidgetLayoutData(shopId)
     }
 
