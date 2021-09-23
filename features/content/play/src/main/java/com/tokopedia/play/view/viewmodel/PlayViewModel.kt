@@ -740,7 +740,7 @@ class PlayViewModel @Inject constructor(
             if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
 
             playVideoPlayer.addListener(videoManagerListener)
-//            playVideoPlayer.resume()
+            playVideoPlayer.resume()
             updateVideoMetaInfo(channelData.videoMetaInfo)
 
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
@@ -788,7 +788,7 @@ class PlayViewModel @Inject constructor(
         updatePartnerInfo(channelData.partnerInfo)
         updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze) {
-            updateVideoMetaInfo(channelData.videoMetaInfo)
+//            updateVideoMetaInfo(channelData.videoMetaInfo)
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
