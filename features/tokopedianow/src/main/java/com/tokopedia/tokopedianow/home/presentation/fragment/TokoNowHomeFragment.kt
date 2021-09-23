@@ -188,7 +188,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
-    private var carouselScrollPosition = SparseIntArray()
     private var scrollStateMap = mutableMapOf<Int, Parcelable?>()
     private var stickyLoginView: StickyLoginView? = null
     private var hasEducationalInformationAppeared = false
@@ -600,7 +599,7 @@ class TokoNowHomeFragment: Fragment(),
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
-        carouselScrollPosition.clear()
+        scrollStateMap.clear()
         loadLayout()
         isRefreshed = true
     }
