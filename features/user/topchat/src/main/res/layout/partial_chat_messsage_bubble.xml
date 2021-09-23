@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout">
 
-    <com.tokopedia.topchat.chatroom.view.custom.message.TextReplyBubbleAreaMessage
+    <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
         android:id="@+id/cl_reply_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

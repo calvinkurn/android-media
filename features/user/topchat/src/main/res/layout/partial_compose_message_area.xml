@@ -9,7 +9,7 @@
     tools:paddingTop="@dimen/unify_space_8"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.tokopedia.topchat.chatroom.view.custom.message.TextReplyBubbleAreaMessage
+    <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
         android:id="@+id/trb_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

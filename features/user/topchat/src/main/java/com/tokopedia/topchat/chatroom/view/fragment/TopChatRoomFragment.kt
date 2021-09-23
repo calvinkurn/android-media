@@ -106,7 +106,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.*
-import com.tokopedia.topchat.chatroom.view.custom.message.TextReplyBubbleAreaMessage
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -201,7 +201,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
     private var rvSrw: SrwFrameLayout? = null
-    private var replyCompose: TextReplyBubbleAreaMessage? = null
+    private var replyCompose: ReplyBubbleAreaMessage? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var sendButton: IconUnify? = null
