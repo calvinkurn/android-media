@@ -300,13 +300,6 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
     }
 
     private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
-        AnalyticsTrackerUtil.sendEvent(
-            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
-            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
-            AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
-            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
-        )
         if (itemView.context.isDarkMode()) {
             ivStatusBackground?.setImageResource(R.drawable.bg_statusmatching_dark)
         } else {
@@ -343,6 +336,13 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             setContainerWithTimer()
             setTimer(metadata)
         }
+        AnalyticsTrackerUtil.sendEvent(
+            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
+            AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
+            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+        )
     }
 
     private fun setTimer(metadata: MetadataItem?){
