@@ -1248,7 +1248,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setPrimaryCTAText("")
                     visible()
                 }
-                view?.sahGlobalError?.gone()
+                binding?.sahGlobalError?.gone()
             }
         }
     }
