@@ -1,5 +1,6 @@
 package com.tokopedia.deals.brand_detail.ui.fragment
 
+import android.app.Activity
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -36,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.Math.abs
+import java.lang.ref.WeakReference
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -64,6 +66,8 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     private var brandDetail = Brand()
 
     private var binding by autoClearedNullable<FragmentDealsBrandDetailBinding>()
+
+    private lateinit var dealsShareBrandDetail: DealsBrandDetailShare
 
     override fun getScreenName(): String = ""
 
@@ -259,9 +263,9 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
 
     private fun share(brandDetail: Brand) {
         activity?.let { activity ->
-            context?.let { context ->
-                DealsBrandDetailShare(activity).shareEvent(brandDetail, brandDetail.title, { showShareLoading() }, { hideShareLoading() })
-            }
+            val activity = WeakReference<Activity>(activity)
+            if(!::dealsShareBrandDetail.isInitialized) dealsShareBrandDetail = DealsBrandDetailShare(activity)
+            dealsShareBrandDetail.shareEvent(brandDetail, brandDetail.title, { showShareLoading() }, { hideShareLoading() })
         }
     }
 

@@ -11,8 +11,10 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.url.TokopediaUrl
+import java.lang.ref.WeakReference
 
-class DealsBrandDetailShare (private val activity: Activity) {
+class DealsBrandDetailShare (private val activity: WeakReference<Activity>) {
 
     companion object {
         private const val TYPE = "text/plain"
@@ -31,7 +33,7 @@ class DealsBrandDetailShare (private val activity: Activity) {
             putExtra(Intent.EXTRA_TEXT, url)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
-        activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
+        activity.get()?.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
     }
 
     private fun generateBranchLink(data: Brand, titleShare: String, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
@@ -59,8 +61,8 @@ class DealsBrandDetailShare (private val activity: Activity) {
                 description = data.description
                 ogUrl = null
                 imgUri = data.featuredImage
-                uri = activity.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
-                deepLink = activity.resources.getString(R.string.deals_brand_detail_share_app_link, data.seoUrl)
+                uri = "${TokopediaUrl.getInstance().WEB}deals/b/${data.seoUrl}"
+                deepLink = activity.get()?.resources?.getString(R.string.deals_brand_detail_share_app_link, data.seoUrl)
             }
         }
     }
