@@ -7,6 +7,8 @@ import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -49,6 +51,8 @@ class HomeAccountUserViewModelTest {
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
     private val walletEligibleUseCase = mockk<GetWalletEligibleUseCase>(relaxed = true)
+    private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
+    private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -83,6 +87,8 @@ class HomeAccountUserViewModelTest {
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
             walletEligibleUseCase,
+            getLinkStatusUseCase,
+            getPhoneUseCase,
             walletPref,
             dispatcher
         )
