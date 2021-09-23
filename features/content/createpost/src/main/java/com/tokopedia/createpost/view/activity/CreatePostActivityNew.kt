@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.content.ContentResolver
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import java.util.*
 
 
@@ -79,12 +80,13 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun updateHeader(header: HeaderViewModel) {
         content_post_avatar.loadImageCircle(header.avatar)
         content_post_avatar.showWithCondition(header.avatar.isNotBlank())
-        content_post_name.text = header.title
+        content_post_name.text = MethodChecker.fromHtml(header.title)
     }
 
     override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
         (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().currentCorouselIndex =
             position
+        isOpenedFromPreview = true
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
         content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
         inflateFragment()
@@ -119,6 +121,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
         var isEditState: Boolean = false
+        var isOpenedFromPreview: Boolean = false
         fun createIntent(
             context: Context,
             createPostViewModel: CreatePostViewModel,
@@ -187,8 +190,14 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         setContentView(layoutRes)
         content_back_button.setOnClickListener {
             KeyboardHandler.hideSoftKeyboard(this)
-            if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState)
+            if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState) {
+                createPostAnalytics.eventClickBackOnPreviewPage()
                 finish()
+            }else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview){
+                createPostAnalytics.eventClickBackOnProductTaggingPage()
+                clickContinueOnTaggingPage()
+                isOpenedFromPreview = false
+            }
             else
                 onBackPressed()
         }
@@ -197,14 +206,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_action_post_button.setOnClickListener {
             if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
                 createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)
-                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-                content_action_post_button?.text = getString(R.string.feed_content_text_post)
-                inflateFragment()
+                clickContinueOnTaggingPage()
             } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
                 postFeed()
             }
         }
 
+    }
+    fun clickContinueOnTaggingPage(){
+        intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+        content_action_post_button?.text = getString(R.string.feed_content_text_post)
+        inflateFragment()
     }
 
 

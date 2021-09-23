@@ -17,10 +17,8 @@ import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.plist.ShopPageProduct
-import com.tokopedia.createpost.view.posttag.ProductTaggingView
 import com.tokopedia.createpost.view.util.TagViewProvider
 import com.tokopedia.createpost.view.util.TempTagViewProvider
-import com.tokopedia.createpost.view.util.TempTagViewProvider.addViewToParent
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
@@ -28,7 +26,6 @@ import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.content_creation_image_post.view.*
 import kotlinx.android.synthetic.main.content_creation_video_post.*
 import kotlinx.android.synthetic.main.content_creation_video_post.view.*
 import kotlinx.android.synthetic.main.feed_preview_post_fragment_new.*
@@ -267,10 +264,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             }
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    if (createPostModel.completeImageList[createPostModel.currentCorouselIndex].type == MediaType.VIDEO)
+                        createPostModel.completeImageList[createPostModel.currentCorouselIndex].isPlaying =
+                            false
                     createPostModel.currentCorouselIndex = current
                     page_indicator.setCurrentIndicator(current)
 
                     if (createPostModel.completeImageList[current].type == MediaType.VIDEO) {
+                        detach()
                         playVideo(createPostModel.completeImageList[current],
                             current)
                     }
@@ -595,6 +596,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             removeExtraTagListElement(createPostModel.completeImageList[createPostModel.currentCorouselIndex])
         }
         return isAdded
+    }
+    fun detach(
+    ) {
+        if (videoPlayer != null) {
+            videoPlayer?.pause()
+            videoPlayer?.setVideoStateListener(null)
+            videoPlayer?.destroy()
+            videoPlayer = null
+        }
     }
 
 }

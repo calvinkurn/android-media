@@ -233,17 +233,6 @@ class FeedAnalyticTracker
         else
             SGC_IMAGE
     }
-    private fun eventClickRetryToPostOnProgressBar(shopId: String) {
-        val map = mapOf(
-            EVENT to CLICK_FEED,
-            EVENT_CATEGORY to CONTENT_FEED_CREATION,
-            EVENT_ACTION to Action.CLICK_RETRY_ON_FEED_TO_POST,
-            EVENT_LABEL to shopId,
-            KEY_BUSINESS_UNIT_EVENT to CONTENT,
-            KEY_CURRENT_SITE_EVENT to MARKETPLACE
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
 
     //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
     //    screenshot 47

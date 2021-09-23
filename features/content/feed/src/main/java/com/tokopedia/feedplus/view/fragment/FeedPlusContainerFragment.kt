@@ -32,7 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.createpost.view.activity.CreatePostActivityNew
+import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
@@ -45,6 +45,7 @@ import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
+import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -381,7 +382,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initView() {
-        postProgressUpdateView= view?.findViewById(R.id.postUpdateView)
+        postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
@@ -548,6 +549,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.hide()
         isFabExpanded = true
         fab_feed.setOnClickListener {
+            toolBarAnalytics.sendClickBuatFeedPostEvent(userSession.userId, userSession.shopId)
             if (postProgressUpdateView?.isVisible == true)
                 updateVisibility(false)
             val authors = viewModel.feedContentForm.authors
@@ -556,16 +558,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
             intent.putExtra(TITLE,
                 getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
-            intent.putExtra(SUB_TITLE,
-                authors.first().name
-                )
+            val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+            intent.putExtra(SUB_TITLE, name)
             intent.putExtra(TOOLBAR_ICON_URL,
                 authors.first().thumbnail
             )
             intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
             startActivity(intent)
-
+            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
         }
     }
 
@@ -708,6 +709,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             //no op
         }
         updateVisibility(false)
+    }
+
+    override fun onRetryCLicked() {
+        toolBarAnalytics.eventClickRetryToPostOnProgressBar(userSession.shopId)
     }
 
     override fun updateVisibility(flag: Boolean) {

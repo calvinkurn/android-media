@@ -1,6 +1,8 @@
-package com.tokopedia.imagepicker_insta.trackers
+package com.tokopedia.createpost.analyics
 
-class FeedTracker(val shopId: String) : TrackerContract {
+import com.tokopedia.imagepicker_insta.trackers.TrackerContract
+
+class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
 
     override fun onNextButtonClick() {
         val map = mutableMapOf<String, Any>()
