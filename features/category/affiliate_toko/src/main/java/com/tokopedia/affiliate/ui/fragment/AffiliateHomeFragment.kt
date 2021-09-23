@@ -48,7 +48,7 @@ import javax.inject.Inject
 
 class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface {
 
-    private var totalItemsCount: Int? = 0
+    private var totalDataItemsCount: Int = 0
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -129,7 +129,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                affiliateHomeViewModel.getAffiliatePerformance(page)
+                if(totalItemsCount < totalDataItemsCount)
+                    affiliateHomeViewModel.getAffiliatePerformance(page - 1)
             }
         }
     }
@@ -146,10 +147,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         affiliateHomeViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility) {
-                    nested_scroll_view?.hide()
                     affiliate_progress_bar?.show()
                 } else {
-                    nested_scroll_view?.show()
                     affiliate_progress_bar?.gone()
                 }
             }
@@ -173,24 +172,19 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 activity?.finish()
             }
         })
-        affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
-            affiliatePerformance.getAffiliateItemsPerformanceList?.data?.sectionData?.let { sectionData ->
-                affiliate_products_count.text = getString(R.string.affiliate_product_count, sectionData.itemTotalCount.toString())
-                totalItemsCount = sectionData.itemTotalCount
-                if (sectionData.items?.isNotEmpty() == true) {
-                    val list : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-                    for (product in sectionData.items!!) {
-                        product?.let {
-                            list.add(AffiliateSharedProductCardsModel(product))
-                        }
-                    }
-                    adapter.setElement(list)
-                    adapter.setElement(list)
-                    loadMoreTriggerListener?.updateStateAfterGetData()
-                } else {
-                    showNoAffiliate()
-                }
+
+        affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            if (dataList.isNotEmpty()) {
+                adapter.addMoreData(dataList)
+                loadMoreTriggerListener?.updateStateAfterGetData()
+            } else {
+                showNoAffiliate()
             }
+        })
+
+        affiliateHomeViewModel.getAffiliateItemCount().observe(this, { itemCount ->
+            affiliate_products_count.text = getString(R.string.affiliate_product_count, itemCount.toString())
+            totalDataItemsCount = itemCount
         })
     }
 

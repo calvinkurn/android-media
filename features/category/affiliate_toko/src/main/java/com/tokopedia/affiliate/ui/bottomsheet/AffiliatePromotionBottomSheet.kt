@@ -144,12 +144,11 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                 eventCategory = AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S
             }
             it?.let { data ->
-                // TODO add link name
                 AffiliateAnalytics.sendEvent(
                         AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
                         AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK,
                         eventCategory,
-                        "$productId-$currentServiceFormat",userSessionInterface.userId)
+                        "$productId-${data.linkID}-$currentServiceFormat",userSessionInterface.userId)
                 val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url?.shortURL))
                 Toaster.build(contentView.rootView, getString(R.string.affiliate_link_generated_succesfully, currentName),

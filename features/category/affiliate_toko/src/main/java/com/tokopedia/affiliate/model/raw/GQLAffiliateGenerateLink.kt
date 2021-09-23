@@ -8,6 +8,7 @@ const val GQL_Affiliate_Generate_Link: String = """mutation generateAffiliateLin
       Error
       Identifier
       IdentifierType
+      LinkID
       URL {
         ShortURL
         RegularURL

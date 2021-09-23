@@ -25,7 +25,9 @@ data class AffiliateGenerateLinkData(
                 @SerializedName("IdentifierType")
                 var identifierType: Int?,
                 @SerializedName("URL")
-                var url: Data.Url?
+                var url: Url?,
+                @SerializedName("LinkID")
+                var linkID : String?
         ) {
             @Keep
             data class Url(

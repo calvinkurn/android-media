@@ -2,13 +2,17 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.ArrayList
 import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
@@ -19,10 +23,11 @@ class AffiliateHomeViewModel @Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var affiliatePerformance = MutableLiveData<AffiliatePerformanceData>()
+    private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
-    private val pageLimit = 5
-    
+    private val pageLimit = 6
+
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             progressBar.value = false
@@ -35,11 +40,24 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun getAffiliatePerformance(page : Int) {
-        progressBar.value = false
-        shimmerVisibility.value = true
+        //TODO Cleanup
+        if(page == 0)
+            shimmerVisibility.value = true
         launchCatchError(block = {
-            shimmerVisibility.value = false
-            affiliatePerformance.value = affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit)
+            if(page == 0)
+                shimmerVisibility.value = false
+            affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
+                totalItemsCount.value = it.itemTotalCount
+                val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+                it.items?.let { items ->
+                    for (product in items) {
+                        product?.let {
+                            tempList.add(AffiliateSharedProductCardsModel(product))
+                        }
+                    }
+                    affiliateDataList.value = tempList
+                }
+            }
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
@@ -62,6 +80,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
-    fun getAffiliatePerformanceData(): LiveData<AffiliatePerformanceData> = affiliatePerformance
+    fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
+    fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun progressBar(): LiveData<Boolean> = progressBar
 }
