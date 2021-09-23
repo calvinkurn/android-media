@@ -122,7 +122,7 @@ class TopupBillsFavoriteNumberActivityTest {
         )
     }
 
-//    @Test
+    @Test
     fun validate_favorite_number_empty_unhappy_flow() {
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
@@ -142,7 +142,7 @@ class TopupBillsFavoriteNumberActivityTest {
         )
     }
 
-//    @Test
+    @Test
     fun validate_favorite_number_page_favorite_detail_error_flow() {
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
