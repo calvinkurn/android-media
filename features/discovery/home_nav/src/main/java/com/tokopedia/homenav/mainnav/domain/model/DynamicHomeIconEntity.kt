@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -16,6 +17,7 @@ data class DynamicHomeIconEntity(
     )
 
     data class Category(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("id")
             val id: Int = -1,
             @SerializedName("title")
@@ -31,6 +33,7 @@ data class DynamicHomeIconEntity(
     )
 
     data class CategoryRow(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("id")
             val id: Int = -1,
             @SerializedName("name")

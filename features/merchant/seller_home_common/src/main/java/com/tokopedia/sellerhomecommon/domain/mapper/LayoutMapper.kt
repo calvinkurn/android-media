@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
@@ -12,8 +14,14 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 09/06/20
  */
 
-class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) :
-    BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+class LayoutMapper @Inject constructor(
+    private val tooltipMapper: TooltipMapper
+) : BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+
+    companion object {
+        private const val EMPTY_WIDGET_MESSAGE =
+            "Oops, kamu tidak punya izin untuk melihat kontent di halaman Home"
+    }
 
     override fun mapRemoteDataToUiData(
         response: GetLayoutResponse,
@@ -42,26 +50,28 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                             )
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
+                            WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
                 }
             }
             return mappedList
-        } else throw RuntimeException("no widget found")
+        } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
     }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
         return CardWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -75,15 +85,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): CarouselWidgetUiModel {
         return CarouselWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = null,
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -97,15 +108,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): DescriptionWidgetUiModel {
         return DescriptionWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -119,15 +131,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): LineGraphWidgetUiModel {
         return LineGraphWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -138,23 +151,24 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
 
     private fun mapToPostWidget(widget: WidgetModel, fromCache: Boolean): PostListWidgetUiModel {
         return PostListWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
             maxData = widget.maxData.orZero(),
             maxDisplay = widget.maxDisplay.orZero(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             postFilter = widget.postFilter?.mapIndexed { i, filter ->
                 WidgetFilterUiModel(
                     filter.name.orEmpty(),
                     filter.value.orEmpty(),
-                    isSelected = i == 0
+                    isSelected = i.isZero()
                 )
             }.orEmpty(),
             isLoaded = false,
@@ -174,10 +188,11 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -193,12 +208,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
             maxData = widget.maxData.orZero(),
             maxDisplay = widget.maxDisplay.orZero(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -208,7 +224,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 WidgetFilterUiModel(
                     filter.name.orEmpty(),
                     filter.value.orEmpty(),
-                    isSelected = i == 0
+                    isSelected = i.isZero()
                 )
             }.orEmpty()
         )
@@ -216,15 +232,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
 
     private fun mapToSectionWidget(widget: WidgetModel, fromCache: Boolean): SectionWidgetUiModel {
         return SectionWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -238,15 +255,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): PieChartWidgetUiModel {
         return PieChartWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -260,15 +278,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         fromCache: Boolean
     ): BarChartWidgetUiModel {
         return BarChartWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -282,15 +301,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         isFromCache: Boolean
     ): MultiLineGraphWidgetUiModel {
         return MultiLineGraphWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -305,15 +325,16 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         isFromCache: Boolean
     ): AnnouncementWidgetUiModel {
         return AnnouncementWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
-            isShowEmpty = widget.isShowEmpty ?: false,
+            isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
             isLoading = false,
@@ -327,11 +348,35 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         isFromCache: Boolean
     ): RecommendationWidgetUiModel {
         return RecommendationWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun mapToMilestoneWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): MilestoneWidgetUiModel {
+        return MilestoneWidgetUiModel(
             id = (widget.id ?: 0L).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),

@@ -20,7 +20,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
     return RecommendationWidget(
             recommendationItemList = recommendation.mapIndexed { index, recommendation ->
                 RecommendationItem(
-                        productId = recommendation.id.toInt(),
+                        productId = recommendation.id,
                         name = recommendation.name,
                         categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
                         url = recommendation.url,
@@ -35,13 +35,13 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         rating = recommendation.rating,
                         ratingAverage = recommendation.ratingAverage,
                         countReview = recommendation.countReview,
-                        stock = recommendation.stock,
+                        stock = if (isRecomCardShouldShowVariantOrCart() && recommendation.maxOrder != 0) recommendation.maxOrder else recommendation.stock,
                         recommendationType = recommendation.recommendationType,
                         isTopAds = recommendation.isIsTopads,
                         isWishlist = recommendation.isWishlist,
                         slashedPrice = recommendation.slashedPrice,
-                        slashedPriceInt =  recommendation.slashedPriceInt,
-                        discountPercentage = if(recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
+                        slashedPriceInt = recommendation.slashedPriceInt,
+                        discountPercentage = if (recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
                         discountPercentageInt = recommendation.discountPercentage,
                         position = index,
                         shopId = recommendation.shop.id,
@@ -50,6 +50,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         header = title,
                         pageName = pageName,
                         minOrder = recommendation.minOrder,
+                        maxOrder = recommendation.minOrder,
                         location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
                         badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
                         type = layoutType,

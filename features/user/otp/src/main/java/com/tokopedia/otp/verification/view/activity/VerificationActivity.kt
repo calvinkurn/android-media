@@ -132,6 +132,15 @@ open class VerificationActivity : BaseOtpActivity() {
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 
+    fun goToWhatsappNotRegistered(title: String, subtitle: String, imgLink: String) {
+        val bundle = Bundle()
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_TITLE, title)
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_SUBTITLE, subtitle)
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_IMG_LINK, imgLink)
+        val fragment = WhatsappNotRegisteredFragment.createInstance(bundle)
+        doFragmentTransaction(fragment, TAG_OTP_WA_NOT_REGISTERED, false)
+    }
+
     open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
@@ -180,5 +189,6 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_MODE = "otpMode"
         const val TAG_OTP_VALIDATOR = "otpValidator"
         const val TAG_OTP_MISCALL = "otpMiscall"
+        const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
     }
 }

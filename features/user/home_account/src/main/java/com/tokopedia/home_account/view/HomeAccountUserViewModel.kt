@@ -10,7 +10,8 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -80,9 +81,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val saldoBalance: LiveData<Result<Balance>>
         get() = _saldoBalance
 
-    private val _tokopointsDrawerList = MutableLiveData<Result<TokopointsDrawerList>>()
-    val tokopointsDrawerList: LiveData<Result<TokopointsDrawerList>>
-        get() = _tokopointsDrawerList
+    private val _tokopoints = MutableLiveData<Result<PointDataModel>>()
+    val tokopoints: LiveData<Result<PointDataModel>>
+        get() = _tokopoints
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -157,14 +158,15 @@ class HomeAccountUserViewModel @Inject constructor(
 
     }
 
-    private fun getRecommendationList(page: Int): RecommendationWidget {
-        val params = getRecommendationUseCase.getRecomParams(
-                page,
-                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
-                AKUN_PAGE,
-                emptyList()
+    private suspend fun getRecommendationList(page: Int): RecommendationWidget {
+        val recommendationParams = GetRecommendationRequestParam(
+            pageNumber = page,
+            xSource = DEFAULT_VALUE_X_SOURCE,
+            pageName = AKUN_PAGE,
+            productIds = emptyList(),
+            xDevice = DEFAULT_VALUE_X_DEVICE
         )
-        return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
+        return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
     fun getUserPageAssetConfig() {
@@ -180,13 +182,23 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getTokopoints() {
         launchCatchError(block = {
-            val response = getHomeAccountTokopointsUseCase.executeOnBackground()
+            val response = getHomeAccountTokopointsUseCase(Unit)
+
             withContext(dispatcher) {
-                _tokopointsDrawerList.value = Success(response.data)
+                if (isSuccessGetTokoPoint(response)) {
+                    _tokopoints.value = Success(response.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
+                } else {
+                    _tokopoints.postValue(Fail(Throwable(response.tokopointsStatusFilteredDataModel.resultStatus.message[0])))
+                }
             }
         }, onError = {
-            _tokopointsDrawerList.postValue(Fail(it))
+            _tokopoints.postValue(Fail(it))
         })
+    }
+
+    private fun isSuccessGetTokoPoint(tokopointsDataModel: TokopointsDataModel): Boolean {
+        return tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.code == SUCCESS_CODE &&
+            tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.status == SUCCESS_STAT
     }
 
     fun getSaldoBalance() {
@@ -226,6 +238,12 @@ class HomeAccountUserViewModel @Inject constructor(
 
     companion object {
         private const val AKUN_PAGE = "account"
+
+        private const val SUCCESS_CODE = "200"
+        private const val SUCCESS_STAT = "OK"
+
+        private const val DEFAULT_VALUE_X_SOURCE = "recom_widget"
+        private const val DEFAULT_VALUE_X_DEVICE = "android"
     }
 
 }

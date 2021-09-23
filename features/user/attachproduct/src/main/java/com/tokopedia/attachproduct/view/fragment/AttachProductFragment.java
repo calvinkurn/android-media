@@ -77,6 +77,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     private int maxChecked = MAX_CHECKED_DEFAULT;
     private ArrayList<String> hiddenProducts = new ArrayList<>();
 
+    @NonNull
     public static AttachProductFragment newInstance(
             AttachProductContract.Activity checkedUIView,
             boolean isSeller, String source, int maxChecked,
