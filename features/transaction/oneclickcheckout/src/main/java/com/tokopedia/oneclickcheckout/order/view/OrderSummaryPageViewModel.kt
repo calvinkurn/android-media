@@ -642,10 +642,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun calculateTotal() {
         launch(executorDispatchers.immediate) {
-            adjustAdminFee()
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                     validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            adjustAdminFee()
         }
     }
 
@@ -764,6 +764,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
                 }
                 orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
+                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
                 globalEvent.value = newGlobalEvent
             }
         }
