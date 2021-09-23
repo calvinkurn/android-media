@@ -191,7 +191,6 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getBalanceAndPoint(walletId: String) {
-        launchCatchError(context=dispatcher.main, block = {
         launchCatchError(block = {
             if(walletId == AccountConstants.WALLET.TOKOPOINT) {
                 val result = getTokopointsBalanceAndPointUseCase(Unit)
