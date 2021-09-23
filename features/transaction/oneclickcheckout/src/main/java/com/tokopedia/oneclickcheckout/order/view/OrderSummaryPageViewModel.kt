@@ -11,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.PAYMENT_GATEWAY_CC
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
@@ -641,10 +642,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun calculateTotal() {
         launch(executorDispatchers.immediate) {
+            adjustAdminFee()
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                     validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
-            adjustAdminFee()
         }
     }
 
@@ -746,22 +747,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun adjustAdminFee() {
-        if (orderPayment.value.creditCard.isAfpb && !hasGetTenorList) {
+        if (orderPayment.value.creditCard.isAfpb && !hasGetTenorList && orderPayment.value.gatewayCode == PAYMENT_GATEWAY_CC) {
             hasGetTenorList = true
             val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
                 userSession.userId, orderTotal.value, orderCart)
             launch(executorDispatchers.immediate) {
                 val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
+
+                val newOrderPayment = orderPayment.value
+                val selectedTerm = newOrderPayment.creditCard.selectedTerm
                 if (!isSuccess) {
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
 
-                    val newOrderPayment = orderPayment.value
-                    val selectedTerm = newOrderPayment.creditCard.selectedTerm
                     if (selectedTerm != null) {
                         selectedTerm.isError = true
-                        orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
                     }
                 }
+                orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
                 globalEvent.value = newGlobalEvent
             }
         }
