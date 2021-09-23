@@ -143,7 +143,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
-        setFirstIcon(null)
+        setFirstIcon("")
         setProgressUpdate(0, 0)
     }
 

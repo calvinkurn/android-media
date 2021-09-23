@@ -14,6 +14,7 @@ import com.tokopedia.createpost.view.plist.ShopPageProduct
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -35,6 +36,7 @@ constructor(private val userSession: UserSessionInterface) {
         private const val KEY_CURRENT_SITE_EVENT = "currentSite"
         private const val MARKETPLACE = "tokopediamarketplace"
         private const val KEY_ECOMMERCE = "ecommerce"
+        private val KEY_USER_ID = "userId"
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_CODE_IDR = "IDR"
         const val ACTION_FIELD = "actionField"
@@ -355,6 +357,7 @@ constructor(private val userSession: UserSessionInterface) {
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_USER_ID to userSession.userId,
             KEY_ECOMMERCE to ecommerceMap
         )
         analyticTracker.sendEnhanceEcommerceEvent(map)
@@ -380,6 +383,7 @@ constructor(private val userSession: UserSessionInterface) {
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_USER_ID to userSession.userId,
             KEY_ECOMMERCE to ecommerceMap
         )
         analyticTracker.sendEnhanceEcommerceEvent(map)
@@ -402,6 +406,15 @@ constructor(private val userSession: UserSessionInterface) {
             Product.NAME, item.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (item.campaign?.dPrice?.toInt() != 0) item.campaign?.dPrice else item.price?.priceIdr,
+            if (item.campaign?.dPrice?.toInt() != 0) formatStringPrice(item.campaign?.dPrice
+                ?: "") else formatStringPrice(
+                item.price?.priceIdr ?: ""),
         )
+    private fun formatStringPrice(price: String): String {
+        return try {
+            (price.replace("[^\\d]".toRegex(), ""))
+        } catch (e: Exception) {
+            ""
+        }
+    }
 }
