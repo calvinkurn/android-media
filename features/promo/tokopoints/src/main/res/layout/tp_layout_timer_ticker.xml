@@ -20,17 +20,4 @@
         tools:ellipsize="end"
         tools:text="3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" />
 
-    <!--<com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/timer_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:textColor="@color/Unify_N0"
-        android:typeface="normal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/timer_value"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        tools:text="minut lagi" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
