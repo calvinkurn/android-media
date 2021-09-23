@@ -181,16 +181,6 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapProductRecomData(
-        item: HomeProductRecomUiModel,
-        recommendationWidget: RecommendationWidget
-    ) {
-        updateItemById(item.visitableId) {
-            val productRecom = HomeProductRecomUiModel(id = item.visitableId, recomWidget = recommendationWidget)
-            HomeLayoutItemUiModel(productRecom, HomeLayoutItemState.LOADED)
-        }
-    }
-
     fun MutableList<HomeLayoutItemUiModel>.mapProductPurchaseData(
         item: TokoNowRecentPurchaseUiModel,
         response: RecentPurchaseData,
@@ -345,13 +335,24 @@ object HomeLayoutMapper {
         quantity: Int
     ) {
         filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
-            val uiModel = homeLayoutItemUiModel.layout as? HomeProductRecomUiModel
-            if (!uiModel?.recomWidget?.recommendationItemList.isNullOrEmpty()) {
-                val recom = uiModel?.recomWidget?.copy()
-                val recommendationItem = recom?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }
-                recommendationItem?.let {
-                    it.quantity = quantity
-                    mapProductRecomData(uiModel, recom)
+            val layout = homeLayoutItemUiModel.layout
+            val uiModel = layout as HomeProductRecomUiModel
+            if (!uiModel.recomWidget.recommendationItemList.isNullOrEmpty()) {
+                val recom = uiModel.recomWidget
+                val recommendationItemList = recom.recommendationItemList.toMutableList()
+                val recommendationItem = recommendationItemList.firstOrNull {
+                    it.productId.toString() == productId
+                }
+                val index = recommendationItemList.indexOf(recommendationItem)
+
+                recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
+                    recommendationItemList[index] = it
+                }
+
+                updateItemById(layout.getVisitableId()) {
+                    val updatedRecom = recom.copy(recommendationItemList = recommendationItemList)
+                    val updatedUiModel = uiModel.copy(recomWidget = updatedRecom)
+                    homeLayoutItemUiModel.copy(layout = updatedUiModel)
                 }
             }
         }
