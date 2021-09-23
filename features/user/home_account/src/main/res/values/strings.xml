@@ -110,6 +110,8 @@
 
     <string name="label_link_account">Akun Tersambung</string>
     <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>
+    <string name="label_toolbar_verifikasi_akun">Verifikasi Akun</string>
+    <string name="label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
 
     <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
     <string name="label_call_tokopedia">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>

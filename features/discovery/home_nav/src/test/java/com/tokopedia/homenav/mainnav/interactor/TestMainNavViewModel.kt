@@ -321,10 +321,6 @@ class TestMainNavViewModel {
                 userName = "Joko",
                 userImage = "Tingkir"
             ),
-            profileOvoDataModel = ProfileOvoDataModel(
-                ovoSaldo = "Rp 100",
-                ovoPoint = "Rp 100"
-            ),
             profileMembershipDataModel = ProfileMembershipDataModel(
                 badge = "kucing"
             ),
@@ -343,15 +339,11 @@ class TestMainNavViewModel {
         Assert.assertNotNull(accountHeaderViewModel)
         Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint.isNotEmpty()
                 && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userName == "Joko"
                 && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo == "Rp 100"
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint == "Rp 100"
                 && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
                 && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
                 && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
@@ -388,10 +380,6 @@ class TestMainNavViewModel {
             profileDataModel = ProfileDataModel(
                 userName = "Joko",
                 userImage = "Tingkir"
-            ),
-            profileOvoDataModel = ProfileOvoDataModel(
-                ovoSaldo = "Rp 100",
-                ovoPoint = "Rp 100"
             ),
             profileMembershipDataModel = ProfileMembershipDataModel(
                 badge = "kucing"
@@ -442,10 +430,6 @@ class TestMainNavViewModel {
                 userName = "Joko",
                 userImage = "Tingkir"
             ),
-            profileOvoDataModel = ProfileOvoDataModel(
-                ovoSaldo = "Rp 100",
-                ovoPoint = "Rp 100"
-            ),
             profileMembershipDataModel = ProfileMembershipDataModel(
                 badge = "kucing"
             ),
@@ -462,15 +446,11 @@ class TestMainNavViewModel {
         Assert.assertNotNull(accountHeaderViewModel)
         Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint.isNotEmpty()
                 && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userName == "Joko"
                 && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo == "Rp 100"
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint == "Rp 100"
                 && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
                 && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
                 && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
@@ -485,10 +465,6 @@ class TestMainNavViewModel {
             profileDataModel = ProfileDataModel(
                 userName = "Joko",
                 userImage = "Tingkir"
-            ),
-            profileOvoDataModel = ProfileOvoDataModel(
-                ovoSaldo = "Rp 100",
-                ovoPoint = "Rp 100"
             ),
             profileMembershipDataModel = ProfileMembershipDataModel(
                 badge = "kucing"
@@ -507,15 +483,11 @@ class TestMainNavViewModel {
         Assert.assertNotNull(accountHeaderViewModel)
         Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint.isNotEmpty()
                 && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
                 && accountHeaderViewModel.profileDataModel.userName == "Joko"
                 && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo == "Rp 100"
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint == "Rp 100"
                 && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
                 && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
                 && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")

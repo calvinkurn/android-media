@@ -291,11 +291,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         RouteManager.route(context, item.cta?.appLink)
                         hideNotification(index, dynamicActionList)
 
-                        AnalyticsTrackerUtil.sendEvent(context,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                                item.cta?.text?.let { it1 -> AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, it1) },
-                                "")
+                        AnalyticsTrackerUtil.sendEvent(
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                            item.cta?.text ?: "",
+                            AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+                        )
                     }
                 }
             }

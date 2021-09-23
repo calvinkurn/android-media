@@ -161,7 +161,6 @@ class AccountHeaderViewHolder(itemView: View,
 
         if (
             !element.isCacheData && (element.profileDataModel.isGetUserNameError ||
-                    element.profileOvoDataModel.isGetOvoError ||
                     element.profileSaldoDataModel.isGetSaldoError ||
                     element.profileWalletAppDataModel.isWalletAppFailed)) {
             usrOvoBadge.gone()
@@ -220,7 +219,6 @@ class AccountHeaderViewHolder(itemView: View,
                  */
                 profileSaldo.isGetSaldoError -> {
                     if (element.profileWalletAppDataModel.isWalletAppFailed ||
-                        element.profileOvoDataModel.isGetOvoError ||
                             element.profileMembershipDataModel.isTokopointExternalAmountError) {
                         sectionSaldo.gone()
                     } else {
@@ -340,22 +338,6 @@ class AccountHeaderViewHolder(itemView: View,
                     } else if (element.profileMembershipDataModel.isTokopointExternalAmountError) {
                             tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
                             usrOvoBadge.clearImage()
-                    } else {
-                        /**
-                         * Handling ovo value
-                         */
-                        element.profileOvoDataModel.let { profileOvo ->
-                            tvOvo.text = renderOvoText(profileOvo.ovoSaldo, profileOvo.ovoPoint)
-                            if (profileOvo.ovoSaldo.isNotEmpty()) {
-                                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-                                /**
-                                 * Handling ovo error state
-                                 */
-                            } else if (element.profileOvoDataModel.isGetOvoError) {
-                                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
-                                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-                            }
-                        }
                     }
                 }
             }
