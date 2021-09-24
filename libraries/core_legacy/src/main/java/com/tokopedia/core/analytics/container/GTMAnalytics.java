@@ -1053,6 +1053,9 @@ public class GTMAnalytics extends ContextAnalytics {
             case TRANSACTION:
                 keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
                 break;
+            case REMOVEFROMCART:
+                keyEvent = FirebaseAnalytics.Event.REMOVE_FROM_CART;
+                break;
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
