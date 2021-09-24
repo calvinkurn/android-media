@@ -12,8 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="bold"
         tool:text="Rp36.000" />
 
@@ -23,8 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:labelType="general_light_red"
-        app:layout_constraintStart_toEndOf="@+id/tv_price"
-        app:layout_constraintTop_toTopOf="parent"
         tool:labelTitle="30%" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -33,9 +29,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_44"
-        app:layout_constraintStart_toEndOf="@+id/label_discount"
-        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         tool:text="Rp36.000" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_layout_discount_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_price,label_discount,tv_slash_price"
+        app:flow_horizontalBias="0"
+        app:flow_horizontalGap="@dimen/spacing_lvl2"
+        app:flow_verticalBias="0"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
