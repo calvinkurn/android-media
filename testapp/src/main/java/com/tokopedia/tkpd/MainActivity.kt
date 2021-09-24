@@ -103,8 +103,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goTo() {
-        RouteManager.route(this, "tokopedia://discovery/cal-test-mix")
-
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
