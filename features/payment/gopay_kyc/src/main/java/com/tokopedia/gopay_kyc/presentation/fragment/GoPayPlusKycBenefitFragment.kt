@@ -84,8 +84,8 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
     }
 
     private fun showToastMessage(message: String, toastType: Int = Toaster.TYPE_NORMAL) {
-        if (message.isNotEmpty() && view != null)
-            Toaster.build(requireView(), message, toastType, Toaster.LENGTH_LONG)
+        if (message.isNotEmpty())
+            Toaster.build(upgradeNowButton, message, Toaster.LENGTH_LONG, toastType)
                 .show()
     }
 
