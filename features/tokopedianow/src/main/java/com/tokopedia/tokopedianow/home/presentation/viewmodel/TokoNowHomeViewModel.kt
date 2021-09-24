@@ -673,7 +673,10 @@ class TokoNowHomeViewModel @Inject constructor(
         val productRecom = homeItem?.layout as? HomeProductRecomUiModel
         val recomWidget = productRecom?.recomWidget
         val recommendationItemList = recomWidget?.recommendationItemList.orEmpty()
-        val product = recommendationItemList.firstOrNull { it.productId.toString() == productId}
+        val product = recommendationItemList.firstOrNull {
+            it.productId.toString() == productId
+        }
+        product?.quantity = quantity
 
         product?.let { item ->
             val position = recommendationItemList.indexOf(item)

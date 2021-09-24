@@ -2283,7 +2283,7 @@ private fun testAddToCartButtonNonVariantIgnoreHasAddToCartFlag(): ProductCardMo
         maxQuantity = 100
     )
     val productCardModel = ProductCardModel(
-        productName = "Add to Cart Button from Non Variant with Quantity",
+        productName = "Add to Cart Button Non Variant Ignore hasAddToCart flag",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         shopBadgeList = mutableListOf<ShopBadge>().also { badges ->

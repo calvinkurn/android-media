@@ -63,13 +63,14 @@ import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
-import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -122,6 +123,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
 
         private const val RV_TOP_POSITION = 0
+        private const val TICKER_FIRST_INDEX = 0
         private const val ADDITIONAL_POSITION = 1
     }
 
@@ -190,7 +192,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
 
@@ -346,14 +347,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         val cardValue = model.data?.value ?: "0"
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         SellerHomeTracking.sendClickCardEvent(
             model.dataKey,
-            model.data?.state.orEmpty(), model.data?.value ?: "0"
+            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
         )
     }
 
@@ -832,8 +833,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgets.setLoading()
         val dataKeys: List<TableAndPostDataKey> =
             widgets.filterIsInstance<TableWidgetUiModel>().map {
-                val postFilter = it.tableFilters.find { filter -> filter.isSelected }
-                    ?.value.orEmpty()
+                val postFilter =
+                    it.tableFilters.find { filter -> filter.isSelected }
+                        ?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
             }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
@@ -1209,22 +1211,43 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
-        val errorType =
-            when (throwable) {
-                is MessageErrorException -> null
-                is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
-                else -> GlobalError.SERVER_ERROR
-            }
+        val errorType: Int? = when (throwable) {
+            is MessageErrorException -> null
+            is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+            is EmptyLayoutException -> GlobalError.PAGE_NOT_FOUND
+            else -> GlobalError.SERVER_ERROR
+        }
 
-        if (errorType == null) {
-            sahGlobalError?.gone()
-            emptyState?.showMessageExceptionError(throwable)
-        } else {
-            sahGlobalError?.run {
-                setType(errorType)
-                visible()
+        when (errorType) {
+            null -> {
+                sahGlobalError?.gone()
+                emptyState?.showMessageExceptionError(throwable)
             }
-            emptyState?.gone()
+            GlobalError.PAGE_NOT_FOUND -> showEmptyState()
+            else -> {
+                sahGlobalError?.run {
+                    setType(errorType)
+                    visible()
+                }
+                emptyState?.gone()
+            }
+        }
+    }
+
+    private fun showEmptyState() {
+        recyclerView?.post {
+            val isLayoutEmpty = adapter.data.isEmpty()
+            if (isLayoutEmpty) {
+                emptyState?.run {
+                    if (isVisible) return@post
+                    emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
+                    setTitle(getString(R.string.sah_empty_layout_message))
+                    setDescription("")
+                    setPrimaryCTAText("")
+                    visible()
+                }
+                view?.sahGlobalError?.gone()
+            }
         }
     }
 
@@ -1560,8 +1583,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
+            val tickerImpressHolders = mutableListOf<ImpressHolder>()
             val tickersData = tickers.map {
-                TickerData(it.title, it.message, getTickerType(it.color), true, it)
+                TickerData(it.title, it.message, getTickerType(it.color), true, it).also {
+                    tickerImpressHolders.add(ImpressHolder())
+                }
             }
 
             val adapter = TickerPagerAdapter(context, tickersData)
@@ -1569,26 +1595,48 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        if (itemData is TickerUiModel) {
+                        if (itemData is TickerItemUiModel) {
                             RouteManager.route(context, itemData.redirectUrl)
                         }
                     }
-                    SellerHomeTracking.sendHomeTickerCtaClickEvent(getShopStatusStr())
+                    (itemData as? TickerItemUiModel)?.let {
+                        SellerHomeTracking.sendHomeTickerCtaClickEvent(
+                            it.id,
+                            it.type
+                        )
+                    }
                 }
             })
-            addOnImpressionListener(tickerImpressHolder) {
-                SellerHomeTracking.sendHomeTickerImpressionEvent(getShopStatusStr())
+
+            // Add impression listener on first page of ticker
+            addSellerHomeImpressionListener(
+                tickerImpressHolders.firstOrNull(),
+                tickers.firstOrNull()
+            )
+
+            // Add impression listener if ticker view pager swiped to another page
+            onTickerPageChangeListener = { pageIndex ->
+                if (pageIndex > TICKER_FIRST_INDEX) {
+                    addSellerHomeImpressionListener(
+                        tickerImpressHolders.getOrNull(pageIndex),
+                        tickers.getOrNull(pageIndex)
+                    )
+                }
             }
         }
     }
 
-    private fun getShopStatusStr(): String {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        return when {
-            isOfficialStore -> "OS"
-            isPowerMerchant -> "PM"
-            else -> "RM"
+    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
+                                                       ticker: TickerItemUiModel?) {
+        impressHolder?.let { holder ->
+            ticker?.let { ticker ->
+                addOnImpressionListener(holder) {
+                    SellerHomeTracking.sendHomeTickerImpressionEvent(
+                        ticker.id,
+                        ticker.type
+                    )
+                }
+            }
         }
     }
 
@@ -1637,6 +1685,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
+
+        showEmptyState()
     }
 
     private fun checkLoadingWidgets() {
