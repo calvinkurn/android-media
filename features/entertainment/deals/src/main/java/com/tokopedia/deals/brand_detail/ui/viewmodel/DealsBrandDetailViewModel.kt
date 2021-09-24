@@ -33,7 +33,7 @@ class DealsBrandDetailViewModel @Inject constructor(
                         val data = withContext(dispatcher.io) {
                                 val graphqlRequest = GraphqlRequest(DealsGqlQueries.getBrandDetail(),
                                         DealsBrandDetail::class.java, mapParam)
-                                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                                graphqlRepository.response(listOf(graphqlRequest),
                                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
                         }.getSuccessData<DealsBrandDetail>()
 

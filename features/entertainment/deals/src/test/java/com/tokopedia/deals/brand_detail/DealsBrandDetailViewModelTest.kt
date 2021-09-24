@@ -56,7 +56,7 @@ class DealsBrandDetailViewModelTest {
         result[objectType] = mockResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         viewModel.getBrandDetail(mapParams)
@@ -79,7 +79,7 @@ class DealsBrandDetailViewModelTest {
         errors[objectType] = listOf(errorGql)
         val gqlResponseError = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseError
 
         //when
         viewModel.getBrandDetail(mapParams)
