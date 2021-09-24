@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -100,6 +101,7 @@ class TokoNowCategoryFragment:
             outOfCoverageListener = this,
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
+            tokoNowProductCardListener = this,
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -270,4 +272,40 @@ class TokoNowCategoryFragment:
     override fun onAllCategoryClicked() { }
 
     override fun onCategoryClicked(position: Int, categoryId: String) { }
+
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
+        super.onProductCardImpressed(position, data)
+
+        val trackingQueue = trackingQueue ?: return
+
+        CategoryTracking.sendRepurchaseWidgetImpressionEvent(
+            trackingQueue,
+            data,
+            position,
+            userSession.userId
+        )
+    }
+
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
+        super.onProductCardClicked(position, data)
+
+        CategoryTracking.sendRepurchaseWidgetClickEvent(
+            data,
+            position,
+            userSession.userId
+        )
+    }
+
+    override fun sendAddToCartRepurchaseProductTrackingEvent(
+        addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
+    ) {
+        val (quantity, cartId, repurchaseProduct) = addToCartRepurchaseProductData
+
+        CategoryTracking.sendRepurchaseWidgetAddToCartEvent(
+            repurchaseProduct,
+            quantity,
+            cartId,
+            userSession.userId,
+        )
+    }
 }

@@ -29,7 +29,7 @@ class DefaultUseCaseHandler(
         var retryCount = 0
         suspend fun withRetry() {
             try {
-                gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
+                gqlResponse = gqlRepository.response(listOf(gqlRequest), gqlCacheStrategy)
             } catch (throwable: Throwable) {
                 if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
                 else {

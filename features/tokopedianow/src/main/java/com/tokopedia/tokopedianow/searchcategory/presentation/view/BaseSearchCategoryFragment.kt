@@ -58,6 +58,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
@@ -97,6 +99,7 @@ abstract class BaseSearchCategoryFragment:
         TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
         ChooseAddressBottomSheetListener,
         OutOfCoverageListener,
+        TokoNowProductCardListener,
         TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {
 
     companion object {
@@ -449,6 +452,9 @@ abstract class BaseSearchCategoryFragment:
                 this::sendAddToCartRecommendationTrackingEvent
         )
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
+            ::sendAddToCartRepurchaseProductTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -908,5 +914,30 @@ abstract class BaseSearchCategoryFragment:
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+        getViewModel().onViewATCRepurchaseWidget(data, quantity)
+    }
+
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
+        openATCVariantBottomSheet(
+            data.productId,
+            data.shopId,
+        )
+    }
+
+    protected open fun sendAddToCartRepurchaseProductTrackingEvent(
+        addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
+    ) {
+
     }
 }

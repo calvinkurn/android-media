@@ -85,7 +85,9 @@ data class EventHomeDataResponse(
                         @SerializedName("is_promo")
                         var isPromo: Int = 0,
                         @SerializedName("seo_url")
-                        val seoUrl: String = ""
+                        val seoUrl: String = "",
+                        @SerializedName("min_start_date")
+                        val minStartDate: String = ""
                 )
             }
         }

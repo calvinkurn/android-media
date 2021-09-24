@@ -83,7 +83,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): UserShopInfoWrapper {
         val gqlRequest = GraphqlRequest(USER_SHOP_INFO_QUERY, UserShopInfoResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(UserShopInfoResponse::class.java)
         if (gqlError.isNullOrEmpty()) {

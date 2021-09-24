@@ -252,7 +252,7 @@ class AddToCartNonVariantTestHelper(
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
     }
 
-    private fun `Given view setup to update quantity`(
+    fun `Given view setup to update quantity`(
             productId: String,
             updatedQuantity: Int,
     ) {

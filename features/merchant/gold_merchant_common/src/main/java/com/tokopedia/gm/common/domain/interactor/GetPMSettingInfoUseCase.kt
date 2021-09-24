@@ -24,7 +24,7 @@ class GetPMSettingInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PowerMerchantSettingInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GetPowerMerchantSettingInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPowerMerchantSettingInfoResponse::class.java)
 
         if (errors.isNullOrEmpty()) {
