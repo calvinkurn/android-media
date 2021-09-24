@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
@@ -85,6 +86,7 @@ class InfiniteTokonowRecomFragment :
     private lateinit var viewModel: InfiniteRecomViewModel
     private var pageName = ""
     private var recomPageUiUpdater: RecomPageUiUpdater = RecomPageUiUpdater(mutableListOf())
+    private var firstRecomWidget: RecommendationWidget? = null
 
 
     private val adapter by lazy {
@@ -193,12 +195,12 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId, productId) as HashMap<String, Any>)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(firstRecomWidget, item, getUserSession().userId, productId) as HashMap<String, Any>)
         goToPDP(item.productId.toString(), item.position)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemImpression(item, getUserSession().userId, productId) as HashMap<String, Any>)
+        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemImpression(firstRecomWidget, item, getUserSession().userId, productId) as HashMap<String, Any>)
     }
 
     override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
@@ -265,6 +267,7 @@ class InfiniteTokonowRecomFragment :
         viewModel.recommendationWidgetData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 navToolbar?.setToolbarTitle(it.title)
+                firstRecomWidget = it
             }
         })
         viewModel.recommendationFirstLiveData.observe(viewLifecycleOwner, Observer {
@@ -326,12 +329,12 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.atcRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomAddToCart(firstRecomWidget, it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
             }, {})
         })
         viewModel.deleteCartRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomRemoveFromCart(it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomRemoveFromCart(firstRecomWidget, it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
             }, {})
         })
         viewModel.atcRecomTokonowResetCard.observe(viewLifecycleOwner, Observer {
