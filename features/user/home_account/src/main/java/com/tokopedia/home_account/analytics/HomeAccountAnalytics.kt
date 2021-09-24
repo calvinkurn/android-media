@@ -127,7 +127,7 @@ import java.util.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInterface) {
+class HomeAccountAnalytics(val userSession: UserSessionInterface) {
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")

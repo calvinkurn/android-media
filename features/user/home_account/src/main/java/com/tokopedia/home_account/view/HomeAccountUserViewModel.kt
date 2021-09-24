@@ -98,7 +98,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun refreshPhoneNo() {
         launchCatchError(block = {
-            val profile = getPhoneUseCase(RequestParams.EMPTY)
+            val profile = getPhoneUseCase(Unit)
             val phone = profile.profileInfo.phone
             if (phone.isNotEmpty()) {
                 userSession.phoneNumber = phone
@@ -132,8 +132,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private suspend fun getLinkStatus(): LinkStatusResponse {
-        val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
-        return getLinkStatusUseCase(params)
+        return getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
     }
 
     fun getBuyerData() {

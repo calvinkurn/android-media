@@ -63,8 +63,8 @@ class HomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    fun provideHomeAccountAnalytics(@HomeAccountUserContext context: Context, userSession: UserSessionInterface): HomeAccountAnalytics {
-        return HomeAccountAnalytics(context, userSession)
+    fun provideHomeAccountAnalytics(userSession: UserSessionInterface): HomeAccountAnalytics {
+        return HomeAccountAnalytics(userSession)
     }
 
     @Provides

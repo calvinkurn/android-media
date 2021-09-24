@@ -13,16 +13,13 @@ import javax.inject.Inject
  */
 
 class GetUserProfile @Inject constructor(private val repository: GraphqlRepository)
-    : CoroutineUseCase<RequestParams, ProfilePojo>(Dispatchers.IO) {
+    : CoroutineUseCase<Unit, ProfilePojo>(Dispatchers.IO) {
 
-    override suspend fun execute(params: RequestParams): ProfilePojo {
-        return repository.request(graphqlQuery(), params.parameters)
+    override suspend fun execute(params: Unit): ProfilePojo {
+        return repository.request(graphqlQuery(), params)
     }
 
-    override fun graphqlQuery(): String = query
-
-    companion object {
-        val query = """
+    override fun graphqlQuery(): String = """
             query profile() {
               profile() {
                 phone
@@ -30,4 +27,3 @@ class GetUserProfile @Inject constructor(private val repository: GraphqlReposito
             }
         """.trimIndent()
     }
-}
