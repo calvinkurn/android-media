@@ -275,7 +275,7 @@ class ChatItemListViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
-                repository.getReseponse(listOf(request))
+                repository.response(listOf(request))
             }.getSuccessData<ChatChangeStateResponse>()
             result(Success(data))
         }
@@ -289,7 +289,7 @@ class ChatItemListViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
-                repository.getReseponse(listOf(request))
+                repository.response(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
             getChatAdminAccessJob?.join()
             if (isAdminHasAccess) {

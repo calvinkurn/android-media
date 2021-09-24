@@ -54,13 +54,13 @@ class GetLayoutUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetLayoutResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val resultLayout = getLayoutUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!resultLayout.isNullOrEmpty())
@@ -72,14 +72,14 @@ class GetLayoutUseCaseTest {
         val successResponse = TestHelper.createErrorResponse<GetLayoutResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val resultLayout = getLayoutUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(resultLayout.isNullOrEmpty())

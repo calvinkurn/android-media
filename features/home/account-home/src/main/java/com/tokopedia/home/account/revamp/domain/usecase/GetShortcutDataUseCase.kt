@@ -21,7 +21,7 @@ class GetShortcutDataUseCase @Inject constructor(
         val rawQuery = rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]
         val gqlRequest = GraphqlRequest(rawQuery,
                 ShortcutResponse::class.java, mapOf<String, Any>())
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(ShortcutResponse::class.java)
         if (!errors.isNullOrEmpty()) {
