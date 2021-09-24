@@ -765,7 +765,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         nonVariant = NonVariant(quantity, 3, 4)
                     )
@@ -843,7 +843,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
                         nonVariant = NonVariant(quantity, 3, 4)
@@ -973,7 +973,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         nonVariant = NonVariant(5, 3, 4)
                     )
@@ -1125,7 +1125,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expected = listOf(
             createHomeProductCardUiModel(
                 productId = productId,
-                quantity = 5,
+                quantity = 4,
                 product = ProductCardModel(
                     hasAddToCartButton = true,
                     nonVariant = NonVariant(minQuantity = 3, maxQuantity = 4)
@@ -1272,7 +1272,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
                         nonVariant = NonVariant(0, 3, 4)
@@ -1691,7 +1691,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val productCardUiModel = createHomeProductCardUiModel(
             productId = "2",
-            quantity = 3,
+            quantity = 4,
             product =  ProductCardModel(
                 hasAddToCartButton = true,
                 nonVariant = NonVariant(0, 1, 4)
