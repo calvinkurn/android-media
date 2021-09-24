@@ -9,17 +9,6 @@ import com.tokopedia.shop.score.performance.presentation.model.*
 
 class ShopPerformanceAdapterTypeFactory(
     private val shopPerformanceListener: ShopPerformanceListener,
-    private val itemShopPerformanceListener: ItemShopPerformanceListener,
-    private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener,
-    private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener,
-    private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener,
-    private val itemTimerNewSellerListener: ItemTimerNewSellerListener,
-    private val sectionFaqListener: SectionFaqListener,
-    private val globalErrorListener: GlobalErrorListener,
-    private val itemRegularMerchantListener: ItemRegularMerchantListener,
-    private val potentialPMProListener: ItemRMPotentialPMProListener,
-    private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener,
-    private val itemPMPotentialPMProListener: ItemPMPotentialPMProListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -82,8 +71,13 @@ class ShopPerformanceAdapterTypeFactory(
         return ItemStatusPMProViewHolder.LAYOUT
     }
 
+    override fun type(protectedParameterSectionUiModel: ProtectedParameterSectionUiModel): Int {
+        return ItemProtectedParameterSectionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(
                 parent,
                 shopPerformanceListener
@@ -91,46 +85,53 @@ class ShopPerformanceAdapterTypeFactory(
             PeriodDetailPerformanceViewHolder.LAYOUT -> PeriodDetailPerformanceViewHolder(parent)
             ItemDetailPerformanceViewHolder.LAYOUT -> ItemDetailPerformanceViewHolder(
                 parent,
-                itemShopPerformanceListener
+                shopPerformanceListener
             )
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)
             ItemStatusPMViewHolder.LAYOUT -> ItemStatusPMViewHolder(
                 parent,
-                itemStatusPowerMerchantListener
+                shopPerformanceListener
             )
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(
                 parent,
-                itemRegularMerchantListener
+                shopPerformanceListener
             )
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(
                 parent,
-                itemPotentialPowerMerchantListener
+                shopPerformanceListener
             )
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(
                 parent,
-                itemRecommendationFeatureListener
+                shopPerformanceListener
             )
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(
                 parent,
-                itemTimerNewSellerListener
+                shopPerformanceListener
             )
-            SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent, sectionFaqListener)
+            SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(
+                parent,
+                shopPerformanceListener
+            )
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(
                 parent,
-                globalErrorListener
+                shopPerformanceListener
             )
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
             ItemRMPotentialPMProViewHolder.LAYOUT -> ItemRMPotentialPMProViewHolder(
                 parent,
-                potentialPMProListener
+                shopPerformanceListener
             )
             ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(
                 parent,
-                itemStatusPowerMerchantProListener
+                shopPerformanceListener
             )
             ItemPMPotentialPMProViewHolder.LAYOUT -> ItemPMPotentialPMProViewHolder(
                 parent,
-                itemPMPotentialPMProListener
+                shopPerformanceListener
+            )
+            ItemProtectedParameterSectionViewHolder.LAYOUT -> ItemProtectedParameterSectionViewHolder(
+                parent,
+                shopPerformanceListener
             )
             else -> return super.createViewHolder(parent, type)
         }

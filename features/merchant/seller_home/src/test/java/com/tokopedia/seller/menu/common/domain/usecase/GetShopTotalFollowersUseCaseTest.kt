@@ -47,14 +47,14 @@ class GetShopTotalFollowersUseCaseTest {
         val successTotalFollowers = 0L
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyInt())
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(totalFollowers, successTotalFollowers)
@@ -67,7 +67,7 @@ class GetShopTotalFollowersUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<ShopTotalFollowers>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
@@ -75,7 +75,7 @@ class GetShopTotalFollowersUseCaseTest {
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertNull(totalFollowers)

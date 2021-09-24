@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.analytic
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Created By @ilhamsuaib on 2020-02-11
@@ -692,22 +693,165 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerCtaClickEvent(shopType: String) {
+    fun sendHomeTickerCtaClickEvent(tickerId: String,
+                                    tickerType: Int) {
         val eventMap = createEventMap(
-            event = TrackingConstant.CLICK_SHOP_SCORE,
-            category = TrackingConstant.ACTION_CLICK_LEARN_MORE,
-            action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
-            label = shopType
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.CLICK_TICKER_HYPERLINK,
+            label = arrayOf(
+                tickerId,
+                getTickerTypeString(tickerType)
+            ).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerImpressionEvent(shopType: String) {
+    fun sendHomeTickerImpressionEvent(tickerId: String,
+                                      tickerType: Int) {
         val eventMap = createEventMap(
-            event = TrackingConstant.VIEW_SHOP_SCORE_IRIS,
-            category = TrackingConstant.IMPRESS_LEARN_MORE,
-            action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
-            label = shopType
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.IMPRESSION_TICKER,
+            label = arrayOf(
+                tickerId,
+                getTickerTypeString(tickerType)
+            ).joinToString(" - ")
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneWidgetImpressionEvent(model: MilestoneWidgetUiModel) {
+        val missions = model.data?.milestoneMissions
+            ?.filterIsInstance<MilestoneMissionUiModel>().orEmpty()
+
+        val isFinished = missions.all { it.missionCompletionStatus }
+
+        val state = if (isFinished) {
+            TrackingConstant.FINISHED
+        } else {
+            val totalFinishedMissions = missions.filter { it.missionCompletionStatus }.size
+            String.format(
+                TrackingConstant.TOTAL_FINISHED_MISSION,
+                totalFinishedMissions,
+                missions.size
+            )
+        }
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.IMPRESSION_WIDGET_MILESTONE,
+            label = arrayOf(model.title, state).joinSpaceSeparator()
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneMissionImpressionEvent(
+        mission: BaseMilestoneMissionUiModel,
+        position: Int
+    ) {
+        val state = when (mission.missionButton.buttonStatus) {
+            BaseMilestoneMissionUiModel.ButtonStatus.ENABLED -> TrackingConstant.ACTIVE
+            BaseMilestoneMissionUiModel.ButtonStatus.DISABLED -> TrackingConstant.FINISHED
+            BaseMilestoneMissionUiModel.ButtonStatus.HIDDEN -> TrackingConstant.LOCKED
+        }
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.IMPRESSION_WIDGET_MILESTONE_CARD,
+            label = arrayOf(mission.title, state, position).joinSpaceSeparator()
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneMissionCtaClickEvent(
+        mission: BaseMilestoneMissionUiModel,
+        position: Int
+    ) {
+        val state = when (mission.missionButton.buttonStatus) {
+            BaseMilestoneMissionUiModel.ButtonStatus.ENABLED -> TrackingConstant.ACTIVE
+            BaseMilestoneMissionUiModel.ButtonStatus.DISABLED -> TrackingConstant.FINISHED
+            BaseMilestoneMissionUiModel.ButtonStatus.HIDDEN -> TrackingConstant.LOCKED
+        }
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_CARD,
+            label = arrayOf(mission.title, state, position).joinSpaceSeparator()
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneFinishedMissionCtaClickEvent() {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_CARD_FINISHED
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneWidgetCtaClickEvent() {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_SEE_MORE
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneWidgetMinimizeClickEvent() {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_MINIMIZE
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneMissionShareClickEvent(socialMedia: String) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_SHARE,
+            label = socialMedia
         )
 
         TrackingHelper.sendGeneralEvent(eventMap)
@@ -724,15 +868,33 @@ object SellerHomeTracking {
         return recommendations?.filter { it.type == type }?.size.orZero()
     }
 
+    private fun getTickerTypeString(tickerType: Int?): String {
+        return when(tickerType) {
+            Ticker.TYPE_ANNOUNCEMENT -> TrackingConstant.TICKER_ANNOUNCEMENT
+            Ticker.TYPE_ERROR -> TrackingConstant.TICKER_DANGER
+            Ticker.TYPE_INFORMATION -> TrackingConstant.TICKER_INFO
+            Ticker.TYPE_WARNING -> TrackingConstant.TICKER_WARNING
+            else -> ""
+        }
+    }
+
     private fun createEventMap(
         event: String,
         category: String,
         action: String,
-        label: String
+        label: String = TrackingConstant.EMPTY_STRING
     ): MutableMap<String, Any> {
         val map = TrackingHelper.createMap(event, category, action, label)
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
         map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
         return map
+    }
+
+    private fun <T> Array<T>.joinDashSeparator(): String {
+        return this.joinToString(TrackingConstant.SEPARATOR)
+    }
+
+    private fun <T> Array<T>.joinSpaceSeparator(): String {
+        return this.joinToString(TrackingConstant.SPACE)
     }
 }

@@ -277,9 +277,16 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
-                        val shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
-                        shareModel.subjectName = productData.productName ?: ""
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
+                        try{
+                            val shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
+                            shareModel.subjectName = productData.productName ?: ""
+                            SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
+                        } catch (e: Exception){
+                            err.add(e)
+                            logExceptionToFirebase(e)
+                            openIntentShareDefaultUniversalSharing(null, productData)
+                        }
+
                         if (isLog) {
                             log(mode, resourceReady, imageProcess, branchTime, err, null)
                         }
@@ -288,7 +295,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                     override fun onError(linkerError: LinkerError) {
                         postBuildImage.invoke()
-                        productData.let { openIntentShareDefaultUniversalSharing(null, it) }
+                        openIntentShareDefaultUniversalSharing(null, productData)
                         if (isLog) {
                             log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
                         }
@@ -297,7 +304,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }))
         } else {
             postBuildImage.invoke()
-            productData.let { openIntentShareDefaultUniversalSharing(null, it) }
+            openIntentShareDefaultUniversalSharing(null, productData)
             if (isLog) {
                 log(mode, resourceReady, imageProcess, branchTime, err, null)
             }

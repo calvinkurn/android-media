@@ -1,14 +1,13 @@
 package com.tokopedia.digital.home.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.LayoutDigitalHomeTrustmarkItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.layout_digital_home_trustmark_item.view.*
 
 class RechargeItemDualIconsAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener)
     : RecyclerView.Adapter<RechargeItemDualIconsAdapter.RechargeItemTrustMarkViewHolder>() {
@@ -18,7 +17,7 @@ class RechargeItemDualIconsAdapter(val items: List<RechargeHomepageSections.Item
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RechargeItemTrustMarkViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_trustmark_item, parent, false)
+        val view = LayoutDigitalHomeTrustmarkItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RechargeItemTrustMarkViewHolder(view)
     }
 
@@ -26,13 +25,16 @@ class RechargeItemDualIconsAdapter(val items: List<RechargeHomepageSections.Item
         return items.size
     }
 
-    class RechargeItemTrustMarkViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class RechargeItemTrustMarkViewHolder(val binding: LayoutDigitalHomeTrustmarkItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
-            itemView.trustmark_image.loadImage(element.mediaUrl)
-            itemView.trustmark_name.text = element.title
-            itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element)
+            with(binding){
+                trustmarkImage.loadImage(element.mediaUrl)
+                trustmarkName.text = element.title
+                root.setOnClickListener {
+                    onItemBindListener.onRechargeSectionItemClicked(element)
+                }
             }
+
         }
 
     }

@@ -65,7 +65,7 @@ class RechargeGeneralViewModelTest {
         result[objectType] = operatorCluster
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
@@ -89,7 +89,7 @@ class RechargeGeneralViewModelTest {
         result[objectType] = operatorCluster
         val gqlResponseNull = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseNull
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
@@ -98,7 +98,7 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getOperatorCluster_Fail_ErrorResponse() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
@@ -122,7 +122,7 @@ class RechargeGeneralViewModelTest {
         result[objectType] = productData
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.productList.value
@@ -145,7 +145,7 @@ class RechargeGeneralViewModelTest {
         result[objectType] = productData
         val gqlResponseNull = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseNull
 
         val errorMsg = "this is error message"
         rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = errorMsg)
@@ -156,7 +156,7 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getProductList_Fail_ErrorResponse() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.productList.value

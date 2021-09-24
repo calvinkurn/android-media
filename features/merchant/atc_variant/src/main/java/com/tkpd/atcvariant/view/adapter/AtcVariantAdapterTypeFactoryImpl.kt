@@ -2,6 +2,7 @@ package com.tkpd.atcvariant.view.adapter
 
 import android.view.View
 import com.tkpd.atcvariant.data.uidata.*
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tkpd.atcvariant.view.viewholder.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -15,7 +16,8 @@ import rx.subscriptions.CompositeSubscription
 
 class AtcVariantAdapterTypeFactoryImpl(
         private val variantListener: AtcVariantListener,
-        private val compositeSubscription: CompositeSubscription
+        private val compositeSubscription: CompositeSubscription,
+        private val atcVariantBottomSheetListener: AtcVariantBottomSheetListener
 ) : BaseAdapterTypeFactory(), AtcVariantTypeFactory {
 
     override fun type(data: VariantHeaderDataModel): Int {
@@ -40,7 +42,7 @@ class AtcVariantAdapterTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view, variantListener)
+            AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view, variantListener, atcVariantBottomSheetListener)
             AtcVariantQuantityViewHolder.LAYOUT -> AtcVariantQuantityViewHolder(view, variantListener, compositeSubscription)
             AtcVariantShimmeringViewHolder.LAYOUT -> AtcVariantShimmeringViewHolder(view)
             AtcVariantComponentViewHolder.LAYOUT -> AtcVariantComponentViewHolder(view, variantListener)

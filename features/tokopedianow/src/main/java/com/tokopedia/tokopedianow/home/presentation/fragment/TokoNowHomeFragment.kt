@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.util.SparseIntArray
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,9 +55,11 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME2
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
@@ -65,13 +67,15 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -82,13 +86,13 @@ import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -118,7 +122,9 @@ class TokoNowHomeFragment: Fragment(),
         HomeProductRecomViewHolder.HomeProductRecomListener,
         TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        HomeSharingEducationListener,
+        HomeEducationalInformationListener
 {
 
     companion object {
@@ -126,7 +132,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
-        private const val ITEM_VIEW_CACHE_SIZE = 0
+        private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -152,13 +158,15 @@ class TokoNowHomeFragment: Fragment(),
     private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
-                tokoNowListener = this,
+                tokoNowView = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
-                tokoNowProductCardListener = this
+                tokoNowProductCardListener = this,
+                homeSharingEducationListener = this,
+                homeEducationalInformationListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -179,7 +187,9 @@ class TokoNowHomeFragment: Fragment(),
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
-    private var carouselScrollPosition = SparseIntArray()
+    private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
+    private var stickyLoginView: StickyLoginView? = null
+    private var hasEducationalInformationAppeared = false
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -387,12 +397,12 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+        carouselScrollState[adapterPosition] = scrollState
     }
 
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
+    override fun getScrollState(adapterPosition: Int): Parcelable? {
+        return carouselScrollState[adapterPosition]
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -408,7 +418,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onProductCardImpressed(data: TokoNowProductCardUiModel) {
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
             RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
         }
@@ -447,6 +457,32 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             analytics.onImpressBannerPromo(userSession.userId, channelModel)
             isFirstImpressionOnBanner = false
+        }
+    }
+
+    override fun onShareBtnSharingEducationClicked() {
+        shareClicked(shareHomeTokonow())
+    }
+
+    override fun onCloseBtnSharingEducationClicked(id: String) {
+        SharedPreferencesUtil.setSharingEducationState(activity)
+        viewModelTokoNow.removeSharingEducationWidget(id)
+    }
+
+    override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
+
+    override fun onEducationInformationLottieClicked() {
+        SharedPreferencesUtil.setEducationalInformationState(activity)
+    }
+
+    override fun onEducationInformationWidgetImpressed() {
+        hasEducationalInformationAppeared = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (!SharedPreferencesUtil.isEducationalInformationStopped(activity) && hasEducationalInformationAppeared) {
+            SharedPreferencesUtil.setEducationalInformationState(activity)
         }
     }
 
@@ -503,7 +539,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginSetup(){
-        sticky_login_tokonow?.let {
+        stickyLoginView = view?.findViewById(R.id.sticky_login_tokonow)
+        stickyLoginView?.let {
             it.page = StickyLoginConstant.Page.TOKONOW
             it.lifecycleOwner = viewLifecycleOwner
             it.setStickyAction(object : StickyLoginAction {
@@ -525,11 +562,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginLoadContent(){
-        sticky_login_tokonow.loadContent()
+        stickyLoginView?.loadContent()
     }
 
     private fun hideStickyLogin(){
-        sticky_login_tokonow.hide()
+        stickyLoginView?.hide()
     }
 
     private fun loadHeaderBackground() {
@@ -561,7 +598,7 @@ class TokoNowHomeFragment: Fragment(),
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
-        carouselScrollPosition.clear()
+        carouselScrollState.clear()
         loadLayout()
         isRefreshed = true
     }
@@ -612,7 +649,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onClickShareButton() {
-        shareIconClicked(shareHomeTokonow())
+        shareClicked(shareHomeTokonow())
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -632,7 +669,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun isNavOld(): Boolean {
         return try {
-            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+            getAbTestPlatform().getString(AB_TEST_EXP_NAME, getAbTestPlatform().getString(AB_TEST_EXP_NAME2, AB_TEST_VARIANT_OLD)) == AB_TEST_VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -707,9 +744,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome?.post {
-                    rvHome?.submitProduct(it.data)
-                }
+                showHomeLayout(it.data)
             }
         }
 
@@ -891,6 +926,7 @@ class TokoNowHomeFragment: Fragment(),
                     showHomeLayout(data)
                 }
             }
+            TokoNowLayoutState.UPDATE -> showHomeLayout(data)
         }
     }
 
@@ -1001,7 +1037,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getHomeLayout() {
-        viewModelTokoNow.getHomeLayout(localCacheModel)
+        val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
+        viewModelTokoNow.getHomeLayout(localCacheModel, isSharingRemoved)
     }
 
     private fun getMiniCart() {
@@ -1173,7 +1210,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun shareIconClicked(shareHomeTokonow: ShareHomeTokonow?){
+    private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
         }

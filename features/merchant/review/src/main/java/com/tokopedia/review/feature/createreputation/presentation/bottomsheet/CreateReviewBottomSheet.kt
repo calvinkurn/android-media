@@ -209,7 +209,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onDismissBottomSheet(text: String, templates: List<String>) {
         textArea?.setText(text)
         clearFocusAndHideSoftInput(view)
-        templatesAdapter.setData(templates)
+        if (isGoodRating()) {
+            templatesAdapter.setData(templates)
+        }
         if (templates.isEmpty()) {
             hideTemplates()
             return
@@ -501,8 +503,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             getIncentiveOvoData()
             return
         }
-        activity?.setResult(Activity.RESULT_OK)
-        dismiss()
+        finishIfRoot(true)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {

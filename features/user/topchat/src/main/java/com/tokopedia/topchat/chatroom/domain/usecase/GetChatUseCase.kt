@@ -194,6 +194,7 @@ open class GetChatUseCase @Inject constructor(
             hasNextAfter
             textareaReply
             attachmentIDs
+            replyIDsAttachment
             contacts {
               role
               userId
@@ -226,7 +227,6 @@ open class GetChatUseCase @Inject constructor(
                   fraudStatus
                   replyTime
                   status
-                  attachmentID
                   isOpposite
                   isHighlight
                   isRead

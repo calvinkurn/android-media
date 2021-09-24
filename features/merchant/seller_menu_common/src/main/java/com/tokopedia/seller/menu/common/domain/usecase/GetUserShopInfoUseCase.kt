@@ -25,7 +25,7 @@ class GetUserShopInfoUseCase @Inject constructor(
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos", "shopstats-limited"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link"]
                 }
               ) {
                 result {
@@ -41,6 +41,14 @@ class GetUserShopInfoUseCase @Inject constructor(
                     identifier
                     value
                     startTime
+                  }
+                  shopSnippetURL
+                  location
+                  branchLinkDomain
+                  shopCore {
+                    description
+                    tagLine
+                    url
                   }
                 }
               }
@@ -75,7 +83,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): UserShopInfoWrapper {
         val gqlRequest = GraphqlRequest(USER_SHOP_INFO_QUERY, UserShopInfoResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(UserShopInfoResponse::class.java)
         if (gqlError.isNullOrEmpty()) {

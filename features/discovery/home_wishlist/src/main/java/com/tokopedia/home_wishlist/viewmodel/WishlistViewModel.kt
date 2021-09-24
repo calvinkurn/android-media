@@ -925,7 +925,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                updateRecommendationItemWishlist(productId?.toLong()?:-1, parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toLong() ?: 0, parentPosition, childPosition, !currentWishlistState)
                 addWishlistRecommendationActionData.value = Event(
                         AddWishlistRecommendationData(
                                 message = "",
@@ -959,7 +959,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessRemoveWishlist(productId: String?) {
-                updateRecommendationItemWishlist(productId?.toLong()?:-1, parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toLong()?:0, parentPosition, childPosition, !currentWishlistState)
                 removeWishlistRecommendationActionData.value = Event(
                         RemoveWishlistRecommendationData(
                                 message = "",
