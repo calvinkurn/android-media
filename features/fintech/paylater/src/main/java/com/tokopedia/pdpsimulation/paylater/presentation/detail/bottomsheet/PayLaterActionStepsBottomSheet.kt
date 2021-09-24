@@ -16,7 +16,6 @@ import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterActionStepsAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_action_steps_bottomsheet_widget.*
 import java.net.URLEncoder
@@ -74,7 +73,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == howToUse) {
+            if (it.cta?.cta_type == HOWTOUSE) {
                 if (it.gateway_detail?.how_toUse?.notes?.size != 0)
                     noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
                 it.gateway_detail?.how_toUse?.let { howToUseDetail ->
@@ -182,7 +181,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         const val APPLICATION_STATUS_DATA = "applicationStatusData"
 
         // If CTA type is 4 the show How to Use list else show how to apply list
-        const val howToUse = 4
+        const val HOWTOUSE = 4
 
         fun show(
             bundle: Bundle,
