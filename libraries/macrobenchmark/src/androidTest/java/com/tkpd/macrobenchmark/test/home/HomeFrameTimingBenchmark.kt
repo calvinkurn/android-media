@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     @Before
     fun setupEnvironment() {
-        MacroDevOps.setupHomeEnvironment()
+        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
     }
 
     override fun pageInteractionTest() {
