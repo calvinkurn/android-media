@@ -86,7 +86,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(CommonTopupBillsGqlQuery.ADD_BILL_QUERY,
                         AddSmartBills::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<AddSmartBills>()
 

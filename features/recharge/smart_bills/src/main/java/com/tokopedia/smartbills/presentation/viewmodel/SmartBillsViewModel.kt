@@ -138,7 +138,7 @@ class SmartBillsViewModel @Inject constructor(
             )
 
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeCatalogMenuAddBills>()
 
             mutableCatalogList.postValue(Success(data.response))
@@ -183,7 +183,7 @@ class SmartBillsViewModel @Inject constructor(
             )
 
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeDeleteSBM>()
 
             mutableDeleteSBM.postValue(Success(data))

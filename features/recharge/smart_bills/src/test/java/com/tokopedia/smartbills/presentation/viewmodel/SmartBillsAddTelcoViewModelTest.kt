@@ -111,7 +111,7 @@ class SmartBillsAddTelcoViewModelTest {
         result[objectType] = addBills
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsAddTelcoViewModel.addBill(mapParams)
@@ -126,7 +126,7 @@ class SmartBillsAddTelcoViewModelTest {
 
     @Test
     fun getAddBillRecharge_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         smartBillsAddTelcoViewModel.addBill(mapParams)
 
@@ -318,7 +318,7 @@ class SmartBillsAddTelcoViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsEnquiryData::class.java] = topUpEnquiryData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         smartBillsAddTelcoViewModel.getInquiryData(mapParams)
@@ -338,7 +338,7 @@ class SmartBillsAddTelcoViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsEnquiryData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         smartBillsAddTelcoViewModel.getInquiryData(mapParams)
@@ -365,7 +365,7 @@ class SmartBillsAddTelcoViewModelTest {
         result[objectType] = productOutputs
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsAddTelcoViewModel.getCatalogNominal(true, productInputs, mapParams)
@@ -390,7 +390,7 @@ class SmartBillsAddTelcoViewModelTest {
         result[objectType] = productOutputs
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsAddTelcoViewModel.getCatalogNominal(false, productInputs, mapParams)
@@ -414,7 +414,7 @@ class SmartBillsAddTelcoViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[RechargeCatalogProductInputMultiTabData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         smartBillsAddTelcoViewModel.getCatalogNominal(true, productInputs, mapParams)

@@ -223,7 +223,7 @@ class RechargeGeneralViewModelTest {
         result[objectType] = addBills
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         rechargeGeneralViewModel.addBillRecharge(mapParams)
@@ -238,7 +238,7 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getAddBillRecharge_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeGeneralViewModel.addBillRecharge(mapParams)
 

@@ -620,7 +620,7 @@ class SmartBillsViewModelTest {
         result[objectType] = catalogs
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getCatalogAddBills(mapParams)
@@ -635,7 +635,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun getCatalogAddBills_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         smartBillsViewModel.getCatalogAddBills(mapParams)
 
@@ -654,7 +654,7 @@ class SmartBillsViewModelTest {
         result[objectType] = deleteSBM
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.deleteProductSBM(mapParams)
@@ -669,7 +669,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun deleteProductSBM_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         smartBillsViewModel.deleteProductSBM(mapParams)
 

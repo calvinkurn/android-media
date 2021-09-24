@@ -100,7 +100,7 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
             var data: TopupBillsEnquiryData
             do {
                 data = withContext(dispatcher.io) {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData()
 
                 with (data.enquiry) {
@@ -119,7 +119,7 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(CommonTopupBillsGqlQuery.ADD_BILL_QUERY,
                         RechargeAddBillsData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeAddBillsData>()
 
@@ -136,7 +136,7 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
                 val data = withContext(dispatcher.io) {
                     val graphqlRequest = GraphqlRequest(SmartBillsQueries.GET_NOMINAL_TELCO,
                             RechargeCatalogProductInputMultiTabData::class.java, mapParam)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest),
+                    graphqlRepository.response(listOf(graphqlRequest),
                             GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
                 }.getSuccessData<RechargeCatalogProductInputMultiTabData>()
 
