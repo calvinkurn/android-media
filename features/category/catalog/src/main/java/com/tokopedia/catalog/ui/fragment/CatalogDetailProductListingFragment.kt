@@ -567,14 +567,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onQuickFilterSelected(option: Option) {
         val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
-        if(isQuickFilterSelectedReversed){
-            CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
-                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
-                    userSession.userId)
-        }
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
         val queryParams = viewModel.filterController?.getParameter()
@@ -583,6 +575,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             refreshFilterControllers(HashMap(queryParams))
         }
         reloadData()
+        if(isQuickFilterSelectedReversed){
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
+        }
     }
 
     fun refreshSearchParameters(queryParams: Map<String, String>) {
