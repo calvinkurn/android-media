@@ -209,8 +209,7 @@ object AtcCommonMapper {
                 VariantComponentDataModel(
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
-                        mapOfSelectedVariant = initialSelectedVariant,
-                        emptyOrInactiveCopy = selectedChild?.stock?.stockCopy ?: "")
+                        mapOfSelectedVariant = initialSelectedVariant)
         ).also {
             idCounter += 1
         }
@@ -259,8 +258,7 @@ object AtcCommonMapper {
                 is VariantComponentDataModel -> {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
-                                    ?: mutableMapOf(),
-                            emptyOrInactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
+                                    ?: mutableMapOf())
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",

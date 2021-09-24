@@ -1,0 +1,15 @@
+{
+  "readme": "Smart bills management add bills success",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "viewSmartBillIris",
+      "eventAction": "view add bills success - toaster box",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

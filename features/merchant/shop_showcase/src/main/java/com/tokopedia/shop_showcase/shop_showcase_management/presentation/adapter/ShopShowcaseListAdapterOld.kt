@@ -1,18 +1,17 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
-import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
+import com.tokopedia.shop_showcase.databinding.ShopShowcaseItemOldBinding
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcaseListAdapterOld (
@@ -28,7 +27,12 @@ class ShopShowcaseListAdapterOld (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(R.layout.shop_showcase_item_old))
+        val binding = ShopShowcaseItemOldBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        )
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -40,17 +44,17 @@ class ShopShowcaseListAdapterOld (
     }
 
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val context: Context
+    inner class ViewHolder(itemViewBinding: ShopShowcaseItemOldBinding): RecyclerView.ViewHolder(itemViewBinding.root) {
         private var titleShowcase: TextView? = null
         private var buttonMenuMore: ImageView? = null
         private var campaignLabel: Typography? = null
 
         init {
-            context = itemView.context
-            titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
-            buttonMenuMore = itemView.findViewById(R.id.img_menu_more)
-            campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
+            itemViewBinding.apply {
+                titleShowcase = tvShowcaseName
+                buttonMenuMore = imgMenuMore
+                campaignLabel = tvCampaignLabel
+            }
         }
 
         fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
