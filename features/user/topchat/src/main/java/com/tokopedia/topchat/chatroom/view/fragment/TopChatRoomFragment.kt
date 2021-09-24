@@ -42,6 +42,7 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
@@ -339,6 +340,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) {
             adapter.expandSrwBubble()
         }
+    }
+
+    override fun showPreviewMsg(previewMsg: SendableViewModel) {
+        adapter.addHeaderDateIfDifferent(previewMsg)
+        adapter.addNewMessage(previewMsg)
+        topchatViewState?.scrollToBottom()
     }
 
     override fun removeSrwBubble() {
@@ -801,7 +808,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.blastId.toString(), viewModel.attachmentId)
+        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
         super.onImageAnnouncementClicked(viewModel)
     }
 
@@ -836,7 +843,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        super.onReceiveMessageEvent(visitable)
+        val chatBubble = visitable as? BaseChatViewModel
+        val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
+        if (chatBubble != null && hasPreviewOnList) {
+            adapter.updatePreviewFromWs(visitable, chatBubble.localId)
+        } else {
+            viewState?.removeDummyIfExist(visitable)
+            viewState?.onReceiveMessageEvent(visitable)
+        }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
     }
@@ -1385,13 +1399,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel(
-            messageId,
-            opponentId,
-            (System.currentTimeMillis() / SECOND_DIVIDER).toString(),
-            imageUrl,
-            SendableViewModel.generateStartTime()
-        )
+        return ImageUploadViewModel.Builder()
+            .withRoomMetaData(presenter.roomMetaData)
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsDummy(true)
+            .withImageUrl(imageUrl)
+            .build()
     }
 
     private fun showDialogConfirmToAbortUpload() {

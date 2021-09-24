@@ -35,6 +35,12 @@ data class ChannelDetailsWithRecomResponse(
             @SerializedName("title")
             val title: String = "",
 
+            @SerializedName("cover_url")
+            val coverUrl: String = "",
+
+            @SerializedName("start_time")
+            val startTime: String = "",
+
             @SerializedName("is_live")
             val isLive: Boolean = false,
 
@@ -55,6 +61,9 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("share")
             val share: Share = Share(),
+
+            @SerializedName("air_time")
+            val airTime: String = "",
     )
 
     data class Partner(
@@ -156,7 +165,10 @@ data class ChannelDetailsWithRecomResponse(
             val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
 
             @SerializedName("room_background")
-            val roomBackground: RoomBackground = RoomBackground()
+            val roomBackground: RoomBackground = RoomBackground(),
+
+            @SerializedName("reminder")
+            val reminder: Reminder = Reminder()
     )
 
     data class FreezeData(
@@ -235,5 +247,10 @@ data class ChannelDetailsWithRecomResponse(
     data class RealTimeNotificationConfig(
             @SerializedName("lifespan")
             val lifespan: Long = 0L,
+    )
+
+    data class Reminder(
+        @SerializedName("is_set")
+        val isSet: Boolean = false
     )
 }

@@ -47,6 +47,7 @@ data class Url(
         val HUB: String,
         val PCIDSS_CREDIT_CARD: String,
         val GOJEK_OTP: String,
-        val GOPAY_PIN: String
+        val GOPAY_PIN: String,
+        val SSE: String
 )
 
