@@ -63,7 +63,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
                         id = recomItem.productId.toString(),
                         name = recomItem.name,
                         variant = "",
-                        productPrice = recomItem.priceInt.toString(),
+                        productPrice = CURRENCY_DEFAULT_VALUE,
                         isFreeOngkir = recomItem.isFreeOngkirActive
                 ))
         )
@@ -173,8 +173,8 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         const val KEY_EVENT_REMOVE_FROM_CART = "removeFromCart"
         const val KEY_EVENT_PAGE_SOURCE = "pageSource"
         const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
-        const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
-        const val KEY_EVENT_ACTION_REMOVE_FROM_CART = "click delete on tokonow product recommendation"
+        const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation pdp"
+        const val KEY_EVENT_ACTION_REMOVE_FROM_CART = "click delete on tokonow pdp product recommendation"
         const val KEY_EVENT_LABEL_ATC = "%s, %s" //recom title, chips value
 
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
