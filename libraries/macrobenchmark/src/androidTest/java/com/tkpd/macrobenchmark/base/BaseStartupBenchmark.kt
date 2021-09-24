@@ -18,7 +18,7 @@ import org.junit.runners.Parameterized
 
 /**
  * Created by DevAra
- * This test will measure MainParentActivity janky frames with macro benchmark
+ * Base class for startup macrobenchmark in Tokopedia
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
