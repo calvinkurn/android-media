@@ -327,8 +327,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun trackSelectedTab(tabPosition: Int) {
         when (tabPosition) {
-            0 -> EmoneyPdpAnalyticsUtils.clickRecentTransactionTab(userSession.userId)
-            1 -> EmoneyPdpAnalyticsUtils.clickPromoTab(userSession.userId)
+            0 -> EmoneyPdpAnalyticsUtils.clickRecentTransactionTab(userSession.userId, getIssuerName(issuerId))
+            1 -> EmoneyPdpAnalyticsUtils.clickPromoTab(userSession.userId, getIssuerName(issuerId))
         }
     }
 

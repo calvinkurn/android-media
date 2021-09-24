@@ -85,24 +85,24 @@ object EmoneyPdpAnalyticsUtils {
         }
     }
 
-    fun clickRecentTransactionTab(userId: String) {
+    fun clickRecentTransactionTab(userId: String, issuerName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 TrackAppUtils.EVENT, EmoneyPdpAnalyticsConst.Event.CLICK_DIGITAL_NATIVE,
                 TrackAppUtils.EVENT_CATEGORY, EmoneyPdpAnalyticsConst.Category.DIGITAL_NATIVE,
                 TrackAppUtils.EVENT_ACTION, EmoneyPdpAnalyticsConst.Action.CLICK_ORDER_LIST_SECTION,
-                TrackAppUtils.EVENT_LABEL, "",
+                TrackAppUtils.EVENT_LABEL, issuerName,
                 BUSINESS_UNIT, RECHARGE_BU,
                 CURRENTSITE, RECHARGE_SITE,
                 USER_ID, userId
         ))
     }
 
-    fun clickPromoTab(userId: String) {
+    fun clickPromoTab(userId: String, issuerName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 TrackAppUtils.EVENT, EmoneyPdpAnalyticsConst.Event.CLICK_DIGITAL_NATIVE,
                 TrackAppUtils.EVENT_CATEGORY, EmoneyPdpAnalyticsConst.Category.DIGITAL_NATIVE,
                 TrackAppUtils.EVENT_ACTION, EmoneyPdpAnalyticsConst.Action.CLICK_PROMO_SECTION,
-                TrackAppUtils.EVENT_LABEL, "",
+                TrackAppUtils.EVENT_LABEL, issuerName,
                 BUSINESS_UNIT, RECHARGE_BU,
                 CURRENTSITE, RECHARGE_SITE,
                 USER_ID, userId
