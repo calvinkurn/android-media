@@ -160,7 +160,7 @@ class SellerHomeNavigator(
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
             SomTabConst.STATUS_ALL_ORDER,
-            "0",
+            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
             "",
             ""
         )
