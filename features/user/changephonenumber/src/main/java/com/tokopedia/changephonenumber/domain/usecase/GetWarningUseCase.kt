@@ -1,11 +1,11 @@
 package com.tokopedia.changephonenumber.domain.usecase
 
+import com.tokopedia.changephonenumber.data.GetWarningDataModel
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.changephonenumber.data.GetWarningDataModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.reflect.Type
@@ -35,8 +35,5 @@ class GetWarningUseCase @Inject constructor(
         private val GET_WARNING = "${TokopediaUrl.getInstance().ACCOUNTS}api/v1/change-msisdn/get-warning"
         private const val PARAM_OS_TYPE = "theme"
         private const val OS_TYPE_ANDROID = "mobile"
-
-        private const val KEY_AUTHORIZATION = "Authorization"
-        private const val BEARER = "Bearer"
     }
 }

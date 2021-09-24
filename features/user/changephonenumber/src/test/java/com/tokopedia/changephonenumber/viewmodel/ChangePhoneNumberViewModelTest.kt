@@ -7,7 +7,6 @@ import com.tokopedia.changephonenumber.domain.usecase.GetWarningUseCase
 import com.tokopedia.changephonenumber.features.ChangePhoneNumberViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
