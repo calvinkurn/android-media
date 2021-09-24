@@ -66,6 +66,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
         const val BU_WIDGET_TYPE_LEFT = "mix-left"
+        const val RESET_IMAGE_LAYOUT_VALUE: Int = 0
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -136,7 +137,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            image.layout(0,0,0,0)
+            image.layout(RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE)
             image.loadImageFitCenter(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
