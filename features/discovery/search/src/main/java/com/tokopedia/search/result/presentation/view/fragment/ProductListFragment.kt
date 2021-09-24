@@ -760,6 +760,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             irisSessionId,
             item.topadsTag,
+            item.dimension115,
         )
     }
 
@@ -832,6 +833,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 getUserId(),
                 item.dimension90,
                 item.topadsTag,
+                item.dimension115,
         )
     }
 
