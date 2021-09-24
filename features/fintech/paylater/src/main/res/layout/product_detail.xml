@@ -19,7 +19,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_4"
@@ -29,7 +29,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Product name  jkef eerfknekjrf" />
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Product name  jkef eersdljkbfjsidnsdbf sdbffljksdnkfnsdkjfnsdffknekjrf" />
 
 
     <com.tokopedia.unifyprinciples.Typography
