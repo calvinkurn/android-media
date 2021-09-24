@@ -1,28 +1,17 @@
 package com.tokopedia.play.robot.play
 
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.Robot
-import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.type.PiPMode
-import com.tokopedia.play.view.type.PiPState
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.ClickLikeAction
-import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
@@ -30,21 +19,17 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.launch
 
 /**
  * Created by jegul on 10/02/21
@@ -60,6 +45,7 @@ class PlayViewModelRobot2(
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+    playChannelReminderUseCase: PlayChannelReminderUseCase,
     playSocketToModelMapper: PlaySocketToModelMapper,
     playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -68,6 +54,7 @@ class PlayViewModelRobot2(
     playPreference: PlayPreference,
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
+    playChannelSSE: PlayChannelSSE,
     private val repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
@@ -87,6 +74,7 @@ class PlayViewModelRobot2(
             getProductTagItemsUseCase,
             trackProductTagBroadcasterUseCase,
             trackVisitChannelBroadcasterUseCase,
+            playChannelReminderUseCase,
             playSocketToModelMapper,
             playUiModelMapper,
             userSession,
@@ -95,6 +83,7 @@ class PlayViewModelRobot2(
             playPreference,
             videoLatencyPerformanceMonitoring,
             playChannelWebSocket,
+            playChannelSSE,
             repo,
             playAnalytic,
             timerFactory,
@@ -178,6 +167,7 @@ fun createPlayViewModelRobot(
     getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
+    playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
     playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -185,6 +175,7 @@ fun createPlayViewModelRobot(
     playPreference: PlayPreference = mockk(relaxed = true),
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
     playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+    playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
@@ -201,6 +192,7 @@ fun createPlayViewModelRobot(
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase = playChannelReminderUseCase,
         playSocketToModelMapper = playSocketToModelMapper,
         playUiModelMapper = playUiModelMapper,
         userSession = userSession,
@@ -209,8 +201,10 @@ fun createPlayViewModelRobot(
         playPreference = playPreference,
         videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
         playChannelWebSocket = playChannelWebSocket,
+        playChannelSSE = playChannelSSE,
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
+
     ).apply(fn)
 }
