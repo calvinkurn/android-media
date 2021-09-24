@@ -223,6 +223,15 @@ object AccountConstants {
         const val REQUEST_ADD_PASSWORD = 100
     }
 
+    object TDNBanner {
+        const val TDN_RADIUS = 16
+        const val SOURCE = "16"
+        const val DIMEN_ID = 3
+        const val ADS_COUNT = 1
+        const val EMPTY = ""
+        const val TDN_INDEX = 4
+    }
+
     object LAYOUT {
         const val TYPE_ERROR = -1
     }

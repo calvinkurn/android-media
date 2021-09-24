@@ -20,13 +20,15 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBan
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
 
 class HomeAdapterTypeFactory(
-    private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowView: TokoNowView? = null,
     private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
     private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null,
-    private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null
+    private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null,
+    private val homeSharingEducationListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null,
+    private val homeEducationalInformationListener: HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener? = null
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -39,6 +41,8 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
+    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRecentPurchaseUiModel): Int = TokoNowRecentPurchaseViewHolder.LAYOUT
     // endregion
 
@@ -65,11 +69,13 @@ class HomeAdapterTypeFactory(
             // endregion
 
             // region TokoNow Home Component
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowView, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowListener, homeProductRecomListener)
-            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
+            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
+            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
+            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowView, homeEducationalInformationListener)
             // endregion
 
             // region Global Home Component
@@ -78,7 +84,7 @@ class HomeAdapterTypeFactory(
                 DynamicLegoBannerViewHolder(view, listener, null)
             }
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
-            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
+            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
             // endregion
             else -> super.createViewHolder(view, type)
         }

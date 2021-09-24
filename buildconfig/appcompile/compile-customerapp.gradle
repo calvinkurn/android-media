@@ -14,7 +14,6 @@ includeIfEnabled("features:category:kategori")
 includeIfEnabled("features:category:category_levels")
 includeIfEnabled("features:category:find_native")
 
-includeIfEnabled("features:content:affiliate")
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:createpost")
 includeIfEnabled("features:content:feed")
@@ -65,7 +64,7 @@ includeIfEnabled("features:entertainment:event")
 includeIfEnabled("features:entertainment:deals")
 includeIfEnabled("features:entertainment:digital_deals")
 
-includeIfEnabled("features:salam:umrah")
+//includeIfEnabled("features:salam:umrah")
 
 includeIfEnabled("features:discovery:category_common")
 includeIfEnabled("features:discovery:discovery_common")

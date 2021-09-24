@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
@@ -32,12 +33,13 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.view_recharge_home_search.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener {
 
+    protected var binding by autoCleared<ViewRechargeHomeSearchBinding>()
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
@@ -48,7 +50,8 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
     lateinit var viewModel: DigitalHomePageSearchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.view_recharge_home_search, container, false)
+        binding = ViewRechargeHomeSearchBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,15 +65,17 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        digital_homepage_search_view_search_bar.clearListener = {
+        
+        binding.digitalHomepageSearchViewSearchBar.clearListener = {
             clearAllData()
         }
-        digital_homepage_search_view_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        
+        binding.digitalHomepageSearchViewToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         // Show keyboard automatically
-        digital_homepage_search_view_search_bar.searchBarTextField.requestFocus()
-        digital_homepage_search_view_search_bar.searchBarTextField.setOnEditorActionListener(getSearchListener)
-        digital_homepage_search_view_search_bar.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.requestFocus()
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setOnEditorActionListener(getSearchListener)
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -83,7 +88,7 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
         })
         context?.run {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.showSoftInput(digital_homepage_search_view_search_bar.searchBarTextField, InputMethod.SHOW_FORCED)
+            inputMethodManager.showSoftInput(binding.digitalHomepageSearchViewSearchBar.searchBarTextField, InputMethod.SHOW_FORCED)
         }
 
         val recyclerView = getRecyclerView(view) as? VerticalRecyclerView

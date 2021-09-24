@@ -9,6 +9,7 @@ import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperRespons
 import com.tokopedia.shop.score.performance.domain.usecase.GetShopPerformanceUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,10 +23,10 @@ abstract class ShopPerformanceViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    protected lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    protected lateinit var getShopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>
 
     @RelaxedMockK
-    protected lateinit var getShopPerformanceUseCase: GetShopPerformanceUseCase
+    protected lateinit var getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
 
     @RelaxedMockK
     protected lateinit var shopScoreMapper: ShopScoreMapper
@@ -51,27 +52,27 @@ abstract class ShopPerformanceViewModelTestFixture {
     }
 
     protected fun onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns shopInfoPeriodUiModel
+        coEvery { getShopInfoPeriodUseCase.get().executeOnBackground() } returns shopInfoPeriodUiModel
     }
 
     protected fun onGetShopInfoPeriodUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws exception
+        coEvery { getShopInfoPeriodUseCase.get().executeOnBackground() } throws exception
     }
 
     protected fun verifyGetShopInfoPeriodUseCaseCalled() {
-        coVerify { getShopInfoPeriodUseCase.executeOnBackground() }
+        coVerify { getShopInfoPeriodUseCase.get().executeOnBackground() }
     }
 
     protected fun onGetShopPerformanceUseCase_thenReturn(shopScoreWrapperResponse: ShopScoreWrapperResponse) {
-        coEvery { getShopPerformanceUseCase.executeOnBackground() } returns shopScoreWrapperResponse
+        coEvery { getShopPerformanceUseCase.get().executeOnBackground() } returns shopScoreWrapperResponse
     }
 
     protected fun verifyGetShopPerformanceUseCaseCalled() {
-        coVerify { getShopPerformanceUseCase.executeOnBackground() }
+        coVerify { getShopPerformanceUseCase.get().executeOnBackground() }
     }
 
     protected fun onGetShopPerformanceUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopPerformanceUseCase.executeOnBackground() } throws exception
+        coEvery { getShopPerformanceUseCase.get().executeOnBackground() } throws exception
     }
 
 

@@ -50,7 +50,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -72,7 +72,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -134,7 +134,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
@@ -1287,7 +1286,7 @@ class NewShopPageFragment :
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
             } else {
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
             }
         }
     }
