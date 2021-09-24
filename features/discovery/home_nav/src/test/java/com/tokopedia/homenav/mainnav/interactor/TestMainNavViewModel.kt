@@ -97,7 +97,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when nav page launched from uoh page then do notshow back to home icon`() {
+    fun `test when nav page launched from uoh page then not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
@@ -140,6 +140,7 @@ class TestMainNavViewModel {
 
     @Test
     fun `test when nav page launched from homepage then do show back to home icon with default pagesource`() {
+        val defaultPageSource = "Default"
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
@@ -150,7 +151,7 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource()
-        Assert.assertEquals("Default", viewModel.getPageSource())
+        Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
@@ -406,13 +407,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when not login first load init viewmodel data then check data not null`() {
+    fun `test when user not login first load init viewmodel data not null`() {
         val userSession = mockk<UserSessionInterface>()
         every { userSession.isLoggedIn() } returns false
         viewModel = createViewModel(userSession = userSession)
         viewModel.setInitialState()
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList
         Assert.assertNotNull(visitableList)
     }
 
@@ -816,9 +817,10 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSessionInterface>()
         every { userSession.isLoggedIn() } returns true
         every { userSession.hasShop() } returns true
+        every { userSession.isShopOwner } returns true
         viewModel = createViewModel(userSession = userSession)
 
-        viewModel.getMainNavData(false)
+        viewModel.getMainNavData(true)
         val complainPosition = viewModel.findComplainModelPosition()
         Assert.assertNotEquals(defaultPositionComplaintNotFound, complainPosition)
     }
@@ -848,9 +850,32 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test refresh `() {
-        viewModel = createViewModel()
+    fun `test show error bu list then refresh bu list data will still show error bu list`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val errorStateBuDataModel = dataList.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
+        Assert.assertNotNull(errorStateBuDataModel) //error state bu data model existed
+
         viewModel.refreshBuListdata()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
+        Assert.assertNotNull(errorStateBuDataModelRefreshed)
     }
 
 }
