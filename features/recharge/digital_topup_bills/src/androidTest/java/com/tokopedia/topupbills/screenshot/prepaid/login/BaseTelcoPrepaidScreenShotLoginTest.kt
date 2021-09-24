@@ -97,7 +97,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     @Test
     fun screenshot() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        isCoachmarkDisabled(context, false)
+        isCoachmarkDisabled(context, true)
         Thread.sleep(3000)
 
         take_screenshot_visible_screen()
