@@ -24,14 +24,15 @@ internal fun View.renderProductCardFooter(
     buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
     if (isProductCardList) {
+        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
         buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
+        buttonSimilarProduct?.hide()
     } else {
         buttonDeleteProduct?.hide()
         buttonRemoveFromWishlist?.hide()
+        renderSimilarProductButton(productCardModel)
     }
-
-    renderSimilarProductButton(productCardModel)
 }
 
 internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
