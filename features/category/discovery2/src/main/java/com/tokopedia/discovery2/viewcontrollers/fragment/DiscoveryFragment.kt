@@ -48,6 +48,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -70,6 +71,12 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.IntentManger
+import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.views.MvcView
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
@@ -87,6 +94,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -110,7 +118,6 @@ private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
 private const val VARIANT_REVAMP2 = NAVIGATION_VARIANT_REVAMP2
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
-const val SCREENSHOT_SHARE_SHEET = 2
 
 class DiscoveryFragment :
     BaseDaggerFragment(),
@@ -118,7 +125,10 @@ class DiscoveryFragment :
     View.OnClickListener,
     LihatSemuaViewHolder.OnLihatSemuaClickListener,
     TabLayout.OnTabSelectedListener,
-    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
+    ChooseAddressWidget.ChooseAddressWidgetListener,
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -213,7 +223,13 @@ class DiscoveryFragment :
         initChooseAddressWidget(view)
         initView(view)
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this, addFragmentLifecycleObserver = true)
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                it,
+                this,
+                this,
+                addFragmentLifecycleObserver = true,
+                permissionListener = this
+            )
         }
     }
 
@@ -864,6 +880,22 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
+        this.componentPosition =componentPosition
+        context?.let {
+            startActivityForResult(
+                TransParentActivity.getIntent(
+                    it,
+                    shopId,
+                    MvcSource.DISCO,
+                    ApplinkConst.SHOP.replace("{shop_id}", shopId),
+                    hashCode = hashCodeForMVC
+                ),
+                MvcView.REQUEST_CODE
+            )
+        }
+    }
+
     fun refreshCarouselData(componentPosition: Int = -1) {
         if (componentPosition >= 0) {
             discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
@@ -909,6 +941,20 @@ class DiscoveryFragment :
                 val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
                     (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+            }
+            MvcView.REQUEST_CODE ->{
+                if(resultCode == MvcView.RESULT_CODE_OK){
+                    data?.let{
+                        val bundle = data.getBundleExtra(REGISTER_MEMBER_SUCCESS)
+                        bundle?.let {
+                            val listInfo =
+                                bundle.getParcelableArrayList<AnimatedInfos>(IntentManger.Keys.ANIMATED_INFO)?: ArrayList()
+                            val isShown = bundle.getBoolean(IntentManger.Keys.IS_SHOWN,true)
+                            val shopID = bundle.getString(IntentManger.Keys.SHOP_ID,"")
+                            (discoveryBaseViewModel as? DiscoMerchantVoucherViewModel)?.updateData(shopID,isShown,listInfo)
+                        }
+                    }
+                }
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
@@ -1180,5 +1226,10 @@ class DiscoveryFragment :
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
+    }
+
+    // ScreenShot Access Dialogue Permission
+    override fun permissionAction(action: String, label: String) {
+        getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
     }
 }

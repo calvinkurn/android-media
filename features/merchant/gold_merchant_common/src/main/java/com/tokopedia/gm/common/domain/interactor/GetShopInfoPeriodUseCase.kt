@@ -72,7 +72,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 
         val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests)
+            val gqlResponse = graphqlRepository.response(requests)
             if (gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.shopInfoByIDResponse = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
             } else {

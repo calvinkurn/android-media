@@ -13,6 +13,8 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -53,6 +55,7 @@ class HomeAccountUserViewModelTest {
     private val walletEligibleUseCase = mockk<GetWalletEligibleUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
+    private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -81,6 +84,7 @@ class HomeAccountUserViewModelTest {
             homeAccountShortcutUseCase,
             homeAccountSafeSettingProfileUseCase,
             homeAccountRecommendationUseCase,
+            topAdsImageViewUseCase,
             centralizedUserAssetConfigUseCase,
             balanceAndPointUseCase,
             tokopointsBalanceAndPointUseCase,
@@ -154,10 +158,12 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Successfully get recommendation first page`() {
-        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
+        val recommendationData = mockk<RecommendationWidget>(relaxed = true)
         coEvery {
             homeAccountRecommendationUseCase.getData(any())
-        } returns listOf(expectedResult)
+        } returns listOf(recommendationData)
+
+        val expectedResult = RecommendationWidgetWithTDN(recommendationData,null)
 
         viewModel.getFirstRecommendation()
 

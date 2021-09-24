@@ -10,6 +10,7 @@ class BuyerOrderDetailTrackerValidationTest601 : BuyerOrderDetailTrackerValidati
         setupMock {
             mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_601)
         } actionTest {
+            login()
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
             testClickToolbarChatIcon()

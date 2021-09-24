@@ -56,7 +56,7 @@ class EventHomeViewModel @Inject constructor(
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
             }.getSuccessData<EventHomeDataResponse.Data>()
 
             mutableEventHomeListData.postValue(Success(mappingItem(data)))

@@ -63,11 +63,12 @@ data class GetRecentPurchaseResponse(
         @Expose
         @SerializedName("countReview")
         val countReview: String = "",
+        @Expose
         @SerializedName("minOrder")
         val minOrder: String = "",
         @Expose
-        @SerializedName("stock")
-        val stock: String = "",
+        @SerializedName("maxOrder")
+        val maxOrder: String = "",
         @Expose
         @SerializedName("category")
         val category: String = "",

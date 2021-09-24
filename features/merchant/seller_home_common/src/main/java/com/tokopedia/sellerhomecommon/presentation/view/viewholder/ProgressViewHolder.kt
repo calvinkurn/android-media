@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_progress_widget_error.view.*
@@ -63,6 +64,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
 
         element.data?.run {
             with(element) {
+                setTagNotification(element.tag)
                 itemView.tvProgressTitle.text = title
                 itemView.tvProgressDescription.text = data?.subtitle?.parseAsHtml()
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
@@ -72,6 +74,20 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
         }
 
         showProgressLayout()
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagProgress.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagProgress.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
     }
 
     private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {

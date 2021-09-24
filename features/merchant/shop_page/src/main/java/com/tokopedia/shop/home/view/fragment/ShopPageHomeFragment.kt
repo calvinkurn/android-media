@@ -80,7 +80,6 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -110,7 +109,6 @@ import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
@@ -865,9 +863,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             totalProductData: Int,
             isInitialData: Boolean
     ) {
-        if (ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            addChangeProductGridSection(totalProductData)
-        }
+        addChangeProductGridSection(totalProductData)
         shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
@@ -1000,7 +996,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         shopRef
                 )
 
-                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
             }
             REQUEST_CODE_SORT -> {
@@ -1062,7 +1058,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 "",
                 shopRef
         )
-        intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+        intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
         startActivity(intent)
     }
 
@@ -2063,7 +2059,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
                     // set isNeedToReload data to true for sync shop info data in product result fragment
-                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                    putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
                 }
                 startActivity(showcaseIntent)
             }

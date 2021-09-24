@@ -12,6 +12,8 @@ import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -41,5 +43,10 @@ class HomeAccountUserUsecaseModules {
     @Provides
     fun provideGetUserProfile(repository: GraphqlRepository): GetUserProfile {
         return GetUserProfile(repository)
+    }
+
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

@@ -35,7 +35,7 @@ open class HomeAccountUserUsecase @Inject constructor(
         val rawQuery = rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME]
         val gqlRequest = GraphqlRequest(rawQuery,
                 UserAccountDataModel::class.java, mapOf<String, Any>())
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(UserAccountDataModel::class.java)
         if (!errors.isNullOrEmpty()) {

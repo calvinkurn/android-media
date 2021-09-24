@@ -4,13 +4,13 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_category.view.*
 
 /**
  * @author by resakemal on 05/06/20.
@@ -20,20 +20,21 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: RechargeH
         AbstractViewHolder<RechargeHomepageCategoryModel>(itemView) {
 
     override fun bind(element: RechargeHomepageCategoryModel) {
+        val bind = ViewRechargeHomeCarousellBinding.bind(itemView)
         val section = element.section
-        with(itemView) {
+        with(bind) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_category_shimmering.hide()
+                viewRechargeHomeCarousellShimmering.root.hide()
 
                 val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
-                rv_recharge_home_category.layoutManager = layoutManager
-                rv_recharge_home_category.adapter = RechargeItemCategoryAdapter(section.items, listener)
-                tv_recharge_home_category_title.text = section.title
-                addOnImpressionListener(section) {
+                rvRechargeHomeCarousell.layoutManager = layoutManager
+                rvRechargeHomeCarousell.adapter = RechargeItemCategoryAdapter(section.items, listener)
+                tvRechargeHomeCarousellTitle.text = section.title
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_recharge_home_category_shimmering.show()
+                viewRechargeHomeCarousellShimmering.root.show()
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }

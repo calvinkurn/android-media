@@ -32,7 +32,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
-            url.contains(BACK_BTN_APPLINK, ignoreCase = true) -> {
+            url.startsWith(BACK_BTN_APPLINK, ignoreCase = true) -> {
                 // Finish activity from webview
                 return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
             }
