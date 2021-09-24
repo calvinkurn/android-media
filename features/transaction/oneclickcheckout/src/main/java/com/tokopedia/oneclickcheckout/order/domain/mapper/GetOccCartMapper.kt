@@ -313,7 +313,7 @@ class GetOccCartMapper @Inject constructor() {
                 selectedTerm = availableTerms.firstOrNull { it.isSelected },
                 additionalData = mapPaymentCreditCardAdditionalData(data),
                 isDebit = payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE,
-                isAfpb = creditCard.bankCode.isNotEmpty(),
+                isAfpb = creditCard.isAfpb,
                 unixTimestamp = creditCard.unixTimestamp,
                 tokenId = creditCard.tokenId,
                 tenorSignature = creditCard.tenorSignature
