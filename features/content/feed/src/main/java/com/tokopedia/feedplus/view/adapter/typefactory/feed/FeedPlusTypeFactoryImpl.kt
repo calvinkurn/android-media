@@ -189,7 +189,11 @@ class FeedPlusTypeFactoryImpl(
                 viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
             }
             TopAdsHeadlineViewHolder.LAYOUT -> {
-                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
+                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener,
+                    dynamicPostListener,
+                    videoViewListener,
+                    gridItemListener,
+                    imagePostListener)
             }
             OnboardingViewHolder.LAYOUT -> {
                 viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)

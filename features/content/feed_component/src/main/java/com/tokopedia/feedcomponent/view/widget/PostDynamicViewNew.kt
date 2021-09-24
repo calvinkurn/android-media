@@ -18,6 +18,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -60,6 +61,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.unifycomponents.Label
+import kotlinx.android.synthetic.main.item_topads_shop.view.*
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -234,7 +237,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.deletable,
             feedXCard.followers,
             feedXCard.typename,
-            feedXCard.media.firstOrNull()?.type ?: ""
+            feedXCard.media.firstOrNull()?.type ?: "",
+            feedXCard.isTopAds,
+            feedXCard.adId,
+            feedXCard.shopId
         )
     }
 
@@ -245,7 +251,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         deletable: Boolean,
         followers: FeedXFollowers,
         type: String,
-        mediaType: String
+        mediaType: String,
+        isTopads:Boolean,
+        adId:String,
+        shopId: String
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -320,10 +329,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (startIndex < spannableString.length && endIndex <= spannableString.length) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
-                        authorType, isFollowed, type, isVideo
-                    )
+                    if (isTopads) {
+                               listener?.onFollowClick(positionInFeed,shopId,adId)
+                    } else {
+                        listener?.onHeaderActionClick(
+                            positionInFeed, author.id,
+                            authorType, isFollowed, type, isVideo
+                        )
+                    }
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -719,6 +732,38 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
+                            if(feedXCard.isTopAds){
+                                likedText.hide()
+                                captionText.hide()
+                                commentButton.invisible()
+                                likeButton.invisible()
+                                timestampText.hide()
+                                seeAllCommentText.hide()
+                                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+                                val cekSekrang = findViewById<Typography>(R.id.top_ads_cek_sekrang)
+                                val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+                                val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
+                                val textViewSlashedPrice = findViewById<Typography>(R.id.top_ads_slashed_price)
+                                val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
+                                val labelPrice=  findViewById<Label>(R.id.top_ads_label_cashback)
+
+                                topAdsCard.show()
+                                if(feedMedia.productName.isEmpty()){
+                                    cekSekrang.show()
+                                    val constraintSet = ConstraintSet()
+                                    constraintSet.clone(topAdsCard)
+                                    constraintSet.connect(cekSekrang.id,ConstraintSet.TOP,topAdsCard.id,ConstraintSet.TOP)
+                                    constraintSet.connect(cekSekrang.id,ConstraintSet.BOTTOM,topAdsCard.id,ConstraintSet.BOTTOM)
+                                    constraintSet.applyTo(topAdsCard)
+                                }else {
+                                    topAdsProductName.displayTextOrHide(feedMedia.productName)
+                                    textViewPrice.displayTextOrHide(feedMedia.price)
+                                    textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
+                                    labelDiscount.displayTextOrHide(feedMedia.discountPercentage)
+                                    if(feedMedia.isCashback)
+                                        labelPrice.show()
+                                }
+                            }
                             doOnLayout {
                                 imageWidth = width
                                 imageHeight = height

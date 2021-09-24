@@ -152,7 +152,14 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopAdsHeadlineViewHolder.LAYOUT ->
-                TopAdsHeadlineViewHolder(parent, userSession) as AbstractViewHolder<Visitable<*>>
+                TopAdsHeadlineViewHolder(
+                    parent,
+                    userSession,
+                    dynamicPostListener = dynamicPostListener,
+                    videoViewListener = videoViewListener,
+                    gridItemListener = gridItemListener,
+                    imagePostListener = imagePostListener
+                ) as AbstractViewHolder<Visitable<*>>
             EmptyAffiliateViewHolder.LAYOUT ->
                 EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
             NoPostCardViewHolder.LAYOUT ->

@@ -40,7 +40,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:textColor="@color/Unify_N700"
