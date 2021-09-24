@@ -94,7 +94,9 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
         Embrace.getInstance().start(this);
+        Log.v("ForceLightMode", "before super");
         super.onCreate();
+        Log.v("ForceLightMode", "after super");
         setupAppScreenMode();
     }
 
@@ -115,25 +117,24 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private boolean checkForceLightMode() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-
+        Log.v("ForceLightMode", "check force light");
         if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
-            Log.d("ForceLightMode", "remote config force light true");
+            Log.v("ForceLightMode", "remote config force light true");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
             return true;
         }
-        Log.d("ForceLightMode", "remote config force light false");
+        Log.v("ForceLightMode", "remote config force light false");
         return false;
     }
 
     private void setupAppScreenMode() {
-
+        Log.v("ForceLightMode", "setupAppScreenMode");
         boolean isForceLightMode = checkForceLightMode();
         if (isForceLightMode) {
-            Log.d("ForceLightMode", "forced to light");
+            Log.v("ForceLightMode", "forced to light");
         } else {
-            Log.d("ForceLightMode", "not forced");
+            Log.v("ForceLightMode", "not forced");
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -141,10 +142,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         int screenMode;
         if (isDarkMode && !isForceLightMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;
-            Log.d("ForceLightMode", "set dark mode");
+            Log.v("ForceLightMode", "set dark mode");
         } else {
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;
-            Log.d("ForceLightMode", "set light mode");
+            Log.v("ForceLightMode", "set light mode");
         }
         AppCompatDelegate.setDefaultNightMode(screenMode);
     }
