@@ -13,11 +13,9 @@ import com.tokopedia.updateinactivephone.features.InactivePhoneViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -41,6 +39,7 @@ class InactivePhoneViewModelTest {
 
     var phoneNumber = "62800000000000"
     var email = "account@test.com"
+    var userIndex = 1
     val mockThrowable = Throwable("Opss!")
 
     @Before
@@ -55,6 +54,11 @@ class InactivePhoneViewModelTest {
         viewModel.onCleared()
         viewModel.phoneValidation.removeObserver(observerPhoneValidation)
         viewModel.getStatusPhoneNumber.removeObserver(observerGetStatusInactivePhoneNumber)
+    }
+
+    @Test
+    fun `Validate Phone Number - Success`() {
+        assert(viewModel.isValidPhoneNumber("089683321123"))
     }
 
     @Test
@@ -146,24 +150,23 @@ class InactivePhoneViewModelTest {
         val mockResponse = StatusInactivePhoneNumberDataModel(GetStatusInactivePhoneNumber(
             isSuccess = true,
             isAllowed = true,
-            userIdEnc = "",
+            userIdEnc = "7Bf2:d2ZGkaFaEsLrKuc4ZrULR79PoEwgtTaW/npKvoRyCRdViRc=",
             errorMessage = ""
         ))
 
+        val expectedValue = Success(mockResponse)
+
         coEvery {
-            getStatusInactivePhoneNumberUseCase(mapOf())
+            getStatusInactivePhoneNumberUseCase(any())
         } returns mockResponse
 
-        viewModel.getStatusPhoneNumber(email)
+        viewModel.getStatusPhoneNumber(email, phoneNumber, userIndex)
 
-        verify {
-            observerGetStatusInactivePhoneNumber.onChanged(any())
+        coVerify {
+            observerGetStatusInactivePhoneNumber.onChanged(expectedValue)
         }
 
-        assert(viewModel.getStatusPhoneNumber.value is Success)
-
-        val result = viewModel.getStatusPhoneNumber.value as Success
-        assert(result.data.data.isSuccess && result.data.data.isAllowed)
+        assertEquals(viewModel.getStatusPhoneNumber.value, expectedValue)
     }
 
     @Test
@@ -175,19 +178,22 @@ class InactivePhoneViewModelTest {
             errorMessage = "Opps!"
         ))
 
+        val expectedValue = Success(mockResponse)
+
         coEvery {
-            getStatusInactivePhoneNumberUseCase(mapOf())
+            getStatusInactivePhoneNumberUseCase(any())
         } returns mockResponse
 
-        viewModel.getStatusPhoneNumber(email)
+        viewModel.getStatusPhoneNumber(email, phoneNumber, userIndex)
 
-        verify {
-            observerGetStatusInactivePhoneNumber.onChanged(any())
+        coVerify {
+            observerGetStatusInactivePhoneNumber.onChanged(expectedValue)
         }
 
-        assert(viewModel.getStatusPhoneNumber.value is Success)
+        assertEquals(viewModel.getStatusPhoneNumber.value, expectedValue)
 
         val result = viewModel.getStatusPhoneNumber.value as Success
-        assert(!result.data.data.isAllowed)
+        assert(!result.data.statusInactivePhoneNumber.isSuccess)
+        assert(!result.data.statusInactivePhoneNumber.isAllowed)
     }
 }

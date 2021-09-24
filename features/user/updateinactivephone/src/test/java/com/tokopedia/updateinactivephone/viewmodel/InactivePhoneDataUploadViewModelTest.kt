@@ -11,7 +11,6 @@ import com.tokopedia.updateinactivephone.domain.usecase.SubmitExpeditedInactiveP
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneDataUploadViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,6 +22,7 @@ import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.math.exp
 
 @ExperimentalCoroutinesApi
 class InactivePhoneDataUploadViewModelTest {
@@ -45,6 +45,7 @@ class InactivePhoneDataUploadViewModelTest {
 
     val phoneNumber = "62800000000000"
     val email = "asdfghk@tokopedia.com"
+    val userIndex = 1
     val mockThrowable = Throwable("Opss!")
 
     @Before
@@ -216,17 +217,19 @@ class InactivePhoneDataUploadViewModelTest {
             isSuccess = true
         )
 
+        val expectedValue = Success(mockResponse)
+
         coEvery {
-            submitExpeditedInactivePhoneUseCase(mapOf())
+            submitExpeditedInactivePhoneUseCase(any())
         } returns mockResponse
 
-        viewmodel.submitNewPhoneNumber(phoneNumber, email)
+        viewmodel.submitNewPhoneNumber(phoneNumber, email, userIndex.toString())
 
         verify {
-            observerSubmitExpeditedData.onChanged(any())
+            observerSubmitExpeditedData.onChanged(expectedValue)
         }
 
-        assert(viewmodel.submitDataExpedited.value is Success)
+        assertEquals(viewmodel.submitDataExpedited.value, expectedValue)
 
         val result = viewmodel.submitDataExpedited.value as Success
         assert(result.data.isSuccess)
@@ -235,24 +238,25 @@ class InactivePhoneDataUploadViewModelTest {
     @Test
     fun `Submit Expedited Data - Failed`() {
         val mockResponse = SubmitExpeditedInactivePhoneDataModel(
-            errorMessage = "",
+            errorMessage = mockThrowable.message.toString(),
             isSuccess = false
         )
 
+        val expectedValue = Success(mockResponse)
+
         coEvery {
-            submitExpeditedInactivePhoneUseCase(mapOf())
+            submitExpeditedInactivePhoneUseCase(any())
         } returns mockResponse
 
-        viewmodel.submitNewPhoneNumber(phoneNumber, email)
+        viewmodel.submitNewPhoneNumber(phoneNumber, email, userIndex.toString())
 
         verify {
-            observerSubmitExpeditedData.onChanged(any())
+            observerSubmitExpeditedData.onChanged(expectedValue)
         }
 
-        assert(viewmodel.submitDataExpedited.value is Success)
+        assertEquals(viewmodel.submitDataExpedited.value, expectedValue)
 
         val result = viewmodel.submitDataExpedited.value as Success
         assert(!result.data.isSuccess)
-
     }
 }
