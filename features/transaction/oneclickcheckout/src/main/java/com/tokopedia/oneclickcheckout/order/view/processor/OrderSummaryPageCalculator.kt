@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.oneclickcheckout.common.PAYMENT_GATEWAY_CC
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
@@ -154,6 +153,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (payment.creditCard.selectedTerm?.isError == true) {
                 currentState = disableButtonState(currentState)
             }
+            if (payment.creditCard.isAfpb && payment.creditCard.selectedTerm == null) {
+                currentState = disableButtonState(currentState)
+            }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
         total.emit(result)
@@ -171,7 +173,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
             var subtotal = cost.totalPrice + cost.productDiscountAmount + cost.shippingDiscountAmount
             var payment = orderPayment
-            if (!orderPayment.creditCard.isAfpb && orderPayment.gatewayCode != PAYMENT_GATEWAY_CC) {
+            if (!orderPayment.creditCard.isAfpb) {
                 payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - cost.productDiscountAmount - cost.shippingDiscountAmount else 0.0, cost.productDiscountAmount + cost.shippingDiscountAmount)
             }
             val fee = payment.getRealFee()
