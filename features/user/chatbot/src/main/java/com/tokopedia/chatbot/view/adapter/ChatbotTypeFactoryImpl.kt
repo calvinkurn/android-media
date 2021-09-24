@@ -41,7 +41,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatActionListBubbleListener: ChatActionListBubbleListener,
                                   private val chatOptionListListener: ChatOptionListListener,
                                   private val csatOptionListListener: CsatOptionListListener,
-                                  private val actionButtonClickListener: StickyActionButtonClickListener) :
+                                  private val actionButtonClickListener: StickyActionButtonClickListener,
+                                  private val uploadSecureImageLoadListener: UploadSecureImageLoadListener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -150,7 +151,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatRatingListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
-            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener)
+            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, uploadSecureImageLoadListener)
             else -> super.createViewHolder(parent, type)
         }
     }

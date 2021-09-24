@@ -15,13 +15,16 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.UploadSecureImageLoadListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 
 class ChatbotImageUploadViewHolder(itemView: View?,
-                                   private val listener: ImageUploadListener)
+                                   private val listener: ImageUploadListener,
+                                   private val uploadSecureImageLoadListener: UploadSecureImageLoadListener
+)
     : ImageUploadViewHolder(itemView, listener) {
 
     override fun alwaysShowTime() = true
@@ -77,7 +80,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let { imageUrl ->
-            attachmentUnify?.let { attachementUnify -> LoadImage(attachementUnify, imageUrl) }
+            attachmentUnify?.let { attachementUnify -> LoadImage(attachementUnify, imageUrl, element.attachmentType) }
         }
     }
 
@@ -85,22 +88,27 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         return R.dimen.dp_chatbot_3
     }
 
-    fun LoadImage(imageview: ImageView, url: String?) {
-        try {
-            if (imageview.context != null) {
-                Glide.with(imageview.context)
+    fun LoadImage(imageview: ImageView, url: String?, attachmentType: String) {
+        if (attachmentType == "26"){
+            uploadSecureImageLoadListener.loadImageUsingUrl(url?:"")
+        }else{
+            try {
+                if (imageview.context != null) {
+                    Glide.with(imageview.context)
                         .load(url)
                         .fitCenter()
                         .dontAnimate()
                         .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader)
                         .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                         .into(imageview)
-            }
-        } catch (e: Exception) {
-            if (imageview.context != null) {
-                imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
+                }
+            } catch (e: Exception) {
+                if (imageview.context != null) {
+                    imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
+                }
             }
         }
+
     }
 
     private fun bindChatReadStatus(element: ImageUploadViewModel, checkMark: ImageView) {

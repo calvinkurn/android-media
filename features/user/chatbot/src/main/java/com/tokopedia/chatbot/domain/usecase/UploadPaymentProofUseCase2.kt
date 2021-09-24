@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.domain.usecase
 
+import android.content.Context
+import android.graphics.Bitmap
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
@@ -8,6 +10,8 @@ import com.tokopedia.usecase.RequestParams
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
@@ -28,21 +32,37 @@ class UploadPaymentProofUseCase2 @Inject constructor() : RestRequestUseCase() {
     private lateinit var messageId: String
 
 
-    private fun generateRequestParams(): HashMap<String, Any>? {
-        val requestBodyMap = HashMap<String, Any>()
+    private fun generateRequestParams(): HashMap<String, RequestBody>? {
+        val requestBodyMap = HashMap<String, RequestBody>()
 
 
         val reqImgFile: RequestBody =
             RequestBody.create(MediaType.parse(MEDIA_TYPE_IMAGE), File(imageFilePath))
 
+        try {
+            requestBodyMap["file" + "\"; filename=\"" + URLEncoder.encode(
+                imageFilePath,
+                "UTF-8"
+            )] =
+                reqImgFile
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+
         requestBodyMap["msg_id"] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), messageId)
-        requestBodyMap["file"] = reqImgFile
 
         return requestBodyMap
     }
 
-    fun setRequestParams(messageId: String, imagePath: String) {
-        imageFilePath = imagePath
+    fun setRequestParams(messageId: String, imagePath: String, context: Context?) {
+//        imageFilePath = imagePath
+        val b = Bitmap.createBitmap(300,300, Bitmap.Config.ARGB_8888)
+        val file = File(context?.cacheDir, "tempPath.jpeg")
+        val out = file.outputStream()
+        b.compress(Bitmap.CompressFormat.JPEG, 100, out)
+        out.flush()
+        out.close()
+        imageFilePath = file.absolutePath
         this.messageId = messageId
     }
 
@@ -58,4 +78,19 @@ class UploadPaymentProofUseCase2 @Inject constructor() : RestRequestUseCase() {
         tempRequest.add(restRequest)
         return tempRequest
     }
+
+    fun downloadImage(url: String) {
+
+    }
+
+//    private fun getBody(): Any? {
+//        val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+//            .addFormDataPart(
+//                "file",
+//                imageFilePath
+//            )
+//            .addFormDataPart("msg_id", "3897250")
+//            .build()
+//        return mapOf()
+//    }
 }

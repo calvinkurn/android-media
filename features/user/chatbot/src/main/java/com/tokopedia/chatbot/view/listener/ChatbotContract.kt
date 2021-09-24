@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.listener
 
+import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
@@ -133,8 +134,11 @@ interface ChatbotContract {
             messageId: String,
             opponentId: String,
             onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
-            path: String?
+            path: String?,
+            context: Context?
         )
+
+        fun downloadSecureImage(url: String)
 
     }
 }

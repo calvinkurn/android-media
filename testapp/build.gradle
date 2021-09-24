@@ -122,4 +122,8 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.libraries.imagePicker)
+	implementation project(rootProject.ext.libraries.imagePickerCommon)
+	implementation project(rootProject.ext.features.chatbot)
+	implementation project(rootProject.ext.features.contactUs)
 }

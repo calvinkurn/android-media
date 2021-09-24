@@ -32,4 +32,12 @@ class UploadSecureImageUploadUseCase @Inject constructor(private val repository:
         )
         return secureImageParameter
     }
+
+    suspend fun downloadImage(url: String): UploadSecureResponse {
+        val secureImage = repository.getRestData<UploadSecureResponse>(
+            url,
+            object : TypeToken<UploadSecureResponse>() {}.type
+        )
+        return secureImage
+    }
 }

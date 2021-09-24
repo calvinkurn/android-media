@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.presenter
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.text.TextUtils
@@ -484,7 +485,8 @@ class ChatbotPresenter @Inject constructor(
         messageId: String,
         opponentId: String,
         onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
-        path: String?
+        path: String?,
+        context: Context?
     ) {
 //        launchCatchError(
 //            block = {
@@ -500,7 +502,7 @@ class ChatbotPresenter @Inject constructor(
 //            }
 //
 //        )
-        uploadPaymentProofUseCase2.setRequestParams(messageId, path?:"")
+        uploadPaymentProofUseCase2.setRequestParams(messageId, path?:"", context)
         uploadPaymentProofUseCase2.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
@@ -516,9 +518,27 @@ class ChatbotPresenter @Inject constructor(
                 val restResponse = t?.get(token)
                 val paymentProofResponse: UploadSecureResponse = restResponse!!.getData()
                 Log.d("wdewfrf", "onNext: $paymentProofResponse ")
+                sendUploadedImageToWebsocket(
+                    ChatbotSendWebsocketParam
+                        .generateParamUploadSecureSendImage(
+                            messageId,
+                            paymentProofResponse.uploadSecureData.urlImage,
+                            imageUploadViewModel.startTime,
+                            opponentId,
+                            userSession.name)
+                )
+
             }
 
         })
+
+    }
+
+    override fun downloadSecureImage(url: String) {
+        launchCatchError(
+            block = { uploadSecureImageUploadUseCase.downloadImage(url)},
+            onError = {}
+        )
 
     }
 
