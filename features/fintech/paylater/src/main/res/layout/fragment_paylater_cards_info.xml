@@ -81,19 +81,21 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_2"
+                        app:layout_constraintEnd_toEndOf="parent"
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
                         app:layout_constraintTop_toBottomOf="@+id/tvSmallSubTitlePaylaterPartner"
                         app:typographyType="body_3"
-                        tools:text="Yuk, daftar sekarang!" />
+                        tools:text="Yuk, daftar sedjlfgjdfgkjndfgk  djkfnbglkjsdfngjskldfg   sdjkfngjksdfngkjsdlfkarang!" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSmallSubTitlePaylaterPartner"
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_2"
-                        android:textColor="@color/Unify_N700_68"
                         android:visibility="gone"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
                         app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
                         app:typographyType="small"
