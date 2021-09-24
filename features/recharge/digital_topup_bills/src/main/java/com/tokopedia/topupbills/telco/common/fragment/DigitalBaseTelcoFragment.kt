@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
+import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AlphaAnimation
@@ -455,6 +456,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        if (data.favoriteNumbers.isNotEmpty()) {
+            getClientInputNumber().run {
+                setInputType(InputType.TYPE_CLASS_TEXT)
+            }
+        }
         setSeamlessFavNumbers(data)
     }
 
@@ -573,6 +579,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     abstract fun onExpandAppBar()
 
     abstract fun onBackPressed()
+
+    protected abstract fun getClientInputNumber(): DigitalClientNumberWidget
 
     protected abstract fun getTelcoMenuId(): Int
 

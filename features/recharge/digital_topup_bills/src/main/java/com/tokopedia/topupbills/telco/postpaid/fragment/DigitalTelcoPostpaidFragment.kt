@@ -134,6 +134,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
+
     private fun initViewPager() {
         val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
             override fun getTabList(): List<TelcoTabItem> {

@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.prepaid.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -208,6 +209,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
     }
+
+    override fun getClientInputNumber(): DigitalClientNumberWidget = telcoClientNumberWidget
 
     private fun prepareProductForCheckout(telcoProduct: TelcoProduct) {
         productId = telcoProduct.id.toIntOrZero()

@@ -49,6 +49,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
     private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
+    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label)
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -84,14 +85,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberField.clearIconView.setOnClickListener {
             inputNumberField.editText.setText("")
             inputNumberField.isInputError = false
-            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
+            inputNumberField.textInputLayout.hint = textFieldStaticLabel
             clearErrorState()
             imgOperator.hide()
             listener.onClearAutoComplete()
         }
 
         inputNumberField.editText.run {
-            inputType = InputType.TYPE_CLASS_TEXT
             threshold = AUTOCOMPLETE_THRESHOLD
             dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
 
@@ -139,6 +139,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
 
         initClientNumberAutoComplete(context)
+    }
+
+    fun setInputType(inputType: Int) {
+        inputNumberField.editText.inputType = inputType
     }
 
     fun setFavoriteNumber(favNumberItems: List<TopupBillsSeamlessFavNumberItem>) {
