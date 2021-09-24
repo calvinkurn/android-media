@@ -176,9 +176,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             payLaterOffersGlobalError.hide()
             payLaterOffersShimmerGroup.visible()
             payLaterViewModel.getPayLaterAvailableDetail(productAmount)
-            val parentFrag: PdpSimulationFragment =
-                this.parentFragment as PdpSimulationFragment
-            parentFrag.reloadProductDetail()
+            pdpSimulationCallback?.reloadProductDetail()
         }
     }
 

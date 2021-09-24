@@ -315,7 +315,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
 
-    fun reloadProductDetail() {
+    override fun reloadProductDetail() {
         if (!productDetail.isVisible) {
             productInfoShimmer.visible()
             productDetail.visible()

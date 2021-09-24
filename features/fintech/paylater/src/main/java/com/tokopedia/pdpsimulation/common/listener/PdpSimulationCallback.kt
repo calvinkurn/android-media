@@ -10,4 +10,5 @@ interface PdpSimulationCallback {
     fun showRegisterWidget()
     fun getSimulationProductInfo()
     fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent)
+    fun reloadProductDetail()
 }
