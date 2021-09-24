@@ -21,6 +21,7 @@ internal const val OOC_TOKONOW = "ooc_tokonow"
 internal const val RECOM_WIDGET = "recom_widget"
 internal const val PAGE_NUMBER_RECOM_WIDGET = 1
 
+internal const val CATEGORY_GRID_TITLE = "Mau belanja apa?"
 internal const val CATEGORY_LIST_DEPTH = 1
 
 internal const val NO_VARIANT_PARENT_PRODUCT_ID = "0"

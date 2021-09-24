@@ -32,10 +32,9 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.*
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -183,8 +182,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryGridIndex = minOf(visitableList.size, 2)
         val categoryGridUIModel = TokoNowCategoryGridUiModel(
                 id = "",
-                title = "",
-                titleRes = R.string.tokopedianow_repurchase_category_grid_title,
+                title = CATEGORY_GRID_TITLE,
                 categoryList = null,
                 state = TokoNowLayoutState.LOADING,
         )

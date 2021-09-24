@@ -75,7 +75,6 @@ object RepurchaseLayoutMapper {
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",
-                titleRes = R.string.tokopedianow_repurchase_category_grid_title,
                 categoryList = categoryList,
                 state = TokoNowLayoutState.SHOW
             )
