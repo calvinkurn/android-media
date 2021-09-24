@@ -34,6 +34,8 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardSprintSaleCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleCarouselItem.componentName, componentProperties, creativeName)
+            ComponentNames.CalendarWidgetGrid.componentName, ComponentNames.CalendarWidgetCarousel.componentName ->
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.CalendarWidgetItem.componentName, componentProperties, creativeName)
             else ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName)
 

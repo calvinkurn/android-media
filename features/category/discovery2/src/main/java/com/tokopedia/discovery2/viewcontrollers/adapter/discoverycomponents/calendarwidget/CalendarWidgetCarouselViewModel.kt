@@ -8,7 +8,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.usecase.calendarwidget.CalenderWidgetUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +28,7 @@ class CalendarWidgetCarouselViewModel(
     }
 
     @Inject
-    lateinit var calenderWidgetUseCase: CalenderWidgetUseCase
+    lateinit var calenderWidgetUseCase: ProductCardsUseCase
     private var isLoading = false
     private val calendarCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val calendarLoadError: MutableLiveData<Boolean> = MutableLiveData()

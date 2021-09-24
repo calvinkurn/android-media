@@ -64,6 +64,7 @@ object Constant {
     object Calendar{
         const val CAROUSEL = "carousel"
         const val DYNAMIC = "dynamic"
+        const val STATIC = "static"
         const val SINGLE = "single"
         const val DOUBLE = "double"
         const val TRIPLE = "triple"

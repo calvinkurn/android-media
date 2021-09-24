@@ -1,6 +1,9 @@
 package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
+import com.tokopedia.discovery2.Constant.Calendar.STATIC
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
@@ -122,10 +125,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.CalendarWidgetGrid.componentName,
             ComponentNames.CalendarWidgetCarousel.componentName -> {
                 listComponents.add(component)
-                if(component.properties?.calendarType.equals("dynamic")
-                    && component.properties?.calendarLayout.equals("grid"))
+                if(component.properties?.calendarType.equals(DYNAMIC)
+                    && component.properties?.calendarLayout.equals(GRID))
                     listComponents.addAll(parseProductVerticalList(component))
-                else if(component.properties?.calendarType == "static"){
+                else if(component.properties?.calendarType == STATIC){
                     if(component.getComponentsItem().isNullOrEmpty()) {
                         component.setComponentsItem(
                             DiscoveryDataMapper().mapListToComponentList(
@@ -136,9 +139,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                             )
                         )
                     }
-                    if(component.properties?.calendarLayout.equals("grid"))
-                        for (item in component.getComponentsItem() ?: arrayListOf())
-                            listComponents.addAll(parseProductVerticalList(item))
+                    if(component.properties?.calendarLayout.equals(GRID)) {
+                        listComponents.add(component)
+                        component.getComponentsItem()?.let {
+                            listComponents.addAll(getDiscoveryComponentList(it))
+                        }
+                    }
                 }
             }
 
