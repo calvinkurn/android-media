@@ -28,6 +28,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPayment
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.ErrorType
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
@@ -149,7 +150,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
         updateStateScrollListener()
 
-        val errorType = if (throwable is UnknownHostException || throwable is SocketTimeoutException) 0 else 1
+        val errorType = if (throwable is UnknownHostException || throwable is SocketTimeoutException) ErrorType.NO_CONNECTION else ErrorType.SERVER_ERROR
         (adapter as WaitingPaymentOrderAdapter).setErrorNetworkModel(errorType, this)
 
         if (adapter.itemCount > 0 && !isLoadingInitialData) {
@@ -281,7 +282,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun scrollToTopAfterRecyclerViewInflated() {
         binding?.rvWaitingPaymentOrder?.addOneTimeGlobalLayoutListener {
-            binding?.rvWaitingPaymentOrder?.smoothScrollToPosition(0)
+            binding?.rvWaitingPaymentOrder?.smoothScrollToPosition(Int.ZERO)
         }
     }
 
@@ -306,7 +307,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     private fun animateCheckAndSetStockButtonEnter() {
         if (buttonLeaveAnimation?.isRunning == true) buttonLeaveAnimation?.end()
         binding?.cardCheckAndSetStock?.visible()
-        buttonEnterAnimation = animateCheckAndSetStockButton(binding?.cardCheckAndSetStock?.height?.toFloat().orZero(), 0f)
+        buttonEnterAnimation = animateCheckAndSetStockButton(binding?.cardCheckAndSetStock?.height?.toFloat().orZero(), Float.ZERO)
         buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
@@ -328,7 +329,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun animateCheckAndSetStockButtonLeave() {
         if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
-        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, binding?.cardCheckAndSetStock?.height?.toFloat().orZero())
+        buttonLeaveAnimation = animateCheckAndSetStockButton(Float.ZERO, binding?.cardCheckAndSetStock?.height?.toFloat().orZero())
         buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 

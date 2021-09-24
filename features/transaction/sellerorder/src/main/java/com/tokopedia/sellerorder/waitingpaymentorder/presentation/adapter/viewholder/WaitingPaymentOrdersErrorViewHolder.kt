@@ -6,6 +6,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemWaitingPaymentOrdersErrorBinding
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.ErrorType
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderErrorNetworkUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -28,8 +29,8 @@ class WaitingPaymentOrdersErrorViewHolder(
         binding?.run {
             element?.let { element ->
                 when (element.errorType) {
-                    0 -> waitingPaymentOrderGlobalError.setType(NO_CONNECTION)
-                    1 -> waitingPaymentOrderGlobalError.setType(SERVER_ERROR)
+                    ErrorType.NO_CONNECTION -> waitingPaymentOrderGlobalError.setType(NO_CONNECTION)
+                    ErrorType.SERVER_ERROR -> waitingPaymentOrderGlobalError.setType(SERVER_ERROR)
                     else -> waitingPaymentOrderGlobalError.setType(SERVER_ERROR)
                 }
                 waitingPaymentOrderGlobalError.setActionClickListener {

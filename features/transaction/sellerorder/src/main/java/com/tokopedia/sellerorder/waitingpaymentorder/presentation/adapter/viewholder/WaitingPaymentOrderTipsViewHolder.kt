@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewh
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetWaitingPaymentOrderTipsItemBinding
@@ -24,7 +25,7 @@ class WaitingPaymentOrderTipsViewHolder(itemView: View) : AbstractViewHolder<Wai
     override fun bind(element: WaitingPaymentOrderTipsUiModel?) {
         element?.let { element ->
             binding?.run {
-                ivWaitingOrderTips.setImage(element.iconUrl, 0f)
+                ivWaitingOrderTips.setImage(element.iconUrl, Float.ZERO)
                 tvWaitingOrderTipsDescription.text = element.description.parseAsHtml()
             }
         }

@@ -190,7 +190,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 super.onScrolled(recyclerView, dx, dy)
                 if (coachMark?.currentIndex == newOrderCoachMarkItemPosition) {
                     if (coachMark?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
-                        reshowNewOrderCoachMark(dy < 0)
+                        reshowNewOrderCoachMark(dy < Int.ZERO)
                     } else if (coachMark?.isDismissed == false) {
                         if (somListLayoutManager == null) {
                             return
@@ -208,7 +208,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         ) {
                             coachMark?.setOnDismissListener {
                                 coachMark?.setOnDismissListener { }
-                                reshowNewOrderCoachMark(dy < 0)
+                                reshowNewOrderCoachMark(dy < Int.ZERO)
                             }
                             dismissCoachMark(false)
                         }
@@ -235,7 +235,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             ?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
                                 it.isVisible
                             }?.let { quickActionButton ->
-                                if (getVisiblePercent(quickActionButton) == 0) {
+                                if (getVisiblePercent(quickActionButton) == Int.ZERO) {
                                     quickActionButton.post {
                                         createCoachMarkItems(quickActionButton).run {
                                             if (activity?.isFinishing != false) return@post
@@ -279,7 +279,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var isWaitingPaymentOrderPageOpened: Boolean = false
     private var currentNewOrderWithCoachMark: Int = -1
     private var shouldScrollToTop: Boolean = false
-    private var filterOrderType: Int = 0
+    private var filterOrderType: Int = Int.ZERO
     private var skipSearch: Boolean =
         false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var canDisplayOrderData = false
@@ -301,7 +301,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var wasChangingTab = false
 
     protected var tabActive: String = ""
-    protected var coachMarkIndexToShow: Int = 0
+    protected var coachMarkIndexToShow: Int = Int.ZERO
     protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     protected var shouldShowCoachMark: Boolean = false
     protected var selectedOrderId: String = ""
@@ -567,7 +567,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 somListSortFilterTab?.isStatusFilterAppliedFromAdvancedFilter ?: false,
                 viewModel.getDataOrderListParams().statusList,
                 filterDate,
-                filterOrderType != 0,
+                filterOrderType != Int.ZERO,
                 cacheManager?.id.orEmpty()
             )
             somFilterBottomSheet?.setSomFilterFinishListener(this)
@@ -581,9 +581,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             val selectedFilterKeys = arrayListOf<String>()
             selectedFilterKeys.addAll(somListSortFilterTab?.getSelectedFilterKeys().orEmpty())
             if (it.isNullOrBlank()) {
-                selectedFilterKeys.add(0, STATUS_ALL_ORDER)
+                selectedFilterKeys.add(Int.ZERO, STATUS_ALL_ORDER)
             } else {
-                selectedFilterKeys.add(0, it)
+                selectedFilterKeys.add(Int.ZERO, it)
             }
             SomAnalytics.eventClickFilter(selectedFilterKeys)
         }
@@ -1035,7 +1035,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.filterResult.observe(
             viewLifecycleOwner,
             object : Observer<Result<SomListFilterUiModel>> {
-                var realtimeDataChangeCount = 0
+                var realtimeDataChangeCount = Int.ZERO
                 override fun onChanged(result: Result<SomListFilterUiModel>?) {
                     when (result) {
                         is Success -> {
@@ -2773,14 +2773,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         binding?.containerBtnBulkAction?.visible()
         bulkAcceptButtonEnterAnimation =
-            binding?.containerBtnBulkAction?.animateSlide(binding?.containerBtnBulkAction?.translationY.orZero(), 0f)
+            binding?.containerBtnBulkAction?.animateSlide(binding?.containerBtnBulkAction?.translationY.orZero(), Float.ZERO)
     }
 
     private fun animateBulkAcceptOrderButtonLeave() {
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.cancel()
         bulkAcceptButtonLeaveAnimation = binding?.containerBtnBulkAction?.animateSlide(
             binding?.containerBtnBulkAction?.translationY.orZero(),
-            binding?.containerBtnBulkAction?.height?.toFloat() ?: 0f
+            binding?.containerBtnBulkAction?.height?.toFloat().orZero()
         )
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
@@ -2806,11 +2806,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 val enterValue: Float
                 val exitValue: Float
                 if (isEnter) {
-                    enterValue = 0f
+                    enterValue = Float.ZERO
                     exitValue = 1f
                 } else {
                     enterValue = 1f
-                    exitValue = 0f
+                    exitValue = Float.ZERO
                 }
                 binding?.tickerSomList?.run {
                     val height = height.toFloat().orZero()

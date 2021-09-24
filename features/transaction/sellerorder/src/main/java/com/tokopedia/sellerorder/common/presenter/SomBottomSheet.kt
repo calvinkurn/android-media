@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
@@ -129,7 +130,7 @@ abstract class SomBottomSheet <T: ViewBinding> (
         this?.run {
             if (overlayFadeOutAnimation?.isRunning == true) return
             overlayFadeInAnimation?.cancel()
-            overlayFadeOutAnimation = animateFade(alpha, 0f).apply {
+            overlayFadeOutAnimation = animateFade(alpha, Float.ZERO).apply {
                 addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {
                         // noop

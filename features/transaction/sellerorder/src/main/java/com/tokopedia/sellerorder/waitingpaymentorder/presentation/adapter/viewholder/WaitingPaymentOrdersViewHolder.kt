@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -74,7 +75,7 @@ class WaitingPaymentOrdersViewHolder(
                 }
                 icLoadMoreDropDown.apply {
                     iconDropdownAnimator?.end()
-                    rotation = if (element.isExpanded) -180f else 0f
+                    rotation = if (element.isExpanded) -180f else Float.ZERO
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 }
                 rvWaitingPaymentOrderProducts.apply {
@@ -128,9 +129,9 @@ class WaitingPaymentOrdersViewHolder(
 
     private fun setupDropdownIconAnimator(isExpanded: Boolean) {
         if (isExpanded) {
-            setupDropdownIconAnimator(0f, -180f)
+            setupDropdownIconAnimator(Float.ZERO, -180f)
         } else {
-            setupDropdownIconAnimator(-180f, 0f)
+            setupDropdownIconAnimator(-180f, Float.ZERO)
         }
     }
 

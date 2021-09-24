@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SomBottomSheetCourierProblemsAdapter(private var listener: ActionListener) :
     RecyclerView.Adapter<SomBottomSheetCourierProblemsAdapter.ViewHolder>() {
     var listChildCourierProblems = mutableListOf<SomReasonRejectData.Data.SomRejectReason.Child>()
-    var selectedRadio = -1
+    var selectedRadio = RecyclerView.NO_POSITION
 
     interface ActionListener {
         fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child)

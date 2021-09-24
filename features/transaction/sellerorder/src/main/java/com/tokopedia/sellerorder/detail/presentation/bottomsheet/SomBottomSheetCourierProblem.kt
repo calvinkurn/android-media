@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -109,7 +110,7 @@ class SomBottomSheetCourierProblem(
             tfExtraNotes.textFieldInput.setText("")
             tfExtraNotes.gone()
             btnPrimary.isEnabled = false
-            somBottomSheetCourierProblemsAdapter.selectedRadio = -1
+            somBottomSheetCourierProblemsAdapter.selectedRadio = RecyclerView.NO_POSITION
         }
     }
 
