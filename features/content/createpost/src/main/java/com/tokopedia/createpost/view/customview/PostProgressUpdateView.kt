@@ -151,7 +151,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
-        postIcon?.setImageDrawable(context.getDrawable(R.drawable.bg_image_rect_white))
         setFirstIcon("")
         setIconVisibility(isEditPost)
         setProgressUpdate(0, 0)
