@@ -9,14 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.cameraview.CameraView
+        <com.otaliastudios.cameraview.CameraView
             android:id="@+id/camera"
-            android:keepScreenOn="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="none"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="autoFocus"
+            app:cameraGrid="off"
+            app:cameraFlash="off"
+            app:cameraPlaySounds="true"
             app:cameraAudio="off"
-            app:cameraPlaySounds="true"/>
+            app:cameraHdr="off"
+            app:cameraMode="picture" />
 
     </FrameLayout>
 
@@ -39,28 +48,31 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_20">
+        android:layout_margin="@dimen/hc_inset_distance">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_cancel"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:visibility="gone"
             android:clickable="false"
-            app:srcCompat="@drawable/ic_close_white" />
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:shadowColor="@color/clr_80000000"
+            android:shadowColor="@color/hc_dms_text_shadow"
             android:shadowDy="2"
             android:shadowRadius="4"
             android:id="@+id/desc_1"
-            android:textSize="15sp"
-            android:textColor="@color/white"
-            android:lineSpacingExtra="@dimen/sp_5"
+            app:typographyType="body_1"
+            android:textColor="@color/Unify_Static_White"
             android:gravity="center_horizontal"
             android:text="@string/pstkn_wjh" />
 

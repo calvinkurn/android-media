@@ -1,9 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
@@ -29,6 +26,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -64,9 +62,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        addToCartUseCase: AddToCartUseCase,
-        updateCartUseCase: UpdateCartUseCase,
-        deleteCartUseCase: DeleteCartUseCase,
+        cartService: CartService,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         getRecommendationUseCase: GetRecommendationUseCase,
         private val getCategoryListUseCase: GetCategoryListUseCase,
@@ -79,9 +75,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getFilterUseCase,
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
-        addToCartUseCase,
-        updateCartUseCase,
-        deleteCartUseCase,
+        cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
         chooseAddressWrapper,
@@ -149,6 +143,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val contentDataView = ContentDataView(
                 aceSearchProductData = searchProduct.data,
+                recentPurchaseWidget = categoryModel.tokonowRepurchaseWidget,
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)

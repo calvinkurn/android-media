@@ -27,7 +27,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
 
     override suspend fun executeOnBackground(): String {
         val gqlRequest = GraphqlRequest(QUERY, ReputationShopsResult::class.java, params)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(ReputationShopsResult::class.java)
         if (errors.isNullOrEmpty()) {

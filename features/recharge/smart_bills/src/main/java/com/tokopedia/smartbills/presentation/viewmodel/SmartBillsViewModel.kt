@@ -62,7 +62,7 @@ class SmartBillsViewModel @Inject constructor(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
 
             if (!data.response.isNullOrEmpty()) {
@@ -85,7 +85,7 @@ class SmartBillsViewModel @Inject constructor(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val response = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }
 
             val error = response.getError(RechargeListSmartBills.Response::class.java)
@@ -117,7 +117,7 @@ class SmartBillsViewModel @Inject constructor(
             )
 
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeMultipleSBMBill.Response>()
 
             if (data.response != null) {

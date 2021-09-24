@@ -21,7 +21,7 @@ class GetPropertyPopularUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<PopularSearch> {
         val gqlRequest = GraphqlRequest(HotelGqlQuery.GET_POPULAR_PROPERTY_QUERY, PopularSearch.Response::class.java)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build())
         val errors = gqlResponse.getError(PopularSearch.Response::class.java)

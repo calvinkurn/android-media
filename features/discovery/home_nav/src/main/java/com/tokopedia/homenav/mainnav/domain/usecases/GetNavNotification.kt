@@ -19,7 +19,7 @@ class GetNavNotification @Inject constructor(
 
     override suspend fun executeOnBackground(): NavNotificationModel {
         val gqlRequest = GraphqlRequest(query, NavNotificationPojo::class.java, params.parameters)
-        val gqlResponse = graphqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(NavNotificationPojo::class.java)
