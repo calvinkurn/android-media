@@ -806,7 +806,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val popupEndTenureUiModel = PopupEndTenureUiModel(
-            isOfficialStore = headerShopPerformanceUiModel.isOfficialStore,
             powerMerchantData = headerShopPerformanceUiModel.powerMerchantData,
             shopScore = headerShopPerformanceUiModel.shopScore,
             shopLevel = headerShopPerformanceUiModel.shopLevel

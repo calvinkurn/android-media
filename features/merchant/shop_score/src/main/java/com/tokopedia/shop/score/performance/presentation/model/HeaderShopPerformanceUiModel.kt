@@ -12,7 +12,6 @@ data class HeaderShopPerformanceUiModel(
     var descHeaderShopService: String? = "",
     var showCardNewSeller: Boolean = false,
     var powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data? = null,
-    var isOfficialStore: Boolean = false,
     var isShowPopupEndTenure: Boolean = false
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {

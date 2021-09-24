@@ -4,7 +4,6 @@ import com.tokopedia.shop.score.performance.domain.model.GoldGetPMOStatusRespons
 
 data class PopupEndTenureUiModel(
     val powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data? = null,
-    val isOfficialStore: Boolean = false,
     val shopScore: String = "",
     val shopLevel: String = ""
 )

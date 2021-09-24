@@ -465,7 +465,6 @@ class ShopScoreMapper @Inject constructor(
                 }
             }
             this.powerMerchantData = powerMerchantResponse
-            this.isOfficialStore = isOfficialStore
             this.shopAge = shopAge
             this.shopLevel =
                 if (shopLevel < 0) {
