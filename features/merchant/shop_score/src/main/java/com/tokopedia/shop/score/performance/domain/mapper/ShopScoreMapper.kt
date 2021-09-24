@@ -123,6 +123,7 @@ class ShopScoreMapper @Inject constructor(
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
+        val powerMerchantData = shopScoreWrapperResponse.goldGetPMOStatusResponse
         val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
             shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
         } else {
@@ -139,9 +140,6 @@ class ShopScoreMapper @Inject constructor(
         }
 
         val shopScore = shopScoreResult?.shopScore ?: SHOP_SCORE_NULL
-
-        val shopType =
-            getShopType(shopScoreWrapperResponse.goldGetPMOStatusResponse, isOfficialStore)
 
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
@@ -161,8 +159,9 @@ class ShopScoreMapper @Inject constructor(
             add(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
+                    powerMerchantData,
+                    isOfficialStore,
                     shopAge,
-                    shopType,
                     shopInfoPeriodUiModel.dateShopCreated
                 )
             )
@@ -262,8 +261,9 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
+        powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        isOfficialStore: Boolean,
         shopAge: Long,
-        shopType: ShopType,
         dateShopCreated: String
     ): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
@@ -464,6 +464,7 @@ class ShopScoreMapper @Inject constructor(
                     }
                 }
             }
+            this.powerMerchantData = powerMerchantResponse
             this.shopAge = shopAge
             this.shopLevel =
                 if (shopLevel < 0) {
@@ -484,7 +485,6 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong().orZero()
 
-            this.shopType = shopType
             this.isShowPopupEndTenure = getIsShowPopupEndTenure(shopAge, dateShopCreated)
         }
         return headerShopPerformanceUiModel
@@ -924,21 +924,6 @@ class ShopScoreMapper @Inject constructor(
         } catch (e: ParseException) {
             e.printStackTrace()
             ""
-        }
-    }
-
-    private fun getShopType(
-        powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
-        isOfficialStore: Boolean
-    ): ShopType {
-        val powerMerchantData = powerMerchantResponse?.powerMerchant
-        return when {
-            isOfficialStore -> ShopType.OFFICIAL_STORE
-            powerMerchantData?.pmTier == PMTier.PRO ->
-                ShopType.POWER_MERCHANT_PRO
-            powerMerchantData?.pmTier == PMTier.REGULAR ->
-                ShopType.POWER_MERCHANT
-            else -> ShopType.REGULAR_MERCHANT
         }
     }
 
