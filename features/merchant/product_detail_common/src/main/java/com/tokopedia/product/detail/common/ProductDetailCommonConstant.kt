@@ -66,6 +66,7 @@ object ProductDetailCommonConstant {
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_REMIND_ME = "remind_me"
+    const val KEY_DEFAULT_OOS = "default-oos"
     const val KEY_CHECK_WISHLIST = "check_wishlist"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
