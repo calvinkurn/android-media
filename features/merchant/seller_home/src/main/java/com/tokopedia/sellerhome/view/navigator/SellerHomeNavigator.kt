@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
@@ -161,7 +160,7 @@ class SellerHomeNavigator(
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
             SomTabConst.STATUS_ALL_ORDER,
-            ApplinkConstInternalOrder.EXTRA_DEFAULT_ORDER_TYPE,
+            "0",
             "",
             ""
         )
