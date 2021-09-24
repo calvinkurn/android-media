@@ -61,7 +61,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
                         id = recomItem.productId.toString(),
                         name = recomItem.name,
                         variant = "",
-                        productPrice = recomItem.price,
+                        productPrice = recomItem.priceInt.toString(),
                         isFreeOngkir = recomItem.isFreeOngkirActive
                 ))
         )
@@ -87,7 +87,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
                         id = recomItem.productId.toString(),
                         name = recomItem.name,
                         variant = "",
-                        productPrice = recomItem.price,
+                        productPrice = recomItem.priceInt.toString(),
                         isFreeOngkir = recomItem.isFreeOngkirActive
                 ))
         )
