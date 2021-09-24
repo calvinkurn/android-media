@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -16,6 +17,13 @@ buildscript {
     }
 }
 
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
@@ -24,7 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
+//    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -32,6 +40,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -45,7 +54,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+//    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
@@ -55,34 +64,35 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.miscDependencies.cameraView
+    implementation rootProject.ext.miscDependencies.dagger
+    testAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+
 }
 
 project.ext {
     artifactId = 'update-inactive-phone'
     groupId = 'com.tokopedia.user'
     versionName = "0.0.2"
-    artifactName ="updateinactivephone-release"
+    artifactName = "updateinactivephone-release"
 }
 
 apply from: '../../../publish_local.gradle'
