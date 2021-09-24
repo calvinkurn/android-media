@@ -17,17 +17,17 @@ object InfiniteRecomTracker : BaseTrackerConst() {
     private const val CLICK_CATEGORY_INFINITE_RECOM_ITEM = "tokonow product detail page"
     private const val BU_RECOM = "tokopediamarketplace"
     private const val CURRENTSITE_RECOM = "tokopediamarketplace"
-    private const val KEY_PRODUCT_ID = "product_id"
+    private const val KEY_PRODUCT_ID = "productId"
     private const val KEY_PAGE_SOURCE = "pageSource"
     private const val VALUE_EVENT_LABEL = "%s,%s"
     private const val VALUE_PAGE_SOURCE = "%s.%s" //first value is page source PDP, recommendationType || second value is recomItem.recommendationType
     private const val CONST_LIST = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s" //first value page name, second one recommendation type
 
-    private const val KEY_SHOP_ID_SELLER = "shopId"
-    private const val KEY_SHOP_TYPE = "shopType"
-    private const val KEY_SHOP_NAME = "shopName"
+    private const val KEY_SHOP_ID_SELLER = "shop_id"
+    private const val KEY_SHOP_TYPE = "shop_type"
+    private const val KEY_SHOP_NAME = "shop_name"
     private const val KEY_ECOMMERCE = "ecommerce"
-    private const val KEY_CATEGORY_ID = "categoryId"
+    private const val KEY_CATEGORY_ID = "category_id"
     private const val KEY_USER_ID_VARIANT = "userId"
 
     private const val ID = "id"
@@ -89,7 +89,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
                         id = recomItem.productId.toString(),
                         name = recomItem.name,
                         variant = "",
-                        productPrice = recomItem.priceInt.toString(),
+                        productPrice = CURRENCY_DEFAULT_VALUE,
                         isFreeOngkir = recomItem.isFreeOngkirActive
                 ))
         )
