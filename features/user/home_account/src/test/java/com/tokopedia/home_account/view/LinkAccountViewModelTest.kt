@@ -57,14 +57,14 @@ class LinkAccountViewModelTest {
     fun `on Success Get Link Status, with get profile` () {
         val mockPhoneNo = "08123123123"
         every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
-        coEvery { getLinkStatusUseCase.invoke(any()) } returns mockLinkStatusResponse
-        coEvery { getUserProfile.invoke(any()) } returns mockGetUserProfile
+        coEvery { getLinkStatusUseCase(any()) } returns mockLinkStatusResponse
+        coEvery { getUserProfile(Unit) } returns mockGetUserProfile
 
         viewModel.getLinkStatus(true)
 
         coVerify {
             userSession.phoneNumber = mockPhoneNo
-            getUserProfile(any())
+            getUserProfile(Unit)
             linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
         }
     }
