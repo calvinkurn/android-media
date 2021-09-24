@@ -264,12 +264,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
-    fun setFilterChipShimmer(show: Boolean) {
+    fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {
         if (show) {
             sortFilterChip.hide()
             sortFilterChipShimmer.show()
         } else {
-            sortFilterChip.show()
+            if (!shouldHideChip) sortFilterChip.show()
             sortFilterChipShimmer.hide()
         }
     }

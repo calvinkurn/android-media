@@ -647,8 +647,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
-        telcoClientNumberWidget.setFilterChipShimmer(false)
         val favNumbers = data.favoriteNumbers
+        telcoClientNumberWidget.setFilterChipShimmer(false, favNumbers.isEmpty())
         seamlessFavNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             autoSelectTabProduct = true
@@ -664,7 +664,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
-        telcoClientNumberWidget.setFilterChipShimmer(false)
+        telcoClientNumberWidget.setFilterChipShimmer(false, true)
     }
 
     private fun performanceMonitoringStopTrace() {
