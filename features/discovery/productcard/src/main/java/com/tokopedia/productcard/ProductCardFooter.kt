@@ -11,6 +11,7 @@ import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.safeParseColor
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 
@@ -29,6 +30,8 @@ internal fun View.renderProductCardFooter(
         buttonDeleteProduct?.hide()
         buttonRemoveFromWishlist?.hide()
     }
+
+    renderSimilarProductButton(productCardModel)
 }
 
 internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
@@ -69,3 +72,8 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
         else ->
             MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
     }
+
+private fun View.renderSimilarProductButton(productCardModel: ProductCardModel) {
+    val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
+    buttonSimilarProduct?.showWithCondition(productCardModel.hasSimilarProductButton)
+}

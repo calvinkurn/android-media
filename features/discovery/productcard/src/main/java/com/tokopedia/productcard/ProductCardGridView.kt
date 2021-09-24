@@ -116,7 +116,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
-        cartExtension.similarProductClickListener = similarProductClickListener
+        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
+        buttonSimilarProduct?.setOnClickListener(similarProductClickListener)
     }
 
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
