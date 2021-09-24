@@ -7,6 +7,7 @@ import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
@@ -74,6 +75,7 @@ class HomeAccountUserViewModelTest {
 
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
+    private val linkStatusResult = LinkStatusResponse()
 
     @Before
     fun setUp() {
@@ -105,6 +107,7 @@ class HomeAccountUserViewModelTest {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
         coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
         verify {
@@ -167,11 +170,8 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFirstRecommendation()
 
-        coVerify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
         print(viewModel.firstRecommendationData.value)
-        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data, expectedResult[0])
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data, expectedResult)
     }
 
     @Test
@@ -184,11 +184,8 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getRecommendation(testPage)
 
-        coVerify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
         print(viewModel.getRecommendationData.value)
-        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, expectedResult[0].recommendationItemList)
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, expectedResult.recommendationItemList)
     }
 
     @Test
@@ -200,9 +197,6 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFirstRecommendation()
 
-        coVerify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
         print(viewModel.firstRecommendationData.value)
         Assert.assertEquals((viewModel.firstRecommendationData.value as Fail).throwable, expectedResult)
     }
@@ -217,81 +211,8 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getRecommendation(testPage)
 
-        coVerify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
         print(viewModel.getRecommendationData.value)
         Assert.assertEquals((viewModel.getRecommendationData.value as Fail).throwable, expectedResult)
-    }
-
-    @Test
-    fun `Failed get user page asset config`() {
-        viewModel.userPageAssetConfig.observeForever(userPageAssetConfigObserver)
-        coEvery { userPageAssetConfigUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
-
-        viewModel.getUserPageAssetConfig()
-
-        verify { userPageAssetConfigObserver.onChanged(any<Fail>()) }
-        assert(viewModel.userPageAssetConfig.value is Fail)
-
-        val result = viewModel.userPageAssetConfig.value as Fail
-        assertEquals(throwableResponse, result.throwable)
-    }
-
-    @Test
-    fun `Success get saldo balance`() {
-        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
-        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } returns successGetSaldoBalanceResponse
-
-        viewModel.getSaldoBalance()
-
-        verify { saldoBalanceObserver.onChanged(any<Success<Balance>>()) }
-        assert(viewModel.saldoBalance.value is Success)
-
-        val result = viewModel.saldoBalance.value as Success<Balance>
-        assert(result.data == successGetSaldoBalanceResponse.data)
-    }
-
-    @Test
-    fun `Failed get saldo balance`() {
-        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
-        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
-
-        viewModel.getSaldoBalance()
-
-        verify { saldoBalanceObserver.onChanged(any<Fail>()) }
-        assert(viewModel.saldoBalance.value is Fail)
-
-        val result = viewModel.saldoBalance.value as Fail
-        assertEquals(throwableResponse, result.throwable)
-    }
-
-    @Test
-    fun `Success get tokopoints`() {
-        viewModel.tokopoints.observeForever(tokopointsObserver)
-        coEvery { homeAccountTokopointsUseCase(Unit) } returns successGetTokopointsResponse
-
-        viewModel.getTokopoints()
-
-        verify { tokopointsObserver.onChanged(any<Success<PointDataModel>>()) }
-        assert(viewModel.tokopoints.value is Success)
-
-        val result = viewModel.tokopoints.value as Success<PointDataModel>
-        assert(result.data == successGetTokopointsResponse.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
-    }
-
-    @Test
-    fun `Failed get tokopoints`() {
-        viewModel.tokopoints.observeForever(tokopointsObserver)
-        coEvery { homeAccountTokopointsUseCase(Unit) } coAnswers { throw throwableResponse }
-
-        viewModel.getTokopoints()
-
-        verify { tokopointsObserver.onChanged(any<Fail>()) }
-        assert(viewModel.tokopoints.value is Fail)
-
-        val result = viewModel.tokopoints.value as Fail
-        assertEquals(throwableResponse, result.throwable)
     }
 
     @Test
