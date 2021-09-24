@@ -50,6 +50,13 @@ open class LoginRegisterBase {
         )
     }
 
+    fun isDisplayingSubGivenText(id: Int, givenText: String) {
+        Espresso.onView(ViewMatchers.withId(id))
+            .check(ViewAssertions.matches(ViewMatchers.withSubstring(givenText))).check(
+                ViewAssertions.matches(ViewMatchers.isDisplayed())
+            )
+    }
+
     fun isTextInputHasError(id: Int, errorText: String) {
         Espresso.onView(ViewMatchers.withId(id))
             .check(ViewAssertions.matches(ViewMatchers.hasErrorText(errorText))).check(
