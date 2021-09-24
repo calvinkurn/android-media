@@ -66,7 +66,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
-    private lateinit var otpData: OtpData
+    lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
     protected var isMoreThanOneMethod: Boolean = true
@@ -149,7 +149,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         viewBound.methodList?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun getVerificationMethod() {
+    open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
         if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
@@ -231,7 +231,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun setFooter(linkType: Int) {
+    open fun setFooter(linkType: Int) {
         when (linkType) {
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> setAbTestFooter()
             TYPE_PROFILE_SETTING -> onProfileSettingType()
@@ -357,12 +357,12 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun showLoading() {
+    open fun showLoading() {
         viewBound.loader?.show()
         viewBound.containerView?.hide()
     }
 
-    private fun hideLoading() {
+    open fun hideLoading() {
         viewBound.loader?.hide()
         viewBound.containerView?.show()
     }

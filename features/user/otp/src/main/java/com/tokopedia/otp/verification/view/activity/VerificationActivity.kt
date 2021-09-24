@@ -17,6 +17,7 @@ import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -52,7 +53,11 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     protected open fun createVerificationMethodFragment(bundle: Bundle): Fragment {
-        return VerificationMethodFragment.createInstance(bundle)
+        return if (otpData.source == SOURCE_INACTIVE_PHONE) {
+            InactivePhoneVerificationMethodFragment.createInstance(bundle)
+        } else {
+            VerificationMethodFragment.createInstance(bundle)
+        }
     }
 
     override fun setupFragment(savedInstance: Bundle?) {

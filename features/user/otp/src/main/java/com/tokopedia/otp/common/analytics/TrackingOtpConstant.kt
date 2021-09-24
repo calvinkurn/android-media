@@ -104,6 +104,9 @@ object TrackingOtpConstant{
         const val ACTION_EXPIRED_CLICK_ON_BUTTON_CLOSE = "expired - click on button close"
         const val ACTION_VIEW_CHOOSE_OTP_PAGE = "view choose otp page"
         const val ACTION_AUTO_SUBMIT_OTP = "auto submit otp page"
+
+        /*InactivePhone*/
+        const val ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER = "click ajukan perubahan nomor"
     }
 
     object Label{
@@ -113,6 +116,8 @@ object TrackingOtpConstant{
         const val LABEL_FAILED = "failed - "
         const val LABEL_ON = "on"
         const val LABEL_OFF = "off"
+        const val LABEL_MODE_LIST = "mode list"
+        const val LABEL_OTP_PAGE = "otp page"
     }
 
     object BusinessUnit {

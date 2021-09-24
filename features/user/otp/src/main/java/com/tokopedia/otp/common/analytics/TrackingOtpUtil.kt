@@ -643,4 +643,25 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 } + " - ${otpData.otpType} - ${modeListData.modeText}"
         ))
     }
+
+    /**
+     * For Inactive Phone
+     **/
+    fun trackClickRequestChangePhoneNumberOnModeList() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_MODE_LIST
+        )
+    }
+
+    fun trackClickRequestChangePhoneNumberOnPin() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_OTP_PAGE
+        )
+    }
 }

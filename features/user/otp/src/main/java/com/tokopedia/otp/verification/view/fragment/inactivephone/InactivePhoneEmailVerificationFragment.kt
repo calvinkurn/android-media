@@ -60,7 +60,7 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
     }
 
     companion object {
-        private const val PARAM_IS_USE_REGULAR_FLOW = "isRegularFlow"
+        private const val PARAM_IS_USE_REGULAR_FLOW = "isUseRegularFlow"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = InactivePhoneEmailVerificationFragment()

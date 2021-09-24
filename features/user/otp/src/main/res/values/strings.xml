@@ -75,7 +75,6 @@
     <!--  otp inactive phone  -->
     <string name="inactive_phone_text_footer_email_challenge_meta">Tidak punya akses ke email?</string>
     <string name="inactive_phone_text_footer_email_challenge_action">Ajukan perubahan nomor HP</string>
-  
-    <string name="inactive_phone_text_footer_pin_challenge_meta">Tidak punya akses ke email?</string>
+    <string name="inactive_phone_text_footer_pin_challenge_meta">Lupa pin Tokopedia?</string>
     <string name="inactive_phone_text_footer_pin_challenge_action">Ajukan perubahan nomor HP</string>
 </resources>
