@@ -79,6 +79,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testAddToCartVariantWithNoQuantity())
     it.add(testAddToCartVariantWithQuantity())
     it.add(testAddToCartVariantWithQuantityAbove99())
+    it.add(testSimilarProductButton())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -2470,6 +2471,55 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT)
         it[R.id.textVariantQuantity] = isDisplayedWithText("99+ pcs")
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSimilarProductButton(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+
+    val productCardModel = ProductCardModel(
+        productName = "Notify me button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp8.999.000",
+        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        ratingCount = 4,
+        reviewCount = 70,
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        isTopAds = true,
+        labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+            labelGroups.add(labelProductStatus)
+            labelGroups.add(labelPrice)
+            labelGroups.add(labelGimmick)
+        },
+        hasSimilarProductButton = true
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.buttonSeeSimilarProduct] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
