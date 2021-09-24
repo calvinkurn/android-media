@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -35,12 +37,12 @@ import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOKOMEMBER
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.MetadataItem
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
-import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
@@ -79,6 +81,7 @@ class TopSectionVH(
     private var parentStatusMatching : ConstraintLayout ? =null
     private var ivStatusBackground: AppCompatImageView? = null
     private val MEMBER_STATUS_BG_RADII = 16F
+    private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
 
     fun bind(model: TopSectionResponse) {
 
@@ -401,9 +404,16 @@ class TopSectionVH(
         cardStatusMatching?.layoutParams = layoutParams
     }
 
-    private fun playAnimation(){
-        confettiAnim?.repeatCount = ValueAnimator.INFINITE
-        confettiAnim?.playAnimation()
+    private fun playAnimation() {
+        val lottieTask =
+            LottieCompositionFactory.fromAsset(itemView.context, TP_CONFETTI_STATUS_MATCHING)
+        lottieTask?.addListener { result: LottieComposition? ->
+            result?.let {
+                confettiAnim?.setComposition(result)
+                confettiAnim?.repeatCount = ValueAnimator.INFINITE
+                confettiAnim?.playAnimation()
+            }
+        }
     }
 
      private fun hideStatusMatching() {

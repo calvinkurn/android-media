@@ -7,6 +7,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse

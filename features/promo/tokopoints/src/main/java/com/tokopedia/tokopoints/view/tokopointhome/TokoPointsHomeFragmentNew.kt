@@ -40,6 +40,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonit
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.intro.RewardIntroFragment
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.section.SectionContent
@@ -311,7 +313,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent> , recommList : RewardsRecommendation?) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?, sections: List<SectionContent>, recommList : RewardsRecommendation?) {
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {

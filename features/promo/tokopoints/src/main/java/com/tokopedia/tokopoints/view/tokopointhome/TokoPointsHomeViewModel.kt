@@ -3,16 +3,14 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.di.TokoPointScope
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
+import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
-import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
-import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
-import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
 import com.tokopedia.tokopoints.view.util.ErrorMessage
@@ -124,26 +122,3 @@ class TokoPointsHomeViewModel @Inject constructor(
         }
     }
 }
-
-data class TokopointSuccess(
-    val topSectionResponse: TopSectionResponse,
-    val sectionList: MutableList<SectionContent>,
-    val recomData: RewardsRecommendation?
-)
-
-data class TopSectionResponse(
-    val tokopediaRewardTopSection: TokopediaRewardTopSection,
-    val userSavingResponse: TokopointsUserSaving?,
-    val rewardTickerResponse: RewardTickerListResponse?
-)
-
-data class RewardsRecommendation(
-    val recommendationWrapper: List<RecommendationWrapper>,
-    val title: String,
-    val appLink: String
-)
-
-data class RecommendationWrapper(
-    val recomendationItem: RecommendationItem,
-    val recomData: ProductCardModel
-)
