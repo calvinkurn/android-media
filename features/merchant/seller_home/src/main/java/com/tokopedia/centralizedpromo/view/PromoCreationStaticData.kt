@@ -36,7 +36,7 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationTitleMerchantVoucher(),
                 resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
                 "",
-                ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
             )
         )
 
