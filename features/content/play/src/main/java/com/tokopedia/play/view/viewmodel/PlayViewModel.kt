@@ -1314,6 +1314,7 @@ class PlayViewModel @Inject constructor(
                 _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
             }
             is UpdateMultipleLikeConfig -> {
+                if (result.channelId.toString() != channelId) return@withContext
                 val config = playSocketToModelMapper.mapMultipleLikeConfig(
                     result.configuration
                 )
