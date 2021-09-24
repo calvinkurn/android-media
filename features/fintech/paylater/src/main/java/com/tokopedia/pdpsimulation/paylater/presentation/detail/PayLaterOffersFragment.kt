@@ -108,6 +108,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                             name
                         )
                     )
+                    payLaterProductList[0].detail?.get(0)?.let{ detail->
+                        onPageSelectedByUser(detail)
+                    }
                 } else {
                     filterData.add(SortFilterItem(name) {
                         selectOtherTenure(i, name)
