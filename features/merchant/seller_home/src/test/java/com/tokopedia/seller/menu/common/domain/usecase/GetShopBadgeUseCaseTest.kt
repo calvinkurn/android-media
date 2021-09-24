@@ -47,14 +47,14 @@ class GetShopBadgeUseCaseTest {
         val successShopBadge = "https://success.shop.name/avatar.png"
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(shopBadge, successShopBadge)
@@ -66,7 +66,7 @@ class GetShopBadgeUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<ReputationShopsResult>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
@@ -74,7 +74,7 @@ class GetShopBadgeUseCaseTest {
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(shopBadge)

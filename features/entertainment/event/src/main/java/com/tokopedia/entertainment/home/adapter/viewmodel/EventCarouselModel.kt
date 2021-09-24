@@ -21,7 +21,7 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                     it.title,
                     it.location,
                     it.price,
-                    it.schedule,
+                    it.minStartDate,
                     it.isLiked,
                     it.appUrl,
                     it.seoUrl
