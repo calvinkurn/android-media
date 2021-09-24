@@ -526,7 +526,5 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         private const val CHANNEL_TYPE = "channel_type"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
-
-        private const val LIB_NATIVE_ARTP = "artp"
     }
 }
