@@ -13,7 +13,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestFixtures() {
+internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Open filter page without parameter (edge cases)`() {
@@ -144,19 +144,27 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
 
     @Test
     fun `Open filter page second time after first time success`() {
-        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+        val dynamicFilterModelJSON = "searchproduct/dynamicfilter/dynamic-filter-model-common.json"
+        val dynamicFilterModel = dynamicFilterModelJSON.jsonToObject<DynamicFilterModel>()
+        val keyword = "samsung"
+        val mapParameter = mapOf(SearchApiConst.Q to keyword, SearchApiConst.OFFICIAL to true)
 
         `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
+        `Given view already open and apply filter page`(keyword, mapParameter)
 
-        `When open filter page`(mapParameter)
-        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions open filter page second time after first time success`(dynamicFilterModel)
     }
 
-    private fun `When bottomsheet filter is dismissed`() {
+    private fun `Given view already open and apply filter page`(
+        keyword: String,
+        mapParameter: Map<String, Any>,
+    ) {
+        every { productListView.queryKey } returns keyword
+
+        productListPresenter.openFilterPage(mapParameter)
+        productListPresenter.onApplySortFilter(mapParameter)
         productListPresenter.onBottomSheetFilterDismissed()
     }
 
@@ -175,13 +183,13 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
     @Test
     fun `Open filter page second time after first time failed`() {
         val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+        val keyword = "samsung"
+        val mapParameter = mapOf(SearchApiConst.Q to keyword, SearchApiConst.OFFICIAL to true)
         val dynamicFilterModelSlot = slot<DynamicFilterModel>()
 
         `Given get dynamic filter model API will fail and then success`(dynamicFilterModel)
+        `Given view already open and apply filter page`(keyword, mapParameter)
 
-        `When open filter page`(mapParameter)
-        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions for open filter page second time after first time failed`(dynamicFilterModelSlot, dynamicFilterModel)
@@ -193,7 +201,7 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             getDynamicFilterUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<DynamicFilterModel>>().error(TestException())
-        } andThen {
+        } andThenAnswer {
             secondArg<Subscriber<DynamicFilterModel>>().complete(dynamicFilterModel)
         }
     }
@@ -231,6 +239,51 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             productListView.openBottomSheetFilter(null)
             getDynamicFilterUseCase.execute(any(), any())
             productListView.setDynamicFilter(dynamicFilterModel)
+        }
+    }
+
+    @Test
+    fun `Open filter page second time after keyword changes`() {
+        val dynamicFilterModelJSON = "searchproduct/dynamicfilter/dynamic-filter-model-common.json"
+        val dynamicFilterModel = dynamicFilterModelJSON.jsonToObject<DynamicFilterModel>()
+        val keyword = "samsung"
+        val mapParameter: Map<String, Any> = mapOf(
+            SearchApiConst.Q to keyword,
+            SearchApiConst.OFFICIAL to true,
+        )
+
+        `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
+        `Given view open filter page`(mapParameter)
+
+        val newKeyword = "$keyword -tv"
+        val mapParameterNewKeyword = mapParameter.toMutableMap().also {
+            it[SearchApiConst.Q] = newKeyword
+        }
+
+        `Given view apply keyword filter`(keyword, mapParameterNewKeyword)
+
+        `When open filter page`(mapParameterNewKeyword)
+
+        `Then verify get dynamic filter is called twice`()
+    }
+
+    private fun `Given view apply keyword filter`(
+        oldKeyword: String,
+        mapParameterKeyword: MutableMap<String, Any>,
+    ) {
+        every { productListView.queryKey } returns oldKeyword
+
+        productListPresenter.onApplySortFilter(mapParameterKeyword)
+        productListPresenter.onBottomSheetFilterDismissed()
+    }
+
+    private fun `Given view open filter page`(mapParameter: Map<String, Any>) {
+        productListPresenter.openFilterPage(mapParameter)
+    }
+
+    private fun `Then verify get dynamic filter is called twice`() {
+        verify(exactly = 2) {
+            getDynamicFilterUseCase.execute(any(), any())
         }
     }
 }
