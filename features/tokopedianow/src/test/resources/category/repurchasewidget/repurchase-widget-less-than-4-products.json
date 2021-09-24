@@ -477,7 +477,7 @@
         "discountPercentage": "10",
         "parentProductID": "4789",
         "minOrder": 1,
-        "stock": 50,
+        "maxOrder": 50,
         "category": "4001",
         "shop": {
           "id": "480552"
