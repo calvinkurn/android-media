@@ -1416,7 +1416,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart(productId, 4, shopId, type)
 
         val recomItemList = listOf(
-            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 1),
+            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 4),
             RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
