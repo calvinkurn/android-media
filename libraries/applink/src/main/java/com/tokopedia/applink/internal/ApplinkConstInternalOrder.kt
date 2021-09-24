@@ -53,6 +53,7 @@ object ApplinkConstInternalOrder {
     const val PESANAN_TIBA = "14"
     const val PESANAN_SELESAI = "7"
     const val MENUNGGU_KONFIRMASI = "5"
+    const val EXTRA_DEFAULT_ORDER_TYPE = "0"
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
     const val PATH_CANCELLATION_REQUEST = "cancellationrequest"
