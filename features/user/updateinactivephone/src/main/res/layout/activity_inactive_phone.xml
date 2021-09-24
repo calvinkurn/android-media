@@ -2,12 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerInactivePhone"
     android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
   
   <com.tokopedia.unifycomponents.LoaderUnify
-    android:id="@+id/logoutLoading"
+    android:id="@+id/loaderInactivePhoneNumber"
     android:layout_width="@dimen/spacing_lvl7"
     android:layout_height="@dimen/spacing_lvl7"
     app:layout_constraintBottom_toBottomOf="parent"
