@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DeviceDiagParams {
     @SerializedName("ProductId")
-    private int productId;
+    private String productId;
     @SerializedName("DeviceId")
     private String deviceId;
     @SerializedName("NewPrice")
@@ -12,11 +12,11 @@ public class DeviceDiagParams {
     @SerializedName("TradeInType")
     private int tradeInType;
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

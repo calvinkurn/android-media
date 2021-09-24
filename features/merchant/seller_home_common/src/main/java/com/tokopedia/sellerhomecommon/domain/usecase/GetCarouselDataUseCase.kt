@@ -31,7 +31,7 @@ class GetCarouselDataUseCase(
 
     override suspend fun executeOnBackground(): List<CarouselDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetCarouselDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCarouselDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

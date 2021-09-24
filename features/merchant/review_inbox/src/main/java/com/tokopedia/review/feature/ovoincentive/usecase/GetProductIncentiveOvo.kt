@@ -46,7 +46,7 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
         } else {
             GraphqlRequest(OvoIncentive.GQL_QUERY, ProductRevIncentiveOvoDomain::class.java)
         }
-        val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
+        val response = graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
         return response.getData(ProductRevIncentiveOvoDomain::class.java)
     }
 

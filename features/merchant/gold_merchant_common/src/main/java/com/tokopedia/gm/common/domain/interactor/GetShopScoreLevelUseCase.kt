@@ -19,7 +19,7 @@ class GetShopScoreLevelUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopScoreResultUiModel {
         val gqlRequest = GraphqlRequest(QUERY, ShopScoreResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
         val gqlErrors = gqlResponse.getError(ShopScoreResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val data = gqlResponse.getData<ShopScoreResponse>(ShopScoreResponse::class.java)

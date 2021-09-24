@@ -36,7 +36,7 @@ class InsertSuccessSearchUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): SuccessSearchResponse.SuccessSearch {
         val gqlRequest = GraphqlRequest(gqlQuery, SuccessSearchResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<SuccessSearchResponse>(SuccessSearchResponse::class.java).successSearch

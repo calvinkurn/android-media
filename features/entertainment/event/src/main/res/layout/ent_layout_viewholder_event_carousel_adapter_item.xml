@@ -37,6 +37,7 @@
             android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/event_date"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@+id/event_image"
             app:typographyType="heading_6"
             tools:text="Grand Galaxy Convention Hall" />
@@ -52,6 +53,7 @@
             android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/event_date"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@+id/event_location"
             app:typographyType="heading_4"
             tools:text="Bekasi Wedding Exhibiti…" />
@@ -86,7 +88,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingLeft="@dimen/dimen_dp_18"
-            android:paddingRight="@dimen/dimen_dp_18"
             android:textColor="@color/Unify_T500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/event_location"

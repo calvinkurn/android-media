@@ -75,4 +75,9 @@ object RollenceKey {
 
     //TAPCASH
     const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
+
+    //Add Bills SBM
+    const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
+    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
+    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 }

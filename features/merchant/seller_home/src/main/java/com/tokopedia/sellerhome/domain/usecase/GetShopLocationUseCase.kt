@@ -38,7 +38,7 @@ class GetShopLocationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShippingLoc {
         val gqlRequest = GraphqlRequest(QUERY, ShopInfoLocation::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(ShopInfoLocation::class.java)
         if (errors.isNullOrEmpty()) {

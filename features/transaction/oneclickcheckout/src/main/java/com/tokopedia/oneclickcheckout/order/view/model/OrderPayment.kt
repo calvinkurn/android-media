@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
     val isEnable: Boolean = false,
