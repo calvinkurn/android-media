@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
     <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
     <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
@@ -49,6 +49,18 @@
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
 
+    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>2 jam tiba</b> dan <b>gratis ongkir!</b>]]></string>
+    <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
+    <string name="tokopedianow_home_educational_information_two_hours">2 jam tiba</string>
+    <string name="tokopedianow_home_educational_information_stock_available">Stok pasti tersedia</string>
+    <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
+    <string name="tokopedianow_home_educational_information_two_hours_bottomsheet"><![CDATA[<b>2 jam tiba.</b> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <b>gratis ongkir</b> juga!]]></string>
+    <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<b>Stok pasti tersedia.</b> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
+    <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<b>Kualitas terjamin.</b> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
+    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'#42b549\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now?utm_campaign=Help-13808288-a-2981-100921&utm_source=salinlink&utm_medium=share">Pelajari</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'#42b549\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_title">Untung pakai Tokopedia NOW!</string>
+
     <string name="tokopedianow_repurchase_empty_state_no_history_title">Tidak ada history repurchase</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter yang kamu gunakan atau cari barang serupa dengan explore tokonow</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kunci yang kamu gunakan atau cari barang serupa dengan explore tokonow</string>
@@ -80,6 +92,8 @@
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
+    <string name="tokopedianow_sharing_education_background_content_description">sharing education background</string>
+    <string name="tokopedianow_educational_information_chevron_entry_point_to_show_bottomsheet">entry point to show bottomsheet educational information</string>
 
     <string name="tokopedianow_category_filter_title">Pilih Kategori</string>
     <string name="tokopedianow_text_apply">Terapkan</string>

@@ -50,6 +50,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         renderButtonAddToCart(productCardModel)
         renderCartEditorNonVariant(productCardModel)
         renderChooseVariant(productCardModel)
+        renderButtonSimilarProduct(productCardModel)
     }
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
@@ -57,14 +58,19 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             productCardModel.shouldShowAddToCartNonVariantQuantity() ->
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
-            productCardModel.hasAddToCartButton ->
+            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
                 buttonAddToCart?.configureButtonAddToCart()
-
-            productCardModel.hasSimilarProductButton ->
-                buttonSimilarProduct?.configureButtonSimilarProduct()
 
             else ->
                 buttonAddToCart?.gone()
+        }
+    }
+
+    private fun renderButtonSimilarProduct(productCardModel: ProductCardModel) {
+        when {
+            productCardModel.hasSimilarProductButton ->
+                buttonSimilarProduct?.configureButtonSimilarProduct()
+            else -> buttonSimilarProduct?.gone()
         }
     }
 

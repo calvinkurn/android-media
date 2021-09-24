@@ -314,10 +314,7 @@ public interface ApplinkConst {
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
     String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
-    String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
-    String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
-    String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
@@ -357,6 +354,7 @@ public interface ApplinkConst {
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
+    String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
 
     String CATEGORY_HOST = "category";
@@ -472,6 +470,7 @@ public interface ApplinkConst {
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
+        String PM_BENEFIT_PACKAGE = "sellerapp://power_merchant/benefit-package";
         String BROWSER = "sellerapp://browser";
         String WEBVIEW = "sellerapp://webview";
         String VOUCHER_LIST = "sellerapp://voucher-list";

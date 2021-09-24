@@ -8,6 +8,7 @@ import androidx.annotation.IntDef
     TokoNowLayoutState.LOADING,
     TokoNowLayoutState.HIDE,
     TokoNowLayoutState.LOAD_MORE,
+    TokoNowLayoutState.LOADED,
     TokoNowLayoutState.EMPTY,
     TokoNowLayoutState.UPDATE
 )

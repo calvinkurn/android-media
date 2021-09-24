@@ -296,18 +296,20 @@ object RepurchaseLayoutMapper {
         val productList = filterIsInstance<RepurchaseProductUiModel>()
 
         productList.firstOrNull { it.id == productId }?.let {
-            val index = indexOf(it)
-            val productCard = it.productCard.run {
-                if (hasVariant()) {
-                    copy(variant = variant?.copy(quantity = quantity))
-                } else {
-                    copy(
-                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
-                        nonVariant = nonVariant?.copy(quantity = quantity)
-                    )
+            if(!it.isStockEmpty) {
+                val index = indexOf(it)
+                val productCard = it.productCard.run {
+                    if (hasVariant()) {
+                        copy(variant = variant?.copy(quantity = quantity))
+                    } else {
+                        copy(
+                            hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                            nonVariant = nonVariant?.copy(quantity = quantity)
+                        )
+                    }
                 }
+                set(index, it.copy(productCard = productCard))
             }
-            set(index, it.copy(productCard = productCard))
         }
     }
 

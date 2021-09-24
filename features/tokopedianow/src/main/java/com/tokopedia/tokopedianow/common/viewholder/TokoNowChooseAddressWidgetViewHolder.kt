@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
-        private val tokoNowListener: TokoNowView? = null,
+        private val tokoNowView: TokoNowView? = null,
         private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null
 ): AbstractViewHolder<TokoNowChooseAddressWidgetUiModel>(itemView) {
 
@@ -34,10 +34,10 @@ class TokoNowChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokoNowListener?.getFragmentPage()?.let { fragment ->
+        tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    tokoNowListener.refreshLayoutPage()
+                    tokoNowView.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {
@@ -45,7 +45,7 @@ class TokoNowChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    tokoNowListener.refreshLayoutPage()
+                    tokoNowView.refreshLayoutPage()
                 }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment

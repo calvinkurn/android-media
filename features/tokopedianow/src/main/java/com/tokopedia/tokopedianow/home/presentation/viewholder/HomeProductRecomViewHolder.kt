@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 
 class HomeProductRecomViewHolder(
     itemView: View,
-    private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null
 ): AbstractViewHolder<HomeProductRecomUiModel>(itemView), RecommendationCarouselWidgetListener {
 
@@ -41,9 +41,10 @@ class HomeProductRecomViewHolder(
                 recommendationData = element.recomWidget,
                 state = RecommendationCarouselData.STATE_READY,
             ),
-            widgetListener = this,
-            scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
+            widgetListener = this
         )
+        setOnScrollListener()
+        restoreScrollState()
         if (isOoc) {
             divider.show()
             val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
@@ -108,32 +109,19 @@ class HomeProductRecomViewHolder(
             pageSource = SOURCE,
             isTokoNow = true,
             shopId = recomItem.shopId.toString(),
-            startActivitResult = (tokoNowListener?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
-        )
-        saveCarouselScrollPosition()
-    }
-
-    private fun saveCarouselScrollPosition() {
-        val adapterPosition = this.adapterPosition
-        val carouselScrollPosition = productRecom.getCurrentPosition()
-
-        listener?.onSaveCarouselScrollPosition(
-            adapterPosition = adapterPosition,
-            scrollPosition = carouselScrollPosition,
+            startActivitResult = (tokoNowView?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
         )
     }
 
-    fun submitList(data: HomeProductRecomUiModel?) {
-        data?.recomWidget?.let {
-            productRecom.bind(
-                carouselData = RecommendationCarouselData(
-                    recommendationData = it,
-                    state = RecommendationCarouselData.STATE_READY,
-                ),
-                widgetListener = this,
-                scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
-            )
+    private fun setOnScrollListener() {
+        productRecom.setScrollListener { scrollState ->
+            tokoNowView?.saveScrollState(adapterPosition, scrollState)
         }
+    }
+
+    private fun restoreScrollState() {
+        val scrollState = tokoNowView?.getScrollState(adapterPosition)
+        productRecom.restoreScrollState(scrollState)
     }
 
     interface HomeProductRecomListener {
@@ -141,7 +129,5 @@ class HomeProductRecomViewHolder(
         fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)
         fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean)
         fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
-        fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
-        fun onGetCarouselScrollPosition(adapterPosition: Int): Int
     }
 }

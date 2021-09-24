@@ -20,7 +20,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiMode
 
 class HomeEmptyStateViewHolder(
         itemView: View,
-        private val tokoNowListener: TokoNowView? = null,
+        private val tokoNowView: TokoNowView? = null,
 ) : AbstractViewHolder<HomeEmptyStateUiModel>(itemView) {
 
     companion object {
@@ -53,7 +53,7 @@ class HomeEmptyStateViewHolder(
             override fun getLocalizingAddressHostSourceBottomSheet(): String = SOURCE
 
             override fun onAddressDataChanged() {
-                tokoNowListener?.refreshLayoutPage()
+                tokoNowView?.refreshLayoutPage()
             }
 
             override fun onLocalizingAddressServerDown() { /* to do : nothing */ }
@@ -62,7 +62,7 @@ class HomeEmptyStateViewHolder(
 
             override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
         })
-        tokoNowListener?.getFragmentManagerPage()?.let {
+        tokoNowView?.getFragmentManagerPage()?.let {
             chooseAddressBottomSheet.show(it, SHIPPING_CHOOSE_ADDRESS_TAG)
         }
     }

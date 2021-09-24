@@ -46,7 +46,7 @@ object RecentPurchaseMapper {
             TokoNowProductCardUiModel(
                 it.id,
                 it.shop.id,
-                it.stock.toInt(),
+                it.maxOrder,
                 it.parentProductId,
                 createProductCardModel(it, miniCartData),
                 TokoNowLayoutType.RECENT_PURCHASE

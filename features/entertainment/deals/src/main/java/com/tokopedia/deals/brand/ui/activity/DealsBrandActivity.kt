@@ -31,8 +31,6 @@ import kotlin.coroutines.CoroutineContext
 class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBrandComponent>, CoroutineScope {
 
     private val listeners: ArrayList<DealsBrandSearchTabListener> = arrayListOf()
-    private var searchBarContainer: ConstraintLayout? = null
-    private var searchBar: SearchBarUnify? = null
     var userTyped = false
     var searchNotFound = false
 
@@ -61,15 +59,13 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
 
         super.onCreate(savedInstanceState)
         initInjector()
-        searchBarContainer = findViewById(R.id.container_search_bar)
-        searchBar = searchBarContainer?.findViewById(R.id.searchBarDealsBaseSearch)
         setKeywordFromPreviousPage()
         setupListener()
     }
 
     private fun setKeywordFromPreviousPage() {
         val keyword = intent.getStringExtra(DealsSearchConstants.KEYWORD_EXTRA)
-        searchBar?.searchBarTextField?.setText(keyword)
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setText(keyword)
     }
 
     @Synchronized
@@ -97,16 +93,16 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
     }
 
     private fun setupListener() {
-        searchBar?.searchBarTextField?.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             KeyboardHandler.showSoftKeyboard(this)
             if(this::analytics.isInitialized) {
                 analytics.eventClickSearchBrandPage()
             }
         }
-        searchBar?.searchBarTextField?.afterTextChangedDelayed {
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.afterTextChangedDelayed {
             onSearchTextChanged()
         }
-        searchBar?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setOnEditorActionListener { textView, i, keyEvent ->
             if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
@@ -117,8 +113,8 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
 
     fun getSearchKeyword(): String {
         var query = ""
-        if(searchBar?.searchBarTextField?.text?.isNotEmpty() == true) {
-            query = searchBar?.searchBarTextField?.text.toString()
+        if(binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text?.isNotEmpty() == true) {
+            query = binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text.toString()
         }
         return query
     }

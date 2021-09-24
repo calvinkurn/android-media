@@ -15,6 +15,7 @@ object TrackingConstant {
     const val POWER_MERCHANT_PRO = "power merchant pro"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val PHYSICAL_GOODS = "physicalgoods"
+    const val PHYSICAL_GOODS_NEW = "physical goods"
     const val BECOME_RM = "become RM"
     const val BECOME_PM = "become pm"
 
@@ -23,11 +24,28 @@ object TrackingConstant {
     const val KEY_SHOP_ID = "shopId"
     const val KEY_USER_ID = "userId"
 
+    const val SHOP_TYPE = "shop_type"
+    const val SHOP_SCORE = "shop_score"
     const val EVENT_CLICK_POWER_MERCHANT = "clickPowerMerchant"
 
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_MAIN_APP = "tokopedia main app"
     const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant pro opt out questionnaire"
+
+    const val EVENT_SELECT_CONTENT = "select_content"
+    const val EVENT_VIEW_ITEM = "view_item"
+    const val CLICK_LEARN_MORE_PM_PRO = "click pelajari selengkapnya PM Pro"
+
+    const val KEY_EVENT_ECOMMERCE_PROMOTION = "promotions"
+    const val PM_PRO_ACTIVATION_PAGE = "PM Pro Activation Page"
+    const val PM_PRO_LEARN_MORE = "pelajari selengkapnya PM Pro"
+
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_ID = "item_id"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_ITEM_NAME = "item_name"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_NAME = "creative_name"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE_SLOT = "creative_slot"
+
+    const val IMPRESSION_PM_PRO_LEARN_MORE = "impression pelajari selengkapnya PM Pro"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT_PRO = "click upgrade power merchant pro"

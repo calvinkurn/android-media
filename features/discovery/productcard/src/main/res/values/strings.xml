@@ -27,6 +27,7 @@
     <string name="content_desc_imageFreeOngkirPromo">image bebas ongkir</string>
     <string name="content_desc_imageRemoveFromWishlist">button hapus wishlist</string>
     <string name="content_desc_buttonAddToCart">button tambah ke keranjang</string>
+    <string name="content_desc_buttonSeeSimilarProduct">button lihat barang serupa</string>
     <string name="content_desc_notifyMe">button Ingatkan Saya</string>
     <string name="content_desc_imageRating">image rating</string>
     <string name="content_desc_imageWishlist">image wishlist</string>
