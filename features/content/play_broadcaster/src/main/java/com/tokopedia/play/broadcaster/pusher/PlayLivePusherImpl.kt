@@ -103,8 +103,16 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun stop() {
         stopStream()
+        stopPreview()
         broadcastState(PlayLivePusherState.Stopped)
+    }
+
+    override fun release() {
         streamer?.release()
+        mListener = null
+        mBitrateAdapter = null
+        mHandler = null
+        streamer = null
     }
 
     override fun getHandler(): Handler {
@@ -339,6 +347,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     private fun cancelStatsJob() {
         try {
             statisticUpdateTimer?.cancel()
+            statisticUpdateTimer = null
         } catch (ignored: Exception) { }
     }
 

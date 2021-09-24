@@ -80,30 +80,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check internal affiliate explorer appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/explore"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
-    }
-
-    @Test
-    fun `check internal affiliate dashboard appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/dashboard"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
-    }
-
-    @Test
-    fun `check internal affiliate education appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/education"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
-    }
-
-    @Test
-    fun `check internal affiliate by me tracking appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/tracking/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
-    }
-
-    @Test
     fun `check play detail appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)

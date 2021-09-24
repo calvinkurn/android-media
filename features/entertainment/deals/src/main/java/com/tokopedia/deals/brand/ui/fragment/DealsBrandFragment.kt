@@ -2,7 +2,9 @@ package com.tokopedia.deals.brand.ui.fragment
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -29,20 +31,32 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_base_deals.*
-import kotlinx.android.synthetic.main.fragment_deals_brand.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener,
         SearchBarActionListener {
 
+    private var binding by autoCleared<FragmentDealsBrandBinding>()
+
+    override fun inflate_tmp(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+        x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View
+    ): View {
+        val view =  super.inflate_tmp(inflater, container, savedInstanceState, x)
+        binding = FragmentDealsBrandBinding.bind(view)
+        return view
+    }
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -239,7 +253,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     override fun onClickSearchBar() {
-        (activity as DealsBaseBrandCategoryActivity).appBarLayoutSearchContent.setExpanded(true)
+        (activity as DealsBaseBrandCategoryActivity).binding.appBarLayoutSearchContent.setExpanded(true)
     }
 
     override fun afterSearchBarTextChanged(text: String) {
@@ -262,14 +276,14 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun showTitle(brands: DealsBrandsDataView) {
         if (!brands.title.isNullOrEmpty() && showTitle()) {
             hideTitleShimmering()
-            tv_brand_title.show()
-            unused_line.show()
-            tv_brand_title.text = brands.title
+            binding.tvBrandTitle.show()
+            binding.unusedLine.show()
+            binding.tvBrandTitle.text = brands.title
         }
     }
 
     private fun hideTitleShimmering() {
-        shimmering_title.hide()
+        binding.shimmeringTitle.hide()
     }
 
     companion object {

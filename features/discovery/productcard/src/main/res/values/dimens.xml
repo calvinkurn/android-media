@@ -132,8 +132,7 @@
     <dimen name="product_card_button_delete_cart_height">24dp</dimen>
 
     <dimen name="product_card_button_add_variant_with_quantity_margin_start">8dp</dimen>
-    <dimen name="product_card_button_add_variant_margin_start">8dp</dimen>
-    <dimen name="product_card_button_add_variant_with_quantity_margin_top">4dp</dimen>
+    <dimen name="product_card_button_add_variant_margin_start">0dp</dimen>
     <dimen name="product_card_button_add_variant_margin_top">8dp</dimen>
     <dimen name="product_card_button_add_variant_margin_end">8dp</dimen>
     <dimen name="product_card_button_add_variant_margin_bottom">0dp</dimen>

@@ -446,8 +446,8 @@ private fun ProductCardModel.getQuantityEditorSectionHeight(context: Context): I
 
 private fun ProductCardModel.getVariantSectionHeight(context: Context): Int {
     return if (hasVariant()) {
-        val addVariantButtonMarginTop = if (hasVariantWithQuantity()) context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
-        else context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
+        val addVariantButtonMarginTop =
+            context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
 
         val addVariantButtonHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_height)
 

@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
@@ -109,10 +110,17 @@ class SharingUtil {
         fun takeScreenshot(view: View?): Bitmap? {
             var bitmap : Bitmap? = null
             if (view != null) {
-                bitmap = Bitmap.createBitmap(
-                    view.width,
-                    view.height, Bitmap.Config.ARGB_8888
-                )
+                bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Bitmap.createBitmap(
+                        view.width,
+                        view.height, Bitmap.Config.RGBA_F16
+                    )
+                }else{
+                    Bitmap.createBitmap(
+                        view.width,
+                        view.height, Bitmap.Config.ARGB_8888
+                    )
+                }
                 val canvas = bitmap?.let { Canvas(it) }
                 view.draw(canvas)
             }
