@@ -16,20 +16,15 @@ class GetWarningUseCase @Inject constructor(
     val userSession: UserSessionInterface
 ) : RestRequestUseCase(restRepository) {
 
-    private val url = BASE_URL + GET_WARNING
+    private val url = GET_WARNING
     private val params = mapOf(
         PARAM_OS_TYPE to OS_TYPE_ANDROID
-    )
-
-    private val headers = mapOf(
-        KEY_AUTHORIZATION to BEARER + " " + userSession.accessToken
     )
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val restRequest = RestRequest.Builder(url, GetWarningDataModel::class.java)
             .setRequestType(RequestType.GET)
             .setQueryParams(params)
-            .setHeaders(headers)
             .build()
         restRequestList.clear()
         restRequestList.add(restRequest)
@@ -37,8 +32,7 @@ class GetWarningUseCase @Inject constructor(
     }
 
     companion object {
-        private var BASE_URL = TokopediaUrl.getInstance().ACCOUNTS
-        private const val GET_WARNING = "api/v1/change-msisdn/get-warning"
+        private val GET_WARNING = "${TokopediaUrl.getInstance().ACCOUNTS}api/v1/change-msisdn/get-warning"
         private const val PARAM_OS_TYPE = "theme"
         private const val OS_TYPE_ANDROID = "mobile"
 
