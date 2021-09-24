@@ -176,7 +176,7 @@ class InfiniteTokonowRecomFragment :
 
     override fun onResume() {
         super.onResume()
-        if (getUserSession().isLoggedIn) miniCartWidget?.show() else miniCartWidget?.gone()
+        showMiniCartWidget()
         getMiniCartData()
     }
 
