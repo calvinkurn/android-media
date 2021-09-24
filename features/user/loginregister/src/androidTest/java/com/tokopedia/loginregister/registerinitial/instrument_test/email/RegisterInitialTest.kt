@@ -3,11 +3,11 @@ package com.tokopedia.loginregister.registerinitial.instrument_test.email
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -37,7 +37,7 @@ class RegisterInitialTest: RegisterInitialBase() {
     private val emailNotRegistered = "kelvin.saputra+qa99@tokopedia.com"
 
     @Test
-    fun `check_register_email_success_tracker`() {
+    fun check_register_email_success_tracker() {
         //Given
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(
@@ -63,7 +63,7 @@ class RegisterInitialTest: RegisterInitialBase() {
     }
 
     @Test
-    fun `check_register_email_failed_tracker`() {
+    fun check_register_email_failed_tracker() {
         //Given
         isDefaultRegisterCheck = false
         registerCheckUseCase.isError = true
@@ -81,12 +81,12 @@ class RegisterInitialTest: RegisterInitialBase() {
         Thread.sleep(1000)
         setupMockOtpIntent()
 
-        Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
-                .perform(ViewActions.replaceText(""))
-                .perform(ViewActions.typeText(emailNotRegistered))
+        onView(withId(R.id.input_email_phone))
+                .perform(replaceText(""))
+                .perform(typeText(emailNotRegistered))
 
-        Espresso.onView(ViewMatchers.withId(R.id.register_btn))
-                .perform(ViewActions.click())
+        onView(withId(R.id.register_btn))
+                .perform(click())
     }
 
     private fun setupMockOtpIntent() {
@@ -106,8 +106,6 @@ class RegisterInitialTest: RegisterInitialBase() {
                 "click on button daftar - email",
                 "click"
             )
-            //Need to create more test in:
-            //tracker/user/loginregister/email/loginregister_register_email_success.json
         )
     }
 

@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.registerinitial.instrument_test.phonenumber
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -28,7 +28,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     val phoneNumberNotRegistered = "0851563646951"
 
     @Test
-    fun `check_register_phone_failed_tracker`() {
+    fun check_register_phone_failed_tracker() {
         //Given
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(
@@ -50,7 +50,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     }
 
     @Test
-    fun `check_register_phone_success_tracker`() {
+    fun check_register_phone_success_tracker() {
         //Given
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(
@@ -75,12 +75,12 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     private fun checkRegisterPhoneNumber() {
         Thread.sleep(1000)
 
-        Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
-                .perform(ViewActions.replaceText(""))
-                .perform(ViewActions.typeText(phoneNumberNotRegistered))
+        onView(withId(R.id.input_email_phone))
+                .perform(replaceText(""))
+                .perform(typeText(phoneNumberNotRegistered))
 
-        Espresso.onView(ViewMatchers.withId(R.id.register_btn))
-                .perform(ViewActions.click())
+        onView(withId(R.id.register_btn))
+                .perform(click())
     }
 
     private fun getAnalyticValidatorListFailed(): List<Map<String, String>> {

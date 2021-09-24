@@ -17,7 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.loginregister.common.Event
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.Matcher
@@ -63,14 +62,6 @@ class LoginTestHelper {
 
     fun GtmLogDBSource.finishTest() {
         deleteAll().subscribe()
-    }
-
-    companion object {
-        const val LOGIN_EMAIL_P1 = "tracker/user/loginregister/email/login_email_p1.json"
-        const val LOGIN_PHONE_P1 = "tracker/user/loginregister/email/login_phone_p1.json"
-        const val LOGIN_FORGOT_PASS_P1 = "tracker/user/loginregister/email/login_forgot_pass_p1.json"
-        const val LOGIN_EMAIL_REGISTER_P1 = "tracker/user/loginregister/email/login_email_register_p1.json"
-        const val OTP_LOGIN_PHONE_NUMBER = "tracker/user/otp/otp_login_phone_p1.json"
     }
 }
 

@@ -3,9 +3,9 @@ package com.tokopedia.loginregister.registerinitial.instrument_test.social_media
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,7 +29,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     var cassavaTestRule = CassavaTestRule()
 
     @Test
-    fun `check_failed_register_tracker_facebook`() {
+    fun check_failed_register_tracker_facebook() {
         isDefaultRegisterCheck = false
         registerCheckUseCase.isError = true
 
@@ -41,7 +41,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     }
 
     @Test
-    fun `check_failed_register_tracker_google`() {
+    fun check_failed_register_tracker_google() {
         isDefaultRegisterCheck = false
         registerCheckUseCase.isError = true
 
@@ -53,7 +53,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     }
 
     @Test
-    fun `check_success_register_tracker_facebook`() {
+    fun check_success_register_tracker_facebook() {
         isDefaultRegisterCheck = false
         registerCheckUseCase.isError = true
 
@@ -65,7 +65,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     }
 
     @Test
-    fun `check_success_register_tracker_google`() {
+    fun check_success_register_tracker_google() {
 
         runTest {
             checkRegisterGoogle()
@@ -75,27 +75,27 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     }
 
     private fun checkRegisterFacebook() {
-        Intents.intending(IntentMatchers.anyIntent())
+        intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(1000)
 
-        Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
-                .perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.socmed_btn))
+                .perform(click())
 
-        Espresso.onView(ViewMatchers.withText("Facebook"))
-                .perform(ViewActions.click())
+        onView(ViewMatchers.withText("Facebook"))
+                .perform(click())
     }
 
     private fun checkRegisterGoogle() {
-        Intents.intending(IntentMatchers.anyIntent())
+        intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent()))
         Thread.sleep(1000)
 
-        Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
-            .perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.socmed_btn))
+            .perform(click())
 
-        Espresso.onView(ViewMatchers.withText("Google"))
-            .perform(ViewActions.click())
+        onView(ViewMatchers.withText("Google"))
+            .perform(click())
     }
 
     private fun getAnalyticValidatorListFacebookSuccess(): List<Map<String, String>> {
@@ -105,13 +105,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
                 "register page",
                 "click on button facebook",
                 "click"
-            ),
-//            CassavaTestRuleMatcher.getAnalyticValidator(
-//                "clickRegister",
-//                "register page",
-//                "click on button facebook",
-//                "register success"
-//            )
+            )
         )
     }
 
