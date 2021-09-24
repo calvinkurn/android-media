@@ -28,6 +28,7 @@ import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.home_recom.view.diffutil.RecomPageDiffUtil
 import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -175,6 +176,7 @@ class InfiniteTokonowRecomFragment :
 
     override fun onResume() {
         super.onResume()
+        if (getUserSession().isLoggedIn) miniCartWidget?.show() else miniCartWidget?.gone()
         getMiniCartData()
     }
 
