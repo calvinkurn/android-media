@@ -32,11 +32,9 @@ class LinkAccountViewModel @Inject constructor(
 
     fun getLinkStatus(isGetProfile: Boolean = false) {
         launchCatchError(block = {
-            val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
-            val result = getLinkStatusUseCase(params)
-
+            val result = getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
             if(isGetProfile) {
-                val profile = getProfileUseCase(RequestParams.EMPTY)
+                val profile = getProfileUseCase(Unit)
                 val phone = profile.profileInfo.phone
                 if(phone.isNotEmpty()) {
                     userSession.phoneNumber = phone
