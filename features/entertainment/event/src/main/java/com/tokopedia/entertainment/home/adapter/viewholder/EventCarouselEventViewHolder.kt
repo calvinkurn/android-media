@@ -14,6 +14,7 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -86,6 +87,7 @@ class EventCarouselEventViewHolder(itemView: View,
                 if (dateFormated.isNullOrEmpty()){
                     gone()
                 } else {
+                    show()
                     text = dateFormated
                 }
             }
