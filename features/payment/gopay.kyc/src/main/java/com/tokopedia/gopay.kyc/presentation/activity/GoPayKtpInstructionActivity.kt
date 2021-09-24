@@ -93,7 +93,7 @@ class GoPayKtpInstructionActivity : BaseSimpleActivity(),
     }
 
     private fun openKycReviewPage() {
-        startActivity(GoPayReviewActivity.getIntent(this, ktpPath, selfieKtpPath))
+        startActivity(GoPayReviewResultActivity.getIntent(this, ktpPath, selfieKtpPath))
         shouldOpenReviewScreen = false
     }
 

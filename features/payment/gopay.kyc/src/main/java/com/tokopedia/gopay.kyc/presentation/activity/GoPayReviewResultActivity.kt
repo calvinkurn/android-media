@@ -18,13 +18,13 @@ import com.tokopedia.gopay.kyc.presentation.bottomsheet.GoPayKycUploadFailedBott
 import com.tokopedia.gopay.kyc.presentation.fragment.GoPayReviewAndUploadFragment
 import com.tokopedia.gopay.kyc.presentation.fragment.GoPayUploadSuccessFragment
 import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycNavigationListener
-import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewListener
+import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewResultListener
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
 import javax.inject.Inject
 
-class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent>,
-    GoPayKycReviewListener, GoPayKycNavigationListener {
+class GoPayReviewResultActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent>,
+    GoPayKycReviewResultListener, GoPayKycNavigationListener {
 
     @Inject
     lateinit var goPayKycAnalytics: dagger.Lazy<GoPayKycAnalytics>
@@ -131,7 +131,7 @@ class GoPayReviewActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent
         const val REQUEST_KTP_SELFIE_ACTIVITY = 1003
 
         fun getIntent(context: Context, ktpPath: String, selfieKtpPath: String): Intent {
-            val intent = Intent(context, GoPayReviewActivity::class.java)
+            val intent = Intent(context, GoPayReviewResultActivity::class.java)
             intent.putExtra(KTP_PATH, ktpPath)
             intent.putExtra(SELFIE_KTP_PATH, selfieKtpPath)
             return intent

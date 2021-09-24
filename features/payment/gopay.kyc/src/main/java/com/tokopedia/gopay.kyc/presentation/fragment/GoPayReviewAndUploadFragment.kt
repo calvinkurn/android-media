@@ -14,15 +14,18 @@ import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
-import com.tokopedia.gopay.kyc.presentation.activity.GoPayReviewActivity.Companion.KTP_PATH
-import com.tokopedia.gopay.kyc.presentation.activity.GoPayReviewActivity.Companion.SELFIE_KTP_PATH
+import com.tokopedia.gopay.kyc.presentation.activity.GoPayReviewResultActivity.Companion.KTP_PATH
+import com.tokopedia.gopay.kyc.presentation.activity.GoPayReviewResultActivity.Companion.SELFIE_KTP_PATH
 import com.tokopedia.gopay.kyc.presentation.fragment.base.GoPayKycBaseFragment
 import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycNavigationListener
-import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewListener
+import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewResultListener
 import com.tokopedia.gopay.kyc.utils.ReviewCancelDialog
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycImageUploadViewModel
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_gopay_review_layout.*
 import java.io.File
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
@@ -72,6 +75,11 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
             sendKycButton.isLoading = false
             if (isKycUploaded) showKycSuccessScreen() else showKycErrorBottomSheet()
         })
+        viewModel.kycSubmitErrorLiveData.observe(viewLifecycleOwner, {
+            val toastType = if (it is IllegalStateException && it.message == GoPayKycImageUploadViewModel.ILLEGAL_STATE)
+                Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR
+            showToastMessage(ErrorHandler.getErrorMessage(context, it), toastType)
+        })
     }
 
     private fun initListeners() {
@@ -110,14 +118,14 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
 
     private fun showKycErrorBottomSheet() =
         activity?.let {
-            (it as GoPayKycReviewListener).showKycFailedBottomSheet(
+            (it as GoPayKycReviewResultListener).showKycFailedBottomSheet(
                 viewModel.ktpPath,
                 viewModel.selfieKtpPath
             )
         }
 
     private fun showKycSuccessScreen() =
-        activity?.let { (it as GoPayKycReviewListener).showKycSuccessScreen() }
+        activity?.let { (it as GoPayKycReviewResultListener).showKycSuccessScreen() }
 
     fun updateKtpImage(ktpPath: String) {
         viewModel.ktpPath = ktpPath
@@ -127,6 +135,12 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     fun updateSelfieKtpImage(selfieKtpPath: String) {
         viewModel.selfieKtpPath = selfieKtpPath
         setImageFromFile(selfieKtpPath, ktpSelfieImage)
+    }
+
+    private fun showToastMessage(message: String, toastType: Int) {
+        if (message.isNotEmpty())
+            Toaster.build(sendKycButton, message, Toaster.LENGTH_LONG, toastType)
+                .show()
     }
 
     override fun getScreenName() = null
@@ -171,7 +185,7 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     }
 
     companion object {
-        const val GOPAY_HELP_URL = "http://www.go-pay.co.id/appterms"
+        const val GOPAY_HELP_URL = "https://www.go-pay.co.id/appterms"
         fun newInstance(bundle: Bundle?): GoPayReviewAndUploadFragment {
             val fragment = GoPayReviewAndUploadFragment()
             fragment.arguments = bundle

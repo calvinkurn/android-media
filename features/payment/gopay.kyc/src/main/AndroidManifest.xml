@@ -27,7 +27,7 @@
             android:theme="@style/Theme.WhiteUnify" />
 
         <activity
-            android:name=".presentation.activity.GoPayReviewActivity"
+            android:name=".presentation.activity.GoPayReviewResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
 

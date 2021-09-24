@@ -8,6 +8,7 @@ import com.tokopedia.gopay.kyc.domain.usecase.InitiateKycUseCase
 import com.tokopedia.gopay.kyc.domain.usecase.SubmitKycUseCase
 import com.tokopedia.gopay.kyc.domain.usecase.UploadKycDocumentUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class GoPayKycImageUploadViewModel @Inject constructor(
@@ -21,6 +22,7 @@ class GoPayKycImageUploadViewModel @Inject constructor(
     var selfieKtpPath = ""
     private var kycRequestId: String = ""
     val uploadSuccessLiveData = MutableLiveData<Boolean>()
+    val kycSubmitErrorLiveData = MutableLiveData<Throwable>()
 
     // to prevent unwanted re-initiate kyc call in that case where submit kyc has failed
     private fun isKycUploadRequired() = kycRequestId.isEmpty()
@@ -57,12 +59,17 @@ class GoPayKycImageUploadViewModel @Inject constructor(
                 } else updateKycUploadStatus(false)
             }, {
                 updateKycUploadStatus(false)
+                kycSubmitErrorLiveData.postValue(it)
             })
-        } else updateKycUploadStatus(false)
+        } else {
+            updateKycUploadStatus(false)
+            kycSubmitErrorLiveData.postValue(IllegalStateException(ILLEGAL_STATE))
+        }
     }
 
     private fun onKycInitiationFailed(throwable: Throwable) {
         updateKycUploadStatus(false)
+        kycSubmitErrorLiveData.postValue(throwable)
     }
 
     private fun onKycSubmissionSuccess(isSuccess: String) {
@@ -71,6 +78,7 @@ class GoPayKycImageUploadViewModel @Inject constructor(
 
     private fun onKycSubmissionError(throwable: Throwable) {
         uploadSuccessLiveData.postValue(false)
+        kycSubmitErrorLiveData.postValue(throwable)
     }
 
     private fun updateKycUploadStatus(isSuccess: Boolean) {
@@ -80,6 +88,7 @@ class GoPayKycImageUploadViewModel @Inject constructor(
     companion object {
         const val CODE_SUCCESS = "SUCCESS"
         const val DOCUMENT_TYPE_KYC_PROOF = "KYC_PROOF"
+        const val ILLEGAL_STATE = "Silakan coba lagi"
     }
 
     override fun onCleared() {

@@ -11,12 +11,15 @@ import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
 import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycNavigationListener
-import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewListener
+import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewResultListener
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycImageUploadViewModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.gopay_kyc_upload_failed_layout.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
@@ -88,9 +91,21 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         })
+        viewModel.kycSubmitErrorLiveData.observe(viewLifecycleOwner, {
+            val toastType = if (it is IllegalStateException && it.message == GoPayKycImageUploadViewModel.ILLEGAL_STATE)
+                Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR
+            showToastMessage(ErrorHandler.getErrorMessage(context, it), toastType)
+        })
     }
 
-    //@Todo provide params
+    private fun showToastMessage(message: String, toastType: Int) {
+        view?.rootView?.let {
+            if (message.isNotEmpty())
+                Toaster.build(it, message, Toaster.LENGTH_LONG, toastType)
+                    .show()
+        }
+    }
+
     private fun sendImpressionEvent() {
         val event = GoPayKycEvent.Impression.KycFailedImpression("")
         activity?.let { (it as GoPayKycNavigationListener).sendAnalytics(event) }
@@ -102,7 +117,7 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
     }
 
     private fun showKycSuccessScreen() =
-        activity?.let { (it as GoPayKycReviewListener).showKycSuccessScreen() }
+        activity?.let { (it as GoPayKycReviewResultListener).showKycSuccessScreen() }
 
     companion object {
         const val TITLE = "Upgrade GoPay Plus"

@@ -97,6 +97,6 @@ class GoPayKycViewModel @Inject constructor(
 
     companion object {
         const val CODE_SUCCESS = "SUCCESS"
-        const val ILLEGAL_STATE = "Peningkatan versi gagal. Silakan coba lagi"
+        const val ILLEGAL_STATE = "Silakan coba lagi"
     }
 }
