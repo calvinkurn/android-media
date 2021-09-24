@@ -21,8 +21,6 @@ import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.view.util.FileUtil
 import com.tokopedia.createpost.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +29,6 @@ import kotlinx.coroutines.GlobalScope
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class SubmitPostServiceNew : JobIntentService() {
 
@@ -76,6 +73,12 @@ class SubmitPostServiceNew : JobIntentService() {
 
         postUpdateProgressManager = getProgressManager(viewModel)
         postUpdateProgressManager!!.setCreatePostData(viewModel)
+        if (!viewModel.isEditState)
+            postUpdateProgressManager!!.setFirstIcon((viewModel.completeImageList.first().path))
+
+        postUpdateProgressManager?.isEditPostValue(viewModel.isEditState)
+        postUpdateProgressManager?.onAddProgress()
+
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         submitPostUseCase.execute(

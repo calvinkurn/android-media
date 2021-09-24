@@ -120,6 +120,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+        const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
+        const val PARAM_IS_EDIT_STATE = "is_edit_state"
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
         fun createIntent(
@@ -256,21 +258,23 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
+        val createPostViewModel = (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
         cacheManager.put(
             CreatePostViewModel.TAG,
-            (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData(),
+            createPostViewModel,
             TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
-        goToFeed()
+        goToFeed(createPostViewModel.isEditState)
         finish()
     }
 
-    private fun goToFeed() {
+    private fun goToFeed(isEditState: Boolean) {
         this.let {
             val applink = ApplinkConst.HOME_FEED
             val intent = RouteManager.getIntent(it, applink)
-            intent.putExtra("show_posting_progress_bar", true)
+            intent.putExtra(PARAM_SHOW_PROGRESS_BAR, true)
+            intent.putExtra(PARAM_IS_EDIT_STATE, isEditState)
             startActivity(intent)
         }
     }
