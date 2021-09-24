@@ -38,7 +38,6 @@ data class ProductCardModel (
         val labelGroupList: List<LabelGroup> = listOf(),
         val hasDeleteProductButton: Boolean = false,
         val hasAddToCartButton: Boolean = false,
-        val hasSimilarProductButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
@@ -57,7 +56,8 @@ data class ProductCardModel (
         val isWideContent: Boolean = false,
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
-) {
+        val hasSimilarProductButton: Boolean = false,
+        ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
     @Deprecated("replace with labelGroupList")
