@@ -243,7 +243,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     }
 
     fun showMiniCartWidget() {
-        if (userSession.isLoggedIn) miniCartWidget?.show() else miniCartWidget?.gone()
+        if (getUserSession().isLoggedIn) miniCartWidget?.show() else miniCartWidget?.gone()
     }
 
     fun scrollToTop() {
