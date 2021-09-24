@@ -53,8 +53,7 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener
-) : LifecycleObserver, OtherMenuContentAnimator.Listener {
+    private var listener: Listener) : LifecycleObserver {
 
     private val otherMenuAdapter by lazy {
         listener.getFragmentAdapter() as? OtherMenuAdapter
@@ -94,19 +93,9 @@ class OtherMenuViewHolder(
     private var shareButtonAnimator: OtherMenuShareButtonAnimator? = null
     private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
 
-    private var hasInitialAnimationCompleted = false
-
     private val saldoImpressHolder = ImpressHolder()
     private val topadsImpressHolder = ImpressHolder()
     private val shopAvatarImpressHolder = ImpressHolder()
-
-    override fun onInitialAnimationCompleted() {
-        hasInitialAnimationCompleted = true
-        if (listener.getIsShopShareReady()) {
-            showShareButtons()
-            animateShareButton()
-        }
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
@@ -200,9 +189,7 @@ class OtherMenuViewHolder(
     }
 
     fun runShareButtonAnimation() {
-        if (hasInitialAnimationCompleted) {
-            animateShareButton()
-        }
+        animateShareButton()
     }
 
     fun swipeSecondaryInfoGently() {
@@ -292,8 +279,7 @@ class OtherMenuViewHolder(
     }
 
     private fun setupContentAnimator() {
-        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
-            hasInitialAnimationCompleted = false
+        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout).also {
             it.animateInitialSlideIn()
         }
     }
@@ -521,7 +507,6 @@ class OtherMenuViewHolder(
         fun onShareButtonClicked()
         fun onShopStatusImpression(shopType: ShopType)
         fun onFreeShippingImpression()
-        fun getIsShopShareReady(): Boolean
     }
 
 }

@@ -353,8 +353,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
-    override fun getIsShopShareReady(): Boolean = shopShareInfo != null
-
     override fun onScrollToTop() {
         viewHolder?.scrollToTop()
     }

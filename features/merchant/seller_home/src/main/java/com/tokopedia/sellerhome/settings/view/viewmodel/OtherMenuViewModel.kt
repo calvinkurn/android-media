@@ -290,32 +290,6 @@ class OtherMenuViewModel @Inject constructor(
         }
     }
 
-    fun setErrorStateMapDefaultValue() {
-        if (_errorStateMap.value == null) {
-            _errorStateMap.value = mutableMapOf(
-                OtherMenuDataType.Badge to false,
-                OtherMenuDataType.Followers to false,
-                OtherMenuDataType.Status to false,
-                OtherMenuDataType.Operational to false,
-                OtherMenuDataType.Saldo to false,
-                OtherMenuDataType.Topads to false,
-                OtherMenuDataType.FreeShipping to false
-            )
-        }
-    }
-
-    fun setSuccessStateMapDefaultValue() {
-        if (_secondarySuccessStateMap.value == null) {
-            _secondarySuccessStateMap.value = mutableMapOf(
-                OtherMenuDataType.Badge to false,
-                OtherMenuDataType.Followers to false,
-                OtherMenuDataType.Status to false,
-                OtherMenuDataType.Operational to false,
-                OtherMenuDataType.FreeShipping to false
-            )
-        }
-    }
-
     private fun getFreeShippingStatusData() {
         val freeShippingDisabled =
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
@@ -478,6 +452,32 @@ class OtherMenuViewModel @Inject constructor(
                 _shopShareInfoLiveData.value = null
             }
         )
+    }
+
+    fun setErrorStateMapDefaultValue() {
+        if (_errorStateMap.value == null) {
+            _errorStateMap.value = mutableMapOf(
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.Saldo to false,
+                OtherMenuDataType.Topads to false,
+                OtherMenuDataType.FreeShipping to false
+            )
+        }
+    }
+
+    fun setSuccessStateMapDefaultValue() {
+        if (_secondarySuccessStateMap.value == null) {
+            _secondarySuccessStateMap.value = mutableMapOf(
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.FreeShipping to false
+            )
+        }
     }
 
     private suspend fun swipeSecondaryInfoGentlyWithDelay() {
