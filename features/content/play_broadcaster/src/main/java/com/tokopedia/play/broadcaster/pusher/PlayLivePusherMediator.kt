@@ -88,6 +88,7 @@ class PlayLivePusherMediator(
 
     fun destroy() {
         mCountDownTimer.destroy()
+        release()
     }
 
     fun addListener(listener: PlayLivePusherMediatorListener) {

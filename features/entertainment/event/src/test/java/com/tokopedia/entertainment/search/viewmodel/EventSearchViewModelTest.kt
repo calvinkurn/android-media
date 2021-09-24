@@ -63,7 +63,7 @@ class EventSearchViewModelTest {
         assertNotNull(graphqlRepository)
 
         val dataMock = Gson().fromJson(getJson("history_mock.json"), EventSearchHistoryResponse::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventSearchHistoryResponse.Data::class.java to dataMock.data
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
@@ -102,7 +102,7 @@ class EventSearchViewModelTest {
         errors[ EventSearchHistoryResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -118,7 +118,7 @@ class EventSearchViewModelTest {
         assertNotNull(graphqlRepository)
 
         val dataMock = Gson().fromJson(getJson("search_mock.json"), EventSearchLocationResponse::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventSearchLocationResponse.Data::class.java to dataMock.data
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
@@ -142,7 +142,7 @@ class EventSearchViewModelTest {
         errors[EventSearchLocationResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
