@@ -193,12 +193,12 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId) as HashMap<String, Any>)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(item, getUserSession().userId, productId) as HashMap<String, Any>)
         goToPDP(item.productId.toString(), item.position)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemImpression(item, getUserSession().userId) as HashMap<String, Any>)
+        getTrackingQueueObj()?.putEETracking(InfiniteRecomTracker.eventRecomItemImpression(item, getUserSession().userId, productId) as HashMap<String, Any>)
     }
 
     override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
@@ -326,12 +326,12 @@ class InfiniteTokonowRecomFragment :
         })
         viewModel.atcRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomAddToCart(it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
             }, {})
         })
         viewModel.deleteCartRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
             data.doSuccessOrFail({
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomRemoveFromCart(it.data, getUserSession().userId, it.data.minOrder) as HashMap<String, Any>)
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventClickRecomRemoveFromCart(it.data, getUserSession().userId, it.data.minOrder, productId) as HashMap<String, Any>)
             }, {})
         })
         viewModel.atcRecomTokonowResetCard.observe(viewLifecycleOwner, Observer {

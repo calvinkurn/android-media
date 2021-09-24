@@ -47,7 +47,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
     private const val VALUE_INFINITE_RECOM = "infinite recom"
 
 
-    fun eventRecomItemImpression(recomItem: RecommendationItem, userId: String): Map<String, Any> {
+    fun eventRecomItemImpression(recomItem: RecommendationItem, userId: String, parentProductid: String): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder().constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventAction = IMPRESSION_ACTION_INFINITE_RECOM_ITEM,
@@ -68,12 +68,12 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendUserId(userId)
         trackerBuilder.appendBusinessUnit(BU_RECOM)
         trackerBuilder.appendCurrentSite(CURRENTSITE_RECOM)
-        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, recomItem.productId)
+        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, parentProductid)
         trackerBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         return trackerBuilder.build()
     }
 
-    fun eventRecomItemClick(recomItem: RecommendationItem, userId: String): Map<String, Any> {
+    fun eventRecomItemClick(recomItem: RecommendationItem, userId: String, parentProductid: String): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder().constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventAction = CLICK_ACTION_INFINITE_RECOM_ITEM,
@@ -94,12 +94,12 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendUserId(userId)
         trackerBuilder.appendBusinessUnit(BU_RECOM)
         trackerBuilder.appendCurrentSite(CURRENTSITE_RECOM)
-        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, recomItem.productId)
+        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, parentProductid)
         trackerBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         return trackerBuilder.build()
     }
 
-    fun eventClickRecomAddToCart(recomItem: RecommendationItem, userId: String, quantity: Int): Map<String, Any> {
+    fun eventClickRecomAddToCart(recomItem: RecommendationItem, userId: String, quantity: Int, parentProductid: String): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         trackerBuilder.appendEvent(RecomTokonow.KEY_EVENT_ATC)
         trackerBuilder.appendEventCategory(RecomTokonow.KEY_EVENT_CATEGORY_ATC)
@@ -107,7 +107,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendEventLabel(String.format(RecomTokonow.KEY_EVENT_LABEL_ATC, recomItem.name, ""))
         trackerBuilder.appendBusinessUnit(BU_RECOM)
         trackerBuilder.appendCurrentSite(CURRENTSITE_RECOM)
-        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, recomItem.productId)
+        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, parentProductid)
         trackerBuilder.appendCustomKeyValue(KEY_USER_ID_VARIANT, userId)
         trackerBuilder.appendCustomKeyValue(RecomTokonow.KEY_EVENT_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         trackerBuilder.appendCustomKeyValue(KEY_ECOMMERCE, DataLayer.mapOf(
@@ -132,7 +132,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         return trackerBuilder.build()
     }
 
-    fun eventClickRecomRemoveFromCart(recomItem: RecommendationItem, userId: String, quantity: Int): Map<String, Any> {
+    fun eventClickRecomRemoveFromCart(recomItem: RecommendationItem, userId: String, quantity: Int, parentProductid: String): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         trackerBuilder.appendEvent(RecomTokonow.KEY_EVENT_REMOVE_FROM_CART)
         trackerBuilder.appendEventCategory(RecomTokonow.KEY_EVENT_CATEGORY_ATC)
@@ -141,7 +141,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
         trackerBuilder.appendBusinessUnit(BU_RECOM)
         trackerBuilder.appendCurrentSite(CURRENTSITE_RECOM)
         trackerBuilder.appendCustomKeyValue(KEY_USER_ID_VARIANT, userId)
-        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, recomItem.productId)
+        trackerBuilder.appendCustomKeyValue(KEY_PRODUCT_ID, parentProductid)
         trackerBuilder.appendCustomKeyValue(RecomTokonow.KEY_EVENT_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE, VALUE_INFINITE_RECOM, recomItem.recommendationType))
         trackerBuilder.appendCustomKeyValue(KEY_ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
@@ -168,7 +168,7 @@ object InfiniteRecomTracker : BaseTrackerConst() {
     object RecomTokonow {
         //recomatc
         const val KEY_EVENT_ATC = "addToCart"
-        const val KEY_EVENT_REMOVE_FROM_CART = "remove_from_cart"
+        const val KEY_EVENT_REMOVE_FROM_CART = "removeFromCart"
         const val KEY_EVENT_PAGE_SOURCE = "pageSource"
         const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
         const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
