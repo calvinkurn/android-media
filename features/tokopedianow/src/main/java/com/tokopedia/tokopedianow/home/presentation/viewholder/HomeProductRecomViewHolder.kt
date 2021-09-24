@@ -76,7 +76,7 @@ class HomeProductRecomViewHolder(
         data: RecommendationCarouselData,
         applink: String
     ) {
-        listener?.onSeeAllBannerClicked(channelId, data.recommendationData.title, isOoc)
+        listener?.onSeeAllBannerClicked(channelId, data.recommendationData.title, isOoc, applink)
     }
 
     override fun onRecomProductCardClicked(
@@ -127,7 +127,7 @@ class HomeProductRecomViewHolder(
     interface HomeProductRecomListener {
         fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean)
         fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)
-        fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean)
+        fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String)
         fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
     }
 }
