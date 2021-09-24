@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 22/02/18.
