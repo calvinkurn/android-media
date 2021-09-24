@@ -40,12 +40,12 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun onRecordButtonClick() {
+    override fun onRecordButtonClick(mediaType:String) {
         val map = mutableMapOf<String, Any>()
         map["event"] = "clickFeed"
         map["eventAction"] = "click circle on record page"
         map["eventCategory"] = "content feed creation"
-        map["eventLabel"] = shopId
+        map["eventLabel"] = "$shopId - $mediaType"
         map["businessUnit"] = "content"
         map["currentSite"] = "tokopediamarketplace"
         map["sessionIris"] = "sessioniris"
