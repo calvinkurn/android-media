@@ -8,8 +8,7 @@
         <attr name="lockScroll" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="PlaySpamLikeView">
-        <attr name="additionalShot" format="boolean" />
+    <declare-styleable name="PlayLikeBubbleView">
         <attr name="bouncing" format="boolean"/>
         <attr name="maxShot" format="integer"/>
     </declare-styleable>

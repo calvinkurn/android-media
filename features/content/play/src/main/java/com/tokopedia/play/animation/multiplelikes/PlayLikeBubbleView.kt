@@ -34,7 +34,6 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     private val sizeList = listOf(defaultSize to defaultSize)
     private val sizeMultiplyList = listOf(0.3f)
     private var shot = 0
-    private var dot: Drawable? = null
 
     /**
      * Config
@@ -42,7 +41,6 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     private var maxShot = 30
     private var sizeType = PlayLikeBubbleSize.EXACT
     private val duration = ANIMATION_DURATION_IN_MS
-//    private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
     private var blurOpacity: Float = 0.5F
 
@@ -51,19 +49,12 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     private val imageList = mutableListOf<ImageView>()
 
     init {
-        val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeView)
+        val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlayLikeBubbleView)
 
-        isBouncing = type.getBoolean(R.styleable.PlaySpamLikeView_bouncing, false)
-//        isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeView_additionalShot, false)
-        maxShot = type.getInteger(R.styleable.PlaySpamLikeView_maxShot, 30)
+        isBouncing = type.getBoolean(R.styleable.PlayLikeBubbleView_bouncing, false)
+        maxShot = type.getInteger(R.styleable.PlayLikeBubbleView_maxShot, 30)
 
         type.recycle()
-
-        setDefaultDotList()
-    }
-
-    private fun setDefaultDotList() {
-        dot = ContextCompat.getDrawable(context, R.drawable.shape_play_cart_dots)
     }
 
     /**
@@ -73,20 +64,6 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     fun setParentView(parentView: ViewGroup) {
         this.parentView = parentView
     }
-
-    fun setBouncing(isBouncing: Boolean) {
-        this.isBouncing = isBouncing
-    }
-
-    fun setDot(dot: Drawable) {
-        this.dot = dot
-    }
-
-    fun setMaxShot(maxShot: Int) {
-        this.maxShot = maxShot
-    }
-
-    fun getMaxShot(): Int = maxShot
 
     fun shot(
         likeAmount: Int,

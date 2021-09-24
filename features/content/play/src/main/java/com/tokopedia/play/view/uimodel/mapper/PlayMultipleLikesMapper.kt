@@ -22,11 +22,6 @@ class PlayMultipleLikesMapper @Inject constructor() {
             val savedColorList = bubbleMap[config.icon] ?: emptyList()
             bubbleMap[config.icon] = savedColorList + color
         }
-//        val bubbleMap = mapOf(
-//            "https://images.tokopedia.net/img/playassets/join.png" to listOf("#F94D63", "#00AA5B").map {
-//                Color.parseColor(it)
-//            }
-//        )
         return PlayLikeBubbleConfig(bubbleMap = bubbleMap)
     }
 }
