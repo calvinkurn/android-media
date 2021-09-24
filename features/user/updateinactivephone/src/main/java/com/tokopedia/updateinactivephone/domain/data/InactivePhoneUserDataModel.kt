@@ -21,5 +21,8 @@ data class InactivePhoneUserDataModel (
     var newPhoneNumber: String = "",
     @Expose
     @SerializedName("userIndex")
-    var userIndex: Int = 0
+    var userIndex: Int = 0,
+    @Expose
+    @SerializedName("validateToken")
+    var validateToken: String = ""
 ): Parcelable

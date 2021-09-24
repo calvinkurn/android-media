@@ -43,7 +43,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
         }
 
         textPhoneNumber?.setOnClickListener {
-            tracker.clickOnTextViewInputNewPhoneNumber()
+            trackerRegular.clickOnTextViewInputNewPhoneNumber()
         }
 
         thumbnailIdCard?.let { setImage(it, CameraViewMode.ID_CARD.id) }
@@ -56,9 +56,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
         viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.validation.status == STATUS_SUCCESS) {
-                        doUploadImage(FileType.ID_CARD, ID_CARD)
-                    }
+                    doUploadImage(FileType.ID_CARD, ID_CARD)
                 }
 
                 is Fail -> {
@@ -104,7 +102,13 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
             hideLoading()
             when(it) {
                 is Success -> {
-                    gotoSuccessPage()
+                    if (it.data.status.isSuccess) {
+                        gotoSuccessPage()
+                    } else {
+                        view?.let { v ->
+                            Toaster.build(v, it.data.status.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
                 }
                 is Fail -> {
                     if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
@@ -121,11 +125,11 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
 
     override fun onSubmit() {
         hideKeyboard()
+        trackerRegular.clickOnButtonSubmitUploadData()
 
         if (isPhoneValid()) {
             showLoading()
 
-            tracker.clickOnButtonSubmitUploadData()
             inactivePhoneUserDataModel?.newPhoneNumber = textPhoneNumber?.text.orEmpty()
 
             viewModel.userValidation(

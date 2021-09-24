@@ -19,9 +19,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class InactivePhoneViewModel @Inject constructor(
-        private val phoneValidationUseCase: PhoneValidationUseCase,
-        private val getStatusInactivePhoneNumberUseCase: GetStatusInactivePhoneNumberUseCase,
-        private val dispatcher: CoroutineDispatchers
+    private val phoneValidationUseCase: PhoneValidationUseCase,
+    private val getStatusInactivePhoneNumberUseCase: GetStatusInactivePhoneNumberUseCase,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
     private val _phoneValidation = MutableLiveData<Result<PhoneValidationDataModel>>()
@@ -38,16 +38,14 @@ class InactivePhoneViewModel @Inject constructor(
                 return@launchCatchError
             }
 
-            phoneValidationUseCase.setParam(phone, email)
-            phoneValidationUseCase.execute(onSuccess = {
-                if (it.validation.isSuccess) {
-                    _phoneValidation.postValue(Success(it))
-                } else {
-                    _phoneValidation.postValue(Fail(Throwable(it.validation.error)))
-                }
-            }, onError = {
-                _phoneValidation.postValue(Fail(it))
-            })
+            val response = phoneValidationUseCase(mapOf(
+                PhoneValidationUseCase.PARAM_PHONE to phone,
+                PhoneValidationUseCase.PARAM_EMAIL to email
+            ))
+
+            withContext(dispatcher.main) {
+                _phoneValidation.postValue(Success(response))
+            }
         }, {
             _phoneValidation.postValue(Fail(it))
         })
@@ -71,27 +69,20 @@ class InactivePhoneViewModel @Inject constructor(
         return true
     }
 
-    fun getStatusPhoneNumber(email: String) {
+    fun getStatusPhoneNumber(email: String, phone: String, index: Int) {
         launchCatchError(coroutineContext, {
             val result = getStatusInactivePhoneNumberUseCase(mapOf(
-                GetStatusInactivePhoneNumberUseCase.PARAM_EMAIL to email
+                GetStatusInactivePhoneNumberUseCase.PARAM_EMAIL to email,
+                GetStatusInactivePhoneNumberUseCase.PARAM_PHONE to phone,
+                GetStatusInactivePhoneNumberUseCase.PARAM_USER_INDEX to index,
             ))
 
             withContext(dispatcher.main) {
-                if (result.data.isSuccess && result.data.isAllowed && result.data.userIdEnc.isNotEmpty()) {
-                    _getStatusPhoneNumber.postValue(Success(result))
-                } else {
-                    _getStatusPhoneNumber.postValue(Fail(Throwable(result.data.errorMessage)))
-                }
+                _getStatusPhoneNumber.postValue(Success(result))
             }
         }, {
             _getStatusPhoneNumber.postValue(Fail(Throwable(it)))
         })
-    }
-
-    public override fun onCleared() {
-        super.onCleared()
-        phoneValidationUseCase.cancelJob()
     }
 
     companion object {

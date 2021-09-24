@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_inactive_phone_account_list.*
 import kotlinx.android.synthetic.main.activity_inactive_phone_account_list.loader
 import javax.inject.Inject
 
-class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<InactivePhoneComponent> {
+open class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<InactivePhoneComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -141,7 +141,6 @@ class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<Inac
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.onCleared()
         viewModel.accountList.removeObservers(this)
     }
 

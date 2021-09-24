@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class StatusInactivePhoneNumberDataModel(
     @Expose
     @SerializedName("GetStatusInactivePhoneNumber")
-    var data: GetStatusInactivePhoneNumber = GetStatusInactivePhoneNumber()
+    var statusInactivePhoneNumber: GetStatusInactivePhoneNumber = GetStatusInactivePhoneNumber()
 )
 
 data class GetStatusInactivePhoneNumber(

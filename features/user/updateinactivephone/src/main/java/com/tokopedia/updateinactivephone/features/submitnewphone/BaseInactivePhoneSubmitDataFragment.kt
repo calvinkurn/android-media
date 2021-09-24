@@ -21,6 +21,7 @@ import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
+import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity
 import javax.inject.Inject
 
@@ -31,7 +32,12 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     val viewModel by lazy { viewModelFragmentProvider.get(InactivePhoneDataUploadViewModel::class.java) }
 
-    var tracker = InactivePhoneTracker()
+    @Inject
+    lateinit var trackerRegular: InactivePhoneTracker
+
+    @Inject
+    lateinit var trackerWithPin: InactivePhoneWithPinTracker
+
     var thumbnailIdCard: ThumbnailFileView? = null
     var thumbnailSelfie: ThumbnailFileView? = null
     var thumbnailSavingBook: ThumbnailFileView? = null
@@ -129,10 +135,5 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
 
     fun hideLoading() {
         loader?.hide()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.onCleared()
     }
 }

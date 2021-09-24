@@ -9,8 +9,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_USER_DATA
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
+import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 
 class InactivePhoneWithPinActivity: BaseSimpleActivity() {
+
+    private var tracker = InactivePhoneWithPinTracker()
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -34,6 +37,11 @@ class InactivePhoneWithPinActivity: BaseSimpleActivity() {
         supportActionBar?.apply {
             elevation = 0f
         }
+    }
+
+    override fun onBackPressed() {
+        tracker.clickOnButtonBackOnboarding()
+        super.onBackPressed()
     }
 
     companion object {

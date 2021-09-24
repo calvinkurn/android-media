@@ -17,10 +17,10 @@ import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import kotlinx.android.synthetic.main.activity_inactive_phone_succcess_page.*
 
-class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
+open class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
 
     private var tracker = InactivePhoneTracker()
-    private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
+    open var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 
     override fun getLayoutRes(): Int = R.layout.activity_inactive_phone_succcess_page
 
@@ -52,6 +52,11 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
             gotoHome()
         }
 
+        initDescription()
+        showTicker()
+    }
+
+    open fun initDescription() {
         val desc = if (inactivePhoneUserDataModel?.email?.getValidEmail()?.isEmpty() == true) {
             String.format(getString(R.string.text_success_description_has_no_email), inactivePhoneUserDataModel?.newPhoneNumber)
         } else {
@@ -59,7 +64,6 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
         }
 
         textDescription?.text = MethodChecker.fromHtml(desc)
-        showTicker()
     }
 
     private fun showTicker() {

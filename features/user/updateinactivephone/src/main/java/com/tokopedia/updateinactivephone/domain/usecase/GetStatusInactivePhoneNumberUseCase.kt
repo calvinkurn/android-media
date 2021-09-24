@@ -2,10 +2,11 @@ package com.tokopedia.updateinactivephone.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.StatusInactivePhoneNumberDataModel
 
-class GetStatusInactivePhoneNumberUseCase constructor(
+open class GetStatusInactivePhoneNumberUseCase constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, StatusInactivePhoneNumberDataModel>(dispatcher.io){
@@ -20,10 +21,12 @@ class GetStatusInactivePhoneNumberUseCase constructor(
 
     companion object {
         const val PARAM_EMAIL = "email"
+        const val PARAM_PHONE = "msisdn"
+        const val PARAM_USER_INDEX = "index"
 
         private val query = """
-            query GetStatusInactivePhoneNumber(${'$'}email: String!) {
-              GetStatusInactivePhoneNumber(email: ${'$'}email){
+            query GetStatusInactivePhoneNumber(${'$'}email: String, ${'$'}msisdn: String, ${'$'}index: Int) {
+              GetStatusInactivePhoneNumber(email: ${'$'}email, msisdn: ${'$'}msisdn, index: ${'$'}index) {
                 error_message
                 is_success
                 is_allowed

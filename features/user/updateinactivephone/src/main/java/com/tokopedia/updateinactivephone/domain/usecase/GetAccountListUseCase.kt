@@ -1,46 +1,27 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
-import javax.inject.Inject
 
-class GetAccountListUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<AccountListDataModel>
-) {
+open class GetAccountListUseCase constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<Map<String, Any>, AccountListDataModel>(dispatcher.io) {
 
-    lateinit var params: Map<String, Any>
-
-    fun execute(onSuccess: (AccountListDataModel) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.apply {
-            setTypeClass(AccountListDataModel::class.java)
-            setGraphqlQuery(query)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
+    override suspend fun execute(params: Map<String, Any>): AccountListDataModel {
+        return request(repository, params)
     }
 
-    fun generateParam(phoneNumber: String) {
-        params = mapOf(
-                PARAM_PHONE_NUMBER to phoneNumber,
-                PARAM_IS_INACTIVE_PHONE to true,
-                PARAM_VALIDATE_TOKEN to ""
-        )
-    }
-
-    fun cancelJobs() {
-        graphqlUseCase.cancelJobs()
-        graphqlUseCase.clearCache()
+    override fun graphqlQuery(): String {
+        return query
     }
 
     companion object {
-
-        private const val PARAM_PHONE_NUMBER = "phone"
-        private const val PARAM_VALIDATE_TOKEN = "validate_token"
-        private const val PARAM_IS_INACTIVE_PHONE = "is_inactive_phone"
+        const val PARAM_PHONE_NUMBER = "phone"
+        const val PARAM_VALIDATE_TOKEN = "validate_token"
+        const val PARAM_IS_INACTIVE_PHONE = "is_inactive_phone"
 
         private val query = """
             query accountsGetAccountsList(${'$'}validate_token : String!, ${'$'}phone : String, ${'$'}is_inactive_phone : Boolean) {

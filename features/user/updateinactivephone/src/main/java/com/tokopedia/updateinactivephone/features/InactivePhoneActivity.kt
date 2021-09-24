@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,7 +15,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.utils.removeRegionCodeAndCharacter
@@ -23,6 +26,7 @@ import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
+import com.tokopedia.updateinactivephone.domain.data.StatusInactivePhoneNumberDataModel
 import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
 import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
@@ -37,9 +41,10 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(InactivePhoneViewModel::class.java) }
 
+    private var container: ConstraintLayout? = null
+
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
-    private var phoneNumber = ""
-    private var email = ""
+    private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 
     override fun getNewFragment(): Fragment? = null
 
@@ -57,17 +62,24 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inactive_phone)
+        container = findViewById(R.id.containerInactivePhone)
+
         component.inject(this)
         initObserver()
         remoteConfig = FirebaseRemoteConfigImpl(this)
 
         intent?.extras?.let {
-            phoneNumber = it.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.removeRegionCodeAndCharacter().orEmpty()
-            email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
+            inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+                oldPhoneNumber = it.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.removeRegionCodeAndCharacter().orEmpty(),
+                email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
+            )
         }
 
         if(isVersionValid()) {
-            viewModel.userValidation(phoneNumber, email)
+            viewModel.userValidation(
+                inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
+                inactivePhoneUserDataModel?.email.orEmpty()
+            )
         }
     }
 
@@ -76,19 +88,27 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
             when(it) {
                 is Success -> {
                     if (it.data.validation.status == InactivePhoneConstant.STATUS_SUCCESS) {
-                        gotoRegularRegularFlow()
+                        inactivePhoneUserDataModel?.userIndex = 1
+                        isHasEmailAndPin(
+                            inactivePhoneUserDataModel?.email,
+                            inactivePhoneUserDataModel?.oldPhoneNumber,
+                            0)
                     } else if (it.data.validation.status == InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT) {
-                        gotoChoseAccount(phoneNumber)
+                        gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
                     }
                 }
-                is Fail -> { }
+                is Fail -> {
+                    onError(it.throwable)
+                }
             }
         })
 
         viewModel.getStatusPhoneNumber.observe(this, {
             when(it) {
-                is Success -> { }
-                is Fail -> { }
+                is Success -> { onSuccessGetStatus(it.data) }
+                is Fail -> {
+                    onError(it.throwable)
+                }
             }
         })
     }
@@ -97,7 +117,16 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         when(requestCode) {
             REQUEST_CODE_CHOOSE_ACCOUNT -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    isHasEmailAndPin(data)
+                    data?.extras?.let {
+                        it.getParcelable<AccountListDataModel.UserDetailDataModel>(InactivePhoneConstant.PARAM_USER_DETAIL_DATA)?.let { userDetail ->
+                            inactivePhoneUserDataModel?.userIndex = userDetail.index
+                            isHasEmailAndPin(
+                                inactivePhoneUserDataModel?.email,
+                                inactivePhoneUserDataModel?.oldPhoneNumber,
+                                inactivePhoneUserDataModel?.userIndex
+                            )
+                        }
+                    }
                 } else {
                     finish()
                 }
@@ -108,21 +137,25 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         }
     }
 
-    private fun isHasEmailAndPin(data: Intent?) {
-        data?.extras?.let {
-            it.getParcelable<AccountListDataModel.UserDetailDataModel>(InactivePhoneConstant.PARAM_USER_DETAIL_DATA)?.let { userDetail ->
-                val inactivePhoneUserDataModel = InactivePhoneUserDataModel(
-                    email = userDetail.email,
-                    oldPhoneNumber = phoneNumber,
-                    userIndex = userDetail.index
-                )
+    private fun isHasEmailAndPin(email: String?, phone: String?, index: Int?) {
+        viewModel.getStatusPhoneNumber(
+            email.orEmpty(),
+            phone.orEmpty(),
+            index.orZero()
+        )
+    }
 
-                /** check if user has email & pin: waiting for API */
-                //:: check user Email & PIN
-                gotoWithPinFlow(inactivePhoneUserDataModel)
-                // else
-//                gotoRegularRegularFlow(inactivePhoneUserDataModel)
-            }
+    private fun onSuccessGetStatus(statusInactivePhoneNumberDataModel: StatusInactivePhoneNumberDataModel) {
+        val status = statusInactivePhoneNumberDataModel.statusInactivePhoneNumber
+        if (status.isSuccess && status.isAllowed && status.userIdEnc.isNotEmpty()) {
+            gotoWithPinFlow(InactivePhoneUserDataModel(
+                userIdEnc = status.userIdEnc,
+                oldPhoneNumber = inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
+                email = inactivePhoneUserDataModel?.email.orEmpty(),
+                userIndex = inactivePhoneUserDataModel?.userIndex.orZero()
+            ))
+        } else {
+            gotoRegularRegularFlow()
         }
     }
 
@@ -131,11 +164,9 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun gotoRegularRegularFlow() {
-        startActivity(InactivePhoneRegularActivity.createIntent(this, InactivePhoneUserDataModel(
-            email = email,
-            oldPhoneNumber = phoneNumber,
-            userIndex = 1
-        )))
+        startActivity(inactivePhoneUserDataModel?.let {
+            InactivePhoneRegularActivity.createIntent(this, it)
+        })
         finish()
     }
 
@@ -187,6 +218,12 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         } catch (e: ActivityNotFoundException) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAY_STORE + getAppPackageName()))
             startActivity(intent)
+        }
+    }
+
+    private fun onError(throwable: Throwable) {
+        container?.let {
+            Toaster.build(it, throwable.message.orEmpty(), Toaster.LENGTH_LONG).show()
         }
     }
 

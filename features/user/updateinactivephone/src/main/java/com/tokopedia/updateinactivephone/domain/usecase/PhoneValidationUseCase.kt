@@ -1,44 +1,27 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
-import javax.inject.Inject
 
-class PhoneValidationUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<PhoneValidationDataModel>
-) {
-    private lateinit var params: Map<String, Any>
+open class PhoneValidationUseCase constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<Map<String, Any>, PhoneValidationDataModel>(dispatcher.io) {
 
-    fun execute(onSuccess: (PhoneValidationDataModel) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.apply {
-            setTypeClass(PhoneValidationDataModel::class.java)
-            setGraphqlQuery(query)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
+    override suspend fun execute(params: Map<String, Any>): PhoneValidationDataModel {
+        return request(repository, params)
     }
 
-    fun setParam(phone: String, email: String, index: Int = 0) {
-        params = mapOf(
-                PARAM_PHONE to phone,
-                PARAM_EMAIL to email,
-                PARAM_INDEX to index
-        )
-    }
-
-    fun cancelJob() {
-        graphqlUseCase.cancelJobs()
-        graphqlUseCase.clearCache()
+    override fun graphqlQuery(): String {
+        return query
     }
 
     companion object {
-        private const val PARAM_PHONE = "phone"
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_INDEX = "index"
+        const val PARAM_PHONE = "phone"
+        const val PARAM_EMAIL = "email"
+        const val PARAM_INDEX = "index"
 
         private val query = """
             query validateInactivePhoneUser(${'$'}phone: String, ${'$'}email: String, ${'$'}index: Int) {

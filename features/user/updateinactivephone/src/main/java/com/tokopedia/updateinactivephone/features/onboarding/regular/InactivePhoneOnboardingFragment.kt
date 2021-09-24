@@ -7,10 +7,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingFragment : BaseInactivePhoneOnboardingFragment() {
+
+    private val tracker = InactivePhoneTracker()
 
     override fun initInjector() {
         DaggerInactivePhoneComponent.builder()

@@ -35,9 +35,9 @@ object InactivePhoneConstant {
     const val STATUS_SUCCESS = 1
     const val STATUS_MULTIPLE_ACCOUNT = 2
 
-    const val OTP_TYPE_PIN = 160
-    const val OTP_TYPE_EMAIL = 161
-    const val OTP_TYPE_VERIFY_NEW_PHONE = 162
+    const val OTP_TYPE_INACTIVE_PHONE_EMAIL = 160
+    const val OTP_TYPE_INACTIVE_PHONE_PIN = 161
+    const val OTP_TYPE_INACTIVE_PHONE_SMS = 162
 
     fun filePath(context: Context, fileType: Int): String {
         return when (fileType) {

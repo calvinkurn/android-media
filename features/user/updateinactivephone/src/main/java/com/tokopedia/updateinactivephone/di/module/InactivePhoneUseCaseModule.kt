@@ -1,9 +1,9 @@
 package com.tokopedia.updateinactivephone.di.module
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.updateinactivephone.di.InactivePhoneScope
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
@@ -16,31 +16,42 @@ import dagger.Provides
 @Module
 class InactivePhoneUseCaseModule {
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
-    fun provideGetAccountListUseCase(useCase: GraphqlUseCase<AccountListDataModel>): GetAccountListUseCase {
-        return GetAccountListUseCase(useCase)
+    fun provideGetAccountListUseCase(
+        repository: GraphqlRepository,
+        dispatcher: CoroutineDispatchers
+    ): GetAccountListUseCase {
+        return GetAccountListUseCase(repository, dispatcher)
     }
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
-    fun providePhoneValidationUseCase(useCase: GraphqlUseCase<PhoneValidationDataModel>): PhoneValidationUseCase {
-        return PhoneValidationUseCase(useCase)
+    fun providePhoneValidationUseCase(
+        repository: GraphqlRepository,
+        dispatcher: CoroutineDispatchers
+    ): PhoneValidationUseCase {
+        return PhoneValidationUseCase(repository, dispatcher)
     }
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
-    fun provideSubmitDataUseCase(useCase: GraphqlUseCase<InactivePhoneSubmitDataModel>): SubmitDataUseCase {
-        return SubmitDataUseCase(useCase)
+    fun provideSubmitDataUseCase(
+        repository: GraphqlRepository,
+        dispatcher: CoroutineDispatchers
+    ): SubmitDataUseCase {
+        return SubmitDataUseCase(repository, dispatcher)
     }
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
-    fun provideImageUploadUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): ImageUploadUseCase {
+    fun provideImageUploadUseCase(
+        apiClient: InactivePhoneApiClient<InactivePhoneApi>
+    ): ImageUploadUseCase {
         return ImageUploadUseCase(apiClient)
     }
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
     fun provideGetStatusInactivePhoneNumberUseCase(
         repository: GraphqlRepository,
@@ -49,7 +60,7 @@ class InactivePhoneUseCaseModule {
         return GetStatusInactivePhoneNumberUseCase(repository, dispatchers)
     }
 
-    @InactivePhoneScope
+    @ActivityScope
     @Provides
     fun provideSubmitExpeditedInactivePhoneUseCase(
         repository: GraphqlRepository,

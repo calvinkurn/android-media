@@ -8,11 +8,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 
 abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
-
-    val tracker = InactivePhoneTracker()
 
     private var textTitle: Typography? = null
     private var textDescription: Typography? = null
