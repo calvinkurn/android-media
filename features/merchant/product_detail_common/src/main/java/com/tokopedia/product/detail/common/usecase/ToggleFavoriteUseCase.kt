@@ -46,7 +46,7 @@ class ToggleFavoriteUseCase @Inject constructor(private val graphqlRepository: G
         val request = GraphqlRequest(QUERY,
                 DataFollowShop::class.java, variables)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request))
+        val gqlResponse = graphqlRepository.response(listOf(request))
         val result = gqlResponse.getData<DataFollowShop>(DataFollowShop::class.java)
         val errorResult = gqlResponse.getError(DataFollowShop::class.java)
 

@@ -50,13 +50,13 @@ class GetChatBlastSellerMetadataUsecaseTest {
         val successResponse = TestHelper.createSuccessResponse<ChatBlastSellerMetadataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val chatBlastMetadata = usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assertions.assertEquals(chatBlastMetadata, successResult)
@@ -67,14 +67,14 @@ class GetChatBlastSellerMetadataUsecaseTest {
         val errorResponse = TestHelper.createErrorResponse<ChatBlastSellerMetadataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
     }
 }

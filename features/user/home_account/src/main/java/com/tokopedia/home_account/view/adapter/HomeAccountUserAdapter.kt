@@ -23,5 +23,6 @@ class HomeAccountUserAdapter(
         delegatesManager.addDelegate(HomeAccountRecommendationItemDelegate(listener))
         delegatesManager.addDelegate(HomeAccountSeparatorDelegate())
         delegatesManager.addDelegate(HomeAccountRecommendationLoaderDelegate())
+        delegatesManager.addDelegate(HomeAccountTdnBannerDelegate())
     }
 }
