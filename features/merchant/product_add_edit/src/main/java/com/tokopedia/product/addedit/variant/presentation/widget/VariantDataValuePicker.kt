@@ -3,9 +3,11 @@ package com.tokopedia.product.addedit.variant.presentation.widget
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
@@ -13,9 +15,11 @@ import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_UNIT_VALUES
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_picker_layout.view.*
+import com.tokopedia.unifycomponents.list.ListUnify
 
 class VariantDataValuePicker : LinearLayout {
 
@@ -35,6 +39,12 @@ class VariantDataValuePicker : LinearLayout {
         this.onButtonSaveClickListener = onButtonSaveClickListener
     }
 
+    private var variantUnitLayout: LinearLayout? = null
+    private var textFieldUnifyVariantUnit: TextFieldUnify? = null
+    private var scrollViewVariantUnitValues: ScrollView? = null
+    private var listUnifyVariantUnitValues: ListUnify? = null
+    private var buttonSave: UnifyButton? = null
+
     private var layoutPosition: Int = 0
     private var variantData: VariantDetail = VariantDetail()
     private var onVariantUnitPickerClickListener: OnVariantUnitPickerClickListener? = null
@@ -50,6 +60,8 @@ class VariantDataValuePicker : LinearLayout {
                                     selectedVariantUnitValues: MutableList<UnitValue>,
                                     addedCustomVariantUnitValue: UnitValue,
                                     unConfirmedSelection: List<UnitValue>) {
+        // initialize views
+        setupViews()
         // setup unit picker
         setupVariantUnitPicker(layoutPosition, variantData.name, selectedVariantUnit, selectedVariantUnitValues)
         // setup unit value picker
@@ -60,22 +72,30 @@ class VariantDataValuePicker : LinearLayout {
         configureSaveButton(selectedVariantUnitValues.isEmpty(), selectedVariantUnitValues.size)
     }
 
+    private fun setupViews() {
+        variantUnitLayout = findViewById(R.id.variantUnitLayout)
+        textFieldUnifyVariantUnit = findViewById(R.id.textFieldUnifyVariantUnit)
+        scrollViewVariantUnitValues = findViewById(R.id.scrollViewVariantUnitValues)
+        listUnifyVariantUnitValues = findViewById(R.id.listUnifyVariantUnitValues)
+        buttonSave = findViewById(R.id.buttonSave)
+    }
+
     private fun setupVariantUnitPicker(layoutPosition: Int,
                                        typeName: String,
                                        selectedVariantUnit: Unit,
                                        selectedVariantUnitValues: MutableList<UnitValue>) {
         if (selectedVariantUnit.unitName.isNotBlank()) {
             // setup variant unit picker ui
-            textFieldUnifyVariantUnit.textFiedlLabelText.text = typeName
-            textFieldUnifyVariantUnit.textFieldInput.setText(selectedVariantUnit.unitName)
-            textFieldUnifyVariantUnit.textFieldInput.isFocusable = false
-            textFieldUnifyVariantUnit.textFieldInput.isActivated = false
+            textFieldUnifyVariantUnit?.textFiedlLabelText?.text = typeName
+            textFieldUnifyVariantUnit?.textFieldInput?.setText(selectedVariantUnit.unitName)
+            textFieldUnifyVariantUnit?.textFieldInput?.isFocusable = false
+            textFieldUnifyVariantUnit?.textFieldInput?.isActivated = false
             // setup variant unit picker click listener
-            textFieldUnifyVariantUnit.textFieldInput.setOnClickListener {
+            textFieldUnifyVariantUnit?.textFieldInput?.setOnClickListener {
                 onVariantUnitPickerClickListener?.onVariantUnitPickerClicked(layoutPosition, selectedVariantUnit, selectedVariantUnitValues)
             }
-            variantUnitLayout.show()
-        } else variantUnitLayout.hide()
+            variantUnitLayout?.show()
+        } else variantUnitLayout?.hide()
     }
 
     private fun setupVariantUnitValuePicker(layoutPosition: Int,
@@ -105,9 +125,9 @@ class VariantDataValuePicker : LinearLayout {
         listItemUnifyList.add(addCustomVariantUnitValueButton)
 
         // populate the ListUnify with data
-        listUnifyVariantUnitValues.setData(listItemUnifyList)
+        listUnifyVariantUnitValues?.setData(listItemUnifyList)
 
-        listUnifyVariantUnitValues.onLoadFinish {
+        listUnifyVariantUnitValues?.onLoadFinish {
             // set selected values
             setSelectedValues(listItemUnifyList, selectedVariantUnitValues)
             // setup add custom button
@@ -152,7 +172,7 @@ class VariantDataValuePicker : LinearLayout {
                                                variantUnitValues: List<UnitValue>,
                                                selectedVariantUnitValues: MutableList<UnitValue>) {
         // setup ListUnify item click handler
-        listUnifyVariantUnitValues.setOnItemClickListener { _, _, position, _ ->
+        listUnifyVariantUnitValues?.setOnItemClickListener { _, _, position, _ ->
             // last position is reserved for add custom variant unit value button
             if (position != listItemUnifyList.lastIndex) {
                 val selectedItem = listItemUnifyList[position]
@@ -214,8 +234,8 @@ class VariantDataValuePicker : LinearLayout {
         customListItemUnify?.run {
             customListItemUnify.listRightCheckbox?.performClick()
             // scroll to the bottom
-            val top = listUnifyVariantUnitValues.getChildAt(listItemUnifyList.lastIndex).top
-            scrollViewVariantUnitValues.smoothScrollTo(0, top)
+            val top = listUnifyVariantUnitValues?.getChildAt(listItemUnifyList.lastIndex)?.top.orZero()
+            scrollViewVariantUnitValues?.smoothScrollTo(0, top)
         }
     }
 
@@ -231,7 +251,7 @@ class VariantDataValuePicker : LinearLayout {
     }
 
     private fun setupSaveButton(layoutPosition: Int, selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             if (selectedVariantUnitValues.size > MAX_SELECTED_VARIANT_UNIT_VALUES) {
                 Toaster.make(this, context.getString(R.string.error_variant_unit_value_selection_exceed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 return@setOnClickListener
@@ -244,22 +264,22 @@ class VariantDataValuePicker : LinearLayout {
         var enableSaveButton = true
         // disable save button when selection is empty
         if (isSelectedUnitValuesEmpty) {
-            buttonSave.text = context.getText(R.string.action_variant_save).toString()
-            buttonSave.isEnabled = false
+            buttonSave?.text = context.getText(R.string.action_variant_save).toString()
+            buttonSave?.isEnabled = false
             enableSaveButton = false
         }
         // show "Simpan (maks. 10)" for 10 or more selection
         if (size >= MAX_SELECTED_VARIANT_UNIT_VALUES) {
             val stringSave = context.getText(R.string.action_variant_save).toString()
             val stringMax = context.getText(R.string.label_variant_max).toString()
-            buttonSave.text = "$stringSave($MAX_SELECTED_VARIANT_UNIT_VALUES)$stringMax"
+            buttonSave?.text = "$stringSave($MAX_SELECTED_VARIANT_UNIT_VALUES)$stringMax"
         } else {
-            buttonSave.text = context.getText(R.string.action_variant_save).toString() + "(" + size.toString() + ")"
+            buttonSave?.text = context.getText(R.string.action_variant_save).toString() + "(" + size.toString() + ")"
         }
         // disable save button when selection beyond max limit
         if (size > MAX_SELECTED_VARIANT_UNIT_VALUES) enableSaveButton = false
         // configure save button status
-        buttonSave.isEnabled = enableSaveButton
+        buttonSave?.isEnabled = enableSaveButton
     }
 
     interface OnVariantUnitPickerClickListener {

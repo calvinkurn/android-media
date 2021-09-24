@@ -6,17 +6,18 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftModule
 import com.tokopedia.product.addedit.draft.di.DaggerAddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductDraftFragment
-import kotlinx.android.synthetic.main.activity_add_edit_product_draft.*
 
 
 open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddEditProductDraftComponent> {
 
+    private var toolbarDraft: HeaderUnify? = null
     private val addEditProductDraftFragment: AddEditProductDraftFragment by lazy {
         AddEditProductDraftFragment.newInstance()
     }
@@ -30,7 +31,8 @@ open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product_draft)
-        setSupportActionBar(toolbar_draft)
+        toolbarDraft = findViewById(R.id.toolbar_draft)
+        setSupportActionBar(toolbarDraft)
     }
 
     override fun getComponent(): AddEditProductDraftComponent {

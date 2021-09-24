@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -17,8 +19,6 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_list.*
-import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
 class TooltipBottomSheet : BottomSheetUnify() {
 
@@ -26,6 +26,8 @@ class TooltipBottomSheet : BottomSheetUnify() {
     private var isDividerVisible: Boolean = false
     private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
     private var urlImage: String? = null
+    private var bannerTooltip: AppCompatImageView? = null
+    private var rvList: RecyclerView? = null
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
@@ -50,8 +52,8 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     private fun setupBannerImage() {
         urlImage?.apply {
-            bannerTooltip.loadImage(this)
-            bannerTooltip.show()
+            bannerTooltip?.loadImage(this)
+            bannerTooltip?.show()
         }
     }
 
@@ -86,7 +88,9 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     private fun initChildLayout() {
         contentView = View.inflate(context, R.layout.bottom_sheet_list, null)
-        contentView?.rvList?.apply {
+        bannerTooltip = contentView?.findViewById(R.id.bannerTooltip)
+        rvList = contentView?.findViewById(R.id.rvList)
+        rvList?.apply {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {

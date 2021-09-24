@@ -9,7 +9,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
+import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnFieldClickListener)
     : RecyclerView.ViewHolder(itemView) {
@@ -20,19 +21,21 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
 
     private var levelCount = 0
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
+    private val textSelection: Typography? = null
+    private val listUnifySelection: ListUnify? = null
 
     fun bindData(selectedItem: List<Boolean>, selections: List<SelectionInputModel>) {
         levelCount = selections.size
         dataList = mapToListItems(selectedItem, selections)
-        itemView.listUnifySelection.setData(dataList)
-        itemView.listUnifySelection.onLoadFinish {
-            itemView.listUnifySelection.setOnItemClickListener { _, _, position, _ ->
+        listUnifySelection?.setData(dataList)
+        listUnifySelection?.onLoadFinish {
+            listUnifySelection.setOnItemClickListener { _, _, position, _ ->
                 val checkedItem = dataList[position]
                 checkedItem.listRightCheckbox?.performClick()
             }
 
             dataList.forEachIndexed { position, listItemUnify ->
-                listItemUnify.listRightCheckbox?.isChecked = selectedItem[position] ?: false
+                listItemUnify.listRightCheckbox?.isChecked = selectedItem.getOrNull(position) ?: false
                 listItemUnify.listRightCheckbox?.setOnClickListener {
                     val isChecked = listItemUnify.listRightCheckbox?.isChecked ?: false
                     clickListener.onFieldClicked(adapterPosition, position, isChecked)
@@ -45,12 +48,12 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
     private fun setupListTitle(selections: List<SelectionInputModel>) {
         when (levelCount) {
             VARIANT_VALUE_LEVEL_ONE_COUNT -> {
-                itemView.textSelection.gone()
+                textSelection?.gone()
             }
             VARIANT_VALUE_LEVEL_TWO_COUNT -> {
                 selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
                     val title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
-                    itemView.textSelection.text = title
+                    textSelection?.text = title
                 }
             }
         }

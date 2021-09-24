@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setPrimarySelected
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
@@ -11,7 +12,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
+import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClickListener)
     : RecyclerView.ViewHolder(itemView) {
@@ -20,6 +22,8 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
         fun onFieldClicked(level1Position: Int, level2Position: Int, value: Boolean)
     }
 
+    private val textSelection: Typography? = itemView.findViewById(R.id.textSelection)
+    private val listUnifySelection: ListUnify? = itemView.findViewById(R.id.listUnifySelection)
     private var levelCount = 0
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
     private var context: Context? = null
@@ -28,9 +32,9 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
         levelCount = selections.size
         dataList = mapToListItems(selectedItemMap, selections)
         context = itemView.context
-        itemView.listUnifySelection.setData(dataList)
-        itemView.listUnifySelection.onLoadFinish {
-            itemView.listUnifySelection.setOnItemClickListener { _, _, position, _ ->
+        listUnifySelection?.setData(dataList)
+        listUnifySelection?.onLoadFinish {
+            listUnifySelection.setOnItemClickListener { _, _, position, _ ->
                 val selectedItem = dataList[position]
                 selectedItem.listRightRadiobtn?.performClick()
             }
@@ -51,12 +55,12 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
     private fun setupListTitle(selections: List<SelectionInputModel>) {
         when (levelCount) {
             VARIANT_VALUE_LEVEL_ONE_COUNT -> {
-                itemView.textSelection.gone()
+                textSelection?.gone()
             }
             VARIANT_VALUE_LEVEL_TWO_COUNT -> {
                 selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
                     val title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
-                    itemView.textSelection.text = title
+                    textSelection?.text = title
                 }
             }
         }
