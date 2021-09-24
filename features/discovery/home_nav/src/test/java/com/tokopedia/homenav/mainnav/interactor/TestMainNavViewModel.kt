@@ -847,4 +847,10 @@ class TestMainNavViewModel {
         Assert.assertEquals(indexDefaultAllTransaction, allTransactionPosition)
     }
 
+    @Test
+    fun `test refresh `() {
+        viewModel = createViewModel()
+        viewModel.refreshBuListdata()
+    }
+
 }
