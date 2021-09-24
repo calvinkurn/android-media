@@ -66,7 +66,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(HotelGqlMutation.getSubmitCancellationQuery(), HotelCancellationSubmitResponse::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCancellationSubmitResponse>()
             mutableCancellationSubmitData.postValue(Success(data.response.data))
         }) {

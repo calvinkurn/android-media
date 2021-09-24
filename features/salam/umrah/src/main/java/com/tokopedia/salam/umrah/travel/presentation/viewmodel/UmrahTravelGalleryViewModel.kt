@@ -35,7 +35,7 @@ class UmrahTravelGalleryViewModel @Inject constructor(private val graphqlReposit
             val graphqlRequest = GraphqlRequest(rawQuery, UmrahGalleriesEntity::class.java, params)
 
             val response = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }
             mutableGalleryResult.value = Success(response.getSuccessData())
         }) {

@@ -64,7 +64,7 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
         val voucherId = params.getInt(VOUCHER_ID_KEY, 0)
 
         val request = GraphqlRequest(MUTATION, CancelVoucherResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val errors = response.getError(CancelVoucherResponse::class.java)
         if (errors.isNullOrEmpty()) {

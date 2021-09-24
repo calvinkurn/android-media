@@ -40,6 +40,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
             renderTicker(element)
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(element.getComponentTrackData(adapterPosition))
+            }
         }
     }
 

@@ -43,7 +43,7 @@ class UmrahOrderDetailViewModelTest{
         result[UmrahOrderDetailsEntity.Response::class.java] = UmrahOrderDetailsEntity.Response()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(),any()) } returns gqlResponse
 
         viewModel.getOrderDetail("","")
 
@@ -53,7 +53,7 @@ class UmrahOrderDetailViewModelTest{
 
     @Test
     fun `getOrderDetail_FailedRetreiveOrderDetail_ShouldFailed`(){
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable() }
+        coEvery { graphqlRepository.response(any(),any()) } coAnswers {throw Throwable() }
 
         viewModel.getOrderDetail("","")
 
@@ -67,7 +67,7 @@ class UmrahOrderDetailViewModelTest{
         result[MyUmrahEntity.Response::class.java] = MyUmrahEntity.Response()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(),any()) } returns gqlResponse
 
         viewModel.getMyUmrahWidget("","")
 
@@ -77,7 +77,7 @@ class UmrahOrderDetailViewModelTest{
 
     @Test
     fun `getMyUmrah_FailedRetreiveMyUmrah_ShouldFailed`(){
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable() }
+        coEvery { graphqlRepository.response(any(),any()) } coAnswers {throw Throwable() }
 
         viewModel.getMyUmrahWidget("","")
 

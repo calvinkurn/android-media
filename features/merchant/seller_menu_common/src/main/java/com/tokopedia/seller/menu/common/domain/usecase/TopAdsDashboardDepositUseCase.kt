@@ -39,7 +39,7 @@ class TopAdsDashboardDepositUseCase @Inject constructor(private val graphqlRepos
 
     override suspend fun executeOnBackground(): Float {
         val gqlRequest = GraphqlRequest(QUERY, TopAdsDepositDataModel::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(TopAdsDepositDataModel::class.java)
         if (gqlError.isNullOrEmpty()) {

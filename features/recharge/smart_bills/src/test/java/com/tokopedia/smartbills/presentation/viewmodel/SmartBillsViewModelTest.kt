@@ -75,7 +75,7 @@ class SmartBillsViewModelTest {
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         //when
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //then
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -97,7 +97,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementMonthsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -110,7 +110,7 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementMonths_Fail_ErrorResponse() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -136,7 +136,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementBills(mapParams)
@@ -172,7 +172,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementBills(mapParams)
@@ -191,7 +191,7 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementBills_Fail() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -227,7 +227,7 @@ class SmartBillsViewModelTest {
         errors[objectType] = listOf(graphqlError)
         val gqlResponseFailDefault = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFailDefault
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFailDefault
 
         //when
         smartBillsViewModel.getStatementBills(mapParams)
@@ -531,7 +531,7 @@ class SmartBillsViewModelTest {
         result[objectType] = getSBMActionResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
@@ -570,7 +570,7 @@ class SmartBillsViewModelTest {
                 title = "Section 2", type = 2, bills = listOf(
                 RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
         )))))
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
