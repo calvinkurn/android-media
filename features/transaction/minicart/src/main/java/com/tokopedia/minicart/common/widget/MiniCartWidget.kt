@@ -278,12 +278,12 @@ class MiniCartWidget @JvmOverloads constructor(
         } else {
             val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
             val pageSource = when (pageName) {
-                MiniCartAnalytics.Page.HOME_PAGE -> "minicart - tokonow - homepage"
-                MiniCartAnalytics.Page.SEARCH_PAGE -> "minicart - tokonow - search result"
-                MiniCartAnalytics.Page.CATEGORY_PAGE -> "minicart - tokonow category page"
+                MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
             }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-                    .putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, pageSource)
+                    .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)
         }
 
         context.startActivity(intent)
@@ -597,6 +597,8 @@ class MiniCartWidget @JvmOverloads constructor(
 
     companion object {
         private const val COACH_MARK_TAG = "coachmark_tokonow"
+
+        private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
     }
 
 }
