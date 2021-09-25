@@ -6,7 +6,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Created By @ilhamsuaib on 2020-03-05

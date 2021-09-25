@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class GetShopTotalFollowersUseCaseTest {
@@ -50,7 +50,7 @@ class GetShopTotalFollowersUseCaseTest {
             gqlRepository.response(any(), any())
         } returns successResponse
 
-        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyLong())
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
@@ -71,7 +71,7 @@ class GetShopTotalFollowersUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyLong())
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
