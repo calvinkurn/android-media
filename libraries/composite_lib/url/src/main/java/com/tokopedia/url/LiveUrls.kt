@@ -45,5 +45,6 @@ internal val live = Url(
         PLAY = "https://chat.tokopedia.com",
         WS_PLAY = "wss://groupchat.tokopedia.com",
         HUB = "https://hub.tokopedia.com/",
-        PCIDSS_CREDIT_CARD = "https://pay.tokopedia.id/"
+        PCIDSS_CREDIT_CARD = "https://pay.tokopedia.id/",
+        SSE = "https://sse.tokopedia.com/"
 )

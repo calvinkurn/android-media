@@ -1,8 +1,7 @@
 package com.tokopedia.mvcwidget.trackers
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.trackers.Tracker
 
 open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     //1 Pdp
@@ -351,14 +350,14 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
 
     override fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.EVENT_VIEW_PROMO
-        map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
-        map[Constants.EVENT_LABEL] = label
-        map[Constants.EVENT_ACTION] = Action.VIEW_MVC_COUPON
-        map[Constants.ECOMMERCE] = DataLayer.mapOf("promoView", mapData)
+        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_VIEW_PROMO
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.REWARDS_CATEGORY
+        map[Tracker.Constants.EVENT_LABEL] = label
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_COUPON
+        map[Tracker.Constants.ECOMMERCE] = DataLayer.mapOf("promoView", mapData)
 
-        fillCommonItems(map, "", "")
-        getTracker().sendEnhanceEcommerceEvent(map)
+        Tracker.fillCommonItems(map, "", "")
+        Tracker.getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     override fun mvcMultiShopCardClick(
@@ -366,16 +365,16 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         eventAction: String,
         @MvcSource source: Int,
         userId: String?,
-        label: String = ""
+        label: String
     ) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_KUPON
-        map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
-        map[Constants.EVENT_ACTION] = eventAction
-        map[Constants.EVENT_LABEL] = label
+        map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_KUPON
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.REWARDS_CATEGORY
+        map[Tracker.Constants.EVENT_ACTION] = eventAction
+        map[Tracker.Constants.EVENT_LABEL] = label
 
-        fillCommonItems(map, userId, "")
-        getTracker().sendGeneralEvent(map)
+        Tracker.fillCommonItems(map, userId, "")
+        Tracker.getTracker().sendGeneralEvent(map)
     }
 
 

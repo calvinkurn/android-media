@@ -45,5 +45,6 @@ internal val staging = Url(
         PLAY = "https://groupchat-staging.tokopedia.com",
         WS_PLAY = "wss://groupchat-staging.tokopedia.com",
         HUB = "https://hub-staging.tokopedia.com/",
-        PCIDSS_CREDIT_CARD = "https://pulsa-staging.tokopedia.id/"
+        PCIDSS_CREDIT_CARD = "https://pulsa-staging.tokopedia.id/",
+        SSE = "https://sse-staging.tokopedia.com/"
 )

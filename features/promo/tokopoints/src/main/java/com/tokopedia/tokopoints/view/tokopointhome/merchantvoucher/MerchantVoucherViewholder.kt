@@ -13,13 +13,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.mvcwidget.MVC_ADINFO
 import com.tokopedia.mvcwidget.MVC_SOURCE_KEY
-import com.tokopedia.mvcwidget.MvcSource.Companion.REWARDS
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter
 import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponActivity
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.REWARDS
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CustomConstraintProvider

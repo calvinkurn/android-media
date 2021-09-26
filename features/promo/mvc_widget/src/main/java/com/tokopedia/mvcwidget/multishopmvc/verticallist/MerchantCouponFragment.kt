@@ -26,7 +26,6 @@ import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceConstant
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
-import com.tokopedia.mvcwidget.views.MvcMultiShopContract
 import com.tokopedia.promoui.common.dpToPx
 import kotlinx.android.synthetic.main.mvc_layout_multishop_merchat_coupon_list.*
 import kotlinx.android.synthetic.main.mvc_notfound_error.*

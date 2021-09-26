@@ -88,6 +88,7 @@ class MvcTracker{
         trackerImpl.tokomemberImpressionOnPdp(shopId,userId)
     }
 
+    //Multishop
     fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int){
         trackerImpl.viewMVCCoupon(label,mapData,source)
     }

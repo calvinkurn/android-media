@@ -88,7 +88,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
             hotelCartResult.postValue(Success(data))
             mutablePromoData.postValue(HotelMapper.mapToPromoData(data))
@@ -104,7 +104,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CHECKOUT, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCheckoutResponse.Response>()
 
             hotelCheckoutResult.postValue(Success(data.response))
@@ -117,7 +117,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TokopointsSumCoupon.Response>()
             tokopointSumCouponResult.postValue(data.response.sumCouponUnitOpt)
         }) {
@@ -129,7 +129,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher.Response>()
             if(data.response.attributes.success){
                 mutablePromoData.postValue(PromoData(state = TickerCheckoutView.State.ACTIVE))
