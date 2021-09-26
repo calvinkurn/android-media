@@ -1073,4 +1073,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onPostTagBubbleClick(int positionInFeed, @NonNull String redirectUrl, @NonNull FeedXProduct postTagItem) {
 
     }
+
+    @Override
+    public void onFollowClick(int positionInFeed, @NonNull String shopId, @NonNull String adId) {
+
+    }
 }

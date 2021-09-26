@@ -1177,4 +1177,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             hideFloatingActionButton()
         }
     }
+
+    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+
+    }
 }

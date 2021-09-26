@@ -2049,4 +2049,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
     }
+
+    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+
+    }
 }
