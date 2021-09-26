@@ -15,6 +15,7 @@ import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
@@ -51,9 +52,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
     fun setIconVisibility(isEditPost: Boolean) {
         if (isEditPost)
-            postIcon?.visibility = View.GONE
-        else
-            postIcon?.visibility = View.VISIBLE
+            postIcon?.setImageDrawable(context.getDrawable((R.drawable.bg_rect_white_round)))
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {

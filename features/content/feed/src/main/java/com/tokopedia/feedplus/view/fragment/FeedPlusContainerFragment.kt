@@ -298,8 +298,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     val mediaPath = activity?.intent?.getStringExtra(
                         PARAM_MEDIA_PREVIEW) ?: ""
                     postProgressUpdateView?.setFirstIcon(mediaPath)
-                } else {
-                    postProgressUpdateView?.setFirstIcon("")
                 }
                 updateVisibility(true)
                 mInProgress = true
