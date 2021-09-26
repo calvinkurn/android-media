@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -33,13 +34,16 @@ open class GetChatUseCase @Inject constructor(
     fun getFirstPageChat(
             messageId: String,
             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onErrorGetChat: (Throwable) -> Unit
+            onErrorGetChat: (Throwable) -> Unit,
+            roomMetaData: (RoomMetaData) -> Unit
     ) {
         val topQuery = generateFirstPageQuery()
         val params = generateFirstPageParam(messageId)
         getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
             updateMinReplyTime(chat)
             updateMaxReplyTime(chat)
+            val metaData = mapper.generateRoomMetaData(messageId, chat)
+            roomMetaData(metaData)
         }
     }
 
@@ -190,6 +194,7 @@ open class GetChatUseCase @Inject constructor(
             hasNextAfter
             textareaReply
             attachmentIDs
+            replyIDsAttachment
             contacts {
               role
               userId
@@ -222,7 +227,6 @@ open class GetChatUseCase @Inject constructor(
                   fraudStatus
                   replyTime
                   status
-                  attachmentID
                   isOpposite
                   isHighlight
                   isRead

@@ -52,6 +52,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
+import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -91,6 +92,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
@@ -206,7 +208,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
-                is Success -> onSuccessGetFirstRecommendationData(it.data)
+                is Success -> onSuccessGetFirstRecommendationData(it.data.recommendationWidget, it.data.tdnBanner)
                 is Fail -> {
                     onFailGetData()
                     endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
@@ -217,7 +219,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
-                is Success -> addRecommendationItem(it.data)
+                is Success -> addRecommendationItem(it.data, null)
                 is Fail -> {
                     onFailGetData()
                     endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
@@ -442,21 +444,29 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         fpmBuyer?.run { stopTrace() }
     }
 
-    private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
+    private fun onSuccessGetFirstRecommendationData(
+        recommendation: RecommendationWidget,
+        tdnBanner: TopAdsImageViewModel?
+    ) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
         addTopAdsHeadLine()
         adapter?.notifyDataSetChanged()
-        addRecommendationItem(recommendation.recommendationItemList)
+        addRecommendationItem(recommendation.recommendationItemList, tdnBanner)
     }
 
     private fun addTopAdsHeadLine() {
         addItem(TopadsHeadlineUiModel(), addSeparator = false)
     }
 
-    private fun addRecommendationItem(list: List<RecommendationItem>) {
-        for (item in list) {
-            adapter?.addItem(item)
+    private fun addRecommendationItem(
+        list: List<RecommendationItem>,
+        tdnBanner: TopAdsImageViewModel?
+    ) {
+
+        list.forEachIndexed { index, recommendationItem ->
+            if (index == TDN_INDEX) tdnBanner?.let { adapter?.addItem(it) }
+            adapter?.addItem(recommendationItem)
         }
         adapter?.notifyDataSetChanged()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()

@@ -17,6 +17,7 @@ import javax.inject.Inject
  * Created by devara fikry on 16/04/19.
  */
 
+//[GetRecommendationUseCase] already sent choose address location params
 open class GetRecommendationUseCase @Inject
 constructor(private val context: Context, private val graphqlRepository: GraphqlRepository)
     : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {

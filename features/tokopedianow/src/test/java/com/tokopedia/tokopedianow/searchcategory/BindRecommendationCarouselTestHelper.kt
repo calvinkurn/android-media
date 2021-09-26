@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.coEvery
 import io.mockk.coVerify

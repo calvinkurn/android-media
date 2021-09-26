@@ -29,7 +29,7 @@ class HomeAccountSaldoBalanceUseCase @Inject constructor(
                 mapOf<String, Any>()
         )
         val gqlStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), gqlStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), gqlStrategy)
         val errors = gqlResponse.getError(BalanceDataModel::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)

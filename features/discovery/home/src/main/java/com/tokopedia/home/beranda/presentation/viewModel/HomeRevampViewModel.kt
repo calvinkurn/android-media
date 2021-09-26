@@ -926,6 +926,13 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun updatePlayWidgetReminder(channelId: String, isReminder: Boolean) {
+        updateCarouselPlayWidget {
+            val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+            it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType))
+        }
+    }
+
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         if (!userSession.get().isLoggedIn) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else updatePlayWidgetToggleReminder(channelId, reminderType)
