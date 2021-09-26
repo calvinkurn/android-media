@@ -2,6 +2,7 @@ package com.tokopedia.product_bundle.common.util
 
 import com.tokopedia.product.detail.common.data.model.variant.*
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.Child
 import com.tokopedia.product_bundle.common.data.model.response.VariantOption
 import com.tokopedia.product.detail.common.data.model.variant.VariantOption as AtcVariantOption
 
@@ -59,10 +60,18 @@ object AtcVariantMapper {
                     discountedPrice = discountedPrice,
                     discountedPercentage = discountedPercentage.toFloat(),
                     stock = it.stock
-                )
+                ),
+                optionName = mapOptionName(it, bundleItem)
             )
         } catch (e: Exception) {
             VariantChild()
         }
     }
+
+    private fun mapOptionName(it: Child, bundleItem: BundleItem) =
+        it.optionIds.mapIndexed { index, optionId ->
+            bundleItem.selections.getOrNull(index)?.options?.find {
+                it.productVariantOptionID == optionId
+            }?.value.orEmpty()
+        }
 }
