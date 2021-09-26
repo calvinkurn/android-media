@@ -11,15 +11,15 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.databinding.BottomsheetTooltipInformationLevelBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.adapter.CardTooltipLevelAdapter
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
+class BottomSheetShopTooltipLevel :
+    BaseBottomSheetShopScore<BottomsheetTooltipInformationLevelBinding>() {
 
     @Inject
     lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
@@ -29,15 +29,10 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private var productSold = ""
     private var nextUpdate = ""
     private var period = ""
-    private var tvPeriodInformationLevel: Typography? = null
-    private var tvValueIncomeTooltip: Typography? = null
-    private var tvValueProductSoldTooltip: Typography? = null
-    private var rvLevelCard: RecyclerView? = null
-    private var tvValueNextUpdate: Typography? = null
-    private var containerCardIncomeInformation: ConstraintLayout? = null
-    private var loaderTooltipLevel: LoaderUnify? = null
 
     private val cardTooltipLevelAdapter by lazy { CardTooltipLevelAdapter() }
+
+    override fun bind(view: View) = BottomsheetTooltipInformationLevelBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_information_level
 
@@ -75,7 +70,6 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
             )
         }
         isFullpage = true
-        initView(view)
         setRecyclerView()
         observeShopInfoLevel()
     }
@@ -84,18 +78,8 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         getComponent(ShopPerformanceComponent::class.java)?.inject(this)
     }
 
-    private fun initView(view: View) {
-        tvPeriodInformationLevel = view.findViewById(R.id.tv_period_information_level)
-        tvValueIncomeTooltip = view.findViewById(R.id.tv_value_income_tooltip)
-        tvValueProductSoldTooltip = view.findViewById(R.id.tv_value_product_sold_tooltip)
-        rvLevelCard = view.findViewById(R.id.rv_level_card)
-        tvValueNextUpdate = view.findViewById(R.id.tv_value_next_update)
-        containerCardIncomeInformation = view.findViewById(R.id.containerCardIncomeInformation)
-        loaderTooltipLevel = view.findViewById(R.id.loaderTooltipLevel)
-    }
-
     private fun setRecyclerView() {
-        rvLevelCard?.run {
+        binding?.rvLevelCard?.run {
             if (itemDecorationCount.isZero()) {
                 addItemDecoration(TooltipLevelItemDecoration())
             }
@@ -107,7 +91,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     private fun observeShopInfoLevel() {
         observe(shopPerformanceViewModel.shopInfoLevel) {
-            loaderTooltipLevel?.hide()
+            binding?.loaderTooltipLevel?.hide()
             val shopInfoLevelUiModel = ShopInfoLevelUiModel(
                 shopIncome = shopIncome,
                 productSold = productSold,
@@ -120,24 +104,24 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         shopPerformanceViewModel.getShopInfoLevel(shopLevel)
     }
 
-    private fun setShopLevelData(data: ShopInfoLevelUiModel) {
-        tvPeriodInformationLevel?.text = data.periodDate
-        tvValueIncomeTooltip?.text =
+    private fun setShopLevelData(data: ShopInfoLevelUiModel) = binding?.run {
+        tvPeriodInformationLevel.text = data.periodDate
+        tvValueIncomeTooltip.text =
             if (data.shopIncome.toDoubleOrZero() < 0.0) {
                 "-"
             } else {
                 StringBuilder("Rp${data.shopIncome.toDoubleOrZero().getNumberFormatted()}")
             }
-        tvValueProductSoldTooltip?.text =
+        tvValueProductSoldTooltip.text =
             if (data.productSold.toDoubleOrZero() < 0.0) {
                 "-"
             } else {
                 data.productSold
             }
-        tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
+        tvValueNextUpdate.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
         context?.let {
-            containerCardIncomeInformation?.setBackgroundColor(
+            containerCardIncomeInformation.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
                     com.tokopedia.unifyprinciples.R.color.Unify_N0

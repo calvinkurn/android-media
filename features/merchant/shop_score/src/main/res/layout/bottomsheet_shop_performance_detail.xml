@@ -5,7 +5,6 @@
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl5"
-    tools:viewBindingIgnore="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 

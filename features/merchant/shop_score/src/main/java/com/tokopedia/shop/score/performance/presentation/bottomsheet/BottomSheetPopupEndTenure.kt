@@ -12,22 +12,13 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.getNumberFormat
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.databinding.BottomSheetNewSellerShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopType
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 
-class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
+class BottomSheetPopupEndTenure : BaseBottomSheetShopScore<BottomSheetNewSellerShopScoreBinding>() {
 
-    private var ivNewSellerIllustration: ImageUnify? = null
-    private var tvShopLevel: Typography? = null
-    private var ivLevelBarNewSeller: ImageUnify? = null
-    private var tvShopScoreValue: Typography? = null
-    private var tvTipsIncreasePerformance: Typography? = null
-    private var tickerTipsIncreasePerformance: Ticker? = null
-    private var btnUnderstand: UnifyButton? = null
+    override fun bind(view: View) = BottomSheetNewSellerShopScoreBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottom_sheet_new_seller_shop_score
 
@@ -43,21 +34,10 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setupView()
         setupData()
     }
 
-    private fun View.setupView() = this.run {
-        ivNewSellerIllustration = findViewById(R.id.ivNewSellerIllustration)
-        tvShopLevel = findViewById(R.id.tvShopLevel)
-        ivLevelBarNewSeller = findViewById(R.id.ivLevelBarNewSeller)
-        tvShopScoreValue = findViewById(R.id.tvShopScoreValue)
-        tvTipsIncreasePerformance = findViewById(R.id.tvTipsIncreasePerformance)
-        tickerTipsIncreasePerformance = findViewById(R.id.tickerTipsIncreasePerformance)
-        btnUnderstand = findViewById(R.id.btnUnderstand)
-    }
-
-    private fun setupData() {
+    private fun setupData() = binding?.run {
         val cacheManager = context?.let {
             SaveInstanceCacheManager(
                 it,
@@ -67,8 +47,8 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         val popupEndTenureUiModel = cacheManager?.get<PopupEndTenureUiModel>(
             KEY_ITEM_END_TENURE_POP_UP, PopupEndTenureUiModel::class.java
         )
-        ivNewSellerIllustration?.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
-        tvShopLevel?.text =
+        ivNewSellerIllustration.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
+        tvShopLevel.text =
             getString(R.string.title_level_pop_up_end_tenure, popupEndTenureUiModel?.shopLevel)
         setShopScore(popupEndTenureUiModel?.shopScore.orEmpty())
         setupLevelBarNewSeller(popupEndTenureUiModel?.shopLevel.orEmpty())
@@ -77,24 +57,24 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     }
 
     private fun setupBtnUnderstand() {
-        btnUnderstand?.setOnClickListener {
+        binding?.btnUnderstand?.setOnClickListener {
             dismiss()
         }
     }
 
-    private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel?) {
+    private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel?) = binding?.run {
         when (popupEndTenureUiModel?.shopType) {
             ShopType.POWER_MERCHANT, ShopType.POWER_MERCHANT_PRO -> {
                 if (popupEndTenureUiModel.shopScore
                         .getNumberFormat(ShopScoreConstant.NULL_NUMBER) <
                     ShopScoreConstant.SHOP_AGE_SIXTY
                 ) {
-                    tvTipsIncreasePerformance?.hide()
+                    tvTipsIncreasePerformance.hide()
                     setDescTicker(popupEndTenureUiModel.shopType)
-                    tickerTipsIncreasePerformance?.show()
+                    tickerTipsIncreasePerformance.show()
                 } else {
-                    tvTipsIncreasePerformance?.show()
-                    tickerTipsIncreasePerformance?.hide()
+                    tvTipsIncreasePerformance.show()
+                    tickerTipsIncreasePerformance.hide()
                 }
             }
             else -> {
@@ -102,29 +82,30 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         }
     }
 
-    private fun setDescTicker(shopType: ShopType) {
+    private fun setDescTicker(shopType: ShopType) = binding?.run {
         when (shopType) {
             ShopType.POWER_MERCHANT -> {
-                tickerTipsIncreasePerformance?.tickerTitle =
+                tickerTipsIncreasePerformance.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm)
-                tickerTipsIncreasePerformance?.setTextDescription(
+                tickerTipsIncreasePerformance.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm)
                 )
             }
             ShopType.POWER_MERCHANT_PRO -> {
-                tickerTipsIncreasePerformance?.tickerTitle =
+                tickerTipsIncreasePerformance.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm_pro)
-                tickerTipsIncreasePerformance?.setTextDescription(
+                tickerTipsIncreasePerformance.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm_pro)
                 )
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
-    private fun setShopScore(shopScore: String) {
+    private fun setShopScore(shopScore: String) = binding?.run {
         val shopScoreNumber = shopScore.getNumberFormat(ShopScoreConstant.NULL_NUMBER)
-        tvShopScoreValue?.run {
+        tvShopScoreValue.run {
             text = shopScore
             if (shopScoreNumber < ShopScoreConstant.SHOP_AGE_SIXTY) {
                 setTextColor(
@@ -144,8 +125,8 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         }
     }
 
-    private fun setupLevelBarNewSeller(shopLevel: String) {
-        ivLevelBarNewSeller?.run {
+    private fun setupLevelBarNewSeller(shopLevel: String) = binding?.run {
+        ivLevelBarNewSeller.run {
             when (shopLevel.getNumberFormat(ShopScoreConstant.NULL_NUMBER)) {
                 ShopScoreConstant.SHOP_SCORE_LEVEL_ONE ->
                     setImageResource(R.drawable.ic_one_level_green)
