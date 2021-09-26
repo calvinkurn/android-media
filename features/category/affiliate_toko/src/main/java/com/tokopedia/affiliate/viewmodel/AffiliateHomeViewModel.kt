@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
@@ -40,11 +41,10 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun getAffiliatePerformance(page : Int) {
-        //TODO Cleanup
-        if(page == 0)
+        if(page == PAGE_ZERO)
             shimmerVisibility.value = true
         launchCatchError(block = {
-            if(page == 0)
+            if(page == PAGE_ZERO)
                 shimmerVisibility.value = false
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount

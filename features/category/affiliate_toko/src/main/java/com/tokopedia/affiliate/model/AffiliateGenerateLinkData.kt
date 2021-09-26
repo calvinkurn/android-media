@@ -12,7 +12,7 @@ data class AffiliateGenerateLinkData(
     @Keep
     data class AffiliateGenerateLink(
             @SerializedName("Data")
-            var `data`: List<Data>
+            var `data`: List<Data>?
     ) {
         @Keep
         data class Data(
@@ -32,9 +32,9 @@ data class AffiliateGenerateLinkData(
             @Keep
             data class Url(
                     @SerializedName("RegularURL")
-                    var regularURL: String,
+                    var regularURL: String?,
                     @SerializedName("ShortURL")
-                    var shortURL: String
+                    var shortURL: String?
             )
         }
     }

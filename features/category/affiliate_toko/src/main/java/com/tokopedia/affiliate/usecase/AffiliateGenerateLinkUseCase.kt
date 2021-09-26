@@ -24,7 +24,7 @@ class AffiliateGenerateLinkUseCase @Inject constructor(
                 GQL_Affiliate_Generate_Link,
                 AffiliateGenerateLinkData::class.java,
                 createRequestParams(id, url, identifier)
-        ).affiliateGenerateLink.data.firstOrNull()
+        ).affiliateGenerateLink.data?.firstOrNull()
     }
 
     companion object {

@@ -205,7 +205,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
         }else {
             AffiliateAnalytics.sendEvent(
                     AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP,
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP_B_S,
                     AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP_B_S,
                     "",userSessionInterface.userId)
         }

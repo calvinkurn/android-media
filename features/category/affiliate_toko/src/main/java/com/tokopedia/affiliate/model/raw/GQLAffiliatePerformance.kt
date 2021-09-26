@@ -36,13 +36,6 @@ const val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerforma
             AndroidURL
             IosURL
           }
-          Metrics {
-            MetricType
-            MetricTitle
-            MetricValue
-            MetricDifferenceValue
-            Trend
-          }
           Footer {
             FooterType
             FooterIcon

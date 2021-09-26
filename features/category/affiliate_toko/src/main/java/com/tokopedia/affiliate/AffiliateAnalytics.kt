@@ -67,10 +67,4 @@ object AffiliateAnalytics {
             const val CLICK_SEARCH = "click - search"
         }
     }
-
-    interface KEYS {
-        companion object {
-            const val NONE_OTHER = "none / other"
-        }
-    }
 }

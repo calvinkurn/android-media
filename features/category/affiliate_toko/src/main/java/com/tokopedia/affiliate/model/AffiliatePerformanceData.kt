@@ -82,8 +82,6 @@ data class AffiliatePerformanceData(
                         var itemType: Int?,
                         @SerializedName("LinkID")
                         var linkID: String,
-                        @SerializedName("Metrics")
-                        var metrics: List<Any?>?,
                         @SerializedName("Status")
                         var status: Int?
                 ) {
