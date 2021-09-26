@@ -122,6 +122,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
+        const val PARAM_MEDIA_PREVIEW = "media_preview"
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
         fun createIntent(
@@ -265,16 +266,19 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             TimeUnit.DAYS.toMillis(7)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
-        goToFeed(createPostViewModel.isEditState)
+        goToFeed(createPostViewModel)
         finish()
     }
 
-    private fun goToFeed(isEditState: Boolean) {
+    private fun goToFeed(createPostViewModel: CreatePostViewModel) {
         this.let {
             val applink = ApplinkConst.HOME_FEED
             val intent = RouteManager.getIntent(it, applink)
             intent.putExtra(PARAM_SHOW_PROGRESS_BAR, true)
+            val isEditState = createPostViewModel.isEditState
             intent.putExtra(PARAM_IS_EDIT_STATE, isEditState)
+            intent.putExtra(PARAM_MEDIA_PREVIEW,
+                if (!isEditState) createPostViewModel.completeImageList.first().path else "")
             startActivity(intent)
         }
     }

@@ -89,6 +89,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val TOOLBAR_WHITE = 2
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
+        const val PARAM_MEDIA_PREVIEW = "media_preview"
 
         val TITLE = "title"
         val SUB_TITLE = "subtitle"
@@ -291,8 +292,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
                 val isEditPost = activity?.intent?.getBooleanExtra(
-                    PARAM_IS_EDIT_STATE, false)
+                    PARAM_IS_EDIT_STATE, false) ?: false
                 postProgressUpdateView?.resetProgressBarState(isEditPost ?: false)
+                if (!isEditPost) {
+                    val mediaPath = activity?.intent?.getStringExtra(
+                        PARAM_MEDIA_PREVIEW) ?: ""
+                    postProgressUpdateView?.setFirstIcon(mediaPath)
+                } else {
+                    postProgressUpdateView?.setFirstIcon("")
+                }
                 updateVisibility(true)
                 mInProgress = true
                 postProgressUpdateView?.registerBroadcastReceiver()
