@@ -21,7 +21,7 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val SESSION_IRIS_VALUE = "sessioniris"
         private const val CONTENT = "content"
-        
+
     }
     private object Event {
         const val CLICK_FEED = "clickFeed"
@@ -72,12 +72,12 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun onRecordButtonClick() {
+    override fun onRecordButtonClick(mediaType:String) {
         val map = mutableMapOf<String, Any>()
         map[PARAM_EVENT_NAME] = CLICK_FEED
         map[PARAM_EVENT_ACTION] = CLICK_CIRCLE_ON_PICKER_PAGE
         map[PARAM_EVENT_CATEGORY] = CONTENT_FEED_CREATION
-        map[PARAM_EVENT_LABEL] = shopId
+        map[PARAM_EVENT_LABEL] = "$shopId - $mediaType"
         map[KEY_BUSINESS_UNIT_EVENT] = CONTENT
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
         map[KEY_SESSION_IRIS] = SESSION_IRIS_VALUE
