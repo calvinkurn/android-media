@@ -91,25 +91,10 @@
         android:paddingTop="@dimen/unify_space_12"
         android:paddingBottom="@dimen/unify_space_12"
         app:layout_constraintTop_toBottomOf="@id/post_image"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="visible"
         android:background="@color/Unify_NN50"
         >
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_cek_sekrang"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Cek Sekrang"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            android:textColor="@color/Unify_NN600"
-            android:visibility="gone"
-            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/top_ads_product_name"
@@ -198,6 +183,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="top_ads_label_cashback,top_ads_price,top_ads_label_discount,top_ads_slashed_price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

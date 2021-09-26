@@ -30,6 +30,8 @@ data class FeedXMedia(
     val price : String = "",
     val slashedPrice : String = "",
     val discountPercentage : String = "",
-    val isCashback : Boolean = false
+    val isCashback : Boolean = false,
+    val cashBackFmt:String = "",
+    val variant:Int = 1
 )
 

@@ -20,9 +20,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
@@ -78,7 +76,7 @@ class FeedPlusTypeFactoryImpl(
     private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
     private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
-    private val topAdsHeadlineListener: TopAdsHeadlineViewHolder.TopAdsHeadlineListener
+    private val topAdsHeadlineListener: TopAdsHeadlineListener
 
     init {
         this.kolPostListener = context
@@ -130,7 +128,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
-        return TopAdsHeadlineViewHolder.LAYOUT
+        return TopAdsHeadlineV2ViewHolder.LAYOUT
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
@@ -188,8 +186,8 @@ class FeedPlusTypeFactoryImpl(
             TopadsShopViewHolder.LAYOUT -> {
                 viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
             }
-            TopAdsHeadlineViewHolder.LAYOUT -> {
-                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener,
+            TopAdsHeadlineV2ViewHolder.LAYOUT -> {
+                viewHolder = TopAdsHeadlineV2ViewHolder(view, userSession, topAdsHeadlineListener,
                     dynamicPostListener,
                     videoViewListener,
                     gridItemListener,

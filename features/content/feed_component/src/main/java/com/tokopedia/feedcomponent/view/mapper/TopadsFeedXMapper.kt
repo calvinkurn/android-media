@@ -8,12 +8,12 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
 
-    fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel): FeedXCard {
+    fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int): FeedXCard {
         val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data[0]
         val merchantVouchers = data.cpm.cpmShop.merchantVouchers
         cpmData.data[0].cpm.cpmShop.products.forEach {
-            media.add(cpmProductToFeedXMedia(it))
+            media.add(cpmProductToFeedXMedia(it,variant,merchantVouchers as ArrayList<String>))
         }
 
         val feedXProducts = arrayListOf<FeedXProduct>()
@@ -48,7 +48,7 @@ object TopadsFeedXMapper {
         val followers = FeedXFollowers(
             isFollowed = cpmData.data[0].cpm.cpmShop.isFollowed,
             mods = listOf(),
-            transitionFollow = false
+            transitionFollow = cpmData.data[0].cpm.cpmShop.isFollowed
         )
 
         return FeedXCard(
@@ -65,8 +65,8 @@ object TopadsFeedXMapper {
             type = "",
             products = feedXProducts,
             subTitle = data.cpm.decription,
-            text = data.cpm.name,
-            title = data.cpm.promotedText,
+            text = data.cpm.promotedText,
+            title = data.cpm.name,
             like = FeedXLike(),
             comments = FeedXComments(),
             share = share,
@@ -83,7 +83,11 @@ object TopadsFeedXMapper {
     }
 
 
-    private fun cpmProductToFeedXMedia(product: Product): FeedXMedia {
+    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>): FeedXMedia {
+        var cashback=""
+        if (!merchantVoucher.isNullOrEmpty()){
+            cashback=merchantVoucher[0]
+        }
         product.run {
             return FeedXMedia(
                 id = id,
@@ -96,7 +100,9 @@ object TopadsFeedXMapper {
                 price = product.priceFormat,
                 slashedPrice = product.campaign.originalPrice,
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-                isCashback = isProductCashback
+                isCashback = isProductCashback,
+                variant = variant,
+                cashBackFmt = cashback
             )
         }
     }
@@ -117,7 +123,10 @@ object TopadsFeedXMapper {
                 isBebasOngkir = freeOngkir.isActive,
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
-                name = name
+                name = name,
+                priceOriginalFmt = priceFormat,
+                priceFmt = priceFormat,
+                isDiscount = false
             )
         }
     }

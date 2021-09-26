@@ -47,5 +47,8 @@ data class FeedXProduct(
         @SerializedName("totalSold")
         var totalSold: Int = 0,
         @SerializedName("webLink")
-        var webLink: String = ""
-)
+        var webLink: String = "",
+        var variant: Int = 1,
+        var productName : String= "",
+        val slashedPrice : String = "",
+        )

@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -44,6 +45,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder.Companion.VARIANT_EXPERIMENTCLEAN
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -285,6 +287,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val text = if (followers.transitionFollow) {
             endIndex += SPACE
             context.getString(R.string.kol_Action_following_color)
+        } else if (followers.isFollowed && isTopads) {
+            context.getString(
+                R.string.kol_Action_following_color
+            )
         } else {
             context.getString(
                 R.string.feed_component_follow
@@ -732,38 +738,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
-                            if(feedXCard.isTopAds){
-                                likedText.hide()
-                                captionText.hide()
-                                commentButton.invisible()
-                                likeButton.invisible()
-                                timestampText.hide()
-                                seeAllCommentText.hide()
-                                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-                                val cekSekrang = findViewById<Typography>(R.id.top_ads_cek_sekrang)
-                                val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
-                                val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
-                                val textViewSlashedPrice = findViewById<Typography>(R.id.top_ads_slashed_price)
-                                val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
-                                val labelPrice=  findViewById<Label>(R.id.top_ads_label_cashback)
-
-                                topAdsCard.show()
-                                if(feedMedia.productName.isEmpty()){
-                                    cekSekrang.show()
-                                    val constraintSet = ConstraintSet()
-                                    constraintSet.clone(topAdsCard)
-                                    constraintSet.connect(cekSekrang.id,ConstraintSet.TOP,topAdsCard.id,ConstraintSet.TOP)
-                                    constraintSet.connect(cekSekrang.id,ConstraintSet.BOTTOM,topAdsCard.id,ConstraintSet.BOTTOM)
-                                    constraintSet.applyTo(topAdsCard)
-                                }else {
-                                    topAdsProductName.displayTextOrHide(feedMedia.productName)
-                                    textViewPrice.displayTextOrHide(feedMedia.price)
-                                    textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
-                                    labelDiscount.displayTextOrHide(feedMedia.discountPercentage)
-                                    if(feedMedia.isCashback)
-                                        labelPrice.show()
-                                }
-                            }
                             doOnLayout {
                                 imageWidth = width
                                 imageHeight = height
@@ -787,7 +761,63 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 positionInFeed,
                                 pageControl.indicatorCurrentPosition
                             )
+                            if (feedXCard.isTopAds) {
+                                likedText.hide()
+                                captionText.hide()
+                                commentButton.invisible()
+                                likeButton.invisible()
+                                timestampText.hide()
+                                seeAllCommentText.hide()
+                                shopMenuIcon.hide()
+                                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+                                val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+                                val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
+                                val textViewSlashedPrice =
+                                    findViewById<Typography>(R.id.top_ads_slashed_price)
+                                val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
+                                val labelPrice = findViewById<Label>(R.id.top_ads_label_cashback)
+                                val group = findViewById<Group>(R.id.group)
 
+                                topAdsCard.show()
+                                topAdsCard.setOnClickListener {
+                                    RouteManager.route(context,feedMedia.appLink)
+                                }
+                                if (feedMedia.variant == VARIANT_EXPERIMENTCLEAN) {
+                                    group.hide()
+                                    topAdsProductName.show()
+                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                    topAdsProductName.setTextColor(
+                                        MethodChecker.getColor(
+                                            context,
+                                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                        )
+                                    )
+                                    val constraintSet = ConstraintSet()
+                                    constraintSet.clone(topAdsCard)
+                                    constraintSet.connect(
+                                        topAdsProductName.id,
+                                        ConstraintSet.TOP,
+                                        topAdsCard.id,
+                                        ConstraintSet.TOP
+                                    )
+                                    constraintSet.connect(
+                                        topAdsProductName.id,
+                                        ConstraintSet.BOTTOM,
+                                        topAdsCard.id,
+                                        ConstraintSet.BOTTOM
+                                    )
+                                    constraintSet.applyTo(topAdsCard)
+                                } else {
+                                    group.show()
+                                    topAdsProductName.displayTextOrHide(feedMedia.productName)
+                                    textViewPrice.displayTextOrHide(feedMedia.price)
+                                    textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
+                                    labelDiscount.displayTextOrHide(feedMedia.discountPercentage)
+                                    if (feedMedia.isCashback)
+                                        labelPrice.show()
+                                    labelPrice.text = feedMedia.cashBackFmt
+                                }
+                            }
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
