@@ -54,13 +54,13 @@ class GetShopInfoUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetShopInfoResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val actualShopInfo: ShopInfoUiModel? = getShopInfoUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(getExpectedShopInfo(), actualShopInfo)
@@ -72,14 +72,14 @@ class GetShopInfoUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetShopInfoResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val actualShopInfo: ShopInfoUiModel? = getShopInfoUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(actualShopInfo)

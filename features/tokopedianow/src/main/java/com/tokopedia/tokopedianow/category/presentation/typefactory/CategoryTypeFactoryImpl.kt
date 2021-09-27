@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecentPurchaseViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
@@ -37,6 +38,7 @@ class CategoryTypeFactoryImpl(
         outOfCoverageListener: OutOfCoverageListener,
         recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
         private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
+        private val tokoNowProductCardListener: TokoNowProductCardListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -46,7 +48,7 @@ class CategoryTypeFactoryImpl(
         productItemListener,
         emptyProductListener,
         outOfCoverageListener,
-        recommendationCarouselListener
+        recommendationCarouselListener,
 ), CategoryTypeFactory, TokoNowTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT
@@ -57,9 +59,14 @@ class CategoryTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            BaseChooseAddressViewHolder.LAYOUT -> CategoryChooseAddressViewHolder(view, chooseAddressListener)
-            CategoryAisleViewHolder.LAYOUT -> CategoryAisleViewHolder(view, categoryAisleListener)
-            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            BaseChooseAddressViewHolder.LAYOUT ->
+                CategoryChooseAddressViewHolder(view, chooseAddressListener)
+            CategoryAisleViewHolder.LAYOUT ->
+                CategoryAisleViewHolder(view, categoryAisleListener)
+            TokoNowCategoryGridViewHolder.LAYOUT ->
+                TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowRecentPurchaseViewHolder.LAYOUT ->
+                TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
             else -> super.createViewHolder(view, type)
         }
     }

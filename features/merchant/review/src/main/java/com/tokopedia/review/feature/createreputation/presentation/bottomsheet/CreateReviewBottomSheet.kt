@@ -150,6 +150,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
+        observeLiveDatas()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -209,7 +210,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onDismissBottomSheet(text: String, templates: List<String>) {
         textArea?.setText(text)
         clearFocusAndHideSoftInput(view)
-        templatesAdapter.setData(templates)
+        if (isGoodRating()) {
+            templatesAdapter.setData(templates)
+        }
         if (templates.isEmpty()) {
             hideTemplates()
             return
@@ -347,7 +350,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeGetForm() =
-        createReviewViewModel.getReputationDataForm.observe(viewLifecycleOwner, {
+        createReviewViewModel.getReputationDataForm.observe(this, {
             when (it) {
                 is Success -> onSuccessGetReviewForm(it.data)
                 is Fail -> onErrorGetReviewForm(it.throwable)
@@ -355,7 +358,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         })
 
     private fun observeIncentive() {
-        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, {
+        createReviewViewModel.incentiveOvo.observe(this, {
             when (it) {
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
@@ -365,7 +368,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeTemplates() {
-        createReviewViewModel.reviewTemplates.observe(viewLifecycleOwner, {
+        createReviewViewModel.reviewTemplates.observe(this, {
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
@@ -374,7 +377,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeSubmitReview() {
-        createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, {
+        createReviewViewModel.submitReviewResult.observe(this, {
             when (it) {
                 is com.tokopedia.review.common.data.Success -> {
                     onSuccessSubmitReview()
@@ -390,13 +393,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeButtonState() {
-        createReviewViewModel.submitButtonState.observe(viewLifecycleOwner, {
+        createReviewViewModel.submitButtonState.observe(this, {
             submitButton?.isEnabled = it
         })
     }
 
     private fun observeProgressBarState() {
-        createReviewViewModel.progressBarState.observe(viewLifecycleOwner, {
+        createReviewViewModel.progressBarState.observe(this, {
             progressBar?.setProgressBarValue(it)
         })
     }
@@ -856,7 +859,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 ?.setOnClickListener {
                     handleDismiss()
                 }
-            observeLiveDatas()
             getData()
         }
         setCloseClickListener {

@@ -47,7 +47,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
         }
     }
 
@@ -56,7 +56,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
     fun forbiddenPage_discoverEmpty() {
         isDefaultDiscover = false
         runTest {
-            isDisplayingGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
         }
     }
 

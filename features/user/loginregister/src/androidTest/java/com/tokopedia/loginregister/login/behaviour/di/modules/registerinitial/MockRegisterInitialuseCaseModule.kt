@@ -95,4 +95,10 @@ class MockRegisterInitialuseCaseModule {
     fun provideMockRegisterCheckUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCaseStub<RegisterCheckPojo> {
         return GraphqlUseCaseStub(graphqlRepository)
     }
+
+    @Provides
+    fun provideGetProfileUseCaseStub(resources: Resources,
+                                     graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetProfileUseCaseStub {
+        return GetProfileUseCaseStub(resources, graphqlUseCase)
+    }
 }

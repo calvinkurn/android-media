@@ -101,7 +101,7 @@ class HotelHomepageViewModel @Inject constructor(
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelPropertyDefaultHome.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelPropertyDefaultHome.Response>().response.data
 
             mutableHomepageDefaultParam.postValue(data)
@@ -122,7 +122,7 @@ class HotelHomepageViewModel @Inject constructor(
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelDeleteRecentSearchEntity.Response>()
 
             mutableDeleteRecentSearch.postValue(Success(data.travelRecentSearchHotelDelete.result))
