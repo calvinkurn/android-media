@@ -1,5 +1,7 @@
 package com.tokopedia.attachinvoice.view.adapter
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -7,7 +9,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.attachinvoice.data.Invoice
+import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceBinding
+import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceEmptyViewBinding
 import com.tokopedia.attachinvoice.view.adapter.viewholder.AttachInvoiceViewHolder
+import com.tokopedia.attachinvoice.view.adapter.viewholder.EmptyAttachInvoiceViewHolder
+import java.lang.IllegalArgumentException
 
 class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoiceTypeFactory)
     : BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory>(baseListAdapterTypeFactory),
@@ -17,8 +23,7 @@ class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoice
     private var selectedInvoicePosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
-        val view = onCreateViewItem(parent, viewType)
-        return baseListAdapterTypeFactory.createViewHolder(view, viewType, this)
+        return baseListAdapterTypeFactory.createViewHolder(parent, viewType, this)
     }
 
     override fun checkCurrentItem(element: Invoice, position: Int) {
@@ -36,5 +41,4 @@ class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoice
     override fun isChecked(element: Invoice): Boolean {
         return selectedInvoice.value == element
     }
-
 }
