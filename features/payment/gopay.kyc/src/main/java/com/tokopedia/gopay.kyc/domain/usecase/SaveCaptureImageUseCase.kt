@@ -69,16 +69,21 @@ class SaveCaptureImageUseCase @Inject constructor(
             val file = File(imageFile.absolutePath)
             if (file.exists()) {
                 val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                myBitmap?.let {
-                    return if (ordinal == Facing.FRONT.ordinal) {
-                        val flippedBitmap = ImageHandler.flip(myBitmap, true, false)
-                        myBitmap.recycle()
-                        flippedBitmap
-                    } else myBitmap
-                }
+                flipBitmapByOrdinal(myBitmap, ordinal)
             }
         } catch (e: Throwable) {
             throw e
+        }
+        return null
+    }
+
+    private fun flipBitmapByOrdinal(bitmap: Bitmap?, ordinal: Int): Bitmap? {
+        bitmap?.let {
+            return if (ordinal == Facing.FRONT.ordinal) {
+                val flippedBitmap = ImageHandler.flip(bitmap, true, false)
+                bitmap.recycle()
+                flippedBitmap
+            } else bitmap
         }
         return null
     }

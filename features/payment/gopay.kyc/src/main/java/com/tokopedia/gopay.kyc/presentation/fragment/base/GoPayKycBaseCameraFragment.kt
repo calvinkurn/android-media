@@ -84,9 +84,8 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
         override fun onPictureTaken(result: PictureResult) {
             try {
                 generateImage(result.data)
+            } finally {
                 viewModel.mCapturingPicture = false
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }
@@ -236,7 +235,7 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
         }
     }
 
-    @TargetApi(23)
+    @TargetApi(TARGET_API_23)
     override fun onAttach(context: Context) {
         super.onAttach(context)
         onAttachActivity(context)
@@ -290,4 +289,8 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
     override fun getScreenName() = null
     override fun initInjector() = getComponent(GoPayKycComponent::class.java).inject(this)
     protected fun sendAnalytics(event: GoPayKycEvent) = goPayKycAnalytics.get().sentKycEvent(event)
+
+    companion object {
+        const val TARGET_API_23 = 23
+    }
 }

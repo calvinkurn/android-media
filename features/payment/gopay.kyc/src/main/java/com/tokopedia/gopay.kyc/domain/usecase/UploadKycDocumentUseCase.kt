@@ -18,8 +18,6 @@ class UploadKycDocumentUseCase @Inject constructor(private val restApi: RestApi)
     private var ktpPath = ""
     private var selfieKtpPath = ""
 
-    private val MEDIA_TYPE_IMAGE = "image/*"
-
     fun setRequestParams(
         documentList: ArrayList<KycDocument>,
         ktpPath: String,
@@ -56,6 +54,10 @@ class UploadKycDocumentUseCase @Inject constructor(private val restApi: RestApi)
             mapOf()
         )
         return (RestConstant.HTTP_SUCCESS == ktpUploadResponse.code() && RestConstant.HTTP_SUCCESS == selfieKtpUploadResponse.code())
+    }
+
+    companion object {
+        private const val MEDIA_TYPE_IMAGE = "image/*"
     }
 
 
