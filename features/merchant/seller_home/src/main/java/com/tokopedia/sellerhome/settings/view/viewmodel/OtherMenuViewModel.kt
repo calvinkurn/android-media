@@ -300,8 +300,8 @@ class OtherMenuViewModel @Inject constructor(
                 if (freeShippingDisabled || inTransitionPeriod) {
                     false to ""
                 } else {
-                    val userId = userSession.userId.toIntOrZero()
-                    val shopId = userSession.shopId.toIntOrZero()
+                    val userId = userSession.userId.toLongOrZero()
+                    val shopId = userSession.shopId.toLongOrZero()
                     val params =
                         GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
                     getShopFreeShippingInfoUseCase.execute(params).first().let {
@@ -320,7 +320,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val badgeUrl = withContext(dispatcher.io) {
                     getShopBadgeUseCase.params =
-                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getShopBadgeUseCase.executeOnBackground()
                 }
                 _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
@@ -336,7 +336,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val totalFollowers = withContext(dispatcher.io) {
                     getShopTotalFollowersUseCase.params =
-                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
                         if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
                             throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
@@ -360,7 +360,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
                     getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
@@ -410,7 +410,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()

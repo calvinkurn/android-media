@@ -1,8 +1,6 @@
 package com.tokopedia.shop.common.view.viewholder
 
 import android.view.View
-import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -10,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -20,27 +19,24 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Rafli Syam on 07/04/2021
  */
 abstract class ShopShowcaseListImageBaseViewHolder(
-        itemView: View
-) : RecyclerView.ViewHolder(itemView) {
+        private val itemViewBinding: ItemShopShowcaseListImageBinding
+) : RecyclerView.ViewHolder(itemViewBinding.root) {
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_shop_showcase_list_image
-    }
-
-    var tvShowcaseName: Typography? = null
-    var tvShowcaseCount: Typography? = null
-    var ivShowcaseImage: ImageUnify? = null
-    var showcaseCampaignLabel: Label? = null
-    var showcaseActionButton: View? = null
+    var itemTvShowcaseName: Typography? = null
+    var itemTvShowcaseCount: Typography? = null
+    var itemIvShowcaseImage: ImageUnify? = null
+    var itemShowcaseCampaignLabel: Label? = null
+    var itemShowcaseActionButton: View? = null
 
     abstract fun bind(element: Any)
 
     init {
-        tvShowcaseName = itemView.findViewById(R.id.tvShowcaseName)
-        tvShowcaseCount = itemView.findViewById(R.id.tvShowcaseCount)
-        ivShowcaseImage = itemView.findViewById(R.id.ivShowcaseImage)
-        showcaseCampaignLabel = itemView.findViewById(R.id.showcaseCampaignLabel)
+        itemViewBinding.apply {
+            itemTvShowcaseName = tvShowcaseName
+            itemTvShowcaseCount = tvShowcaseCount
+            itemIvShowcaseImage = ivShowcaseImage
+            itemShowcaseCampaignLabel = showcaseCampaignLabel
+        }
     }
 
     fun renderShowcaseMainInfo(element: Any, isMyShop: Boolean = false) {
@@ -77,30 +73,32 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     }
 
     private fun adjustShowcaseNameConstraintPosition() {
-        val parentConstraintLayout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout)
-        val constraintSet = ConstraintSet()
-        val tvShowcaseNameId = R.id.tvShowcaseName
-        val labelShowcaseCampaignId = R.id.showcaseCampaignLabel
-        val verticalGuidelineId = R.id.guideline_action_picker2
-        constraintSet.clone(parentConstraintLayout)
-        if (showcaseCampaignLabel?.visibility == View.VISIBLE) {
-            constraintSet.connect(
-                    tvShowcaseNameId,
-                    ConstraintSet.RIGHT,
-                    labelShowcaseCampaignId,
-                    ConstraintSet.LEFT,
-                    0
-            )
-        } else {
-            constraintSet.connect(
-                    tvShowcaseNameId,
-                    ConstraintSet.RIGHT,
-                    verticalGuidelineId,
-                    ConstraintSet.LEFT,
-                    0
-            )
+        itemViewBinding.apply {
+            val parentConstraintLayout = parentLayout
+            val tvShowcaseNameId = tvShowcaseName.id
+            val labelShowcaseCampaignId = showcaseCampaignLabel.id
+            val verticalGuidelineId = guidelineActionPicker2.id
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(parentConstraintLayout)
+            if (itemShowcaseCampaignLabel?.visibility == View.VISIBLE) {
+                constraintSet.connect(
+                        tvShowcaseNameId,
+                        ConstraintSet.RIGHT,
+                        labelShowcaseCampaignId,
+                        ConstraintSet.LEFT,
+                        0
+                )
+            } else {
+                constraintSet.connect(
+                        tvShowcaseNameId,
+                        ConstraintSet.RIGHT,
+                        verticalGuidelineId,
+                        ConstraintSet.LEFT,
+                        0
+                )
+            }
+            constraintSet.applyTo(parentConstraintLayout)
         }
-        constraintSet.applyTo(parentConstraintLayout)
     }
 
     private fun isShowcaseTypeGenerated(type: Int) = type == ShopEtalaseTypeDef.ETALASE_DEFAULT
@@ -131,15 +129,15 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     }
 
     private fun setShowcaseInfo(name: String, count: Int) {
-        tvShowcaseName?.text = name
-        tvShowcaseCount?.text = itemView.context.getString(
+        itemTvShowcaseName?.text = name
+        itemTvShowcaseCount?.text = itemView.context.getString(
                 R.string.shop_page_showcase_product_count_text,
                 count.toString()
         )
     }
 
     private fun setCampaignLabel(type: Int, isSellerView: Boolean) {
-        showcaseCampaignLabel?.apply {
+        itemShowcaseCampaignLabel?.apply {
             if (isSellerView)
                 shouldShowWithAction(isShowCampaignLabel(type), action = { adjustShowcaseNameConstraintPosition() })
             else
@@ -150,7 +148,7 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     }
 
     private fun setActionButton(isMyShop: Boolean, type: Int) {
-        showcaseActionButton?.let { actionButton ->
+        itemShowcaseActionButton?.let { actionButton ->
             actionButton.apply {
                 shouldShowWithAction(
                         shouldShow = (isMyShop && isShowActionButton(type)),
@@ -164,10 +162,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
             imageUrl?.let {
-                if (ivShowcaseImage?.context?.isValidGlideContext() == true) {
-                    ivShowcaseImage?.setImageUrl(it)
+                if (itemIvShowcaseImage?.context?.isValidGlideContext() == true) {
+                    itemIvShowcaseImage?.setImageUrl(it)
                 }
-            } ?: ivShowcaseImage?.setImageUrl("")
+            } ?: itemIvShowcaseImage?.setImageUrl("")
         } catch (e: Throwable) {
         }
     }

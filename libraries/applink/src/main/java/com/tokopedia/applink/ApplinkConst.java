@@ -235,6 +235,8 @@ public interface ApplinkConst {
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
+    String LINK_ACCOUNT = "tokopedia://gojek-account-link";
+
     String FLIGHT = "tokopedia://pesawat";
     String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
 
@@ -502,6 +504,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
+        String REPURCHASE = "tokopedia://now/repurchase-page";
     }
 
     interface Query {

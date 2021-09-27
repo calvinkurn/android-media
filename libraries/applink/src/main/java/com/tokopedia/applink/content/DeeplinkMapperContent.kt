@@ -17,7 +17,7 @@ object DeeplinkMapperContent {
         return if (uri.pathSegments
                 .joinToString("/")
                 .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)) {
-            handleNavigationPlay(deepLink)
+            handleNavigationPlay(uri)
         } else ""
     }
 
@@ -74,7 +74,7 @@ object DeeplinkMapperContent {
         return deepLink
     }
 
-    private fun handleNavigationPlay(deepLink: String): String {
-        return "${ApplinkConst.BROWSER}?url=$deepLink"
+    private fun handleNavigationPlay(uri: Uri): String {
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
 }

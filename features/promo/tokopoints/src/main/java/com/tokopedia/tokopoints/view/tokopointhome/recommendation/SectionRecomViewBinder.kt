@@ -3,8 +3,8 @@ package com.tokopedia.tokopoints.view.tokopointhome.recommendation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
-import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecommendation
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 
 class SectionRecomViewBinder(val recommList: RewardsRecommendation, val listener: RewardsRecomListener)
