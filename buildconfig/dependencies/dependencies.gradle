@@ -101,9 +101,9 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.7'
-    unifyPrinciplesVersion = '1.3.8'
-    unifyComponentsVersion = '1.1.72'
+    unifyIconsVersion = '1.0.12'
+    unifyPrinciplesVersion = '1.3.9'
+    unifyComponentsVersion = '1.1.75'
     unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.4'
     unifyBannerVersion = '1.0.4'
@@ -115,7 +115,7 @@ ext {
     unifyGlobalErrorVersion = '1.0.12'
     unifyHeaderVersion = '1.1.5'
     unifySortFilterVersion = '1.1.3.1'
-    unifyIconNotificationVersion = '1.0.0'
+    unifyIconNotificationVersion = '1.0.1'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.8'
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
