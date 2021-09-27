@@ -238,6 +238,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 onFailCreateReview(data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review))
             }
+            loadInitialData()
         }
     }
 
@@ -276,12 +277,17 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getSourceData()
+        loadInitialData()
     }
 
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
             containerListener = context
         }
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     override fun shouldShowCoachMark(): Boolean {

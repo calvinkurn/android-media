@@ -12,6 +12,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBasicInfoListener {
@@ -80,7 +81,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
 
     private fun setReview() {
         review?.apply {
-            text = reviewMessage
+            text = HtmlLinkHelper(context, reviewMessage).spannedString
             movementMethod = ScrollingMovementMethod()
             maxLines = Int.MAX_VALUE
         }

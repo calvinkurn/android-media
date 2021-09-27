@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.util.SparseIntArray
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +55,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
@@ -66,13 +67,15 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -83,14 +86,12 @@ import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -114,7 +115,7 @@ import javax.inject.Inject
 
 class TokoNowHomeFragment: Fragment(),
         TokoNowView,
-        HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
+        TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
         TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
@@ -124,7 +125,8 @@ class TokoNowHomeFragment: Fragment(),
         ShareBottomsheetListener,
         ScreenShotListener,
         HomeSharingEducationListener,
-        HomeEducationalInformationListener
+        HomeEducationalInformationListener,
+        ServerErrorListener
 {
 
     companion object {
@@ -132,7 +134,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
-        private const val ITEM_VIEW_CACHE_SIZE = 0
+        private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -158,15 +160,16 @@ class TokoNowHomeFragment: Fragment(),
     private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
-                tokoNowListener = this,
+                tokoNowView = this,
                 homeTickerListener = this,
-                homeChooseAddressWidgetListener = this,
+                tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
-                homeEducationalInformationListener = this
+                homeEducationalInformationListener = this,
+                serverErrorListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -187,7 +190,8 @@ class TokoNowHomeFragment: Fragment(),
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
-    private var carouselScrollPosition = SparseIntArray()
+    private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
+    private var stickyLoginView: StickyLoginView? = null
     private var hasEducationalInformationAppeared = false
 
     private val homeMainToolbarHeight: Int
@@ -242,6 +246,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = onRefreshLayout()
+
+    override fun onClickRetryButton() = onRefreshLayout()
 
     override fun onAttach(context: Context) {
         initInjector()
@@ -369,7 +375,8 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean) {
+    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String) {
+        RouteManager.route(context, applink)
         analytics.onClickAllProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -396,12 +403,12 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+        carouselScrollState[adapterPosition] = scrollState
     }
 
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
+    override fun getScrollState(adapterPosition: Int): Parcelable? {
+        return carouselScrollState[adapterPosition]
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -417,7 +424,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onProductCardImpressed(data: TokoNowProductCardUiModel) {
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
             RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
         }
@@ -538,7 +545,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginSetup(){
-        sticky_login_tokonow?.let {
+        stickyLoginView = view?.findViewById(R.id.sticky_login_tokonow)
+        stickyLoginView?.let {
             it.page = StickyLoginConstant.Page.TOKONOW
             it.lifecycleOwner = viewLifecycleOwner
             it.setStickyAction(object : StickyLoginAction {
@@ -560,11 +568,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun stickyLoginLoadContent(){
-        sticky_login_tokonow.loadContent()
+        stickyLoginView?.loadContent()
     }
 
     private fun hideStickyLogin(){
-        sticky_login_tokonow.hide()
+        stickyLoginView?.hide()
     }
 
     private fun loadHeaderBackground() {
@@ -596,7 +604,7 @@ class TokoNowHomeFragment: Fragment(),
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
-        carouselScrollPosition.clear()
+        carouselScrollState.clear()
         loadLayout()
         isRefreshed = true
     }
@@ -742,9 +750,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome?.post {
-                    rvHome?.submitProduct(it.data)
-                }
+                showHomeLayout(it.data)
             }
         }
 
@@ -1080,7 +1086,7 @@ class TokoNowHomeFragment: Fragment(),
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
         val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+                TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
                 true
         )
         return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled

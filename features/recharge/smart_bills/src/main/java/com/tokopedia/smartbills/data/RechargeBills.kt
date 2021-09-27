@@ -36,6 +36,9 @@ data class RechargeBills(
         @SerializedName("clientNumber")
         @Expose
         val clientNumber: String = "",
+        @SerializedName("newBillLabel")
+        @Expose
+        val newBillLabel: NewBillLabel = NewBillLabel(),
         @SerializedName("amount")
         @Expose
         val amount: Float = 0f,
@@ -104,3 +107,12 @@ data class RechargeBills(
                 }
         }
 }
+
+data class NewBillLabel(
+        @SerializedName("isNewLabel")
+        @Expose
+        val isNewLabel: Boolean = false,
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
+)
