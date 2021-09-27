@@ -46,6 +46,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         tvOtherParticipant.text = leaderboard.otherParticipantText
 
         winnerAdapter.setItemsAndAnimateChanges(leaderboard.winners)
+        winnerAdapter.notifyDataSetChanged()
 
         if (leaderboard.otherParticipant > 0) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()

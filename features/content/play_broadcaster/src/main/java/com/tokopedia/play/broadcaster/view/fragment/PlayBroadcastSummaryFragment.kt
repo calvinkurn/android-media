@@ -282,11 +282,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         val fragmentFactory = childFragmentManager.fragmentFactory
         val leaderBoardBottomSheet = fragmentFactory.instantiate(
             requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name).apply {
-                arguments = Bundle().apply {
-                    putBoolean(PlayInteractiveLeaderBoardBottomSheet.EXTRA_BROADCASTER_REFRESH_LEADERBOARD, true)
-                }
-            } as PlayInteractiveLeaderBoardBottomSheet
+            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 }

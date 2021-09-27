@@ -42,9 +42,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
 
-    private val refreshLeaderboard: Boolean
-        get() = arguments?.getBoolean(EXTRA_BROADCASTER_REFRESH_LEADERBOARD, false) ?: false
-
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             analytic.onClickChatWinnerIcon(
@@ -157,7 +154,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                    showError(false)
                    btnRefresh.isLoading = false
                    leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
-                   if(refreshLeaderboard) leaderboardAdapter.notifyDataSetChanged()
+                   leaderboardAdapter.notifyDataSetChanged()
                }
            }
         })
@@ -192,7 +189,5 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
         private const val HEIGHT_MULTIPLIER = 0.67f
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
-
-        const val EXTRA_BROADCASTER_REFRESH_LEADERBOARD = "EXTRA_BROADCASTER_REFRESH_LEADERBOARD"
     }
 }
