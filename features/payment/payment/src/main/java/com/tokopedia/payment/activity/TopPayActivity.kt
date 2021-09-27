@@ -113,7 +113,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
 
-    private var isNeedRefresh = false
+    private var reloadUrl = ""
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -193,6 +193,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             webViewClient = TopPayWebViewClient()
             webChromeClient = webChromeWebviewClient
             setOnKeyListener(webViewOnKeyListener)
+        }
+
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) && BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true)
         }
 
         btnBack?.visibility = View.VISIBLE
@@ -422,17 +426,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
         } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
-            scroogeWebView?.reload()
+            reloadPayment()
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if(isNeedRefresh) {
-//            isNeedRefresh = !isNeedRefresh
-//            scroogeWebView?.reload()
-//        }
-//    }
+    private fun reloadPayment() {
+        // scroogeWebView?.reload() doesn't work
+        scroogeWebView?.loadUrl(reloadUrl)
+    }
 
     private fun encodeToBase64(imagePath: String?): String {
         val bm = BitmapFactory.decodeFile(imagePath)
@@ -444,6 +445,12 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
 
     private inner class TopPayWebViewClient : WebViewClient() {
+
+        fun gotoLinkAccount() {
+            reloadUrl = scroogeWebView?.url ?: ""
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+        }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
@@ -466,10 +473,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
                 if(url.isNotEmpty() && url == ApplinkConst.LINK_ACCOUNT ||
                     url.startsWith("https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth")) {
-                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
-//                    isNeedRefresh = true
-                    startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
-                    return true
+                        gotoLinkAccount()
+                        return true
                 }
 
                 // success payment
@@ -563,6 +568,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         show(supportFragmentManager, "fingerprintPayment")
                     }
                     view?.post { view?.stopLoading() }
+                }
+
+                // for testing purpose only, ignore it
+                if(uri.toString().startsWith(TokopediaUrl.getInstance().ACCOUNTS.plus("account-link/v1/gojek-auth?"))) {
+                    runOnUiThread {
+                        gotoLinkAccount()
+                    }
                 }
             }
             return super.shouldInterceptRequest(view, request)
