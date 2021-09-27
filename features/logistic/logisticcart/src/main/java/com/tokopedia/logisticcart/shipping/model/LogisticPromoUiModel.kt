@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model
 import android.os.Parcelable
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fajarnuha on 29/03/19.

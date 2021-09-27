@@ -12,6 +12,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.behaviour.activity.RegisterInitialActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
+import com.tokopedia.loginregister.login.behaviour.data.GetProfileUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerRegisterInitialComponentStub
@@ -65,6 +66,9 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
     @Inject
     lateinit var routerHelperStub: RegisterInitialRouterHelperStub
+
+    @Inject
+    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @ExperimentalCoroutinesApi
     @Before

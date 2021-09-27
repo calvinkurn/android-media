@@ -1,20 +1,18 @@
 package com.tokopedia.flight.cancellationdetail.presentation.adapter.viewholder
 
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationStatusEnum
-import kotlinx.android.synthetic.main.item_flight_cancellation_list.view.*
-
+import com.tokopedia.flight.databinding.ItemFlightCancellationListBinding
 /**
  * @author by furqan on 06/01/2021
  */
-class FlightOrderCancellationListViewHolder(view: View)
-    : AbstractViewHolder<FlightOrderCancellationListModel>(view) {
+class FlightOrderCancellationListViewHolder(val binding: ItemFlightCancellationListBinding)
+    : AbstractViewHolder<FlightOrderCancellationListModel>(binding.root) {
 
     override fun bind(element: FlightOrderCancellationListModel) {
-        with(itemView) {
+        with(binding) {
             tgCancellationCreatedTime.text = String.format(getString(
                     R.string.flight_cancellation_list_created_time),
                     element.cancellationDetail.createTime)
@@ -36,27 +34,27 @@ class FlightOrderCancellationListViewHolder(view: View)
     }
 
     private fun setupCancellationStatus(status: Int, statusStr: String) {
-        with(itemView) {
+        with(binding) {
             tgCancellationStatus.text = statusStr
             when (status) {
                 0 -> {
                 }
                 FlightOrderCancellationStatusEnum.REQUESTED.id -> {
-                    tgCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle)
-                    tgCancellationStatus.background = context.resources.getDrawable(R.drawable.flight_bg_card_process)
+                    tgCancellationStatus.setTextAppearance(itemView.context, R.style.CardProcessStatusStyle)
+                    tgCancellationStatus.background = itemView.context.resources.getDrawable(R.drawable.flight_bg_card_process)
 
                 }
                 FlightOrderCancellationStatusEnum.REFUNDED.id -> {
-                    tgCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle)
-                    tgCancellationStatus.background = context.resources.getDrawable(R.drawable.flight_bg_card_success)
+                    tgCancellationStatus.setTextAppearance(itemView.context, R.style.CardSuccessStatusStyle)
+                    tgCancellationStatus.background = itemView.context.resources.getDrawable(R.drawable.flight_bg_card_success)
                 }
                 FlightOrderCancellationStatusEnum.ABORTED.id -> {
-                    tgCancellationStatus.setTextAppearance(context, R.style.CardFailedStatusStyle)
-                    tgCancellationStatus.background = context.resources.getDrawable(R.drawable.flight_bg_card_failed)
+                    tgCancellationStatus.setTextAppearance(itemView.context, R.style.CardFailedStatusStyle)
+                    tgCancellationStatus.background = itemView.context.resources.getDrawable(R.drawable.flight_bg_card_failed)
                 }
                 else -> {
-                    tgCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle)
-                    tgCancellationStatus.background = context.resources.getDrawable(R.drawable.flight_bg_card_process)
+                    tgCancellationStatus.setTextAppearance(itemView.context, R.style.CardProcessStatusStyle)
+                    tgCancellationStatus.background = itemView.context.resources.getDrawable(R.drawable.flight_bg_card_process)
                 }
             }
         }

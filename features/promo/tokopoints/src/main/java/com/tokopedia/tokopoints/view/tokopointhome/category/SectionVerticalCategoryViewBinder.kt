@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -14,6 +15,7 @@ import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
+import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionVerticalCategoryViewBinder()

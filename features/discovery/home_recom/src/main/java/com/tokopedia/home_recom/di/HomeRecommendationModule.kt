@@ -64,7 +64,7 @@ class HomeRecommendationModule {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
         useCase.setGraphqlQuery(query)
-        return GetPrimaryProductUseCase(useCase)
+        return GetPrimaryProductUseCase(context, useCase)
     }
 
     @Provides

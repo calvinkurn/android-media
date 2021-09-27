@@ -54,7 +54,7 @@ class AdChooserViewModelTest {
 
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
+        coEvery { repository.response(any(), any()) } returns response
         every { response.getError(AdCreationOption::class.java) } returns listOf()
         every { response.getData<AdCreationOption>(AdCreationOption::class.java) } returns data
 
@@ -77,7 +77,7 @@ class AdChooserViewModelTest {
 
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
+        coEvery { repository.response(any(), any()) } returns response
         every { response.getError(TopAdsAutoAdsCreate.Response::class.java) } returns listOf()
         every { response.getData<TopAdsAutoAdsCreate.Response>(TopAdsAutoAdsCreate.Response::class.java) } returns data
 
@@ -99,7 +99,7 @@ class AdChooserViewModelTest {
 
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
+        coEvery { repository.response(any(), any()) } returns response
         every { response.getError(AutoAdsResponse::class.java) } returns listOf()
         every { response.getData<AutoAdsResponse>(AutoAdsResponse::class.java) } returns data
 

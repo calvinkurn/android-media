@@ -48,6 +48,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -70,11 +71,19 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.IntentManger
+import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.views.MvcView
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -82,8 +91,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -101,11 +112,12 @@ private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
+private const val EXP_NAME2 = NAVIGATION_EXP_TOP_NAV2
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val VARIANT_REVAMP2 = NAVIGATION_VARIANT_REVAMP2
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
-const val SCREENSHOT_SHARE_SHEET = 2
 
 class DiscoveryFragment :
     BaseDaggerFragment(),
@@ -113,7 +125,10 @@ class DiscoveryFragment :
     View.OnClickListener,
     LihatSemuaViewHolder.OnLihatSemuaClickListener,
     TabLayout.OnTabSelectedListener,
-    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
+    ChooseAddressWidget.ChooseAddressWidgetListener,
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -152,8 +167,10 @@ class DiscoveryFragment :
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
+    private var isManualScroll = true
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -205,6 +222,24 @@ class DiscoveryFragment :
         initToolbar(view)
         initChooseAddressWidget(view)
         initView(view)
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                it,
+                this,
+                this,
+                addFragmentLifecycleObserver = true,
+                permissionListener = this
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     private fun initChooseAddressWidget(view: View) {
@@ -214,7 +249,13 @@ class DiscoveryFragment :
     }
 
     private fun initToolbar(view: View) {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        showOldToolbar = !(RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            EXP_NAME,
+            VARIANT_OLD
+        ).equals(VARIANT_REVAMP, true) ||
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, VARIANT_OLD)
+                    .equals(VARIANT_REVAMP2, true)
+                )
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
@@ -253,7 +294,7 @@ class DiscoveryFragment :
             val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
+                if (dy >= 0) {
                     ivToTop.hide()
                     calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
@@ -549,7 +590,7 @@ class DiscoveryFragment :
             discoDefaultShare(data)
         }
     }
-    
+
     private fun discoDefaultShare(data: PageInfo?) {
         data?.let {
             LinkerManager.getInstance().executeShareRequest(
@@ -607,7 +648,7 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -766,6 +807,7 @@ class DiscoveryFragment :
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
                     recyclerView.smoothScrollToPosition(position)
+                    isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
@@ -838,6 +880,22 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
+        this.componentPosition =componentPosition
+        context?.let {
+            startActivityForResult(
+                TransParentActivity.getIntent(
+                    it,
+                    shopId,
+                    MvcSource.DISCO,
+                    ApplinkConst.SHOP.replace("{shop_id}", shopId),
+                    hashCode = hashCodeForMVC
+                ),
+                MvcView.REQUEST_CODE
+            )
+        }
+    }
+
     fun refreshCarouselData(componentPosition: Int = -1) {
         if (componentPosition >= 0) {
             discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
@@ -881,8 +939,26 @@ class DiscoveryFragment :
                     return
                 val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
                 val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
-                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
+                    val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
+                }
+            }
+            MvcView.REQUEST_CODE ->{
+                if(resultCode == MvcView.RESULT_CODE_OK){
+                    data?.let{
+                        val bundle = data.getBundleExtra(REGISTER_MEMBER_SUCCESS)
+                        bundle?.let {
+                            val listInfo =
+                                bundle.getParcelableArrayList<AnimatedInfos>(IntentManger.Keys.ANIMATED_INFO)?: ArrayList()
+                            val isShown = bundle.getBoolean(IntentManger.Keys.IS_SHOWN,true)
+                            val shopID = bundle.getString(IntentManger.Keys.SHOP_ID,"")
+                            (discoveryBaseViewModel as? DiscoMerchantVoucherViewModel)?.updateData(shopID,isShown,listInfo)
+                        }
+                    }
+                }
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
@@ -966,7 +1042,6 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -984,9 +1059,8 @@ class DiscoveryFragment :
         if(lastVisibleComponent == null){
             updateLastVisibleComponent()
         }
-        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent, isManualScroll)
         openScreenStatus = false
-        UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
@@ -1056,11 +1130,17 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -1071,7 +1151,10 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return EMPTY_STRING
+        return if((context as DiscoveryActivity).isFromCategory())
+                (context as DiscoveryActivity).getPageIdentifier()
+            else
+                EMPTY_STRING
     }
 
     private fun fetchUserLatestAddressData() {
@@ -1147,5 +1230,10 @@ class DiscoveryFragment :
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
+    }
+
+    // ScreenShot Access Dialogue Permission
+    override fun permissionAction(action: String, label: String) {
+        getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
     }
 }

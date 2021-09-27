@@ -53,7 +53,7 @@ class DropoffPickerViewModelTest {
     fun `When get store list Given success callback Then live data changed to success`() {
         val testData = DropoffUiModel(listOf(), 1)
         val successResult = hashMapOf<Type, Any>(GetStoreResponse::class.java to GetStoreResponse())
-        coEvery { repo.getReseponse(any(), any()) } returns GraphqlResponse(
+        coEvery { repo.response(any(), any()) } returns GraphqlResponse(
                 successResult, HashMap<Type, List<GraphqlError>>(), false)
         every { mapper.map(GetStoreResponse()) } returns testData
 
@@ -65,7 +65,7 @@ class DropoffPickerViewModelTest {
     @Test
     fun `When get store throws exception Then live data changed to fail`() {
         val testError = Throwable("test error")
-        coEvery { repo.getReseponse(any(), any()) } throws testError
+        coEvery { repo.response(any(), any()) } throws testError
 
         viewModel.getStores("")
 
@@ -78,7 +78,7 @@ class DropoffPickerViewModelTest {
     @Test
     fun `When get store throws cancellation Then live data stays as is`() {
         val testError = CancellationException("cancelled")
-        coEvery { repo.getReseponse(any(), any()) } throws testError
+        coEvery { repo.response(any(), any()) } throws testError
 
         viewModel.getStores("")
 
