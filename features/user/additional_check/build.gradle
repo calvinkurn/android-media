@@ -57,7 +57,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.miscDependencies.coroutineCore
