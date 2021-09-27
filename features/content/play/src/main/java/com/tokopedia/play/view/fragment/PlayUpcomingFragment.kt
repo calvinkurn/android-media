@@ -23,8 +23,8 @@ import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayCartUiState
+import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -133,7 +133,7 @@ class PlayUpcomingFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
+                renderToolbarView(state.partner, state.share.shouldShow, state.cart)
             }
         }
 
@@ -205,13 +205,12 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-        followStatus: PlayPartnerFollowStatus,
-        partnerName: String,
+        partnerState: PlayPartnerUiState,
         isShareable: Boolean,
         cartState: PlayCartUiState,
     ) {
-        toolbarView.setFollowStatus(followStatus)
-        toolbarView.setPartnerName(partnerName)
+        toolbarView.setFollowStatus(partnerState.followStatus)
+        toolbarView.setPartnerName(partnerState.name)
 
         toolbarView.setIsShareable(isShareable)
 

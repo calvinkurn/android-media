@@ -27,6 +27,7 @@ import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -237,10 +238,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 id = element.productId,
                 imageUrl = element.productImageUrl,
                 name = element.productName,
-                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
+                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix(),
                 dropPercentage = element.productSlashPriceLabel.removeSuffix("%"),
                 priceBeforeInt = element.productOriginalPrice.toDouble(),
-                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false),
+                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false).removeDecimalSuffix(),
             )
             productPreviews.add(productPreview)
         }
