@@ -10,4 +10,5 @@ class AffiliateHelpFragment : BaseSessionWebViewFragment() {
             return newInstance(url)
         }
     }
+
 }

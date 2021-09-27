@@ -28,6 +28,8 @@ class AffiliatePromotionProductCard  {
         private const val LABEL_TYPE = "status"
         private const val LABEL_COLOR = "transparentBlack"
         private const val LABEL_COLOR_COMMISSION = "textGreen"
+        private const val LABEL_SISA = "gimmick"
+        private const val LABEL_SISA_COLOR = "textDarkRed"
 
         fun toAffiliateProductModel(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item) : ProductCardModel{
             return ProductCardModel(
@@ -38,13 +40,15 @@ class AffiliatePromotionProductCard  {
                     priceRange = getAdditionalDataFromType(item, AdditionalInfoType.FINAL_PRICE_TYPE),
                     labelGroupList = arrayListOf(
                             ProductCardModel.LabelGroup(LABEL_POSITION,
-                            getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),LABEL_COLOR_COMMISSION),
-                            ProductCardModel.LabelGroup(LABEL_TYPE, getMessageDataFromType(item,MessageType.OVERLAY_IMAGE_TYPE), LABEL_COLOR)),
+                                    getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),LABEL_COLOR_COMMISSION),
+                            ProductCardModel.LabelGroup(LABEL_SISA,
+                                    getAdditionalDataFromType(item, AdditionalInfoType.PRODUCT_STOCK_TYPE),LABEL_SISA_COLOR),
+                            ProductCardModel.LabelGroup(LABEL_TYPE,
+                                    getMessageDataFromType(item,MessageType.OVERLAY_IMAGE_TYPE), LABEL_COLOR)),
                     shopBadgeList = arrayListOf(ProductCardModel.ShopBadge(getFooterDataFromType(item,FooterType.SHOP)?.footerIcon?.isNotEmpty() == true,
                             getFooterDataFromType(item,FooterType.SHOP)?.footerIcon ?: "")),
                     shopLocation = getFooterDataFromType(item,FooterType.SHOP)?.footerText ?: "",
-                    countSoldRating = getFooterDataFromType(item,FooterType.RATING)?.footerText ?: "",
-                    stockBarLabel = getAdditionalDataFromType(item, AdditionalInfoType.PRODUCT_STOCK_TYPE)
+                    countSoldRating = getFooterDataFromType(item,FooterType.RATING)?.footerText ?: ""
             )
         }
 

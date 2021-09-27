@@ -28,6 +28,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
 
         itemView.findViewById<UnifyButton>(R.id.buttonNotify)?.run {
             visibility = View.VISIBLE
+            buttonType = UnifyButton.Type.MAIN
             buttonVariant = UnifyButton.Variant.GHOST
             text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
