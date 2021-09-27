@@ -74,6 +74,7 @@ class ReadReviewViewHolder(view: View,
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName, user.userID, isAnonymous)
             setReviewerStats(userReviewStats, user.userID, isAnonymous)
+            setProfilePicture(user.image)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -301,5 +302,13 @@ class ReadReviewViewHolder(view: View,
             return
         }
         basicInfo?.hideStats()
+    }
+
+    private fun setProfilePicture(imageUrl: String) {
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent()) {
+            basicInfo?.setReviewerImage(imageUrl)
+            return
+        }
+        basicInfo?.hideReviewerImage()
     }
 }

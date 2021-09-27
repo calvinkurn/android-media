@@ -25,14 +25,26 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="kemarin" />
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/review_item_reviewer_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:unify_image_type="circle"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/review_item_reviewer_name"
+        app:layout_constraintBottom_toBottomOf="@id/review_item_reviewer_name"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_item_reviewer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_goneMarginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/review_item_reviewer_image"
         app:layout_constraintTop_toBottomOf="@id/review_item_timestamp"
         app:typographyType="body_3"
         app:typographyWeight="bold"

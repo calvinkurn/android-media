@@ -38,6 +38,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var reviewerName: Typography? = null
     private var variant: Typography? = null
     private var reviewerStats: Typography? = null
+    private var profilePicture: ImageUnify? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_review_basic_info, this)
@@ -50,6 +51,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         reviewerName = findViewById(R.id.review_item_reviewer_name)
         variant = findViewById(R.id.review_item_variant)
         reviewerStats = findViewById(R.id.review_item_reviewer_stats)
+        profilePicture = findViewById(R.id.review_item_reviewer_image)
     }
 
     fun setRating(rating: Int) {
@@ -135,5 +137,16 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun setCountColorToGreen() {
         reviewerStats?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+    }
+
+    fun setReviewerImage(imageUrl: String) {
+        profilePicture?.apply {
+            loadImage(imageUrl)
+            show()
+        }
+    }
+
+    fun hideReviewerImage() {
+        profilePicture?.hide()
     }
 }
