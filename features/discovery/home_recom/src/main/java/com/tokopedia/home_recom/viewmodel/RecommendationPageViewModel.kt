@@ -97,7 +97,7 @@ open class RecommendationPageViewModel @Inject constructor(
             try{
                 var result = awaitAll(
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            getPrimaryProductUseCase.setParameter(productId.toInt(), queryParam)
+                            getPrimaryProductUseCase.setParameter(productId, queryParam)
                             getPrimaryProductUseCase.executeOnBackground()
                         }) {
                             null
@@ -288,7 +288,7 @@ open class RecommendationPageViewModel @Inject constructor(
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productDetailData.id.toLong()
+            addToCartRequestParams.productId = productDetailData.id
             addToCartRequestParams.shopId = productDetailData.shop.id
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""

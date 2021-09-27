@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
@@ -28,6 +29,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var ratingStars: ImageUnify? = null
     private var timeStamp: Typography? = null
     private var reviewerName: Typography? = null
+    private var variant: Typography? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_review_basic_info, this)
@@ -38,6 +40,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         ratingStars = findViewById(R.id.review_item_rating)
         timeStamp = findViewById(R.id.review_item_timestamp)
         reviewerName = findViewById(R.id.review_item_reviewer_name)
+        variant = findViewById(R.id.review_item_variant)
     }
 
     fun setRating(rating: Int) {
@@ -56,5 +59,14 @@ class ReviewBasicInfoWidget : BaseCustomView {
         val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96)
         timeStamp?.setTextColor(color)
         reviewerName?.setTextColor(color)
+        variant?.setTextColor(color)
+    }
+
+    fun setVariantName(variantName: String) {
+        if (variantName.isEmpty()) return
+        this.variant?.apply {
+            text = context.getString(R.string.review_gallery_variant, variantName)
+            show()
+        }
     }
 }

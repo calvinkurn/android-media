@@ -14,6 +14,7 @@ class ProductFeaturedSeeMoreAdapterDelegate(
 ) : TypedAdapterDelegate<PlayProductUiModel.SeeMore, PlayProductUiModel, ProductFeaturedSeeMoreViewHolder>(ProductFeaturedSeeMoreViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: PlayProductUiModel.SeeMore, holder: ProductFeaturedSeeMoreViewHolder) {
+        holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductFeaturedSeeMoreViewHolder {

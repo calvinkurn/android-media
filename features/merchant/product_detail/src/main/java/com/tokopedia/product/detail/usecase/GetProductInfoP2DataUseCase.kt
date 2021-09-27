@@ -425,6 +425,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
+            rating {
+                ratingScore
+                totalRating
+                totalReviewTextAndImage
+            }
         }
     }""".trimIndent()
     }
@@ -451,7 +456,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
         val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), cacheStrategy)
+            val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)
             val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
             val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
@@ -494,6 +499,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.rating = rating
         }
         return p2UiData
     }

@@ -64,7 +64,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         UserSession(activity)
     }
 
-    private val MIN_SHOP_NAME_LENGTH = 3
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
     private lateinit var txtInputShopName: TextFieldUnify
@@ -85,6 +84,12 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
         const val DEFAULT_SELECTED_POSITION = -1
+        const val ZERO_SPAN_SIZE = 0
+        const val TWENTY_SPAN_SIZE = 20
+        const val TWENTY_ONE_SPAN_SIZE = 21
+        const val TWENTY_FOUR_SPAN_SIZE = 24
+        const val TWENTY_FIVE_SPAN_SIZE = 25
+        const val MINIMUM_SHOP_LENGTH = 3
     }
 
     override fun onAttach(context: Context) {
@@ -110,10 +115,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
-                if (s.toString().length < MIN_SHOP_NAME_LENGTH) {
+                if (s.toString().length < MINIMUM_SHOP_LENGTH) {
                     shopNameValue = s.toString()
                     validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
-                } else if (s.toString().length >= MIN_SHOP_NAME_LENGTH && s.isNotEmpty()) {
+                } else if (s.toString().length >= MINIMUM_SHOP_LENGTH && s.isNotEmpty()) {
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -126,10 +131,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 txtInputDomainName.setError(false)
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
-                if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
+                if (domainInputStr.length < MINIMUM_SHOP_LENGTH) {
                     domainNameValue = domainInputStr.toString()
                     validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
-                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
+                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MINIMUM_SHOP_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
@@ -236,7 +241,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         var errorMessage = it.data.validateDomainShopName.error.message
-                        if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
+                        if (shopNameValue.length < MINIMUM_SHOP_LENGTH) {
                             errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
                             validateShopName(
                                     isError = true,
@@ -464,17 +469,17 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val tncUnclickableAreaSpan = setupClickableSpan("", getString(R.string.open_shop_revamp_tnc_unclickable))
         val privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))
 
-        textTnc.setSpan(tncClickableSpan, 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncClickableSpan, ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(tncUnclickableAreaSpan, 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.NORMAL), 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(privacyPolicyClickableSpan, 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         txtTermsAndConditions.setText(textTnc)
         txtTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance())

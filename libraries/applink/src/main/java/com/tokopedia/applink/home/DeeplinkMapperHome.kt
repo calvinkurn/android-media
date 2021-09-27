@@ -1,13 +1,16 @@
 package com.tokopedia.applink.home
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.user.session.UserSession
 
 object DeeplinkMapperHome {
 
@@ -21,9 +24,18 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
 
-    fun getRegisteredNavigationHome(deeplink: String): String {
+    fun isLoginAndHasShop(context: Context): Boolean{
+        val userSession = UserSession(context)
+        return userSession.isLoggedIn && userSession.hasShop()
+    }
+
+    fun getRegisteredNavigationHome(context: Context, deeplink: String): String {
         if (GlobalConfig.isSellerApp()) {
-            return ApplinkConstInternalSellerapp.SELLER_HOME
+            return if (isLoginAndHasShop(context)) {
+                ApplinkConstInternalSellerapp.SELLER_HOME
+            } else {
+                ApplinkConstInternalSellerapp.WELCOME
+            }
         }
         val uri = Uri.parse(deeplink)
 
@@ -107,7 +119,10 @@ object DeeplinkMapperHome {
         ) == RollenceKey.VARIANT_NEW_INBOX
         val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
         return useNewInbox && useNewNav
     }
 

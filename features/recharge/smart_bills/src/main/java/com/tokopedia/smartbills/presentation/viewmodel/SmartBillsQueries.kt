@@ -15,6 +15,75 @@ object SmartBillsQueries {
         """.trimIndent()
     }
 
+    val GET_CATALOG_ADD_BILLS by lazy {
+        """
+            query rechargeCatalog(${'$'}platformID: Int!){ 
+              rechargeCatalogMenu(platformID:${'$'}platformID){ 
+                id 
+                name 
+                label 
+                icon 
+                style 
+                app_link 
+                slug_name 
+                }
+               }
+        """.trimIndent()
+    }
+
+    val GET_NOMINAL_TELCO by lazy {
+        """query rechargeCatalog(${'$'}menuID: Int!, ${'$'}platformID: Int!, ${'$'}operator: String!, ${'$'}clientNumber: String!){
+            rechargeCatalogProductInputMultiTab(menuID: ${'$'}menuID, platformID: ${'$'}platformID, operator: ${'$'}operator, clientNumber: [${'$'}clientNumber]) {
+            productInputs {
+                id
+                label
+                needEnquiry
+                isShowingProduct
+                enquiryFields {
+                    id
+                    param_name
+                    name
+                }
+                product {
+                    name
+                    text
+                    placeholder
+                    validations {
+                        rule
+                    }
+                    dataCollections {
+                        name
+                        products {
+                            id
+                            attributes {
+                                price
+                                price_plain
+                                detail
+                                info
+                                product_labels
+                                promo {
+                                    id
+                                    new_price
+                                }
+                                desc
+                            }
+                        }
+                    }
+                }
+                filterTagComponents{
+                    name
+                    text
+                    param_name
+                    data_collections {
+                        key
+                        value
+                    }
+                }
+            }
+        }
+        }"""
+    }
+
     val STATEMENT_BILLS_QUERY by lazy {
         """
             query rechargeStatementBills(${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){
@@ -107,6 +176,10 @@ object SmartBillsQueries {
                   operatorID:OperatorID
                   operatorName: OperatorName
                   clientNumber: ClientNumber
+                  newBillLabel: NewBillLabel{
+                    isNewLabel: IsNewBill
+                    text: Text
+                  }
                   amount: Amount
                   amountText: AmountText
                   iconURL: IconURL
@@ -128,6 +201,11 @@ object SmartBillsQueries {
                   DueDateLabel{
                      Type
                      Text
+                  }
+                  promo: Promo{
+                    percentage: Percentage,
+                    slashAmout: SlashAmount,
+                    slashAmountText: SlashAmountText
                   }
             }
         }
@@ -177,4 +255,15 @@ object SmartBillsQueries {
     }
     """
     }
+
+
+    val DELETE_SBM by lazy {
+        """mutation DeleteFromSBMList(${'$'}req:RechargeSBMDeleteBillRequest!) {
+                rechargeSBMDeleteBill(req: ${'$'}req) {
+                    Message
+                }
+            }
+        """.trimIndent()
+    }
+
 }

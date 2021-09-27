@@ -67,7 +67,7 @@ class GetTickerUseCaseTest {
         ))
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         coEvery {
@@ -77,7 +77,7 @@ class GetTickerUseCaseTest {
         val result = getTickerUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         coVerify {
@@ -94,14 +94,14 @@ class GetTickerUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetTickerResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getTickerUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

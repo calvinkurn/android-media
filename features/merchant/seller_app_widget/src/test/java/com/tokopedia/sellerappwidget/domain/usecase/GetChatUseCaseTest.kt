@@ -53,7 +53,7 @@ class GetChatUseCaseTest {
         val successResponse: GraphqlResponse = TestHelper.createSuccessResponse<GetChatResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         coEvery {
@@ -63,7 +63,7 @@ class GetChatUseCaseTest {
         val actualResult: ChatUiModel = getChatUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         coVerify {
@@ -80,14 +80,14 @@ class GetChatUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetChatResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val actualResult = getChatUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertNull(actualResult)

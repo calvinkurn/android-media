@@ -8,7 +8,7 @@ public class LikeDislikeList {
 
     @SerializedName("review_id")
     @Expose
-    private int reviewId;
+    private Long reviewId;
     @SerializedName("total_like")
     @Expose
     private int totalLike;
@@ -19,11 +19,11 @@ public class LikeDislikeList {
     @Expose
     private int likeStatus;
 
-    public int getReviewId() {
+    public Long getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(int reviewId) {
+    public void setReviewId(Long reviewId) {
         this.reviewId = reviewId;
     }
 

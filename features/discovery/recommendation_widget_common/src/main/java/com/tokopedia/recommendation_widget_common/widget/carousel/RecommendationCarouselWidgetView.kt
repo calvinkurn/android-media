@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.carousel
 
 import android.content.Context
 import android.graphics.Rect
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -67,6 +68,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private lateinit var recyclerView: RecyclerView
     private var adapter: RecommendationCarouselAdapter? = null
     private lateinit var layoutManager: LinearLayoutManager
+    private var scrollListener: ((Parcelable?) -> Unit)? = null
     private var pageName: String = ""
     private var adapterPosition: Int = 0
     private var isInitialized = false
@@ -242,6 +244,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapter = RecommendationCarouselAdapter(typeFactory)
         layoutManager = createLayoutManager()
 
+        recyclerView.addOnScrollListener(createScrollListener())
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
@@ -292,7 +295,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         cardList.addAll(productDataList)
         if (cardList.size != 0) {
             if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
-                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
+                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink, listener = this))
             }
 
             adapter?.submitList(cardList)
@@ -347,10 +350,16 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    fun getCurrentPosition(): Int {
-        return if (::layoutManager.isInitialized)
-            layoutManager.findFirstCompletelyVisibleItemPosition()
-        else 0
+    private fun createScrollListener(): RecyclerView.OnScrollListener {
+        return  object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (::layoutManager.isInitialized) {
+                    val scrollState = layoutManager.onSaveInstanceState()
+                    scrollListener?.invoke(scrollState)
+                }
+            }
+        }
     }
 
     private fun doActionBasedOnRecomState(state: Int, onLoad: () -> Unit?, onReady: () -> Unit?, onFailed: () -> Unit?) {
@@ -399,5 +408,23 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 })
             })
         }
+    }
+
+    fun getCurrentPosition(): Int {
+        return if (::layoutManager.isInitialized)
+            layoutManager.findFirstCompletelyVisibleItemPosition()
+        else 0
+    }
+
+    fun restoreScrollState(scrollState: Parcelable?) {
+        if (!::layoutManager.isInitialized) return
+
+        itemView.post {
+            layoutManager.onRestoreInstanceState(scrollState)
+        }
+    }
+
+    fun setScrollListener(scrollListener: ((Parcelable?) -> Unit)?) {
+        this.scrollListener = scrollListener
     }
 }
