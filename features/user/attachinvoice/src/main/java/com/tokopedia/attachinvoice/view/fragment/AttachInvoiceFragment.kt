@@ -71,11 +71,10 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding =  FragmentAttachinvoiceAttachInvoiceBinding.inflate(inflater, container, false).also {
-            initializeArguments(arguments)
-            setupRecyclerView()
-            setupObserver()
-        }
+        _binding =  FragmentAttachinvoiceAttachInvoiceBinding.inflate(inflater, container, false)
+        initializeArguments(arguments)
+        setupRecyclerView()
+        setupObserver()
         return binding.root
     }
 
