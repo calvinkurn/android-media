@@ -35,6 +35,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -472,7 +473,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
             val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
                     ?: context.getString(R.string.mini_cart_widget_cta_text_default)
             setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
