@@ -25,6 +25,7 @@ class CentralizedPromoViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
+    private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -66,23 +67,34 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(): Result<BaseUiModel> {
         return try {
-            val isFreeShippingEnabled =
+            val isFreeShippingEnabledDeferred = async {
                 !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-            val chatBlastSellerMetadataUiModel =
-                getChatBlastSellerMetadataUseCase.executeOnBackground()
-            val broadcastChatExtra =
-                if (chatBlastSellerMetadataUiModel.promo > UNAVAILABLE_PROMO_TYPE &&
-                    chatBlastSellerMetadataUiModel.promoType == BROADCAST_CHAT_PROMO_TYPE) {
-                    resourceProvider.composeBroadcastChatFreeQuotaLabel(
-                        chatBlastSellerMetadataUiModel.promo
-                    )
-                } else ""
+            }
+            val broadcastChatPairDeferred = async {
+                val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
+                val broadcastChatExtra =
+                    if (chatBlastSellerMetadataUiModel.promo > UNAVAILABLE_PROMO_TYPE &&
+                        chatBlastSellerMetadataUiModel.promoType == BROADCAST_CHAT_PROMO_TYPE) {
+                        resourceProvider.composeBroadcastChatFreeQuotaLabel(
+                            chatBlastSellerMetadataUiModel.promo
+                        )
+                    } else ""
+                broadcastChatExtra to chatBlastSellerMetadataUiModel.url
+            }
+            val isVoucherCashbackEligibleDeferred = async {
+                voucherCashbackEligibleUseCase.execute(userSession.shopId)
+            }
+
+            val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()
+            val isFreeShippingEnabled = isFreeShippingEnabledDeferred.await()
+            val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
                     broadcastChatExtra,
-                    chatBlastSellerMetadataUiModel.url,
-                    isFreeShippingEnabled
+                    chatBlastSellerUrl,
+                    isFreeShippingEnabled,
+                    isVoucherCashbackEligible
                 )
             )
         } catch (t: Throwable) {
