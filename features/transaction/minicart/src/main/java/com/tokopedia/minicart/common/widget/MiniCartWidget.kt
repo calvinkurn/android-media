@@ -16,6 +16,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -71,6 +74,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
     private var miniCartChevronClickListener: OnClickListener? = null
+    private var coachMark: CoachMark2? = null
 
     private var viewModel: MiniCartViewModel? = null
 
@@ -442,6 +446,7 @@ class MiniCartWidget @JvmOverloads constructor(
             renderUnavailableWidget(miniCartSimplifiedData)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
+            showOnBoarding()
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
@@ -558,6 +563,39 @@ class MiniCartWidget @JvmOverloads constructor(
         context?.let {
             handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
         }
+    }
+
+    private fun showOnBoarding() {
+        context?.let { context ->
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
+                coachMark = CoachMark2(context)
+                this.totalAmount?.labelTitleView?.let { anchor ->
+                    coachMark?.let { coachMark2 ->
+                        anchor.post {
+                            val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    anchor,
+                                    context.getString(R.string.mini_cart_coachmark_title),
+                                    context.getString(R.string.mini_cart_coachmark_desc),
+                                    CoachMark2.POSITION_TOP
+                                )
+                            )
+                            coachMark2.showCoachMark(step = coachMarkItems)
+                            CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun hideCoachMark() {
+        coachMark?.dismissCoachMark()
+    }
+
+    companion object {
+        private const val COACH_MARK_TAG = "coachmark_tokonow"
     }
 
 }
