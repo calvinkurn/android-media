@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -35,9 +35,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     private var updateInfoCtaClickListener: (() -> Unit)? = null
 
     init {
-        val view = View.inflate(context, R.layout.item_benefit_package_status_pm_pro, this)
-        binding = ItemBenefitPackageStatusPmProBinding.bind(view)
-        addView(view)
+        binding = ItemBenefitPackageStatusPmProBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun show(data: WidgetExpandableUiModel) {

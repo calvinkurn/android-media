@@ -2,13 +2,12 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmRegistrationFooterBinding
 
 /**
@@ -28,10 +27,7 @@ class RegistrationFooterView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        val view = View.inflate(context, R.layout.view_pm_registration_footer, this)
-        binding = ViewPmRegistrationFooterBinding.bind(view)
-        addView(view)
-
+        binding = ViewPmRegistrationFooterBinding.inflate(LayoutInflater.from(context), this, true)
         binding?.run {
             tvPmRegistrationTnC.setOnClickListener {
                 tncClickListener?.invoke()

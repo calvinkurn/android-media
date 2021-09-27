@@ -2,11 +2,10 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmTermsHeaderBinding
 
 /**
@@ -27,9 +26,7 @@ class TermHeaderView : LinearLayout {
     private var isExpanded = true
 
     init {
-        val view = View.inflate(context, R.layout.view_pm_terms_header, this)
-        binding = ViewPmTermsHeaderBinding.bind(view)
-        addView(view)
+        binding = ViewPmTermsHeaderBinding.inflate(LayoutInflater.from(context), this, true)
 
         binding?.root?.setOnClickListener {
             isExpanded = !isExpanded

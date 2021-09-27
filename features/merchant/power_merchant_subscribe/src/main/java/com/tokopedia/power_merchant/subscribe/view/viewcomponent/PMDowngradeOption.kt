@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -28,9 +28,7 @@ class PMDowngradeOption : ConstraintLayout {
         private set
 
     init {
-        val view = View.inflate(context, R.layout.view_pm_downgrade_option, this)
-        binding = ViewPmDowngradeOptionBinding.bind(view)
-        addView(view)
+        binding = ViewPmDowngradeOptionBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun show(label: String, name: String, description: String) = binding?.run {

@@ -2,12 +2,11 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmCurrentBenefitSectionBinding
 
 /**
@@ -29,9 +28,7 @@ class PmCurrentBenefitSectionView : ConstraintLayout {
     )
 
     init {
-        val view = View.inflate(context, R.layout.view_pm_current_benefit_section, this)
-        binding = ViewPmCurrentBenefitSectionBinding.bind(view)
-        addView(view)
+        binding = ViewPmCurrentBenefitSectionBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun setOnExpandedChanged(shouldExpanded: Boolean) = binding?.run {
