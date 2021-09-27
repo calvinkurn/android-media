@@ -86,10 +86,6 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     @Test
     fun screenshot() {
-        CommonTelcoActions.stubSearchNumber(
-            VALID_PHONE_NUMBER,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
-        )
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_input_number()
@@ -112,14 +108,13 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     fun take_screenshot_input_number() {
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget")
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget_filled")
     }
 
     fun take_screenshot_interaction_product_not_login() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
         // Pulsa
         CommonActions.findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(),
@@ -174,7 +169,7 @@ abstract class BaseTelcoPrepaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_promo() {
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
+        onView(withId(R.id.text_field_icon_close)).perform(click())
         Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
             CoreMatchers.allOf(

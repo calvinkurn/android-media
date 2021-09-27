@@ -6,15 +6,11 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -22,8 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -43,7 +37,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import org.hamcrest.CoreMatchers.allOf
 import java.lang.StringBuilder
 
@@ -93,10 +87,7 @@ abstract class BaseTelcoPostpaidScreenShotTest {
 
     @Test
     fun screenshot() {
-        stubSearchNumber(
-            VALID_PHONE_NUMBER,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
-        )
+        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_interaction_promo()

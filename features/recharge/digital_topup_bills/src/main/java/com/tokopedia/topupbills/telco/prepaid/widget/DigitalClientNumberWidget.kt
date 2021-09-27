@@ -88,7 +88,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.textInputLayout.hint = textFieldStaticLabel
             clearErrorState()
             imgOperator.hide()
-            listener.onClearAutoComplete()
+            listener.onClickClearInput()
         }
 
         inputNumberField.editText.run {
@@ -345,6 +345,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onNavigateToContact(isSwitchChecked: Boolean)
         fun onRenderOperator()
         fun onClearAutoComplete()
+        fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
     }

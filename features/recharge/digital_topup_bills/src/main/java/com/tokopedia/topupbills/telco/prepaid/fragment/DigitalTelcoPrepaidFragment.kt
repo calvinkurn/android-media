@@ -507,6 +507,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
             }
         }
+
+        override fun onClickClearInput() {
+            topupAnalytics.eventClearInputNumber()
+        }
     }
 
     private fun showPromoAndRecommendation() {

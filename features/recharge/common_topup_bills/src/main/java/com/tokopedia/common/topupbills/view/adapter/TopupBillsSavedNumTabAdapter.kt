@@ -8,7 +8,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFra
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
 import java.util.ArrayList
 
-class TopupBillsSavedNumTabAdapter(
+open class TopupBillsSavedNumTabAdapter(
     fragment: Fragment,
     private var clientNumberType: String,
     private var number: String,
@@ -22,21 +22,19 @@ class TopupBillsSavedNumTabAdapter(
         return when (position) {
             POSITION_CONTACT_LIST -> {
                 if (!instance.containsKey(position.toString())) {
-                    instance[position.toString()] =
-                        TopupBillsContactListFragment.newInstance()
+                    instance[position.toString()] = TopupBillsContactListFragment.newInstance()
                 }
                 instance[position.toString()]!!
             }
             POSITION_FAVORITE_NUMBER -> {
                 if (!instance.containsKey(position.toString())) {
-                    instance[position.toString()] =
-                        TopupBillsFavoriteNumberFragment.newInstance(
-                            clientNumberType,
-                            number,
-                            operatorData,
-                            currentCategoryName,
-                            dgCategoryIds
-                        )
+                    instance[position.toString()] = TopupBillsFavoriteNumberFragment.newInstance(
+                        clientNumberType,
+                        number,
+                        operatorData,
+                        currentCategoryName,
+                        dgCategoryIds
+                    )
                 }
                 instance[position.toString()]!!
             }
