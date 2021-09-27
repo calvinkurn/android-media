@@ -21,7 +21,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "impression on engagement button",
                 KEY_EVENT_LABEL to "$channelId - live",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId
@@ -36,7 +36,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "click engagement button",
                 KEY_EVENT_LABEL to "$channelId - live",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId
@@ -57,7 +57,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "click terapkan & mulai button",
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle - $durationInSecond",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId
@@ -76,7 +76,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "impression on winner list",
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId
@@ -95,7 +95,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "click winner list",
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId
@@ -114,7 +114,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_ACTION to "click chat in bottom sheet",
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE_MARKETPLACE,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SHOP_ID to userSession.shopId,
                 KEY_USER_ID to userSession.userId

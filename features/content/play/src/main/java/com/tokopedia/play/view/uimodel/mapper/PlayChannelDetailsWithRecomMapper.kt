@@ -2,13 +2,14 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -22,8 +23,9 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayChannelDetailsWithRecomMapper @Inject constructor(
-        private val htmlTextTransformer: HtmlTextTransformer,
-        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+    private val htmlTextTransformer: HtmlTextTransformer,
+    private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
+    private val multipleLikesMapper: PlayMultipleLikesMapper,
 ) {
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
@@ -40,14 +42,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         videoInfo = mapVideoInfo(it.video),
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
-                    likeInfo = mapLikeInfo(it.config.feedLikeParam),
+                    likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                     channelReportInfo = mapChannelReportInfo(),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, it.title, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
-                    leaderboardInfo = mapLeaderboardInfo()
+                    leaderboardInfo = mapLeaderboardInfo(),
+                    upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime)
             )
         }
     }
@@ -73,12 +76,16 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             status = PlayPartnerFollowStatus.Unknown,
     )
 
-    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel(
-            contentId = feedLikeParamResponse.contentId,
-            contentType = feedLikeParamResponse.contentType,
-            likeType = feedLikeParamResponse.likeType,
-            status = PlayLikeStatus.Unknown,
-            source = LikeSource.Network,
+    private fun mapLikeInfo(
+        feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
+        configs: List<MultipleLikeConfig>,
+    ) = PlayLikeInfoUiModel(
+        contentId = feedLikeParamResponse.contentId,
+        contentType = feedLikeParamResponse.contentType,
+        likeType = feedLikeParamResponse.likeType,
+        status = PlayLikeStatus.Unknown,
+        source = LikeSource.Network,
+        likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
     private fun mapChannelReportInfo() = PlayChannelReportUiModel()
@@ -113,6 +120,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         id = videoResponse.id,
         orientation = VideoOrientation.getByValue(videoResponse.orientation),
     )
+
+    private fun mapMultipleLikeConfig(
+        configs: List<MultipleLikeConfig>
+    ) : PlayLikeBubbleConfig {
+        return multipleLikesMapper.mapMultipleLikeConfig(configs)
+    }
 
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
             shouldShow = configResponse.showCart
@@ -233,6 +246,16 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
+
+    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
+        PlayUpcomingUiModel(
+            title = title,
+            isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
+            isReminderSet = isReminderSet,
+            coverUrl = coverUrl,
+            startTime = startTime,
+            isAlreadyLive = false
+        )
 
     companion object {
         private const val MS_PER_SECOND = 1000

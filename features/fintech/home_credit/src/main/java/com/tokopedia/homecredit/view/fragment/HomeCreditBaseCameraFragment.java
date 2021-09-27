@@ -61,7 +61,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private List<Flash> supportedFlashList;
     public FrameLayout cameraLayout;
     public IconUnify flashControl;
-    public ImageView buttonCancel;
+    public IconUnify buttonCancel;
 
     private Size mCaptureNativeSize;
     public ImageView imageCaptured;
@@ -354,6 +354,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     public void onResume() {
         super.onResume();
         onVisible();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(isCameraOpen){
+            cameraView.close();
+        }
     }
 
     @Override

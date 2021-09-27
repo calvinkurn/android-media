@@ -3,7 +3,7 @@ package com.tokopedia.cart.view.uimodel
 import android.os.Parcelable
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class CartShopHolderData : Parcelable {

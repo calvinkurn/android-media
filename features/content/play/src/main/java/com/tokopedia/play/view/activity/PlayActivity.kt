@@ -38,6 +38,7 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 /**
@@ -277,8 +278,11 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot) {
-                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                    if (isTaskRoot || viewModel.source.key == "") {
+                        val intent = RouteManager.getIntent(
+                            this,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "${TokopediaUrl.getInstance().WEB}$PLAY_CHANNEL_LIST_PATH?$PLAY_CHANNEL_LIST_QUERY")
+                        )
                         startActivity(intent)
                         finish()
                     } else {
@@ -287,7 +291,9 @@ class PlayActivity : BaseActivity(),
                     }
                 }
             }
-        } else super.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun requestEnableNavigation() {
@@ -343,6 +349,8 @@ class PlayActivity : BaseActivity(),
     }
 
     companion object {
+        private const val PLAY_CHANNEL_LIST_PATH = "play/channels"
+        private const val PLAY_CHANNEL_LIST_QUERY = "pull_to_refresh=true&titlebar=false"
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
     }
 }

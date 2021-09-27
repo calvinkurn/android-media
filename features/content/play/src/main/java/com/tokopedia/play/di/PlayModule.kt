@@ -16,6 +16,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -43,7 +45,7 @@ import javax.inject.Named
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule {
+class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
@@ -55,7 +57,7 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun providePlayVideoPlayerLifecycleObserver(context: Context): PlayVideoPlayerObserver = PlayVideoPlayerObserver(context)
+    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
 
     @PlayScope
     @Provides
@@ -78,15 +80,15 @@ class PlayModule {
     @PlayScope
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideUpdateCartCounterMutation(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+    fun provideUpdateCartCounterMutation(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
     }
 
     @Provides
     @PlayScope
     @Named(QUERY_VARIANT)
-    internal fun provideQueryVariant(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
+    internal fun provideQueryVariant(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }
 
     @Provides
@@ -99,8 +101,8 @@ class PlayModule {
 
     @Provides
     @PlayScope
-    fun provideTrackingQueue(context: Context): TrackingQueue {
-        return TrackingQueue(context)
+    fun provideTrackingQueue(): TrackingQueue {
+        return TrackingQueue(mContext)
     }
 
     @Provides
@@ -111,8 +113,8 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun provideRemoteConfig(context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
+    fun provideRemoteConfig(): RemoteConfig {
+        return FirebaseRemoteConfigImpl(mContext)
     }
 
     @PlayScope
@@ -147,6 +149,10 @@ class PlayModule {
                 dispatchers
         )
     }
+
+    @Provides
+    fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers)
 
     @Provides
     fun provideCastContext(@ApplicationContext context: Context) = CastContext.getSharedInstance(context)
