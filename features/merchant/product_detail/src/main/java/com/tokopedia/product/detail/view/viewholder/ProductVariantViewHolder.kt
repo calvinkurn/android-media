@@ -49,7 +49,7 @@ class ProductVariantViewHolder(val view: View,
                     containerAdapter?.setData(it)
                 }
             }
-            addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(element.impressHolder) {
                 pdpListener.onImpressComponent(getComponentTrackData(element))
             }
         }

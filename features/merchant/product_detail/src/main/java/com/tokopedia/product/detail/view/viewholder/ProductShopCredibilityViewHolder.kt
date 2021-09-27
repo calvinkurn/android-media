@@ -65,7 +65,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                 }
 
                 hideShopLoading()
-                addOnImpressionListener(element.impressHolder) {
+                view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }
