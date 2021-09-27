@@ -55,6 +55,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+    implementation rootProject.ext.playServicesDependencies.core
 }
 
 project.ext {

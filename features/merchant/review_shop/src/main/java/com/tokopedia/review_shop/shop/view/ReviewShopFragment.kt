@@ -1,12 +1,14 @@
 package com.tokopedia.review_shop.shop.view
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -75,6 +77,11 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
         progressDialog = ProgressDialog(activity)
         progressDialog!!.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         return inflater.inflate(R.layout.fragment_shop_review_page, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        SplitCompat.install(context)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
