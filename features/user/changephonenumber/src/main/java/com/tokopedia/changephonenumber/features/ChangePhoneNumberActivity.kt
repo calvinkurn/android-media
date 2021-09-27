@@ -16,6 +16,7 @@ import com.tokopedia.changephonenumber.di.ChangePhoneNumberComponent
 import com.tokopedia.changephonenumber.di.DaggerChangePhoneNumberComponent
 import com.tokopedia.changephonenumber.di.module.ChangePhoneNumberModule
 import com.tokopedia.changephonenumber.features.webview.ChangePhoneNumberWebViewActivity
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -108,6 +109,6 @@ class ChangePhoneNumberActivity : BaseSimpleActivity(), HasComponent<ChangePhone
 
     companion object {
         private const val REQUEST_LOGIN = 1000
-        private const val DEFAULT_URL = "https://m.tokopedia.com/user/profile/edit/phone"
+        private val DEFAULT_URL =  "${TokopediaUrl.getInstance().MOBILEWEB}user/profile/edit/phone"
     }
 }
