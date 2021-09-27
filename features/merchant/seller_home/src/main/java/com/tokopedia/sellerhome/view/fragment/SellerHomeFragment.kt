@@ -93,7 +93,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.io.File
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -194,6 +193,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
+    private var shopImageFilePath: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -272,7 +272,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onDestroy() {
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
-        removeTemporaryShopImage()
+        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -500,7 +500,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
-                        removeTemporaryShopImage()
+                        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
                         setupShopSharing()
                     }
                 }
@@ -885,18 +885,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
     }
 
-    private var shopImageFilePath: String = ""
-
-    private fun removeTemporaryShopImage() {
-        if (shopImageFilePath.isNotEmpty()) {
-            File(shopImageFilePath).apply {
-                if (exists()) {
-                    delete()
-                }
-            }
-        }
-    }
-
     private fun setupShopSharing() {
         ImageHandler.loadImageWithTarget(
             context,
@@ -931,12 +919,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun initShopShareBottomSheet() {
-        val shopUrl = shopShareData?.shopUrl.orEmpty()
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
                 val shareDataModel = ShopShareHelper.DataModel(
-                    shareModel, shopImageFilePath, shopUrl
+                    shareModel = shareModel,
+                    shopImageFilePath = shopImageFilePath,
+                    shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
                     shopShareHelper.onShareOptionClicked(

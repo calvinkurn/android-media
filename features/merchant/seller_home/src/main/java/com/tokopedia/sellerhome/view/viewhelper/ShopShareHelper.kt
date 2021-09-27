@@ -13,6 +13,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -53,6 +54,16 @@ class ShopShareHelper @Inject constructor(
         )
 
         LinkerManager.getInstance().executeShareRequest(linkShareRequest)
+    }
+
+    fun removeTemporaryShopImage(shopImageFilePath: String) {
+        if (shopImageFilePath.isNotEmpty()) {
+            File(shopImageFilePath).apply {
+                if (exists()) {
+                    delete()
+                }
+            }
+        }
     }
 
     private fun getShopShareCallback(
