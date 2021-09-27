@@ -396,7 +396,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     hideFullPageLoading()
                     hideError()
                     hideLoading()
-                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
                         with(it.data.credibilityWidget) {
                             addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
                         }
