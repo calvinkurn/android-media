@@ -7,13 +7,18 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
-
     fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int): FeedXCard {
         val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data[0]
         val merchantVouchers = data.cpm.cpmShop.merchantVouchers
+
+        val feedXTagging = arrayListOf<FeedXMediaTagging>()
+        cpmData.data[0].cpm.cpmShop.products.forEachIndexed { index, _ ->
+            feedXTagging.add(getFeedxMediaTagging(index))
+        }
+
         cpmData.data[0].cpm.cpmShop.products.forEach {
-            media.add(cpmProductToFeedXMedia(it,variant,merchantVouchers as ArrayList<String>))
+            media.add(cpmProductToFeedXMedia(it,variant,merchantVouchers as ArrayList<String>,feedXTagging))
         }
 
         val feedXProducts = arrayListOf<FeedXProduct>()
@@ -83,7 +88,7 @@ object TopadsFeedXMapper {
     }
 
 
-    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>): FeedXMedia {
+    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>,feedXMediaTagging: ArrayList<FeedXMediaTagging>): FeedXMedia {
         var cashback=""
         if (!merchantVoucher.isNullOrEmpty()){
             cashback=merchantVoucher[0]
@@ -94,7 +99,7 @@ object TopadsFeedXMapper {
                 type = "image",
                 appLink = applinks,
                 mediaUrl = image.m_url,
-                tagging = arrayListOf(FeedXMediaTagging(0, 0.5f, 0.44f)),
+                tagging = feedXMediaTagging,
                 isImageImpressedFirst = false,
                 productName = name,
                 price = product.priceFormat,
@@ -105,6 +110,10 @@ object TopadsFeedXMapper {
                 cashBackFmt = cashback
             )
         }
+    }
+
+    private fun getFeedxMediaTagging(index:Int):FeedXMediaTagging{
+        return FeedXMediaTagging(index,0.5f, 0.5f)
     }
 
     private fun cpmProductToFeedXProduct(
@@ -126,7 +135,8 @@ object TopadsFeedXMapper {
                 name = name,
                 priceOriginalFmt = priceFormat,
                 priceFmt = priceFormat,
-                isDiscount = false
+                isDiscount = false,
+                coverURL = imageProduct.imageUrl
             )
         }
     }
