@@ -54,7 +54,7 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
 
     override suspend fun executeOnBackground(): InitiateVoucherUiModel {
         val request = GraphqlRequest(QUERY, InitiateVoucherResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val error = response.getError(InitiateVoucherResponse::class.java)
         if (error.isNullOrEmpty()) {

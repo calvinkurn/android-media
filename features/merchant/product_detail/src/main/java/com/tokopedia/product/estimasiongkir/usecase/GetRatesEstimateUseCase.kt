@@ -250,7 +250,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 .setSessionIncluded(false)
                 .build()
 
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(BottomSheetProductDetailInfoResponse::class.java)
         val data = response.getSuccessData<RatesEstimationModel.Response>().data?.data
                 ?: throw NullPointerException()

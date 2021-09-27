@@ -4,12 +4,14 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.LocalLoad
@@ -64,6 +66,9 @@ class ProductSingleVariantViewHolder(val view: View,
                 hideError()
             }
         }
+        view.addOnImpressionListener(element.impressHolder) {
+            pdpListener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
@@ -101,4 +106,8 @@ class ProductSingleVariantViewHolder(val view: View,
         txtVariantIdentifierStatic.show()
         variantLocalLoad.hide()
     }
+
+    private fun getComponentTrackData(
+        element: ProductSingleVariantDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

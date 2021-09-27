@@ -1,22 +1,19 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop_showcase.databinding.ShopShowcaseItemPickerBinding
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-import kotlinx.android.synthetic.main.shop_showcase_item_picker.view.*
 
 class ShopShowcasePickerAdapter(
         private val listener: PickerClickListener,
@@ -29,9 +26,12 @@ class ShopShowcasePickerAdapter(
     private var preSelectedShowcaseList: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcasePickerViewHolder {
-        return ShopShowcasePickerViewHolder(
-                parent.inflateLayout(R.layout.shop_showcase_item_picker)
+        val binding = ShopShowcaseItemPickerBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
         )
+        return ShopShowcasePickerViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -69,20 +69,22 @@ class ShopShowcasePickerAdapter(
         private const val DISABLE_TEXT_OPACITY = 0.3f
     }
 
-    inner class ShopShowcasePickerViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class ShopShowcasePickerViewHolder(itemViewBinding: ShopShowcaseItemPickerBinding): RecyclerView.ViewHolder(itemViewBinding.root) {
 
-        val btnRadioPicker: RadioButtonUnify? by lazy {
-            itemView.btn_radio_showcase_picker
-        }
-        private val btnCheckboxPicker: CheckboxUnify? by lazy {
-            itemView.btn_checkbox_showcase_picker
-        }
-        private val tvShowcaseName: TextView? by lazy {
-            itemView.tv_showcase_name
+        var btnRadioPicker: RadioButtonUnify? = null
+        private var btnCheckboxPicker: CheckboxUnify? = null
+        private var tvShowcaseNamePicker: TextView? = null
+
+        init {
+            itemViewBinding.apply {
+                btnRadioPicker = btnRadioShowcasePicker
+                btnCheckboxPicker = btnCheckboxShowcasePicker
+                tvShowcaseNamePicker = tvShowcaseName
+            }
         }
 
         fun bind(item: ShopEtalaseModel) {
-            tvShowcaseName?.text = item.name
+            tvShowcaseNamePicker?.text = item.name
 
             if(pickerType == ShowcasePickerType.RADIO) {
                 btnRadioPicker?.visible()
@@ -128,12 +130,12 @@ class ShopShowcasePickerAdapter(
 
         private fun setDisableState(ctx: Context, state: Boolean) {
             if(state) {
-                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                tvShowcaseName?.alpha = DISABLE_TEXT_OPACITY
+                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                tvShowcaseNamePicker?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
-                tvShowcaseName?.setTextColor(androidx.core.content.ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
-                tvShowcaseName?.alpha = ENABLE_TEXT_OPACITY
+                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+                tvShowcaseNamePicker?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }
         }

@@ -110,13 +110,15 @@ public class TopAdsGtmTracker {
             String keyword,
             String userId,
             String irisSessionId,
-            int topadsTag
+            int topadsTag,
+            String dimension115
     ) {
         List<Object> impressionList = createSearchResultProductImpressionDataLayer(
                 item,
                 position,
                 dimension90,
-                topadsTag
+                topadsTag,
+                dimension115
         );
 
         Map<String, Object> map = DataLayer.mapOf(
@@ -146,7 +148,8 @@ public class TopAdsGtmTracker {
             Product item,
             int position,
             String dimension90,
-            int topadsTag
+            int topadsTag,
+            String dimension115
     ) {
         List<Object> impressionList = new ArrayList<>();
 
@@ -164,7 +167,8 @@ public class TopAdsGtmTracker {
                 TopAdsGtmTrackerConstant.Product.LIST, list,
                 TopAdsGtmTrackerConstant.Product.POSITION, position,
                 TopAdsGtmTrackerConstant.DIMENSION83, setFreeOngkirDataLayer(item),
-                TopAdsGtmTrackerConstant.DIMENSION90, dimension90
+                TopAdsGtmTrackerConstant.DIMENSION90, dimension90,
+                TopAdsGtmTrackerConstant.DIMENSION115, dimension115
         );
 
         impressionList.add(impression);
@@ -326,7 +330,8 @@ public class TopAdsGtmTracker {
             int position,
             String userId,
             String dimension90,
-            int topadsTag
+            int topadsTag,
+            String dimension115
     ) {
         Analytics tracker = getTracker();
         if (tracker != null) {
@@ -334,6 +339,19 @@ public class TopAdsGtmTracker {
                     TopAdsGtmTrackerConstant.SEARCH_PRODUCT_TOPADS_PRODUCTLIST,
                     String.valueOf(topadsTag)
             );
+
+            Map<String, Object> productItemMap = DataLayer.mapOf(
+                    "name", item.getName(),
+                    "id", item.getId(),
+                    "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
+                    "brand", "none/other",
+                    "category", getCategoryBreadcrumb(item),
+                    "variant", "none/other",
+                    "position", position,
+                    "dimension83", setFreeOngkirDataLayer(item),
+                    "dimension90", dimension90,
+                    "dimension115", dimension115);
+
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "search result",
@@ -344,17 +362,7 @@ public class TopAdsGtmTracker {
                     "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", list),
-                                    "products", DataLayer.listOf(DataLayer.mapOf(
-                                            "name", item.getName(),
-                                            "id", item.getId(),
-                                            "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
-                                            "brand", "none/other",
-                                            "category", getCategoryBreadcrumb(item),
-                                            "variant", "none/other",
-                                            "position", position,
-                                            "dimension83", setFreeOngkirDataLayer(item),
-                                            "dimension90", dimension90)
-                                    )
+                                    "products", DataLayer.listOf(productItemMap)
                             )
                     )
             );
