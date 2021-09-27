@@ -13,14 +13,9 @@ import javax.inject.Inject
  * Created by jegul on 20/01/21
  */
 /*
-welcome_format{
-    type
-    copy
-    background_color
-    icon
-}
-real_time_notif {
-    lifespan
+multiple_like{
+  icon
+  background_color
 }
  */
 @GqlQuery(GetChannelDetailsWithRecomUseCase.QUERY_NAME, GetChannelDetailsWithRecomUseCase.QUERY)
@@ -138,6 +133,10 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     }
                     room_background{
                       image_url
+                    }
+                    multiple_like{
+                      icon
+                      background_color
                     }
                   }
                   app_link

@@ -80,7 +80,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                     PlayPartnerFollowStatus.Followable(isFollowing = true)
                 )
             }
@@ -104,7 +104,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                         PlayPartnerFollowStatus.Followable(isFollowing = false)
                 )
             }
@@ -128,7 +128,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify { event ->
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                         PlayPartnerFollowStatus.Followable(isFollowing = false)
                 )
             }

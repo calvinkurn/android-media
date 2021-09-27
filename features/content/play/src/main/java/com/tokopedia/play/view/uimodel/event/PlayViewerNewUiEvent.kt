@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 
 /**
  * Created by jegul on 29/06/21
@@ -27,6 +28,30 @@ data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 data class ShowRealTimeNotificationEvent(
         val notification: RealTimeNotificationUiModel,
 ) : PlayViewerNewUiEvent()
+
+/**
+ * Multiple Likes
+ */
+data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
+object RemindToLikeEvent : PlayViewerNewUiEvent()
+sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
+
+    abstract val count: Int
+    abstract val reduceOpacity: Boolean
+
+    data class Single(
+        override val count: Int,
+        override val reduceOpacity: Boolean,
+        val config: PlayLikeBubbleConfig,
+    ) : ShowLikeBubbleEvent()
+
+    data class Burst(
+        override val count: Int,
+        override val reduceOpacity: Boolean,
+        val config: PlayLikeBubbleConfig,
+    ) : ShowLikeBubbleEvent()
+}
+data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEvent()
 
 //---------------------
 

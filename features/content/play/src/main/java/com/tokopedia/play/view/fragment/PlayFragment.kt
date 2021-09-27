@@ -477,7 +477,11 @@ class PlayFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                if (cachedState.isValueChanged(PlayViewerNewUiState::showWinnerBadge) && state.showWinnerBadge) fragmentBottomSheetView.safeInit()
+                val prevState = cachedState.prevValue
+                if (
+                    prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
+                    state.winnerBadge.shouldShow
+                ) fragmentBottomSheetView.safeInit()
             }
         }
     }
