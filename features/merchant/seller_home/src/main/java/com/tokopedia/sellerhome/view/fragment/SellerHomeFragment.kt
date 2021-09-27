@@ -93,6 +93,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.io.File
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -271,6 +272,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onDestroy() {
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
+        removeTemporaryShopImage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -498,6 +500,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
+                        removeTemporaryShopImage()
                         setupShopSharing()
                     }
                 }
@@ -884,32 +887,41 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var shopImageFilePath: String = ""
 
-    private fun setupShopSharing() {
-        if (shopShareData != null) {
-            ImageHandler.loadImageWithTarget(
-                context,
-                shopShareData?.shopSnippetURL.orEmpty(),
-                object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                            resource,
-                            Bitmap.CompressFormat.PNG
-                        )
-                        if (savedFile != null) {
-                            shopImageFilePath = savedFile.absolutePath
-                            initShopShareBottomSheet()
-                        }
-                    }
+    private fun removeTemporaryShopImage() {
+        if (shopImageFilePath.isNotEmpty()) {
+            File(shopImageFilePath).apply {
+                if (exists()) {
+                    delete()
+                }
+            }
+        }
+    }
 
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        // no op
+    private fun setupShopSharing() {
+        ImageHandler.loadImageWithTarget(
+            context,
+            shopShareData?.shopSnippetURL.orEmpty(),
+            object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        resource,
+                        Bitmap.CompressFormat.PNG
+                    )
+                    if (savedFile != null) {
+                        shopImageFilePath = savedFile.absolutePath
+                        initShopShareBottomSheet()
                     }
                 }
-            )
-        } else {
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // no op
+                }
+            }
+        )
+        if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
                 handleShopShareMilestoneWidget(it)
@@ -919,41 +931,39 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun initShopShareBottomSheet() {
-        if (universalShareBottomSheet == null) {
-            val shareListener = object : ShareBottomsheetListener {
+        val shopUrl = shopShareData?.shopUrl.orEmpty()
+        val shareListener = object : ShareBottomsheetListener {
 
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                    val shareDataModel = ShopShareHelper.DataModel(
-                        shareModel = shareModel,
-                        shopImageFilePath = shopImageFilePath,
-                        shopCoreUrl = shopShareData?.shopUrl.orEmpty()
-                    )
-                    activity?.let {
-                        shopShareHelper.onShareOptionClicked(
-                            it,
-                            shareDataModel,
-                            callback = { shareModel, _ ->
-                                setOnShopShareOptionClicked(shareModel)
-                            }
-                        )
-                    }
-                }
-
-                override fun onCloseOptionClicked() {
-                    //no op
-                }
-            }
-
-            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(shareListener)
-                setMetaData(
-                    userSession.shopName,
-                    userSession.shopAvatar,
-                    ""
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val shareDataModel = ShopShareHelper.DataModel(
+                    shareModel, shopImageFilePath, shopUrl
                 )
-                setOgImageUrl(userSession.shopAvatar)
-                imageSaved(shopImageFilePath)
+                activity?.let {
+                    shopShareHelper.onShareOptionClicked(
+                        it,
+                        view,
+                        shareDataModel,
+                        callback = { shareModel, _ ->
+                            setOnShopShareOptionClicked(shareModel)
+                        }
+                    )
+                }
             }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopShareData?.shopSnippetURL.orEmpty())
+            imageSaved(shopImageFilePath)
         }
         universalShareBottomSheet?.show(childFragmentManager, this)
     }
