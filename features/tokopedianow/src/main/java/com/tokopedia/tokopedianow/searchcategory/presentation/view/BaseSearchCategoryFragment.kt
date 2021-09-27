@@ -58,6 +58,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -65,14 +70,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.Pro
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.track.TrackApp
@@ -94,10 +96,11 @@ abstract class BaseSearchCategoryFragment:
         CategoryChooserBottomSheet.Callback,
         MiniCartWidgetListener,
         ProductItemListener,
-        EmptyProductListener,
+        TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
         ChooseAddressBottomSheetListener,
         OutOfCoverageListener,
-        SearchCategoryRecommendationCarouselListener {
+        TokoNowProductCardListener,
+        TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -449,6 +452,9 @@ abstract class BaseSearchCategoryFragment:
                 this::sendAddToCartRecommendationTrackingEvent
         )
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
+            ::sendAddToCartRepurchaseProductTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -797,14 +803,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBindRecommendationCarousel(
-            element: RecommendationCarouselDataView,
+            element: TokoNowRecommendationCarouselUiModel,
             adapterPosition: Int,
     ) {
         getViewModel().onBindRecommendationCarousel(element, adapterPosition)
     }
 
     override fun onImpressedRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -827,7 +833,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -855,7 +861,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onATCNonVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             recommendationCarouselPosition: Int,
@@ -869,7 +875,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
     ) {
@@ -909,5 +915,30 @@ abstract class BaseSearchCategoryFragment:
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+        getViewModel().onViewATCRepurchaseWidget(data, quantity)
+    }
+
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
+
+    }
+
+    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
+        openATCVariantBottomSheet(
+            data.productId,
+            data.shopId,
+        )
+    }
+
+    protected open fun sendAddToCartRepurchaseProductTrackingEvent(
+        addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
+    ) {
+
     }
 }

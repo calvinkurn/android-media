@@ -1,138 +1,18 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.data.MessageViewModel.Builder
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
- * @author by nisie on 5/16/18.
+ * Primary constructor, use [Builder] class to create this instance.
  */
-open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class MessageViewModel protected constructor(
+    builder: Builder
+) : SendableViewModel(builder), Visitable<BaseChatTypeFactory> {
 
-    var blastId: Long = 0
-    var fraudStatus = 0
-    var label: String = ""
-
-    var attachment: Any? = null
+    var attachment: Any? = builder.attachment
         private set
-
-    /**
-     * constructor for GQL response
-     */
-    constructor(
-            reply: Reply,
-            attachment: Any? = null
-    ) : super(
-            messageId = reply.msgId.toString(),
-            fromUid = reply.senderId.toString(),
-            from = reply.senderName,
-            fromRole = reply.role,
-            attachmentId = reply.attachment.id,
-            attachmentType = reply.attachment.type.toString(),
-            replyTime = reply.replyTime,
-            startTime = "",
-            isRead = reply.isRead,
-            isDummy = false,
-            isSender = !reply.isOpposite,
-            message = reply.msg,
-            source = reply.source,
-    ) {
-        blastId = reply.blastId
-        fraudStatus = reply.fraudStatus
-        label = reply.label
-        this.attachment = attachment
-    }
-
-    /**
-     * constructor for WS response
-     */
-    constructor(
-        pojo: ChatSocketPojo,
-        attachment: Any? = null
-    ) : super(
-            messageId = pojo.msgId.toString(),
-            fromUid = pojo.fromUid,
-            from = pojo.from,
-            fromRole = pojo.fromRole,
-            attachmentId = "",
-            attachmentType = "",
-            replyTime = pojo.message.timeStampUnixNano,
-            startTime = pojo.startTime,
-            isRead = false,
-            isDummy = false,
-            isSender = !pojo.isOpposite,
-            message = pojo.message.censoredReply,
-            source = pojo.source
-    ) {
-        label = pojo.label
-        this.attachment = attachment
-    }
-
-    constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
-            source: String, blastId: Long = 0, fraudStatus: Int = 0
-    ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            isRead, isDummy, isSender, message,
-            source
-    ) {
-        this.blastId = blastId
-        this.fraudStatus = fraudStatus
-    }
-
-    /**
-     * Constructor for WebSocketResponse / API Response
-     * [ChatWebSocketListenerImpl]
-     * [GetReplyListUseCase]
-     *
-     * @param messageId      messageId
-     * @param fromUid        userId of sender
-     * @param from           name of sender
-     * @param fromRole       role of sender
-     * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     * [WebSocketMapper] types
-     * @param replyTime      replytime in unixtime
-     * @param startTime      date time when sending / uploading data. Used to validate temporary
-     * @param message        censored reply
-     * @param isRead         is message already read by opponent
-     * @param isSender       is own sender
-     */
-    constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            message: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean,
-            source: String
-    ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            isRead, isDummy, isSender, message, source
-    ) {
-    }
-
-    /**
-     * Constructor for send message
-     *
-     * @param messageId messageId
-     * @param fromUid   userId of sender
-     * @param from      name of sender
-     * @param startTime date time when sending / uploading data. Used to validate temporary
-     * message
-     * @param message   censored reply
-     */
-    constructor(
-            messageId: String, fromUid: String, from: String, startTime: String,
-            message: String
-    ) : super(
-            messageId, fromUid, from, "",
-            "", "", BaseChatViewModel.SENDING_TEXT, startTime,
-            false, true, true, message, ""
-    ) {
-    }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
@@ -160,5 +40,19 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     fun hasAttachment(): Boolean {
         return attachment != null
+    }
+
+    open class Builder : SendableViewModel.Builder<Builder, MessageViewModel>() {
+
+        internal var attachment: Any? = null
+
+        fun withAttachment(attachment: Any): Builder {
+            this.attachment = attachment
+            return self()
+        }
+
+        override fun build(): MessageViewModel {
+            return MessageViewModel(this)
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
