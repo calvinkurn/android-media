@@ -58,8 +58,8 @@ class SelectVariantMainBottomSheet(
         setTitle(getString(R.string.label_variant_main_select_bottom_sheet_title))
         contentView = View.inflate(context,
                 R.layout.add_edit_product_select_variant_main_bottom_sheet_content, null)
-        val recyclerViewVariantMain: RecyclerView? = contentView?.findViewById(R.id.checkboxSelectAll)
-        val buttonSave: UnifyButton? = contentView?.findViewById(R.id.recyclerViewVariantCheck)
+        val recyclerViewVariantMain: RecyclerView? = contentView?.findViewById(R.id.recyclerViewVariantMain)
+        val buttonSave: UnifyButton? = contentView?.findViewById(R.id.buttonSave)
 
         recyclerViewVariantMain?.apply {
             setHasFixedSize(true)

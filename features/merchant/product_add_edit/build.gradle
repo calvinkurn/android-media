@@ -23,6 +23,19 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+
     defaultConfig {
         multiDexEnabled true
     }

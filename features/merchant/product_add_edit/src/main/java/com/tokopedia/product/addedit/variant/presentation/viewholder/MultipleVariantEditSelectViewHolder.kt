@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
@@ -21,8 +22,8 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
 
     private var levelCount = 0
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
-    private val textSelection: Typography? = null
-    private val listUnifySelection: ListUnify? = null
+    private val textSelection: Typography? = itemView.findViewById(R.id.textSelection)
+    private val listUnifySelection: ListUnify? = itemView.findViewById(R.id.listUnifySelection)
 
     fun bindData(selectedItem: List<Boolean>, selections: List<SelectionInputModel>) {
         levelCount = selections.size

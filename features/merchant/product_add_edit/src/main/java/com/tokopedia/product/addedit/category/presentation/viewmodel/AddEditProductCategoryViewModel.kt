@@ -22,7 +22,7 @@ class AddEditProductCategoryViewModel @Inject constructor(
     fun getCategoryLiteTree() {
         launchCatchError(coroutineDispatcher.io, block = {
             val param = GetCategoryLiteTreeUseCase.createRequestParams()
-            val category = getCategoryLiteTreeUseCase.createBlockingObservable(param)
+            val category = getCategoryLiteTreeUseCase.getCategoryLiteData(param)
             _categoryLiteTree.postValue(Success(category))
         }) {
             _categoryLiteTree.postValue(Fail(it))

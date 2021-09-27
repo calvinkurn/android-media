@@ -24,13 +24,12 @@ class AddEditProductCategoryViewHolder(
         private val resultCategories: MutableList<CategoryUiModel>
 ): RecyclerView.ViewHolder(itemView) {
 
-    private var itemCategory: LinearLayout? = null
-    private var tvCategoryNameParent: Typography? = null
-    private var rbCategory: RadioButtonUnify? = null
-    private var rvLevelCategory: RecyclerView? = null
-    private var spacingLevelCategory: View? = null
-    private var ivCategoryParent: AppCompatImageView? = null
-
+    private var itemCategory: LinearLayout? = itemView.findViewById(R.id.itemCategory)
+    private var tvCategoryNameParent: Typography? = itemView.findViewById(R.id.tvCategoryNameParent)
+    private var rbCategory: RadioButtonUnify? = itemView.findViewById(R.id.rbCategory)
+    private var rvLevelCategory: RecyclerView? = itemView.findViewById(R.id.rvLevelCategory)
+    private var spacingLevelCategory: View? = itemView.findViewById(R.id.spacingLevelCategory)
+    private var ivCategoryParent: AppCompatImageView? = itemView.findViewById(R.id.ivCategoryParent)
     private var categoryChildAdapter: AddEditProductCategoryAdapter? = null
 
     fun bindData(category: CategoryUiModel?) {

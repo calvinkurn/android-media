@@ -58,6 +58,6 @@ class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase:
         graphqlUseCase.unsubscribe()
     }
 
-    fun createBlockingObservable(requestParams: RequestParams): CategoriesResponse =
+    fun getCategoryLiteData(requestParams: RequestParams): CategoriesResponse =
         createObservable(requestParams).toBlocking().first()
 }
