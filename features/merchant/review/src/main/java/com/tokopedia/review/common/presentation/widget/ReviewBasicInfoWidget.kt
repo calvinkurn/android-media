@@ -88,6 +88,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         timeStamp?.setTextColor(color)
         reviewerName?.setTextColor(color)
         variant?.setTextColor(color)
+        reviewerStats?.setTextColor(color)
     }
 
     fun setVariantName(variantName: String) {
