@@ -95,7 +95,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             val response = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(balanceRawQuery, BalanceTapcash::class.java, mapParam)
                 graphqlRequest.setUrlPath(URL_PATH)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }
 
             val errors = response.getError(BalanceTapcash::class.java)

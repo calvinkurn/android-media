@@ -8,7 +8,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import kotlinx.android.synthetic.main.item_tokopedianow_home_category.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowCategoryItemViewHolder(
     itemView: View,
@@ -22,8 +23,11 @@ class TokoNowCategoryItemViewHolder(
 
     override fun bind(data: TokoNowCategoryItemUiModel) {
         itemView.apply {
-            textCategory.text = data.title
-            imageCategory.loadImage(data.imageUrl) {
+            val tpCategory: Typography = findViewById(R.id.tp_category)
+            val iuCategory: ImageUnify = findViewById(R.id.iu_category)
+
+            tpCategory.text = data.title
+            iuCategory.loadImage(data.imageUrl) {
                 setCacheStrategy(MediaCacheStrategy.RESOURCE)
             }
             setOnClickListener {

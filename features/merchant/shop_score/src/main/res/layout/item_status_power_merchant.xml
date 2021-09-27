@@ -130,7 +130,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
                 app:typographyType="body_2"
-                tools:text="@string/desc_content_pm_section" />
+                tools:text="@string/desc_content_pm_not_eligible_pm_pro" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

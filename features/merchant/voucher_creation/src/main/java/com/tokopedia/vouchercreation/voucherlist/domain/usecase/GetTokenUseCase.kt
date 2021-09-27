@@ -28,7 +28,7 @@ class GetTokenUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
 
     override suspend fun executeOnBackground(): String {
         val request = GraphqlRequest(QUERY, TokenResponse::class.java, RequestParams.EMPTY.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val errors = response.getError(TokenResponse::class.java)
         if (errors.isNullOrEmpty()) {

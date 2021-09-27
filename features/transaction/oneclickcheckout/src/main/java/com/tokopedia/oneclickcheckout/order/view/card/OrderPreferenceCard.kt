@@ -155,10 +155,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -221,7 +221,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
                 val span = SpannableString("($originalPrice $finalPrice)")
                 span.setSpan(StrikethroughSpan(), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(RelativeSizeSpan(10 / 12f), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 binding.root.context?.let {
@@ -247,10 +247,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -356,10 +356,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -465,7 +465,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val originalPriceStartIndex = shipping.logisticPromoShipping.productData.shipperName.length + 2
                     val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length + 1
                     span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    span.setSpan(RelativeSizeSpan(10 / 12f), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                     binding.root.context?.let {
                         val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                         span.setSpan(ForegroundColorSpan(color), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -661,6 +661,20 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         }
                     }
                 }
+            } else if (!creditCard.isDebit && creditCard.isAfpb && creditCard.selectedTerm == null) {
+                tvInstallmentType.visible()
+                tvInstallmentDetail.visible()
+                btnChangeInstallment.visible()
+                tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
+                tvInstallmentDetail.alpha = ENABLE_ALPHA
+                tvInstallmentErrorMessage.gone()
+                tvInstallmentErrorAction.gone()
+                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
+                    if (profile.enable) {
+                        val selectedCreditCard = payment.creditCard
+                        listener.onInstallmentDetailClicked(selectedCreditCard)
+                    }
+                }
             } else {
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
@@ -822,6 +836,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
+        private const val FLOAT_12 = 12F
+        private const val PROPOTION_10 = 10
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8
         private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16

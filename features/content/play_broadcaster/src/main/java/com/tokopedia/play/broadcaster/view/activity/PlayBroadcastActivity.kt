@@ -108,12 +108,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
+        initStreamer()
+
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
             requestPermission()
         }
 
-        initStreamer()
         initView()
         setupView()
 
