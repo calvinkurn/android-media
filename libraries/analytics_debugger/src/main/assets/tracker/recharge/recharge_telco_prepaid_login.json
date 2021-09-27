@@ -124,9 +124,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEventIris",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "view favorite number chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -134,9 +134,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEventIris",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "view favorite contact chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -144,9 +144,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEvent",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "click favorite number chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     },
     {
@@ -154,9 +154,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEvent",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "click favorite contact chip",
-      "sessionIris": ".+",
+      "sessionIris": ".*",
       "eventLabel": ".+"
     }
   ]
