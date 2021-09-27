@@ -35,6 +35,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -276,7 +277,15 @@ class MiniCartWidget @JvmOverloads constructor(
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
+            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+            val pageSource = when (pageName) {
+                MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
+                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
+            }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                    .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)
         }
 
         context.startActivity(intent)
@@ -590,6 +599,8 @@ class MiniCartWidget @JvmOverloads constructor(
 
     companion object {
         private const val COACH_MARK_TAG = "coachmark_tokonow"
+
+        private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
     }
 
 }

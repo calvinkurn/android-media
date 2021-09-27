@@ -580,6 +580,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
