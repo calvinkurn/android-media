@@ -255,4 +255,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
+
+    public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
+  
+    public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 }

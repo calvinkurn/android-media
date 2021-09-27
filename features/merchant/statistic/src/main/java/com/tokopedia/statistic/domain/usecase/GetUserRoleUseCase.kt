@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.statistic.domain.model.GetUserRoleModel
@@ -43,9 +44,9 @@ class GetUserRoleUseCase @Inject constructor(
             }
         """.trimIndent()
 
-        fun createParam(userId: Int): RequestParams {
+        fun createParam(userId: String): RequestParams {
             return RequestParams.create().apply {
-                putInt(USER_ID, userId)
+                putLong(USER_ID, userId.toLongOrZero())
             }
         }
     }

@@ -192,7 +192,16 @@ class MixLeftComponentViewHolder (itemView: View,
 
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
-                listData.add(CarouselViewAllCardDataModel(channel.channelHeader.applink, channel.channelViewAllCard, this))
+                listData.add(
+                    CarouselViewAllCardDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelViewAllCard,
+                        this,
+                        channel.channelBanner.imageUrl,
+                        channel.channelBanner.gradientColor,
+                        channel.layout
+                    )
+                )
             }
             else {
                 listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))

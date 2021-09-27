@@ -107,7 +107,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator.openWebView(button.url, false)
+        navigator.openAppLink(button.url, false)
     }
 
     private fun onBuyAgainAllProductButtonClicked() {

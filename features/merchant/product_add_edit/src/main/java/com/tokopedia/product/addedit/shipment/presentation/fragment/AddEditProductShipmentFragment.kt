@@ -605,7 +605,7 @@ class AddEditProductShipmentFragment:
 
     private fun applyShipmentValue(data: CustomProductLogisticModel) {
         val cplProduct = data.cplProduct
-        if (cplProduct.isEmpty() || cplProduct[0].cplStatus == 0) {
+        if (cplProduct.isEmpty() || cplProduct.getOrNull(0)?.cplStatus == 0) {
             radioStandarShipment?.isChecked = true
             radioCustomShipment?.isChecked = false
             isCPLActivated = true
@@ -626,24 +626,35 @@ class AddEditProductShipmentFragment:
     }
 
     private fun updateShipmentDataStandard(data: CustomProductLogisticModel) {
-        shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-        shipmentOnDemandAdapter.setAllProductIdsActivated()
-        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
-        shipmentConventionalAdapter.setAllProductIdsActivated()
+        data.shipperList.firstOrNull()?.let {
+            shipmentOnDemandAdapter.updateData(it.shipper)
+            shipmentOnDemandAdapter.setAllProductIdsActivated()
+        }
+        data.shipperList.getOrNull(1)?.let {
+            shipmentConventionalAdapter.updateData(it.shipper)
+            shipmentConventionalAdapter.setAllProductIdsActivated()
+        }
     }
 
     private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
-        if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
-            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-        } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
-            shipmentConventionalAdapter.updateData(data.shipperList[0].shipper)
-            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
-        } else {
-            shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
-            shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-            shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
-            shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        if (data.shipperList.isNotEmpty() && data.cplProduct.isNotEmpty()) {
+            when (data.shipperList[0].header) {
+                ON_DEMAND_VALIDATION -> {
+                    shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+                }
+                CONVENTIONAL_VALIDATION -> {
+                    shipmentConventionalAdapter.updateData(data.shipperList[0].shipper)
+                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+                }
+                else -> {
+                    shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
+                    if (data.shipperList.size >= 2)
+                        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+                }
+            }
         }
         updateLayoutShipment()
     }
