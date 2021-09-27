@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment
 
 import android.app.Activity
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.digital_deals.R
 import com.tokopedia.digital_deals.di.DealsComponent
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
@@ -20,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
 import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
 import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
-import kotlinx.android.synthetic.main.fragment_checkout_deal.*
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_deal_details
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_total_amount
 import kotlinx.android.synthetic.main.fragment_deal_quantity.*
@@ -88,6 +89,53 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         tv_no_quantity.text = String.format(resources.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity)
         tv_sales_price.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
         tv_total_amount.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
+
+        iv_subtract.setOnClickListener {
+            if (currentQuantity > minQuantity) {
+                currentQuantity--
+                context?.let {
+                    tv_no_quantity.setText(String.format(it.resources.getString(R.string.quantity_of_deals), currentQuantity))
+                }
+            }
+            setTotalAmount()
+            setButtons()
+        }
+
+        iv_add.setOnClickListener {
+            if (currentQuantity < maxQuantity) {
+                currentQuantity++
+                currentQuantity++
+                context?.let {
+                    tv_no_quantity.setText(String.format(it.resources.getString(R.string.quantity_of_deals), currentQuantity))
+                }
+            }
+            setTotalAmount()
+            setButtons()
+        }
+
+    }
+
+    private fun setButtons(){
+        context?.let {
+            if (currentQuantity > 1) {
+                iv_subtract.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+                iv_subtract.setClickable(true)
+            } else {
+                iv_subtract.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N150), PorterDuff.Mode.SRC_IN)
+                iv_subtract.setClickable(false)
+            }
+            if (currentQuantity < maxQuantity) {
+                iv_add.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+                iv_add.setClickable(true)
+            } else {
+                iv_add.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N150), PorterDuff.Mode.SRC_IN)
+                iv_add.setClickable(false)
+            }
+        }
+    }
+
+    private fun setTotalAmount(){
+        tv_total_amount.text = Utils.convertToCurrencyString((dealsDetail.salesPrice * currentQuantity).toLong())
     }
 
     companion object{
