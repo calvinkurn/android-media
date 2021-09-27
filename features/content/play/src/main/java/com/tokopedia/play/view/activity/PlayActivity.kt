@@ -19,6 +19,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -222,7 +223,7 @@ class PlayActivity : BaseActivity(),
                 .baseAppComponent(
                         (applicationContext as BaseMainApplication).baseAppComponent
                 )
-                .context(this)
+                .playModule(PlayModule(this))
                 .build()
                 .inject(this)
     }

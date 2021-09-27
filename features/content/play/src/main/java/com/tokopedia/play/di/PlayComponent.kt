@@ -19,11 +19,11 @@ interface PlayComponent {
 
     fun inject(playActivity: PlayActivity)
 
-    @Component.Builder
-    interface Builder {
-
-        fun baseAppComponent(appComponent: BaseAppComponent): Builder
-        fun context(@BindsInstance context: Context): Builder
-        fun build(): PlayComponent
-    }
+//    @Component.Builder
+//    interface Builder {
+//
+//        fun baseAppComponent(appComponent: BaseAppComponent): Builder
+//        fun context(@BindsInstance context: Context): Builder
+//        fun build(): PlayComponent
+//    }
 }
