@@ -205,7 +205,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val bottomMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
             if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
-                ImageHandler.loadImage2(imageBundle, cartItemModel.bundleIconUrl, R.drawable.ic_loading_placeholder)
+                ImageHandler.loadImage2(imageBundle, cartItemModel.bundleIconUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             }
 
             ivProductImageLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
