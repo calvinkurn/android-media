@@ -92,6 +92,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
                 createPostAnalytics.eventClickOnSearchBar()
 
         }
+        view.sb_shop_product.iconDrawable = null
         view.sb_shop_product.searchBarTextField.setOnClickListener {
             createPostAnalytics.eventClickOnSearchBar()
         }
@@ -264,6 +265,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             position)
     }
     override fun sortProductCriteriaClicked(criteria: String) {
+        mAdapter.resetOriginalList()
         createPostAnalytics.eventClickOnSortCriteria(criteria)
     }
 }

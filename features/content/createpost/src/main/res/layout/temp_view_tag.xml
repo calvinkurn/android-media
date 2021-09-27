@@ -13,9 +13,10 @@
         android:layout_height="8dp"
         android:background="@drawable/ic_feed_up"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/dot"
+        app:layout_constraintBottom_toTopOf="@id/dot"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
     <View
         android:id="@+id/dot"
@@ -34,7 +35,7 @@
         android:background="@drawable/ic_feed_down"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/dot"
         app:layout_constraintTop_toBottomOf="@+id/dot" />
 
     <LinearLayout
@@ -44,7 +45,7 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/product_tag_clear_right"
         app:layout_constraintEnd_toStartOf="@id/product_tag_clear" >
 
         <com.tokopedia.unifyprinciples.Typography
@@ -107,7 +108,6 @@
         android:id="@+id/product_tag_clear"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_12"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N0"
@@ -115,6 +115,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/dot"
         app:layout_constraintEnd_toEndOf="@+id/dot"
         app:layout_constraintStart_toEndOf="@+id/bubble_text_layout"
+        app:layout_constraintTop_toTopOf="@+id/dot"
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/product_tag_clear_right"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_name="CLEAR"
+        app:layout_constraintBottom_toBottomOf="@+id/dot"
+        app:layout_constraintStart_toStartOf="@+id/dot"
+        app:layout_constraintEnd_toStartOf="@+id/bubble_text_layout"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:unify_image_type="circle"
         tools:visibility="visible"/>

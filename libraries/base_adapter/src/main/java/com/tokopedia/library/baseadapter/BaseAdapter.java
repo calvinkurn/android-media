@@ -78,6 +78,16 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     }
 
     /**
+     * reset list for current adapter to 0
+     *
+     * @return List items
+     */
+    public final void resetOriginalList() {
+         mOrigItems.clear();
+         mItems.clear();
+    }
+
+    /**
      * Must have
      * To get itemviewholder this method must be implement by consumer
      *
@@ -480,9 +490,9 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<T> filteredResults = null;
+                List<T> filteredResults;
                 if (constraint.length() == 0) {
-                    filteredResults = getOrigItems();
+                    filteredResults = new ArrayList<>(getOrigItems());
                 } else {
                     filteredResults = getFilteredResults(constraint.toString().toLowerCase());
                 }

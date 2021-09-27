@@ -1,9 +1,8 @@
-package com.tokopedia.createpost.view.util;
+package com.tokopedia.createpost.view.posttag;
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -14,13 +13,11 @@ import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
-import java.util.logging.Handler
 
 class TagViewProvider {
     var dX = 0f
@@ -28,59 +25,7 @@ class TagViewProvider {
     var listener: CreateContentPostCOmmonLIstener? = null
 
 
-    /*
 
-    val tagImg = findViewById<ConstraintLayout>(R.id.tag)
-
-        tagImg.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        return true
-                    }
-
-                    MotionEvent.ACTION_UP -> {
-                        val vv = TagViewProvider.getTagView(this@MainActivity)
-//                        vv.x = event.x
-//                        vv.y = event.y
-//                        tagImg.addView(vv)
-                        TagViewProvider.addViewToParent(vv, v as ConstraintLayout, event)
-                    }
-
-                }
-
-                return v?.onTouchEvent(event) ?: true
-            }
-        })
-
-     */
-
-    /*
-
-    val tagImg = findViewById<ConstraintLayout>(R.id.tag)
-
-        tagImg.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        return true
-                    }
-
-                    MotionEvent.ACTION_UP -> {
-                        val vv = TagViewProvider.getTagView(this@MainActivity)
-//                        vv.x = event.x
-//                        vv.y = event.y
-//                        tagImg.addView(vv)
-                        TagViewProvider.addViewToParent(vv, v as ConstraintLayout, event)
-                    }
-
-                }
-
-                return v?.onTouchEvent(event) ?: true
-            }
-        })
-
-     */
     fun getTagView(
         context: Context?,
         products: List<RelatedProductItem>,
@@ -94,6 +39,7 @@ class TagViewProvider {
         val productViewPrice = view.findViewById<View>(R.id.product_tag_price_text) as Typography
         val productName = view.findViewById<View>(R.id.product_tag_name_text) as Typography
         var productTagViewDelete: IconUnify = view.findViewById(R.id.product_tag_clear)
+        var productTagViewDeleteRight: IconUnify = view.findViewById(R.id.product_tag_clear_right)
 
         val (id, name, price, _, _, _, priceDiscountFmt, isDiscount) = products[index]
         this.listener = listener
@@ -115,6 +61,16 @@ class TagViewProvider {
             )
             view.gone()
         }
+        productTagViewDeleteRight.setOnClickListener {
+            listener?.deleteItemFromProductTagList(
+                feedXTag.tagIndex,
+                id,
+                true,
+                MediaType.IMAGE
+            )
+            view.gone()
+        }
+
         return view
     }
 
@@ -123,28 +79,27 @@ class TagViewProvider {
         child: View,
         parent: ConstraintLayout,
         feedXMediaTagging: FeedXMediaTagging,
+        index: Int
+
     ) {
         child.visibility = View.INVISIBLE
         parent.addView(child)
-
-        val location = IntArray(2)
-        parent.getLocationOnScreen(location)
-        val x = location[0]
-        val y = location[1]
-
-        Log.d("Lavekush", "X=$x ,Y=$y")
-
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
+        var productTagViewDeleteRight: IconUnify = child.findViewById(R.id.product_tag_clear_right)
+        var productTagViewDeleteFinal: IconUnify = child.findViewById(R.id.product_tag_clear)
         child.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+            var isDrag = false
             view.parent.requestDisallowInterceptTouchEvent(true)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isDrag = false
                     dX = view.x - motionEvent.rawX
                     dY = view.y - motionEvent.rawY
                     return@OnTouchListener true
                 }
 
                 MotionEvent.ACTION_MOVE -> {
+                    isDrag = true
                     val gotoX: Float = when {
                         (motionEvent.rawX.plus(dX) ?: 0f) + view.width > parent.right -> {
                             parent.right - view.width.toFloat() /*Blocking right on drag*/
@@ -157,9 +112,6 @@ class TagViewProvider {
                         }
                     }
 
-
-                    Log.d("Lavekush", "rawX=${motionEvent.rawX} ,rawY=${motionEvent.rawY}")
-                    Log.d("Lavekush", "ppX=${motionEvent.x} ,ppY=${motionEvent.y}")
                     val gotoY: Float = when {
                         motionEvent.rawY.plus(dY) < 0 -> {
                             0f /*Blocking top on drag*/
@@ -171,23 +123,6 @@ class TagViewProvider {
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
                     }
-
-//                    val gotoY: Float
-//                    if (event.getY() - TagViewProvider.pxFromDp(child.context, 68f) < 0) {
-//                        gotoY = 0f /*Blocking top on drag*/
-//                    } else if (event.getRawY() + TagViewProvider.dX + TagViewProvider.pxFromDp(
-//                            child.context,
-//                            68f
-//                        ) > parent.bottom
-//                    ) {
-//                        gotoY = parent.bottom - TagViewProvider.pxFromDp(
-//                            child.context,
-//                            68f
-//                        ) /*Blocking bottom on drag*/
-//                    } else {
-//                        gotoY = event.getRawY() + TagViewProvider.dY /*Normal vertical drag*/
-//                    }
-
 
                     view.animate()
                         .x(gotoX)
@@ -207,11 +142,27 @@ class TagViewProvider {
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if (productTagViewDelete.isVisible) {
-                        productTagViewDelete.gone()
-                    } else {
-                        productTagViewDelete.hide()
+                    if (!isDrag) {
+                        if (!productTagViewDeleteFinal.isVisible) {
+                            productTagViewDeleteFinal =
+                                if (((view.parent as ConstraintLayout).right) - (view.x + view.width) > 88)
+                                    productTagViewDelete
+                                else
+                                    productTagViewDeleteRight
+                        }
+
+                        if (productTagViewDeleteFinal.isVisible) {
+                            productTagViewDeleteFinal.gone()
+                        } else {
+                            productTagViewDeleteFinal.visible()
+                        }
                     }
+
+                    val location = IntArray(2)
+                    view.findViewById<View>(R.id.topNotch).getLocationOnScreen(location)
+                    feedXMediaTagging.X =  location[0].toFloat()
+                    feedXMediaTagging.Y =  location[1].toFloat()
+                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
                 }
             }
 
@@ -256,38 +207,8 @@ class TagViewProvider {
 
         }, 50)
 
-//        new Handler().post(new Runnable() {
-//            @Override
-//            public void run() {
-//                ((Activity)parent.getContext()).runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        /*Handling for X position*/
-//                        float xTapped = event.getX() - temp.getWidth() / 2;
-//                        float x2Want = xTapped + temp.getWidth();
-//                        float x2Diff = parent.getRight() - x2Want;
-//                        if (x2Diff < 0) {
-//                            xTapped += x2Diff;
-//                        }
-//
-//
-//                        /*Handling for Y position*/
-//                        float yTapped = event.getY();
-//                        float y2Want = yTapped + temp.getHeight();
-//                        float y2Diff = parent.getBottom() - y2Want;
-//                        if (y2Diff < 0) {
-//                            yTapped += y2Diff;
-//                        }
-//
-//                        child.setX(xTapped);
-//                        child.setY(yTapped);
-//                        child.setVisibility(View.VISIBLE);
-//                        parent.addView(child);
-//                        parent.removeView(temp);
-//                    }
-//                });
-//            }
-//        });
+     listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
+
     }
 
     fun dpFromPx(context: Context, px: Float): Float {

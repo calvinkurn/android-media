@@ -90,6 +90,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
+        val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
 
         val TITLE = "title"
         val SUB_TITLE = "subtitle"
@@ -565,6 +566,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
             intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                MAX_MULTI_SELECT_ALLOWED_VALUE)
             intent.putExtra(TITLE,
                 getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
             val name: String = MethodChecker.fromHtml(authors.first().name).toString()

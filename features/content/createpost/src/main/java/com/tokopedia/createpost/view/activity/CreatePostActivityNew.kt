@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.content.ContentResolver
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import java.util.*
 
 
@@ -84,6 +85,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+        KeyboardHandler.hideSoftKeyboard(this)
         (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().currentCorouselIndex =
             position
         isOpenedFromPreview = true
@@ -93,6 +95,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
         TODO("Not yet implemented")
     }
 
@@ -207,7 +213,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
 
     }
-    fun clickContinueOnTaggingPage(){
+    private fun clickContinueOnTaggingPage(){
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
         content_action_post_button?.text = getString(R.string.feed_content_text_post)
         inflateFragment()

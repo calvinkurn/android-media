@@ -17,8 +17,7 @@ import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.plist.ShopPageProduct
-import com.tokopedia.createpost.view.util.TagViewProvider
-import com.tokopedia.createpost.view.util.TempTagViewProvider
+import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
@@ -51,8 +50,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
 
     private lateinit var contentProductTagBS: ContentCreationProductTagBottomSheet
-    private lateinit var tempTagViewProvider: TempTagViewProvider
-    private lateinit var lastMotionEvent: MotionEvent
 
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
@@ -98,7 +95,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun initView() {
         val relatedProducts = ArrayList(createPostModel.relatedProducts)
-        tempTagViewProvider = TempTagViewProvider()
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
         createPostModel.maxProduct = 5
@@ -445,6 +441,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         createPostAnalytics.eventClickProductTagBubble(mediaType, productId)
     }
 
+    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
+        createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags[index] =
+            feedXMediaTagging
+    }
+
 
     private fun openProductTaggingScreen() {
         goToAttachProduct()
@@ -559,9 +560,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
             media.tags.forEachIndexed { index, feedXMediaTagging ->
                 val tagViewProvider = TagViewProvider()
-                val view = tagViewProvider.getTagView(context, products, index, listener, feedXMediaTagging)
-                if (view != null)
-                tagViewProvider.addViewToParent(view, layout, feedXMediaTagging)
+                val view = tagViewProvider.getTagView(context,
+                    products,
+                    index,
+                    listener,
+                    feedXMediaTagging)
+                if (view != null) {
+                    tagViewProvider.addViewToParent(view, layout, feedXMediaTagging, index)
+
+                }
 
             }
         }
