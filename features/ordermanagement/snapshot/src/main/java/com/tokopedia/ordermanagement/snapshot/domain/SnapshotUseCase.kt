@@ -19,7 +19,7 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
     suspend fun executeSuspend(param: SnapshotParam): Result<GetOrderSnapshot> {
         return try {
             val request = GraphqlRequest(QUERY, Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<Data>()
             Success(response.getOrderSnapshot)
         } catch (throwable: Throwable) {
             Fail(throwable)

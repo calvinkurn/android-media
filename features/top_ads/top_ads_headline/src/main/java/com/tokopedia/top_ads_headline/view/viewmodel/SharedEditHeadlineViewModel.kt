@@ -34,7 +34,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
         private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
         private val bidInfoUseCase: BidInfoUseCase) : ViewModel() {
 
-    private var adId: Int = 0
+    private var adId: String = ""
     private var status: String = ""
     private val editHeadlineAdLiveData: MutableLiveData<HeadlineAdStepperModel> = MutableLiveData()
 
@@ -81,7 +81,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
                     val nonGroupResponse = response.data.topadsDashboardGroupProducts
                     if (nonGroupResponse.data.isNotEmpty()) {
                         adId = nonGroupResponse.data.first().adId
-                        getHeadlineAdDetail(nonGroupResponse.data.first().adId.toString(), shopId.toString(), onError)
+                        getHeadlineAdDetail(nonGroupResponse.data.first().adId, shopId.toString(), onError)
                     }
                 }
             })

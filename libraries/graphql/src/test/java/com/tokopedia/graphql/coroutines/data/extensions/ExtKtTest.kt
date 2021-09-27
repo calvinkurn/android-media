@@ -20,7 +20,7 @@ class ExtKtTest {
 
     @Before
     fun setup() {
-        coEvery { repository.getReseponse(any(), any()) } returns
+        coEvery { repository.response(any(), any()) } returns
                 MockUtil.createSuccessResponse(case)
     }
 
