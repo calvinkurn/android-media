@@ -59,7 +59,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val graphqlRepository:
         val cacheStrategy = if (!isUserSessionActive) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build() else CacheStrategyUtil.getCacheStrategy(forceRefresh)
 
         try {
-            val response = graphqlRepository.getReseponse(p3Request, cacheStrategy)
+            val response = graphqlRepository.response(p3Request, cacheStrategy)
 
             //region Ticker
             if (response.getError(GeneralTickerDataModel.TickerResponse::class.java)?.isNotEmpty() != true) {

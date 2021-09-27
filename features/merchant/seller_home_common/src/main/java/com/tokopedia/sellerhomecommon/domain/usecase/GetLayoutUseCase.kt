@@ -31,13 +31,15 @@ class GetLayoutUseCase(
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse =
-            graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(
+            listOf(gqlRequest), cacheStrategy
+        )
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
-            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return mapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
@@ -72,6 +74,7 @@ class GetLayoutUseCase(
                       description
                     }
                   }
+                  tag
                   showEmpty
                   postFilter {
                     name

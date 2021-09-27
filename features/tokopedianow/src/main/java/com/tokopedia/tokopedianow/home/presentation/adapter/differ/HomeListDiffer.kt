@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.adapter.differ
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
 class HomeListDiffer : BaseTokopediaNowDiffer() {
@@ -17,6 +18,8 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.visitableId == newItem.visitableId
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
+        } else if (oldItem is TokoNowLayoutUiModel && newItem is TokoNowLayoutUiModel) {
+            oldItem.visitableId == newItem.visitableId
         } else {
             oldItem == newItem
         }

@@ -184,15 +184,11 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
-    // NotificationActivity
-    const val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
-
-    const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
-
-    const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
-
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    // BenefitPackageActivity
+    const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 

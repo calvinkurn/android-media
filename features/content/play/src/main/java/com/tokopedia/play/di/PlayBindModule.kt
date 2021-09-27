@@ -8,6 +8,8 @@ import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalyticImpl
+import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
+import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
@@ -63,4 +65,8 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindSocketAnalytic(analytic: PlaySocketAnalyticImpl): PlaySocketAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindUpcomingAnalytic(analytic: PlayUpcomingAnalyticImpl): PlayUpcomingAnalytic
 }

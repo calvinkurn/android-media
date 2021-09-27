@@ -1,8 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 buildscript {
     repositories {
@@ -17,8 +21,8 @@ buildscript {
 }
 
 android {
-    androidExtensions {
-        experimental = true
+    buildFeatures{
+        viewBinding true
     }
 }
 
@@ -32,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -48,10 +53,7 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    implementation rootProject.ext.miscDependencies.gson
-
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

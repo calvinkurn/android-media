@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.domain
 
-import android.util.Log
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
@@ -20,17 +19,19 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
-        private val dataPolicyUseCase: DataPolicyUseCase,
-        private val mediaUploaderUseCase: MediaUploaderUseCase
+        dataPolicyUseCase: DataPolicyUseCase,
+        mediaUploaderUseCase: MediaUploaderUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
-    private val uploaderManager by lazy {
-        UploaderManager(dataPolicyUseCase, mediaUploaderUseCase)
-    }
+    private val uploaderManager = UploaderManager(
+        dataPolicyUseCase,
+        mediaUploaderUseCase
+    )
 
-    private var progressCallback: ProgressCallback? = null
+    private var progressUploader: ProgressCallback? = null
 
     // this domain isn't using graphql service
     override fun graphqlQuery() = ""
@@ -42,7 +43,7 @@ class UploaderUseCase @Inject constructor(
         return try {
             uploaderManager.validate(fileToUpload, sourceId) { sourcePolicy ->
                 // track progress bar
-                mediaUploaderUseCase.progressCallback = progressCallback
+                uploaderManager.setProgressUploader(progressUploader)
 
                 // upload file
                 uploaderManager.post(fileToUpload, sourceId, sourcePolicy)
@@ -57,18 +58,22 @@ class UploaderUseCase @Inject constructor(
             uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
-                    e !is SocketException &&
-                    e !is InterruptedIOException &&
-                    e !is ConnectionShutdownException &&
-                    e !is CancellationException) {
-                trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
+                e !is SocketException &&
+                e !is InterruptedIOException &&
+                e !is ConnectionShutdownException &&
+                e !is CancellationException) {
+
+                @Suppress("UselessCallOnNotNull")
+                if (getStackTraceMessage(e).orEmpty().isNotEmpty()) {
+                    trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
+                }
             }
             return uploaderManager.setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
         }
     }
 
     fun trackProgress(progress: (percentage: Int) -> Unit) {
-        this.progressCallback = object : ProgressCallback {
+        this.progressUploader = object : ProgressCallback {
             override fun onProgress(percentage: Int) {
                 progress(percentage)
             }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
+    <string name="shared_pref_title">Shared Pref Editor</string>
     <string name="ab_test_rollence_title">Ab Test Rollence Editor</string>
     <string name="pdp_dev_option_title">Product Dev Option</string>
 
@@ -53,6 +54,7 @@
     <string name="enable_leak_canary">Enable Leak Canary</string>
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>
+    <string name="shared_pref_editor">SharedPreferences Editor</string>
     <string name="logging_to_server">Logging To Server</string>
     <string name="required_server_logging">Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)</string>
     <string name="send_log_to_server">Send Log to Server</string>

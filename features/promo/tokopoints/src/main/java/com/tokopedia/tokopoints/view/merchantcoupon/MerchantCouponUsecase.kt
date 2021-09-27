@@ -27,6 +27,6 @@ class MerchantCouponUsecase @Inject constructor(val graphqlRepository: GraphqlRe
 
      suspend fun executeOnBackground() = withContext(Dispatchers.IO)  {
         val gqlRequest = GraphqlRequest(TpMvcCatalogList.GQL_QUERY, MerchantCouponResponse::class.java, params ,false)
-        graphqlRepository.getReseponse(listOf(gqlRequest))
+        graphqlRepository.response(listOf(gqlRequest))
     }
 }

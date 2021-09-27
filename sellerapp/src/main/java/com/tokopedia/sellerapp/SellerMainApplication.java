@@ -370,10 +370,4 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
-
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return DeepLinkActivity.class;
-    }
-
 }
