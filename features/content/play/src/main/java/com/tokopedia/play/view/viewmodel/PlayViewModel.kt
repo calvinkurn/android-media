@@ -13,6 +13,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
@@ -21,6 +22,7 @@ import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -28,6 +30,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
@@ -43,6 +46,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -65,8 +69,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import com.tokopedia.play.extensions.combine
-import com.tokopedia.play.view.uimodel.state.*
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -96,6 +99,7 @@ class PlayViewModel @Inject constructor(
         private val playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
+        private val timerFactory: TimerFactory,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -149,6 +153,94 @@ class PlayViewModel @Inject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
 
+    private val _interactiveUiState = combine(
+        _interactive, _bottomInsets, _status
+    ) { interactive, bottomInsets, status ->
+        PlayInteractiveViewUiState(
+            interactive = interactive,
+            visibility = when {
+                /**
+                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                 */
+                bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                else -> ViewVisibility.Visible
+            },
+        )
+    }
+
+    private val _partnerUiState = _partnerInfo.map {
+        PlayPartnerUiState(it.name, it.status)
+    }
+
+    private val _winnerBadgeUiState = combine(
+        _leaderboardInfo, _bottomInsets, _status, _channelDetail
+    ) { leaderboardInfo, bottomInsets, status, channelDetail ->
+        PlayWinnerBadgeUiState(
+            leaderboards = leaderboardInfo.leaderboardWinners,
+            shouldShow = !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    leaderboardInfo.leaderboardWinners.isNotEmpty() &&
+                    channelDetail.channelInfo.channelType.isLive,
+        )
+    }
+
+    private val _likeUiState = combine(
+        _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
+    ) { likeInfo, channelDetail, bottomInsets, status, channelReport ->
+        PlayLikeUiState(
+            shouldShow = !bottomInsets.isAnyShown && status.isActive,
+            canLike = likeInfo.status != PlayLikeStatus.Unknown,
+            totalLike = channelReport.totalLikeFmt,
+            likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
+            else PlayLikeMode.Single,
+            isLiked = likeInfo.status == PlayLikeStatus.Liked,
+            canShowBubble = !bottomInsets.isAnyShown &&
+                    channelDetail.channelInfo.channelType.isLive &&
+                    status.isActive,
+        )
+    }
+
+    private val _totalViewUiState = _channelReport.map {
+        PlayTotalViewUiState(it.totalViewFmt)
+    }
+
+    private val _shareUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayShareUiState(shouldShow = channelDetail.shareInfo.shouldShow &&
+                !bottomInsets.isAnyShown &&
+                (status.isActive || (upcomingInfo != null && upcomingInfo?.isUpcoming == true))
+        )
+    }
+
+    private val _cartUiState = combine(_cartInfo, _bottomInsets) { cartInfo, bottomInsets ->
+        PlayCartUiState(
+            shouldShow = cartInfo.shouldShow &&
+                    !bottomInsets.isAnyShown &&
+                    (upcomingInfo != null && upcomingInfo?.isUpcoming == false),
+            count = if (cartInfo.itemCount > 0) {
+                val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+"
+                else cartInfo.itemCount.toString()
+                PlayCartCount.Show(countText)
+            } else PlayCartCount.Hide
+        )
+    }
+
+    private val _rtnUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayRtnUiState(
+            shouldShow = channelType.isLive &&
+                    !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    !channelDetail.videoInfo.orientation.isHorizontal &&
+                    !videoPlayer.isYouTube,
+            lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+        )
+    }
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -156,63 +248,33 @@ class PlayViewModel @Inject constructor(
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
-            _channelDetail,
-            _partnerInfo,
-            _bottomInsets,
-            _interactive,
-            _leaderboardInfo,
-            _status,
-            _likeInfo,
-            _channelReport,
-            _cartInfo,
-    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport, cartInfo ->
+        _interactiveUiState.distinctUntilChanged(),
+        _partnerUiState.distinctUntilChanged(),
+        _winnerBadgeUiState.distinctUntilChanged(),
+        _bottomInsets,
+        _likeUiState.distinctUntilChanged(),
+        _totalViewUiState.distinctUntilChanged(),
+        _shareUiState.distinctUntilChanged(),
+        _cartUiState.distinctUntilChanged(),
+        _rtnUiState.distinctUntilChanged(),
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, cart, rtn ->
         PlayViewerNewUiState(
-                partnerName = partnerInfo.name,
-                followStatus = partnerInfo.status,
-                bottomInsets = bottomInsets,
-                interactive = interactive,
-                showInteractive = when {
-                    /**
-                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
-                     */
-                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
-                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
-                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
-                    else -> ViewVisibility.Visible
-                },
-                leaderboards = leaderboardInfo.leaderboardWinners,
-                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
-                status = status,
-                like = PlayLikeUiState(
-                        isLiked = likeInfo.status == PlayLikeStatus.Liked,
-                        shouldShow = !bottomInsets.isAnyShown && status.isActive,
-                        canLike = likeInfo.status != PlayLikeStatus.Unknown,
-                        animate = likeInfo.source == LikeSource.UserAction,
-                        totalLike = channelReport.totalLikeFmt,
-                ),
-                totalView = channelReport.totalViewFmt,
-                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown &&
-                                (status.isActive || (upcomingInfo != null && upcomingInfo?.isUpcoming == true)),
-                cart = PlayCartUiState(
-                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown && (upcomingInfo != null && upcomingInfo?.isUpcoming == false),
-                        count = if (cartInfo.itemCount > 0) {
-                            val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
-                            PlayCartCount.Show(countText)
-                        } else PlayCartCount.Hide
-                ),
-                rtn = PlayRtnUiState(
-                        shouldShow = channelType.isLive &&
-                                !bottomInsets.isAnyShown &&
-                                status.isActive &&
-                                !channelDetail.videoInfo.orientation.isHorizontal &&
-                                !videoPlayer.isYouTube,
-                        lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
-                )
+            interactiveView = interactive,
+            partner = partner,
+            winnerBadge = winnerBadge,
+            bottomInsets = bottomInsets,
+            like = like,
+            totalView = totalView,
+            share = share,
+            cart = cart,
+            rtn = rtn,
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.filter { isActive.get() || it is AllowedWhenInactiveEvent ||
-                (upcomingInfo != null && upcomingInfo?.isUpcoming == true)}
+        get() = _uiEvent.filter {
+            isActive.get() || it is AllowedWhenInactiveEvent ||
+                    (upcomingInfo != null && upcomingInfo?.isUpcoming == true)
+        }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -431,6 +493,8 @@ class PlayViewModel @Inject constructor(
     private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope, { channelType }, { videoPlayer })
     private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
+    private var likeReminderTimer: Job? = null
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -640,9 +704,9 @@ class PlayViewModel @Inject constructor(
             ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
             ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            ClickLikeAction -> handleClickLike()
+            ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
-            ClickCartAction -> handleClickCart()
+            ClickCartAction -> handleClickCart(isFromLogin = false)
         }
     }
 
@@ -700,6 +764,9 @@ class PlayViewModel @Inject constructor(
             focusVideoPlayer(channelData)
             startWebSocket(channelData.id)
             checkLeaderboard(channelData.id)
+
+            prepareSelfLikeBubbleIcon()
+            checkLikeReminderTimer()
         }
 
         updateChannelInfo(channelData)
@@ -711,6 +778,7 @@ class PlayViewModel @Inject constructor(
 
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
+        cancelReminderLikeTimer()
 
         stopInteractive()
         stopSSE()
@@ -1126,6 +1194,34 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun prepareSelfLikeBubbleIcon() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                PreloadLikeBubbleIconEvent(
+                    _likeInfo.value.likeBubbleConfig.bubbleMap.keys
+                )
+            )
+        }
+    }
+
+    private fun checkLikeReminderTimer() {
+        fun shouldRemindLike() = _likeInfo.value.status != PlayLikeStatus.Liked && channelType.isLive
+        suspend fun sendLikeReminder() = _uiEvent.emit(RemindToLikeEvent)
+
+        if (!shouldRemindLike()) return
+        cancelReminderLikeTimer()
+        likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
+            delay(TimeUnit.MINUTES.toMillis(1))
+            timerFactory.createLoopingAlarm(
+                millisInFuture = TimeUnit.MINUTES.toMillis(5),
+                stopCondition = { !shouldRemindLike() },
+                onStart = { sendLikeReminder() }
+            )
+        }
+    }
+
+    private fun cancelReminderLikeTimer() = likeReminderTimer?.cancel()
+
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
         getChannelStatusUseCase.apply {
             setRequestParams(GetChannelStatusUseCase.createParams(arrayOf(channelId)))
@@ -1164,9 +1260,34 @@ class PlayViewModel @Inject constructor(
         when (result) {
             is TotalLike -> {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
+                val prevLike = _channelReport.value.totalLike
+
+                if (channelType.isLive && totalLike < prevLike) return@withContext
 
                 _channelReport.setValue {
                     copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
+                }
+
+                if (!channelType.isLive) return@withContext
+
+                val diffLike = totalLike - prevLike
+
+                if (diffLike >= LIKE_BURST_THRESHOLD) {
+                    _uiEvent.emit(
+                        ShowLikeBubbleEvent.Burst(
+                            LIKE_BURST_THRESHOLD,
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
+                        )
+                    )
+                } else if (diffLike > 0) {
+                    _uiEvent.emit(
+                        ShowLikeBubbleEvent.Single(
+                            diffLike.toInt(),
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
+                        )
+                    )
                 }
             }
             is TotalView -> {
@@ -1254,6 +1375,18 @@ class PlayViewModel @Inject constructor(
             is RealTimeNotification -> {
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
                 _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
+            }
+            is UpdateMultipleLikeConfig -> {
+                if (result.channelId.toString() != channelId) return@withContext
+                val config = playSocketToModelMapper.mapMultipleLikeConfig(
+                    result.configuration
+                )
+                _likeInfo.setValue {
+                    copy(likeBubbleConfig = config)
+                }
+                viewModelScope.launch {
+                    _uiEvent.emit(PreloadLikeBubbleIconEvent(config.bubbleMap.keys))
+                }
             }
         }
     }
@@ -1352,7 +1485,11 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String, interactive: PlayCurrentInteractiveModel, isUserJoined: Boolean) = coroutineScope {
+        suspend fun fetchLeaderboard(
+            channelId: String,
+            interactive: PlayCurrentInteractiveModel,
+            isUserJoined: Boolean
+        ) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
@@ -1516,49 +1653,122 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             else -> {}
         }
     }
 
-    private fun handleClickLike() = needLogin(REQUEST_CODE_LOGIN_LIKE) {
-        val likeInfo = _likeInfo.value
-        if (likeInfo.status == PlayLikeStatus.Unknown) return@needLogin
+    private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
 
-        val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
-        _likeInfo.setValue {
-            copy(status = newStatus, source = LikeSource.UserAction)
+        fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
+            val currentTotalLike = _channelReport.value.totalLike
+            val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
+            return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
+                val totalLike =
+                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(
+                        0
+                    )
+                val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
+                totalLike to fmt
+            } else {
+                currentTotalLike to currentTotalLikeFmt
+            }
         }
 
-        val currentTotalLike = _channelReport.value.totalLike
-        val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
-        val (newTotalLike, newTotalLikeFmt) = if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-            val totalLike = (_channelReport.value.totalLike + (if (newStatus == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(0)
-            val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
-            totalLike to fmt
-        } else {
-            currentTotalLike to currentTotalLikeFmt
+        /**
+         * Like for Live Channel
+         * - New status will always be LIKE
+         * - Send Data to BE via Socket
+         */
+        fun handleClickLikeLive(onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
+            val newStatus = PlayLikeStatus.Liked
+            _likeInfo.setValue {
+                copy(status = newStatus, source = LikeSource.UserAction)
+            }
+
+            viewModelScope.launch {
+                _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
+                _uiEvent.emit(ShowLikeBubbleEvent.Single(
+                    count = 1,
+                    reduceOpacity = false,
+                    config = _likeInfo.value.likeBubbleConfig,
+                ))
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            playChannelWebSocket.send(
+                playSocketToModelMapper.mapSendLike(channelId)
+            )
+
+            onNewStatusFn(newStatus)
         }
 
-        _channelReport.setValue {
-            copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
-        }
+        /**
+         * Like for Non-Live Channel
+         * - New status can be UNLIKE or LIKE
+         * - Send Data to BE via GQL
+         */
+        fun handleClickLikeNonLive(isFromLogin: Boolean, onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
 
-        viewModelScope.launch {
-            repo.postLike(
+            val likeInfo = _likeInfo.value
+            if (likeInfo.status == PlayLikeStatus.Unknown) return
+
+            val newStatus = when {
+                isFromLogin -> PlayLikeStatus.Liked
+                likeInfo.status == PlayLikeStatus.Liked -> PlayLikeStatus.NotLiked
+                else -> PlayLikeStatus.Liked
+            }
+            _likeInfo.setValue { copy(status = newStatus, source = LikeSource.UserAction) }
+
+            if (newStatus == PlayLikeStatus.Liked) {
+                viewModelScope.launch {
+                    _uiEvent.emit(
+                        AnimateLikeEvent(
+                            fromIsLiked = likeInfo.status == PlayLikeStatus.Liked
+                        )
+                    )
+                }
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            viewModelScope.launch {
+                repo.postLike(
                     contentId = likeInfo.contentId.toLongOrZero(),
                     contentType = likeInfo.contentType,
                     likeType = likeInfo.likeType,
                     shouldLike = newStatus == PlayLikeStatus.Liked
-            )
+                )
+            }
+
+            onNewStatusFn(newStatus)
         }
 
-        playAnalytic.clickLike(
+        /**
+         * Main Like Condition Logic
+         */
+        val newStatusHandler: (PlayLikeStatus) -> Unit = { status ->
+            if (status == PlayLikeStatus.Liked) cancelReminderLikeTimer()
+
+            playAnalytic.clickLike(
                 channelId = channelId,
                 channelType = channelType,
                 channelName = _channelDetail.value.channelInfo.title,
-                likeStatus = newStatus,
-        )
+                likeStatus = status,
+            )
+        }
+
+        if (channelType.isLive) handleClickLikeLive(newStatusHandler)
+        else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
     private fun handleClickShare() {
@@ -1577,10 +1787,11 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickCart() {
+    private fun handleClickCart(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
         viewModelScope.launch {
+            val event = OpenPageEvent(applink = ApplinkConst.CART)
             _uiEvent.emit(
-                    OpenPageEvent(applink = ApplinkConst.CART)
+                 if (isFromLogin) AllowedWhenInactiveEvent(event) else event
             )
         }
     }
@@ -1610,10 +1821,7 @@ class PlayViewModel @Inject constructor(
 
         private const val MAX_CART_COUNT = 99
 
-        /**
-         * Real Time Notif
-         */
-        private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 300L
+        private const val LIKE_BURST_THRESHOLD = 30
 
         /**
          * Request Code When need login
@@ -1621,6 +1829,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
+        private const val REQUEST_CODE_LOGIN_REMIND_ME = 575
     }
 }

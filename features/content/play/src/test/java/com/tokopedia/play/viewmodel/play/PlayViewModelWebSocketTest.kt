@@ -91,7 +91,8 @@ class PlayViewModelWebSocketTest {
             fakePlayWebSocket.fakeReceivedMessage(PlayTotalViewSocketResponse.response)
         } thenVerify {
             withState {
-                totalView.isEqualTo(PlayTotalViewSocketResponse.totalViewFormatted)
+                totalView.viewCountStr
+                    .isEqualTo(PlayTotalViewSocketResponse.totalViewFormatted)
             }
         }
     }
