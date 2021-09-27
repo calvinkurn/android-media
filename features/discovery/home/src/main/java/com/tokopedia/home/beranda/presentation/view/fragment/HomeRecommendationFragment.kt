@@ -130,7 +130,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(WIHSLIST_STATUS_IS_WISHLIST)) {
-            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
             val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
             val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
             updateWishlist(id, wishlistStatusFromPdp, position)

@@ -6,8 +6,10 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.RegisterEmailBase
+import com.tokopedia.loginregister.login.common.TextFieldUnifyMatcher
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AnyOf.anyOf
+import org.hamcrest.core.Is.`is`
 import org.junit.Test
 
 class RegisterEmailNegativeCase: RegisterEmailBase() {
@@ -19,7 +21,7 @@ class RegisterEmailNegativeCase: RegisterEmailBase() {
     /* Disable Wrapper Email on Created */
     fun disableEmailInput() {
         runTest {
-            shouldBeDisabled(R.id.wrapper_email)
+            TextFieldUnifyMatcher.isEnabled(`is`(R.id.wrapper_email), `is`(false))
         }
     }
 
@@ -100,13 +102,6 @@ class RegisterEmailNegativeCase: RegisterEmailBase() {
     fun showError_IfNameLengthLessThan3() {
         runTest {
             inputName("yo")
-            Espresso.onView(
-                CoreMatchers.allOf(
-                    ViewMatchers.withId(R.id.text_field_input),
-                    ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.wrapper_name))
-                )
-            ).perform(ViewActions.clearText())
-
             Espresso.onView(anyOf(ViewMatchers.withText(lengthLessThan3Text)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }
@@ -117,13 +112,6 @@ class RegisterEmailNegativeCase: RegisterEmailBase() {
     fun showPasswordHint() {
         runTest {
             inputPassword("abcdef")
-            Espresso.onView(
-                CoreMatchers.allOf(
-                    ViewMatchers.withId(R.id.text_field_input),
-                    ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.wrapper_password))
-                )
-            ).perform(ViewActions.clearText())
-
             Espresso.onView(anyOf(ViewMatchers.withText("minimum 8 karakter")))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }

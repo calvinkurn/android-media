@@ -5,48 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_gradient_background"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/voucher_info_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/mvc_gradient_green_bg"
+        android:background="@drawable/bg_mvc_gradient_green"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_tkpd_voucher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:src="@drawable/mvc_tkpd_voucher"
-        app:layout_constraintLeft_toLeftOf="@id/iu_gradient_background"
-        app:layout_constraintRight_toRightOf="@id/iu_gradient_background"
-        app:layout_constraintTop_toTopOf="@id/iu_gradient_background" />
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_tkpd_voucher"
+            android:layout_width="@dimen/mvc_dimen_215dp"
+            android:layout_height="@dimen/mvc_dimen_174dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgp_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:text="@string/mvc_voucher_scheduled_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iu_tkpd_voucher"
-        app:typographyType="heading_2" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgp_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:text="@string/mvc_voucher_scheduled_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iu_tkpd_voucher"
+            app:typographyType="heading_2" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgp_voucher_period_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintTop_toBottomOf="@id/tgp_title"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        tools:text="@string/mvc_voucher_period_info" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgp_voucher_period_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintTop_toBottomOf="@id/tgp_title"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="@string/mvc_voucher_period_info" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgp_voucher_period_info" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgp_header"
@@ -57,7 +66,7 @@
         android:text="@string/mvc_success_create_header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iu_gradient_background"
+        app:layout_constraintTop_toBottomOf="@id/voucher_info_layout"
         app:typographyType="heading_4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

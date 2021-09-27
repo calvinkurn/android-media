@@ -22,7 +22,7 @@ class GetPMShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMShopInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GMShopInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GMShopInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -43,6 +43,7 @@ class GetPMShopInfoUseCase @Inject constructor(
           query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!, ${'$'}filter: GetPMShopInfoFilter) {
             goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, filter: ${'$'}filter) {
               is_new_seller
+              is_30_days_first_monday
               is_kyc
               shop_age
               kyc_status_id

@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 13/03/20.

@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.SendableViewModel.Companion.PAYLOAD_EVENT_
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 
 class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiModel>(itemView) {
@@ -24,6 +25,18 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
 
     override fun alwaysShowTime(): Boolean = true
 
+    override fun bind(message: StickerUiModel?, payloads: List<Any>) {
+        if (payloads.isEmpty() || message == null) return
+        when (payloads.first()) {
+            Payload.REBIND -> bind(message)
+            PAYLOAD_EVENT_READ -> {
+                if (message.isSender) {
+                    bindChatReadStatus(message)
+                }
+            }
+        }
+    }
+
     override fun bind(message: StickerUiModel?) {
         if (message == null) return
         super.bind(message)
@@ -31,14 +44,6 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
         bindStickerImage(message.sticker)
         alignLayout(message)
         bindChatReadStatus(message)
-    }
-
-    override fun bind(message: StickerUiModel?, payloads: List<Any>) {
-        if (payloads.isEmpty() || message == null) return
-        val payload = payloads[0]
-        if (payload === PAYLOAD_EVENT_READ && message.isSender) {
-            bindChatReadStatus(message)
-        }
     }
 
     private fun initLoader() {
@@ -53,6 +58,10 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
             })
             loader?.start()
         }
+    }
+
+    override fun onViewRecycled() {
+        loader?.clearAnimationCallbacks()
     }
 
     private fun bindStickerImage(sticker: StickerProfile) {

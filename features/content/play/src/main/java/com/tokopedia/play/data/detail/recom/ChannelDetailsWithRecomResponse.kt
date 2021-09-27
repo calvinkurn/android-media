@@ -2,6 +2,7 @@ package com.tokopedia.play.data.detail.recom
 
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 
 /**
  * Created by jegul on 20/01/21
@@ -34,6 +35,12 @@ data class ChannelDetailsWithRecomResponse(
             @SerializedName("title")
             val title: String = "",
 
+            @SerializedName("cover_url")
+            val coverUrl: String = "",
+
+            @SerializedName("start_time")
+            val startTime: String = "",
+
             @SerializedName("is_live")
             val isLive: Boolean = false,
 
@@ -54,6 +61,9 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("share")
             val share: Share = Share(),
+
+            @SerializedName("air_time")
+            val airTime: String = "",
     )
 
     data class Partner(
@@ -118,6 +128,12 @@ data class ChannelDetailsWithRecomResponse(
 
     data class Config(
 
+            @SerializedName("welcome_format")
+            val welcomeFormat: RealTimeNotification = RealTimeNotification(),
+
+            @SerializedName("real_time_notif")
+            val realTimeNotif: RealTimeNotificationConfig = RealTimeNotificationConfig(),
+
             @SerializedName("show_cart")
             val showCart: Boolean = false,
 
@@ -149,7 +165,10 @@ data class ChannelDetailsWithRecomResponse(
             val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
 
             @SerializedName("room_background")
-            val roomBackground: RoomBackground = RoomBackground()
+            val roomBackground: RoomBackground = RoomBackground(),
+
+            @SerializedName("reminder")
+            val reminder: Reminder = Reminder()
     )
 
     data class FreezeData(
@@ -223,5 +242,15 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("is_show_button")
             val isShowButton: Boolean = false
+    )
+
+    data class RealTimeNotificationConfig(
+            @SerializedName("lifespan")
+            val lifespan: Long = 0L,
+    )
+
+    data class Reminder(
+        @SerializedName("is_set")
+        val isSet: Boolean = false
     )
 }

@@ -292,15 +292,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         userSession.logoutSession();
     }
 
-    public Intent getHomeIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.HOME);
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        return MainParentActivity.class;
-    }
-
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
@@ -600,12 +591,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
-
-    @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
         if(TextUtils.isEmpty(errorMessage)){
             SessionAnalytics.trackRefreshTokenSuccess();
@@ -616,28 +601,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);

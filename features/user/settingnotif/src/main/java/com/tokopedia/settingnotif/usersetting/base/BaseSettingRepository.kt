@@ -18,7 +18,7 @@ class BaseSettingRepository(
             requests: List<GraphqlRequest>,
             cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        return repository.getReseponse(requests, cacheStrategy)
+        return repository.response(requests, cacheStrategy)
     }
 
 }

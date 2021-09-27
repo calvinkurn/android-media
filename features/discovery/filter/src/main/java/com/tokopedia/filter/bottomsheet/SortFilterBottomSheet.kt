@@ -1,6 +1,7 @@
 package com.tokopedia.filter.bottomsheet
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -18,6 +19,8 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
@@ -108,9 +111,27 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             sortFilterBottomSheetViewModel?.onPriceTextOutOfFocus()
         }
     }
+
+    private val keywordFilterListener = object: KeywordFilterListener {
+        override fun scrollToPosition(position: Int) {
+            val recyclerView = sortFilterBottomSheetView?.recyclerViewSortFilterBottomSheet ?: return
+            Handler().postDelayed(
+                { recyclerView.smoothScrollToPosition(position) },
+                50
+            )
+        }
+
+        override fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {
+            sortFilterBottomSheetViewModel?.onChangeKeywordFilter(keywordFilterDataView)
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
-                    sortViewListener, filterViewListener, priceFilterListener
+                sortViewListener,
+                filterViewListener,
+                priceFilterListener,
+                keywordFilterListener,
             )
     )
 
@@ -118,7 +139,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             fragmentManager: FragmentManager,
             mapParameter: Map<String, String>?,
             dynamicFilterModel: DynamicFilterModel?,
-            callback: Callback
+            callback: Callback,
     ) {
         if (mapParameter == null) return
 

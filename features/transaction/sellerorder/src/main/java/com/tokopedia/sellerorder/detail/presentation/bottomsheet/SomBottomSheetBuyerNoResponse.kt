@@ -40,7 +40,7 @@ class SomBottomSheetBuyerNoResponse(
                     childViews?.btn_primary?.isEnabled = !s.isNullOrBlank()
                 }
             })
-            fl_btn_primary?.visible()
+            btn_primary?.visible()
             btn_primary?.setOnClickListener {
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam().apply {

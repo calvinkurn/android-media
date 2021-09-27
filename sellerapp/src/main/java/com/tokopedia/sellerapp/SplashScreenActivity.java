@@ -46,9 +46,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        boolean defaultInteraction = false;
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
-                .withDefaultInteractions(defaultInteraction)
                 .start(this.getApplication());
         setUserIdNewRelic();
         isApkTempered = false;
