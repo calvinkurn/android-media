@@ -17,8 +17,15 @@ object TopadsFeedXMapper {
             feedXTagging.add(getFeedxMediaTagging(index))
         }
 
-        cpmData.data[0].cpm.cpmShop.products.forEach {
-            media.add(cpmProductToFeedXMedia(it,variant,merchantVouchers as ArrayList<String>,feedXTagging))
+        cpmData.data[0].cpm.cpmShop.products.forEachIndexed { index, product ->
+                media.add(
+                    cpmProductToFeedXMedia(
+                        product,
+                        variant,
+                        merchantVouchers as ArrayList<String>,
+                        index
+                    )
+                )
         }
 
         val feedXProducts = arrayListOf<FeedXProduct>()
@@ -87,8 +94,7 @@ object TopadsFeedXMapper {
         )
     }
 
-
-    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>,feedXMediaTagging: ArrayList<FeedXMediaTagging>): FeedXMedia {
+    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>,index: Int): FeedXMedia {
         var cashback=""
         if (!merchantVoucher.isNullOrEmpty()){
             cashback=merchantVoucher[0]
@@ -99,7 +105,7 @@ object TopadsFeedXMapper {
                 type = "image",
                 appLink = applinks,
                 mediaUrl = image.m_url,
-                tagging = feedXMediaTagging,
+                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f)),
                 isImageImpressedFirst = false,
                 productName = name,
                 price = product.priceFormat,
