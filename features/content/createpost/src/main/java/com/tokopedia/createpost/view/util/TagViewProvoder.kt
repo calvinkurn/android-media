@@ -156,15 +156,16 @@ class TagViewProvider
                         }
                     }
 
+
                     Log.d("Lavekush", "rawX=${motionEvent.rawX} ,rawY=${motionEvent.rawY}")
                     Log.d("Lavekush", "ppX=${motionEvent.x} ,ppY=${motionEvent.y}")
                     val gotoY: Float = when {
-                        motionEvent.rawY < (0 + y) + parent.top-> {
+                        motionEvent.rawY.plus(dY) < 0 -> {
                             0f /*Blocking top on drag*/
                         }
-//                        (motionEvent.rawY?.plus(dX) ?: 0f) + pxFromDp(child.context, 68f) > parent.bottom -> {
-//                            parent.bottom - pxFromDp(view.context, 68f) /*Blocking bottom on drag*/
-//                        }
+                        (motionEvent.rawY?.plus(dY) ?: 0f) + pxFromDp(child.context, 68f) > parent.bottom -> {
+                            parent.bottom - pxFromDp(view.context, 68f) /*Blocking bottom on drag*/
+                        }
                         else -> {
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
