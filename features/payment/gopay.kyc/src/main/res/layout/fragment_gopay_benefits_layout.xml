@@ -38,13 +38,13 @@
             android:id="@+id/goPayBenefitHeaderTitle"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
             android:text="@string/gopay_kyc_benefit_header_title_text"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toTopOf="@+id/goPayBenefitDescriptionText"
             app:layout_constraintEnd_toEndOf="@+id/goPayBenefitDescriptionText"
             app:layout_constraintStart_toStartOf="@+id/goPayBenefitDescriptionText"
             app:typographyType="heading_3" />
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/goPayBenefitDescriptionText"

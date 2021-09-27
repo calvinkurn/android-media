@@ -56,19 +56,19 @@ class GoPayKycImageUploadViewModel @Inject constructor(
                 if (isUploadSuccessful) {
                     kycRequestId = initiateKycResponse.initiateKycData.kycRequestId
                     submitKycInfo()
-                } else updateKycUploadStatus(false)
+                } else uploadKycFailed()
             }, {
-                updateKycUploadStatus(false)
+                uploadKycFailed()
                 kycSubmitErrorLiveData.postValue(it)
             })
         } else {
-            updateKycUploadStatus(false)
+            uploadKycFailed()
             kycSubmitErrorLiveData.postValue(IllegalStateException(ILLEGAL_STATE))
         }
     }
 
     private fun onKycInitiationFailed(throwable: Throwable) {
-        updateKycUploadStatus(false)
+        uploadKycFailed()
         kycSubmitErrorLiveData.postValue(throwable)
     }
 
@@ -81,8 +81,8 @@ class GoPayKycImageUploadViewModel @Inject constructor(
         kycSubmitErrorLiveData.postValue(throwable)
     }
 
-    private fun updateKycUploadStatus(isSuccess: Boolean) {
-        uploadSuccessLiveData.postValue(isSuccess)
+    private fun uploadKycFailed() {
+        uploadSuccessLiveData.postValue(false)
     }
 
     companion object {
