@@ -39,7 +39,7 @@
                 android:layout_toEndOf="@id/dot_place_holder"
                 android:layout_toRightOf="@id/dot_place_holder">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -47,15 +47,16 @@
                     android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="10"
                     android:textStyle="bold"
+                    app:typographyType="heading_5"
                     tools:text="Loren Ipsum" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:textSize="11sp"
+                    app:typographyType="small"
                     tools:text="20 Mei 2017" />
 
             </LinearLayout>
@@ -84,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,6 +93,7 @@
                     android:layout_marginRight="@dimen/dp_5"
                     android:paddingBottom="@dimen/dp_5"
                     android:paddingTop="@dimen/dp_5"
+                    app:typographyType="body_2"
                     android:textColor="@color/Unify_N200"
                     tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
