@@ -645,7 +645,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (cartItemModel.isBundlingItem()) {
             if (!TextUtils.isEmpty(cartItemModel.getBundleIconUrl())) {
-                ImageHandler.loadImage2(imageBundle, cartItemModel.getBundleIconUrl(), R.drawable.ic_loading_placeholder);
+                ImageHandler.loadImage2(imageBundle, cartItemModel.getBundleIconUrl(), com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
             }
             ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
             tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
