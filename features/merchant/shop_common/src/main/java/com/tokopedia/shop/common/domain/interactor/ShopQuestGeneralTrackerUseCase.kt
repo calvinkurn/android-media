@@ -16,7 +16,7 @@ class ShopQuestGeneralTrackerUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopQuestGeneralTracker {
         val request = GraphqlRequest(MUTATION, ShopQuestGeneralTracker::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(request))
+        val gqlResponse = gqlRepository.response(listOf(request))
         return gqlResponse.getData<ShopQuestGeneralTracker>(
                 ShopQuestGeneralTracker::class.java
         )

@@ -9,6 +9,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -47,7 +48,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
-                    leaderboardInfo = mapLeaderboardInfo()
+                    leaderboardInfo = mapLeaderboardInfo(),
+                    upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime)
             )
         }
     }
@@ -228,6 +230,16 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
+
+    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
+        PlayUpcomingUiModel(
+            title = title,
+            isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
+            isReminderSet = isReminderSet,
+            coverUrl = coverUrl,
+            startTime = startTime,
+            isAlreadyLive = false
+        )
 
     companion object {
         private const val MS_PER_SECOND = 1000

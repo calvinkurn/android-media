@@ -1,8 +1,8 @@
 package com.tokopedia.shop.showcase.presentation.adapter.viewholder
 
-import android.view.View
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 
@@ -10,9 +10,9 @@ import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHo
  * Created by Rafli Syam on 30/03/2021
  */
 class ShopShowcaseListImageViewHolder(
-        itemView: View,
+        itemViewBinding: ItemShopShowcaseListImageBinding,
         private val listener: ShopShowcaseListImageListener
-) : ShopShowcaseListImageBaseViewHolder(itemView) {
+) : ShopShowcaseListImageBaseViewHolder(itemViewBinding) {
 
     override fun bind(element: Any) {
 
@@ -23,7 +23,7 @@ class ShopShowcaseListImageViewHolder(
         renderShowcaseMainInfo(showcaseItem)
 
         // showcase item impressed listener
-        ivShowcaseImage?.addOnImpressionListener(
+        itemIvShowcaseImage?.addOnImpressionListener(
                 holder = showcaseItem,
                 listener = object : ViewHintListener {
                     override fun onViewHint() {

@@ -29,6 +29,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -56,6 +57,7 @@ class PlayViewModelRobot(
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase: PlayChannelReminderUseCase,
         playSocketToModelMapper: PlaySocketToModelMapper,
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -64,6 +66,7 @@ class PlayViewModelRobot(
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         playChannelWebSocket: PlayChannelWebSocket,
+        playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
 ) : Robot {
@@ -84,6 +87,7 @@ class PlayViewModelRobot(
                 getProductTagItemsUseCase,
                 trackProductTagBroadcasterUseCase,
                 trackVisitChannelBroadcasterUseCase,
+                playChannelReminderUseCase,
                 playSocketToModelMapper,
                 playUiModelMapper,
                 userSession,
@@ -92,6 +96,7 @@ class PlayViewModelRobot(
                 playPreference,
                 videoLatencyPerformanceMonitoring,
                 playChannelWebSocket,
+                playChannelSSE,
                 repo,
                 playAnalytic
         )
@@ -103,6 +108,10 @@ class PlayViewModelRobot(
 
     fun focusPage(channelData: PlayChannelData) {
         viewModel.focusPage(channelData)
+    }
+
+    fun defocusPage(shouldPauseVideo: Boolean) {
+        viewModel.defocusPage(shouldPauseVideo)
     }
 
     fun setMockResponseReportSummaries(response: ReportSummaries) {
@@ -227,6 +236,7 @@ fun givenPlayViewModelRobot(
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
+        playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
@@ -235,6 +245,7 @@ fun givenPlayViewModelRobot(
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+        playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
@@ -251,6 +262,7 @@ fun givenPlayViewModelRobot(
             getProductTagItemsUseCase = getProductTagItemsUseCase,
             trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
             trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
+            playChannelReminderUseCase = playChannelReminderUseCase,
             playSocketToModelMapper = playSocketToModelMapper,
             playUiModelMapper = playUiModelMapper,
             userSession = userSession,
@@ -259,6 +271,7 @@ fun givenPlayViewModelRobot(
             playPreference = playPreference,
             videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
             playChannelWebSocket = playChannelWebSocket,
+            playChannelSSE = playChannelSSE,
             repo = repo,
             playAnalytic = playAnalytic
     ).apply(fn)
