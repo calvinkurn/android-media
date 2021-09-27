@@ -37,7 +37,13 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 HomeBalanceModel.TYPE_STATE_1 -> {
                     renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
                 }
-                HomeBalanceModel.TYPE_STATE_2, HomeBalanceModel.TYPE_STATE_3 -> {
+                HomeBalanceModel.TYPE_STATE_2 -> {
+                    renderBalanceLayout(
+                        it.homeBalanceModel,
+                        element.headerDataModel?.isUserLogin?: false,
+                        element.needToShowUserWallet)
+                }
+                HomeBalanceModel.TYPE_STATE_3 -> {
                     renderBalanceLayout(
                             it.homeBalanceModel,
                             element.headerDataModel?.isUserLogin?: false,
