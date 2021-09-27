@@ -625,6 +625,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment,)
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
+                        setStats(userStats, userId, this@ReviewImagePreviewFragment, isAnonymous)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {
                             ReviewImagePreviewTracking.trackOnLikeReviewClicked(

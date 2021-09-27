@@ -320,7 +320,9 @@ class ReviewGalleryFragment :
                 totalLiked = this.totalLike,
                 review = this.review,
                 reviewTime = this.createTimestamp,
-                isReportable = this.isReportable
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
