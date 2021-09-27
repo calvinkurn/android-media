@@ -59,6 +59,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
@@ -76,7 +77,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataVi
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
@@ -84,7 +85,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverag
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
@@ -310,7 +310,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.clear()
         visitableList.add(chooseAddressDataView)
         visitableList.add(OutOfCoverageDataView())
-        visitableList.add(RecommendationCarouselDataView(pageName = OOC_TOKONOW))
+        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -424,8 +424,8 @@ abstract class BaseSearchCategoryViewModel(
         val activeFilterList = filterController.getActiveFilterOptionList()
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(EmptyProductDataView(activeFilterList))
-        visitableList.add(RecommendationCarouselDataView(TOKONOW_NO_RESULT))
+        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
+        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_NO_RESULT))
     }
 
     private fun createVisitableListWithProduct(
@@ -1133,7 +1133,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onBindRecommendationCarousel(
-            element: RecommendationCarouselDataView,
+            element: TokoNowRecommendationCarouselUiModel,
             adapterPosition: Int,
     ) {
         launchCatchError(
@@ -1143,7 +1143,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open suspend fun getRecommendationCarousel(
-            element: RecommendationCarouselDataView,
+            element: TokoNowRecommendationCarouselUiModel,
             adapterPosition: Int,
     ) {
         if (element.carouselData.state == RecommendationCarouselData.STATE_READY) return
@@ -1167,7 +1167,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createRecommendationRequestParam(
-            recommendationCarouselDataView: RecommendationCarouselDataView
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
     ) = GetRecommendationRequestParam(
             pageName = recommendationCarouselDataView.pageName,
             categoryIds = getRecomCategoryId(recommendationCarouselDataView),
@@ -1179,7 +1179,7 @@ abstract class BaseSearchCategoryViewModel(
     )
 
     protected open fun getRecomCategoryId(
-            recommendationCarouselDataView: RecommendationCarouselDataView
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
     ) = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
@@ -1206,8 +1206,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open suspend fun getRecommendationCarouselError(
-            element: RecommendationCarouselDataView,
-            adapterPosition: Int,
+        element: TokoNowRecommendationCarouselUiModel,
+        adapterPosition: Int,
     ) {
         element.carouselData = RecommendationCarouselData(
                 state = RecommendationCarouselData.STATE_FAILED
