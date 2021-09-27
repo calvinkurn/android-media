@@ -19,8 +19,8 @@
     <string name="affiliate_promoted_products">Produk yang dipromosikan</string>
     <string name="affiliate_where_to_promote">Mau promosikan di mana?</string>
     <string name="affiliate_copy_link">Salin Link</string>
-    <string name="affiliate_never_bought_product">Kamu belum pernah beli produk di Tokopedia</string>
-    <string name="affiliate_still_buy_products">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia </string>
+    <string name="affiliate_never_bought_product">Cari produknya dulu, yuk!</string>
+    <string name="affiliate_still_buy_products">Kalau udah ada produk yang mau dipromosikan, segera salin link-nya, lalu tempel di sini.</string>
     <string name="affiliate_paste_link">Tempel Link</string>
     <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
     <string name="affiliate_active">Aktif</string>
