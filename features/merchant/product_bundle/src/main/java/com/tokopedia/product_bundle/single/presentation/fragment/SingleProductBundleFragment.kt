@@ -109,8 +109,15 @@ class SingleProductBundleFragment(
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
-            adapter.setSelectedVariant(selectedProductId, viewModel.getVariantText(selectedProductVariant, selectedProductId))
-            Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
+            adapter.setSelectedVariant(selectedProductId,
+                viewModel.getVariantText(selectedProductVariant, selectedProductId))
+            Toaster.build(
+                requireView(),
+                getString(R.string.single_bundle_success_variant_added),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.action_oke)
+            ).setAnchorView(totalAmount?.bottomContentView).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
