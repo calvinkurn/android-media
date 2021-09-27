@@ -61,6 +61,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 data {
                   id
                   title
+                  cover_url
+                  start_time
                   is_live
                   partner {
                     id
@@ -148,6 +150,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     meta_description
                     is_show_button
                   }
+                  air_time
                 }
               }
             }
