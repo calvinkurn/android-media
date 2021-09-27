@@ -17,10 +17,6 @@ abstract class BaseSellerFeatureTabFragment(
 ) : Fragment() {
 
     var recyclerViewListener: SellerFeatureCarousel.RecyclerViewListener? = null
-        set(value) {
-            field = value
-            value?.let { binding?.sellerFeatureCarousel?.setRecyclerViewListener(it) }
-        }
 
     private val binding by viewBinding(FragmentBaseSellerFeatureBinding::bind)
 
