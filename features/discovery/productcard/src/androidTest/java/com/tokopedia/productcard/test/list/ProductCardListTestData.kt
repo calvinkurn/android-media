@@ -18,6 +18,7 @@ import org.hamcrest.Matcher
 internal val productCardListTestData = productCardModelMatcherData + mutableListOf<ProductCardModelMatcher>().also {
     it.add(testAddToCartAndRemoveFromWishlist())
     it.add(testDeleteProductButton())
+    it.add(testSimilarProductButton())
 }
 
 private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
@@ -95,6 +96,26 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.buttonDeleteProduct] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSimilarProductButton(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Similar Product Button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp8.999.000",
+        shopLocation = "DKI Jakarta",
+        hasSimilarProductButton = false
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

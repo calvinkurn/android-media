@@ -224,7 +224,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Call this function to let the NavToolbar manage your status bar transparency
      */
-    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true) {
+    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true, applyPaddingNegative: Boolean = false) {
         statusBarUtil = StatusBarUtil(WeakReference(activity))
 
         statusBarTheme?.let {
@@ -236,6 +236,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
 
         if (applyPadding) applyStatusBarPadding()
+        if (applyPaddingNegative) resetPadding()
     }
 
     /**
@@ -503,7 +504,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun getCurrentSearchbarText(): String {
-        return navSearchBarController.etSearch?.text?.toString()?:""
+        return navSearchBarController.etSearch?.text?.toString() ?: ""
     }
 
     private fun applyStatusBarPadding() {
@@ -512,8 +513,13 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navToolbar?.updatePadding(top = pT)
     }
 
+    private fun resetPadding() {
+        var pT = 0
+        navToolbar?.updatePadding(top = pT)
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onStartListener(owner: LifecycleOwner){
+    private fun onStartListener(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeLiveData()
     }

@@ -143,4 +143,6 @@ public interface LinkerConstants {
     String BRANCH_LINK_DOMAIN_1="tokopedia.link";
     String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
     String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
+    String FIREBASE_KEY_FDL_ENABLE = "app_firebase_dynamic_link_activated";
+
 }
