@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
@@ -512,7 +513,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun shouldShowCredibility(): Boolean {
-        return isNewReadingExperience() && isNewReadingExperienceEnabled()
+        return isNewCredibilityEnabled() && isNewReadingExperienceEnabled()
     }
 
     private fun isNewCredibilityEnabled(): Boolean {
