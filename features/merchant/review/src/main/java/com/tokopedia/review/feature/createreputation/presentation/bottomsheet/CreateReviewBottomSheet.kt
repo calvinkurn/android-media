@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -113,6 +112,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var templatesSelectedCount = 0
     private var shouldShowThankYouBottomSheet = false
     private var thankYouBottomSheetText = ""
+    private var thankYouBottomSheetImageUrl = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -349,17 +349,16 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.getReviewTemplates(productId)
     }
 
-    private fun observeGetForm() {
-        createReviewViewModel.getReputationDataForm.observe(this, Observer {
+    private fun observeGetForm() =
+        createReviewViewModel.getReputationDataForm.observe(this, {
             when (it) {
                 is Success -> onSuccessGetReviewForm(it.data)
                 is Fail -> onErrorGetReviewForm(it.throwable)
             }
         })
-    }
 
     private fun observeIncentive() {
-        createReviewViewModel.incentiveOvo.observe(this, Observer {
+        createReviewViewModel.incentiveOvo.observe(this, {
             when (it) {
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
@@ -369,7 +368,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeTemplates() {
-        createReviewViewModel.reviewTemplates.observe(this, Observer {
+        createReviewViewModel.reviewTemplates.observe(this, {
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
@@ -378,7 +377,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeSubmitReview() {
-        createReviewViewModel.submitReviewResult.observe(this, Observer {
+        createReviewViewModel.submitReviewResult.observe(this, {
             when (it) {
                 is com.tokopedia.review.common.data.Success -> {
                     onSuccessSubmitReview()
@@ -394,13 +393,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun observeButtonState() {
-        createReviewViewModel.submitButtonState.observe(this, Observer {
+        createReviewViewModel.submitButtonState.observe(this, {
             submitButton?.isEnabled = it
         })
     }
 
     private fun observeProgressBarState() {
-        createReviewViewModel.progressBarState.observe(this, Observer {
+        createReviewViewModel.progressBarState.observe(this, {
             progressBar?.setProgressBarValue(it)
         })
     }
@@ -434,6 +433,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
         ovoDomain?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImageUrl = it.thankYouImage
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
@@ -717,7 +717,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     productId,
                     getUserId()
                 )
-            })
+            },
+            DialogUnify.HORIZONTAL_ACTION
+        )
         CreateReviewTracking.eventViewDialog(
             CreateReviewDialogType.CreateReviewSendRatingOnlyDialog,
             title,
@@ -745,7 +747,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     productId,
                     getUserId()
                 )
-            })
+            },
+            DialogUnify.HORIZONTAL_ACTION
+        )
         CreateReviewTracking.eventViewDialog(
             CreateReviewDialogType.CreateReviewUnsavedDialog,
             title,
@@ -760,10 +764,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         showDialog(
             getString(R.string.review_form_incentives_exit_dialog_title),
             getString(R.string.review_form_incentives_exit_dialog_body),
+            getString(R.string.review_form_dismiss_form_dialog_stay),
+            {},
             getString(R.string.review_edit_dialog_exit),
             { dismiss() },
-            getString(R.string.review_form_dismiss_form_dialog_stay),
-            {})
+            DialogUnify.HORIZONTAL_ACTION
+        )
     }
 
     private fun showDialog(
@@ -772,10 +778,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         primaryCtaText: String,
         primaryCtaAction: () -> Unit,
         secondaryCtaText: String,
-        secondaryCtaAction: () -> Unit
+        secondaryCtaAction: () -> Unit,
+        orientation: Int = DialogUnify.VERTICAL_ACTION
     ) {
         context?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            DialogUnify(it, orientation, DialogUnify.NO_IMAGE).apply {
                 setTitle(title)
                 setDescription(description)
                 setPrimaryCTAText(primaryCtaText)
@@ -1022,7 +1029,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     @SuppressLint("ClickableViewAccessibility")
     private fun View.setCustomTouchListener() {
-        this.setOnTouchListener { v, event ->
+        this.setOnTouchListener { _, _ ->
             clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
         }
@@ -1043,7 +1050,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     data,
                     this,
                     getThankYouBottomSheetTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImageUrl
                 )
             }
         }
@@ -1111,7 +1119,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun handleOnBackPressed() {
-        dialog?.setOnKeyListener { _, keyCode, event ->
+        dialog?.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 handleDismiss()
                 true

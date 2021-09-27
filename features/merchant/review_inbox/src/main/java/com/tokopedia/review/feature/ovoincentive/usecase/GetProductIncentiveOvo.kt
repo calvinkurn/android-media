@@ -29,6 +29,7 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                     cta_text
                     amount
                     bottom_sheet
+                    image_url
                   }
                 }
             """
