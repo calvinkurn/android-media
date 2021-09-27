@@ -30,6 +30,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -92,6 +93,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return TopAdsHeadlineViewHolder.LAYOUT
     }
 
+    override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int {
+        return TopAdsHeadlineV2ViewHolder.LAYOUT
+    }
+
     override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
         return EmptyAffiliateViewHolder.LAYOUT
     }
@@ -152,6 +157,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsHeadlineViewHolder.LAYOUT ->
+                TopAdsHeadlineViewHolder(parent, userSession) as AbstractViewHolder<Visitable<*>>
             TopAdsHeadlineV2ViewHolder.LAYOUT ->
                 TopAdsHeadlineV2ViewHolder(
                     parent,
