@@ -35,7 +35,7 @@ object FragmentDFMapper {
              */
             add(FragmentDFPattern(
                     {it == REVIEW_SHOP_FRAGMENT},
-                    DeeplinkDFMapper.DF_MERCHANT_REVIEW,
+                    DeeplinkDFMapper.DF_BASE,
                     R.string.title_review_shop
             ))
         }
