@@ -74,6 +74,7 @@
 /features/merchant/shop_open/                           @tokopedia/android-minionken-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionken-dev
+/features/merchant/review_shop/                         @tokopedia/android-minionken-dev
 /features/merchant/favorite/                            @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev

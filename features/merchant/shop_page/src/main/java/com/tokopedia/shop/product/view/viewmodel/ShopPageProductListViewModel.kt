@@ -25,6 +25,7 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
@@ -32,7 +33,6 @@ import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.review.shop.data.network.ErrorMessageException
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -197,7 +197,7 @@ class ShopPageProductListViewModel @Inject constructor(
             val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
             if (code != ShopHomeViewModel.CODE_STATUS_SUCCESS) {
-                val errorMessage = ErrorHandler.getErrorMessage(context, ErrorMessageException(response.data?.resultStatus?.message.toString()))
+                val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
                         ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
                         Throwable(errorMessage)
