@@ -21,7 +21,7 @@ class GetFeaturedShowcaseUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): GetFeaturedShowcase {
         val request = GraphqlRequest(QUERY, GetFeaturedShowcaseResponse::class.java, params.parameters)
-        val response = graphqlRepository.getReseponse(listOf(request))
+        val response = graphqlRepository.response(listOf(request))
         return response.getData<GetFeaturedShowcaseResponse>(
                 GetFeaturedShowcaseResponse::class.java
         ).getFeaturedShowcase ?: throw MessageErrorException()

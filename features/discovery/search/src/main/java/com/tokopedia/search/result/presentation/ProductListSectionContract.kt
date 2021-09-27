@@ -133,6 +133,7 @@ interface ProductListSectionContract {
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
         fun onBottomSheetFilterDismissed()
+        fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)

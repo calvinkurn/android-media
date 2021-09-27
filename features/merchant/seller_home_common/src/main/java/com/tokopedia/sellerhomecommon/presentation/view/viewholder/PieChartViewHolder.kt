@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -49,6 +50,7 @@ class PieChartViewHolder(
                 toggleWidgetHeight(true)
             }
             tvPieChartTitle.text = element.title
+            setTagNotification(element.tag)
             setupTooltip(element)
 
             observeState(element)
@@ -76,6 +78,20 @@ class PieChartViewHolder(
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
             emptyState?.gone()
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagPieChart.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagPieChart.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 

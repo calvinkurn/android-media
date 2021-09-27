@@ -54,7 +54,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawTokenQuery, BrizziTokenResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<BrizziTokenResponse>()
 
             if (data.tokenResponse.token != token) {
@@ -108,7 +108,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawString, BrizziInquiryLogResponse::class.java, mapParamLog)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<BrizziInquiryLogResponse>()
 
             data.brizziInquiryLog?.let {

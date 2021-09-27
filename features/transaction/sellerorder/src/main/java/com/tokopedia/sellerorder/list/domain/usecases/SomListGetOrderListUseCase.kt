@@ -28,7 +28,7 @@ class SomListGetOrderListUseCase @Inject constructor(
 
     suspend fun executeOnBackground(params: RequestParams): Pair<String, List<SomListOrderUiModel>> {
         val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val searchKeyword = getSearchKeyword(params)
 
         val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)

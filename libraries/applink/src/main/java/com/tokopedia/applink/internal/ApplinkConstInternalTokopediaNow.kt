@@ -10,13 +10,19 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPEDIA_NOW}"
 
-    //TokoMartHomeActivity
+    //TokoNowHomeActivity
     @JvmField
     val HOME = "$INTERNAL_TOKOPEDIA_NOW/home"
 
-    //TokoMartCategoryListActivity
+    //TokoNowCategoryListActivity
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
+
+    //TokoNowSortFilterActivity
+    val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
+
+    //TokoNowDateFilterActivity
+    val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter"
 
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
@@ -26,4 +32,12 @@ object ApplinkConstInternalTokopediaNow {
 
     @JvmField
     val OLD_TOKOMART = "${ApplinkConstInternalGlobal.DISCOVERY}/tokomart"
+
+    //TokoNowRecentPurchaseActivity
+    @JvmField
+    val REPURCHASE = "$INTERNAL_TOKOPEDIA_NOW/repurchase-page"
+
+    //TokoNowCategoryFilterActivity
+    @JvmField
+    val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
 }

@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE,DISCOVERY_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE,DISCOVERY_PAGE, RECOMMENDATION_INFINITE
     }
 
     companion object {
@@ -303,6 +303,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
                 eventCategory = "discovery page"
             }
+            Page.RECOMMENDATION_INFINITE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
+            }
         }
 
         val dataLayer = Bundle().apply {
@@ -350,6 +354,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             Page.DISCOVERY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
                 eventCategory = "discovery page"
+            }
+            Page.RECOMMENDATION_INFINITE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
             }
         }
 

@@ -14,7 +14,11 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
+import com.tokopedia.play.data.ssemapper.PlaySSEMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
+import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.isAnyShown
@@ -31,6 +35,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
@@ -47,6 +52,10 @@ import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.sse.model.SSEAction
+import com.tokopedia.play_common.sse.model.SSECloseReason
+import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -75,6 +84,7 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+        private val playChannelReminderUseCase: PlayChannelReminderUseCase,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -83,6 +93,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
+        private val playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
@@ -113,6 +124,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+    val observableUpcomingInfo: LiveData<PlayUpcomingUiModel>
+        get() = _observableUpcomingInfo
 
     /**
      * Interactive Remote Config defaults to true, because it should be enabled by default,
@@ -178,9 +191,10 @@ class PlayViewModel @Inject constructor(
                         totalLike = channelReport.totalLikeFmt,
                 ),
                 totalView = channelReport.totalViewFmt,
-                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
+                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown &&
+                                (status.isActive || (upcomingInfo != null && upcomingInfo?.isUpcoming == true)),
                 cart = PlayCartUiState(
-                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown && (upcomingInfo != null && upcomingInfo?.isUpcoming == false),
                         count = if (cartInfo.itemCount > 0) {
                             val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
                             PlayCartCount.Show(countText)
@@ -198,7 +212,7 @@ class PlayViewModel @Inject constructor(
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent
-            .filter { isActive.get() || it is AllowedWhenInactiveEvent }
+            .filter { isActive.get() || it is AllowedWhenInactiveEvent || (upcomingInfo != null && upcomingInfo?.isUpcoming == true) }
             .map { if (it is AllowedWhenInactiveEvent) it.event else it }
 
     val videoOrientation: VideoOrientation
@@ -242,6 +256,9 @@ class PlayViewModel @Inject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val upcomingInfo: PlayUpcomingUiModel?
+        get() = _observableUpcomingInfo.value
+
     private var mChannelData: PlayChannelData? = null
 
     private val channelId: String
@@ -277,7 +294,8 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboardInfo.value
+                    leaderboardInfo = _leaderboardInfo.value,
+                    upcomingInfo = _observableUpcomingInfo.value ?: channelData.upcomingInfo
             )
         }
 
@@ -298,6 +316,8 @@ class PlayViewModel @Inject constructor(
 
     private var socketJob: Job? = null
 
+    private var sseJob: Job? = null
+
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
@@ -315,6 +335,7 @@ class PlayViewModel @Inject constructor(
     }
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -431,6 +452,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         stopWebSocket()
+        stopSSE()
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
@@ -615,6 +637,9 @@ class PlayViewModel @Inject constructor(
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
+            ImpressUpcomingChannel -> handleImpressUpcomingChannel()
+            ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
+            ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
@@ -667,12 +692,19 @@ class PlayViewModel @Inject constructor(
     fun focusPage(channelData: PlayChannelData) {
         isActive.compareAndSet(false, true)
 
-        focusVideoPlayer(channelData)
-        updateChannelInfo(channelData)
-        startWebSocket(channelData.id)
-        trackVisitChannel(channelData.id)
+        _observableUpcomingInfo.value = channelData.upcomingInfo
 
-        checkLeaderboard(channelData.id)
+        if(channelData.upcomingInfo.isUpcoming) {
+            startSSE(channelData.id)
+        }
+        else {
+            focusVideoPlayer(channelData)
+            startWebSocket(channelData.id)
+            checkLeaderboard(channelData.id)
+        }
+
+        updateChannelInfo(channelData)
+        trackVisitChannel(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -682,6 +714,7 @@ class PlayViewModel @Inject constructor(
         stopWebSocket()
 
         stopInteractive()
+        stopSSE()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -703,7 +736,7 @@ class PlayViewModel @Inject constructor(
         updateStatusInfo(channelData.id)
         updatePartnerInfo(channelData.partnerInfo)
         updateCartInfo(channelData.cartInfo)
-        if (!channelData.statusInfo.statusType.isFreeze) {
+        if (!channelData.statusInfo.statusType.isFreeze && upcomingInfo != null && upcomingInfo?.isUpcoming == false) {
             updateVideoMetaInfo(channelData.videoMetaInfo)
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
@@ -761,13 +794,7 @@ class PlayViewModel @Inject constructor(
     private fun startWebSocket(channelId: String) {
         socketJob?.cancel()
         socketJob = viewModelScope.launch {
-            val socketCredential = try {
-                withContext(dispatchers.io) {
-                    return@withContext getSocketCredentialUseCase.executeOnBackground()
-                }
-            } catch (e: Throwable) {
-                SocketCredential()
-            }
+            val socketCredential = getSocketCredential()
 
             if (!isActive) return@launch
             connectWebSocket(
@@ -793,6 +820,40 @@ class PlayViewModel @Inject constructor(
 
     private fun stopInteractive() {
         _interactive.value = PlayInteractiveUiState.NoInteractive
+    }
+
+    private fun startSSE(channelId: String) {
+        sseJob?.cancel()
+        sseJob = viewModelScope.launch {
+            val socketCredential = getSocketCredential()
+            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+            playChannelSSE.listen().collect {
+                when (it) {
+                    is SSEAction.Message -> handleSSEMessage(it.message, channelId)
+                    is SSEAction.Close -> {
+                        if (it.reason == SSECloseReason.ERROR)
+                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun connectSSE(channelId: String, pageSource: String, gcToken: String) {
+        playChannelSSE.connect(channelId, pageSource, gcToken)
+    }
+
+    private fun stopSSE() {
+        sseJob?.cancel()
+        playChannelSSE.close()
+    }
+
+    private suspend fun getSocketCredential(): SocketCredential = try {
+        withContext(dispatchers.io) {
+            return@withContext getSocketCredentialUseCase.executeOnBackground()
+        }
+    } catch (e: Throwable) {
+        SocketCredential()
     }
 
     /**
@@ -1198,6 +1259,25 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private suspend fun handleSSEMessage(message: SSEResponse, channelId: String) {
+        val result = withContext(dispatchers.computation) {
+            val sseMapper = PlaySSEMapper(message)
+            sseMapper.mapping()
+        }
+
+        when(result) {
+            is UpcomingChannelUpdateLive -> handleUpdateChannelStatus(result.channelId, channelId)
+            is UpcomingChannelUpdateActive -> handleUpdateChannelStatus(result.channelId, channelId)
+        }
+    }
+
+    private fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
+        if(changedChannelId == currentChannelId) {
+            _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
+            stopSSE()
+        }
+    }
+
     /**
      * Called when user tap
      */
@@ -1397,11 +1477,47 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
+    private fun handleImpressUpcomingChannel() {
+        playAnalytic.impressUpcomingPage(channelId)
+    }
+
+    private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
+        if(userClick) playAnalytic.clickRemindMe(channelId)
+
+        needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
+            viewModelScope.launchCatchError(block = {
+
+                mChannelData?.let {
+                    val status: Boolean
+
+                    withContext(dispatchers.io) {
+                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
+                        val response = playChannelReminderUseCase.executeOnBackground()
+                        status = PlayChannelReminderUseCase.checkRequestSuccess(response)
+                    }
+
+                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
+
+                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+
+                } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+            }) {
+                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+            }
+        }
+    }
+
+    private fun handleWatchNowUpcomingChannel() {
+        playAnalytic.clickWatchNow(channelId)
+        stopSSE()
+    }
+
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             else -> {}
@@ -1514,6 +1630,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
+        private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 575
     }
 }

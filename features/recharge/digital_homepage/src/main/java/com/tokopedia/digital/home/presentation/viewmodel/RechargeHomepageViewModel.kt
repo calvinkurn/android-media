@@ -52,7 +52,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
             mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
@@ -77,7 +77,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSections.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
 
@@ -112,7 +112,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSectionAction.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionAction.Response>().response
 
             mutableRechargeHomepageSectionAction.postValue(Success(data))
@@ -128,7 +128,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeTickerHomepageModel::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeTickerHomepageModel>()
 
             mutableRechargeTickerHomepageModel.postValue(Success(data))
