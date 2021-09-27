@@ -122,10 +122,17 @@ class TagViewProvider
         feedXMediaTagging: FeedXMediaTagging,
     ) {
         child.visibility = View.INVISIBLE
-        child.isClickable = true
-        child.isFocusable = true
+
+        val location = IntArray(2)
+        parent.getLocationOnScreen(location)
+        val x = location[0]
+        val y = location[1]
+
+        Log.d("Lavekush", "X=$x ,Y=$y")
+
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
         child.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+            view.parent.requestDisallowInterceptTouchEvent(true)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     if (!productTagViewDelete.isVisible)
@@ -138,14 +145,10 @@ class TagViewProvider
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val gotoX: Float = when {
-                        (feedXMediaTagging.rawX?.plus(dX) ?: 0f) + pxFromDp(
-                            child.context,
-                            145f) > parent.right -> {
-                            //                            gotoX = (event.getRawX() + dX) - pxFromDp(child.getContext(), 145);
-                            parent.right - pxFromDp(child.context,
-                                145f) /*Blocking right on drag*/
+                        (motionEvent.rawX?.plus(dX) ?: 0f) + pxFromDp( view.context, 145f) > parent.right -> {
+                            parent.right - pxFromDp(view.context, 145f) /*Blocking right on drag*/
                         }
-                        feedXMediaTagging.rawX?.plus(dX) ?: 0f < 0 -> {
+                        motionEvent.rawX?.plus(dX) ?: 0f < 0 -> {
                             0f /*Blocking left on drag*/
                         }
                         else -> {
@@ -153,22 +156,37 @@ class TagViewProvider
                         }
                     }
 
+                    Log.d("Lavekush", "rawX=${motionEvent.rawX} ,rawY=${motionEvent.rawY}")
+                    Log.d("Lavekush", "ppX=${motionEvent.x} ,ppY=${motionEvent.y}")
                     val gotoY: Float = when {
-                        feedXMediaTagging.Y?.minus(pxFromDp(child.context,
-                            68f)) ?: 0f < 0 -> {
+                        motionEvent.rawY < (0 + y) + parent.top-> {
                             0f /*Blocking top on drag*/
                         }
-                        (feedXMediaTagging.rawY?.plus(dX) ?: 0f) + pxFromDp(
-                            child.context,
-                            68f) > parent.bottom -> {
-                            parent.bottom - pxFromDp(child.context,
-                                68f) /*Blocking bottom on drag*/
-                        }
+//                        (motionEvent.rawY?.plus(dX) ?: 0f) + pxFromDp(child.context, 68f) > parent.bottom -> {
+//                            parent.bottom - pxFromDp(view.context, 68f) /*Blocking bottom on drag*/
+//                        }
                         else -> {
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
                     }
-                    Log.v("POinter","GotoX ${gotoX} Goto Y ${gotoY}")
+
+//                    val gotoY: Float
+//                    if (event.getY() - TagViewProvider.pxFromDp(child.context, 68f) < 0) {
+//                        gotoY = 0f /*Blocking top on drag*/
+//                    } else if (event.getRawY() + TagViewProvider.dX + TagViewProvider.pxFromDp(
+//                            child.context,
+//                            68f
+//                        ) > parent.bottom
+//                    ) {
+//                        gotoY = parent.bottom - TagViewProvider.pxFromDp(
+//                            child.context,
+//                            68f
+//                        ) /*Blocking bottom on drag*/
+//                    } else {
+//                        gotoY = event.getRawY() + TagViewProvider.dY /*Normal vertical drag*/
+//                    }
+
+
                     view.animate()
                         .x(gotoX)
                         .y(gotoY)
@@ -181,6 +199,7 @@ class TagViewProvider
                         view.findViewById<View>(R.id.topNotch).visibility = View.GONE
                         view.findViewById<View>(R.id.bottomNotch).visibility = View.VISIBLE
                     }
+
                     return@OnTouchListener true
                 }
             }
