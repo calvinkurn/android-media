@@ -23,7 +23,6 @@ import com.tokopedia.tokopedianow.datefilter.presentation.viewholder.DateFilterV
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.bottomsheet_tokopedianow_date_filter.*
 import java.util.*
 
 class TokoNowDateFilterBottomSheet :
