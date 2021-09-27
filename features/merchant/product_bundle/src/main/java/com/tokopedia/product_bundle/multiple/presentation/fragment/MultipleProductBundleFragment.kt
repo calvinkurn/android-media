@@ -427,7 +427,13 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     updateProductBundleOverView(productBundleOverView, selectedBundleDetails)
                 }
             }
-            Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
+            Toaster.build(
+                requireView(),
+                getString(R.string.single_bundle_success_variant_added),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.action_oke)
+            ).setAnchorView(productBundleOverView?.bottomContentView).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             productBundleOverView?.amountCtaView?.performClick()

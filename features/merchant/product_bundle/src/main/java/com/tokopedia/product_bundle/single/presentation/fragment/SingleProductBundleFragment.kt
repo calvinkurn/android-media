@@ -117,7 +117,7 @@ class SingleProductBundleFragment(
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.action_oke)
-            ).show()
+            ).setAnchorView(totalAmount?.bottomContentView).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
