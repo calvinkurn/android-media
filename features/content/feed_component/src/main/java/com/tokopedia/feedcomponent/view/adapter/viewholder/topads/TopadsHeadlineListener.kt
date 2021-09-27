@@ -9,4 +9,5 @@ interface TopAdsHeadlineListener {
     fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel)
     fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData)
     fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData)
+    fun hideTopadsView(position: Int)
 }

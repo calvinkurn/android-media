@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedXDataModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -26,6 +27,9 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
+const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 1
+const val TOPADS_VARIANT_EXPERIMENT_INFO = 2
+
 class TopAdsHeadlineV2ViewHolder(
     view: View, private val userSession: UserSessionInterface,
     private val topAdsHeadlineListener: TopAdsHeadlineListener?=null,
@@ -33,23 +37,19 @@ class TopAdsHeadlineV2ViewHolder(
     private val videoViewListener: VideoViewHolder.VideoViewListener,
     private val gridItemListener: GridPostAdapter.GridItemListener,
     private val imagePostListener: ImagePostViewHolder.ImagePostListener
-) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
+) : AbstractViewHolder<TopadsHeadLineV2Model>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
 
-    private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
+    private val topadsHeadlineView =  TopAdsHeadlineView(itemView.context)
     private val topadsPostDynamic: PostDynamicViewNew = view.findViewById(R.id.item_post_dynamic_view)
     private val topadsContainer: ViewFlipper = view.findViewById(R.id.ads_container)
-    private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
+    private var topadsHeadlineUiModel: TopadsHeadLineV2Model? = null
     private var impressHolder: ImpressHolder? = null
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topads_headline_container
         const val SHOW_SHIMMER = 0
-        const val VARIANT_DEFAULT = 0
-        const val VARIANT_EXPERIMENTCLEAN = 1
-        const val VARIANT_EXPERIMENTINFO = 1
-        const val SHOW_VARIANTDEFAULT = 1
-        const val SHOW_VARIANTEXPERIMENT = 2
+        const val VARIANT_EXPERIMENT = 1
     }
 
     init {
@@ -94,7 +94,7 @@ class TopAdsHeadlineV2ViewHolder(
         topadsHeadlineView.hide()
     }
 
-    override fun bind(element: TopadsHeadlineUiModel?) {
+    override fun bind(element: TopadsHeadLineV2Model?) {
         topadsHeadlineUiModel = element
         impressHolder = topadsHeadlineUiModel?.impressHolder
         hideHeadlineView()
@@ -109,26 +109,22 @@ class TopAdsHeadlineV2ViewHolder(
 
     private fun showHeadlineView(cpmModel: CpmModel?) {
         val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
-        if (layoutType == VARIANT_DEFAULT) {
-            topadsContainer.displayedChild = SHOW_VARIANTDEFAULT
-            topadsHeadlineView.hideShimmerView()
-            topadsHeadlineView.show()
+        if (layoutType == TOPADS_VARIANT_EXPERIMENT_CLEAN || layoutType == TOPADS_VARIANT_EXPERIMENT_INFO) {
+            topadsContainer.displayedChild = VARIANT_EXPERIMENT
             cpmModel?.let {
-                topadsHeadlineView.displayAds(it)
-            }
-            topadsHeadlineUiModel?.let { setImpressionListener(it) }
-        } else {
-            topadsContainer.displayedChild = SHOW_VARIANTEXPERIMENT
-            cpmModel?.let {
-                topadsPostDynamic.bindData(  dynamicPostListener,
+                topadsPostDynamic.bindData(
+                    dynamicPostListener,
                     gridItemListener,
                     videoViewListener,
                     adapterPosition,
                     userSession,
-                    cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, layoutType?:0),
+                    cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, 2 ?: 0),
                     imagePostListener
                 )
             }
+            topadsHeadlineUiModel?.let { setImpressionListener(it) }
+        } else {
+            hideTopadsView()
         }
     }
 
@@ -136,7 +132,7 @@ class TopAdsHeadlineV2ViewHolder(
         topAdsHeadlineListener?.onFollowClick(adapterPosition, shopId, adId)
     }
 
-    private fun setImpressionListener(element: TopadsHeadlineUiModel) {
+    private fun setImpressionListener(element: TopadsHeadLineV2Model) {
         element.cpmModel?.let {
             topadsHeadlineView.addOnImpressionListener(element.impressHolder) {
                 topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, it)
@@ -148,5 +144,9 @@ class TopAdsHeadlineV2ViewHolder(
         data?.let {
             topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, it)
         }
+    }
+
+    private fun hideTopadsView(){
+        topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
 }

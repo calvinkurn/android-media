@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
@@ -62,7 +63,9 @@ object DynamicFeedNewMapper {
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
         val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
         posts.add(topadsHeadlineUiModel)
+        posts.add(topadsHeadlineUiModelV2)
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {

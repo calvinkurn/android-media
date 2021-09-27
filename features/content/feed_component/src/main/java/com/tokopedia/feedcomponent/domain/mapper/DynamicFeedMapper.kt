@@ -32,6 +32,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -137,7 +138,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>, template: Template) {
         val topadsHeadlineUiModel = TopadsHeadlineUiModel(template = template, topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        val topadsHeadlineUiModelv2 = TopadsHeadLineV2Model(template = template, topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+
         posts.add(topadsHeadlineUiModel)
+        posts.add(topadsHeadlineUiModelv2)
     }
 
     private fun mapTopAdsBannerData(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {

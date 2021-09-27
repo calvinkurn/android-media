@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -128,6 +129,9 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT
+    }
+    override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int {
         return TopAdsHeadlineV2ViewHolder.LAYOUT
     }
 
@@ -185,6 +189,9 @@ class FeedPlusTypeFactoryImpl(
             }
             TopadsShopViewHolder.LAYOUT -> {
                 viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
+            }
+            TopAdsHeadlineViewHolder.LAYOUT -> {
+                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
             }
             TopAdsHeadlineV2ViewHolder.LAYOUT -> {
                 viewHolder = TopAdsHeadlineV2ViewHolder(view, userSession, topAdsHeadlineListener,

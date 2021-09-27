@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -79,6 +80,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -2597,6 +2599,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
                 adapter.notifyItemChanged(rowNumber)
             }
+
+            if (adapter.getlist()[rowNumber] is TopadsHeadLineV2Model) {
+                val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadLineV2Model
+                topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
+                    topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed =
+                        !it
+                }
+                adapter.notifyItemChanged(rowNumber)
+            }
         }
     }
 
@@ -3057,4 +3068,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
+    override fun hideTopadsView(position: Int) {
+        if (recyclerView.isComputingLayout ) {
+
+            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
+                adapter.getlist().removeAt(position)
+                recyclerView.post {
+                    adapter.notifyItemRemoved(position)
+                }
+            }
+            if (adapter.getlist().isEmpty()) {
+                showRefresh()
+                onRefresh()
+            }
+        }
+    }
 }

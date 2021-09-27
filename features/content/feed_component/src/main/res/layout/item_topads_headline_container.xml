@@ -7,8 +7,6 @@
 
     <include layout="@layout/item_post_shimmer"/>
 
-    <include layout="@layout/item_topads_headline_feed"/>
-
     <include layout="@layout/item_topads_headline_feedv2"/>
 
 </ViewFlipper>

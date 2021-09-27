@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.widget
 
-import android.annotation.SuppressLint
 import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
@@ -40,18 +40,22 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
-import com.tokopedia.feedcomponent.util.util.*
+import com.tokopedia.feedcomponent.util.util.doOnLayout
+import com.tokopedia.feedcomponent.util.util.productThousandFormatted
+import com.tokopedia.feedcomponent.util.util.showViewWithSlideAnimation
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder.Companion.VARIANT_EXPERIMENTCLEAN
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,9 +66,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import com.tokopedia.feedcomponent.view.widget.PostTagView
-import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.item_topads_shop.view.*
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -776,14 +777,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     findViewById<Typography>(R.id.top_ads_slashed_price)
                                 val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
                                 val labelPrice = findViewById<Label>(R.id.top_ads_label_cashback)
-                                val group = findViewById<Group>(R.id.group)
+                               // val group = findViewById<Group>(R.id.group)
 
                                 topAdsCard.show()
                                 topAdsCard.setOnClickListener {
                                     RouteManager.route(context,feedMedia.appLink)
                                 }
-                                if (feedMedia.variant == VARIANT_EXPERIMENTCLEAN) {
-                                    group.hide()
+                                if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
+                                   // group.hide()
+                                    textViewPrice.hide()
+                                    textViewSlashedPrice.hide()
+                                    labelDiscount.hide()
+                                    labelPrice.hide()
+
                                     topAdsProductName.show()
                                     topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
                                     topAdsProductName.setTextColor(
@@ -807,15 +813,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         ConstraintSet.BOTTOM
                                     )
                                     constraintSet.applyTo(topAdsCard)
-                                } else {
-                                    group.show()
+                                } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
+                                   // group.show()
                                     topAdsProductName.displayTextOrHide(feedMedia.productName)
                                     textViewPrice.displayTextOrHide(feedMedia.price)
                                     textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
-                                    labelDiscount.displayTextOrHide(feedMedia.discountPercentage)
-                                    if (feedMedia.isCashback)
+                                    if (feedMedia.discountPercentage.isNotEmpty()) {
+                                        labelDiscount.show()
+                                        labelDiscount.text = feedMedia.discountPercentage
+                                    } else {
+                                        labelDiscount.hide()
+                                    }
+                                    if (feedMedia.cashBackFmt.isNotEmpty()) {
                                         labelPrice.show()
-                                    labelPrice.text = feedMedia.cashBackFmt
+                                        labelPrice.text = feedMedia.cashBackFmt
+                                    } else {
+                                        labelPrice.hide()
+                                    }
                                 }
                             }
                             val gd = GestureDetector(
@@ -879,8 +893,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                             override fun onAnimationRepeat(animation: Animation) {}
                                         })
-                                        like_anim.visible()
-                                        like_anim.startAnimation(pulseFade)
+                                        if (!feedXCard.isTopAds) {
+                                            like_anim.visible()
+                                            like_anim.startAnimation(pulseFade)
+                                        }
                                         return true
                                     }
 
