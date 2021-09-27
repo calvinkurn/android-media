@@ -157,6 +157,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
+                banner.isCache = isCache
                 Success(banner)
             } catch (t: Throwable) {
                 Fail(t)

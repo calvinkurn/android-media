@@ -703,13 +703,13 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
-    private fun removeLoading() {
+    private fun removeLoading(isCache: Boolean) {
         val osPltCallback = getOfficialStorePageLoadTimeCallback()
         if (osPltCallback != null) {
             osPltCallback.stopNetworkRequestPerformanceMonitoring()
             osPltCallback.startRenderPerformanceMonitoring()
         }
-        setPerformanceListenerForRecyclerView()
+        setPerformanceListenerForRecyclerView(isCache)
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
@@ -722,10 +722,10 @@ class OfficialHomeFragment :
         return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
     }
 
-    private fun setPerformanceListenerForRecyclerView() {
+    private fun setPerformanceListenerForRecyclerView(isCache: Boolean) {
         recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring(isCache)
                 recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
@@ -774,7 +774,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    removeLoading()
+                    removeLoading(it.data.isCache)
                     swipeRefreshLayout?.isRefreshing = false
                     officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
