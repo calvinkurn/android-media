@@ -127,6 +127,11 @@ class TagViewProvider {
         child.visibility = View.INVISIBLE
         parent.addView(child)
 
+        val location = IntArray(2)
+        parent.getLocationOnScreen(location)
+        val x = location[0]
+        val y = location[1]
+
         Log.d("Lavekush", "X=$x ,Y=$y")
 
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
@@ -207,11 +212,6 @@ class TagViewProvider {
                     } else {
                         productTagViewDelete.hide()
                     }
-
-                    val location = IntArray(2)
-                    view.findViewById<View>(R.id.topNotch).getLocationOnScreen(location)
-                    feedXMediaTagging.X =  location[0].toFloat()
-                    feedXMediaTagging.Y =  location[1].toFloat()
                 }
             }
 
