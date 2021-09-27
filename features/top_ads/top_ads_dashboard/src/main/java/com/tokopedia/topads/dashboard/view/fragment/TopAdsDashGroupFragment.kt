@@ -114,11 +114,11 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
                 ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
     }
 
-    private fun editGroup(groupId: Int, strategy: String) {
+    private fun editGroup(groupId: String, strategy: String) {
         if (AppUtil.isSellerInstalled(context)) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId)
                 putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, strategy)
                 putExtra(ISWHITELISTEDUSER, arguments?.getBoolean(ISWHITELISTEDUSER)?:false)
             }
@@ -129,7 +129,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String, groupName: String) {
+    private fun onGroupClicked(id: String, priceSpent: String, groupName: String) {
         if (AppUtil.isSellerInstalled(context)) {
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)

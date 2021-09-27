@@ -26,7 +26,7 @@ class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : U
                 UpdateChannelResponse::class.java,
                 mQueryParams.params
         )
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
         return response.updateChannel

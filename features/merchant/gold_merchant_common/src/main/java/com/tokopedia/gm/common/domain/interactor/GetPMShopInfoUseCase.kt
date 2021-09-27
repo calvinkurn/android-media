@@ -22,7 +22,7 @@ class GetPMShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMShopInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GMShopInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GMShopInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {

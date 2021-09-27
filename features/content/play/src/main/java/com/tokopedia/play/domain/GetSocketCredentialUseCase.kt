@@ -17,7 +17,7 @@ class GetSocketCredentialUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): SocketCredential {
         val gqlRequest = GraphqlRequest(GetSocketCredentialUseCaseQuery.GQL_QUERY, SocketCredential.Response::class.java, emptyMap())
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(SocketCredential.Response::class.java)

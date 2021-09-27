@@ -29,8 +29,8 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                     var actionDelete: ((pos: Int) -> Unit),
                                     var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                    private var editDone: ((groupId: Int) -> Unit),
-                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemModel>(view) {
+                                    private var editDone: ((groupId: String) -> Unit),
+                                    private var onClickItem: ((id: String, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
