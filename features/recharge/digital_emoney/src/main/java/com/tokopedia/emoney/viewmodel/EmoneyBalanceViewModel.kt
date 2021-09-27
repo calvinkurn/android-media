@@ -83,7 +83,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(balanceRawQuery, EmoneyInquiryResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<EmoneyInquiryResponse>()
 
             data.emoneyInquiry.attributesEmoneyInquiry?.let {

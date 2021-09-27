@@ -26,14 +26,14 @@ class ImageAnnouncementViewModel
  * @param replyTime      replytime in unixtime
  * @param imageUrl       image url
  * @param redirectUrl    redirect url in http
- * @param blastId        blast id for campaign
+ * @param broadcastBlastId        blast id for campaign
  * @see AttachmentType for attachment types.
  */
 constructor(
-        messageId: String, fromUid: String, from: String, fromRole: String,
-        attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-        val redirectUrl: String, message: String, val blastId: Long, source: String,
-        val isHideBanner: Boolean
+    messageId: String, fromUid: String, from: String, fromRole: String,
+    attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
+    val redirectUrl: String, message: String, val broadcastBlastId: Long, source: String,
+    val isHideBanner: Boolean
 ) : BaseChatViewModel(
         messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message, source
@@ -76,7 +76,7 @@ constructor(
         redirectUrl = attributes.url,
         isHideBanner = attributes.isHideBanner,
         message = item.msg,
-        blastId = item.blastId,
+        broadcastBlastId = item.blastId,
         source = item.source
     ) {
         assignCampaignData(attributes)

@@ -1,7 +1,7 @@
 package com.tokopedia.atc_common.domain.model.response
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 2019-07-15.
