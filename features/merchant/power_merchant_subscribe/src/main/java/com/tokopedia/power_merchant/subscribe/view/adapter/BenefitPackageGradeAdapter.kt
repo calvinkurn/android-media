@@ -49,10 +49,17 @@ class BenefitPackageGradeAdapter :
             with(itemView) {
                 bgBenefitPackage?.loadImage(data.backgroundUrl)
                 imgBenefitPackageSection?.loadImage(data.iconBenefitUrl)
-                tvTitleBenefitPackageSection?.text = context.getString(
-                    R.string.pm_title_benefit_package_section,
-                    data.gradeName.asCamelCase()
-                )
+                tvTitleBenefitPackageSection?.text = if (data.isDowngrade) {
+                    context.getString(
+                        R.string.pm_title_benefit_package_downgrade_section,
+                        data.gradeName.asCamelCase()
+                    )
+                } else {
+                    context.getString(
+                        R.string.pm_title_benefit_package_upgrade_section,
+                        data.gradeName.asCamelCase()
+                    )
+                }
                 tvDescBenefitPackageSection?.text = MethodChecker.fromHtml(data.descBenefit)
             }
             setItemBenefitAdapter(data.benefitItemList)

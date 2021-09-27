@@ -76,6 +76,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
     private var miniCartChevronClickListener: OnClickListener? = null
+    private var coachMark: CoachMark2? = null
 
     private var viewModel: MiniCartViewModel? = null
 
@@ -577,24 +578,30 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun showOnBoarding() {
         context?.let { context ->
             if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
-                val coachMark = CoachMark2(context)
+                coachMark = CoachMark2(context)
                 this.totalAmount?.labelTitleView?.let { anchor ->
-                    anchor.post {
-                        val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
-                        coachMarkItems.add(
-                            CoachMark2Item(
-                                anchor,
-                                context.getString(R.string.mini_cart_coachmark_title),
-                                context.getString(R.string.mini_cart_coachmark_desc),
-                                CoachMark2.POSITION_TOP
+                    coachMark?.let { coachMark2 ->
+                        anchor.post {
+                            val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    anchor,
+                                    context.getString(R.string.mini_cart_coachmark_title),
+                                    context.getString(R.string.mini_cart_coachmark_desc),
+                                    CoachMark2.POSITION_TOP
+                                )
                             )
-                        )
-                        coachMark.showCoachMark(step = coachMarkItems)
-                        CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
+                            coachMark2.showCoachMark(step = coachMarkItems)
+                            CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
+                        }
                     }
                 }
             }
         }
+    }
+
+    fun hideCoachMark() {
+        coachMark?.dismissCoachMark()
     }
 
     companion object {
