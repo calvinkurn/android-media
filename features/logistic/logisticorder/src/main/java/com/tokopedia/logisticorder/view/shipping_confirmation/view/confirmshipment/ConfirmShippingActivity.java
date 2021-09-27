@@ -381,13 +381,14 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         progressDialog.setCancelable(false);
 
         courierName = findViewById(R.id.courier_name);
+        Typography courierLabel = findViewById(R.id.courier_lbl);
         barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
-        LinearLayout courierLayout = findViewById(R.id.courier_layout);
         Typography confirmButton = findViewById(R.id.confirm_button);
         if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
             toolbar.setTitle(getString(R.string.button_order_detail_change_courier_logistic_module));
-        courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
+        courierName.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
+        courierLabel.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
