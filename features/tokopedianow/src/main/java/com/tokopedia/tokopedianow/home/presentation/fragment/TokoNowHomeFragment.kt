@@ -193,7 +193,6 @@ class TokoNowHomeFragment: Fragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
-    private var stickyLoginView: StickyLoginView? = null
     private var hasEducationalInformationAppeared = false
 
     private val homeMainToolbarHeight: Int
