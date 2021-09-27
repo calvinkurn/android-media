@@ -68,7 +68,6 @@ import rx.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -113,6 +112,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var isPaymentPageLoadingTimeout: Boolean = false
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+
+    private var isNeedRefresh = false
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -420,8 +421,18 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         .append("')")
                 scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
+        } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
+            scroogeWebView?.reload()
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        if(isNeedRefresh) {
+//            isNeedRefresh = !isNeedRefresh
+//            scroogeWebView?.reload()
+//        }
+//    }
 
     private fun encodeToBase64(imagePath: String?): String {
         val bm = BitmapFactory.decodeFile(imagePath)
@@ -430,6 +441,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val b = baos.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
+
 
     private inner class TopPayWebViewClient : WebViewClient() {
 
@@ -449,6 +461,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 if (url.isNotEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_LIVE_HELP_URL) || url.contains(Constant.TempRedirectPayment.TOP_PAY_STAGING_HELP_URL))) {
                     val deepLinkUrl = (ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME + "?url=" + url)
                     RouteManager.route(this@TopPayActivity, deepLinkUrl)
+                    return true
+                }
+
+                if(url.isNotEmpty() && url == ApplinkConst.LINK_ACCOUNT ||
+                    url.startsWith("https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth")) {
+                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+//                    isNeedRefresh = true
+                    startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
                     return true
                 }
 
@@ -745,6 +765,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
+
+        private const val REQUEST_CODE_LINK_ACCOUNT = 101
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {
