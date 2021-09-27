@@ -116,7 +116,6 @@ class PlayWidgetMediumUiMapper @Inject constructor(
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
-                GlobalConfig.isSellerApp() &&
                 userSession.shopId == partnerId
     }
 
