@@ -39,7 +39,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
     var onEditAction: (() -> Unit)? = null
     private var name = ""
     private var activeStatus = 0
-    private var groupId = 0
+    private var groupId = ""
     private var hideDisable = false
     private lateinit var userSession: UserSessionInterface
 
@@ -99,7 +99,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
     fun show(
             fragmentManager: FragmentManager,
             activeStatus: Int,
-            name: String, groupId: Int, hideDisable: Boolean = false) {
+            name: String, groupId: String, hideDisable: Boolean = false) {
         this.activeStatus = activeStatus
         this.name = name
         this.groupId = groupId

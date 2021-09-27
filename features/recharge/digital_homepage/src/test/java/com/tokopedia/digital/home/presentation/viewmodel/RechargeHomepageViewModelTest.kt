@@ -70,7 +70,7 @@ class RechargeHomepageViewModelTest {
         result[objectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
         val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
@@ -107,7 +107,7 @@ class RechargeHomepageViewModelTest {
         result[objectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
         val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
@@ -131,7 +131,7 @@ class RechargeHomepageViewModelTest {
 
     @Test
     fun getRechargeHomepageSectionSkeleton_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
 
@@ -162,7 +162,7 @@ class RechargeHomepageViewModelTest {
         sectionSkeletonResult[skeletonObjectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
         val gqlsectionSkeletonResponseSuccess = GraphqlResponse(sectionSkeletonResult, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlsectionSkeletonResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlsectionSkeletonResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
         val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
@@ -182,7 +182,7 @@ class RechargeHomepageViewModelTest {
         sectionResult[sectionObjectType] = RechargeHomepageSections.Response(sectionsResponse)
         val gqlSectionResponseSuccess = GraphqlResponse(sectionResult, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlSectionResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlSectionResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSections(
                 rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
@@ -225,7 +225,7 @@ class RechargeHomepageViewModelTest {
         sectionSkeletonResult[skeletonObjectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
         val gqlsectionSkeletonResponseSuccess = GraphqlResponse(sectionSkeletonResult, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlsectionSkeletonResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlsectionSkeletonResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
         val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
@@ -245,7 +245,7 @@ class RechargeHomepageViewModelTest {
         sectionResult[sectionObjectType] = RechargeHomepageSections.Response(sectionsResponse)
         val gqlSectionResponseSuccess = GraphqlResponse(sectionResult, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlSectionResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlSectionResponseSuccess
         rechargeHomepageViewModel.calledSectionIds.add(1)
         rechargeHomepageViewModel.getRechargeHomepageSections(
                 rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
@@ -266,7 +266,7 @@ class RechargeHomepageViewModelTest {
 
     @Test
     fun getRechargeHomepageSections_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeHomepageViewModel.getRechargeHomepageSections(mapParams)
         val sections = rechargeHomepageViewModel.rechargeHomepageSections.value
@@ -287,7 +287,7 @@ class RechargeHomepageViewModelTest {
         result[objectType] = RechargeHomepageSectionAction.Response(actionResponse)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeHomepageViewModel.triggerRechargeSectionAction(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeHomepageSectionAction.value
@@ -296,7 +296,7 @@ class RechargeHomepageViewModelTest {
 
     @Test
     fun triggerRechargeSectionAction_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeHomepageViewModel.triggerRechargeSectionAction(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeHomepageSectionAction.value
@@ -312,7 +312,7 @@ class RechargeHomepageViewModelTest {
         result[objectType] = rechargeResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         rechargeHomepageViewModel.getTickerHomepageSection(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeTickerHomepageModel.value
@@ -321,7 +321,7 @@ class RechargeHomepageViewModelTest {
 
     @Test
     fun getTickerHomepageSection_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         rechargeHomepageViewModel.getTickerHomepageSection(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeTickerHomepageModel.value

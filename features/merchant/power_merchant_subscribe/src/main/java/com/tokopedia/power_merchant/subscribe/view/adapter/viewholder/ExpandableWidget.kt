@@ -5,9 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactory
@@ -20,9 +18,9 @@ import kotlinx.android.synthetic.main.widget_pm_expandable.view.*
  */
 
 class ExpandableWidget(
-        itemView: View,
-        private val listener: Listener,
-        private val powerMerchantTracking: PowerMerchantTracking
+    itemView: View,
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetExpandableUiModel>(itemView) {
 
     companion object {
@@ -33,13 +31,10 @@ class ExpandableWidget(
         with(itemView) {
             if (element.isPmPro()) {
                 viewPmProBenefitSection.visible()
-                viewPmBenefitSection.gone()
-                viewPmProBenefitSection.setOnExpandedChanged(true)
             } else {
                 viewPmProBenefitSection.gone()
-                viewPmBenefitSection.visible()
-                viewPmBenefitSection.setOnExpandedChanged(true)
             }
+            viewPmBenefitSection.setOnExpandedChanged(true)
 
             setupExpandableItem(element)
             setupPmSection()
@@ -55,11 +50,8 @@ class ExpandableWidget(
 
     private fun setupPmProSection(element: WidgetExpandableUiModel) = with(itemView) {
         viewPmProBenefitSection.show(element)
-        viewPmProBenefitSection.setOnClickListener {
-            handleExpandableView()
-        }
         viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
-            listener.showUpdateInfoBottomSheet()
+            listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
         }
     }
 
@@ -67,7 +59,6 @@ class ExpandableWidget(
         with(itemView) {
             val shouldExpanded = rvPmExpandableItem.visibility != View.VISIBLE
             viewPmBenefitSection.setOnExpandedChanged(shouldExpanded)
-            viewPmProBenefitSection.setOnExpandedChanged(shouldExpanded)
             if (shouldExpanded) {
                 rvPmExpandableItem.visible()
             } else {
@@ -77,7 +68,10 @@ class ExpandableWidget(
     }
 
     private fun setupExpandableItem(element: WidgetExpandableUiModel) {
-        val expandableAdapter = BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(ExpandableAdapterFactoryImpl(powerMerchantTracking))
+        val expandableAdapter =
+            BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(
+                ExpandableAdapterFactoryImpl(powerMerchantTracking)
+            )
 
         with(itemView.rvPmExpandableItem) {
             isVisible = element.items.isNotEmpty()
@@ -94,6 +88,7 @@ class ExpandableWidget(
     }
 
     interface Listener {
-        fun showUpdateInfoBottomSheet()
+        fun showUpdateInfoBottomSheet(gradeName: String)
+        fun onMembershipStatusPmProClickListener()
     }
 }

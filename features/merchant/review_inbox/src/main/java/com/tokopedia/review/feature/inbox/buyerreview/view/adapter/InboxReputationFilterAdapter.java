@@ -56,19 +56,22 @@ public class InboxReputationFilterAdapter
                 @Override
                 public void onClick(View v) {
                     for (OptionUiModel viewModel : listOption) {
-                        if (viewModel == listOption.get(getAdapterPosition()))
-                            viewModel.setSelected(!viewModel.isSelected());
-                        else if (viewModel.getKey() == listOption.get(getAdapterPosition()).getKey())
-                            viewModel.setSelected(false);
+                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                            if (viewModel == listOption.get(getAdapterPosition()))
+                                viewModel.setSelected(!viewModel.isSelected());
+                            else if (viewModel.getKey() == listOption.get(getAdapterPosition()).getKey())
+                                viewModel.setSelected(false);
+                        }
                     }
 
-                    if (listOption.get(getAdapterPosition()).isSelected()) {
-                        listener.onFilterSelected(listOption.get(getAdapterPosition()));
-                    }else{
-                        listener.onFilterUnselected(listOption.get(getAdapterPosition()));
-
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        if (listOption.get(getAdapterPosition()).isSelected()) {
+                            listener.onFilterSelected(listOption.get(getAdapterPosition()));
+                        } else {
+                            listener.onFilterUnselected(listOption.get(getAdapterPosition()));
+                        }
+                        notifyDataSetChanged();
                     }
-                    notifyDataSetChanged();
                 }
             });
         }

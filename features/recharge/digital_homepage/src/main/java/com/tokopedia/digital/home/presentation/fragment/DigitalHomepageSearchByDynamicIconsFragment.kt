@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import kotlinx.android.synthetic.main.view_recharge_home_search.*
 
 /**
  * @author by jessica on 21/01/21
@@ -35,7 +34,7 @@ class DigitalHomepageSearchByDynamicIconsFragment : DigitalHomePageSearchFragmen
     }
 
     private fun initSearchBarView(placeHolder: String) {
-        digital_homepage_search_view_search_bar.searchBarPlaceholder = placeHolder
+        binding.digitalHomepageSearchViewSearchBar.searchBarPlaceholder = placeHolder
     }
 
     companion object {

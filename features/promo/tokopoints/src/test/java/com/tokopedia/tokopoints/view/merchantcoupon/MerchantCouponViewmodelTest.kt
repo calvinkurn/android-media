@@ -60,7 +60,7 @@ class MerchantCouponViewmodelTest {
                 }
             }
             val data = mockk<GraphqlResponse>(relaxed = true)
-            coEvery { gqlRepository.getReseponse(any()) } returns data
+            coEvery { gqlRepository.response(any()) } returns data
             coEvery { repository.executeOnBackground() } returns mockk {
                 every { getData<MerchantCouponResponse>(MerchantCouponResponse::class.java) } returns merchantCouponResponseData
                 every { getError(MerchantCouponResponse::class.java) } returns null
@@ -84,7 +84,7 @@ class MerchantCouponViewmodelTest {
             every { onChanged(any()) } just Runs
         }
         val data = mockk<GraphqlResponse>(relaxed = true)
-        coEvery { gqlRepository.getReseponse(any()) } returns data
+        coEvery { gqlRepository.response(any()) } returns data
         coEvery { repository.executeOnBackground() } returns mockk {
             every { getData<MerchantCouponResponse>(MerchantCouponResponse::class.java) } returns null
             every { getError(MerchantCouponResponse::class.java) } returns null

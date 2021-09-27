@@ -59,13 +59,13 @@ class GetCardDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetCardDataResponse>(RESPONSE_SUCCESS)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getCardDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!result.isNullOrEmpty())
@@ -77,14 +77,14 @@ class GetCardDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetCardDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val result = getCardDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(result.isNullOrEmpty())

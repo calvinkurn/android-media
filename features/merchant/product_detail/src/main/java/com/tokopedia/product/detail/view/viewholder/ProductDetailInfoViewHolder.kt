@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,6 +33,9 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
 
         view.product_detail_info_seemore?.setOnClickListener {
             listener.onSeeMoreDescriptionClicked(element.dataContent, getComponentTrackData(element))
+        }
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
