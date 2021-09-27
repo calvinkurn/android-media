@@ -622,7 +622,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
                         setRating(rating)
-                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment,)
+                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment, isAnonymous)
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats, userId, this@ReviewImagePreviewFragment, isAnonymous)

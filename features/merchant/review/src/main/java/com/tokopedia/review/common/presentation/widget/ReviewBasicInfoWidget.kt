@@ -65,8 +65,8 @@ class ReviewBasicInfoWidget : BaseCustomView {
     fun setReviewerName(
         name: String,
         userId: String = "",
-        listener: ReviewBasicInfoListener? = null,
-        isAnonymous: Boolean = true
+        listener: ReviewBasicInfoListener,
+        isAnonymous: Boolean
     ) {
         reviewerName?.apply {
             text = name
@@ -74,7 +74,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
                 setOnClickListener { }
             } else {
                 setOnClickListener {
-                    listener?.onUserNameClicked(context, userId)
+                    listener.onUserNameClicked(context, userId)
                 }
             }
         }

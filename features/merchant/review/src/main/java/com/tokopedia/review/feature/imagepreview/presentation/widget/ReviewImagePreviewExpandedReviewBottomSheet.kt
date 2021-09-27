@@ -72,7 +72,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         basicInfoWidget?.apply {
             setRating(rating)
             setCreateTime(timeStamp)
-            setReviewerName(reviewerName)
+            setReviewerName(reviewerName, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)
             setVariantName(variantName)
             setStats(userStats, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)
             setCountColorToGreen()
