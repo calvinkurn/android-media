@@ -22,46 +22,36 @@ import org.hamcrest.core.AllOf
 
 class PdpSimulationRobot {
 
-    fun testClickTabs(tabIndex: Int) {
-        onView(CommonMatcher.firstView(withId(R.id.paylaterTabLayout)))
-            .perform(selectTabAtPosition(tabIndex))
-    }
 
-//    fun testClickPayLaterItem(itemPosition: Int) {
-//        onView(withId(R.id.baseList))
-//            .perform(
-//                RecyclerViewActions.actionOnItemAtPosition<PayLaterPaymentMethodViewHolder>(
-//                    itemPosition,
-//                    ViewActions.click()
-//                )
-//            )
-//        onView(
-//            CommonMatcher.firstView(
-//                AllOf.allOf(
-//                    withId(R.id.btnRegister),
-//                    isDisplayed()
-//                )
-//            )
-//        ).perform(ViewActions.click())
-//    }
-
-
-    fun testSortFilterClicked() {
+    fun clickPartnerButton()
+    {
         onView(
             CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnHowToUse), isDisplayed()))
         ).perform(ViewActions.click())
     }
 
-//    fun testClickRegisterWidget() {
-//        onView(
-//            CommonMatcher.firstView(
-//                AllOf.allOf(
-//                    withId(R.id.paylaterDaftarWidget),
-//                    isDisplayed()
-//                )
-//            )
-//        ).perform(ViewActions.click())
-//    }
+    fun clickPartnerButtonBottomSheet(){
+        onView(
+            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
+        ).perform(ViewActions.click())
+    }
+
+
+    fun clickPartnerFaq()
+    {
+        onView(
+            CommonMatcher.firstView(AllOf.allOf(withId(R.id.faqList), isDisplayed()))
+        ).perform(ViewActions.click())
+    }
+
+
+    fun clickPartnerFaqBottomSheet()
+    {
+        onView(
+            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnSeeMore), isDisplayed()))
+        ).perform(ViewActions.click())
+    }
+
 
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)
 

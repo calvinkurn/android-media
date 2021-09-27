@@ -1,0 +1,14 @@
+{
+  "readme": "Fintech Partner Button BottomSheet Click",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - click cari tahu lebih lanjut",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}

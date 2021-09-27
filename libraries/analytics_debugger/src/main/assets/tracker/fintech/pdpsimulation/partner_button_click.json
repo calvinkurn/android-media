@@ -1,0 +1,22 @@
+{
+  "readme": "Fintech Partner Button Click",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - click card button",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - impression popup cara pakai",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
