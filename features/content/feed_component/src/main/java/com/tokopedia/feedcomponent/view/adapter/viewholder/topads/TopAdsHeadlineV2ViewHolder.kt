@@ -118,7 +118,7 @@ class TopAdsHeadlineV2ViewHolder(
                     videoViewListener,
                     adapterPosition,
                     userSession,
-                    cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, 2 ?: 0),
+                    cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, layoutType ?: 0),
                     imagePostListener
                 )
             }
