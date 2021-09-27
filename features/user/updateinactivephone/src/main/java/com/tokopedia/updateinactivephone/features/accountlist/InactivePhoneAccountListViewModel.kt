@@ -40,8 +40,4 @@ class InactivePhoneAccountListViewModel @Inject constructor(
             _accountList.postValue(Fail(it))
         })
     }
-
-    companion object {
-        const val ERROR_ACCOUNT_LIST_EMPTY = "Account List is empty"
-    }
 }

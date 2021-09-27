@@ -3,26 +3,28 @@ package com.tokopedia.updateinactivephone.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.updateinactivephone.domain.data.*
+import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneSubmitDataModel
+import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
+import com.tokopedia.updateinactivephone.domain.data.SubmitExpeditedInactivePhoneDataModel
 import com.tokopedia.updateinactivephone.domain.usecase.ImageUploadUseCase
 import com.tokopedia.updateinactivephone.domain.usecase.PhoneValidationUseCase
 import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataUseCase
 import com.tokopedia.updateinactivephone.domain.usecase.SubmitExpeditedInactivePhoneUseCase
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneDataUploadViewModel
-import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Before
-import org.junit.Rule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import kotlin.math.exp
 
 @ExperimentalCoroutinesApi
 class InactivePhoneDataUploadViewModelTest {
@@ -51,11 +53,11 @@ class InactivePhoneDataUploadViewModelTest {
     @Before
     fun setup() {
         viewmodel = InactivePhoneDataUploadViewModel(
-                phoneValidationUseCase,
-                imageUploadUseCase,
-                submitDataUseCase,
-                submitExpeditedInactivePhoneUseCase,
-                dispatcherProviderTest
+            phoneValidationUseCase,
+            imageUploadUseCase,
+            submitDataUseCase,
+            submitExpeditedInactivePhoneUseCase,
+            dispatcherProviderTest
         )
 
         viewmodel.phoneValidation.observeForever(observerPhoneValidation)
@@ -66,8 +68,6 @@ class InactivePhoneDataUploadViewModelTest {
 
     @After
     fun tearDown() {
-        viewmodel.onCleared()
-
         viewmodel.phoneValidation.removeObserver(observerPhoneValidation)
         viewmodel.imageUpload.removeObserver(observerImageUpload)
         viewmodel.submitData.removeObserver(observerSubmitData)
@@ -77,19 +77,15 @@ class InactivePhoneDataUploadViewModelTest {
     /** Phone Validation */
     @Test
     fun `phone validation - Success validate`() {
-        val mockResponse = PhoneValidationDataModel(
-                PhoneValidationDataModel.Validation(isSuccess = true)
-        )
+        val mockResponse = PhoneValidationDataModel(PhoneValidationDataModel.Validation(isSuccess = true))
 
-        every {
-            phoneValidationUseCase.execute(any(), any())
-        } answers {
-            firstArg<(PhoneValidationDataModel) -> Unit>().invoke(mockResponse)
-        }
+        coEvery {
+            phoneValidationUseCase(any())
+        } returns mockResponse
 
-        viewmodel.userValidation(phoneNumber, email, 1)
+        viewmodel.userValidation(phoneNumber, email, 0)
 
-        every {
+        verify {
             observerPhoneValidation.onChanged(any())
         }
 
@@ -101,22 +97,22 @@ class InactivePhoneDataUploadViewModelTest {
 
     @Test
     fun `phone validation - Failed validate`() {
-        every {
-            phoneValidationUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        val mockResponse = PhoneValidationDataModel(PhoneValidationDataModel.Validation(isSuccess = false))
 
-        viewmodel.userValidation(phoneNumber, email, 1)
+        coEvery {
+            phoneValidationUseCase(any())
+        } returns mockResponse
 
-        every {
+        viewmodel.userValidation(phoneNumber, email, 0)
+
+        verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewmodel.phoneValidation.value is Fail)
+        assert(viewmodel.phoneValidation.value is Success)
 
-        val result = viewmodel.phoneValidation.value as Fail
-        assertEquals(result.throwable, mockThrowable)
+        val result = viewmodel.phoneValidation.value as Success
+        assert(!result.data.validation.isSuccess)
     }
 
 
@@ -124,10 +120,10 @@ class InactivePhoneDataUploadViewModelTest {
     @Test
     fun `Image Upload - Success upload image`() {
         val mockResponse = ImageUploadDataModel(
-                status = ImageUploadUseCase.STATUS_OK,
-                data = ImageUploadDataModel.PictureObjectDataModel(
-                        pictureObject = "data sample"
-                ))
+            status = ImageUploadUseCase.STATUS_OK,
+            data = ImageUploadDataModel.PictureObjectDataModel(
+                pictureObject = "data sample"
+            ))
 
         every {
             imageUploadUseCase.execute(any(), any())
@@ -172,11 +168,9 @@ class InactivePhoneDataUploadViewModelTest {
     fun `Submit Data - Success submit request`() {
         val mockResponse = InactivePhoneSubmitDataModel(InactivePhoneSubmitDataModel.SubmitInactivePhoneUser(isSuccess = true))
 
-        every {
-            submitDataUseCase.execute(any(), any())
-        } answers {
-            firstArg<(InactivePhoneSubmitDataModel) -> Unit>().invoke(mockResponse)
-        }
+        coEvery {
+            submitDataUseCase(any())
+        } returns mockResponse
 
         viewmodel.submitForm("email", phoneNumber, phoneNumber, 1, "idCardObj", "selfieObj")
 
@@ -192,11 +186,11 @@ class InactivePhoneDataUploadViewModelTest {
 
     @Test
     fun `Submit Data - Failed submit request`() {
-        every {
-            submitDataUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        val mockResponse = InactivePhoneSubmitDataModel(InactivePhoneSubmitDataModel.SubmitInactivePhoneUser(isSuccess = false))
+
+        coEvery {
+            submitDataUseCase(any())
+        } returns mockResponse
 
         viewmodel.submitForm("email", phoneNumber, phoneNumber, 1, "idCardObj", "selfieObj")
 
@@ -204,10 +198,10 @@ class InactivePhoneDataUploadViewModelTest {
             observerSubmitData.onChanged(any())
         }
 
-        assert(viewmodel.submitData.value is Fail)
+        assert(viewmodel.submitData.value is Success)
 
-        val result = viewmodel.submitData.value as Fail
-        assertEquals(result.throwable, mockThrowable)
+        val result = viewmodel.submitData.value as Success
+        assert(result.data.status.isSuccess)
     }
 
     @Test

@@ -58,7 +58,7 @@
     app:srcCompat="@drawable/ic_arrow_back_inactive_phone" />
   
   <com.tokopedia.unifyprinciples.Typography
-    android:id="@+id/txtTitle"
+    android:id="@+id/text_title"
     android:layout_width="@dimen/layout_lvl0"
     android:layout_height="wrap_content"
     android:textColor="@color/Unify_Static_White"
@@ -178,7 +178,7 @@
       app:typographyType="heading_4" />
   
     <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/btnNext"
+      android:id="@+id/button_next"
       android:layout_width="@dimen/layout_lvl0"
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/spacing_lvl2"

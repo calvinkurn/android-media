@@ -18,5 +18,13 @@
             android:name=".stub.features.accountlist.InactivePhoneAccountListActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".stub.features.successpage.InactivePhoneSuccessPageActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".stub.features.submitnewphone.InactivePhoneSubmitDataActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>

@@ -20,6 +20,32 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
         sendOtp()
     }
 
+    override fun sendOtp() {
+        if (isCountdownFinished()) {
+            viewModel.sendOtp2FA(
+                otpType = otpData.otpType.toString(),
+                mode = modeListData.modeText,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                otpDigit = modeListData.otpDigit,
+                validateToken = otpData.accessToken,
+                userIdEnc = otpData.userIdEnc
+            )
+        } else {
+            setFooterText()
+        }
+    }
+
+    override fun validate(code: String) {
+        viewModel.otpValidate2FA(
+            code = code,
+            otpType = otpData.otpType.toString(),
+            mode = modeListData.modeText,
+            userIdEnc = otpData.userIdEnc,
+            validateToken = otpData.accessToken
+        )
+    }
+
     override fun setFooterText(spannable: Spannable?) {
         super.setFooterText(getPEmailFooterSpan())
     }

@@ -7,13 +7,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
-import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingFragment : BaseInactivePhoneOnboardingFragment() {
-
-    private val tracker = InactivePhoneTracker()
 
     override fun initInjector() {
         DaggerInactivePhoneComponent.builder()
@@ -30,12 +27,10 @@ class InactivePhoneOnboardingFragment : BaseInactivePhoneOnboardingFragment() {
     }
 
     override fun onButtonNextClicked() {
-        btnNext?.setOnClickListener {
-            tracker.clickOnNextButtonOnboarding()
+        trackerRegular.clickOnNextButtonOnboarding()
 
-            showLoading()
-            gotoOnboardingIdCardPage()
-        }
+        showLoading()
+        gotoOnboardingIdCardPage()
     }
 
     private fun gotoOnboardingIdCardPage() {
@@ -46,6 +41,6 @@ class InactivePhoneOnboardingFragment : BaseInactivePhoneOnboardingFragment() {
 
     private fun showLoading() {
         loader?.show()
-        btnNext.isEnabled = false
+        viewBinding?.buttonNext?.isEnabled = false
     }
 }

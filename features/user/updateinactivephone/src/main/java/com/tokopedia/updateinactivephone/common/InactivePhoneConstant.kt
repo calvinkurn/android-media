@@ -5,6 +5,7 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import java.io.File
 
 object InactivePhoneConstant {
+    const val KEY_SOURCE = "source"
     const val SOURCE_INACTIVE_PHONE = "inactivePhone"
 
     const val TAG = "InactivePhone"

@@ -14,8 +14,13 @@ object AccountListViewAction {
         clickOnPosition(R.id.recyclerViewAccountList, R.id.mainView, position)
     }
 
-    fun isAccountListTextItemDisplayed(text: String) {
-        isTextDisplayed(R.id.recyclerViewAccountList, text)
+    fun isAccountListTextItemDisplayed(text: String, position: Int) {
+        isChildTextDisplayed(
+            R.id.recyclerViewAccountList,
+            R.id.txtName,
+            position,
+            text
+        )
     }
 
     fun scrollAccountListToPosition(position: Int) {

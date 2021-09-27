@@ -1,55 +1,55 @@
 package com.tokopedia.updateinactivephone.features.submitnewphone.regular
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.ID_CARD
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SELFIE
-import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_SUCCESS
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.filePath
-import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.cameraview.FileType
 import com.tokopedia.updateinactivephone.common.utils.getValidEmail
+import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
+import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
+open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
 
     private var idCardObj = ""
     private var selfieObj = ""
 
     override fun initView() {
-        super.initView()
+        showThumbnailLayout()
 
-        thumbnailIdCard?.setOnClickListener {
-            val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
-            startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD)
+        viewBinding?.imgIdCard?.apply {
+            setImage(this, CameraViewMode.ID_CARD.id)
+            setOnClickListener {
+                val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
+                startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD)
+            }
         }
 
-        thumbnailSelfie?.setOnClickListener {
-            val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
-            startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_SELFIE)
+        viewBinding?.imgSelfie?.apply {
+            setImage(this, CameraViewMode.SELFIE.id)
+            setOnClickListener {
+                val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
+                startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_SELFIE)
+            }
         }
 
-        textPhoneNumber?.setOnClickListener {
+        viewBinding?.textPhoneNumber?.setOnClickListener {
             trackerRegular.clickOnTextViewInputNewPhoneNumber()
         }
-
-        thumbnailIdCard?.let { setImage(it, CameraViewMode.ID_CARD.id) }
-        thumbnailSelfie?.let { setImage(it, CameraViewMode.SELFIE.id) }
-
-        showThumbnailLayout()
     }
 
     override fun initObserver() {
@@ -76,7 +76,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
                         doUploadImage(FileType.SELFIE, SELFIE)
                     } else if (it.data.source == SELFIE) {
                         selfieObj = it.data.data.pictureObject
-                        inactivePhoneUserDataModel?.newPhoneNumber = textPhoneNumber?.text.orEmpty()
+                        inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
 
                         viewModel.submitForm(
                             inactivePhoneUserDataModel?.email?.getValidEmail().orEmpty(),
@@ -100,7 +100,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
 
         viewModel.submitData.observe(this, Observer {
             hideLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     if (it.data.status.isSuccess) {
                         gotoSuccessPage()
@@ -112,7 +112,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
                 }
                 is Fail -> {
                     if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
-                        textPhoneNumber?.error = getString(R.string.error_input_another_phone)
+                        viewBinding?.textPhoneNumber?.error = getString(R.string.error_input_another_phone)
                     } else {
                         view?.let { view ->
                             Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -130,7 +130,7 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
         if (isPhoneValid()) {
             showLoading()
 
-            inactivePhoneUserDataModel?.newPhoneNumber = textPhoneNumber?.text.orEmpty()
+            inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
 
             viewModel.userValidation(
                 inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
@@ -158,10 +158,10 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD -> {
-                    thumbnailIdCard?.let { setImage(it, CameraViewMode.ID_CARD.id) }
+                    viewBinding?.imgIdCard?.let { setImage(it, CameraViewMode.ID_CARD.id) }
                 }
                 InactivePhoneConstant.REQUEST_CAPTURE_SELFIE -> {
-                    thumbnailSelfie?.let { setImage(it, CameraViewMode.SELFIE.id) }
+                    viewBinding?.imgSelfie?.let { setImage(it, CameraViewMode.SELFIE.id) }
                 }
             }
         }
@@ -175,6 +175,37 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
         }
     }
 
+    override fun dialogOnBackPressed() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.text_exit_title))
+                setDescription(getString(R.string.text_exit_description))
+                setPrimaryCTAText(getString(R.string.text_exit_cta_primary))
+                setSecondaryCTAText(getString(R.string.text_exit_cta_secondary))
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    trackerRegular.clickOnExitButtonPopupUploadData()
+                    gotoOnboardingPage()
+                }
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+                setCancelable(false)
+                setOverlayClose(false)
+            }.show()
+        }
+    }
+
+    open fun gotoOnboardingPage() {
+        activity?.let {
+            inactivePhoneUserDataModel?.let { _inactivePhoneUserDataModel ->
+                startActivity(InactivePhoneWithPinActivity.createIntent(it, _inactivePhoneUserDataModel))
+            }
+
+            it.finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.phoneValidation.removeObservers(this)
@@ -183,7 +214,6 @@ class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment() {
     }
 
     companion object {
-
         fun create(bundle: Bundle): Fragment {
             return InactivePhoneDataUploadFragment().apply {
                 arguments = bundle

@@ -15,17 +15,18 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.utils.convertBitmapToImageFile
+import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneCameraViewBinding
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File
 
 class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
-    lateinit var tracker: InactivePhoneTracker
+    private var viewBinding by autoClearedNullable<FragmentInactivePhoneCameraViewBinding>()
+    val tracker = InactivePhoneTracker()
 
     private var mode = 0
-
     private var isPictureTaken = false
 
     override fun getScreenName(): String = ""
@@ -34,12 +35,12 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inactive_phone_camera_view, container, false)
+        viewBinding = FragmentInactivePhoneCameraViewBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tracker = InactivePhoneTracker()
 
         isPictureTaken = false
         arguments?.let {
@@ -54,33 +55,33 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setLayoutCameraView()
 
-        btnFlipCamera?.setOnClickListener { _ ->
-            cameraView?.toggleFacing()
+        viewBinding?.btnFlipCamera?.setOnClickListener { _ ->
+            viewBinding?.cameraView?.toggleFacing()
         }
 
-        btnShutter?.setOnClickListener {
+        viewBinding?.btnShutter?.setOnClickListener {
             cameraViewModeCondition(
-                    onIdCardMode = { tracker.clickOnCaptureButtonCameraViewIdCard() },
-                    onSelfieMode = { tracker.clickOnCaptureButtonCameraViewSelfie() }
+                onIdCardMode = { tracker.clickOnCaptureButtonCameraViewIdCard() },
+                onSelfieMode = { tracker.clickOnCaptureButtonCameraViewSelfie() }
             )
 
-            cameraView?.takePicture()
+            viewBinding?.cameraView?.takePicture()
         }
 
-        btnReCapture?.setOnClickListener {
-            imgPreview?.let {
+        viewBinding?.btnReCapture?.setOnClickListener {
+            viewBinding?.imgPreview?.let {
                 ImageUtils.clearImage(it)
             }
 
             showCamera()
         }
 
-        btnNext?.setOnClickListener {
+        viewBinding?.buttonNext?.setOnClickListener {
             activity?.let {
 
                 cameraViewModeCondition(
-                        onIdCardMode = { tracker.clickOnNextButtonCameraViewIdCardConfirmation() },
-                        onSelfieMode = { tracker.clickOnNextButtonCameraViewSelfiewConfirmation()}
+                    onIdCardMode = { tracker.clickOnNextButtonCameraViewIdCardConfirmation() },
+                    onSelfieMode = { tracker.clickOnNextButtonCameraViewSelfiewConfirmation() }
                 )
 
                 it.setResult(Activity.RESULT_OK)
@@ -88,73 +89,73 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             }
         }
 
-        btnBack?.setOnClickListener {
+        viewBinding?.btnBack?.setOnClickListener {
             cameraViewModeCondition(
-                    onIdCardMode = {
-                        if (isPictureTaken) {
-                            tracker.clickOnBackButtonCameraViewIdCardConfirmation()
-                        } else {
-                            tracker.clickOnBackButtonCameraViewIdCard()
-                        }
-                    },
-                    onSelfieMode = {
-                        if (isPictureTaken) {
-                            tracker.clickOnBackButtonCameraViewSelfieConfirmation()
-                        } else {
-                            tracker.clickOnBackButtonCameraViewSelfiew()
-                        }
+                onIdCardMode = {
+                    if (isPictureTaken) {
+                        tracker.clickOnBackButtonCameraViewIdCardConfirmation()
+                    } else {
+                        tracker.clickOnBackButtonCameraViewIdCard()
                     }
+                },
+                onSelfieMode = {
+                    if (isPictureTaken) {
+                        tracker.clickOnBackButtonCameraViewSelfieConfirmation()
+                    } else {
+                        tracker.clickOnBackButtonCameraViewSelfiew()
+                    }
+                }
             )
             activity?.onBackPressed()
         }
     }
 
     private fun setLayoutCameraView() {
-        layoutCameraView?.layoutType = mode
+        viewBinding?.layoutCameraView?.layoutType = mode
         cameraViewModeCondition(
-                onIdCardMode = { setLayoutCameraIdCard() },
-                onSelfieMode = { setLayoutCameraSelfie() }
+            onIdCardMode = { setLayoutCameraIdCard() },
+            onSelfieMode = { setLayoutCameraSelfie() }
         )
     }
 
     private fun setLayoutCameraIdCard() {
-        cameraView?.facing = Facing.BACK
+        viewBinding?.cameraView?.facing = Facing.BACK
         updateTitle(getString(R.string.text_title_id_card))
         updateDescription(getString((R.string.text_camera_description_id_card)))
         showCamera()
     }
 
     private fun setLayoutCameraSelfie() {
-        cameraView?.facing = Facing.FRONT
+        viewBinding?.cameraView?.facing = Facing.FRONT
         updateTitle(getString(R.string.text_title_selfie))
         updateDescription(getString((R.string.text_camera_description_selfie)))
         showCamera()
     }
 
     private fun updateTitle(title: String) {
-        txtTitle?.text = title
+        viewBinding?.textTitle?.text = title
     }
 
     private fun updateDescription(description: String) {
-        txtDescription?.text = description
+        viewBinding?.txtDescription?.text = description
     }
 
     private fun showCamera(isSavingBook: Boolean = false) {
-        imgPreview?.visibility = View.GONE
-        layoutButtonPreview?.visibility = View.GONE
-        cameraView?.visibility = View.VISIBLE
-        btnShutter?.visibility = View.VISIBLE
-        btnFlipCamera?.visibility = View.VISIBLE
+        viewBinding?.imgPreview?.visibility = View.GONE
+        viewBinding?.layoutButtonPreview?.visibility = View.GONE
+        viewBinding?.cameraView?.visibility = View.VISIBLE
+        viewBinding?.btnShutter?.visibility = View.VISIBLE
+        viewBinding?.btnFlipCamera?.visibility = View.VISIBLE
 
         if (isSavingBook) {
-            txtDescription?.visibility = View.GONE
-            txtDescriptionSavingBook?.visibility = View.VISIBLE
+            viewBinding?.txtDescription?.visibility = View.GONE
+            viewBinding?.txtDescriptionSavingBook?.visibility = View.VISIBLE
         } else {
-            txtDescription?.visibility = View.VISIBLE
-            txtDescriptionSavingBook?.visibility = View.GONE
+            viewBinding?.txtDescription?.visibility = View.VISIBLE
+            viewBinding?.txtDescriptionSavingBook?.visibility = View.GONE
         }
 
-        cameraView?.apply {
+        viewBinding?.cameraView?.apply {
             clearCameraListeners()
             if (isOpened) {
                 close()
@@ -169,22 +170,24 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showPreview(file: File) {
-        imgPreview?.let {
+        viewBinding?.imgPreview?.let {
             ImageUtils.loadImage(it, file.absolutePath)
             it.visibility = View.VISIBLE
         }
 
-        layoutButtonPreview?.visibility = View.VISIBLE
-        cameraView?.visibility = View.GONE
-        btnShutter?.visibility = View.GONE
-        btnFlipCamera?.visibility = View.GONE
+        viewBinding?.layoutButtonPreview?.visibility = View.VISIBLE
+        viewBinding?.cameraView?.visibility = View.GONE
+        viewBinding?.btnShutter?.visibility = View.GONE
+        viewBinding?.btnFlipCamera?.visibility = View.GONE
     }
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
         pictureResult.toBitmap { bitmap ->
             bitmap?.let {
-                val file = convertBitmapToImageFile(it, 100, filePath())
-                showPreview(file)
+                val file = convertBitmapToImageFile(it, 100, filePath().orEmpty())
+                if (file.exists()) {
+                    showPreview(file)
+                }
             }
         }
     }
@@ -192,20 +195,16 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     override fun onStop() {
         super.onStop()
         // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326# 63629326
-        cameraView?.close()
+        viewBinding?.cameraView?.close()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraView?.destroy()
+        viewBinding?.cameraView?.destroy()
     }
 
-    private fun filePath(): String {
-        context?.let {
-            return InactivePhoneConstant.filePath(it, mode)
-        }
-
-        return ""
+    private fun filePath(): String? {
+        return context?.let { InactivePhoneConstant.filePath(it, mode) }
     }
 
     private fun listenerOnPictureTaken(result: (PictureResult) -> Unit): CameraListener {

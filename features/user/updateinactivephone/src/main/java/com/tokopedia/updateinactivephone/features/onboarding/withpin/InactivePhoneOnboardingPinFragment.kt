@@ -3,7 +3,6 @@ package com.tokopedia.updateinactivephone.features.onboarding.withpin
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -12,42 +11,25 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.EXPEDITED
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SOURCE_INACTIVE_PHONE
-import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
-import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity
 
-class InactivePhoneOnboardingPinFragment: BaseInactivePhoneOnboardingFragment() {
+class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment() {
 
-    private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
-    private var tracker = InactivePhoneWithPinTracker()
-
-    override fun initInjector() { }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            inactivePhoneUserDataModel = it.getParcelable(InactivePhoneConstant.PARAM_USER_DATA)
-        }
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initView() {
+        super.initView()
         updateTitle(getString(R.string.text_onboarding_title))
-        updateDescription(getString(R.string.pin_onboarding_description))
+        updateDescription(getString(R.string.expedited_onboarding_description))
     }
 
     override fun onButtonNextClicked() {
-        tracker.clickOnButtonNextOnboarding()
+        trackerWithPin.clickOnButtonNextOnboarding()
         gotoChallengeEmail()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_OTP_EMAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val isUseRegularFlow = data?.extras?.getBoolean(IS_USE_REGULAR_FLOW).orFalse()
@@ -75,6 +57,11 @@ class InactivePhoneOnboardingPinFragment: BaseInactivePhoneOnboardingFragment() 
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        trackerWithPin.clickOnButtonBackOnboarding()
+        return super.onFragmentBackPressed()
     }
 
     private fun gotoChallengeEmail() {
@@ -116,10 +103,8 @@ class InactivePhoneOnboardingPinFragment: BaseInactivePhoneOnboardingFragment() 
     }
 
     companion object {
-
         private const val REQUEST_CODE_OTP_EMAIL = 101
         private const val REQUEST_CODE_VALIDATE_PIN = 102
-
         private const val IS_USE_REGULAR_FLOW = "isUseRegularFlow"
 
         fun instance(bundle: Bundle): Fragment {

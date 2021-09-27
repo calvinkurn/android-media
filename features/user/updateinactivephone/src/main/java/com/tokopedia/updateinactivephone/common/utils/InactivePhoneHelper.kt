@@ -3,6 +3,7 @@ package com.tokopedia.updateinactivephone.common.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import androidx.exifinterface.media.ExifInterface
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -84,6 +85,9 @@ fun String.removeRegionCodeAndCharacter(): String {
 }
 
 fun String.getValidEmail(): String? {
-    if (this.contains('*')) return ""
-    return this
+    return when {
+        this.contains('*') -> ""
+        EMAIL_ADDRESS.matcher(this).matches() -> this
+        else -> null
+    }
 }

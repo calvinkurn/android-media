@@ -5,22 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneOnboardingBinding
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
+import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
+import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
-    private var textTitle: Typography? = null
-    private var textDescription: Typography? = null
-    private var buttonNext: UnifyButton? = null
+    var viewBinding by autoClearedNullable<FragmentInactivePhoneOnboardingBinding>()
+    var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
+
+    val trackerRegular = InactivePhoneTracker()
+    val trackerWithPin = InactivePhoneWithPinTracker()
 
     protected abstract fun onButtonNextClicked()
 
     override fun getScreenName(): String = ""
+    override fun initInjector() {}
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            inactivePhoneUserDataModel = it.getParcelable(InactivePhoneConstant.PARAM_USER_DATA)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inactive_phone_onboarding, container, false)
+        viewBinding = FragmentInactivePhoneOnboardingBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,21 +42,18 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
         initView()
     }
 
-    private fun initView() {
-        textTitle = view?.findViewById(R.id.txtTitle)
-        textDescription = view?.findViewById(R.id.textDescription)
-        buttonNext = view?.findViewById(R.id.btnNext)
-        buttonNext?.setOnClickListener {
+    open fun initView() {
+        viewBinding?.buttonNext?.setOnClickListener {
             onButtonNextClicked()
         }
     }
 
     fun updateTitle(title: String) {
-        textTitle?.text = title
+        viewBinding?.textTitle?.text = title
     }
 
     fun updateDescription(description: String) {
-        textDescription?.text = description
+        viewBinding?.textDescription?.text = description
     }
 
 }

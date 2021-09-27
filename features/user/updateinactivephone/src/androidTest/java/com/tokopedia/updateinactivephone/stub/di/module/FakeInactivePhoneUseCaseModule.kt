@@ -13,6 +13,12 @@ class FakeInactivePhoneUseCaseModule {
 
     @ActivityScope
     @Provides
+    fun provideGetAccountListUseCase(
+        stub: GetAccountListUseCaseStub
+    ): GetAccountListUseCase = stub
+
+    @ActivityScope
+    @Provides
     fun provideGetAccountListUseCaseStub(
         repository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
@@ -22,9 +28,9 @@ class FakeInactivePhoneUseCaseModule {
 
     @ActivityScope
     @Provides
-    fun provideGetAccountListUseCase(
-        stub: GetAccountListUseCaseStub
-    ): GetAccountListUseCase = stub
+    fun provideGetStatusInactivePhoneNumberUseCase(
+        stub: GetStatusInactivePhoneNumberUseCaseStub
+    ): GetStatusInactivePhoneNumberUseCase = stub
 
     @ActivityScope
     @Provides
@@ -37,17 +43,9 @@ class FakeInactivePhoneUseCaseModule {
 
     @ActivityScope
     @Provides
-    fun provideGetStatusInactivePhoneNumberUseCase(
-        stub: GetStatusInactivePhoneNumberUseCaseStub
-    ): GetStatusInactivePhoneNumberUseCase = stub
-
-//    @ActivityScope
-//    @Provides
-//    fun provideImageUploadUseCaseStub(
-//
-//    ) {
-//
-//    }
+    fun providePhoneValidationUseCase(
+        stub: PhoneValidationUseCaseStub
+    ): PhoneValidationUseCase = stub
 
     @ActivityScope
     @Provides
@@ -60,9 +58,9 @@ class FakeInactivePhoneUseCaseModule {
 
     @ActivityScope
     @Provides
-    fun providePhoneValidationUseCase(
-        stub: PhoneValidationUseCaseStub
-    ): PhoneValidationUseCase = stub
+    fun provideSubmitDataUseCase(
+        stub: SubmitDataUseCaseStub
+    ): SubmitDataUseCase = stub
 
     @ActivityScope
     @Provides
@@ -75,9 +73,9 @@ class FakeInactivePhoneUseCaseModule {
 
     @ActivityScope
     @Provides
-    fun provideSubmitDataUseCase(
-        stub: SubmitDataUseCaseStub
-    ): SubmitDataUseCase = stub
+    fun provideSubmitExpeditedInactivePhoneUseCase(
+        stub: SubmitExpeditedInactivePhoneUseCaseStub
+    ): SubmitExpeditedInactivePhoneUseCase = stub
 
     @ActivityScope
     @Provides
@@ -87,10 +85,4 @@ class FakeInactivePhoneUseCaseModule {
     ): SubmitExpeditedInactivePhoneUseCaseStub {
         return SubmitExpeditedInactivePhoneUseCaseStub(repository, dispatcher)
     }
-
-    @ActivityScope
-    @Provides
-    fun provideSubmitExpeditedInactivePhoneUseCase(
-        stub: SubmitExpeditedInactivePhoneUseCaseStub
-    ): SubmitExpeditedInactivePhoneUseCase = stub
 }

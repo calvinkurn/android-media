@@ -6,23 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
-import com.tokopedia.updateinactivephone.common.view.PhoneNumberView
-import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
+import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
@@ -38,18 +36,13 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     @Inject
     lateinit var trackerWithPin: InactivePhoneWithPinTracker
 
-    var thumbnailIdCard: ThumbnailFileView? = null
-    var thumbnailSelfie: ThumbnailFileView? = null
-    var thumbnailSavingBook: ThumbnailFileView? = null
-    var textPhoneNumber: PhoneNumberView? = null
-    var buttonSubmit: UnifyButton? = null
-    var layoutThumbnail: ConstraintLayout? = null
-    var loader: ConstraintLayout? = null
-
+    var viewBinding by autoClearedNullable<FragmentInactivePhoneDataUploadBinding>()
     var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 
     protected abstract fun initObserver()
     protected abstract fun onSubmit()
+    protected abstract fun dialogOnBackPressed()
+    protected abstract fun initView()
 
     override fun getScreenName(): String = ""
 
@@ -61,7 +54,8 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inactive_phone_data_upload, container, false)
+        viewBinding = FragmentInactivePhoneDataUploadBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,42 +67,34 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
-    }
 
-    open fun initView() {
-        thumbnailIdCard = view?.findViewById(R.id.imgIdCard)
-        thumbnailSelfie = view?.findViewById(R.id.imgSelfie)
-        thumbnailSavingBook = view?.findViewById(R.id.imgSavingBook)
-        textPhoneNumber = view?.findViewById(R.id.textPhoneNumber)
-        buttonSubmit = view?.findViewById(R.id.btnNext)
-        layoutThumbnail = view?.findViewById(R.id.layoutThumbnailDataUpload)
-        loader = view?.findViewById(R.id.loader)
-
-        buttonSubmit?.setOnClickListener {
+        viewBinding?.buttonNext?.setOnClickListener {
             onSubmit()
         }
     }
 
-    fun gotoSuccessPage() {
+    override fun onFragmentBackPressed(): Boolean {
+        dialogOnBackPressed()
+        return true
+    }
+
+    open fun gotoSuccessPage() {
         activity?.let {
-            val intent = InactivePhoneSuccessPageActivity.createIntent(it)
-            intent.putExtras(Bundle().apply {
-                putParcelable(InactivePhoneConstant.PARAM_USER_DATA, inactivePhoneUserDataModel)
-            })
+            val intent = InactivePhoneSuccessPageActivity.createIntent(it, InactivePhoneConstant.SOURCE_INACTIVE_PHONE, inactivePhoneUserDataModel)
             startActivity(intent)
             it.finish()
         }
     }
 
     fun isPhoneValid(): Boolean {
-        val phoneNumber = textPhoneNumber?.text.toString()
+        val phoneNumber = viewBinding?.textPhoneNumber?.text.toString()
         when {
             phoneNumber.isEmpty() -> {
-                textPhoneNumber?.error = getString(R.string.text_form_error_empty)
+                viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_empty)
                 return false
             }
             phoneNumber.length < 9 -> {
-                textPhoneNumber?.error = getString(R.string.text_form_error_min_9_digit)
+                viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_min_9_digit)
                 return false
             }
         }
@@ -116,24 +102,24 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
         return true
     }
 
-     fun hideKeyboard() {
+    fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(textPhoneNumber?.windowToken, 0)
+        imm?.hideSoftInputFromWindow(viewBinding?.textPhoneNumber?.windowToken, 0)
     }
 
     fun showThumbnailLayout() {
-        layoutThumbnail?.show()
+        viewBinding?.layoutThumbnailDataUpload?.show()
     }
 
     fun hideThumbnailLayout() {
-        layoutThumbnail?.hide()
+        viewBinding?.layoutThumbnailDataUpload?.hide()
     }
 
     fun showLoading() {
-        loader?.show()
+        viewBinding?.loader?.show()
     }
 
     fun hideLoading() {
-        loader?.hide()
+        viewBinding?.loader?.hide()
     }
 }

@@ -28,6 +28,16 @@ open class InactivePhonePinVerificationFragment : VerificationFragment() {
         }
     }
 
+    override fun validate(code: String) {
+        viewModel.otpValidate2FA(
+            code = code,
+            otpType = otpData.otpType.toString(),
+            mode = modeListData.modeText,
+            userIdEnc = otpData.userIdEnc,
+            validateToken = otpData.accessToken
+        )
+    }
+
     override fun setFooterText(spannable: Spannable?) {
         super.setFooterText(getPinFooterSpan())
     }

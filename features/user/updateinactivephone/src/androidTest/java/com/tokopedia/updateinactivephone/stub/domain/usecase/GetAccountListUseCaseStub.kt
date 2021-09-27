@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.domain.usecase.GetAccountListUseCase
 
-class GetAccountListUseCaseStub constructor(
+class GetAccountListUseCaseStub(
     repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : GetAccountListUseCase(repository, dispatcher) {

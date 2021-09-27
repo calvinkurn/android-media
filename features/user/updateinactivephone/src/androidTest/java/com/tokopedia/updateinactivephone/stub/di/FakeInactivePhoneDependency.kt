@@ -1,9 +1,9 @@
 package com.tokopedia.updateinactivephone.stub.di
 
 import com.tokopedia.updateinactivephone.common.AndroidFileUtil
-import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.domain.data.*
 import com.tokopedia.updateinactivephone.stub.domain.usecase.*
+import com.tokopedia.updateinactivephone.test.R
 import javax.inject.Inject
 
 class FakeInactivePhoneDependency {
@@ -37,27 +37,27 @@ class FakeInactivePhoneDependency {
      */
     fun setDefaultResponse() {
         accountListDataModel = AndroidFileUtil.parseRaw(
-            InactivePhoneConstant.JsonRaw.ACCOUNT_LIST,
+            R.raw.account_list_success,
             AccountListDataModel::class.java
         )
 
         statusInactivePhoneNumberDataModel = AndroidFileUtil.parseRaw(
-            InactivePhoneConstant.JsonRaw.STATUS_INACTIVE_PHONE,
+            R.raw.get_status_inactive_phone_number,
             StatusInactivePhoneNumberDataModel::class.java
         )
 
         phoneValidationDataModel = AndroidFileUtil.parseRaw(
-            InactivePhoneConstant.JsonRaw.PHONE_VALIDATION,
+            R.raw.validate_inactive_phone_number,
             PhoneValidationDataModel::class.java
         )
 
         inactivePhoneSubmitDataModel = AndroidFileUtil.parseRaw(
-            InactivePhoneConstant.JsonRaw.SUBMIT_REGULAR_DATA,
+            R.raw.submit_inactive_phone_user,
             InactivePhoneSubmitDataModel::class.java
         )
 
         submitExpeditedInactivePhoneDataModel = AndroidFileUtil.parseRaw(
-            InactivePhoneConstant.JsonRaw.SUBMIT_EXPEDITED_DATA,
+            R.raw.submit_expedited_inactive_phone,
             SubmitExpeditedInactivePhoneDataModel::class.java
         )
     }

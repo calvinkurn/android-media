@@ -7,69 +7,67 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.BulletSpan
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
-import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
+import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
-import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_id_card.*
 import kotlin.math.roundToInt
 
-class InactivePhoneCaptureIdCardFragment : BaseDaggerFragment() {
+class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment() {
 
-    private val tracker: InactivePhoneTracker = InactivePhoneTracker()
     private val permissionCheckerHelper = PermissionCheckerHelper()
     private var fragmentTransactionInterface: FragmentTransactionInterface? = null
 
-    override fun getScreenName(): String = ""
-    override fun initInjector() {
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inactive_phone_onboarding_id_card, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fragmentTransactionInterface = activity as FragmentTransactionInterface
-
         checkPermission()
+        fragmentTransactionInterface = activity as FragmentTransactionInterface
+    }
 
-        btnNext?.setOnClickListener {
-            tracker.clickOnNextButtonIdCardOnboarding()
+    override fun initView() {
+        super.initView()
+        updateTitle(getString(R.string.text_title_id_card))
 
-            val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
-            startActivityForResult(intent, REQUEST_CAPTURE_ID_CARD)
+        viewBinding?.imgHeader?.let {
+            ImageUtils.clearImage(it)
+            ImageUtils.loadImage(it, IMAGE_ID_CARD_SAMPLE)
         }
 
-        ImageUtils.loadImage(imgHeader, IMAGE_ID_CARD_SAMPLE)
+        viewBinding?.textDescription?.hide()
+        viewBinding?.layoutDescription?.apply {
+            addView(addText(getString(R.string.text_onboarding_id_card_description_title)))
+            addView(addTextWithBullet(getString(R.string.text_onboarding_id_card_description_1)))
+            addView(addTextWithBullet(getString(R.string.text_onboarding_id_card_description_2)))
+            addView(addTextWithBullet(getString(R.string.text_onboarding_id_card_description_3)))
+        }?.show()
+    }
 
-        addText(getString(R.string.text_onboarding_id_card_description_title))
-        addTextWithBullet(getString(R.string.text_onboarding_id_card_description_1))
-        addTextWithBullet(getString(R.string.text_onboarding_id_card_description_2))
-        addTextWithBullet(getString(R.string.text_onboarding_id_card_description_3))
+    override fun onButtonNextClicked() {
+        trackerRegular.clickOnNextButtonIdCardOnboarding()
+
+        val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
+        startActivityForResult(intent, REQUEST_CAPTURE_ID_CARD)
     }
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.request(it, arrayOf(
-                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
                 ), granted = {
                 }, denied = {
                     it.finish()
@@ -97,43 +95,38 @@ class InactivePhoneCaptureIdCardFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun addText(text: String) {
-        context?.let {
-            val tv = Typography(it)
-            tv?.let { view ->
-                view.setType(BODY_2)
-                view.text = text
-                view.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    private fun addText(text: String): Typography? {
+        return context?.let {
+            Typography(it).apply {
+                this.setType(BODY_2)
+                this.text = text
+                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             }
-
-            layoutDescription?.addView(tv)
         }
     }
 
-    private fun addTextWithBullet(text: String) {
-        context?.let {
-            val radius = dpToPx(4)
-            val gapWidth = dpToPx(12)
-            val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
-            val margin = dpToPx(8)
-            val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                BulletSpan(gapWidth, color, radius)
-            } else {
-                BulletSpan(gapWidth, color)
+    private fun addTextWithBullet(text: String): Typography? {
+        return context?.let {
+            Typography(it).apply {
+                val radius = dpToPx(DP_4)
+                val gapWidth = dpToPx(DP_12)
+                val margin = dpToPx(DP_8)
+                val span = SpannableString(text)
+                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+
+                val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    BulletSpan(gapWidth, color, radius)
+                } else {
+                    BulletSpan(gapWidth, color)
+                }
+
+                span.setSpan(bulletSpan, 0, text.length, 0)
+
+                setMargins(this, 0, 0, 0, margin)
+                this.setType(BODY_2)
+                this.text = span
+                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             }
-
-            val span = SpannableString(text)
-            span.setSpan(bulletSpan, 0, text.length, 0)
-
-            val tv = Typography(it)
-            tv?.let { view ->
-                setMargins(view, 0, 0, 0, margin)
-                view.setType(BODY_2)
-                view.text = span
-                view.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            }
-
-            layoutDescription?.addView(tv)
         }
     }
 
@@ -151,6 +144,9 @@ class InactivePhoneCaptureIdCardFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val DP_4 = 4
+        const val DP_8 = 8
+        const val DP_12 = 12
         const val IMAGE_ID_CARD_SAMPLE = "https://ecs7.tokopedia.net/android/others/account_verification_ktp_onboarding.png"
     }
 }

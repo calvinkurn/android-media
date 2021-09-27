@@ -7,9 +7,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.updateinactivephone.common.viewmatcher.withRecyclerView
 import org.hamcrest.Matcher
 
@@ -35,8 +37,13 @@ fun isDisplayed(resId: Int) {
         .check(matches(isDisplayed()))
 }
 
-fun isTextDisplayed(resId: Int, text: String) {
-    onView(withId(resId))
+fun isTextDisplayed(text: String) {
+    onView(withText(text))
+        .check(matches(isDisplayed()))
+}
+
+fun isChildTextDisplayed(resId: Int, childRes: Int, position: Int, text: String) {
+    onView(RecyclerViewMatcher(resId).atPositionOnView(position, childRes))
         .check(matches(withText(text)))
 }
 
@@ -48,7 +55,19 @@ fun clickOnPosition(resId: Int, itemId: Int, position: Int) {
 
 fun clickOnButton(resId: Int) {
     onView(withId(resId))
+        .check(matches(isDisplayed()))
         .perform(click())
+}
+
+fun clickOnButtonWithText(textButton: String) {
+    onView(withText(textButton))
+        .check(matches(isDisplayed()))
+        .perform(click())
+}
+
+fun scrollToView(resId: Int) {
+    onView(withId(resId))
+        .perform(scrollTo())
 }
 
 fun scrollToPosition(resId: Int, position: Int) {

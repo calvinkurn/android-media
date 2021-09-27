@@ -13,8 +13,6 @@ import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 
 class InactivePhoneWithPinActivity: BaseSimpleActivity() {
 
-    private var tracker = InactivePhoneWithPinTracker()
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent?.extras != null) {
@@ -37,11 +35,6 @@ class InactivePhoneWithPinActivity: BaseSimpleActivity() {
         supportActionBar?.apply {
             elevation = 0f
         }
-    }
-
-    override fun onBackPressed() {
-        tracker.clickOnButtonBackOnboarding()
-        super.onBackPressed()
     }
 
     companion object {

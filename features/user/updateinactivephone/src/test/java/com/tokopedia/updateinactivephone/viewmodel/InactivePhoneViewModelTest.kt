@@ -15,7 +15,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -51,7 +50,6 @@ class InactivePhoneViewModelTest {
 
     @After
     fun tearDown() {
-        viewModel.onCleared()
         viewModel.phoneValidation.removeObserver(observerPhoneValidation)
         viewModel.getStatusPhoneNumber.removeObserver(observerGetStatusInactivePhoneNumber)
     }
@@ -107,11 +105,9 @@ class InactivePhoneViewModelTest {
     fun `Phone Validate - Success validate on server`() {
         val mockResponse = PhoneValidationDataModel(PhoneValidationDataModel.Validation(isSuccess = true))
 
-        every {
-            phoneValidationUseCase.execute(any(), any())
-        } answers {
-            firstArg<(PhoneValidationDataModel) -> Unit>().invoke(mockResponse)
-        }
+        coEvery {
+            phoneValidationUseCase(any())
+        } returns mockResponse
 
         viewModel.userValidation(phoneNumber, email)
 
@@ -127,11 +123,11 @@ class InactivePhoneViewModelTest {
 
     @Test
     fun `Phone Validate - Failed validate on server`() {
-        every {
-            phoneValidationUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        val mockResponse = PhoneValidationDataModel(PhoneValidationDataModel.Validation(isSuccess = false))
+
+        coEvery {
+            phoneValidationUseCase(any())
+        } returns mockResponse
 
         viewModel.userValidation(phoneNumber, email)
 
@@ -139,10 +135,10 @@ class InactivePhoneViewModelTest {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Fail)
+        assert(viewModel.phoneValidation.value is Success)
 
-        val result = viewModel.phoneValidation.value as Fail
-        assertEquals(result.throwable, mockThrowable)
+        val result = viewModel.phoneValidation.value as Success
+        assert(!result.data.validation.isSuccess)
     }
 
     @Test

@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
+import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.assertAccountListItem
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.checkAccountListIsDisplayed
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.clickAccountListItemAtPosition
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.isAccountListTextItemDisplayed
@@ -15,55 +17,38 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class AccountListGeneralTest : BaseAccountListTest() {
 
-    var userDetails: MutableList<AccountListDataModel.UserDetailDataModel>? = mutableListOf()
-    val position = 3
+    private val position = 10
+    private var userDetails: MutableList<AccountListDataModel.UserDetailDataModel> = mutableListOf()
+
+    override fun before() {
+        super.before()
+        inactivePhoneDependency.apply {
+            getAccountListUseCaseStub.response = accountListDataModel
+        }
+        userDetails = inactivePhoneDependency.accountListDataModel.accountList.userDetailDataModels
+    }
 
     @Test
     fun show_account_list_and_check_item_list() {
-        // Given
-        inactivePhoneDependency.apply {
-            getAccountListUseCaseStub.response = accountListDataModel
-            userDetails = accountListDataModel.accountList.userDetailDataModels
-        }
-
-        startAccountListActivity()
-
-        // Then
-        val size = userDetails?.size.orZero()
-        if (size > 0) {
+        runTest {
             checkAccountListIsDisplayed()
+            assertAccountListItem(userDetails.size)
             smoothScrollAccountListToPosition(position)
-            isAccountListTextItemDisplayed(userDetails?.get(position)?.fullname.toString())
+            isAccountListTextItemDisplayed(userDetails[position].fullname, position)
         }
     }
 
     @Test
     fun scroll_to_down() {
-        // Given
-        inactivePhoneDependency.apply {
-            getAccountListUseCaseStub.response = accountListDataModel
-        }
-
-        startAccountListActivity()
-
-        // Then
-        val size = userDetails?.size.orZero()
-        if (size > 0) {
+        runTest {
             checkAccountListIsDisplayed()
-            smoothScrollAccountListToPosition(size - 1)
+            smoothScrollAccountListToPosition(userDetails.size - 1)
         }
     }
 
     @Test
     fun scroll_to_position() {
-        inactivePhoneDependency.apply {
-            getAccountListUseCaseStub.response = accountListDataModel
-        }
-
-        startAccountListActivity()
-
-        val size = userDetails?.size.orZero()
-        if (size > 0) {
+        runTest {
             checkAccountListIsDisplayed()
             smoothScrollAccountListToPosition(position)
         }
@@ -71,16 +56,7 @@ class AccountListGeneralTest : BaseAccountListTest() {
 
     @Test
     fun click_on_position() {
-        // Given
-        inactivePhoneDependency.apply {
-            getAccountListUseCaseStub.response = accountListDataModel
-        }
-
-        startAccountListActivity()
-
-        // Then
-        val size = userDetails?.size.orZero()
-        if (size > 0) {
+        runTest {
             checkAccountListIsDisplayed()
             smoothScrollAccountListToPosition(position)
             clickAccountListItemAtPosition(position)

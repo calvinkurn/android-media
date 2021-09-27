@@ -119,13 +119,10 @@
   <string name="image_shutter_1">image shutter 1</string>
   <string name="image_shutter_2">image shutter 2</string>
   <string name="button_back">button back</string>
-
-  <string name="pin_challenge_title">PIN Tokopedia</string>
-  <string name="pin_challenge_desc">Masukkan 6 digit PIN Tokopedia kamu.</string>
-  <string name="pin_challenge_forgot_pin_text_button">Ajukan perubahan nomor HP</string>
-  <string name="pin_challenge_forgot_pin_text_desc">Lupa pin Tokopedia?</string>
-  <string name="pin_onboarding_description">Masukan PIN Tokopediamu dengan benar dan pastikan email mu aktif ya. </string>
-  
   <string name="button_text_save">Simpan</string>
+  
+  <string name="expedited_onboarding_description">Masukan PIN Tokopediamu dengan benar dan pastikan email mu aktif ya. </string>
+  <string name="expedited_title_success_page">Nomor HP berhasil diubah</string>
+  <string name="expedited_description_success_page">Selamat, akunmu sudah menggunakan nomor HP baru.</string>
 
 </resources>
