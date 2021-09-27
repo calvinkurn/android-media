@@ -282,6 +282,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
                 MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
                 MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
+                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
             }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
                     .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)
