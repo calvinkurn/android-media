@@ -296,6 +296,10 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String, isAnonymous: Boolean) {
-        basicInfo?.setStats(userStats, userId, reviewBasicInfoListener, isAnonymous)
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent()) {
+            basicInfo?.setStats(userStats, userId, reviewBasicInfoListener, isAnonymous)
+            return
+        }
+        basicInfo?.hideStats()
     }
 }

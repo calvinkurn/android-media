@@ -25,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
@@ -510,8 +512,29 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun shouldShowCredibility(): Boolean {
-        // AB TEST
-        return true
+        return isNewReadingExperience() && isNewReadingExperienceEnabled()
+    }
+
+    private fun isNewCredibilityEnabled(): Boolean {
+        getAbTestPlatform()?.let {
+            return it.getString(RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY, RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
+        }
+        return false
+    }
+
+    private fun isNewReadingExperienceEnabled(): Boolean {
+        getAbTestPlatform()?.let {
+            return it.getString(RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+        }
+        return false
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (e: java.lang.IllegalStateException) {
+            null
+        }
     }
 
     private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {

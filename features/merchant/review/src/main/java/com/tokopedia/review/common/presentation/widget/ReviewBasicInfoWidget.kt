@@ -103,7 +103,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         isAnonymous: Boolean
     ) {
         if (isAnonymous) {
-            reviewerStats?.hide()
+            hideStats()
             return
         }
         var textToShow = ""
@@ -127,6 +127,10 @@ class ReviewBasicInfoWidget : BaseCustomView {
                 }
             }
         }
+    }
+
+    fun hideStats() {
+        reviewerStats?.hide()
     }
 
     fun setCountColorToGreen() {
