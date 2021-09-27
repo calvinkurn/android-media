@@ -34,6 +34,10 @@ data class VariantChild(
         @Expose
         val optionIds: List<String> = listOf(),
 
+        @SerializedName("optionName")
+        @Expose
+        val optionName: List<String> = listOf(),
+
         @SerializedName("productName")
         @Expose
         val name: String = "",
@@ -190,7 +194,16 @@ data class VariantStock(
 
         @SerializedName("maximumOrder")
         @Expose
-        val maximumOrder: String? = ""
+        val maximumOrder: String? = "",
+
+        @SerializedName("stockFmt")
+        @Expose
+        val stockFmt: String? = "", // Stock: 11 or >50
+
+        @SerializedName("stockCopy")
+        @Expose
+        val stockCopy: String? = ""
+
 )
 
 data class VariantCampaign(

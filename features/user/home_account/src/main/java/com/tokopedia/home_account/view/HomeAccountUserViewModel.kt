@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
@@ -15,6 +16,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,6 +38,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
         private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
         private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
@@ -61,8 +65,8 @@ class HomeAccountUserViewModel @Inject constructor(
     val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
         get() = _recommendationData
 
-    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidget>>()
-    val firstRecommendationData: LiveData<Result<RecommendationWidget>>
+    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidgetWithTDN>>()
+    val firstRecommendationData: LiveData<Result<RecommendationWidgetWithTDN>>
         get() = _firstRecommendationData
 
     private val _ovoBalance = MutableLiveData<Result<WalletModel>>()
@@ -143,8 +147,13 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getRecommendation(page: Int) {
         launchCatchError(Dispatchers.IO, block = {
             val recommendationWidget = getRecommendationList(page)
+            var tdnBanner: TopAdsImageViewModel? = null
+            if (recommendationWidget.recommendationItemList.size >= TDN_INDEX && checkFirstPage(page)) {
+                tdnBanner = getTdnBannerData()
+            }
+            val data = RecommendationWidgetWithTDN(recommendationWidget, tdnBanner)
             if (checkFirstPage(page)) {
-                _firstRecommendationData.postValue(Success(recommendationWidget))
+                _firstRecommendationData.postValue(Success(data))
             } else {
                 _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
             }
@@ -156,6 +165,23 @@ class HomeAccountUserViewModel @Inject constructor(
             }
         })
 
+    }
+
+    private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
+        return try {
+            val queryParams =
+                topAdsImageViewUseCase.getQueryMap(
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.SOURCE,
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.ADS_COUNT,
+                    AccountConstants.TDNBanner.DIMEN_ID,
+                    AccountConstants.TDNBanner.EMPTY
+                )
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        } catch (t: Throwable) {
+            null
+        }
     }
 
     private suspend fun getRecommendationList(page: Int): RecommendationWidget {

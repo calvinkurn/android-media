@@ -186,7 +186,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -205,7 +205,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
@@ -224,7 +224,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         coEvery {
@@ -246,7 +246,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         coEvery {

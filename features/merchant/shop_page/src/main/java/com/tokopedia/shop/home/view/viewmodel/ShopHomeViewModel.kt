@@ -575,6 +575,15 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun updatePlayWidgetReminder(channelId: String?, isReminder: Boolean) {
+        if (channelId == null) return
+
+        updateWidget {
+            val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
+        }
+    }
+
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         if (!isLogin) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else updatePlayWidgetToggleReminder(channelId, reminderType)

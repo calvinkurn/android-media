@@ -29,7 +29,7 @@ class GetProgressDataUseCase constructor(
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetProgressDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

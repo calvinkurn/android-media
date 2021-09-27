@@ -939,8 +939,12 @@ class DiscoveryFragment :
                     return
                 val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
                 val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
-                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
+                    val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
+                }
             }
             MvcView.REQUEST_CODE ->{
                 if(resultCode == MvcView.RESULT_CODE_OK){
@@ -1126,11 +1130,17 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return if((context as DiscoveryActivity).isFromCategory())
+                Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
+            else
+                Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -1141,7 +1151,10 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return EMPTY_STRING
+        return if((context as DiscoveryActivity).isFromCategory())
+                (context as DiscoveryActivity).getPageIdentifier()
+            else
+                EMPTY_STRING
     }
 
     private fun fetchUserLatestAddressData() {

@@ -40,7 +40,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                         val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info),
                                 AdCreationOption::class.java, hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
                         val cacheStrategy = RequestHelper.getCacheStrategy()
-                        repository.getReseponse(listOf(request), cacheStrategy)
+                        repository.response(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<AdCreationOption>().let {
                         onSuccess(it)
@@ -65,7 +65,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                 val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_post_autoads),
                         TopAdsAutoAdsCreate.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAdsCreate.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
@@ -93,7 +93,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                         val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status),
                                 AutoAdsResponse::class.java, hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
                         val cacheStrategy = RequestHelper.getCacheStrategy()
-                        repository.getReseponse(listOf(request), cacheStrategy)
+                        repository.response(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<AutoAdsResponse>().let {
                         onSuccess(it)
