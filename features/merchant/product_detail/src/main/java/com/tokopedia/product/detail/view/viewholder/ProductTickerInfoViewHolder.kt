@@ -133,6 +133,6 @@ class ProductTickerInfoViewHolder(private val view: View,
     }
 
     private fun generateHtml(message: String, link: String): String = with(itemView) {
-        return message.replace(link, context.getString(R.string.ticker_href_builder, link))
+        return message.replace("{link}", context.getString(R.string.ticker_href_builder, link))
     }
 }
