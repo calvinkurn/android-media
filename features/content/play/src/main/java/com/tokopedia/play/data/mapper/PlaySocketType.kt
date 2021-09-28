@@ -17,4 +17,5 @@ enum class PlaySocketType(var value: String) {
     ChannelInteractiveStatus("CHANNEL_INTERACTIVE_STATUS"),
     ChannelInteractive("CHANNEL_INTERACTIVE"),
     RealTimeNotification("REAL_TIME_NOTIF"),
+    UpdateConfigMultipleLike("UPDATE_CONFIG_MULTIPLE_LIKE"),
 }
