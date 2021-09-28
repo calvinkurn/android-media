@@ -50,7 +50,7 @@ class VoucherCashbackEligibleUseCase @Inject constructor(
         setRequestParams(createRequestParams(shopId.toLongOrZero()).parameters)
         val response = executeOnBackground().merchantPromotionGetPromoList
         val errors = response.header.messages
-        if (errors.isEmpty()) {
+        if (errors.isNullOrEmpty()) {
             return mapper.isVoucherCashbackEligible(response.data.pages)
         } else {
             throw MessageErrorException(errors.joinToString { it })
