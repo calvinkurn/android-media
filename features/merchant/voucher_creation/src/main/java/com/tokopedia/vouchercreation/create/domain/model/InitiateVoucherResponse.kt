@@ -39,5 +39,7 @@ data class InitiateVoucherPageData(
         @SerializedName("img_banner_label_cashback_hingga")
         val bannerCashbackUntilLabelUrl: String = "",
         @SerializedName("prefix_voucher_code")
-        val voucherCodePrefix: String = ""
+        val voucherCodePrefix: String = "",
+        @SerializedName("is_eligible")
+        val isEligible: Int = 0
 )
