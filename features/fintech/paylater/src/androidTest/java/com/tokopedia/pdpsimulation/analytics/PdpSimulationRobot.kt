@@ -7,6 +7,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -31,6 +32,8 @@ class PdpSimulationRobot {
     }
 
     fun clickPartnerButtonBottomSheet(){
+        onView(withId(R.id.rvPayLaterRegisterSteps))
+            .perform(swipeUp());
         onView(
             CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
         ).perform(ViewActions.click())

@@ -87,6 +87,7 @@ class PdpSimulationFragmentTest {
     fun check_pay_later_bottomsheet_button_click()
     {
         actionTest {
+            clickPartnerButton()
             clickPartnerButtonBottomSheet()
         } assertTest {
             validate(gtmLogDBSource, context, PAY_LATER_BOTTOM_SHEET_BUTTON_CLICK)
@@ -110,6 +111,7 @@ class PdpSimulationFragmentTest {
     fun check_pay_later_faq_bottom_sheet_button_click()
     {
         actionTest {
+            clickPartnerFaq()
             clickPartnerFaqBottomSheet()
         } assertTest {
             validate(gtmLogDBSource, context, PAY_LATER_FAQ_BOTTOMSHEET_BUTTON_CLICK)
