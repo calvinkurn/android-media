@@ -602,13 +602,11 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun sendSrwBubble(
         question: QuestionUiModel, products: List<SendablePreview>,
     ) {
-        if (networkMode == MODE_WEBSOCKET) {
-            topchatSendMessageWithWebsocket(
-                sendMessage = question.content,
-                intention = question.intent,
-                products = products
-            )
-        }
+        topchatSendMessageWithWebsocket(
+            sendMessage = question.content,
+            intention = question.intent,
+            products = products
+        )
     }
 
     override fun sendMessageWithWebsocket(
