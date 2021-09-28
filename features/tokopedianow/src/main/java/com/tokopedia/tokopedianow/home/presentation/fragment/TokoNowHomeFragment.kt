@@ -795,9 +795,10 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.productAddToCartQuantity) {
-            if(it is Success) {
-                showHomeLayout(it.data)
+        observe(viewModelTokoNow.atcQuantity) {
+            when(it) {
+                is Success -> showHomeLayout(it.data)
+                is Fail -> logATCQuantityError(it.throwable)
             }
         }
 
