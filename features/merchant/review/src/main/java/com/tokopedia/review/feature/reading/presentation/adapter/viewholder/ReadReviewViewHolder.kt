@@ -70,8 +70,8 @@ class ReadReviewViewHolder(view: View,
             itemView.addOnImpressionListener(element.impressHolder) {
                 readReviewItemListener.onItemImpressed(feedbackID, adapterPosition, message.length, imageAttachments.size)
             }
-            setRating(productRating)
-            setCreateTime(reviewCreateTimestamp)
+            setRating(productRating, user.userID)
+            setCreateTime(reviewCreateTimestamp, user.userID)
             setReviewerName(user.fullName, user.userID, isAnonymous)
             setReviewerStats(userReviewStats, user.userID, isAnonymous)
             setProfilePicture(user.image)
@@ -128,12 +128,12 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setRating(rating: Int) {
-        basicInfo?.setRating(rating)
+    private fun setRating(rating: Int, userId: String) {
+        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview)
     }
 
-    private fun setCreateTime(createTime: String) {
-        basicInfo?.setCreateTime(createTime)
+    private fun setCreateTime(createTime: String, userId: String) {
+        basicInfo?.setCreateTime(createTime, reviewBasicInfoListener, userId, isProductReview)
     }
 
     private fun showReportOptionWithCondition(isReportable: Boolean, reviewId: String, shopId: String) {
@@ -150,7 +150,7 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setReviewerName(name: String, userId: String, isAnonymous: Boolean) {
-        basicInfo?.setReviewerName(name, userId, reviewBasicInfoListener, isAnonymous)
+        basicInfo?.setReviewerName(name, userId, reviewBasicInfoListener, isAnonymous, isProductReview)
     }
 
     private fun setVariantName(variantName: String) {
@@ -297,7 +297,7 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String, isAnonymous: Boolean) {
-        if (reviewBasicInfoListener.shouldShowCredibilityComponent()) {
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
             basicInfo?.setStats(userStats, userId, reviewBasicInfoListener, isAnonymous)
             return
         }
@@ -305,7 +305,7 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setProfilePicture(imageUrl: String) {
-        if (reviewBasicInfoListener.shouldShowCredibilityComponent()) {
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
             basicInfo?.setReviewerImage(imageUrl)
             return
         }

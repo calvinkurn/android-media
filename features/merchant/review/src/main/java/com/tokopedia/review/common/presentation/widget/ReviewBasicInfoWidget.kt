@@ -54,28 +54,54 @@ class ReviewBasicInfoWidget : BaseCustomView {
         profilePicture = findViewById(R.id.review_item_reviewer_image)
     }
 
-    fun setRating(rating: Int) {
-        ratingStars?.loadImage(getReviewStar(rating))
+    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean) {
+        ratingStars?.apply {
+            loadImage(getReviewStar(rating))
+            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
+                setOnClickListener {
+                    reviewBasicInfoListener.onUserNameClicked(context, userId)
+                }
+            } else {
+                setOnClickListener { }
+            }
+        }
     }
 
-    fun setCreateTime(createTime: String) {
-        timeStamp?.text = createTime
+    fun setCreateTime(
+        createTime: String,
+        reviewBasicInfoListener: ReviewBasicInfoListener,
+        userId: String,
+        isProductReview: Boolean
+    ) {
+        timeStamp?.apply {
+            text = createTime
+            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
+                setOnClickListener {
+                    reviewBasicInfoListener.onUserNameClicked(
+                        context, userId
+                    )
+                }
+            } else {
+                setOnClickListener {  }
+            }
+        }
     }
 
     fun setReviewerName(
         name: String,
         userId: String = "",
         listener: ReviewBasicInfoListener,
-        isAnonymous: Boolean
+        isAnonymous: Boolean,
+        isProductReview: Boolean
     ) {
         reviewerName?.apply {
             text = name
-            if (isAnonymous) {
-                setOnClickListener { }
-            } else {
+            if (!isAnonymous && isProductReview) {
                 setOnClickListener {
                     listener.onUserNameClicked(context, userId)
                 }
+            } else {
+                setOnClickListener {}
             }
         }
     }
@@ -137,7 +163,12 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     fun setCountColorToGreen() {
-        reviewerStats?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        reviewerStats?.setTextColor(
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            )
+        )
     }
 
     fun setReviewerImage(imageUrl: String) {

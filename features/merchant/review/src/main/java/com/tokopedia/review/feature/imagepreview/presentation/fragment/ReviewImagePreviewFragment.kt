@@ -357,9 +357,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(productReview) {
             reviewImagePreviewDetail?.apply {
                 setPhotoCount(index, imageAttachments.size.toLong())
-                setRating(productRating)
-                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment, isAnonymous)
-                setTimeStamp(reviewCreateTimestamp)
+                setRating(productRating, this@ReviewImagePreviewFragment, user.userID, isProductReview)
+                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
+                setTimeStamp(reviewCreateTimestamp, this@ReviewImagePreviewFragment, user.userID, isProductReview)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
@@ -621,9 +621,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
-                        setRating(rating)
-                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment, isAnonymous)
-                        setTimeStamp(reviewTime)
+                        setRating(rating, this@ReviewImagePreviewFragment, userId, isProductReview)
+                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
+                        setTimeStamp(reviewTime, this@ReviewImagePreviewFragment, userId, isProductReview)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats, userId, this@ReviewImagePreviewFragment, isAnonymous)
                         setLikeCount(totalLiked.toString())
