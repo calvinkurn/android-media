@@ -10,6 +10,8 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
+import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
 
 data class DataItem(
@@ -382,6 +384,16 @@ data class DataItem(
 
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
+
+        @field:SerializedName("products")
+        val products: List<ProductsItem?>? = null,
+
+        @field:SerializedName("maximumBenefitAmountStr")
+        val maximumBenefitAmountStr: String? = null,
+
+        @field:SerializedName("shopInfo")
+        val shopInfo: ShopInfo? = null,
+
 
         var shopAdsClickURL: String? = "",
 

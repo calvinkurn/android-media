@@ -88,4 +88,7 @@ enum class ComponentNames(val componentName: String) {
     //Topads Headline View
     TopadsHeadlineView("topads"),
 
+    MerchantVoucherCarousel("merchant_voucher_carousel"),
+    MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
+
 }
