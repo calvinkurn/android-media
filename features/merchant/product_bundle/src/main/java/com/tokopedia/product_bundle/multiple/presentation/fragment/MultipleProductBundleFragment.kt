@@ -148,6 +148,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     viewModel.setSelectedProductBundleMaster(this)
                     // update the process day
                     renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
+                    // update totalView atc button text
+                    updateProductBundleOverViewButtonText(preOrderStatus)
                 }
             }
         }
