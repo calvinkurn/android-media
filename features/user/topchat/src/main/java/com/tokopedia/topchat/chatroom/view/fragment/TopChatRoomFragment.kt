@@ -2200,7 +2200,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
         onSendAndReceiveMessage()
-        presenter.sendSrwFrom(attachment, opponentId)
+        presenter.sendSrwFrom(attachment)
         onSendingMessage(false).invoke()
     }
 

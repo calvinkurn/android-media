@@ -586,14 +586,13 @@ open class TopChatRoomPresenter @Inject constructor(
         onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
         topchatSendMessageWithWebsocket(
-            messageId, question.content, startTime, opponentId, question.intent, null
+            messageId, question.content, startTime, question.intent, null
         )
         view?.clearAttachmentPreviews()
     }
 
     override fun sendSrwFrom(
-        attachment: HeaderCtaButtonAttachment,
-        opponentId: String
+        attachment: HeaderCtaButtonAttachment
     ) {
         val startTime = SendableViewModel.generateStartTime()
         val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
@@ -604,7 +603,7 @@ open class TopChatRoomPresenter @Inject constructor(
         val products = ctaButton.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(
             thisMessageId, question.content, startTime,
-            opponentId, question.intent, products
+            question.intent, products
         )
     }
 
@@ -617,7 +616,7 @@ open class TopChatRoomPresenter @Inject constructor(
             val startTime = SendableViewModel.generateStartTime()
             topchatSendMessageWithWebsocket(
                 messageId, question.content, startTime,
-                opponentId, question.intent, products
+                question.intent, products
             )
         }
     }
@@ -627,7 +626,7 @@ open class TopChatRoomPresenter @Inject constructor(
         startTime: String, opponentId: String
     ) {
         topchatSendMessageWithWebsocket(
-            messageId, sendMessage, startTime, opponentId, null, null
+            messageId, sendMessage, startTime, null, null
         )
     }
 
@@ -635,9 +634,11 @@ open class TopChatRoomPresenter @Inject constructor(
      * send with websocket but with param [intention]
      */
     private fun topchatSendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String,
-        intention: String?, products: List<SendablePreview>?
+        messageId: String,
+        sendMessage: String,
+        startTime: String,
+        intention: String?,
+        products: List<SendablePreview>?
     ) {
         val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(

@@ -257,6 +257,6 @@ interface TopChatContract {
             onSendingMessage: () -> Unit
         )
         fun adjustInterlocutorWarehouseId(msgId: String)
-        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment, opponentId: String)
+        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }
