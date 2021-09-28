@@ -72,10 +72,10 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <LinearLayout
+        android:id="@+id/container_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="UselessParent">
+        android:orientation="vertical">
 
         <include
             layout="@layout/item_shipment_seller_info_bundle"

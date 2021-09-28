@@ -114,6 +114,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography customTickerDescription;
     private Typography customTickerAction;
 
+    private LinearLayout containerOrder;
     private ConstraintLayout productBundlingInfo;
     private ImageUnify imageBundle;
     private Typography textBundleTitle;
@@ -248,6 +249,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void bindViewIds(View itemView) {
+        containerOrder = itemView.findViewById(R.id.container_order);
         layoutError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_error);
         tickerError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.ticker_error);
         layoutWarning = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_warning);
@@ -1768,6 +1770,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutWarningAndError.setVisibility(View.GONE);
             }
 
+            containerOrder.setAlpha(0.5f);
             cbPPP.setEnabled(false);
             cbInsurance.setEnabled(false);
             llInsurance.setClickable(false);
@@ -1785,6 +1788,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);
 
+            containerOrder.setAlpha(1.0f);
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
