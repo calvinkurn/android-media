@@ -165,8 +165,6 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                     Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials."))
                     Streamer.STATUS.UNKNOWN_FAIL -> {
                         if (info?.length().orZero() > 0) {
-                            broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
-                        } else {
                             broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
                         }
                     }
