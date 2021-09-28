@@ -112,8 +112,7 @@ class GraphqlRepositoryImpl @Inject constructor(
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] =
-                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
@@ -168,8 +167,7 @@ class GraphqlRepositoryImpl @Inject constructor(
                 }
 
                 //Lookup for data
-                results[copyRequests[i].typeOfT] =
-                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
                 refreshRequests.add(copyRequests[i])
