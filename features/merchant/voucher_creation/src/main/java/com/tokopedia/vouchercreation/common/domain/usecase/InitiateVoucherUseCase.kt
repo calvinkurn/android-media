@@ -34,11 +34,13 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "          img_banner_label_cashback\n" +
                 "          img_banner_label_cashback_hingga\n" +
                 "          prefix_voucher_code\n" +
+                "          is_eligible\n" +
                 "        }\n" +
                 "    }\n" +
                 "}"
 
         private const val ACTION_KEY = "action"
+        private const val ELIGIBLE_VALUE = 1
 
         @JvmStatic
         fun createRequestParam(isUpdate: Boolean): RequestParams = RequestParams.create().apply {
@@ -88,7 +90,7 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 bannerCashbackLabelUrl = bannerCashbackLabelUrl,
                 bannerCashbackUntilLabelUrl = bannerCashbackUntilLabelUrl,
                 voucherCodePrefix = voucherCodePrefix,
-                isCreateVoucherEligible = isEligible
+                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE
             )
         }
     }
