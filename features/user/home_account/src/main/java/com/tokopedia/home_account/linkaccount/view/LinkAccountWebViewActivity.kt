@@ -139,9 +139,15 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
 
     override fun getNewFragment(): Fragment {
         var url = intent.getStringExtra(KEY_URL) ?: ""
+        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
+
         if(url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
-            url = getLinkAccountUrl(redirection).toString()
+            val uri = getLinkAccountUrl(redirection)
+            if(source.isNotEmpty()) {
+                uri?.appendQuery(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            }
+            url = uri.toString()
         }
         return LinkAccountWebviewFragment.newInstance(url)
     }
@@ -150,5 +156,15 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         (fragment as LinkAccountWebviewFragment).trackClickBackBtn()
         (fragment as LinkAccountWebviewFragment).checkPageFinished()
         super.onBackPressed()
+    }
+
+    fun Uri.appendQuery(key: String, value: String): Uri {
+        return try {
+            buildUpon()
+                .appendQueryParameter(key, value)
+                .build()
+        } catch (e: Exception) {
+            this
+        }
     }
 }

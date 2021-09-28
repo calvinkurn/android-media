@@ -19,6 +19,7 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -95,6 +96,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var btnBack: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
+    private var mainContainer: RelativeLayout? = null
 
     private var fingerPrintDialogPayment: FingerPrintDialogPayment? = null
     private var fingerPrintDialogRegister: FingerprintDialogRegister? = null
@@ -161,6 +163,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private fun initView() {
         setContentView(R.layout.activity_top_pay_payment_module)
+        mainContainer = findViewById(R.id.activity_topay_container)
         tvTitle = findViewById(R.id.tv_title)
         btnBack = findViewById(R.id.btn_back)
         scroogeWebView = findViewById(R.id.scrooge_webview)
@@ -426,9 +429,33 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
         } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
-            reloadPayment()
+            hideProgressDialog()
+            if(resultCode == Activity.RESULT_OK) {
+                val status = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+                if(status.isNotEmpty()) {
+                    handleStatusMatching(status)
+                }
+                reloadPayment()
+            } else {
+                showToaster("Gagal menghubungkan akun", Toaster.TYPE_ERROR)
+                hideFullLoading()
+            }
         }
     }
+
+    private fun handleStatusMatching(status: String) {
+        when(status) {
+            "linked" -> showToaster("Akun anda telah terhubung", Toaster.TYPE_NORMAL)
+            "not_linked", "in_progress" -> showToaster("Gagal menghubungkan akun", Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun showToaster(message: String, type: Int) {
+        mainContainer?.run {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, type).show()
+        }
+    }
+
 
     private fun reloadPayment() {
         // scroogeWebView?.reload() doesn't work
@@ -443,13 +470,27 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
 
+    private fun showFullLoading() {
+        scroogeWebView?.visibility = View.INVISIBLE
+        showProgressDialog()
+    }
+
+    private fun hideFullLoading() {
+        scroogeWebView?.visibility = View.VISIBLE
+        hideProgressDialog()
+    }
 
     private inner class TopPayWebViewClient : WebViewClient() {
 
+        private val BACK_BUTTON_APPLINK = "tokopedia://back"
+        private val SOURCE_PAYMENT = "app_payment"
+
         fun gotoLinkAccount() {
+            showFullLoading()
             reloadUrl = scroogeWebView?.url ?: ""
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, "tokopedia://back")
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, BACK_BUTTON_APPLINK)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
 
@@ -473,6 +514,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 if(url.isNotEmpty() && url == ApplinkConst.LINK_ACCOUNT ||
+                    // for testing purpose only, ignore it
                     url.startsWith("https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth")) {
                         gotoLinkAccount()
                         return true
