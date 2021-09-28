@@ -237,11 +237,11 @@ class ProductBundleViewModel @Inject constructor(
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
                 productQuantity = bundleItem.quantity,
-                originalPrice = bundleItem.originalPrice,
-                bundlePrice = bundleItem.bundlePrice,
+                originalPrice = bundleItem.getPreviewOriginalPrice(),
+                bundlePrice = bundleItem.getPreviewBundlePrice(),
                 discountAmount = calculateDiscountPercentage(
-                    originalPrice = bundleItem.originalPrice,
-                    bundlePrice = bundleItem.bundlePrice
+                    originalPrice = bundleItem.getPreviewOriginalPrice(),
+                    bundlePrice = bundleItem.getPreviewBundlePrice()
                 ),
                 productVariant = if (productVariant.hasVariant) productVariant else null
             )

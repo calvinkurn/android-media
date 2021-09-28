@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.common.data.model.response
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.parcel.Parcelize
 
 data class GetBundleInfoResponse(
@@ -75,7 +76,13 @@ data class BundleItem(
         @Expose val originalPrice: Double = 0.0,
         @SerializedName("productStatus")
         @Expose val productStatus: String = ""
-): Parcelable
+): Parcelable {
+        fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
+                children.firstOrNull()?.originalPrice.orZero()
+
+        fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
+                children.firstOrNull()?.bundlePrice.orZero()
+}
 
 @Parcelize
 data class Selection(
