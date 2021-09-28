@@ -1,9 +1,11 @@
 package com.tokopedia.tokopedianow.category.presentation.view
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -26,12 +28,15 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
@@ -312,5 +317,28 @@ class TokoNowCategoryFragment:
 
     override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
         CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
+
+        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
+    }
+
+    private fun modifySeeMoreRecomApplink(originalApplink: String): String {
+        val uri = Uri.parse(originalApplink)
+        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
+        val recomRef = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
+
+        return if (recomRef == TOKONOW_CLP) {
+            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
+
+            if (recomCategoryId.isEmpty()) {
+                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = getViewModel().categoryL1
+            }
+
+            "${uri.scheme}://" +
+                "${uri.host}/" +
+                "${uri.path}?" +
+                UrlParamUtils.generateUrlParamString(queryParamsMap)
+        } else {
+            originalApplink
+        }
     }
 }

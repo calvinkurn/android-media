@@ -411,5 +411,7 @@ class TokoNowSearchFragment:
 
     override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
         SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
+
+        RouteManager.route(context, applink)
     }
 }

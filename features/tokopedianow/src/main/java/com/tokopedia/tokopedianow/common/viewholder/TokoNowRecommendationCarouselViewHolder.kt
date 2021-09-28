@@ -127,9 +127,6 @@ class TokoNowRecommendationCarouselViewHolder(
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
         recommendationCarouselListener?.onSeeMoreClick(data, applink)
-
-        val context = itemView.context ?: return
-        RouteManager.route(context, applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
