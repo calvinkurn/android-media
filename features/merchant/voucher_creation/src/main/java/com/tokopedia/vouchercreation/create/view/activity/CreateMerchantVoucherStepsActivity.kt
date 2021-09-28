@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -81,6 +83,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
         const val ERROR_INITIATE = "error_initiate"
         const val REQUEST_CODE = 7137
+        const val ADMIN_RESTRICTION_REQUEST = 403
 
         const val FROM_VOUCHER_LIST = "from_voucher_list"
     }
@@ -414,6 +417,10 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                                             bannerCashbackUntilLabelUrl
                                     )
                         }
+                        if (!isCreateVoucherEligible) {
+                            val adminRestrictionIntent = RouteManager.getIntent(this@CreateMerchantVoucherStepsActivity, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                            startActivityForResult(adminRestrictionIntent, ADMIN_RESTRICTION_REQUEST)
+                        }
                         this@CreateMerchantVoucherStepsActivity.token = token
                         promoCodePrefix = voucherCodePrefix
                     }
@@ -630,5 +637,12 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private fun onReturnToStep(@VoucherCreationStep step: Int) {
         viewModel.setStepPosition(step)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ADMIN_RESTRICTION_REQUEST) {
+            finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

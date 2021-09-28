@@ -288,6 +288,7 @@ class VoucherListFragment :
             )
         }
         mViewModel.getBroadCastMetaData()
+        mViewModel.getCreateVoucherEligibility()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -322,12 +323,15 @@ class VoucherListFragment :
                     isActive = isActiveVoucher,
                     userId = userSession.userId
                 )
-                val intent =
-                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
-                        .apply {
-                            putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
-                        }
-                startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
+                if(mViewModel.isEligibleToCreateVoucher) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                            .apply {
+                                putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
+                            }
+                    startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
+                } else {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -1265,6 +1269,15 @@ class VoucherListFragment :
                 showSuccessCreateBottomSheet(successVoucherId)
             } else if (isNeedToShowSuccessUpdateDialog) {
                 showSuccessUpdateToaster()
+            }
+        })
+        mViewModel.createVoucherEligibility.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> { mViewModel.isEligibleToCreateVoucher = result.data.isCreateVoucherEligible }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    view?.showErrorToaster(errorMessage)
+                }
             }
         })
     }

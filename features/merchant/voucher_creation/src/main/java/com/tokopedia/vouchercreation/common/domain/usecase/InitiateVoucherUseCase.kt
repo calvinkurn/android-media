@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.domain.usecase
+package com.tokopedia.vouchercreation.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -34,11 +34,13 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "          img_banner_label_cashback\n" +
                 "          img_banner_label_cashback_hingga\n" +
                 "          prefix_voucher_code\n" +
+                "          is_eligible\n" +
                 "        }\n" +
                 "    }\n" +
                 "}"
 
         private const val ACTION_KEY = "action"
+        private const val ELIGIBLE_VALUE = 1
 
         @JvmStatic
         fun createRequestParam(isUpdate: Boolean): RequestParams = RequestParams.create().apply {
@@ -52,8 +54,10 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
         }
     }
 
+    var query: String = QUERY
+
     override suspend fun executeOnBackground(): InitiateVoucherUiModel {
-        val request = GraphqlRequest(QUERY, InitiateVoucherResponse::class.java, params.parameters)
+        val request = GraphqlRequest(query, InitiateVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val error = response.getError(InitiateVoucherResponse::class.java)
@@ -75,7 +79,19 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
     private fun InitiateVoucherResponse.mapToUiModel(): InitiateVoucherUiModel {
         val data = initiateVoucherPage.initiateVoucherPageData
         with(data) {
-            return InitiateVoucherUiModel(token, accessToken, uploadAppUrl, bannerBaseUrl, bannerIgPostUrl, bannerIgStoryUrl, bannerFreeShippingLabelUrl, bannerCashbackLabelUrl, bannerCashbackUntilLabelUrl, voucherCodePrefix)
+            return InitiateVoucherUiModel(
+                token = token,
+                accessToken = accessToken,
+                uploadAppUrl = uploadAppUrl,
+                bannerBaseUrl = bannerBaseUrl,
+                bannerIgPostUrl = bannerIgPostUrl,
+                bannerIgStoryUrl = bannerIgStoryUrl,
+                bannerFreeShippingLabelUrl = bannerFreeShippingLabelUrl,
+                bannerCashbackLabelUrl = bannerCashbackLabelUrl,
+                bannerCashbackUntilLabelUrl = bannerCashbackUntilLabelUrl,
+                voucherCodePrefix = voucherCodePrefix,
+                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE
+            )
         }
     }
 }
