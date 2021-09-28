@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CLP_PRODUCT_TOKONOW
@@ -307,5 +308,9 @@ class TokoNowCategoryFragment:
             cartId,
             userSession.userId,
         )
+    }
+
+    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
     }
 }

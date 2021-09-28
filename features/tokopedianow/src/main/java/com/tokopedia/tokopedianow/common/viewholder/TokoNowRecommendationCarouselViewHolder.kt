@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -125,7 +126,10 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
+        recommendationCarouselListener?.onSeeMoreClick(data, applink)
 
+        val context = itemView.context ?: return
+        RouteManager.route(context, applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -188,6 +192,11 @@ class TokoNowRecommendationCarouselViewHolder(
             model: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+        )
+
+        fun onSeeMoreClick(
+            data: RecommendationCarouselData,
+            applink: String,
         )
     }
 }
