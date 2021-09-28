@@ -656,9 +656,10 @@ open class PowerMerchantSubscriptionFragment :
 
     private fun showUpgradePmProStickyView() {
         val isAutoExtendEnabled = getAutoExtendEnabled()
+        val isNewSeller30FirstMonday = pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
         val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
                 && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
-                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isAutoExtendEnabled
+                && isNewSeller30FirstMonday && isAutoExtendEnabled
         view?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
