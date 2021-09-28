@@ -519,7 +519,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         it.reviewTime,
                         it.reviewerName,
                         it.review,
-                        it.variantName
+                        it.variantName,
+                        it.userStats,
+                        it.userId,
+                        it.isAnonymous,
+                        isProductReview
                     )
             }
         } else {
@@ -533,7 +537,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         variantName,
                         userReviewStats,
                         user.userID,
-                        isAnonymous
+                        isAnonymous,
+                        isProductReview
                     )
             }
         }

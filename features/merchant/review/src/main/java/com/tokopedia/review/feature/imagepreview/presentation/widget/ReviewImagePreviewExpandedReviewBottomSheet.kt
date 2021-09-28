@@ -22,7 +22,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         fun createInstance(rating: Int, timeStamp: String, reviewerName: String,
                            reviewMessage: String, variantName: String = "",
                            userStats: List<UserReviewStats> = listOf(), userId: String = "",
-                           isAnonymous: Boolean = false,
+                           isAnonymous: Boolean = false, isProductReview: Boolean = false
         ): ReviewImagePreviewExpandedReviewBottomSheet {
             return ReviewImagePreviewExpandedReviewBottomSheet().apply {
                 this.rating = rating
@@ -33,6 +33,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
                 this.userStats = userStats
                 this.userId = userId
                 this.isAnonymous = isAnonymous
+                this.isProductReview = isProductReview
             }
         }
     }
@@ -45,6 +46,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
     private var userStats = listOf<UserReviewStats>()
     private var userId = ""
     private var isAnonymous = false
+    private var isProductReview = false
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
@@ -70,9 +72,9 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
 
     private fun setBasicInfo() {
         basicInfoWidget?.apply {
-            setRating(rating)
-            setCreateTime(timeStamp)
-            setReviewerName(reviewerName, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)
+            setRating(rating,  this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview)
+            setCreateTime(timeStamp, this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview)
+            setReviewerName(reviewerName, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous, isProductReview)
             setVariantName(variantName)
             setStats(userStats, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)
             setCountColorToGreen()
