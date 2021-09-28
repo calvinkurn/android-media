@@ -269,11 +269,8 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot || viewModel.source.key == "") {
-                        val intent = RouteManager.getIntent(
-                            this,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "${TokopediaUrl.getInstance().WEB}$PLAY_CHANNEL_LIST_PATH?$PLAY_CHANNEL_LIST_QUERY")
-                        )
+                    if (isTaskRoot) {
+                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
                     } else {
@@ -282,9 +279,7 @@ class PlayActivity : BaseActivity(),
                     }
                 }
             }
-        } else {
-            super.onBackPressed()
-        }
+        } else super.onBackPressed()
     }
 
     override fun requestEnableNavigation() {
@@ -340,8 +335,6 @@ class PlayActivity : BaseActivity(),
     }
 
     companion object {
-        private const val PLAY_CHANNEL_LIST_PATH = "play/channels"
-        private const val PLAY_CHANNEL_LIST_QUERY = "pull_to_refresh=true&titlebar=false"
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
     }
 }
