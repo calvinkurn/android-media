@@ -69,6 +69,7 @@ data class CartItemHolderData(
         var originalNotes: String = "",
         var warehouseId: String = "",
         var isFulfillment: Boolean = false,
+        var bundleType: String = "",
 
         // Will be set after calculation
         var wholesalePrice: Long = 0,

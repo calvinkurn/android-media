@@ -752,7 +752,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
             text = action.message
             setOnClickListener {
                 if (data.selectedUnavailableActionLink.isNotBlank()) {
-                    actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
+                    actionListener?.onSimilarProductUrlClicked(data)
                 }
             }
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))

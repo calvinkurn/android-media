@@ -86,7 +86,7 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onEditBundleClicked(cartItemHolderData: CartItemHolderData)
         fun onTobaccoLiteUrlClicked(url: String, data: CartItemHolderData, action: Action)
         fun onShowTickerTobacco()
-        fun onSimilarProductUrlClicked(similarProductUrl: String)
+        fun onSimilarProductUrlClicked(data: CartItemHolderData)
         fun onShowActionSeeOtherProduct(productId: String, errorType: String)
         fun onFollowShopClicked(shopId: String, errorType: String)
     }

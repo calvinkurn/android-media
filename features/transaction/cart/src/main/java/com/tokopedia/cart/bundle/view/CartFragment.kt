@@ -1574,9 +1574,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickSeeOtherProductOnUnavailableSection(userSession.userId, productId, errorType)
     }
 
-    override fun onSimilarProductUrlClicked(similarProductUrl: String) {
-        routeToApplink(similarProductUrl)
-        cartPageAnalytics.eventClickMoreLikeThis()
+    override fun onSimilarProductUrlClicked(data: CartItemHolderData) {
+        if (data.isBundlingItem) {
+            cartPageAnalytics.eventClickMoreLikeThisOnBundleProduct(data.bundleId, data.bundleType)
+        } else {
+            cartPageAnalytics.eventClickMoreLikeThis()
+        }
+        routeToApplink(data.selectedUnavailableActionLink)
     }
 
     override fun onFollowShopClicked(shopId: String, errorType: String) {
@@ -3383,6 +3387,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
         activity?.let {
+            cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(cartItemHolderData.bundleId, cartItemHolderData.bundleType)
             val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
         }

@@ -1088,6 +1088,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                         else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
+            setDimension117(cartItemHolderData.bundleType)
+            setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
         }
         return enhancedECommerceProductCartMapData
