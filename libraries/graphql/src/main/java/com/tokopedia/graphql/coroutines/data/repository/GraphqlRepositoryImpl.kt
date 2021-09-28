@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -102,8 +103,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
             } catch (jse: JsonSyntaxException) {
                 ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
                         mapOf("type" to "json",
-                                "err" to Log.getStackTraceString(jse),
-                                "req" to requests.toString()
+                                "err" to Log.getStackTraceString(jse).take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                                "req" to requests.toString().take(Const.GQL_ERROR_MAX_LENGTH).trim()
                         ))
                 jse.printStackTrace()
             } catch (e: Exception) {
@@ -162,8 +163,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
         } catch (jse: JsonSyntaxException) {
             ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
                     mapOf("type" to "json",
-                            "err" to Log.getStackTraceString(jse),
-                            "req" to requests.toString()
+                            "err" to Log.getStackTraceString(jse).take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                            "req" to requests.toString().take(Const.GQL_ERROR_MAX_LENGTH).trim()
                     ))
             jse.printStackTrace()
         } catch (e: Exception) {
