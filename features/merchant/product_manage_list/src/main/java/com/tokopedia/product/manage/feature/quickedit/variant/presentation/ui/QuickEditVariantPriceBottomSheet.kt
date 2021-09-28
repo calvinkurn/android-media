@@ -18,16 +18,17 @@ class QuickEditVariantPriceBottomSheet(
 ): QuickEditVariantBottomSheet(), ProductVariantListener {
 
     companion object {
-        private const val EXTRA_PRODUCT_ID = "extra_product_id"
         val TAG: String = QuickEditVariantPriceBottomSheet::class.java.simpleName
 
         fun createInstance(
             productId: String,
+            isBundling: Boolean = false,
             onSaveVariantsPrice: (EditVariantResult) -> Unit
         ): QuickEditVariantPriceBottomSheet {
             return QuickEditVariantPriceBottomSheet(onSaveVariantsPrice).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
+                bundle.putBoolean(EXTRA_IS_BUNDLING, isBundling)
                 arguments = bundle
             }
         }

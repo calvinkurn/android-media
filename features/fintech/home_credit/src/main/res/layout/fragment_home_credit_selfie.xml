@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Static_Black"
     tools:context=".view.activity.HomeCreditRegisterActivity">
 
     <ImageView
@@ -26,32 +27,36 @@
         android:layout_above="@+id/camera_controls"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_20"
-        android:background="@color/clr_99000000">
+        android:paddingTop="@dimen/unify_space_24"
+        android:visibility="visible">
 
-        <ImageView
+
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_cancel"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            app:srcCompat="@drawable/ic_close_white" />
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE" />
 
-        <TextView
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/button_cancel"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
-            android:padding="@dimen/dp_4"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:padding="@dimen/unify_space_4"
             android:text="@string/hc_selfie_title"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_16" />
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_1"/>
 
         <FrameLayout
             android:layout_below="@+id/desc_1"
@@ -61,12 +66,21 @@
 
             <com.otaliastudios.cameraview.CameraView
                 android:id="@+id/camera"
-                android:keepScreenOn="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:keepScreenOn="true"
+                app:cameraGestureLongTap="none"
+                app:cameraGesturePinch="zoom"
+                app:cameraGestureScrollHorizontal="none"
+                app:cameraGestureScrollVertical="none"
+                app:cameraGestureTap="autoFocus"
+                app:cameraGrid="off"
+                app:cameraFlash="off"
+                app:cameraPlaySounds="true"
                 app:cameraAudio="off"
-                app:cameraPlaySounds="true"/>
+                app:cameraHdr="off"
+                app:cameraMode="picture" />
 
             <ImageView
                 android:id="@+id/selfieid_cutout"
@@ -77,14 +91,13 @@
 
         </FrameLayout>
 
-
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/camera_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/clr_e6000000"
+        android:background="@color/Unify_Static_Black_96"
         android:layout_alignParentBottom="true">
 
         <include

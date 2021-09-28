@@ -13,7 +13,7 @@ open class MutationMoveChatToTrashUseCase @Inject constructor(
 
     suspend fun execute(messageId: String): ChatDeleteStatus {
         val request = GraphqlRequest(query, ChatDeleteStatus::class.java, createParams(messageId))
-        val response = repository.getReseponse(listOf(request))
+        val response = repository.response(listOf(request))
         val error = response.getError(ChatDeleteStatus::class.java)
 
         if (error == null || error.isEmpty()) {

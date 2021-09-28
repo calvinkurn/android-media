@@ -62,9 +62,6 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         localCacheHandler.putString(cacheKeyFormatted, gson.toJson(viewModel))
         localCacheHandler.applyEditor()
         isAddingProduct = true
-
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.AFFILIATE_EXPLORE)
-        startActivity(intent)
     }
 
     override fun initVar(savedInstanceState: Bundle?) {

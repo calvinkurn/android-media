@@ -16,15 +16,13 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -54,7 +52,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResponse = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -387,7 +385,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val data = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -554,7 +552,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -595,7 +593,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -635,7 +633,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -675,7 +673,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(tickers = emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createCategoryGridDataModel(
                     "11111",
@@ -746,7 +744,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, stock = 5, maxOrder = 4, minOrder = 3))
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -767,9 +765,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
-                        nonVariant = NonVariant(quantity, 3, 5)
+                        nonVariant = NonVariant(quantity, 3, 4)
                     )
                 )
             ),
@@ -777,7 +775,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val homeLayoutItems = listOf(
-            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
             HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
             HomeLayoutItemUiModel(
                 recentPurchaseUiModel,
@@ -820,7 +818,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, stock = 5, maxOrder = 4, minOrder = 3))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -845,10 +843,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
-                        nonVariant = NonVariant(quantity, 3, 5)
+                        nonVariant = NonVariant(quantity, 3, 4)
                     )
                 )
             ),
@@ -856,7 +854,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val homeLayoutItems = listOf(
-            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
             HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
             HomeLayoutItemUiModel(
                 recentPurchaseUiModel,
@@ -899,7 +897,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, maxOrder = 5, minOrder = 3))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -944,10 +942,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
-            stock = "5",
-            minOrder = "3"
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
@@ -974,9 +973,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
-                        nonVariant = NonVariant(5, 3, 5)
+                        nonVariant = NonVariant(5, 3, 4)
                     )
                 )
             ),
@@ -984,7 +983,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val homeLayoutItems = listOf(
-            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
             HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
             HomeLayoutItemUiModel(recentPurchaseUiModel, HomeLayoutItemState.LOADED)
         )
@@ -1103,10 +1102,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
-            stock = "5",
-            minOrder = "3"
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
@@ -1125,10 +1125,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expected = listOf(
             createHomeProductCardUiModel(
                 productId = productId,
-                quantity = 5,
+                quantity = 4,
                 product = ProductCardModel(
                     hasAddToCartButton = true,
-                    nonVariant = NonVariant(minQuantity = 3, maxQuantity = 5)
+                    nonVariant = NonVariant(minQuantity = 3, maxQuantity = 4)
                 )
             )
         )
@@ -1203,7 +1203,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val homeLayoutItems = listOf(
             HomeLayoutItemUiModel(
-                HomeChooseAddressWidgetUiModel(id = "0"),
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
                 HomeLayoutItemState.LOADED
             ),
             HomeLayoutItemUiModel(
@@ -1246,10 +1246,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
-            stock = "5",
-            minOrder = "3"
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
@@ -1271,10 +1272,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productList = listOf(
                 createHomeProductCardUiModel(
                     productId = productId,
-                    quantity = 5,
+                    quantity = 4,
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
-                        nonVariant = NonVariant(0, 3, 5)
+                        nonVariant = NonVariant(0, 3, 4)
                     )
 
                 )
@@ -1283,7 +1284,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val homeLayoutItems = listOf(
-            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
             HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
             HomeLayoutItemUiModel(recentPurchaseUiModel, HomeLayoutItemState.LOADED)
         )
@@ -1416,7 +1417,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart(productId, 4, shopId, type)
 
         val recomItemList = listOf(
-            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 1),
+            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 4),
             RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
@@ -1660,15 +1661,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
             products = listOf(
-                Product(
+                RepurchaseProduct(
                     id = "1",
-                    stock = "5",
-                    minOrder = "3"
+                    stock = 5,
+                    maxOrder = 4,
+                    minOrder = 3
                 ),
-                Product(
+                RepurchaseProduct(
                     id = "2",
-                    stock = "3",
-                    minOrder = "1"
+                    stock = 3,
+                    maxOrder = 4,
+                    minOrder = 1
                 )
             )
         )
@@ -1688,10 +1691,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val productCardUiModel = createHomeProductCardUiModel(
             productId = "2",
-            quantity = 3,
+            quantity = 4,
             product =  ProductCardModel(
                 hasAddToCartButton = true,
-                nonVariant = NonVariant(0, 1, 3)
+                nonVariant = NonVariant(0, 1, 4)
             )
 
         )
@@ -1727,15 +1730,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
             products = listOf(
-                Product(
+                RepurchaseProduct(
                     id = "1",
-                    stock = "5",
-                    minOrder = "3"
+                    maxOrder = 5,
+                    minOrder = 3
                 ),
-                Product(
+                RepurchaseProduct(
                     id = "2",
-                    stock = "3",
-                    minOrder = "1"
+                    maxOrder = 3,
+                    minOrder = 1
                 )
             )
         )
@@ -1836,7 +1839,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(3, "1", 0, 3, LocalCacheModel())
 
         val layoutList = listOf(
-            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(TokoNowChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
             HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
             HomeLayoutItemUiModel(
                 BannerDataModel(

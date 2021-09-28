@@ -23,10 +23,6 @@ object RollenceKey {
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
-    const val KEY_NEW_NOTFICENTER = "NotifCenter_New"
-    const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
-    const val VARIANT_NEW_NOTFICENTER = "NotifCenter_New"
-
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
@@ -81,4 +77,12 @@ object RollenceKey {
 
     //TAPCASH
     const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
+
+    //Home account
+    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
+
+    //Add Bills SBM
+    const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
+    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
+    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 }

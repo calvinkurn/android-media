@@ -1,0 +1,33 @@
+[
+  {
+    "data":{
+      "status":"OK",
+      "rechargeInquiry":{
+        "status":"DONE",
+        "retrySec":null,
+        "attributes":{
+          "UserID":"17211378",
+          "ProductID":"559",
+          "ClientNumber":"085327499272",
+          "Title":"Detail Pembayaran",
+          "Price":"Rp70.000",
+          "PricePlain":70000,
+          "mainInfo":[
+            {
+              "label":"Nomor Telepon",
+              "value":"085327499272"
+            },
+            {
+              "label":"Nama",
+              "value":"Tokope*** Use*"
+            },
+            {
+              "label":"Total Bayar",
+              "value":"Rp70.000"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

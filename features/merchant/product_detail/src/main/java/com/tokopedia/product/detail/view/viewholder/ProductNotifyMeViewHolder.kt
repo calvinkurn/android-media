@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -11,7 +12,9 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 
-class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
+class ProductNotifyMeViewHolder(
+    private val view: View, private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
@@ -26,6 +29,9 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
             campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         } else {
             hideContainer()
         }
@@ -53,4 +59,8 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             }
         }
     }
+
+    private fun getComponentTrackData(
+        element: ProductNotifyMeDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }
