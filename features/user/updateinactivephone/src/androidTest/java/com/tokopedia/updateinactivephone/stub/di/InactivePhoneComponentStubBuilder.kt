@@ -7,11 +7,11 @@ import com.tokopedia.updateinactivephone.stub.di.module.FakeInactivePhoneUseCase
 
 object InactivePhoneComponentStubBuilder {
 
-    fun getComponent(applicationContext: Context, context: Context): InactivePhoneComponentStub {
+    fun getComponent(applicationContext: Context): InactivePhoneComponentStub {
         return DaggerInactivePhoneComponentStub
             .builder()
             .fakeBaseAppComponent(FakeBaseAppComponentBuilder.getComponent((applicationContext)))
-            .inactivePhoneModule(InactivePhoneModule(context))
+            .inactivePhoneModule(InactivePhoneModule())
             .fakeInactivePhoneUseCaseModule(FakeInactivePhoneUseCaseModule())
             .build()
     }

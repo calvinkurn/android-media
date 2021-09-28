@@ -1,15 +1,16 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.StatusInactivePhoneNumberDataModel
+import javax.inject.Inject
 
-open class GetStatusInactivePhoneNumberUseCase constructor(
-    private val repository: GraphqlRepository,
+open class GetStatusInactivePhoneNumberUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, StatusInactivePhoneNumberDataModel>(dispatcher.io){
+) : CoroutineUseCase<Map<String, Any>, StatusInactivePhoneNumberDataModel>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
         return query

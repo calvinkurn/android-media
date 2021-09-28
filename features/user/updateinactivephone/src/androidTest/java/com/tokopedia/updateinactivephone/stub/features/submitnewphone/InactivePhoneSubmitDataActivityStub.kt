@@ -14,7 +14,11 @@ import com.tokopedia.updateinactivephone.stub.features.successpage.InactivePhone
 class InactivePhoneSubmitDataActivityStub : InactivePhoneSubmitDataActivity() {
 
     override fun getTagFragment(): String = TAG
-    override fun inflateFragment() {}
+
+    override fun inflateFragment() {
+        super.inflateFragment()
+        supportFragmentManager.executePendingTransactions()
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -28,12 +32,6 @@ class InactivePhoneSubmitDataActivityStub : InactivePhoneSubmitDataActivity() {
         } else {
             InactivePhoneDataUploadFragmentStub.instance(bundle)
         }
-    }
-
-    open fun setUpFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(parentViewResourceID, newFragment, InactivePhoneSuccessPageActivityStub.TAG)
-            .commit()
     }
 
     companion object {

@@ -13,6 +13,14 @@ class InactivePhoneSubmitNewPhoneFragmentStub : InactivePhoneSubmitNewPhoneFragm
 
     }
 
+    override fun showLoading() {
+        // not triggering loader for instrumented test
+    }
+
+    override fun hideLoading() {
+        // not triggering loader for instrumented test
+    }
+
     companion object {
         fun instance(bundle: Bundle): InactivePhoneSubmitNewPhoneFragmentStub {
             return InactivePhoneSubmitNewPhoneFragmentStub().apply {

@@ -1,8 +1,9 @@
 package com.tokopedia.updateinactivephone.features
 
 import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
-class InactivePhoneTracker {
+class InactivePhoneTracker @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 

@@ -1,16 +1,24 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneSubmitDataModel
 import javax.inject.Inject
 
-open class SubmitDataUseCase constructor(
-    private val repository: GraphqlRepository,
+open class SubmitDataUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, InactivePhoneSubmitDataModel>(dispatcher.io) {
+
+    override suspend fun execute(params: Map<String, Any>): InactivePhoneSubmitDataModel {
+        return request(repository, params)
+    }
+
+    override fun graphqlQuery(): String {
+        return query
+    }
 
     companion object {
         const val PARAM_EMAIL = "email"
@@ -28,13 +36,5 @@ open class SubmitDataUseCase constructor(
               }
             }
         """.trimIndent()
-    }
-
-    override suspend fun execute(params: Map<String, Any>): InactivePhoneSubmitDataModel {
-        return request(repository, params)
-    }
-
-    override fun graphqlQuery(): String {
-        return query
     }
 }

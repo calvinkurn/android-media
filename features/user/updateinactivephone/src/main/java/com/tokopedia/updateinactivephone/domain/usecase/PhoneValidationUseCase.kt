@@ -1,12 +1,14 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
+import javax.inject.Inject
 
-open class PhoneValidationUseCase constructor(
-    private val repository: GraphqlRepository,
+open class PhoneValidationUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, PhoneValidationDataModel>(dispatcher.io) {
 

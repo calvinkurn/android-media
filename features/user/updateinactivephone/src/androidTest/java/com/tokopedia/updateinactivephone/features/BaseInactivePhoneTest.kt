@@ -1,6 +1,8 @@
 package com.tokopedia.updateinactivephone.features
 
 import android.content.Context
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -30,14 +32,16 @@ abstract class BaseInactivePhoneTest {
     @Before
     open fun before() {
         baseAppComponent = FakeBaseAppComponentBuilder.getComponent(applicationContext)
-        inactivePhoneComponent = InactivePhoneComponentStubBuilder.getComponent(applicationContext, context)
+        inactivePhoneComponent = InactivePhoneComponentStubBuilder.getComponent(applicationContext)
         inactivePhoneComponent?.injectMember(inactivePhoneDependency)
 
         inactivePhoneDependency.setDefaultResponse()
+        IdlingRegistry.getInstance().register(CountingIdlingResource(RESOURCE))
     }
 
     @After
     open fun tearDown() {
+        IdlingRegistry.getInstance().unregister(CountingIdlingResource(RESOURCE))
         baseAppComponent = null
         inactivePhoneComponent = null
     }
@@ -75,6 +79,7 @@ abstract class BaseInactivePhoneTest {
     }
 
     companion object {
+        private const val RESOURCE = "global"
         var baseAppComponent: FakeBaseAppComponent? = null
         var inactivePhoneComponent: InactivePhoneComponentStub? = null
     }

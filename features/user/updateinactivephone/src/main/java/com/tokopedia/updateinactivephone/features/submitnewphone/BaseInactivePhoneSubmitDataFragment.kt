@@ -15,6 +15,7 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
@@ -47,10 +48,9 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerInactivePhoneComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .inactivePhoneModule(InactivePhoneModule(requireContext()))
-            .build().inject(this)
+        InactivePhoneComponentBuilder
+            .getComponent(requireContext())
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,11 +115,11 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
         viewBinding?.layoutThumbnailDataUpload?.hide()
     }
 
-    fun showLoading() {
+    open fun showLoading() {
         viewBinding?.loader?.show()
     }
 
-    fun hideLoading() {
+    open fun hideLoading() {
         viewBinding?.loader?.hide()
     }
 }

@@ -101,12 +101,12 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         })
     }
 
-    fun submitNewPhoneNumber(msisdn: String, email: String, index: String) {
+    fun submitNewPhoneNumber(userIdEnc: String, validateToken: String, msisdn: String) {
         launchCatchError(coroutineContext, {
             val response = submitExpeditedInactivePhoneUseCase(mapOf(
-                SubmitExpeditedInactivePhoneUseCase.PARAM_MSISDN to msisdn,
-                SubmitExpeditedInactivePhoneUseCase.PARAM_EMAIL to email,
-                SubmitExpeditedInactivePhoneUseCase.PARAM_USER_INDEX to index
+                SubmitExpeditedInactivePhoneUseCase.PARAM_USER_ID_ENC to userIdEnc,
+                SubmitExpeditedInactivePhoneUseCase.PARAM_VALIDATE_TOKEN to validateToken,
+                SubmitExpeditedInactivePhoneUseCase.PARAM_MSISDN to msisdn
             ))
 
             withContext(dispatcher.main) {

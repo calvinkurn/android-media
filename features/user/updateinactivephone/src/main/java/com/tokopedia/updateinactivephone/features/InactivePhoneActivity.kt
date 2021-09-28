@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -21,9 +20,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.utils.removeRegionCodeAndCharacter
-import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
-import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.domain.data.StatusInactivePhoneNumberDataModel
@@ -49,10 +47,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     override fun getNewFragment(): Fragment? = null
 
     override fun getComponent(): InactivePhoneComponent {
-        return DaggerInactivePhoneComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .inactivePhoneModule(InactivePhoneModule(this))
-            .build()
+        return InactivePhoneComponentBuilder.getComponent(application)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -75,7 +70,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
             )
         }
 
-        if(isVersionValid()) {
+        if (isVersionValid()) {
             viewModel.userValidation(
                 inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
                 inactivePhoneUserDataModel?.email.orEmpty()
@@ -85,7 +80,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
     private fun initObserver() {
         viewModel.phoneValidation.observe(this, {
-            when(it) {
+            when (it) {
                 is Success -> {
                     if (it.data.validation.status == InactivePhoneConstant.STATUS_SUCCESS) {
                         inactivePhoneUserDataModel?.userIndex = 1
@@ -104,8 +99,10 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         })
 
         viewModel.getStatusPhoneNumber.observe(this, {
-            when(it) {
-                is Success -> { onSuccessGetStatus(it.data) }
+            when (it) {
+                is Success -> {
+                    onSuccessGetStatus(it.data)
+                }
                 is Fail -> {
                     onError(it.throwable)
                 }
@@ -114,7 +111,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_CHOOSE_ACCOUNT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.extras?.let {

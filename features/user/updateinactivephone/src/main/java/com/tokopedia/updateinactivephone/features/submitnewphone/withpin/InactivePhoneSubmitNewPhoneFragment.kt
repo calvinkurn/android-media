@@ -24,10 +24,10 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
         viewModel.phoneValidation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    gotoPhoneVerification()
+                    onSuccessPhoneValidation()
                 }
                 is Fail -> {
-
+                    onFailedPhoneValidation(it.throwable)
                 }
             }
         })
@@ -84,6 +84,22 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
         }
     }
 
+    private fun onSuccessPhoneValidation() {
+        inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+
+        viewModel.submitNewPhoneNumber(
+            inactivePhoneUserDataModel?.userIdEnc.orEmpty(),
+            inactivePhoneUserDataModel?.validateToken.orEmpty(),
+            inactivePhoneUserDataModel?.newPhoneNumber.toString()
+        )
+    }
+
+    private fun onFailedPhoneValidation(throwable: Throwable) {
+        view?.let {
+            Toaster.build(it, throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun onSuccessSubmitNewPhoneNumber() {
         trackerWithPin.onSuccessSubmitNewPhone()
         gotoPhoneVerification()
@@ -96,13 +112,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
     }
 
     private fun onSuccessVerificationNewPhone() {
-        inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
 
-        viewModel.submitNewPhoneNumber(
-            inactivePhoneUserDataModel?.newPhoneNumber.orEmpty(),
-            inactivePhoneUserDataModel?.email.orEmpty(),
-            inactivePhoneUserDataModel?.userIndex.toString()
-        )
     }
 
     private fun onFailedVerificationNewPhone() {

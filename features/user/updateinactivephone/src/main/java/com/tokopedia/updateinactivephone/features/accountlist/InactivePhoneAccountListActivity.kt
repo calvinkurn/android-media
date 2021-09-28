@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,9 +16,8 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_PHONE
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_USER_DETAIL_DATA
 import com.tokopedia.updateinactivephone.databinding.ActivityInactivePhoneAccountListBinding
-import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
-import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,10 +47,7 @@ open class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent
     }
 
     override fun getComponent(): InactivePhoneComponent {
-        return DaggerInactivePhoneComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .inactivePhoneModule(InactivePhoneModule(this))
-            .build()
+        return InactivePhoneComponentBuilder.getComponent(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

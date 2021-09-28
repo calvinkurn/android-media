@@ -1,42 +1,39 @@
-package com.tokopedia.updateinactivephone.features.submitnewphone.withpin
+package com.tokopedia.updateinactivephone.features.submitnewphone.regular
 
-import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseSubmitDataTest
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.checkSubmitDataPageDisplayed
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.setPhoneNumberText
 import org.junit.Test
 
-class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
+class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
+
+    var phone = "084444123456"
 
     override fun before() {
         super.before()
         inactivePhoneDependency.apply {
-            submitExpeditedInactivePhoneUseCaseStub.response = submitExpeditedInactivePhoneDataModel
+            submitDataUseCaseStub.response = inactivePhoneSubmitDataModel
         }
     }
 
     @Test
-    fun show_submit_data_with_pin_page() {
-        runTest(source = InactivePhoneConstant.EXPEDITED) {
+    fun show_submit_data_regular_page() {
+        runTest {
             checkSubmitDataPageDisplayed()
         }
     }
 
     @Test
     fun input_valid_phone_number() {
-        val phone = "084444123123"
-
-        runTest(source = InactivePhoneConstant.EXPEDITED) {
+        runTest {
             setPhoneNumberText(phone)
         }
     }
 
     @Test
     fun submit_new_phone() {
-        val phone = "084444123123"
-
-        runTest(source = InactivePhoneConstant.EXPEDITED) {
+        runTest {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
         }
