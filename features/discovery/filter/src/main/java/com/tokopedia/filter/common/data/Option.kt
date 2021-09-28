@@ -143,6 +143,8 @@ class Option(@SerializedName("name")
         const val KEY_OFFICIAL = "official"
         const val KEY_RATING = "rt"
         const val KEY_ANNOTATION_ID = "annotation_id"
+        const val KEY_MAIN_KEYWORD = "main_keyword"
+        const val KEY_NEGATIVE_KEYWORD = "negative_keyword"
 
         const val INPUT_TYPE_TEXTBOX = "textbox"
         const val INPUT_TYPE_CHECKBOX = "checkbox"

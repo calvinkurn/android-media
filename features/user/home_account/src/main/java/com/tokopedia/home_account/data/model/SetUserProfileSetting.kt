@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class SetUserProfileSetting(
     @SerializedName("isSuccess")
     @Expose
-    val isSuccess: Boolean,
+    val isSuccess: Boolean = false,
 
     @SerializedName("error")
     @Expose
-    val error: String
+    val error: String = ""
 )

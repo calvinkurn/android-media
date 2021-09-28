@@ -47,14 +47,14 @@ class TopAdsAutoTopupUseCaseTest {
         val successIsTopAdsAutoTopup = false
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         useCase.params = TopAdsAutoTopupUseCase.createRequestParams(anyString())
         val isTopAdsAutoTopup = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(isTopAdsAutoTopup, successIsTopAdsAutoTopup)
@@ -66,7 +66,7 @@ class TopAdsAutoTopupUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<TopAdsAutoTopupDataModel>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
@@ -74,7 +74,7 @@ class TopAdsAutoTopupUseCaseTest {
         val isTopAdsAutoTopup = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(isTopAdsAutoTopup)

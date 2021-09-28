@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class TradeInParams(
         @SerializedName("ProductId")
-        var productId: Long = 0,
+        var productId: String = "",
         @SerializedName("ShopId")
         var shopId: Int = 0,
         @SerializedName("CategoryId")

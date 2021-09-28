@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.usecase.RequestParams
@@ -32,13 +32,13 @@ class GetShopLocationUseCase @Inject constructor(
         """
 
         fun getRequestParams(shopId: String): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId.toIntOrZero())
+            putLong(SHOP_ID, shopId.toLongOrZero())
         }
     }
 
     override suspend fun executeOnBackground(): ShippingLoc {
         val gqlRequest = GraphqlRequest(QUERY, ShopInfoLocation::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(ShopInfoLocation::class.java)
         if (errors.isNullOrEmpty()) {

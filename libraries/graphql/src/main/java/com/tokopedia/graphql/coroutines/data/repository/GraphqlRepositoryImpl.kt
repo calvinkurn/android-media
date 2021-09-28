@@ -9,10 +9,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
-import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.LoggingUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -24,10 +21,8 @@ class GraphqlRepositoryImpl @Inject constructor(
     private val graphqlCacheDataStore: GraphqlCacheDataStore
 ) : GraphqlRepository {
 
-    override suspend fun getReseponse(
-        requests: List<GraphqlRequest>,
-        cacheStrategy: GraphqlCacheStrategy
-    ): GraphqlResponse {
+    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
+            : GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()
         val isCachedData = mutableMapOf<Type, Boolean>()
@@ -180,11 +175,7 @@ class GraphqlRepositoryImpl @Inject constructor(
                 refreshRequests.add(copyRequests[i])
                 requests.remove(copyRequests[i])
 
-                Timber.d(
-                    "Android CLC - Request served from cache " + CacheHelper.getQueryName(
-                        copyRequests[i].query
-                    ) + " KEY: " + copyRequests[i].cacheKey()
-                )
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             }
         } catch (jse: JsonSyntaxException) {

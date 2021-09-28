@@ -77,7 +77,7 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
             val graphqlRequest = GraphqlRequest(searchQuery, UmrahSearchProductEntity::class.java, params)
 
             val response = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }
             privateSearchResult.value = Success(response.getSuccessData<UmrahSearchProductEntity>().umrahSearchProducts)
         }) {

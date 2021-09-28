@@ -22,7 +22,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                                               private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
 
-    override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
+    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()

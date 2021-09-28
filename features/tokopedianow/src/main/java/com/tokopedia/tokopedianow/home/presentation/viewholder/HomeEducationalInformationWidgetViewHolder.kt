@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
-    private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeEducationalInformationListener? = null
 ) : AbstractViewHolder<HomeEducationalInformationWidgetUiModel>(itemView) {
 
@@ -104,7 +104,7 @@ class HomeEducationalInformationWidgetViewHolder(
     private fun showBottomSheet() {
         setupBasicButton()
         val bottomSheet = TokoNowHomeEducationalInformationBottomSheet.newInstance()
-        tokoNowListener?.getFragmentManagerPage()?.let { fragmentManager ->
+        tokoNowView?.getFragmentManagerPage()?.let { fragmentManager ->
             bottomSheet.show(fragmentManager)
         }
     }
