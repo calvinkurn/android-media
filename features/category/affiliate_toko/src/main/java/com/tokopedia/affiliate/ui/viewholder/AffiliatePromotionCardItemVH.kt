@@ -32,7 +32,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             buttonVariant = UnifyButton.Variant.GHOST
             text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
-                promotionClickInterface?.onPromotionClick( "",
+                promotionClickInterface?.onPromotionClick( element?.promotionItem?.productID ?: "",
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",

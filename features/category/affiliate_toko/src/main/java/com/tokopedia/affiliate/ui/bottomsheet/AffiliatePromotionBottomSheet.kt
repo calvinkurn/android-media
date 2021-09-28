@@ -120,6 +120,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                 productId = bundle.getString(KEY_PRODUCT_ID,"")
                 url = bundle.getString(KEY_PRODUCT_URL, "")
                 identifier = bundle.getString(KEY_PRODUCT_IDENTIFIER)
+                originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
             }
             setObservers(this)
         }

@@ -35,6 +35,8 @@ data class AffiliateSearchData(
             ) {
                 @Keep
                 data class Item(
+                    @SerializedName("productID")
+                    var productID: String,
                     @SerializedName("additionalInformation")
                     var additionalInformation: List<AdditionalInformation?>?,
                     @SerializedName("cardUrl")

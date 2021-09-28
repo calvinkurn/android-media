@@ -32,6 +32,7 @@ const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: 
         hasMore
         title
         items {
+          productID
           title
           image {
             DesktopURL
