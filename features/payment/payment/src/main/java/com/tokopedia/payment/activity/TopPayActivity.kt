@@ -449,6 +449,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         fun gotoLinkAccount() {
             reloadUrl = scroogeWebView?.url ?: ""
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, "tokopedia://back")
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
 
