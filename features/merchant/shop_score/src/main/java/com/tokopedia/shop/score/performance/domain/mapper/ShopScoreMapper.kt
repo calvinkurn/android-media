@@ -160,7 +160,6 @@ class ShopScoreMapper @Inject constructor(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
                     powerMerchantData,
-                    isOfficialStore,
                     shopAge,
                     shopInfoPeriodUiModel.dateShopCreated
                 )
@@ -262,7 +261,6 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
-        isOfficialStore: Boolean,
         shopAge: Long,
         dateShopCreated: String
     ): HeaderShopPerformanceUiModel {
