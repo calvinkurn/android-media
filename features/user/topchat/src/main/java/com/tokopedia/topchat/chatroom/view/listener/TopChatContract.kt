@@ -4,10 +4,7 @@ import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -149,7 +146,7 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndMessage(
-            sendMessage: String
+            sendMessage: String, referredMsg: BaseChatViewModel? = null
         )
 
         fun sendAttachmentsAndSticker(

@@ -1050,11 +1050,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendMessage(message: String? = null) {
         textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
+        val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
-        presenter.sendAttachmentsAndMessage(sendMessage)
+        presenter.sendAttachmentsAndMessage(
+            sendMessage, referredMsg
+        )
     }
 
     private fun delaySendMessage() {

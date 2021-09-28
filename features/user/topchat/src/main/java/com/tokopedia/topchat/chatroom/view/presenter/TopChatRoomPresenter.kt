@@ -551,11 +551,14 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndMessage(
-        sendMessage: String
+        sendMessage: String, referredMsg: BaseChatViewModel?
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(sendMessage)
-            topchatSendMessageWithWebsocket(sendMessage)
+            topchatSendMessageWithWebsocket(
+                sendMessage = sendMessage,
+                referredMsg = referredMsg
+            )
             view?.clearAttachmentPreviews()
         }
     }
@@ -615,18 +618,20 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun topchatSendMessageWithWebsocket(
         sendMessage: String,
         intention: String? = null,
-        products: List<SendablePreview>? = null
+        products: List<SendablePreview>? = null,
+        referredMsg: BaseChatViewModel? = null
     ) {
         val startTime = SendableViewModel.generateStartTime()
         val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(
-            thisMessageId = roomMetaData.msgId,
+            roomeMetaData = roomMetaData,
             messageText = sendMessage,
             startTime = startTime,
             attachments = products ?: attachmentsPreview,
             localId = previewMsg.localId,
             intention = intention,
-            userLocationInfo = userLocationInfo
+            userLocationInfo = userLocationInfo,
+            referredMsg = referredMsg
         )
         sendWs(requestParams, previewMsg)
     }

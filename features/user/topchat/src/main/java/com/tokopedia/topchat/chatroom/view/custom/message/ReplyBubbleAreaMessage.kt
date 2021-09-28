@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -37,6 +38,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         initViewBinding()
     }
 
+    var referredMsg: BaseChatViewModel? = null
+        private set
+    var referredParentReply: ParentReply? = null
+        private set
+
     private fun initLayout() {
         View.inflate(context, LAYOUT, this)
     }
@@ -52,6 +58,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     ) {
         val parentReply = uiModel.parentReply
         if (parentReply != null) {
+            referTo(parentReply)
             setTitle(parentReply.mainText)
             setReplyMsg(parentReply.subText)
             updateCloseButtonState(false)
@@ -65,6 +72,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         uiModel: BaseChatViewModel,
         enableCloseButton: Boolean = false
     ) {
+        referTo(uiModel)
         setTitle(uiModel.from)
         setReplyMsg(uiModel.message)
         updateCloseButtonState(enableCloseButton)
@@ -79,7 +87,20 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             }
         } else {
             closeBtn?.hide()
+            clearReferTo()
         }
+    }
+
+    private fun clearReferTo() {
+        referTo(null)
+    }
+
+    private fun referTo(uiModel: BaseChatViewModel?) {
+        referredMsg = uiModel
+    }
+
+    private fun referTo(parentReply: ParentReply) {
+        referredParentReply = parentReply
     }
 
     private fun setTitle(title: String) {

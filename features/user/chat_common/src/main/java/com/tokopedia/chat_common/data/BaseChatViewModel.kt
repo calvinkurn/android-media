@@ -59,6 +59,10 @@ open class BaseChatViewModel constructor(
      */
     var isShowTime = true
 
+    fun getReferredImageUrl(): String {
+        return ""
+    }
+
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
         const val SOURCE_AUTO_REPLY = "auto_reply"

@@ -1,14 +1,18 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import android.util.Log
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -22,21 +26,27 @@ import com.tokopedia.topchat.common.util.AddressUtil
 
 object TopChatWebSocketParam {
 
+    private val gson = GsonBuilder().create()
+
     fun generateParamSendMessage(
-        thisMessageId: String,
+        roomeMetaData: RoomMetaData,
         messageText: String,
         startTime: String,
         attachments: List<SendablePreview>,
         localId: String,
         intention: String? = null,
-        userLocationInfo: LocalCacheModel? = null
+        userLocationInfo: LocalCacheModel? = null,
+        referredMsg: BaseChatViewModel? = null
     ): String {
+        val referredMsgRequest = generateParentReplyRequestPayload(
+            roomeMetaData, referredMsg
+        )
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
             addProperty("local_id", localId)
-            addProperty("message_id", thisMessageId.toLongOrZero())
+            addProperty("message_id", roomeMetaData.msgId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
@@ -46,9 +56,31 @@ object TopChatWebSocketParam {
                 )
                 add("extras", extras)
             }
+            if (referredMsg != null) {
+                add("parentReply", referredMsgRequest)
+            }
         }
         json.add("data", data)
         return json.toString()
+    }
+
+    fun generateParentReplyRequestPayload(
+        roomMetaData: RoomMetaData,
+        referredMsg: BaseChatViewModel?
+    ): JsonElement? {
+        if (referredMsg == null) return null
+        val requestContract = ParentReplyWsRequest(
+            attachment_id = referredMsg.attachmentId.toLongOrZero(),
+            attachment_type = referredMsg.attachmentType.toLongOrZero(),
+            sender_id = roomMetaData.sender.uid.toLongOrZero(),
+            reply_time = referredMsg.replyTime?.toLongOrZero() ?: 0,
+            main_text = referredMsg.from,
+            sub_text = referredMsg.message,
+            image_url = referredMsg.getReferredImageUrl(),
+            local_id = referredMsg.localId,
+            source = "chat"
+        )
+        return gson.toJsonTree(requestContract)
     }
 
     fun generateParamSendProductAttachment(
