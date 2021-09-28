@@ -16,11 +16,12 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
+import com.tokopedia.review.databinding.WidgetReplyFeedbackItemBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyListener
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
-import kotlinx.android.synthetic.main.widget_reply_feedback_item.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
@@ -49,10 +50,12 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         View.inflate(context, R.layout.widget_reply_feedback_item, this)
     }
 
+    private val binding = WidgetReplyFeedbackItemBinding.bind(this)
+
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
-        ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
-        tvFeedbackUser?.text = MethodChecker.fromHtml(String.format(context.getString(R.string.label_name_reviewer_builder), data.reviewerName.orEmpty()))
-        tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
+        binding.ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
+        binding.tvFeedbackUser.text = MethodChecker.fromHtml(String.format(context.getString(R.string.label_name_reviewer_builder), data.reviewerName.orEmpty()))
+        binding.tvFeedbackDate.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty())
         setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
@@ -60,22 +63,22 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
-        tvReplyComment?.text = data.replyText
-        tvReplyDate?.text = data.replyTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
+        binding.tvReplyComment.text = data.replyText
+        binding.tvReplyDate.text = data.replyTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         if (data.autoReply == isAutoReply) {
-            tvReplyUser?.text = context?.getString(R.string.user_reply)
+            binding.tvReplyUser.text = context.getString(R.string.user_reply)
         } else {
-            tvReplyUser?.text = context?.getString(R.string.otomatis_reply)
+            binding.tvReplyUser.text = context.getString(R.string.otomatis_reply)
         }
     }
 
     private fun setupFeedbackReview(feedbackText: String) {
-        replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
+        binding.replyFeedbackState.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
-            tvFeedbackReview?.text = context.getString(R.string.review_not_found)
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            binding.tvFeedbackReview.text = context.getString(R.string.review_not_found)
+            binding.tvFeedbackReview.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
-            tvFeedbackReview?.apply {
+            binding.tvFeedbackReview.apply {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 text = feedbackText
             }
@@ -84,7 +87,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     private fun setImageAttachment(element: FeedbackUiModel, productReply: ProductReplyUiModel) {
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rvItemAttachmentFeedback?.apply {
+        binding.rvItemAttachmentFeedback.apply {
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecoratingReview())
@@ -92,23 +95,23 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
             adapter = replyReviewFeedbackImageAdapter
         }
         if (element.attachments.isEmpty()) {
-            rvItemAttachmentFeedback?.hide()
+            binding.rvItemAttachmentFeedback.hide()
         } else {
             replyReviewFeedbackImageAdapter.setAttachmentUiData(element.attachments)
             replyReviewFeedbackImageAdapter.setFeedbackId(element.feedbackID)
             replyReviewFeedbackImageAdapter.setProductTitle(productReply.productName.toString())
             replyReviewFeedbackImageAdapter.submitList(element.attachments)
-            rvItemAttachmentFeedback?.show()
+            binding.rvItemAttachmentFeedback.show()
         }
     }
 
     private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
-        kejarUlasanLabel?.showWithCondition(isKejarUlasan)
+        binding.kejarUlasanLabel.showWithCondition(isKejarUlasan)
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,
                                     title: String, feedbackId: String, position: Int) {
-        context?.run {
+        context.run {
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
                     context = this,
                     title = title,
@@ -117,5 +120,29 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
                     imagePosition = position
             ))
         }
+    }
+
+    fun showGroupReply() {
+        binding.groupReply.show()
+    }
+
+    fun hideGroupReply() {
+        binding.groupReply.hide()
+    }
+
+    fun getEditReplyTypography(): Typography {
+        return binding.tvReplyEdit
+    }
+
+    fun setReplyUserText(reply: String) {
+        binding.tvReplyUser.text = reply
+    }
+
+    fun setReplyDate(date: String) {
+        binding.tvReplyDate.text = date
+    }
+
+    fun setReplyComment(comment: String) {
+        binding.tvReplyComment.text = comment
     }
 }

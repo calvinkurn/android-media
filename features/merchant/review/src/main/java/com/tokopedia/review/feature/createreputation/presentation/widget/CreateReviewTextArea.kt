@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,9 +10,9 @@ import android.view.View
 import android.view.View.OnTouchListener
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
+import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
 
 
 class CreateReviewTextArea : BaseCustomView {
@@ -27,16 +28,19 @@ class CreateReviewTextArea : BaseCustomView {
         init()
     }
 
+    private val binding = WidgetCreateReviewTextAreaBinding.bind(this)
+
     override fun clearFocus() {
-        createReviewEditText.clearFocus()
+        binding.createReviewEditText.clearFocus()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun init() {
         View.inflate(context, R.layout.widget_create_review_text_area, this)
-        this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
-        createReviewEditText.apply {
+        binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
+        binding.createReviewEditText.apply {
             setOnTouchListener(OnTouchListener { v, event ->
-                if (createReviewEditText.hasFocus()) {
+                if (binding.createReviewEditText.hasFocus()) {
                     v.parent.requestDisallowInterceptTouchEvent(true)
                     when (event.action and MotionEvent.ACTION_MASK) {
                         MotionEvent.ACTION_SCROLL -> {
@@ -52,19 +56,19 @@ class CreateReviewTextArea : BaseCustomView {
     }
 
     fun setListener(textAreaListener: TextAreaListener) {
-        createReviewExpandButton.setOnClickListener {
-            textAreaListener.onExpandButtonClicked(createReviewEditText.text.toString())
+        binding.createReviewExpandButton.setOnClickListener {
+            textAreaListener.onExpandButtonClicked(binding.createReviewEditText.text.toString())
         }
-        createReviewEditText.apply {
+        binding.createReviewEditText.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
-                    this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
+                    binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
                     textAreaListener.apply {
-                        trackWhenHasFocus(createReviewEditText.text.length)
+                        trackWhenHasFocus(binding.createReviewEditText.text.length)
                         scrollToShowTextArea()
                     }
                 } else {
-                    this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
+                    binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
                     textAreaListener.hideText()
                 }
             }
@@ -86,22 +90,22 @@ class CreateReviewTextArea : BaseCustomView {
     }
 
     fun setText(text: String) {
-        createReviewEditText.setText(text)
+        binding.createReviewEditText.setText(text)
     }
 
     fun getText(): String {
-        return createReviewEditText.text.toString()
+        return binding.createReviewEditText.text.toString()
     }
 
     fun append(text: String) {
-        createReviewEditText.append(text)
+        binding.createReviewEditText.append(text)
     }
 
     fun setPlaceHolder(text: String) {
-        createReviewEditText.hint = text
+        binding.createReviewEditText.hint = text
     }
 
     fun isEmpty(): Boolean {
-        return createReviewEditText.text.isEmpty()
+        return binding.createReviewEditText.text.isEmpty()
     }
 }

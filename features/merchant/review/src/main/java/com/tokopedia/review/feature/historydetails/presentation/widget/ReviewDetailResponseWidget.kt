@@ -7,9 +7,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
+import com.tokopedia.review.databinding.WidgetReviewDetailResponseBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.widget_review_detail_response.view.*
 
 class ReviewDetailResponseWidget : BaseCustomView {
 
@@ -28,22 +28,24 @@ class ReviewDetailResponseWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_review_detail_response, this)
     }
 
+    private val binding = WidgetReviewDetailResponseBinding.bind(this)
+
     fun setContent(response: ProductrevGetReviewDetailResponse) {
-        review_detail_response_tab?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
+        binding.reviewDetailResponseTab.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         with(response) {
             if(shopName.isNotEmpty()) {
-                reviewDetailResponderName.apply {
+                binding.reviewDetailResponderName.apply {
                     text = HtmlLinkHelper(context, context.getString(R.string.review_history_details_by, shopName)).spannedString
                     show()
                 }
             }
             if(responseTimeFormatted.isNotEmpty()) {
-                reviewDetailResponseDate.apply {
+                binding.reviewDetailResponseDate.apply {
                     text = (context.getString(R.string.review_date, responseTimeFormatted))
                     show()
                 }
             }
-            reviewDetailResponseContent.apply {
+            binding.reviewDetailResponseContent.apply {
                 text = responseText
                 show()
             }
