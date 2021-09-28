@@ -31,7 +31,7 @@ import org.junit.runner.RunWith
 class PdpSimulationFragmentTest {
 
     @get:Rule
-    val activityRule = ActivityTestRule(PdpSimulationActivity::class.java, false, true)
+    val activityRule = ActivityTestRule(PdpSimulationActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
