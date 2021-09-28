@@ -1195,11 +1195,11 @@ public class MainParentActivity extends BaseActivity implements
     public void stopOfficialStorePerformanceMonitoring(boolean isCache) {
         if (officialStorePageLoadTimePerformanceCallback != null) {
             if (isCache) {
-                getPageLoadTimePerformanceInterface().addAttribution(
+                officialStorePageLoadTimePerformanceCallback.addAttribution(
                         PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         PERFORMANCE_MONITORING_CACHE_VALUE);
             } else {
-                getPageLoadTimePerformanceInterface().addAttribution(
+                officialStorePageLoadTimePerformanceCallback.addAttribution(
                         PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
