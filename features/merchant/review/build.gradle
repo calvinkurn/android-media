@@ -131,6 +131,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
 }
 
 project.ext {
