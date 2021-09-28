@@ -557,7 +557,7 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String
     ) {
         if (isValidReply(sendMessage)) {
-            sendAttachments(messageId, opponentId, sendMessage)
+            sendAttachments(sendMessage)
             topchatSendMessage(messageId, sendMessage, startTime)
             view?.clearAttachmentPreviews()
         }
@@ -582,7 +582,7 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String,
         onSendingMessage: () -> Unit
     ) {
-        sendAttachments(messageId, opponentId, sticker.intention)
+        sendAttachments(sticker.intention)
         sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
         view?.clearAttachmentPreviews()
     }
@@ -595,7 +595,7 @@ open class TopChatRoomPresenter @Inject constructor(
         onSendingMessage: () -> Unit
     ) {
         onSendingMessage.invoke()
-        sendAttachments(messageId, opponentId, question.content)
+        sendAttachments(question.content)
         topchatSendMessageWithWebsocket(
             messageId, question.content, startTime, question.intent, null
         )
@@ -741,7 +741,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendWs(request, previewSticker)
     }
 
-    private fun sendAttachments(messageId: String, opponentId: String, message: String) {
+    private fun sendAttachments(message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             handleSrwBubbleState(attachment)
@@ -749,8 +749,7 @@ open class TopChatRoomPresenter @Inject constructor(
                 roomMetaData, message
             )
             val wsMsgPayload = attachment.generateMsgObj(
-                messageId, opponentId, message, listInterceptor,
-                userLocationInfo, previewMsg.localId
+                roomMetaData, message, userLocationInfo, previewMsg.localId
             )
             processPreviewMessage(previewMsg)
             sendWebSocketAttachmentPayload(wsMsgPayload)
