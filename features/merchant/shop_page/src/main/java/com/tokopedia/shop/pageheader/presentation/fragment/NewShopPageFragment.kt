@@ -2166,9 +2166,10 @@ class NewShopPageFragment :
         }
 
         if (isShopReviewAppLink(appLink) && !isUsingNewShopReviewPage()) {
-//            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
-//            viewPager?.setCurrentItem(reviewTabPosition, false)
-//            tabLayout?.getTabAt(reviewTabPosition)?.select()
+            val reviewShopClassName = Class.forName(REVIEW_SHOP_FRAGMENT)
+            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(reviewShopClassName).orZero()
+            viewPager?.setCurrentItem(reviewTabPosition, false)
+            tabLayout?.getTabAt(reviewTabPosition)?.select()
         } else
             RouteManager.route(context, appLink)
     }
