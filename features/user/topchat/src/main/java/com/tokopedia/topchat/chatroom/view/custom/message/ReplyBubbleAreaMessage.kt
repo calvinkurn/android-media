@@ -48,6 +48,20 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     fun bindReplyData(
+        uiModel: BaseChatViewModel
+    ) {
+        val parentReply = uiModel.parentReply
+        if (parentReply != null) {
+            setTitle(parentReply.mainText)
+            setReplyMsg(parentReply.subText)
+            updateCloseButtonState(false)
+            show()
+        } else {
+            hide()
+        }
+    }
+
+    fun composeReplyData(
         uiModel: BaseChatViewModel,
         enableCloseButton: Boolean = false
     ) {

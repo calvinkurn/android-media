@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.data
 
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
@@ -7,22 +8,6 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.utils.time.TimeHelper
 import java.util.*
-
-/**
- * Constructor for WebSocketResponse / API Response
- * [ChatWebSocketListenerImpl]
- * [GetReplyListUseCase]
- *
- * @param messageId      messageId
- * @param fromUid        userId of sender
- * @param from           name of sender
- * @param fromRole       role of sender
- * @param attachmentId   attachment id
- * @param attachmentType attachment type.
- * @param replyTime replytime in unixtime
- *
- * @see AttachmentType for attachment types.
- */
 
 open class BaseChatViewModel constructor(
     val messageId: String,
@@ -38,7 +23,8 @@ open class BaseChatViewModel constructor(
     val localId: String = "",
     val blastId: Long = 0,
     val fraudStatus: Int = 0,
-    val label: String = ""
+    val label: String = "",
+    val parentReply: ParentReply? = null
 ) {
 
     constructor(builder: Builder<*, *>) : this(
@@ -56,6 +42,7 @@ open class BaseChatViewModel constructor(
         blastId = builder.blastId,
         fraudStatus = builder.fraudStatus,
         label = builder.label,
+        parentReply = builder.parentReply
     )
 
     /**
@@ -106,6 +93,7 @@ open class BaseChatViewModel constructor(
         internal var blastId: Long = 0
         internal var fraudStatus: Int = 0
         internal var label: String = ""
+        internal var parentReply: ParentReply? = null
 
         open fun withResponseFromGQL(
             reply: Reply
@@ -123,6 +111,7 @@ open class BaseChatViewModel constructor(
             withBlastId(reply.blastId)
             withFraudStatus(reply.fraudStatus)
             withLabel(reply.label)
+            withParentReply(reply.parentReply)
             return self()
         }
 
@@ -244,6 +233,11 @@ open class BaseChatViewModel constructor(
 
         fun withLabel(label: String): B {
             this.label = label
+            return self()
+        }
+
+        fun withParentReply(parentReply: ParentReply?): B {
+            this.parentReply = parentReply
             return self()
         }
 
