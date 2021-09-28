@@ -2,8 +2,9 @@ package com.tokopedia.talk.feature.write.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
+import android.view.View
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.talk.R
 import com.tokopedia.talk.databinding.WidgetTalkWriteHeaderBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -25,11 +26,10 @@ class TalkWriteHeaderWidget : BaseCustomView {
         init()
     }
 
-    private val binding: WidgetTalkWriteHeaderBinding =
-        WidgetTalkWriteHeaderBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = WidgetTalkWriteHeaderBinding.bind(this)
 
     private fun init() {
-        addView(binding.root)
+        View.inflate(context, R.layout.widget_talk_write_header, this)
     }
 
     fun bind(productName: String, productImage: String) {

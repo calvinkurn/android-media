@@ -230,13 +230,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         outState.putString(ReportTalkActivity.EXTRA_COMMENT_ID, commentId)
     }
 
-    override fun onDestroyView() {
-        context?.run {
-            KeyboardHandler.DropKeyboard(this, binding.reason)
-        }
-        super.onDestroyView()
-    }
-
     private fun observeLiveDatas() {
         viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
             hideLoadingFull()
