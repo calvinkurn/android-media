@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.talk.R
 import com.tokopedia.talk.databinding.WidgetTalkReplyTextboxBinding
 import com.tokopedia.talk.feature.reply.presentation.util.TalkDebouncer
 import com.tokopedia.talk.feature.reply.presentation.util.textwatcher.TalkReplyTextWatcher
@@ -15,27 +14,11 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class TalkReplyTextbox : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        init()
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val binding = WidgetTalkReplyTextboxBinding.inflate(LayoutInflater.from(context), this, true)
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_talk_reply_textbox, this)
-    }
 
     fun setText(text: String) {
         binding.replyEditText.apply {
