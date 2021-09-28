@@ -61,7 +61,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = it.id ?: 0
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
+                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
                     hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentPosition?.plus(1)?:index+1
                 }
@@ -85,7 +85,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         banner.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
                     KEY_CREATIVE to it.name.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
