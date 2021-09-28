@@ -403,7 +403,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             dialogUnify?.setPrimaryCTAText(it?.getString(R.string.tp_label_ok))
         }
         dialogUnify?.setPrimaryCTAClickListener {
-            dialogUnify.cancel()
+            dialogUnify.dismiss()
         }
         dialogUnify?.show()
     }
