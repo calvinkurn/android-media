@@ -7,10 +7,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.databinding.ItemChipsHighlightSearchBinding
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HighlightSuggestionSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chips_highlight_search.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemHighLightSuggestionChipsAdapter(private val highLightListener: HighlightSuggestionSearchListener) :
         RecyclerView.Adapter<ItemHighLightSuggestionChipsAdapter.ChipsListViewHolder>() {
@@ -40,9 +41,12 @@ class ItemHighLightSuggestionChipsAdapter(private val highLightListener: Highlig
     }
 
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding: ItemChipsHighlightSearchBinding? by viewBinding()
+
         fun bind(data: ItemHighlightSuggestionSearchUiModel) {
-            with(itemView) {
-                chipsHighlightItem.apply {
+            binding?.run {
+                chipsHighlightItem.run {
                     centerText = true
                     chipText = data.title
                     chipSize = ChipsUnify.SIZE_MEDIUM

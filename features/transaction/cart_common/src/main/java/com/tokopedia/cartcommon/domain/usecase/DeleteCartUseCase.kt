@@ -28,7 +28,7 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         val request = GraphqlRequest(MUTATION, DeleteCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<DeleteCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<DeleteCartGqlResponse>()
 
         if (response.removeFromCart.status == "OK" && response.removeFromCart.data.success == 1) {
             return response.removeFromCart

@@ -1,7 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
 
 buildscript {
     repositories {
@@ -28,7 +33,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.viewPager2
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 }
@@ -41,5 +45,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'

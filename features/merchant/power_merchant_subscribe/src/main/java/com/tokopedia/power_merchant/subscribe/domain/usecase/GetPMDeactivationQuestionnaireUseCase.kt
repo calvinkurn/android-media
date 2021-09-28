@@ -23,7 +23,7 @@ class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): DeactivationQuestionnaireUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GoldCancellationsQuestionaire::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldCancellationsQuestionaire::class.java)
         if (gqlErrors.isNullOrEmpty()) {

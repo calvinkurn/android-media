@@ -15,8 +15,8 @@ buildscript {
         maven {
             url = "$rootDir/localMavenRepository"
         }
-        gradlePluginPortal()
         google()
+        gradlePluginPortal()
         mavenLocal()
         mavenCentral()
         maven {

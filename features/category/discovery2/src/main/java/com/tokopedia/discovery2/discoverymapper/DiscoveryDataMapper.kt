@@ -22,6 +22,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
@@ -228,8 +229,36 @@ class DiscoveryDataMapper {
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
-                hasThreeDots = dataItem.hasThreeDots
+                hasThreeDots = dataItem.hasThreeDots,
+                variant = variantProductCard(dataItem),
+                nonVariant = nonVariantProductCard(dataItem)
         )
+    }
+
+    private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
+        return if (!dataItem.hasATC || checkForVariantProductCard(dataItem.parentProductId)) {
+            null
+        } else {
+            ProductCardModel.NonVariant(
+                dataItem.quantity,
+                dataItem.minQuantity,
+                dataItem.maxQuantity
+            )
+        }
+    }
+
+    private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
+        return if (dataItem.hasATC && checkForVariantProductCard(dataItem.parentProductId)) {
+            ProductCardModel.Variant(
+                dataItem.quantity,
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun checkForVariantProductCard(parentProductId: String?): Boolean {
+        return parentProductId != null && parentProductId.toLongOrZero()>0
     }
 
     private fun setSlashPrice(discountedPrice: String?, price: String?): String {
