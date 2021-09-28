@@ -162,7 +162,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description, it.data.redeemMessage)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
-                    showErrorDialog(it.data.title, it.data.desc, it.data.messageCode)
+                    showErrorDialog(it.data.desc, it.data.messageCode)
                 }
             }
         }
@@ -250,7 +250,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         startActivity(intent)
     }
 
-    private fun showErrorDialog( title: String?, message: String, resCode: Int) {
+    private fun showErrorDialog( message: String, resCode: Int) {
         val dialogUnify: DialogUnify?
         var dialogUnifyType = DialogUnify.SINGLE_ACTION
         val labelPositive: String
@@ -265,13 +265,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
             else -> labelPositive = getString(R.string.tp_label_ok)
         }
-         dialogUnify = context?.let { DialogUnify(it,dialogUnifyType, DialogUnify.NO_IMAGE) }
+        dialogUnify = context?.let { DialogUnify(it, dialogUnifyType, DialogUnify.NO_IMAGE) }
+        dialogUnify?.setTitle(getString(R.string.tp_label_exchange_failed))
 
-        if (title == null || title.isEmpty()) {
-            dialogUnify?.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            dialogUnify?.setTitle(title)
-        }
         dialogUnify?.setDescription(MethodChecker.fromHtml(message))
         if (labelNegative != null && labelNegative.isNotEmpty()) {
             dialogUnify?.setSecondaryCTAText(labelNegative)
@@ -294,7 +290,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
                             AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title
+                            ""
                         )
                     }
                     else -> {
