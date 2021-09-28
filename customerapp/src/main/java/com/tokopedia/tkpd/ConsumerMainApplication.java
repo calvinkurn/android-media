@@ -63,6 +63,20 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         generateConsumerAppNetworkKeys();
     }
 
+    @Override
+    public void registerActivityLifecycleCallbacks() {
+        super.registerActivityLifecycleCallbacks();
+        String versionName = BuildConfig.VERSION_NAME;
+        if (versionName.endsWith("-alpha")) {
+            registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+                @Override
+                public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                    openFeedbackForm(uri, className, isFromScreenshot);
+                }
+            }));
+        }
+    }
+
     public String getOriginalPackageApp() {
         return new String(new char[]{
                 99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
@@ -134,5 +148,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;
         }
         AppCompatDelegate.setDefaultNightMode(screenMode);
+    }
+
+    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("EXTRA_URI_IMAGE", uri);
+        intent.putExtra("EXTRA_IS_CLASS_NAME", className);
+        intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
+        getApplicationContext().startActivity(intent);
     }
 }
