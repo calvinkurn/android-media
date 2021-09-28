@@ -16,7 +16,7 @@ class AppendShopShowcaseProductUseCase(
 
     override suspend fun executeOnBackground(): AppendShowcaseProductResponse {
         val request = GraphqlRequest(MUTATION, AppendShowcaseProductBaseResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
         val responseData = response.getData<AppendShowcaseProductBaseResponse>(AppendShowcaseProductBaseResponse::class.java)
         return responseData.appendProductMenuResponse
     }

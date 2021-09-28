@@ -46,11 +46,9 @@ class TopadsTopupView @JvmOverloads constructor(
     fun stopAnimation() {
         isStoppingAnimation = true
         valueTextView?.run {
-            valueTextView?.run {
-                clearAnimation()
-                alpha = VISIBLE_ALPHA_FLOAT
-                translationY = INITIAL_TRANSLATION_Y
-            }
+            clearAnimation()
+            alpha = VISIBLE_ALPHA_FLOAT
+            translationY = INITIAL_TRANSLATION_Y
         }
         messageTextView?.run {
             clearAnimation()

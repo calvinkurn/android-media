@@ -47,7 +47,7 @@ class UmrahTravelProductViewModelTest{
         result[objectType] = UmrahTravelAgentProductEntity(umrahTravelProducts)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(),any())} returns gqlResponseSuccess
+        coEvery { mGraphqlRepository.response(any(),any())} returns gqlResponseSuccess
 
         //when
         umrahTravelProductViewModel.getDataProductTravel(0,"","")
@@ -70,7 +70,7 @@ class UmrahTravelProductViewModelTest{
 
         val gqlResponseFail = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(),any())} returns gqlResponseFail
+        coEvery { mGraphqlRepository.response(any(),any())} returns gqlResponseFail
 
         //when
         umrahTravelProductViewModel.getDataProductTravel(0,"","")

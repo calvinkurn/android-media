@@ -198,6 +198,17 @@ class SmartBillsViewHolder(val view: View,
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
             }
+
+            if(element.newBillLabel.isNewLabel && element.newBillLabel.text.isNotEmpty()){
+                icon_menu_sbm_delete.apply {
+                    show()
+                    setOnClickListener {
+                        detailListener.onDeleteClicked(element)
+                    }
+                }
+            } else {
+                icon_menu_sbm_delete.gone()
+            }
         }
     }
 
@@ -207,6 +218,7 @@ class SmartBillsViewHolder(val view: View,
 
     interface DetailListener {
         fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
+        fun onDeleteClicked(bill: RechargeBills)
     }
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {

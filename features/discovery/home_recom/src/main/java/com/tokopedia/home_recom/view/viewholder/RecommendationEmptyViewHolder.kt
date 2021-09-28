@@ -15,9 +15,18 @@ class RecommendationEmptyViewHolder(view: View, private val listener: Recommenda
 
     override fun bind(element: RecommendationEmptyDataModel) {
         itemView.empty_state?.run {
-            ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)?.let { setImageDrawable(it) }
-            setPrimaryCTAClickListener {
-                listener.onResetFilterClick()
+            when (element.type) {
+                RecommendationEmptyDataModel.TYPE_PAGE_INFINITE_RECOM -> {
+                    ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)?.let { setImageDrawable(it) }
+                    setPrimaryCTAText("")
+                    setSecondaryCTAText("")
+                }
+                RecommendationEmptyDataModel.TYPE_DEFAULT -> {
+                    ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)?.let { setImageDrawable(it) }
+                    setPrimaryCTAClickListener {
+                        listener.onResetFilterClick()
+                    }
+                }
             }
         }
     }
