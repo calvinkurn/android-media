@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.content.Intent;
 
@@ -15,10 +16,13 @@ import androidx.lifecycle.OnLifecycleEvent;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -28,6 +32,8 @@ import com.tokopedia.utils.permission.SlicePermission;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import io.embrace.android.embracesdk.Embrace;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
