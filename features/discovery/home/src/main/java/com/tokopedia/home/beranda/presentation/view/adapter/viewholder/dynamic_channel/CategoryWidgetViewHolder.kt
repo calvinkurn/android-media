@@ -28,8 +28,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_dc_category_widget
-        val CATEGORY_WIDGET_SPAN_COUNT = 2
+        private const val CATEGORY_WIDGET_SPAN_COUNT = 2
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
