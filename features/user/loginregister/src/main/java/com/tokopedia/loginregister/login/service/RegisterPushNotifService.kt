@@ -16,6 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.security.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.random.Random
 
 /**
  * Created by Ade Fulki on 28/09/20.
@@ -123,9 +124,6 @@ class RegisterPushNotifService : JobIntentService() {
     }
 
     companion object {
-
-        private const val JOB_ID = 34578
-
         private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val PUSH_NOTIF_ALIAS = "PushNotif"
         private const val SHA_256_WITH_RSA = "SHA256withRSA"
@@ -135,7 +133,8 @@ class RegisterPushNotifService : JobIntentService() {
         fun startService(context: Context) {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
-                enqueueWork(context, RegisterPushNotifService::class.java, JOB_ID, intent)
+                val randomValues = Random.nextInt(1000, 5000)
+                enqueueWork(context, RegisterPushNotifService::class.java, randomValues, intent)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -49,7 +49,7 @@ class GetShopEtalaseUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopShowcaseListSellerResponse {
         val graphqlRequest = GraphqlRequest(QUERY, ShopShowcaseListSellerResponse::class.java, params.parameters)
-        val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val graphqlResponse: GraphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(ShopShowcaseListSellerResponse::class.java)
         if (errors.isNullOrEmpty()) {
             return graphqlResponse.getData(ShopShowcaseListSellerResponse::class.java)

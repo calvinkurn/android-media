@@ -19,7 +19,7 @@ class GetShopInfoLocationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Boolean {
         val graphqlRequest = GraphqlRequest(getQuery(), ShopInfoLocationResponse::class.java, params.parameters)
-        val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val graphqlResponse: GraphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(ShopInfoLocationResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<ShopInfoLocationResponse>(ShopInfoLocationResponse::class.java)

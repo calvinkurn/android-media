@@ -1,9 +1,11 @@
 package com.tokopedia.play_common.viewcomponent
 
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -34,6 +36,10 @@ abstract class ViewComponent(
     }
 
     protected fun getColor(@ColorRes colorRes: Int): Int = MethodChecker.getColor(rootView.context, colorRes)
+
+    protected fun getDrawable(@DrawableRes drawableRes: Int): Drawable {
+        return MethodChecker.getDrawable(rootView.context, drawableRes)
+    }
 
     protected val resources: Resources
         get() = rootView.resources

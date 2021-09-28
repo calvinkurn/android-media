@@ -28,7 +28,7 @@ class StackedCouponRepositoryTest {
     @Before
     fun setUp() {
         repository = StackedCouponRepository(mgraphRepository,map)
-        coEvery{ mgraphRepository.getReseponse(any(), any()) } returns data
+        coEvery{ mgraphRepository.response(any(), any()) } returns data
     }
 
     @After
@@ -41,7 +41,7 @@ class StackedCouponRepositoryTest {
             every { map[CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER] } returns "dasdv"
             val response = repository.getFilter("slug")
 
-            coVerify(exactly = 1) { mgraphRepository.getReseponse(any(),any()) }
+            coVerify(exactly = 1) { mgraphRepository.response(any(),any()) }
             assert(data == response)
         }
     }
@@ -52,7 +52,7 @@ class StackedCouponRepositoryTest {
             every { map[CommonConstant.GQLQuery.TP_GQL_COUPON_LISTING_STACK] } returns "dasdv"
             val response = repository.getCouponList(1,1)
 
-            coVerify(exactly = 1) { mgraphRepository.getReseponse(any(),any()) }
+            coVerify(exactly = 1) { mgraphRepository.response(any(),any()) }
             assert(data == response)
         }
     }
@@ -63,7 +63,7 @@ class StackedCouponRepositoryTest {
             every { map[CommonConstant.GQLQuery.TP_GQL_COUPON_IN_STACK] } returns "dasdv"
             val response = repository.getInStackedCouponList("slug")
 
-            coVerify(exactly = 1) { mgraphRepository.getReseponse(any(),any()) }
+            coVerify(exactly = 1) { mgraphRepository.response(any(),any()) }
             assert(data == response)
         }
 

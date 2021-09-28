@@ -42,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
@@ -682,5 +681,17 @@ class SearchActivity: BaseActivity(),
 
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+    }
+
+    override fun updateSearchParameter(searchParameter: SearchParameter?) {
+        if (searchParameter == null) return
+
+        this.searchParameter = searchParameter
+
+        updateKeyword()
+    }
+
+    private fun updateKeyword() {
+        setToolbarTitle(searchParameter.getSearchQuery())
     }
 }
