@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.widget
 import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.talk.R
@@ -30,7 +31,7 @@ class TalkReplyTextbox : BaseCustomView {
         init()
     }
 
-    private val binding = WidgetTalkReplyTextboxBinding.bind(this)
+    private val binding = WidgetTalkReplyTextboxBinding.inflate(LayoutInflater.from(context), this, true)
 
     private fun init() {
         View.inflate(context, R.layout.widget_talk_reply_textbox, this)
