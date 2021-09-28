@@ -149,8 +149,7 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndMessage(
-            messageId: String, sendMessage: String,
-            startTime: String, opponentId: String
+            sendMessage: String
         )
 
         fun sendAttachmentsAndSticker(
@@ -160,9 +159,7 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndSrw(
-            messageId: String, question: QuestionUiModel,
-            startTime: String, opponentId: String,
-            onSendingMessage: () -> Unit
+            question: QuestionUiModel
         )
 
         fun initAttachmentPreview()
@@ -251,9 +248,7 @@ interface TopChatContract {
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>
         fun sendSrwBubble(
-            messageId: String, question: QuestionUiModel,
-            products: List<SendablePreview>, opponentId: String,
-            onSendingMessage: () -> Unit
+            question: QuestionUiModel, products: List<SendablePreview>
         )
         fun adjustInterlocutorWarehouseId(msgId: String)
         fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)

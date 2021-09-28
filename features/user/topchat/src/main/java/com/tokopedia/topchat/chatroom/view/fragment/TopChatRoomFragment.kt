@@ -1050,14 +1050,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendMessage(message: String? = null) {
         textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
-        val startTime = SendableViewModel.generateStartTime()
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
-        presenter.sendAttachmentsAndMessage(
-            messageId, sendMessage, startTime, opponentId
-        )
+        presenter.sendAttachmentsAndMessage(sendMessage)
     }
 
     private fun delaySendMessage() {
@@ -2188,15 +2185,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun sendSrwQuestion(question: QuestionUiModel) {
         onSendAndReceiveMessage()
-        val startTime = SendableViewModel.generateStartTime()
         addSrwBubbleToChat()
-        presenter.sendAttachmentsAndSrw(
-            messageId,
-            question,
-            startTime,
-            opponentId,
-            onSendingMessage(false)
-        )
+        onSendingMessage(false).invoke()
+        presenter.sendAttachmentsAndSrw(question)
     }
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
@@ -2222,11 +2213,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         onSendAndReceiveMessage()
         presenter.sendSrwBubble(
-            messageId,
-            question,
-            products,
-            opponentId,
-            onSendingMessage()
+            question, products
         )
     }
 

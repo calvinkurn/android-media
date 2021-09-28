@@ -551,27 +551,12 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String
+        sendMessage: String
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(sendMessage)
-            topchatSendMessage(messageId, sendMessage, startTime)
+            topchatSendMessageWithWebsocket(sendMessage)
             view?.clearAttachmentPreviews()
-        }
-    }
-
-    private fun topchatSendMessage(
-        messageId: String, sendMessage: String, startTime: String
-    ) {
-        if (networkMode == MODE_WEBSOCKET) {
-            topchatSendMessageWithWebsocket(
-                messageId, sendMessage, startTime, null, null
-            )
-        } else {
-            sendMessageWithApi(messageId, sendMessage, startTime)
         }
     }
 
@@ -588,16 +573,12 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSrw(
-        messageId: String,
-        question: QuestionUiModel,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        question: QuestionUiModel
     ) {
-        onSendingMessage.invoke()
         sendAttachments(question.content)
         topchatSendMessageWithWebsocket(
-            messageId, question.content, startTime, question.intent, null
+            sendMessage = question.content,
+            intention = question.intent
         )
         view?.clearAttachmentPreviews()
     }
@@ -605,7 +586,6 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun sendSrwFrom(
         attachment: HeaderCtaButtonAttachment
     ) {
-        val startTime = SendableViewModel.generateStartTime()
         val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
         val ctaButton = attachment.ctaButton
         val productName = ctaButton.productName
@@ -613,21 +593,20 @@ open class TopChatRoomPresenter @Inject constructor(
         val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
         val products = ctaButton.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(
-            thisMessageId, question.content, startTime,
-            question.intent, products
+            sendMessage = question.content,
+            intention = question.intent,
+            products = products
         )
     }
 
     override fun sendSrwBubble(
-        messageId: String, question: QuestionUiModel,
-        products: List<SendablePreview>, opponentId: String,
-        onSendingMessage: () -> Unit
+        question: QuestionUiModel, products: List<SendablePreview>,
     ) {
         if (networkMode == MODE_WEBSOCKET) {
-            val startTime = SendableViewModel.generateStartTime()
             topchatSendMessageWithWebsocket(
-                messageId, question.content, startTime,
-                question.intent, products
+                sendMessage = question.content,
+                intention = question.intent,
+                products = products
             )
         }
     }
@@ -636,24 +615,21 @@ open class TopChatRoomPresenter @Inject constructor(
         messageId: String, sendMessage: String,
         startTime: String, opponentId: String
     ) {
-        topchatSendMessageWithWebsocket(
-            messageId, sendMessage, startTime, null, null
-        )
+        topchatSendMessageWithWebsocket(sendMessage)
     }
 
     /**
      * send with websocket but with param [intention]
      */
     private fun topchatSendMessageWithWebsocket(
-        messageId: String,
         sendMessage: String,
-        startTime: String,
-        intention: String?,
-        products: List<SendablePreview>?
+        intention: String? = null,
+        products: List<SendablePreview>? = null
     ) {
+        val startTime = SendableViewModel.generateStartTime()
         val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(
-            thisMessageId = messageId,
+            thisMessageId = roomMetaData.msgId,
             messageText = sendMessage,
             startTime = startTime,
             attachments = products ?: attachmentsPreview,
