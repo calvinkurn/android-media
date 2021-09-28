@@ -27,8 +27,7 @@ class GraphqlRepositoryImpl @Inject constructor(
     override suspend fun getReseponse(
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
-    )
-            : GraphqlResponse {
+    ): GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()
         val isCachedData = mutableMapOf<Type, Boolean>()
