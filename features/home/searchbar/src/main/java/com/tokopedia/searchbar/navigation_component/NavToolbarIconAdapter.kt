@@ -8,12 +8,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -26,8 +28,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_animated.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
                                      private val topNavComponentListener: TopNavComponentListener)
@@ -70,8 +70,7 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
 
     override fun onBindViewHolder(holder: IconHolder, position: Int) {
         val icon = iconConfig.iconList[position]
-        val isLastPosition = position == iconConfig.iconList.size - 1
-        holder.bind(icon, themeState, isLastPosition, position)
+        holder.bind(icon, themeState)
     }
 
     override fun getItemCount(): Int {
@@ -147,7 +146,7 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int)
+    abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
 }
 
 internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
@@ -163,7 +162,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
 
         if (iconToolbar.imageRes != null) {
@@ -231,7 +230,6 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         when {
             iconToolbar.badgeCounter.isZero() -> {
                 iconImage.notificationRef.gone()
-                iconImage.gone()
             }
             iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
                 iconImage.setNotifXY(ICON_NONE_COUNTER_PERCENTAGE_X_POSITION, ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION)
@@ -262,8 +260,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
 }
 
 internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_lottieav
-    val iconBadge = view.nav_icon_badge_lottieav
+    val iconImage = view.findViewById<LottieAnimationView>(R.id.nav_icon_lottieav)
+    val iconBadge = view.findViewById<TextView>(R.id.nav_icon_badge_lottieav)
     val context = itemView.context
 
     companion object {
@@ -271,7 +269,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         private const val PADDING_ZERO = 0
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
         iconImage.cancelAnimation()
         iconImage.progress = INITIAL_LOTTIE_PROGRESS
@@ -310,8 +308,8 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
 }
 
 internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_idle
-    val iconAnimatedImage = view.nav_icon_view
+    val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_idle)
+    val iconAnimatedImage = view.findViewById<View>(R.id.nav_icon_view)
     val context = itemView.context
 
     companion object {
@@ -321,7 +319,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
         private const val PADDING_ZERO = 0
     }
 
-    override fun bind(iconToolbar: IconToolbar, themeState: Int, isLastPosition: Boolean, position: Int) {
+    override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconAnimatedImage.tag = iconToolbar.id.toString()
 
         if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
