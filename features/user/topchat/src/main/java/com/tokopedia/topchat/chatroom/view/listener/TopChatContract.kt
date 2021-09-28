@@ -150,8 +150,7 @@ interface TopChatContract {
 
         fun sendAttachmentsAndMessage(
             messageId: String, sendMessage: String,
-            startTime: String, opponentId: String,
-            onSendingMessage: () -> Unit
+            startTime: String, opponentId: String
         )
 
         fun sendAttachmentsAndSticker(

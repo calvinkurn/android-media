@@ -554,13 +554,24 @@ open class TopChatRoomPresenter @Inject constructor(
         messageId: String,
         sendMessage: String,
         startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        opponentId: String
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId, sendMessage)
-            sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+            topchatSendMessage(messageId, sendMessage, startTime)
             view?.clearAttachmentPreviews()
+        }
+    }
+
+    private fun topchatSendMessage(
+        messageId: String, sendMessage: String, startTime: String
+    ) {
+        if (networkMode == MODE_WEBSOCKET) {
+            topchatSendMessageWithWebsocket(
+                messageId, sendMessage, startTime, null, null
+            )
+        } else {
+            sendMessageWithApi(messageId, sendMessage, startTime)
         }
     }
 

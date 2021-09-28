@@ -1054,8 +1054,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
+        onSendingMessage().invoke()
         presenter.sendAttachmentsAndMessage(
-            messageId, sendMessage, startTime, opponentId, onSendingMessage()
+            messageId, sendMessage, startTime, opponentId
         )
     }
 
