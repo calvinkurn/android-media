@@ -43,7 +43,7 @@ class GetFlightFareUseCase @Inject constructor(private val gqlRepository: Graphq
         val diffYear = (maxYear - minYear)
         for (i in 0..diffYear) {
             val graphqlRequest = GraphqlRequest(FLIGHT_FARE_CALENDAR_QUERY, FlightFareData::class.java, params)
-            val gqlResponse = gqlRepository.getReseponse(listOf(graphqlRequest),
+            val gqlResponse = gqlRepository.response(listOf(graphqlRequest),
                     GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                             .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
 

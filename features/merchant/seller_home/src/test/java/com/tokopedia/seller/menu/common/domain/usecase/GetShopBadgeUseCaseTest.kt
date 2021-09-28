@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class GetShopBadgeUseCaseTest {
@@ -47,14 +47,14 @@ class GetShopBadgeUseCaseTest {
         val successShopBadge = "https://success.shop.name/avatar.png"
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
-        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyLong())
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(shopBadge, successShopBadge)
@@ -66,15 +66,15 @@ class GetShopBadgeUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<ReputationShopsResult>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyLong())
         val shopBadge = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(shopBadge)

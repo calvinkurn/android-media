@@ -155,6 +155,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isReviewIncomplete = false
     private var thankYouBottomSheetText = ""
     private var imagesFedIntoPicker = arrayListOf<String>()
+    private var thankYouBottomSheetImage = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -678,6 +679,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
         data?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -728,7 +730,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     data,
                     this@CreateReviewFragment,
                     getThankYouFormTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImage
                 )
             }
         }

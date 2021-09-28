@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems

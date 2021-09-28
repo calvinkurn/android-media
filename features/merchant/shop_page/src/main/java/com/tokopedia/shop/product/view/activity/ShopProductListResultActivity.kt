@@ -18,6 +18,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -53,7 +54,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
         sort = if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID)
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
-        isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+        isNeedToReloadData = intent.getBooleanExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
         sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
         keyword = getSearchKeywordData(savedInstanceState)
         var data = intent.data

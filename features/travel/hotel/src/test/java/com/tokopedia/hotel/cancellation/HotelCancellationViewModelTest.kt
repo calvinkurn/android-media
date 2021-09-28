@@ -118,7 +118,7 @@ class HotelCancellationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -139,7 +139,7 @@ class HotelCancellationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -158,7 +158,7 @@ class HotelCancellationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelCancellationSubmitResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlFailResponse
 
         //when
