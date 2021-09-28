@@ -288,6 +288,10 @@ class TokoNowRecentPurchaseFragment:
         openATCVariantBottomSheet(productId, shopId)
     }
 
+    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+        // TO-DO: Implement see more click tracking
+    }
+
     override fun onClickSortFilter() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
         val selectedFilter = viewModel.getSelectedSortFilter()
