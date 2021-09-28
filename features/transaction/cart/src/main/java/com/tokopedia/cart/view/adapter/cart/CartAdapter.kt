@@ -602,7 +602,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     private fun addCartTopAdsHeadlineData(index: Int) {
-        val cartTopAdsHeadlineData = CartTopAdsHeadlineData()
+        val cartProductIds = mutableListOf<String>()
+        loop@ for (item in cartDataList) {
+            if (item is CartShopHolderData) {
+                item.shopGroupAvailableData?.cartItemDataList?.forEach { cartItem ->
+                    cartProductIds.add(cartItem.cartItemData.originData.productId)
+                }
+            } else if (item is DisabledCartItemHolderData) {
+                cartProductIds.add(item.productId)
+            } else if (item is CartRecentViewHolderData || item is CartWishlistHolderData || item is CartRecommendationItemHolderData) {
+                break@loop
+            }
+        }
+        val cartTopAdsHeadlineData = CartTopAdsHeadlineData(cartProductIds = cartProductIds)
         this.cartTopAdsHeadlineData = cartTopAdsHeadlineData
         cartDataList.add(index, cartTopAdsHeadlineData)
     }

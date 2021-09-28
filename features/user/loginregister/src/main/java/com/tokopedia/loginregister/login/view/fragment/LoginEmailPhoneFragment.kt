@@ -81,7 +81,8 @@ import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -400,7 +401,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         viewModel.discoverResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                is Success -> onSuccessDiscoverLogin(it.data.providers)
+                is Success -> onSuccessDiscoverLogin(it.data)
                 is Fail -> onErrorDiscoverLogin(it.throwable)
             }
         })
@@ -814,37 +815,34 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
-    override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>) {
+    override fun onSuccessDiscoverLogin(discoverData: DiscoverData) {
         stopTrace()
         dismissLoadingDiscover()
-        if (providers.isNotEmpty()) {
+        if (discoverData.providers.isNotEmpty()) {
             val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
             layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
             socmedButtonsContainer?.removeAllViews()
-            providers.forEach { discoverItemDataModel ->
+            discoverData.providers.forEach { provider ->
                 context?.let { context ->
                     val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    tv.tag = discoverItemDataModel.id
-                    tv.setText(discoverItemDataModel.name)
+                    tv.setText(provider.name)
                     if (userSession.name.isNotEmpty()) {
                         var name = userSession.name
                         if (name.split("\\s".toRegex()).size > 1)
                             name = name.substring(0, name.indexOf(" "))
-                        if ((discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
-                                (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
-                            tv.setText("${discoverItemDataModel.name} ${getString(R.string.socmed_account_as)} $name")
+                        if ((provider.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                                (provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                            tv.setText("${provider.name} ${getString(R.string.socmed_account_as)} $name")
                         }
                     }
-                    if (!TextUtils.isEmpty(discoverItemDataModel.image)) {
-                        tv.setImage(discoverItemDataModel.image)
-                    } else if (discoverItemDataModel.imageResource != 0) {
-                        tv.setImageResource(discoverItemDataModel.imageResource)
+                    if (!TextUtils.isEmpty(provider.image)) {
+                        tv.setImage(provider.image)
                     }
                     tv.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
-                    setDiscoverListener(discoverItemDataModel, tv)
+                    setDiscoverListener(provider, tv)
 
                     socmedButtonsContainer?.childCount?.let { childCount ->
                         socmedButtonsContainer?.addView(tv, childCount, layoutParams)
@@ -859,10 +857,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     }
 
-    private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel, tv: LoginTextView) {
-        if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true)) {
+    private fun setDiscoverListener(provider: ProviderData, tv: LoginTextView) {
+        if (provider.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true)) {
             tv.setOnClickListener { onLoginFacebookClick() }
-        } else if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
+        } else if (provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
         }
     }

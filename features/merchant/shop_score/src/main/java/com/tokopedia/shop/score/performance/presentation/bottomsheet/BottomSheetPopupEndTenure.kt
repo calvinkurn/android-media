@@ -5,6 +5,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -13,7 +15,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.getNumberFormat
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ShopType
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -68,11 +69,13 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
             KEY_ITEM_END_TENURE_POP_UP, PopupEndTenureUiModel::class.java
         )
         ivNewSellerIllustration?.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
-        tvShopLevel?.text =
-            getString(R.string.title_level_pop_up_end_tenure, popupEndTenureUiModel?.shopLevel)
-        setShopScore(popupEndTenureUiModel?.shopScore.orEmpty())
-        setupLevelBarNewSeller(popupEndTenureUiModel?.shopLevel.orEmpty())
-        toggleTipsNewSeller(popupEndTenureUiModel)
+        popupEndTenureUiModel?.let {
+            tvShopLevel?.text =
+                getString(R.string.title_level_pop_up_end_tenure, it.shopLevel)
+            setShopScore(it.shopScore)
+            setupLevelBarNewSeller(it.shopLevel)
+            toggleTipsNewSeller(it)
+        }
         setupBtnUnderstand()
     }
 
@@ -82,43 +85,58 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         }
     }
 
-    private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel?) {
-        when (popupEndTenureUiModel?.shopType) {
-            ShopType.POWER_MERCHANT, ShopType.POWER_MERCHANT_PRO -> {
+    private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel) {
+        when {
+            isPowerMerchant(popupEndTenureUiModel).value ||
+                    isPowerMerchantPro(popupEndTenureUiModel).value -> {
                 if (popupEndTenureUiModel.shopScore
                         .getNumberFormat(ShopScoreConstant.NULL_NUMBER) <
                     ShopScoreConstant.SHOP_AGE_SIXTY
                 ) {
                     tvTipsIncreasePerformance?.hide()
-                    setDescTicker(popupEndTenureUiModel.shopType)
+                    setDescTicker(popupEndTenureUiModel)
                     tickerTipsIncreasePerformance?.show()
                 } else {
                     tvTipsIncreasePerformance?.show()
                     tickerTipsIncreasePerformance?.hide()
                 }
             }
-            else -> {
-            }
+            else -> { }
         }
     }
 
-    private fun setDescTicker(shopType: ShopType) {
-        when (shopType) {
-            ShopType.POWER_MERCHANT -> {
+    private fun isPowerMerchant(popupEndTenureUiModel: PopupEndTenureUiModel?): Lazy<Boolean> {
+        return lazy {
+            popupEndTenureUiModel?.powerMerchantData?.powerMerchant?.pmTier == PMTier.REGULAR &&
+                    (popupEndTenureUiModel.powerMerchantData.powerMerchant.status == PMStatusConst.ACTIVE ||
+                            popupEndTenureUiModel.powerMerchantData.powerMerchant.status
+                            == PMStatusConst.IDLE)
+        }
+    }
+
+    private fun isPowerMerchantPro(popupEndTenureUiModel: PopupEndTenureUiModel?): Lazy<Boolean> {
+        return lazy {
+            popupEndTenureUiModel?.powerMerchantData?.powerMerchant?.pmTier == PMTier.PRO
+        }
+    }
+
+    private fun setDescTicker(popupEndTenureUiModel: PopupEndTenureUiModel?) {
+        when {
+            isPowerMerchant(popupEndTenureUiModel).value -> {
                 tickerTipsIncreasePerformance?.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm)
                 tickerTipsIncreasePerformance?.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm)
                 )
             }
-            ShopType.POWER_MERCHANT_PRO -> {
+            isPowerMerchantPro(popupEndTenureUiModel).value -> {
                 tickerTipsIncreasePerformance?.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm_pro)
                 tickerTipsIncreasePerformance?.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm_pro)
                 )
             }
-            else -> {}
+            else -> { }
         }
     }
 

@@ -6,7 +6,7 @@ import java.util.*
 /**
  * Created By : Jonathan Darwin on August 24, 2021
  */
-object PlayWidgetDateFormatter {
+object PlayDateTimeFormatter {
 
     private const val COUNTRY_ID = "ID"
     private const val LANGUAGE_ID = "id"
@@ -58,6 +58,32 @@ object PlayWidgetDateFormatter {
         }
         catch (e: Exception) {
             GMT07
+        }
+    }
+
+    fun convertToCalendar(
+        raw: String,
+        pattern: String = yyyyMMddTHHmmss
+    ): Calendar? {
+        return try {
+            val format = SimpleDateFormat(pattern, locale)
+            val date = format.parse(raw)
+
+            date?.let {
+                val calendar = Calendar.getInstance()
+                calendar.time = it
+
+                val diff = (getDeviceGMT().toInt() - GMT07.toInt())
+                if(diff != 0) {
+                    calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
+                    calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)
+                }
+
+                return@let calendar
+            }
+        }
+        catch (e: Exception){
+            null
         }
     }
 }

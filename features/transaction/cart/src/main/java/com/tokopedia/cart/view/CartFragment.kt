@@ -580,6 +580,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
@@ -2094,7 +2095,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false, userSession.userId)
             }
         }
     }
@@ -2151,7 +2152,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
             }
         }
         if (isApplied) {
