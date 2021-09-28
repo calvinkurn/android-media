@@ -9,8 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.window.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -88,8 +91,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        scanPathQuery(intent.data)
-
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
 
@@ -229,12 +230,20 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun setupToolbar() {
+        scanPathQuery(intent.data)
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         toolbar.removeAllViews()
         toolbar.addView(mCustomView)
         toolbar.contentInsetStartWithNavigation = 0
         toolbar.contentInsetEndWithActions = 0
+
+        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
+            ImageHandler.loadImageCircle2(this, findViewById(com.tokopedia.chat_common.R.id.user_avatar), it.image)
+            (findViewById<TextView>(com.tokopedia.chat_common.R.id.title)).text = it.name
+            (findViewById<TextView>(com.tokopedia.chat_common.R.id.label)).visibility = View.GONE
+            (findViewById<TextView>(com.tokopedia.chat_common.R.id.subtitle)).visibility = View.GONE
+        }
     }
 
     override fun getLayoutRes(): Int {

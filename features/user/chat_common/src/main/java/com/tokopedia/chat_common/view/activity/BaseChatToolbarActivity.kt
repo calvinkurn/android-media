@@ -30,44 +30,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         setupToolbar()
     }
 
-    protected open fun setupToolbar() {
-        val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
-        toolbar.removeAllViews()
-        toolbar.addView(mCustomView)
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            setHomeButtonEnabled(true)
-
-            val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
-            if (upArrow != null) {
-                upArrow.setColorFilter(
-                        MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
-                        PorterDuff.Mode.SRC_ATOP
-                )
-                this.setHomeAsUpIndicator(upArrow)
-            }
-        }
-
-        title = ""
-        toolbar.contentInsetStartWithNavigation = 0
-        toolbar.contentInsetEndWithActions = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 10f
-        }
-
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
-
-            ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
-            (findViewById<TextView>(R.id.title)).text = it.name
-            (findViewById<TextView>(R.id.label)).visibility = View.GONE
-            (findViewById<TextView>(R.id.subtitle)).visibility = View.GONE
-        }
-    }
+    protected abstract fun setupToolbar()
 
     open fun getChatHeaderLayout(): Int = R.layout.header_chat
 
