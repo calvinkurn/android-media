@@ -83,6 +83,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
         const val ERROR_INITIATE = "error_initiate"
         const val REQUEST_CODE = 7137
+        const val ADMIN_RESTRICTION_REQUEST = 403
 
         const val FROM_VOUCHER_LIST = "from_voucher_list"
     }
@@ -417,7 +418,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                                     )
                         }
                         if (!isCreateVoucherEligible) {
-                            RouteManager.route(this@CreateMerchantVoucherStepsActivity, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                            val adminRestrictionIntent = RouteManager.getIntent(this@CreateMerchantVoucherStepsActivity, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                            startActivityForResult(adminRestrictionIntent, ADMIN_RESTRICTION_REQUEST)
                         }
                         this@CreateMerchantVoucherStepsActivity.token = token
                         promoCodePrefix = voucherCodePrefix
@@ -635,5 +637,12 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private fun onReturnToStep(@VoucherCreationStep step: Int) {
         viewModel.setStepPosition(step)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ADMIN_RESTRICTION_REQUEST) {
+            finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

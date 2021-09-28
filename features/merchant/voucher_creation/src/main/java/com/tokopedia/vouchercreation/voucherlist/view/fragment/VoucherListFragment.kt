@@ -1275,7 +1275,8 @@ class VoucherListFragment :
             when(result) {
                 is Success -> { mViewModel.isEligibleToCreateVoucher = result.data.isCreateVoucherEligible }
                 is Fail -> {
-
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    view?.showErrorToaster(errorMessage)
                 }
             }
         })
